@@ -10,6 +10,7 @@
 TMT 的自适应光学系统技术来自于凯克天文望远镜(twin Keck telescopes), Keck也位于莫纳克亚山顶,是当前最大的天文望远镜，口径10米。 30米望远镜能够很好地应对地球表面千变万化的气候环境以及大气层的影响, 而这也是我们将哈勃一类的望远镜送到太空的原因; (也包括即将发射的詹姆斯·韦伯太空望远镜-James Webb Telescope)。
 
 ![30米口径望远镜上的激光](02_tmt-laser-guide-star.jpg)
+**30米口径望远镜上的激光导引星**
 
 为 TMT 开发的自适应光学系统使用了多个变形镜来修正大气层对光线的影响。 从本质上讲,镜子本身的形状可以巧妙地实时校正大气湍流的影响。 科学家称之为 Multi-Conjugate Adaptive Optics(MCAO, 多层共轭自适应光学)。 类似于 Keck, TMT将使用一个波前传感器对入射光进行采样,并确定的变形模式。 望远镜需要某些控件来找到正确的校正方式, 这就是为什么TMT会配备上面这种炫酷的激光装置,一种强大的人造导引星。
 
@@ -28,6 +29,9 @@ TMT在在巨型天文望远镜领域也不是没有对手. 已经有计划宣称
 相关阅读: [寻找外星人: 2020年我们将**有能力**找到存在生命的外星行星](http://www.extremetech.com/extreme/170628-alien-spotting-by-2020-well-finally-have-the-ability-to-locate-habitable-alien-planets)
 
 原文链接: [Gargantuan $1.4 billion Thirty Meter Telescope begins construction in Hawaii](http://www.extremetech.com/extreme/191807-gargantuan-1-4-billion-thirty-meter-telescope-begins-construction-in-hawaii)
+
 原文日期: 2014-10-10
+
 翻译日期: 2014-10-12
+
 翻译人员: [书三生](http://t.qq.com/renfufei)
