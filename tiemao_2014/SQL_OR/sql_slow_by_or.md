@@ -21,7 +21,16 @@ Oracle中 SQL 执行太慢的元凶: OR
 
 - 耗时 1.311秒 ~ 1.6秒
 
-## 1.1 查询计划 ##
+## 1.1 监控信息 ##
+
+**Druid监控截图:**
+
+![](1_2_url.png)
+
+关于Druid,请参考:  [Alibaba_Druid数据库连接池](https://github.com/alibaba/druid/wiki/%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98)
+
+
+## 1.2 查询计划 ##
 
 **查询计划截图:**
 
