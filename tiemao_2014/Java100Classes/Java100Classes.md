@@ -145,3 +145,11 @@
 1. [Learn Eclipse RCP framework by using open source projects](http://www.programcreek.com/2012/09/learn-eclipse-rcp-framework-by-using-open-source-projects/)
 1. [Collection Classes Summary Table](http://www.programcreek.com/2009/02/collection-interface-concrete-implementation-classes-summary-and-some-examples/)
 1. [How to make a method thread-safe in Java?](http://www.programcreek.com/2014/02/how-to-make-a-method-thread-safe-in-java/)
+
+原文链接: [Top 100 Classes Used in Java Projects](http://www.programcreek.com/2014/09/top-100-classes-used-in-java-projects/)
+
+原文日期: 2014-09-28
+
+翻译日期: 2014-10-17
+
+翻译人员: [铁锚](http://blog.csdn.net/renfufei)
