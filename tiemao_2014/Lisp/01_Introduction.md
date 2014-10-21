@@ -15,7 +15,7 @@ Common Lisp简介
 网站[http://common-lisp.net/](http://common-lisp.net/)是许多Common Lisp社区/站点的门户。 目的是提供Common Lisp社区开发相关的资源/资料/链接, 以及成为程序员学习的新起点。
 
 
-为何命名为Common Lisp?
+Common Lisp?
 ===
 
 Common Lisp是一门现代编译型语言, 支持多种编程风格/范式、号称高性能(所有语言都号称高性能!!! 就如同国产软件都支持免费下载一样) 的 ANSI 标准化语言. 是Lisp编程语言家族中新兴的一枚成员。 有没有兴趣参与? [点击这里开始学习](http://cliki.net/Getting%20Started)吧!
