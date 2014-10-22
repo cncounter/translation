@@ -10,7 +10,12 @@ Common Lisp简介
 	孔夫子的一句话点明了做学问的方法: 学而不思则罔 思而不学则殆. 
 	越琢磨越是这个道理, 
 
+
 欢迎来到Common Lisp的神奇时空, Lisp是一门可对语言自身进行编程的语言。
+
+![](lisplogo.png)
+
+**LISP图标**
 
 网站[http://common-lisp.net/](http://common-lisp.net/)是许多Common Lisp社区/站点的门户。 目的是提供Common Lisp社区开发相关的资源/资料/链接, 以及成为程序员学习的新起点。
 
