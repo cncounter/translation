@@ -1,7 +1,7 @@
-为何在缓存领域Redis取代了Memcached
+为何Redis在缓存领域取代了Memcached
 ==
 
-### Redis支持多种数据结构的新兴存储系统,而Memcached仍留一席之地 ###
+### NoSQL数据库Redis支持多种数据结构,而Memcached仍留一席之地 ###
 
 ![](01_redis.png)
 
