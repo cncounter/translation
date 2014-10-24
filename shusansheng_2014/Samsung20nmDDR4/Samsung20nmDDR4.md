@@ -38,3 +38,5 @@ DDR4和exascale
 翻译日期: 2014年10月24日
 
 翻译人员: [书三生](http://t.qq.com/renfufei)
+
+http://digi.163.com/14/1021/10/A92TJ8I4001618JV.html
