@@ -52,8 +52,8 @@ Redis提供可选和可调数据持久性,旨在引导后缓存计划关闭或�
 
 **相关阅读:**
 
-- [使用Memcached提升Java企业应用性能,Part 1:体系结构和配置](http://www.javaworld.com/article/2078565/open-source-tools/use-memcached-for-java-enterprise-performance--part-1--architecture-and-setup.html)
-- [使用Memcached提升Java企业应用性能,Part 2:数据库驱动的 web apps](http://www.javaworld.com/article/2078584/open-source-tools/use-memcached-for-java-enterprise-performance--part-2--database-driven-web-apps.html)
+- [用Memcached提升Java企业应用性能,Part 1:体系结构和配置](http://www.javaworld.com/article/2078565/open-source-tools/use-memcached-for-java-enterprise-performance--part-1--architecture-and-setup.html)
+- [用Memcached提升Java企业应用性能,Part 2:基于数据库的webApp](http://www.javaworld.com/article/2078584/open-source-tools/use-memcached-for-java-enterprise-performance--part-2--database-driven-web-apps.html)
 - [Cache之争: Azure和AWS更新缓存服务](http://www.javaworld.com/article/2078868/java-app-dev/cache-warfare--azure-and-aws-get-updated-caching-services.html)
 
 
