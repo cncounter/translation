@@ -1,4 +1,4 @@
-Redis为何Bigger比Memcached高
+为何Redis要比Memcached好用
 ==
 
 ##
