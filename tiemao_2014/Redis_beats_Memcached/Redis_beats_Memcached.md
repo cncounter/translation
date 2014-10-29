@@ -1,4 +1,4 @@
-Redis为何比Memcached的Bigger高
+Redis为何Bigger比Memcached高
 ==
 
 ##
@@ -17,7 +17,6 @@ Memcached还是Redis? 在现代高性能Web应用中这一直是个争论不休�
 - 所有数据全部放在内存中(这也是适用于缓存的原因)
 - 性能得分不分伯仲,包括数据吞吐量和延迟等指标
 - 都是成熟的、广受开源项目欢迎的 key-value存储系统
-
 
 
 Memcached最初在2003年由 Brad Fitzpatrick 为 LiveJournal网站开发。然后又用C语言重写了一遍(初版为Perl实现),并开放给公众使用,从此成为现代Web系统开发的基石。 当前Memcached的发展方向是改进稳定性和性能优化,而不是添加新功能特性。
@@ -42,32 +41,44 @@ Memcached和Redis被众多企业以及大量生产系统所采用, 支持各种�
 
 除非受环境制约(如遗留系统),或者业务符合上面的2种情况,否则你应该优先选择Redis。 使用Redis作为缓存,通过调优缓存内容,系统效率能获得极其提升。
 
-## 下面的内容需要校对
 
-Redis的优势很明显在于缓存管理的各个方面。 缓存使用一种称为数据回收(data eviction mechanism)的机制将旧数据从内存中删除,为新数据腾出空间。 Memcached的数据回收机制使用**LRU**(Least Recently Used,最近最少使用)算法,然后优先清除与新数据大小差不多的旧数据块。 相比之下,Redis允许细粒度地控制过期缓存,并有6种不同的策略可供选择。 Redis还采用了一些更复杂的内存管理方法和回收候选策略。
+很明显Redis的优势在于缓存管理。 缓存通过某种数据回收机制(data eviction mechanism)在必要时将旧数据从内存中删除,为新数据腾出空间。 Memcached的数据回收机制使用**LRU**(Least Recently Used,最近最少使用)算法,同时优先清除与新数据大小差不多的旧数据块。 相比之下,Redis允许细粒度控制过期缓存,有6种不同的策略可供选择。 Redis还采用了一些更复杂的内存管理方法和回收策略。
 
 **Redis对缓存的对象提供更大的灵活性**。 而Memcached限制 key
-为250字节,限制 value 为1 MB,只能通过纯文本String通信,**Redis的 key 和 value 大小限制都是512 M**B,并且是二进制安全的。 Redis提供6种数据类型,使缓存以及管理缓存变得更加智能和方便,为应用程序开发者打开了一个无限可能的世界。
+为250字节,限制 value 为1 MB,且只能通过纯文本String通信. **Redis的 key 和 value 大小限制都是512 MB**,是二进制安全的【即不丢数据,与编码无关】。 Redis提供6种数据类型,使缓存以及管理缓存变得更加智能和方便,为应用程序开发者打开了一个无限可能的世界。
 
 
-相比将对象使用序列化后的字符串存储, Redis 可以通过 Hash来存储某个对象的字段和值,并使用单个key来管理它们。 
+相比将对象序列化后通过字符串存储, Redis 通过 Hash来存储一个对象的字段和值,并可以通过单个key来管理它们。 
 
 
-看看用Memcached更新一个对象需要干什么: 先获取整个字符串,反序列化为对象,修改其中的值,再次序列化该对象,然后在缓存中将整个字符串替换为新字符串,每次更新都要干这些破事。而使用Redis Hash的方式, 可以大幅度地降低资源消耗和提高性能。 Redis的其他数据类型,比如List 或者 Set,可用来实现更复杂的缓存管理模式。
+看看用Memcached更新一个对象需要干什么: 
+
+1. 获取整个字符串
+2. 反序列化为对象
+3. 修改其中的值
+4. 再次序列化该对象
+5. 在缓存中将整个字符串替换为新字符串
+
+并且每次更新都要干这些破事。
+
+而使用Redis Hash的方式, 可以大幅度降低资源消耗并提高性能。 Redis的其他数据类型,如List 或者 Set,可用来实现更复杂的缓存管理模式。
 
 
-Redis的另一个重要优点是它存储的数据是不透明的,这意味着在服务器端可以直接操纵这些数据。 160多个命令中的大部分都可以用来进行数据操作, 所以通过服务端脚本调用进行数据处理成为现实。 这些内置命令和用户脚本可以让你直接灵活地处理数据任务,而无需通过网络将数据传输给另一个系统进行处理。
+Redis的另一个重大优点是其存储的数据是不透明的,这意味着在服务器端可以直接操纵这些数据。 160多个命令中的大部分都可以用来进行数据操作, 所以通过服务端脚本调用进行数据处理成为现实。 这些内置命令和用户脚本可以让你直接灵活地处理数据任务,而无需通过网络将数据传输给另一个系统进行处理。
 
-Redis提供了可选和可调整的数据持久性, 目的是为了在 崩溃/重启后加载缓存数据。 虽然我们一般认为缓存中的数据是不稳定,瞬态的, 但在缓存场景中将数据持久化到磁盘还是很有价值的。 在重启后将数据立即加载预热的方式耗时很短, 而且消除了在主数据存储系统上计算并重新注入缓存的消耗低得多。
+Redis提供了可选/可调整的数据持久化, 目的是为了在 崩溃/重启后可以快速加载缓存。 虽然我们一般认为缓存中的数据是不稳定,瞬时的, 但在缓存系统中将数据持久化到磁盘还是很有价值的。 在重启后立即加载预热的方式耗时很短, 而且减轻了主数据库系统的开销。
 
-最后, Redis提供主从复制(replication)。 Replication 可用于实现高可用的cache系统,能承受某台服务器崩溃并提供不间断的服务。 假设要求在某台缓存服务器崩溃时, 只有少部分用户和程序在时间内受到些无关紧要的影响, 大多数情况下就需要有一个行之有效的解决方案,来保证缓存内容和服务的可用性。
-
- 
-当前开源软件持续地提供最佳的实用技术。 在需要使用缓存来提高应用系统性能时,Redis和Memcached是最佳的产品级解决方案。 但考虑到其丰富的功能和先进的设计,绝大多数时候Redis应该是你的第一选择。
-
-Itamar Haber ([@itamarhaber](https://twitter.com/itamarhaber)) 是 Redis Labs的首席开发人员, 该企业为开发人员提供完全托管的Memcached和Redis云服务。 具有多年软件产品研发经验,曾在 Xeround, Etagon, Amicada, and M.N.S Ltd.担任管理和领导职位. Itamar 获得 Northwestern and Tel-Aviv Universitiesd 的Kellogg-Recanati工商管理硕士, 以及 Science in Computer Science 学士。  
+最后, Redis提供主从复制(replication)。 Replication 可用于实现高可用的cache系统,允许某些服务器宕机的情况下也能提供不间断的服务。 假设要求在某台缓存服务器崩溃时, 只有少部分用户和程序在短时间内受影响, 大多数情况下就需要有一个行之有效的解决方案,来保证缓存内容和服务的可用性。
 
 
+当今开源软件一直在提供最佳的实用技术方案。 需要使用缓存来提高应用系统性能时,Redis和Memcached是最佳的产品级解决方案。 但考虑到其丰富的功能和先进的设计,绝大多数时候Redis都应该是你的第一选择。
+
+**作者简介**: Itamar Haber ([@itamarhaber](https://twitter.com/itamarhaber)) 是 Redis Labs的首席开发人员, 该企业为开发人员提供完全托管的Memcached和Redis云服务。 具有多年软件产品研发经验,曾在 Xeround, Etagon, Amicada, and M.N.S Ltd.担任管理和领导职位. Itamar 获得 Northwestern and Tel-Aviv Universitiesd 的Kellogg-Recanati工商管理硕士, 以及 Science in Computer Science 学士。  
+
+
+
+
+##
 
 **相关阅读:**
 
@@ -76,13 +87,6 @@ Itamar Haber ([@itamarhaber](https://twitter.com/itamarhaber)) 是 Redis Labs的
 - [Cache之争: Azure和AWS升级缓存服务](http://www.javaworld.com/article/2078868/java-app-dev/cache-warfare--azure-and-aws-get-updated-caching-services.html)
 
 
-
-
-
-
-
-
-##
 
 
 原文链接: [Why Redis beats Memcached for caching](http://www.javaworld.com/article/2836878/developer-tools-ide/why-redis-beats-memcached-for-caching.html)
