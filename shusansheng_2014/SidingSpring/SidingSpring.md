@@ -1,32 +1,50 @@
-NASA的火星卫星成功躲过赛丁泉彗星耀武扬威的暗杀(2014-10-20日更新)
+NASA火星探测器成功躲避赛丁泉彗星
 ====
-
- (Siding Spring) 赛丁泉彗星
-
 
 ![](01_PIA17487_ip.jpg)
 
 
-彗星支持Spring安全通过了火星,所有三个美国宇航局的航天飞机的安全隐藏背后的红色星球,以防止一个不幸的碰撞。我们也有一群很酷的照片,由哈勃望远镜,望远镜在地球上。他们是嵌在下面了。
+赛丁泉彗星(comet Siding Spring)已安全通过了火星, NASA的三颗火星探测器都躲藏在这颗红色行星的背面,以防一个不小心就与彗星发生碰撞。我们收集到很多酷炫的照片,是由哈勃望远镜,以及地面上的望远镜拍摄的。下面分享给大家。
 
-好奇心的照相机了向上的通道支持春天,但我们仍然等待从美国国家航空航天局(NASA)如果它设法得到一个体面的彗星。目前,我已经包括了一个艺术家的概念支持弹簧可能看上去像是从火星表面。火星奥德赛探测器也应该有一个好的的彗星,而窥视周围边缘的火星,但再一次,我们将不得不等到图像传回地球。
+好奇号火星探测车的照相机对准上方,准备拍摄 Siding Spring通过火星的照片,但我们仍然期待从美国国家航空航天局(NASA)获得一些正面的清晰照。目前,我们也制作了一些塞丁泉彗星通过火星上空的效果图。奥德赛探测器(Odyssey)也应该会有一个很好的观测角度,但是,我们得等图像传送回地球才能确定.
 
 
 ![](02_14-090-hubble-comet_0-br2.jpg)
 
-**哈勃望远镜拍摄的 Siding Spring 图片**
+**哈勃望远镜拍摄的 Siding Spring,左边是原始图像,右边是处理后的**
 
 ![](03_Mars-orbiters-comet-siding-spring-close-call-br2.jpg)
-**NASA 的火星卫星, 正在避让 Siding Spring**
+**NASA 的火星探测器, 正在躲避 Siding Spring**
 
 
 
 ![](04_Comet-Siding-Spring-Mars-Artist-Concept-br2.jpg)
 
-**艺术家的概念上面的comet支持春天,火星。这可能不会看上去很戏剧性的在现实生活中,但我们可以希望。**
+Siding Spring在火星上空的艺术效果图。也许实际上没有这么魔幻,但我们充满期待
 
 
-## 原始的故事(10月15日) ##
+
+### 附: 好奇号火星探测车图片 ###
+
+![维基百科,好奇号在火星上](08_Curiosity_Rover_Arm_Camera.jpg)
+**好奇号在火星上**
+
+![维基百科,好奇号探测器](09_CuriosityRover.jpg)
+**好奇号探测器**
+
+
+
+
+
+
+
+
+##
+
+
+
+
+## 下面是10月15日的原始文章,未修缮 ##
 
 美国宇航局的MAVEN宇宙飞船到达火星,上个月,发回了第一个图片的红色行星的大气层受到大型太阳风暴。这些图像是同类中的第一个,为我们提供关于火星的臭氧层,脆弱的氧、碳、氢和电晕的火星的大气中。这些冠状物可以告诉我们火星上的条件可能已经喜欢在过去的四十亿年里,详细说明地球从温暖潮湿([完全适合窝藏生活](http://www.extremetech.com/extreme/150558-nasas-curiosity-rover-confirms-that-life-couldve-survived-on-mars)),寒冷,干燥,尘土飞扬的球体,这是今天。
 
@@ -54,6 +72,8 @@ NASA兴奋的图片:“所有的仪器显示数据质量比预期在这个早期
 所有这些最初兴奋后,MAVEN将经过几周的仪器校准,然后开始认真的主要科学任务。与MAVEN,NASA希望最终确定火星——[可能是一次温暖和湿润的](http://www.extremetech.com/extreme/144769-the-other-blue-planet-what-mars-mightve-looked-like-billions-of-years-ago)——失去了其大气和地表水。最流行的假设是,火星的铁核心冷却,其防护磁场腐烂,使高能太阳粒子-像那些轰击地球上个月大气层烧掉。
 
 ![](07_wet-mars-east-hemisphere.jpg)
+
+
 
 现在读: [2012年的太阳风暴,几乎送我们回到石器时代的末日景象](http://www.extremetech.com/extreme/186805-the-solar-storm-of-2012-that-almost-sent-us-back-to-a-post-apocalyptic-stone-age)
 
