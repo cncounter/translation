@@ -7,7 +7,7 @@ CNCounter translation
 
 # 目录 #
 
-## 小伙伴书三生
+## 小伙伴[书三生](http://t.qq.com/renfufei)
 
 1. **[20纳米DDR4内存 —— 单条最大128GB](shusansheng_2014/Samsung20nmDDR4/Samsung20nmDDR4.md)**
 1. **[国际空间站即将开通当天送货服务](shusansheng_2014/SpaceStation/SpaceStation.md)**
@@ -19,7 +19,7 @@ CNCounter translation
 
 ##
 
-## 码农铁锚
+## 码农[铁锚](http://blog.csdn.net/renfufei)
 
 1. **[Oracle中 SQL 执行太慢的元凶: OR](tiemao_2014/SQL_OR/sql_slow_by_or.md)**
 1. **[最常用的Java类 Top 100](tiemao_2014/Java100Classes/Java100Classes.md)**
