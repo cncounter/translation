@@ -9,24 +9,28 @@
 
 ## 动态 NodeList ##
 
-这是一个主要的文档对象模型的陷阱。 的 节点列表 对象(而且, HTMLCollection 对象在HTML DOM)是一种特殊类型的对象。 的 DOM Level 3规范 说对 HTMLCollection 对象:
+这是文档对象模型(DOM,Document Object Model)中的一个大坑.  `NodeList` 对象(以及 HTML DOM 中的 `HTMLCollection` 对象)是一种特殊类型的对象. [DOM Level 3 spec 规范](http://www.w3.org/TR/DOM-Level-3-Core/core.html#td-live) 对 `HTMLCollection` 对象的描述如下:
 
-节点列表 和 NamedNodeMap 在DOM对象 生活 ;也就是说,底层文档结构的变化反映在所有相关 节点列表 和 NamedNodeMap 对象。 例如,如果一个用户得到一个DOM 节点列表 对象包含的孩子 元素 随后补充道,更多的孩子,元素(或删除孩子,或修改它们),这些更改将自动反映在 节点列表 用户的,没有进一步的行动。 同样地,更改 节点 在树上反映在所有引用 节点 在 节点列表 和 NamedNodeMap 对象。
+DOM中的 `NodeList` 和 `NamedNodeMap` 对象是动态的(live); 
+也就是说,对底层文档结构的修改会动态地反映到相关的集合 `NodeList` 和 `NamedNodeMap` 中。 例如, 如果先获取了某个元素(`Element`)的子元素的动态集合 `NodeList` 对象, 然后又在其他地方顺序添加更多子元素到这个DOM父元素中( 可以说添加, 修改, 删除子元素等操作), 这些更改将自动反射到 `NodeList`, 不需要手动进行其他调用. 同样地, 对DOM树上某个`Node`节点的修改,也会实时影响引用了该节点的 `NodeList` 和 `NamedNodeMap` 对象。
 
-的 getElementsByTagName() 方法返回一个活的集合元素自动更新文档时发生了变化。 因此,实际上是一个无限循环如下:
+`getElementsByTagName()` 方法返回对应标签名的元素的一个动态集合, 只要document发生变化,就会自动更新对应的元素。 因此, 下面的代码实际上是一个死循环:
 
-
-	var divs = document.getElementsByTagName("div"),
-	    i=0;
+	// XXX 实际中请注意... 
+	// 适当的中间变量是一个好习惯
+	var divs = document.getElementsByTagName("div");
+	var i=0;
 	
 	while(i < divs.length){
 	    document.body.appendChild(document.createElement("div"));
 	    i++;
 	}
 
-无限循环是因为 divs.length 通过循环每次都重新计算。 由于在循环的每次迭代是添加一个新的 < div > ,这意味着 divs.length 正在增加每通过一次循环 我 也正在增加,永远无法赶上和终端条件不会触发。
+死循环的原因是每次循环都会重新计算 `divs.length`. 每次迭代都会添加一个新的 `<div>`, 所以每次 `i++` ,对应的 `divs.length` 也在增加, 所以 `i` 永远比`divs.length`小, 循环终止条件也就不会触发[例外情况是dom中没有div,不进入循环]。
 
-这些生活集合可能似乎是一个坏主意,但他们可以用于使相同的对象 document.images , document.forms 和其他类似pre-DOM集合,在浏览器变得司空见惯。
+你可能会觉得这种动态集合是个坏主意, 但通过动态集合可以保证某些使用非常普遍的对象在各种情况下都是同一个, 如 `document.images` , `document.forms`, 以及其他类似的 pre-DOM集合。
+
+## 需要整理
 
 ## 静态 NodeList ##
 
@@ -60,7 +64,7 @@
 
 ## 结论 ##
 
-真正的原因 getElementsByTagName() 是速度比 querySelectorAll() 是因为生活和静态的区别 节点列表 对象。 尽管我肯定有方法来优化这个,没有前期工作生活 节点列表 通常总是快于做所有的工作来创建一个静态的 节点列表 。 确定使用哪个方法是高度依赖于你想做什么。 如果你只是寻找元素标记名称,你不需要一个快照,然后 getElementsByTagName() 应该使用;如果你需要一个快照的结果或CSS查询,你做一个更复杂的呢 querySelectorAll() 应该被使用。
+`getElementsByTagName()` 速度比 `querySelectorAll()` 快的根本原因在于**动态NodeList**和**静态NodeList**对象的不同。 尽管我可以肯定地说有某种方法来优化这一点, 在获取`NodeList`时不需要执行很多前期处理操作的动态列表,总比获取静态的集合(返回之前完成各种处理)要快很多。 哪个方法更好用主要还是看你的需求, 如果只是要根据 tag name 来查找元素, 也不需要获取此一个快照, 那就应该使用 `getElementsByTagName()`方法; 如果需要快照结果(静态),或者需要使用复杂的CSS查询, 则可以考虑 `querySelectorAll()`。
 
 
 
