@@ -1,9 +1,7 @@
-第一天:学习基本的PL / SQL
-
-http://www.developer.com/tech/article.php/777761/Day-1-Learning-the-Basics-of-PLSQL.htm
+PL/SQL基础教程
 
 
-祝贺你决定读这本书, sam自学PL / SQL在21天,第二版 ! 如果你是新的Oracle环境,这本书将帮助你快速学习和掌握甲骨文的内置程序语言。 知识的PL / SQL过程语言/结构化查询语言)是成为一个基本的必要性不管你使用甲骨文的许多产品。
+本文来自《sam自学PL / SQL在21天,第二版》 ! 如果你是新的Oracle环境,这本书将帮助你快速学习和掌握甲骨文的内置程序语言。 知识的PL / SQL过程语言/结构化查询语言)是成为一个基本的必要性不管你使用甲骨文的许多产品。
 
 今天,在你的第一天,你将完成这些任务:
 
@@ -518,3 +516,5 @@ SET SERVEROUTPUT ON
 版权©培生教育。 保留所有权利。
 
 
+
+原文链接: [http://www.developer.com/tech/article.php/777761/Day-1-Learning-the-Basics-of-PLSQL.htm](http://www.developer.com/tech/article.php/777761/Day-1-Learning-the-Basics-of-PLSQL.htm)

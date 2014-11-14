@@ -38,4 +38,4 @@
 
 翻译日期: 2014年10月17日
 
-翻译人员: 铁锚 
+翻译人员: [铁锚: http://blog.csdn.net/renfufei](http://blog.csdn.net/renfufei)
