@@ -26,4 +26,5 @@ CNCounter translation
 1. **[生产环境线上测试的惨淡人生](tiemao_2014/ProductionTesting/ProductionTesting.md)**
 1. **[Redis为何Bigger比Memcached高](tiemao_2014/Redis_beats_Memcached/Redis_beats_Memcached.md)**
 1. **[CPU空闲时在忙什么](tiemao_2014/CPUIdel/CPUIdel.md)**
+1. **[评论更精彩,教你怎么解决64位Windows版Redis狂占C盘的问题](tiemao_2014/RedisQFork_heapdir/RedisQFork_heapdir.md)**
 
