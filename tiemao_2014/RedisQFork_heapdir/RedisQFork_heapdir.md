@@ -85,4 +85,6 @@ Rushdeep
 
 翻译日期: 2014-11-16
 
-翻译人员: [铁锚](http://blog.csdn.net/renfufei)
+翻译人员: [铁锚: http://blog.csdn.net/renfufei](http://blog.csdn.net/renfufei)
+
+CNCounter翻译文章目录: [https://github.com/cncounter/translation](https://github.com/cncounter/translation)
