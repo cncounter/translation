@@ -4,11 +4,11 @@ Java EE标准很难推销给Spring框架用户
 ### Spring开发者称Spring框架仍遥遥领先于Java EE
 
 
-尽管Oracle一直想让Java开发者从Spring转到Java EE(Enterprise Edition, 企业版)框架, 但Spring的支持者仍坚定地守卫在Spring阵营。
+尽管Oracle一直想让Java开发者从Spring框架转移到Java EE(Enterprise Edition, Java企业版), 但Spring的粉丝们仍然紧紧守护在Spring阵营。
 
-Spring的拥护者聚集在SpringOne 2 gx会议本周在硅谷证明框架的强度,一直打算提供便利在企业级Java最初并未发现。 Java EE已经添加功能,已经在春天,如依赖注入,可以简化单元测试。
+本周在硅谷的SpringOne 2GX大会上聚集的大量Spring拥护者充分证明了该框架的强悍和受欢迎程度, 从最初起就一直提供企业级Java难以给予的简单易用性。 当然从那以后Java EE已经添加了很多Spring拥有的功能,比如依赖注入,可以用来简化单元测试。
 
-说:“我的偏好仍然是春天Morten索伦森,自由Java顾问在哥本哈根。 “我有一些偏见对Java EE 10年前因为我离开它,因为它是完全无法使用。 我仍然觉得笨拙,不过,每当我接受它。 “Sorenson支持Spring创建一致的代码,例如。 “春天刚刚更前瞻性的多年来。 “但现在春天是在压力下,从技术上讲,从技术(如Java EE和 [akka](http://www.javaworld.com/javaworld/jw-05-2013/130508-osjp-akka.html) Scala中间件技术,他说。
+"我最爱的还是Spring," Morten Sorensen 回答,他是哥本哈根的一个Java自由顾问。 “我对Java EE有一些偏见,因为10年前放弃它时,它完全是无法使用的。 现在我也觉得它很笨拙,每当我屈服它的时候。 " Sorenson支持Spring创建一致的代码,例如。 “春天刚刚更前瞻性的多年来。 “但现在春天是在压力下,从技术上讲,从技术(如Java EE和 [akka](http://www.javaworld.com/javaworld/jw-05-2013/130508-osjp-akka.html) Scala中间件技术,他说。
 
 甲骨文发布博客如何 [从春天迁移到Java EE](http://www.oracle.com/technetwork/articles/java/springtojavaee-522240.html) ,可以追溯到2011年。 的官员 [关键的](http://gopivotal.com/pivotal-products/apps/spring-framework) 春天,公司监管,坚持春天仍然提供了一个Java EE技术优势和寄存器数以百万计的下载。 “春天是下载机,”皮特·汉弗莱说,一个关键产品营销经理,他还指出,春季和Java EE共生,与Spring支持Java EE。
 
