@@ -91,14 +91,6 @@ Git安装与配置
 
 - Win7_8下的Git: [https://windows.github.com/](https://windows.github.com/)(这应该是Github在windows下的官方软件,但不支持XP)
 
-
-**【经验1】** 很多软件的官网、或者文档你找不到的话，可以到OSChina找找: [http]://www.oschina.net/](http://www.oschina.net/)
-
-**【经验2】** 很多软件/框架的jar包, 可以到Maven仓库网去查找,可以直接下载jar 文件,也可以搜索maven依赖,其他工具的依赖等: [http://www.mvnrepository.com/](http://www.mvnrepository.com/)
-
-
-
-
 ##
 
 日期: 2014-11-27
