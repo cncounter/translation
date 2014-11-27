@@ -93,6 +93,7 @@ Git安装与配置
 
 ##相关文章
 
+1. [目录](GitHelp.md)
 1. [安装及配置Git](01_GitInstall.md)
 1. [安装及配置TortoiseGit](02_TortoiseGit.md)
 1. [基本使用方法](03_Usage.md)

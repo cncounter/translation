@@ -22,7 +22,7 @@ Git的下载页面: [http://git-scm.com/download/](http://git-scm.com/download/)
 
 Win7_8下的Git: [https://windows.github.com/](https://windows.github.com/)(这应该是Github在windows下的官方软件,但不支持XP)
 
-TortoiseGit下载: [http://code.google.com/p/tortoisegit/wiki/Download?tm=2](http://code.google.com/p/tortoisegit/wiki/Download?tm=2)
+TortoiseGit下载: [http://download.tortoisegit.org/tgit/](http://download.tortoisegit.org/tgit/)
 
 详细的Git教程请参考GotGitHub:  [http://www.worldhello.net/gotgithub/index.html](http://www.worldhello.net/gotgithub/index.html)
 
