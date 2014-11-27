@@ -18,6 +18,8 @@ Windows下Git使用入门
 
 ##2. 相关网站:###
 
+TortoiseGit-1.8中文版与Git安装包: [http://download.csdn.net/download/renfufei/8204699](http://download.csdn.net/download/renfufei/8204699)
+
 Git的下载页面: [http://git-scm.com/download/](http://git-scm.com/download/)
 
 Win7_8下的Git: [https://windows.github.com/](https://windows.github.com/)(这应该是Github在windows下的官方软件,但不支持XP)
