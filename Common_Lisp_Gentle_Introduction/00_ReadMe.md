@@ -1,6 +1,14 @@
 COMMON LISP: A Gentle Introduction to Symbolic Computation
 ==
 
+Tutorials下载地址: [http://common-lisp.net/tutorials/](http://common-lisp.net/tutorials/)
+
+
+
+
+
+
+
 David S. Touretzky
 Carnegie Mellon University
 
