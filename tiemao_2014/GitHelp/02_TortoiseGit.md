@@ -7,6 +7,8 @@ TortoiseGit 简称 tgit, 中文名海龟Git. 海龟Git只支持神器 Windows �
 
 ## 下载
 
+**0.** TortoiseGit-1.8中文版与Git安装包:  [http://download.csdn.net/download/renfufei/8204699](http://download.csdn.net/download/renfufei/8204699)
+
 **1.**TortoiseGit下载页面: [http://download.tortoisegit.org/tgit/](http://download.tortoisegit.org/tgit/)
 
 **2.**打开下载页面后, 找到对应的 Latest stable release (最新稳定版) 目录,如当前为 [1.8.12.0版本](http://download.tortoisegit.org/tgit/1.8.12.0/) , 点击进入对应的页面. 
