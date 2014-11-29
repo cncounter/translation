@@ -2,6 +2,7 @@ Git安装与配置
 ==
 
 ## 下载Git安装包
+0.TortoiseGit-1.8中文版与Git安装包: [http://download.csdn.net/download/renfufei/8204699](http://download.csdn.net/download/renfufei/8204699)
 
 1. 首先打开 Git 的官方网站: [http://git-scm.com/](http://git-scm.com/)
 2. 然后找到下载页面: [http://git-scm.com/downloads](http://git-scm.com/downloads)
