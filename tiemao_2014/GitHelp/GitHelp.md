@@ -43,6 +43,7 @@ TortoiseGit下载: [http://download.tortoisegit.org/tgit/](http://download.torto
 1. [安装及配置TortoiseGit](02_TortoiseGit.md)
 1. [基本使用方法](03_Usage.md)
 1. [MarkDown示例](04_MarkDownDemo.md)
+1. [解决 TortoiseGit 诡异的 Bad file number 问题](05_BadFileNumber.md)
 
 
 日期: 2014-11-27

@@ -28,4 +28,5 @@ CNCounter translation
 1. **[CPU空闲时在忙什么](tiemao_2014/CPUIdel/CPUIdel.md)**
 1. **[评论更精彩,教你怎么解决64位Windows版Redis狂占C盘的问题](tiemao_2014/RedisQFork_heapdir/RedisQFork_heapdir.md)**
 1. **[Java Heap dump文件分析工具jhat简介](tiemao_2014/jhat/jhat.md)**
+1. **[Windows下Git使用入门](tiemao_2014/GitHelp/GitHelp.md)**
 
