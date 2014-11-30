@@ -32,7 +32,7 @@ TortoiseGit下载: [http://download.tortoisegit.org/tgit/](http://download.torto
 
 相关的首页也可以从下载页面找到,如果你感兴趣的话.
 
-**【经验1】** 很多软件的官网、或者文档你找不到的话，可以到OSChina找找: [http]://www.oschina.net/](http://www.oschina.net/)
+**【经验1】** 很多软件的官网、或者文档你找不到的话，可以到OSChina找找: [http://www.oschina.net/](http://www.oschina.net/)
 
 **【经验2】** 很多软件/框架的jar包, 可以到Maven仓库网去查找,可以直接下载jar 文件,也可以搜索maven依赖,其他工具的依赖等: [http://www.mvnrepository.com/](http://www.mvnrepository.com/)
 
