@@ -47,6 +47,10 @@ TortoiseGit 简称 tgit, 中文名海龟Git. 海龟Git只支持神器 Windows �
 
 ![](204_tgit_License.png)
 
+**6.1**下一步,选择SSH客户端. 可以选择 TortoiseGitPlink(位于TortoiseGit安装目录/bin 下), 也可以选择 Git 默认的SSH客户端,位于 Git安装目录/bin/ssh.exe(如果配置了 Path,那直接是 ssh.exe)
+
+![](204_2_tgit_Network.png)
+
 **7.** 接着是选择安装目录,可以保持默认,或者安装到开发环境目录下,安装的程序组件保持默认即可：
 
 ![](205_tgit_dir.png)
