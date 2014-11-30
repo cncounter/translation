@@ -72,8 +72,9 @@ Git安装与配置
 
 	git config --global user.name "tiemaocsdn"
 	git config --global user.email "tiemaocsdn@qq.com"
+	git config --global push.default simple
 
-这个姓名与Email只用于日志标识.实际推送到GitHub等在线仓库时,要用有操作权限的账号登录.
+如果要使用git进行推送,则必须配置 `push.default` ,否则推送失败. 姓名与Email只用于日志标识.实际推送到GitHub等在线仓库时,要用有操作权限的账号登录.
 
 查看git配置可以使用 `-l` 参数(l 就是 list 的首字母,L的小写):
 
