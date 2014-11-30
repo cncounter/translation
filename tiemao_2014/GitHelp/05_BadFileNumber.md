@@ -112,7 +112,7 @@
 
 ![](05_04_pullok.png)
 
-好了,问题完美解决.
+好了,问题完美解决.[这可能是 TortoiseGit 当前版本的一个 BUG]
 
 ### 总结
 
@@ -123,10 +123,11 @@
 
 1. [目录](GitHelp.md)
 1. [安装及配置Git](01_GitInstall.md)
-1. [安装及配置TortoiseGit](02_TortoiseGit.md)
+1. [安装及配置 TortoiseGit](02_TortoiseGit.md)
 1. [基本使用方法](03_Usage.md)
 1. [MarkDown示例](04_MarkDownDemo.md)
 1. [解决 TortoiseGit 诡异的 Bad file number 问题](05_BadFileNumber.md)
+1. [加入QQ群GitHub家园: 225932282](http://jq.qq.com/?_wv=1027&k=WHbwkD)
 
 
 

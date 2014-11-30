@@ -248,6 +248,7 @@ Win+R 快捷键打开运行对话框,输入 `cmd` 回车, 在 cmd 中(其实在 
 1. [基本使用方法](03_Usage.md)
 1. [MarkDown示例](04_MarkDownDemo.md)
 1. [解决 TortoiseGit 诡异的 Bad file number 问题](05_BadFileNumber.md)
+1. [加入QQ群GitHub家园: 225932282](http://jq.qq.com/?_wv=1027&k=WHbwkD)
 
 
 

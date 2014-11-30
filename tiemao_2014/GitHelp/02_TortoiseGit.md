@@ -157,6 +157,7 @@ TortoiseGit 简称 tgit, 中文名海龟Git. 海龟Git只支持神器 Windows �
 1. [基本使用方法](03_Usage.md)
 1. [MarkDown示例](04_MarkDownDemo.md)
 1. [解决 TortoiseGit 诡异的 Bad file number 问题](05_BadFileNumber.md)
+1. [加入QQ群GitHub家园: 225932282](http://jq.qq.com/?_wv=1027&k=WHbwkD)
 
 
 
