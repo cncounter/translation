@@ -3,7 +3,9 @@ TortoiseGit安装与配置
 
 TortoiseGit 简称 tgit, 中文名海龟Git. 海龟Git只支持神器 Windows 系统, 有一个前辈海龟SVN, TortoiseSVN和TortoiseGit都是非常优秀的开源的版本库客户端. 分为32位版与64位版.并且支持各种语言,包括简体中文(Chinese, simplified; zh_CN).
 
-**注意:** XP系统已经不支持最新的安装包,请尽量使用 Win7 或更高版本的操作系统.
+**注意:** XP系统已经不支持最新的安装包,请尽量使用 Win7 或更高版本的操作系统. 
+
+官方说明是: Users of Windows XP and Server 2003, please update [TortoiseGitProc.exe](http://download.tortoisegit.org/tgit/1.8.12.0/TortoiseGit-1.8.12.0-WindowsXP-fix.zip) after after installing 1.8.12.0. 即: 如果在 XP 或者 2003 上安装完1.8.12.0 版本的 tgit 后,需要安装这个修正包.(但本人在xp里面根本装不了,更不用说安装后了)
 
 ## 下载
 
