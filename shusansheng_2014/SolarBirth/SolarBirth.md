@@ -1,4 +1,4 @@
-星系的诞生: 首次拍到行星形成时的高清图像
+恒星星系的诞生: 首次拍到行星形成时的高清图像
 ==
 
 ![](01_alma-hl-tau-protoplanetary-disk.jpg)
@@ -30,7 +30,7 @@ HL Tau中间的图像是一个年轻的恒星大约450光年的金牛座。 之�
 回到这里在地球上,这种高分辨率观测HL Tau行星盘的希望会告诉我们很多关于我们的太阳系是如何形成的,大约四十亿年前。 以前,我们只能推测和模拟行星和恒星的形成,但现在,由于阿尔玛,我们可以看着它发生在现实世界中,几乎在真正的时间。 科学是很可怕的。
 
 
-相关阅读:  [9G像素,8400万颗恒星: 窥视世界上最详细的银河系照片](http://www.extremetech.com/extreme/139329-9-gigapixels-84-million-stars-peer-into-the-worlds-most-detailed-photo-of-the-milky-way)
+相关阅读:  [90亿像素,8400万颗恒星: 窥视世界上最详细的银河系照片](http://www.extremetech.com/extreme/139329-9-gigapixels-84-million-stars-peer-into-the-worlds-most-detailed-photo-of-the-milky-way)
 
 原文链接: [Birth of a solar system: The first ever high-resolution image of planet formation](http://www.extremetech.com/extreme/193710-birth-of-a-solar-system-the-first-ever-high-resolution-image-of-planet-formation)
 

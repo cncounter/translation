@@ -14,7 +14,7 @@ M60-UCD1无疑是非常小的,但正因太小而变得与众不同 —— 它中
 
 这就是银河系在红外线天文望远镜中的样子。 可悲的是,人类的眼睛看不出如此多的星星。
 
-扩展阅读: [9G像素,8400万颗恒星: 窥视世界上最详细的银河系照片](http://www.extremetech.com/extreme/139329-9-gigapixels-84-million-stars-peer-into-the-worlds-most-detailed-photo-of-the-milky-way)
+扩展阅读: [90亿像素,8400万颗恒星: 窥视世界上最详细的银河系照片](http://www.extremetech.com/extreme/139329-9-gigapixels-84-million-stars-peer-into-the-worlds-most-detailed-photo-of-the-milky-way)
 
 现在看起来唯一合理的解释就是,这个矮星系全盛时期大约有100亿颗恒星组成 —— 但它与另一个星系,M60相撞了,导致它的大部分恒星逃逸。 M60内部超级大黑洞的质量大约是45亿个太阳的质量。 一直以来, 天文学家们认为M60和M60-UCD1可能最终会合并成一个,而且他们的黑洞也会合并。 我不能完全确定当两个超大型黑洞合并时会发生什么,也不知道这种怪物应该如何命名,但应该蛮壮观的。
 
