@@ -1,15 +1,24 @@
-维珍银河“太空船二号”试飞期间遭受毁灭性打击
+维珍银河二号宇宙飞船的坠毁并非是火箭发动机造成的
 ==
+
+![](00_virgin_galactic.jpg)
+
+##11月3日更新:
+
+初步调查结果表明: 太空飞船二号的解体的原因并非是由于火箭发动机的故障或爆炸. 到目前为止,看起来似乎是“羽翼”系统 —— 展开后以增加空气阻力 —— 过早激活导致的. “羽翼”是由飞行员激活的,似乎是出了其他的什么意外,因而他们自行激活,导致了致命的空中解体。
+
+
 ![](01_SS2-Dawn.jpg)
 
+## 10月31日版本:
+ 
+对商业宇宙飞行来说这是悲催的一个星期. 本周早些时候[当地时间10月28日],美国轨道科学公司的安塔瑞斯火箭(Antares rocket developed by Orbital Sciences Corporation) 在[起飞后爆炸](http://v.youku.com/v_show/id_XODE0OTA1NDg0.html),而今天[2014-10-31],维珍银河的太空船二号确认坠毁。 和SpaceX的 Dragon 或 Antares火箭不同, SpaceShipTwo 的设计目标是为了替换高度专用的运输机,白骑士二号(White Knight Two)。
 
-对商业宇宙飞行来说这是悲催的一周。 本周早些时候[当地时间10月28日],美国轨道科学公司的安塔瑞斯火箭(Antares rocket developed by Orbital Sciences Corporation) 在[起飞后爆炸](http://v.youku.com/v_show/id_XODE0OTA1NDg0.html),而今天[2014-10-31],维珍银河的太空船二号确认销毁。 与SpaceX的龙或Antares火箭,发射太空飞船二号是为了解除高度专用的运输机,白骑士二号。
+这是目前报道,两名飞行员中有一人死亡,而另一人是严重受伤,正在接受治疗, 但和大多数的紧急事件的报告一样、谣言满天飞,大量相互矛盾的信息和报导仍然充斥着我们周围。 一些报告显示两位飞行员都没有被发现,而BBC则声称有一人还活着。
 
-这是目前报道,两名飞行员死亡,而另一个是治疗严重受伤,但与大多数的突然事件报告、大量的相互矛盾的信息仍然是呼啸着从身边周围的电波。 一些报告显示两位飞行员都没有被发现,而BBC声称一个还活着。
+维珍的官方Twitter号发布消息说初始化发射是在10点07分, 火箭点火几秒钟后(同一时间戳)，在10:13发生爆炸(这一点被定义为一个“异常,anomaly”). 所有的报告都指出, 爆炸发生发动机点火后不久.
 
-维珍的官方Twitter账户初始释放10时07指出,火箭的点火几秒钟后(同一时间戳)和正式指出,爆炸(在这一点上定义为一个“异常”)13点。 所有的报告显示,爆炸发生相对发动机点火后不久。
-
-与此同时,在线残骸的照片已经浮出水面:
+与此同时,残骸的照片已经浮出水面:
 
 ![](02_B1S-bKRCMAEOMsl.jpg)
 
@@ -28,10 +37,12 @@ Virgin Galactic’s SpaceShipTwo, 维珍银河二号宇宙飞船, 残骸
 
 
 
-原文链接: 
+原文链接: [Virgin Galactic’s SpaceShipTwo crash wasn’t caused by faulty rocket engine (updated)](http://www.extremetech.com/extreme/193398-virgin-galactics-spaceshiptwo-suffers-catastrophic-failure-during-flight-test)
+
+早期相关文章: [Virgin Galactic successfully tests re-entry, prepares for space tourism in 2014](http://www.extremetech.com/extreme/165943-virgin-galactic-successfully-tests-re-entry-prepares-for-space-tourism-in-2014)
 
 原文日期: 2014年9月18日上午9:57
 
-翻译日期: 2014-09-20
+翻译日期: 2014-12-17
 
 翻译人员: 书三生
