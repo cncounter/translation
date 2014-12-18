@@ -356,19 +356,19 @@ JVM选项大致可以分为以下几类:
 			<td>-XX:InitialTenuringThreshold=7</td><td>Sets the initial tenuring threshold for use in adaptive GC sizing in the parallel young collector. The tenuring threshold is the number of times an object survives a young collection before being promoted to the old, or tenured, generation.</td>
 		</tr>
 		<tr valign="top">
-			<td>-XX:MaxTenuringThreshold=n</td><td>Sets the maximum tenuring threshold for use in adaptive GC sizing. The current largest value is 15. The default value is 15 for the parallel collector and is 4 for CMS.</td>
+			<td>-XX:MaxTenuringThreshold=n</td><td>为自适应GC(adaptive GC sizing)设置对象的最大生命期阀值(tenuring threshold) . 当前允许的最大值是 15. 并行垃圾收集器(parallel collector)的默认值为 15, CMS 默认值为 4 .</td>
 		</tr>
 		<tr valign="top">
-			<td>-Xloggc:&lt;filename&gt;</td><td>Log GC verbose output to specified file. The verbose output is controlled by the normal verbose GC flags.</td>
+			<td>-Xloggc:&lt;filename&gt;</td><td>记录 GC verbose 日志输出到指定的文件. verbose 输出由正常的 verbose GC flags 控制.</td>
 		</tr>
 		<tr valign="top">
-			<td>-XX:-UseGCLogFileRotation</td><td>Enabled GC log rotation, requires -Xloggc.</td>
+			<td>-XX:-UseGCLogFileRotation</td><td>启用 GC 日志轮换(rotation), 要求设置了 -Xloggc.</td>
 		</tr>
 		<tr valign="top">
-			<td>-XX:NumberOfGClogFiles=1</td><td>Set the number of files to use when rotating logs, must be &gt;= 1. The rotated log files will use the following naming scheme, &lt;filename&gt;.0, &lt;filename&gt;.1, ..., &lt;filename&gt;.n-1.</td>
+			<td>-XX:NumberOfGClogFiles=1</td><td>设置日志轮换(rotating)的文件数量, 必须大于等于(&gt;= 1). 轮换日志文件会使用如下命名规则(naming scheme), &lt;filename&gt;.0, &lt;filename&gt;.1, ..., &lt;filename&gt;.n-1.</td>
 		</tr>
 		<tr valign="top">
-			<td>-XX:GCLogFileSize=8K</td><td>The size of the log file at which point the log will be rotated, must be &gt;= 8K.</td>
+			<td>-XX:GCLogFileSize=8K</td><td>单个日志文件的大小,大于这个值则进行日志切换(rotated), 必须大于等于(&gt;= 8K).</td>
 		</tr>
 	</tbody>
 </table>
