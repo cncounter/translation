@@ -9,7 +9,7 @@ JDK7的HotSpot启动参数
 
 ## Java HotSpot VM 参数分类 ##
   
-Java HotSpot VM 识别的标准参数在 Java Application Launcher 参考手册中描述:  [Windows参考手册](http://docs.oracle.com/javase/7/docs/technotes/tools/windows/java.html) 和 [Solaris & Linux 参考手册](http://docs.oracle.com/javase/7/docs/technotes/tools/solaris/java.html). 本文档只讲述 Java HotSpot VM 识别的非标准参数(non-standard):
+Java HotSpot VM 识别的标准参数在 Java Application Launcher 参考手册中描述:  [Windows Java参考手册](http://docs.oracle.com/javase/7/docs/technotes/tools/windows/java.html) 和 [Solaris & Linux Java参考手册](http://docs.oracle.com/javase/7/docs/technotes/tools/solaris/java.html). 本文档只介绍 Java HotSpot VM 识别的非标准参数(non-standard):
 
 - 以 `-X` 开头的参数选项是非标准的(non-standard, 不保证所有的JVM实现都支持), 而且如果后续版本的JDK有变更,并不一定另行通知用户.
 - 以 `-XX` 开头指定的选项是不固定的(not stable),如果有变更,也不另行通知.
@@ -18,7 +18,7 @@ JDK 1.3.0 及以下版本如果想要使用Java HotSpot VM, 请参考 [Java HotS
 
 ## 常用的 -XX 参数 ##
   
-Default values are listed for Java SE 6 for Solaris Sparc with -server. Some options may vary per architecture/OS/JVM version. Platforms with a differing default value are listed in the description.
+下面列出的默认值是在Solaris Sparc的Java SE 6 下面附带了  `-server` 选项时显示的. 有些选项的默认值在各种架构/操作系统/JVM版本(architecture/OS/JVM version)中是不同的. 如果具有不同的默认值,则会在说明部分指出.
 
 - 布尔型(Boolean)的选项,开启时使用加号: `-XX:+<option>` ;关闭则使用减号: `-XX:-<option>`.(这里有一个Disa,不知道什么意思)
 - 数字型(Numeric)的选项,使用等号设置: `-XX:<option>=<number>`. 数字类型支持缩略符号 '`m`' 或 '`M`' 表示MB(megabytes), '`k`' 或 '`K`' 表示KB(kilobytes), 还有 'g' 或 'G' 表示GB(gigabytes). 例如, 32k 等价于 32768.
@@ -26,12 +26,13 @@ Default values are listed for Java SE 6 for Solaris Sparc with -server. Some opt
 
 Flags marked as manageable are dynamically writeable through the JDK management interface (com.sun.management.HotSpotDiagnosticMXBean API) and also through JConsole. In [Monitoring and Managing Java SE 6 Platform Applications](http://www.oracle.com/technetwork/articles/javase/monitoring-141801.html#Heap_Dump), Figure 3 shows an example. The manageable flags can also be set through [jinfo -flag](http://docs.oracle.com/javase/6/docs/technotes/tools/share/jinfo.html). 
 
-The options below are loosely grouped into categories.
 
-- [Behavioral options](http://www.oracle.com/technetwork/java/javase/tech/vmoptions-jsp-140102.html#BehavioralOptions) change the basic behavior of the VM.
-- [Garbage First (G1)](http://www.oracle.com/technetwork/java/javase/tech/vmoptions-jsp-140102.html#G1Options) Garbage Collection Options
-- [Performance tuning](http://www.oracle.com/technetwork/java/javase/tech/vmoptions-jsp-140102.html#PerformanceTuning) options are knobs which can be used to tune VM performance.
-- [Debugging options](http://www.oracle.com/technetwork/java/javase/tech/vmoptions-jsp-140102.html#DebuggingOptions) generally enable tracing, printing, or output of VM information.
+JVM选项大致可以分为以下几类:
+
+- [Behavioral options](http://www.oracle.com/technetwork/java/javase/tech/vmoptions-jsp-140102.html#BehavioralOptions) 虚拟机行为控制选项, 改变JVM的基本行为.
+- [Garbage First (G1)](http://www.oracle.com/technetwork/java/javase/tech/vmoptions-jsp-140102.html#G1Options) G1垃圾收集器选项(Garbage Collection Options)
+- [Performance tuning](http://www.oracle.com/technetwork/java/javase/tech/vmoptions-jsp-140102.html#PerformanceTuning) 性能调优选项.
+- [Debugging options](http://www.oracle.com/technetwork/java/javase/tech/vmoptions-jsp-140102.html#DebuggingOptions) 调试相关选项, 常用来跟踪、打印、或输出JVM信息(tracing, printing, or output of VM information).
   
 ## 虚拟机行为控制选项(Behavioral Options) ##
 
