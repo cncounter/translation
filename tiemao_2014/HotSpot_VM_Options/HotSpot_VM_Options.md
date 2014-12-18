@@ -45,70 +45,70 @@ JVM选项大致可以分为以下几类:
 			<th width="45%" valign="top" align="left">选项与默认值</th><th width="55%" valign="top" align="left">说明</th>
 		</tr>
 		<tr valign="top">
-			<td>-XX:-AllowUserSignalHandlers</td><td>Do not complain if the application installs signal handlers. (Relevant to Solaris and Linux only.)</td>
+			<td>-XX:-AllowUserSignalHandlers</td><td>允许应用程序注册信号量处理器(installs signal handlers). (只适用于 Solaris 以及 Linux.)</td>
 		</tr>
 		<tr valign="top">
-			<td>-XX:AltStackSize=16384</td><td>Alternate signal stack size (in Kbytes). (Relevant to Solaris only, removed from 5.0.)</td>
+			<td>-XX:AltStackSize=16384</td><td>备用(Alternate)信号栈(signal stack)大小.(单位是Kbytes). (只适用于 Solaris, 从 5.0 起已被移除.)</td>
 		</tr>
 		<tr valign="top">
 			<td>-XX:-DisableExplicitGC</td><td>By default calls to System.gc() are enabled (-XX:-DisableExplicitGC). Use -XX:+DisableExplicitGC to disable calls to System.gc(). Note that the JVM still performs garbage collection when necessary.</td>
 		</tr>
 		<tr valign="top">
-			<td>-XX:+FailOverToOldVerifier</td><td>Fail over to old verifier when the new type checker fails. (开始引入 6.)</td>
+			<td>-XX:+FailOverToOldVerifier</td><td>当新类型的检查器失败时故障转移到老的验证程序(verifier). (开始引入: 6.)</td>
 		</tr>
 		<tr valign="top">
-			<td>-XX:+HandlePromotionFailure</td><td>The youngest generation collection does not require a guarantee of full promotion of all live objects. (开始引入 1.4.2 update 11) [5.0 and earlier: false.]</td>
+			<td>-XX:+HandlePromotionFailure</td><td>The youngest generation collection does not require a guarantee of full promotion of all live objects. (开始引入: 1.4.2 update 11) [5.0 and earlier: false.]</td>
 		</tr>
 		<tr valign="top">
 			<td>-XX:+MaxFDLimit</td><td>Bump the number of file descriptors to max. (Relevant&nbsp; to Solaris only.)</td>
 		</tr>
 		<tr valign="top">
-			<td>-XX:PreBlockSpin=10</td><td>Spin count variable for use with -XX:+UseSpinning. Controls the maximum spin iterations allowed before entering operating system thread synchronization code. (开始引入 1.4.2.)</td>
+			<td>-XX:PreBlockSpin=10</td><td>Spin count variable for use with -XX:+UseSpinning. Controls the maximum spin iterations allowed before entering operating system thread synchronization code. (开始引入: 1.4.2.)</td>
 		</tr>
 		<tr valign="top">
-			<td>-XX:-RelaxAccessControlCheck</td><td>Relax the access control checks in the verifier. (开始引入 6.)</td>
+			<td>-XX:-RelaxAccessControlCheck</td><td>Relax the access control checks in the verifier. (开始引入: 6.)</td>
 		</tr>
 		<tr valign="top">
-			<td>-XX:+ScavengeBeforeFullGC</td><td>Do young generation GC prior to a full GC. (开始引入 1.4.1.)</td>
+			<td>-XX:+ScavengeBeforeFullGC</td><td>Do young generation GC prior to a full GC. (开始引入: 1.4.1.)</td>
 		</tr>
 		<tr valign="top">
-			<td>-XX:+UseAltSigs</td><td>Use alternate signals instead of SIGUSR1 and SIGUSR2 for VM internal signals. (开始引入 1.3.1 update 9, 1.4.1. Relevant to Solaris only.)</td>
+			<td>-XX:+UseAltSigs</td><td>Use alternate signals instead of SIGUSR1 and SIGUSR2 for VM internal signals. (开始引入: 1.3.1 update 9, 1.4.1. 只适用于 Solaris only.)</td>
 		</tr>
 		<tr valign="top">
-			<td>-XX:+UseBoundThreads</td><td>Bind user level threads to kernel threads. (Relevant to Solaris only.)</td>
+			<td>-XX:+UseBoundThreads</td><td>Bind user level threads to kernel threads. (只适用于 Solaris only.)</td>
 		</tr>
 		<tr valign="top">
-			<td>-XX:-UseConcMarkSweepGC</td><td>Use concurrent mark-sweep collection for the old generation. (开始引入 1.4.1)</td>
+			<td>-XX:-UseConcMarkSweepGC</td><td>Use concurrent mark-sweep collection for the old generation. (开始引入: 1.4.1)</td>
 		</tr>
 		<tr valign="top">
-			<td>-XX:+UseGCOverheadLimit</td><td>Use a policy that limits the proportion of the VM's time that is spent in GC before an OutOfMemory error is thrown. (开始引入 6.)</td>
+			<td>-XX:+UseGCOverheadLimit</td><td>Use a policy that limits the proportion of the VM's time that is spent in GC before an OutOfMemory error is thrown. (开始引入: 6.)</td>
 		</tr>
 		<tr valign="top">
-			<td>-XX:+UseLWPSynchronization</td><td>Use LWP-based instead of thread based synchronization. (开始引入 1.4.0. Relevant to Solaris only.)</td>
+			<td>-XX:+UseLWPSynchronization</td><td>Use LWP-based instead of thread based synchronization. (开始引入: 1.4.0. 只适用于 Solaris only.)</td>
 		</tr>
 		<tr valign="top">
-			<td>-XX:-UseParallelGC</td><td>Use parallel garbage collection for scavenges. (开始引入 1.4.1)</td>
+			<td>-XX:-UseParallelGC</td><td>使用并行垃圾收集(parallel garbage collection)来清扫内存(scavenges). (开始引入: 1.4.1)</td>
 		</tr>
 		<tr valign="top">
-			<td>-XX:-UseParallelOldGC</td><td>Use parallel garbage collection for the full collections. Enabling this option automatically sets -XX:+UseParallelGC. (开始引入 5.0 update 6.)</td>
+			<td>-XX:-UseParallelOldGC</td><td>Use parallel garbage collection for the full collections. Enabling this option automatically sets -XX:+UseParallelGC. (开始引入: 5.0 update 6.)</td>
 		</tr>
 		<tr valign="top">
-			<td>-XX:-UseSerialGC</td><td>Use serial garbage collection. (开始引入 5.0.)</td>
+			<td>-XX:-UseSerialGC</td><td>使用串行垃圾收集(serial garbage collection). (开始引入: 5.0.)</td>
 		</tr>
 		<tr valign="top">
-			<td>-XX:-UseSpinning</td><td>Enable naive spinning on Java monitor before entering operating system thread synchronizaton code. (Relevant to 1.4.2 and 5.0 only.) [1.4.2, multi-processor Windows platforms: true]</td>
+			<td>-XX:-UseSpinning</td><td>Enable naive spinning on Java monitor before entering operating system thread synchronizaton code. (只适用于 1.4.2 and 5.0 only.) [1.4.2, multi-processor Windows platforms: true]</td>
 		</tr>
 		<tr valign="top">
-			<td>-XX:+UseTLAB</td><td>Use thread-local object allocation (开始引入 1.4.0, known as UseTLE prior to that.) [1.4.2 and earlier, x86 or with -client: false]</td>
+			<td>-XX:+UseTLAB</td><td>使用 thread-local 对象分配 (从 1.4.0 开始引入, 使用的是 UseTLE 优先.) [1.4.2 及更早版本, x86架构或者带 -client 选项时为: false]</td>
 		</tr>
 		<tr valign="top">
-			<td>-XX:+UseSplitVerifier</td><td>Use the new type checker with StackMapTable attributes. (开始引入 5.0.)[5.0: false]</td>
+			<td>-XX:+UseSplitVerifier</td><td>使用新型 checker, 基于 StackMapTable 特性(attributes). (开始引入: 5.0.)[5.0: false]</td>
 		</tr>
 		<tr valign="top">
-			<td>-XX:+UseThreadPriorities</td><td>Use native thread priorities.</td>
+			<td>-XX:+UseThreadPriorities</td><td>使用本机线程优先级(native thread priorities).</td>
 		</tr>
 		<tr valign="top">
-			<td>-XX:+UseVMInterruptibleIO</td><td>Thread interrupt before or with EINTR for I/O operations results in OS_INTRPT. (开始引入 6. Relevant to Solaris only.)</td>
+			<td>-XX:+UseVMInterruptibleIO</td><td>Thread interrupt before or with EINTR for I/O operations results in OS_INTRPT. (开始引入: 6. 只适用于 Solaris only.)</td>
 		</tr>
 	</tbody>
 </table>
@@ -216,7 +216,7 @@ JVM选项大致可以分为以下几类:
 			<td>-XX:+UseLargePages</td><td>Use large page memory. (从 5.0 update 5 开始引入.) For details, see <a href="/technetwork/java/javase/tech/largememory-jsp-137182.html">Java Support for Large Memory Pages</a>.</td>
 		</tr>
 		<tr valign="top">
-			<td>-XX:+UseMPSS</td><td>Use Multiple Page Size Support w/4mb pages for the heap. Do not use with ISM as this replaces the need for ISM. (从 1.4.0 update 1 开始引入, Relevant to Solaris 9 and newer.) [1.4.1 and earlier: false]</td>
+			<td>-XX:+UseMPSS</td><td>Use Multiple Page Size Support w/4mb pages for the heap. Do not use with ISM as this replaces the need for ISM. (从 1.4.0 update 1 开始引入, 只适用于 Solaris 9 and newer.) [1.4.1 and earlier: false]</td>
 		</tr>
 		<tr valign="top">
 			<td>-XX:+UseStringCache</td><td>Enables caching of commonly allocated strings.
@@ -267,7 +267,7 @@ JVM选项大致可以分为以下几类:
 			<td>-XX:ErrorFile=./hs_err_pid&lt;pid&gt;.log</td><td>如果发生错误,将错误数据保存到此文件. (从 6 开始引入.)</td>
 		</tr>
 		<tr valign="top">
-			<td>-XX:-ExtendedDTraceProbes</td><td>Enable performance-impacting <a href="http://docs.oracle.com/javase/6/docs/technotes/guides/vm/dtrace.html">dtrace</a> probes. (从 6 开始引入. Relevant to Solaris only.)</td>
+			<td>-XX:-ExtendedDTraceProbes</td><td>Enable performance-impacting <a href="http://docs.oracle.com/javase/6/docs/technotes/guides/vm/dtrace.html">dtrace</a> probes. (从 6 开始引入. 只适用于 Solaris only.)</td>
 		</tr>
 		<tr valign="top">
 			<td>-XX:HeapDumpPath=./java_pid&lt;pid&gt;.hprof</td><td>Path to directory or filename for heap dump. <em>可动态配置(Manageable)</em>. (从 1.4.2 update 12 , 5.0 update 7 开始引入.)</td>
