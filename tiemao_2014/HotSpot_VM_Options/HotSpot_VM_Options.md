@@ -240,12 +240,12 @@ JVM选项大致可以分为以下几类:
 			&nbsp;</td>
 		</tr>
 		<tr valign="top">
-			<td>-XX:+UseCompressedStrings</td><td>Use a byte[] for Strings which can be represented as pure ASCII. (Introduced in Java 6 Update 21 Performance Release)
+			<td>-XX:+UseCompressedStrings</td><td>对于可以用纯ASCII字符表示的 Strings，使用 byte[]. (Java 6 Update 21  性能版? 引入【Performance Release】)
 			<br>
 			&nbsp;</td>
 		</tr>
 		<tr valign="top">
-			<td>-XX:+OptimizeStringConcat</td><td>Optimize String concatenation operations where possible. (Introduced in Java 6 Update 20)
+			<td>-XX:+OptimizeStringConcat</td><td>如有可能,优化字符串连接操作(Optimize String concatenation operations). (Java 6 Update 20 开始引进)
 			<br>
 			&nbsp;</td>
 		</tr>
