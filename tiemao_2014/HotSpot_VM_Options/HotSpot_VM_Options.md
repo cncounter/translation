@@ -24,7 +24,9 @@ JDK 1.3.0 及以下版本如果想要使用Java HotSpot VM, 请参考 [Java HotS
 - 数字型(Numeric)的选项,使用等号设置: `-XX:<option>=<number>`. 数字类型支持缩略符号 '`m`' 或 '`M`' 表示MB(megabytes), '`k`' 或 '`K`' 表示KB(kilobytes), 还有 'g' 或 'G' 表示GB(gigabytes). 例如, 32k 等价于 32768.
 - 字符串型(String)的选项,使用等号设置: `-XX:<option>=<string>`, 通常用于指定文件,路径,或者命令列表
 
-Flags marked as manageable are dynamically writeable through the JDK management interface (com.sun.management.HotSpotDiagnosticMXBean API) and also through JConsole. In [Monitoring and Managing Java SE 6 Platform Applications](http://www.oracle.com/technetwork/articles/javase/monitoring-141801.html#Heap_Dump), Figure 3 shows an example. The manageable flags can also be set through [jinfo -flag](http://docs.oracle.com/javase/6/docs/technotes/tools/share/jinfo.html). 
+标记为可管理的那些标志位(Flags),都可以通过JDK管理接口(com.sun.management.HotSpotDiagnosticMXBean API) 以及 JConsole动态修改.
+
+在 [监控和管理Java SE 6 系统平台](http://www.oracle.com/technetwork/articles/javase/monitoring-141801.html#Heap_Dump) 一文中, Heap Dump 小节的 Figure 3 展示了一个示例. 可管理的标志位(flags) 还可以使用 [jinfo -flag](http://docs.oracle.com/javase/6/docs/technotes/tools/share/jinfo.html) 来设置. 
 
 
 JVM选项大致可以分为以下几类:
