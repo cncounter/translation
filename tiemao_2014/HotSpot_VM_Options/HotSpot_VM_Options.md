@@ -1,26 +1,28 @@
-Java HotSpot VM 参数大全
+JDK7的HotSpot启动参数
 ==
 
-**Please note that this page only applies to JDK 7 and earlier releases. For JDK 8 please see the [Windows](http://docs.oracle.com/javase/8/docs/technotes/tools/windows/java.html), [Solaris](http://docs.oracle.com/javase/8/docs/technotes/tools/unix/java.html), [Linux](http://docs.oracle.com/javase/8/docs/technotes/tools/unix/java.html) and [Mac OS X](http://docs.oracle.com/javase/8/docs/technotes/tools/unix/java.html) reference pages.**
+**请注意: 此文档只适用于 JDK 7 及更早期版本. 如果是 JDK 8,请参考 [Windows](http://docs.oracle.com/javase/8/docs/technotes/tools/windows/java.html), [Solaris](http://docs.oracle.com/javase/8/docs/technotes/tools/unix/java.html), [Linux](http://docs.oracle.com/javase/8/docs/technotes/tools/unix/java.html) 以及 [Mac OS X](http://docs.oracle.com/javase/8/docs/technotes/tools/unix/java.html) 版本参考手册的相关页面.**
 
-This document provides information on typical command-line options and environment variables that can affect the performance characteristics of the Java HotSpot Virtual Machine. Unless otherwise noted, all information in this document pertains to both the Java HotSpot Client VM and the Java HotSpot Server VM.
 
-## Categories of Java HotSpot VM Options ##
+本文档展示说明会影响Java HotSpot虚拟机性能特征的典型命令行选项和环境变量。除非另外注明,本文档中的所有信息都适用于 Java HotSpot Client VM 和 Java HotSpot Server VM.
+
+
+## Java HotSpot VM 参数分类 ##
   
-Standard options recognized by the Java HotSpot VM are described on the Java Application Launcher reference pages for [Windows](http://docs.oracle.com/javase/7/docs/technotes/tools/windows/java.html) and [Solaris & Linux](http://docs.oracle.com/javase/7/docs/technotes/tools/solaris/java.html). This document deals exclusively with non-standard options recognized by the Java HotSpot VM:
+Java HotSpot VM 识别的标准参数在 Java Application Launcher 参考手册中描述:  [Windows参考手册](http://docs.oracle.com/javase/7/docs/technotes/tools/windows/java.html) 和 [Solaris & Linux 参考手册](http://docs.oracle.com/javase/7/docs/technotes/tools/solaris/java.html). 本文档只讲述 Java HotSpot VM 识别的非标准参数(non-standard):
 
-- Options that begin with -X are non-standard (not guaranteed to be supported on all VM implementations), and are subject to change without notice in subsequent releases of the JDK.
-- Options that are specified with -XX are not stable and are subject to change without notice.
+- 以 `-X` 开头的参数选项是非标准的(non-standard, 不保证所有的JVM实现都支持), 而且如果后续版本的JDK有变更,并不一定另行通知用户.
+- 以 `-XX` 开头指定的选项是不固定的(not stable),如果有变更,也不另行通知.
 
-Users of JDKs older than 1.3.0 who wish to port to a Java HotSpot VM, should see [Java HotSpot Equivalents of Exact VM flags](http://www.oracle.com/technetwork/java/javase/tech/exactoptions-jsp-141536.html).
+JDK 1.3.0 及以下版本如果想要使用Java HotSpot VM, 请参考 [Java HotSpot Equivalents of Exact VM flags](http://www.oracle.com/technetwork/java/javase/tech/exactoptions-jsp-141536.html).
 
-## Some Useful -XX Options ##
+## 常用的 -XX 参数 ##
   
 Default values are listed for Java SE 6 for Solaris Sparc with -server. Some options may vary per architecture/OS/JVM version. Platforms with a differing default value are listed in the description.
 
-- Boolean options are turned on with `-XX:+<option>` and turned off with `-XX:-<option>`.Disa
-- Numeric options are set with `-XX:<option>=<number>`. Numbers can include 'm' or 'M' for megabytes, 'k' or 'K' for kilobytes, and 'g' or 'G' for gigabytes (for example, 32k is the same as 32768).
-- String options are set with `-XX:<option>=<string>`, are usually used to specify a file, a path, or a list of commands
+- 布尔型(Boolean)的选项,开启时使用加号: `-XX:+<option>` ;关闭则使用减号: `-XX:-<option>`.(这里有一个Disa,不知道什么意思)
+- 数字型(Numeric)的选项,使用等号设置: `-XX:<option>=<number>`. 数字类型支持缩略符号 '`m`' 或 '`M`' 表示MB(megabytes), '`k`' 或 '`K`' 表示KB(kilobytes), 还有 'g' 或 'G' 表示GB(gigabytes). 例如, 32k 等价于 32768.
+- 字符串型(String)的选项,使用等号设置: `-XX:<option>=<string>`, 通常用于指定文件,路径,或者命令列表
 
 Flags marked as manageable are dynamically writeable through the JDK management interface (com.sun.management.HotSpotDiagnosticMXBean API) and also through JConsole. In [Monitoring and Managing Java SE 6 Platform Applications](http://www.oracle.com/technetwork/articles/javase/monitoring-141801.html#Heap_Dump), Figure 3 shows an example. The manageable flags can also be set through [jinfo -flag](http://docs.oracle.com/javase/6/docs/technotes/tools/share/jinfo.html). 
 
@@ -31,7 +33,7 @@ The options below are loosely grouped into categories.
 - [Performance tuning](http://www.oracle.com/technetwork/java/javase/tech/vmoptions-jsp-140102.html#PerformanceTuning) options are knobs which can be used to tune VM performance.
 - [Debugging options](http://www.oracle.com/technetwork/java/javase/tech/vmoptions-jsp-140102.html#DebuggingOptions) generally enable tracing, printing, or output of VM information.
   
-## Behavioral Options ##
+## 虚拟机行为控制选项(Behavioral Options) ##
 
 
 <table width="100%" cellspacing="1" cellpadding="1" border="1">
@@ -111,7 +113,7 @@ The options below are loosely grouped into categories.
 
 
 
-## Garbage First (G1) Garbage Collection Options
+## G1垃圾收集器选项 ##
 
 <table width="100%" cellspacing="1" cellpadding="1" border="1">
 	<tbody>
@@ -152,7 +154,7 @@ The options below are loosely grouped into categories.
 </table>
 
 
-## Performance Options ##
+## 性能调优选项(Performance Options) ##
 
 <table width="100%" cellspacing="1" cellpadding="1" border="1">
 	<tbody>
@@ -248,7 +250,7 @@ The options below are loosely grouped into categories.
 </table>
 
 
-## Debugging Options ##
+## 调试相关选项(Debugging Options) ##
 
 <table width="100%" cellspacing="1" cellpadding="1" border="1">
 	<tbody>
@@ -371,3 +373,4 @@ The options below are loosely grouped into categories.
 
 
 原文链接: [http://www.oracle.com/technetwork/java/javase/tech/vmoptions-jsp-140102.html](http://www.oracle.com/technetwork/java/javase/tech/vmoptions-jsp-140102.html)
+
