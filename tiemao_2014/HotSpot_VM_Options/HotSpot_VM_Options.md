@@ -42,7 +42,7 @@ JVM选项大致可以分为以下几类:
 <table width="100%" cellspacing="1" cellpadding="1" border="1">
 	<tbody>
 		<tr>
-			<th width="45%" valign="top" align="left">Option and Default Value</th><th width="55%" valign="top" align="left">Description</th>
+			<th width="45%" valign="top" align="left">选项与默认值</th><th width="55%" valign="top" align="left">说明</th>
 		</tr>
 		<tr valign="top">
 			<td>-XX:-AllowUserSignalHandlers</td><td>Do not complain if the application installs signal handlers. (Relevant to Solaris and Linux only.)</td>
@@ -121,37 +121,37 @@ JVM选项大致可以分为以下几类:
 <table width="100%" cellspacing="1" cellpadding="1" border="1">
 	<tbody>
 		<tr>
-			<th width="45%" valign="top" align="left">Option and Default Value</th><th width="55%" valign="top" align="left">Description</th>
+			<th width="45%" valign="top" align="left">选项与默认值</th><th width="55%" valign="top" align="left">说明</th>
 		</tr>
 		<tr valign="top">
-			<td>-XX:+UseG1GC</td><td>Use the Garbage First (G1) Collector</td>
+			<td>-XX:+UseG1GC</td><td>使用G1收集器(垃圾优先,Garbage First)</td>
 		</tr>
 		<tr valign="top">
-			<td>-XX:MaxGCPauseMillis=n</td><td>Sets a target for the maximum GC pause time. This is a soft goal, and the JVM will make its best effort to achieve it.</td>
+			<td>-XX:MaxGCPauseMillis=n</td><td>设置最大GC停顿时间目标值. 这是一个软指标, JVM会尽量去努力达成.</td>
 		</tr>
 		<tr valign="top">
-			<td>-XX:InitiatingHeapOccupancyPercent<span id="MainContent" class="wcm-region" style="display: inline">=n</span></td><td>Percentage of the (entire) heap occupancy to start a concurrent GC cycle. It is used by GCs that trigger a concurrent GC cycle based on the occupancy of the entire heap, not just one of the generations (e.g., G1). A value of 0 denotes 'do constant GC cycles'. The default value is 45.</td>
+			<td>-XX:InitiatingHeapOccupancyPercent<span id="MainContent" class="wcm-region" style="display: inline">=n</span></td><td>启动并发GC周期(concurrent GC cycle)时整个堆内存的占用百分比. 垃圾收集器用它来根据整个堆内存(entire heap)的占用比触发一次并发GC周期(concurrent GC cycle) , 而不只是某一代内存的占用比 (如G1). 值为 0 则表示一直执行GC('do constant GC cycles'). 默认值为 45.</td>
 		</tr>
 		<tr valign="top">
-			<td>-XX:NewRatio=n</td><td>Ratio of old/new generation sizes. The default value is 2.</td>
+			<td>-XX:NewRatio=n</td><td>老年代与年轻代(old/new generation)空间比值. 默认值为 2.</td>
 		</tr>
 		<tr valign="top">
-			<td>-XX:SurvivorRatio=n</td><td>Ratio of eden/survivor space size. The default value is 8.</td>
+			<td>-XX:SurvivorRatio=n</td><td>新生区与存活区(eden/survivor)的比值. 默认值为 8.</td>
 		</tr>
 		<tr valign="top">
-			<td>-XX:MaxTenuringThreshold=n</td><td>Maximum value for tenuring threshold. The default value is 15.</td>
+			<td>-XX:MaxTenuringThreshold=n</td><td>对象在年轻代中存活周期(tenuring threshold)的最大值. 默认值为 15.</td>
 		</tr>
 		<tr valign="top">
-			<td>-XX:ParallelGCThreads=n</td><td>Sets the number of threads used during parallel phases of the garbage collectors. The default value varies with the platform on which the JVM is running.</td>
+			<td>-XX:ParallelGCThreads=n</td><td>设置垃圾收集器在并行阶段(parallel phases)使用的线程数量. 各个平台上的JVM默认值会有很大差别.</td>
 		</tr>
 		<tr valign="top">
-			<td>-XX:ConcGCThreads=n</td><td>Number of threads concurrent garbage collectors will use. The default value varies with the platform on which the JVM is running.</td>
+			<td>-XX:ConcGCThreads=n</td><td>并发垃圾收集器(concurrent garbage collectors)所使用的线程数量. 各个平台上的JVM默认值不相同.</td>
 		</tr>
 		<tr valign="top">
-			<td>-XX:G1ReservePercent<span id="MainContent2" class="wcm-region" style="display: inline">=n</span></td><td>Sets the amount of heap that is reserved as a false ceiling to reduce the possibility of promotion failure. The default value is 10.</td>
+			<td>-XX:G1ReservePercent<span id="MainContent2" class="wcm-region" style="display: inline">=n</span></td><td>设置作为假天花板的保留堆内存大小, 用来降低转移失败(promotion failure)发生的可能性. 默认值为 10.</td>
 		</tr>
 		<tr valign="top">
-			<td>-XX:G1HeapRegionSize<span id="MainContent3" class="wcm-region" style="display: inline">=n</span></td><td>With G1 the Java heap is subdivided into uniformly sized regions. This sets the size of the individual sub-divisions. The default value of this parameter is determined ergonomically based upon heap size. The minimum value is 1Mb and the maximum value is 32Mb.</td>
+			<td>-XX:G1HeapRegionSize<span id="MainContent3" class="wcm-region" style="display: inline">=n</span></td><td>使用G1时Java堆内存被切分为大小相等的很多块(regions). 这个值设定每个单独的块(individual sub-divisions)的大小. 默认这个参数的值由启动时堆内存大小计算优化得出. 允许的最小值为 1Mb,最大为 32Mb.</td>
 		</tr>
 	</tbody>
 </table>
@@ -162,7 +162,7 @@ JVM选项大致可以分为以下几类:
 <table width="100%" cellspacing="1" cellpadding="1" border="1">
 	<tbody>
 		<tr>
-			<th width="45%" valign="top" align="left">Option and Default Value</th><th width="55%" valign="top" align="left">Description</th>
+			<th width="45%" valign="top" align="left">选项与默认值</th><th width="55%" valign="top" align="left">说明</th>
 		</tr>
 		<tr valign="top">
 			<td>-XX:+AggressiveOpts</td><td>Turn on point performance compiler optimizations that are expected to be default in upcoming releases. (Introduced in 5.0 update 6.)</td>
@@ -258,7 +258,7 @@ JVM选项大致可以分为以下几类:
 <table width="100%" cellspacing="1" cellpadding="1" border="1">
 	<tbody>
 		<tr valign="top">
-			<th width="45%" valign="top" align="left">Option and Default Value</th><th width="55%" valign="top" align="left">Description</th>
+			<th width="45%" valign="top" align="left">选项与默认值</th><th width="55%" valign="top" align="left">说明</th>
 		</tr>
 		<tr valign="top">
 			<td>-XX:-CITime</td><td>Prints time spent in JIT Compiler. (Introduced in 1.4.0.)</td>
@@ -329,7 +329,7 @@ JVM选项大致可以分为以下几类:
 			<td>-XX:+PerfDataSaveToFile</td><td>Saves jvmstat binary data on exit.</td>
 		</tr>
 		<tr valign="top">
-			<td>-XX:ParallelGCThreads=n</td><td>Sets the number of garbage collection threads in the young and old parallel garbage collectors. The default value varies with the platform on which the JVM is running.</td>
+			<td>-XX:ParallelGCThreads=n</td><td>Sets the number of garbage collection threads in the young and old parallel garbage collectors. 各个平台上的JVM默认值会有很大差别.</td>
 		</tr>
 		<tr valign="top">
 			<td>-XX:+UseCompressedOops</td><td>Enables the use of compressed pointers (object references represented as 32 bit offsets instead of 64-bit pointers) for optimized 64-bit performance with Java heap sizes less than 32gb.</td>
@@ -338,19 +338,19 @@ JVM选项大致可以分为以下几类:
 			<td>-XX:+AlwaysPreTouch</td><td>Pre-touch the Java heap during JVM initialization. Every page of the heap is thus demand-zeroed during initialization rather than incrementally during application execution.</td>
 		</tr>
 		<tr valign="top">
-			<td>-XX:AllocatePrefetchDistance=n</td><td>Sets the prefetch distance for object allocation. Memory about to be written with the value of new objects is prefetched into cache at this distance (in bytes) beyond the address of the last allocated object. Each Java thread has its own allocation point. The default value varies with the platform on which the JVM is running.</td>
+			<td>-XX:AllocatePrefetchDistance=n</td><td>Sets the prefetch distance for object allocation. Memory about to be written with the value of new objects is prefetched into cache at this distance (in bytes) beyond the address of the last allocated object. Each Java thread has its own allocation point. 各个平台上的JVM默认值会有很大差别.</td>
 		</tr>
 		<tr valign="top">
-			<td>-XX:InlineSmallCode=n</td><td>Inline a previously compiled method only if its generated native code size is less than this. The default value varies with the platform on which the JVM is running.</td>
+			<td>-XX:InlineSmallCode=n</td><td>Inline a previously compiled method only if its generated native code size is less than this. 各个平台上的JVM默认值会有很大差别.</td>
 		</tr>
 		<tr valign="top">
 			<td>-XX:MaxInlineSize=35</td><td>Maximum bytecode size of a method to be inlined.</td>
 		</tr>
 		<tr valign="top">
-			<td>-XX:FreqInlineSize=n</td><td>Maximum bytecode size of a frequently executed method to be inlined. The default value varies with the platform on which the JVM is running.</td>
+			<td>-XX:FreqInlineSize=n</td><td>Maximum bytecode size of a frequently executed method to be inlined. 各个平台上的JVM默认值会有很大差别.</td>
 		</tr>
 		<tr valign="top">
-			<td>-XX:LoopUnrollLimit=n</td><td>Unroll loop bodies with server compiler intermediate representation node count less than this value. The limit used by the server compiler is a function of this value, not the actual value. The default value varies with the platform on which the JVM is running.</td>
+			<td>-XX:LoopUnrollLimit=n</td><td>Unroll loop bodies with server compiler intermediate representation node count less than this value. The limit used by the server compiler is a function of this value, not the actual value. 各个平台上的JVM默认值会有很大差别.</td>
 		</tr>
 		<tr valign="top">
 			<td>-XX:InitialTenuringThreshold=7</td><td>Sets the initial tenuring threshold for use in adaptive GC sizing in the parallel young collector. The tenuring threshold is the number of times an object survives a young collection before being promoted to the old, or tenured, generation.</td>
