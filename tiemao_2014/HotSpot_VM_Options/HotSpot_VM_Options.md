@@ -51,13 +51,13 @@ JVM选项大致可以分为以下几类:
 			<td>-XX:AltStackSize=16384</td><td>备用(Alternate)信号栈(signal stack)大小.(单位是Kbytes). (只适用于 Solaris, 从 5.0 起已被移除.)</td>
 		</tr>
 		<tr valign="top">
-			<td>-XX:-DisableExplicitGC</td><td>By default calls to System.gc() are enabled (-XX:-DisableExplicitGC). Use -XX:+DisableExplicitGC to disable calls to System.gc(). Note that the JVM still performs garbage collection when necessary.</td>
+			<td>-XX:-DisableExplicitGC</td><td>默认情况下应用程序调用 System.gc()是启用(enable)的(-XX:-DisableExplicitGC). 如果使用 -XX:+DisableExplicitGC 则禁止(disable)调用  System.gc(). 注意 JVM 在必要时仍然会执行垃圾回收.</td>
 		</tr>
 		<tr valign="top">
 			<td>-XX:+FailOverToOldVerifier</td><td>当新类型的检查器失败时故障转移到老的验证程序(verifier). (开始引入: 6.)</td>
 		</tr>
 		<tr valign="top">
-			<td>-XX:+HandlePromotionFailure</td><td>The youngest generation collection does not require a guarantee of full promotion of all live objects. (开始引入: 1.4.2 update 11) [5.0 and earlier: false.]</td>
+			<td>-XX:+HandlePromotionFailure</td><td>年轻代的垃圾收集(youngest generation collection)不需要保证所有的存活对象都得到提升(a guarantee of full promotion). (开始引入: 1.4.2 update 11) [5.0 及之前的默认值: false.]</td>
 		</tr>
 		<tr valign="top">
 			<td>-XX:+MaxFDLimit</td><td>Bump the number of file descriptors to max. (Relevant&nbsp; to Solaris only.)</td>
@@ -210,7 +210,7 @@ JVM选项大致可以分为以下几类:
 			<td>-XX:+UseFastAccessorMethods</td><td>Use optimized versions of Get&lt;Primitive&gt;Field.</td>
 		</tr>
 		<tr valign="top">
-			<td>-XX:-UseISM</td><td>Use Intimate Shared Memory. [Not accepted for non-Solaris platforms.] For details, see <a href="/technetwork/java/ism-139376.html">Intimate Shared Memory</a>.</td>
+			<td>-XX:-UseISM</td><td>Use Intimate Shared Memory. [对 non-Solaris 平台不可用.] For details, see <a href="/technetwork/java/ism-139376.html">Intimate Shared Memory</a>.</td>
 		</tr>
 		<tr valign="top">
 			<td>-XX:+UseLargePages</td><td>Use large page memory. (从 5.0 update 5 开始引入.) For details, see <a href="/technetwork/java/javase/tech/largememory-jsp-137182.html">Java Support for Large Memory Pages</a>.</td>
@@ -219,7 +219,7 @@ JVM选项大致可以分为以下几类:
 			<td>-XX:+UseMPSS</td><td>Use Multiple Page Size Support w/4mb pages for the heap. Do not use with ISM as this replaces the need for ISM. (从 1.4.0 update 1 开始引入, 只适用于 Solaris 9 and newer.) [1.4.1 and earlier: false]</td>
 		</tr>
 		<tr valign="top">
-			<td>-XX:+UseStringCache</td><td>Enables caching of commonly allocated strings.
+			<td>-XX:+UseStringCache</td><td>为一般分配的字符串启用缓存.
 			<br>
 			&nbsp;</td>
 		</tr>
@@ -229,11 +229,11 @@ JVM选项大致可以分为以下几类:
 			&nbsp;</td>
 		</tr>
 		<tr valign="top">
-			<td>-XX:AllocatePrefetchStyle=1</td><td>Generated code style for prefetch instructions.
+			<td>-XX:AllocatePrefetchStyle=1</td><td> 为预取指令(prefetch instructions)生成代码样式(code style).
 			<br>
-			0 - no prefetch instructions are generate*d*,
+			0 - 不生成(generate*d*)预取指令,
 			<br>
-			1 - execute prefetch instructions after each allocation,
+			1 - 在每次分配(each allocation)之后执行预取指令,
 			<br>
 			2 - use TLAB allocation watermark pointer to gate when prefetch instructions are executed.
 			<br>
