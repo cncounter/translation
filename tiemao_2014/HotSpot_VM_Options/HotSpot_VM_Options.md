@@ -60,43 +60,43 @@ JVM选项大致可以分为以下几类:
 			<td>-XX:+HandlePromotionFailure</td><td>年轻代的垃圾收集(youngest generation collection)不需要保证所有的存活对象都得到提升(a guarantee of full promotion). (开始引入: 1.4.2 update 11) [5.0 及之前的默认值: false.]</td>
 		</tr>
 		<tr valign="top">
-			<td>-XX:+MaxFDLimit</td><td>Bump the number of file descriptors to max. (Relevant&nbsp; to Solaris only.)</td>
+			<td>-XX:+MaxFDLimit</td><td>提升(Bump)文件描述符(file descriptors)的数量到最大值. (仅 Solaris 有效.)</td>
 		</tr>
 		<tr valign="top">
-			<td>-XX:PreBlockSpin=10</td><td>Spin count variable for use with -XX:+UseSpinning. Controls the maximum spin iterations allowed before entering operating system thread synchronization code. (开始引入: 1.4.2.)</td>
+			<td>-XX:PreBlockSpin=10</td><td>使用 -XX:+UseSpinning 多线程自旋锁优化的自旋次数(Spin count variable). 用于控制进入操作系统线程同步代码前,所允许的最大自旋次数 (Controls the maximum spin iterations allowed). (开始引入: 1.4.2.)</td>
 		</tr>
 		<tr valign="top">
-			<td>-XX:-RelaxAccessControlCheck</td><td>Relax the access control checks in the verifier. (开始引入: 6.)</td>
+			<td>-XX:-RelaxAccessControlCheck</td><td>放宽(Relax)验证器(verifier)中的访问控制检查(access control checks). (开始引入: 6.)</td>
 		</tr>
 		<tr valign="top">
-			<td>-XX:+ScavengeBeforeFullGC</td><td>Do young generation GC prior to a full GC. (开始引入: 1.4.1.)</td>
+			<td>-XX:+ScavengeBeforeFullGC</td><td>在full GC之前先执行一次年轻代GC. (开始引入: 1.4.1.)</td>
 		</tr>
 		<tr valign="top">
-			<td>-XX:+UseAltSigs</td><td>Use alternate signals instead of SIGUSR1 and SIGUSR2 for VM internal signals. (开始引入: 1.3.1 update 9, 1.4.1. 只适用于 Solaris only.)</td>
+			<td>-XX:+UseAltSigs</td><td>为JVM内部信号使用备用信号(alternate signals)来代替(instead of) SIGUSR1和SIGUSR2 . (开始引入: 1.3.1 update 9, 1.4.1. 只适用于 Solaris.)</td>
 		</tr>
 		<tr valign="top">
-			<td>-XX:+UseBoundThreads</td><td>Bind user level threads to kernel threads. (只适用于 Solaris only.)</td>
+			<td>-XX:+UseBoundThreads</td><td>绑定用户级别的线程到内核线程(Bind user level threads to kernel threads). (只适用于 Solaris.)</td>
 		</tr>
 		<tr valign="top">
-			<td>-XX:-UseConcMarkSweepGC</td><td>Use concurrent mark-sweep collection for the old generation. (开始引入: 1.4.1)</td>
+			<td>-XX:-UseConcMarkSweepGC</td><td>对老年代使用CMS垃圾收集器. (开始引入: 1.4.1)</td>
 		</tr>
 		<tr valign="top">
-			<td>-XX:+UseGCOverheadLimit</td><td>Use a policy that limits the proportion of the VM's time that is spent in GC before an OutOfMemory error is thrown. (开始引入: 6.)</td>
+			<td>-XX:+UseGCOverheadLimit</td><td>使用一种政策,限制在抛出OutOfMemory错误前JVM花费在GC上的那部分时间. (开始引入: 6.)</td>
 		</tr>
 		<tr valign="top">
-			<td>-XX:+UseLWPSynchronization</td><td>Use LWP-based instead of thread based synchronization. (开始引入: 1.4.0. 只适用于 Solaris only.)</td>
+			<td>-XX:+UseLWPSynchronization</td><td>使用 LWP-based 来取代基于线程的同步(thread based synchronization). (开始引入: 1.4.0. 只适用于 Solaris only.)</td>
 		</tr>
 		<tr valign="top">
 			<td>-XX:-UseParallelGC</td><td>使用并行垃圾收集(parallel garbage collection)来清扫内存(scavenges). (开始引入: 1.4.1)</td>
 		</tr>
 		<tr valign="top">
-			<td>-XX:-UseParallelOldGC</td><td>Use parallel garbage collection for the full collections. Enabling this option automatically sets -XX:+UseParallelGC. (开始引入: 5.0 update 6.)</td>
+			<td>-XX:-UseParallelOldGC</td><td>对 FullGC使用并行垃圾收集. 如果设置 -XX:+UseParallelGC 则会自动启用本选项. (开始引入: 5.0 update 6.)</td>
 		</tr>
 		<tr valign="top">
 			<td>-XX:-UseSerialGC</td><td>使用串行垃圾收集(serial garbage collection). (开始引入: 5.0.)</td>
 		</tr>
 		<tr valign="top">
-			<td>-XX:-UseSpinning</td><td>Enable naive spinning on Java monitor before entering operating system thread synchronizaton code. (只适用于 1.4.2 and 5.0 only.) [1.4.2, multi-processor Windows platforms: true]</td>
+			<td>-XX:-UseSpinning</td><td>进入操作系统线程同步代码之前,在Java监视器锁(monitor)上启用自旋锁优化(naive spinning). (只适用于 1.4.2 以及 5.0.) [1.4.2, multi-processor Windows platforms: true]</td>
 		</tr>
 		<tr valign="top">
 			<td>-XX:+UseTLAB</td><td>使用 thread-local 对象分配 (从 1.4.0 开始引入, 使用的是 UseTLE 优先.) [1.4.2 及更早版本, x86架构或者带 -client 选项时为: false]</td>
@@ -108,7 +108,7 @@ JVM选项大致可以分为以下几类:
 			<td>-XX:+UseThreadPriorities</td><td>使用本机线程优先级(native thread priorities).</td>
 		</tr>
 		<tr valign="top">
-			<td>-XX:+UseVMInterruptibleIO</td><td>Thread interrupt before or with EINTR for I/O operations results in OS_INTRPT. (开始引入: 6. 只适用于 Solaris only.)</td>
+			<td>-XX:+UseVMInterruptibleIO</td><td>对于会导致OS_INTRPT的 I/O 操作, 在EINTR之前/时进行线程中断. (开始引入: 6. 只适用于 Solaris.)</td>
 		</tr>
 	</tbody>
 </table>
@@ -377,3 +377,4 @@ JVM选项大致可以分为以下几类:
 
 原文链接: [http://www.oracle.com/technetwork/java/javase/tech/vmoptions-jsp-140102.html](http://www.oracle.com/technetwork/java/javase/tech/vmoptions-jsp-140102.html)
 
+翻译参考: [JVM 不稳定参数](http://286.iteye.com/blog/1924947)
