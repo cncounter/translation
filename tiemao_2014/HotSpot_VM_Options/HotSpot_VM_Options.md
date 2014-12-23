@@ -267,21 +267,21 @@ JVM选项大致可以分为以下几类:
 			<td>-XX:ErrorFile=./hs_err_pid&lt;pid&gt;.log</td><td>如果发生错误,将错误数据保存到此文件. (从 6 开始引入.)</td>
 		</tr>
 		<tr valign="top">
-			<td>-XX:-ExtendedDTraceProbes</td><td>Enable performance-impacting <a href="http://docs.oracle.com/javase/6/docs/technotes/guides/vm/dtrace.html">dtrace</a> probes. (从 6 开始引入. 只适用于 Solaris only.)</td>
+			<td>-XX:-ExtendedDTraceProbes</td><td>启用性能影响(performance-impacting) <a href="http://docs.oracle.com/javase/6/docs/technotes/guides/vm/dtrace.html">dtrace</a> 探测. (从 6 开始引入. 只适用于 Solaris.)</td>
 		</tr>
 		<tr valign="top">
-			<td>-XX:HeapDumpPath=./java_pid&lt;pid&gt;.hprof</td><td>Path to directory or filename for heap dump. <em>可动态配置(Manageable)</em>. (从 1.4.2 update 12 , 5.0 update 7 开始引入.)</td>
+			<td>-XX:HeapDumpPath=./java_pid&lt;pid&gt;.hprof</td><td>堆转储(heap dump)的文件或目录(Path to directory or filename ). <em>可动态配置(Manageable)</em>. (从 1.4.2 update 12 , 5.0 update 7 开始引入.)</td>
 		</tr>
 		<tr valign="top">
-			<td>-XX:-HeapDumpOnOutOfMemoryError</td><td>Dump heap to file when java.lang.OutOfMemoryError is thrown. <em>可动态配置(Manageable)</em>. (从 1.4.2 update 12, 5.0 update 7 开始引入.)</td>
+			<td>-XX:-HeapDumpOnOutOfMemoryError</td><td>在抛出 java.lang.OutOfMemoryError 时转储(dump)堆内存到文件中. <em>可动态配置(Manageable)</em>. (从 1.4.2 update 12, 5.0 update 7 开始引入.)</td>
 		</tr>
 		<tr valign="top">
-			<td>-XX:OnError="&lt;cmd args&gt;;&lt;cmd args&gt;"</td><td>Run user-defined commands on fatal error. (从 1.4.2 update 9 开始引入.)</td>
+			<td>-XX:OnError="&lt;cmd args&gt;;&lt;cmd args&gt;"</td><td>在致命错误(fatal error)发生时运行用户指定的命令(user-defined commands). (从 1.4.2 update 9 开始引入.)</td>
 		</tr>
 		<tr valign="top">
 			<td>-XX:OnOutOfMemoryError="&lt;cmd args&gt;;
 			<br clear="none">
-			&lt;cmd args&gt;"</td><td>Run user-defined commands when an OutOfMemoryError is first thrown. (从 1.4.2 update 12 , 以及 JDK 6 开始引入)</td>
+			&lt;cmd args&gt;"</td><td>在首次抛出 OutOfMemoryError 时运行用户指定的命令(user-defined commands). (从 1.4.2 update 12 , 以及 JDK 6 开始引入)</td>
 		</tr>
 		<tr valign="top">
 			<td>-XX:-PrintClassHistogram</td><td>Print a histogram of class instances on Ctrl-Break. <em>可动态配置(Manageable)</em>. (从 1.4.2 开始引入.) The <a href="http://docs.oracle.com/javase/6/docs/technotes/tools/share/jmap.html">jmap -histo</a> command provides equivalent functionality.</td>
@@ -290,7 +290,7 @@ JVM选项大致可以分为以下几类:
 			<td>-XX:-PrintConcurrentLocks</td><td>Print java.util.concurrent locks in Ctrl-Break thread dump. <em>可动态配置(Manageable)</em>. (从 JDK6 开始引入.) The <a href="http://docs.oracle.com/javase/6/docs/technotes/tools/share/jstack.html">jstack -l</a> command provides equivalent functionality.</td>
 		</tr>
 		<tr valign="top">
-			<td>-XX:-PrintCommandLineFlags</td><td>Print flags that appeared on the command line. (从 5.0 开始引入.)</td>
+			<td>-XX:-PrintCommandLineFlags</td><td>打印命令行中的参数标志(flags). (从 5.0 开始引入.)</td>
 		</tr>
 		<tr valign="top">
 			<td>-XX:-PrintCompilation</td><td>当一个方法被编译时打印消息.</td>
@@ -314,22 +314,22 @@ JVM选项大致可以分为以下几类:
 			<td>-XX:-TraceClassLoading</td><td>跟踪(Trace)类的加载.</td>
 		</tr>
 		<tr valign="top">
-			<td>-XX:-TraceClassLoadingPreorder</td><td>Trace all classes loaded in order referenced (not loaded). (从 1.4.2 开始引入.)</td>
+			<td>-XX:-TraceClassLoadingPreorder</td><td>跟踪所有类加载引用顺序(Trace all classes loaded in order referenced) (不是 loaded 状态). (从 1.4.2 开始引入.)</td>
 		</tr>
 		<tr valign="top">
-			<td>-XX:-TraceClassResolution</td><td>Trace constant pool resolutions. (从 1.4.2 开始引入.)</td>
+			<td>-XX:-TraceClassResolution</td><td>跟踪常量池解析(Trace constant pool resolutions). (从 1.4.2 开始引入.)</td>
 		</tr>
 		<tr valign="top">
 			<td>-XX:-TraceClassUnloading</td><td>跟踪(Trace)类的卸载(unloading).</td>
 		</tr>
 		<tr valign="top">
-			<td>-XX:-TraceLoaderConstraints</td><td>Trace recording of loader constraints. (从 Java6 开始引入.)</td>
+			<td>-XX:-TraceLoaderConstraints</td><td>跟踪加载器限制记录(Trace recording of loader constraints). (从 Java6 开始引入.)</td>
 		</tr>
 		<tr valign="top">
 			<td>-XX:+PerfDataSaveToFile</td><td>在退出时保存 jvmstat 二进制数据.</td>
 		</tr>
 		<tr valign="top">
-			<td>-XX:ParallelGCThreads=n</td><td>Sets the number of garbage collection threads in the young and old parallel garbage collectors. 各个平台上的JVM默认值会有很大差别.</td>
+			<td>-XX:ParallelGCThreads=n</td><td>设置 年轻代与老年代垃圾收集的并行线程数. 各个平台上的JVM默认值会有很大差别.</td>
 		</tr>
 		<tr valign="top">
 			<td>-XX:+UseCompressedOops</td><td>Enables the use of compressed pointers (object references represented as 32 bit offsets instead of 64-bit pointers) for optimized 64-bit performance with Java heap sizes less than 32gb.</td>
@@ -350,7 +350,7 @@ JVM选项大致可以分为以下几类:
 			<td>-XX:FreqInlineSize=n</td><td>一个频繁使用的方法(frequently executed method)要被内联(inlined),最多允许有多少个字节码(Maximum bytecode size). 各个平台上的JVM默认值会有很大差别.</td>
 		</tr>
 		<tr valign="top">
-			<td>-XX:LoopUnrollLimit=n</td><td>Unroll loop bodies with server compiler intermediate representation node count less than this value. The limit used by the server compiler is a function of this value, not the actual value. 各个平台上的JVM默认值会有很大差别.</td>
+			<td>-XX:LoopUnrollLimit=n</td><td>对小于此值的循环体,server模式编译器将其展开(Unroll). server模式编译器根据一个函数计算出限制值,而不是直接使用指定值. 各平台JVM的默认值会有很大差别.</td>
 		</tr>
 		<tr valign="top">
 			<td>-XX:InitialTenuringThreshold=7</td><td>为年轻代收集器(parallel young collector)中的 自适应GC(adaptive GC)设置初始生命周期阀值(initial tenuring threshold). 生命周期阀值是指一个对象被提升到老年代(old, or tenured)之前,在年轻代GC中存活的次数.</td>
