@@ -119,6 +119,21 @@
 有些日子，不适合写代码，也不适合调程序, 但适合填坑, 也许坑填的多了,时间一转,问题就解决了。
 
 
+## 补充说明
+
+问题应该是特定版本的Git与TortoiseGit不兼容导致的。我使用的版本信息是:
+
+	TortoiseGit 1.8.12.0 (D:\Develop\TortoiseGit\bin\)
+	git version 1.9.4.msysgit.2 (D:\Develop\Git\bin)
+
+这个就会出问题。好像跟分支多少没关系。
+
+我的办公室电脑的Git版本好像是 1.9.2 还是什么,反正不是1.9.4，就没有问题，也不需要特殊处理。
+
+具体的软件，你可以到这里下载:
+
+[http://download.csdn.net/download/renfufei/8204699](http://download.csdn.net/download/renfufei/8204699)
+
 ##相关文章
 
 1. [目录](GitHelp.md)
