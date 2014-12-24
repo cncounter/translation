@@ -171,7 +171,7 @@ JVM选项大致可以分为以下几类:
 			<td>-XX:CompileThreshold=10000</td><td>触发JIT执行编译时方法执行/分支(invocations/branches)的次数. 客户端JVM默认1500次[-client: 1,500]</td>
 		</tr>
 		<tr valign="top">
-			<td>-XX:LargePageSizeInBytes=4m</td><td>设置堆内存的大页容量(large page size). (从 1.4.0 update 1 开始引入.) [amd64: 2m.]</td>
+			<td>-XX:LargePageSizeInBytes=4m</td><td>设置堆内存的大分页容量(large page size). (从 1.4.0 update 1 开始引入.) [amd64: 2m.]</td>
 		</tr>
 		<tr valign="top">
 			<td>-XX:MaxHeapFreeRatio=70</td><td>GC之后避免收缩(shrinking)的堆内存自由空间最大百分比.</td>
@@ -201,22 +201,22 @@ JVM选项大致可以分为以下几类:
 			<td>-XX:TargetSurvivorRatio=50</td><td>清理(scavenge)之后期待的存活区(survivor)空间占用率.</td>
 		</tr>
 		<tr valign="top">
-			<td>-XX:ThreadStackSize=512</td><td>Thread Stack Size (in Kbytes). (0 means use default stack size) [Sparc: 512; Solaris x86: 320 (was 256 prior in 5.0 and earlier); Sparc 64 bit: 1024; Linux amd64: 1024 (was 0 in 5.0 and earlier); all others 0.]</td>
+			<td>-XX:ThreadStackSize=512</td><td>线程栈的大小 (单位: K字节, Kbytes). (设为 0 则表示使用默认 stack size) [Sparc: 512; Solaris x86: 320 (在 5.0 及更早版本中最初是 256 prior); Sparc 64 bit: 1024; Linux amd64: 1024 (在 5.0 及更早版本中为 0 ); 其他平台默认为 0.]</td>
 		</tr>
 		<tr valign="top">
-			<td>-XX:+UseBiasedLocking</td><td>Enable biased locking. For more details, see this <a href="/technetwork/java/tuning-139912.html#section4.2.5">tuning example</a>. (从 5.0 update 6 开始引入.) [5.0: false]</td>
+			<td>-XX:+UseBiasedLocking</td><td>启用偏向锁(biased locking). 详情请参考 <a href="/technetwork/java/tuning-139912.html#section4.2.5">JVM调优示例</a>. (从 5.0 update 6 开始引入.) [5.0: false]</td>
 		</tr>
 		<tr valign="top">
 			<td>-XX:+UseFastAccessorMethods</td><td>对Get原生类型属性域(&lt;Primitive&gt;Field)方法进行优化.</td>
 		</tr>
 		<tr valign="top">
-			<td>-XX:-UseISM</td><td>Use Intimate Shared Memory. [对 non-Solaris 平台不可用.] For details, see <a href="/technetwork/java/ism-139376.html">Intimate Shared Memory</a>.</td>
+			<td>-XX:-UseISM</td><td>使用私有共享内存(ISM, Intimate Shared Memory). [对 non-Solaris 平台不可用.] 详情请参考 <a href="/technetwork/java/ism-139376.html">Intimate Shared Memory</a>.</td>
 		</tr>
 		<tr valign="top">
-			<td>-XX:+UseLargePages</td><td>Use large page memory. (从 5.0 update 5 开始引入.) For details, see <a href="/technetwork/java/javase/tech/largememory-jsp-137182.html">Java Support for Large Memory Pages</a>.</td>
+			<td>-XX:+UseLargePages</td><td>使用大分页内存. (从 5.0 update 5 开始引入.) 详情请参考 <a href="/technetwork/java/javase/tech/largememory-jsp-137182.html">Java 对 Large Memory Pages 的支持</a>.</td>
 		</tr>
 		<tr valign="top">
-			<td>-XX:+UseMPSS</td><td>Use Multiple Page Size Support w/4mb pages for the heap. Do not use with ISM as this replaces the need for ISM. (从 1.4.0 update 1 开始引入, 只适用于 Solaris 9 and newer.) [1.4.1 and earlier: false]</td>
+			<td>-XX:+UseMPSS</td><td>为堆内存启用MPSS(Multiple Page Size Support),支持 w/4mb 分页 . 不能和 ISM 一起使用,这会覆盖掉ISM的配置(as this replaces the need for ISM). (从 1.4.0 update 1 开始引入, 只适用于 Solaris 9 and newer.) [1.4.1 and earlier: false]</td>
 		</tr>
 		<tr valign="top">
 			<td>-XX:+UseStringCache</td><td>为一般分配的字符串启用缓存.
@@ -224,7 +224,7 @@ JVM选项大致可以分为以下几类:
 			&nbsp;</td>
 		</tr>
 		<tr valign="top">
-			<td>-XX:AllocatePrefetchLines=1</td><td>Number of cache lines to load after the last object allocation using prefetch instructions generated in JIT compiled code. Default values are 1 if the last allocated object was an instance and 3 if it was an array.
+			<td>-XX:AllocatePrefetchLines=1</td><td>在上次对象分配后,使用JIT生成的预取指令时读取的缓存行数. 如果上次分配的对象是一个普通对象则默认值是1，如果是一个数组则默认值为3.
 			<br>
 			&nbsp;</td>
 		</tr>
@@ -235,7 +235,7 @@ JVM选项大致可以分为以下几类:
 			<br>
 			1 - 在每次分配(each allocation)之后执行预取指令,
 			<br>
-			2 - use TLAB allocation watermark pointer to gate when prefetch instructions are executed.
+			2 - 当预取指令(prefetch instructions)执行时使用 TLAB 分配 watermark 指针pointer to gate .
 			<br>
 			&nbsp;</td>
 		</tr>
