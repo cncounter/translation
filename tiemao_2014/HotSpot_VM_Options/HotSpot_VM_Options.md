@@ -165,16 +165,16 @@ JVM选项大致可以分为以下几类:
 			<th width="45%" valign="top" align="left">选项与默认值</th><th width="55%" valign="top" align="left">说明</th>
 		</tr>
 		<tr valign="top">
-			<td>-XX:+AggressiveOpts</td><td>Turn on point performance compiler optimizations that are expected to be default in upcoming releases. (从 5.0 update 6 开始引入.)</td>
+			<td>-XX:+AggressiveOpts</td><td>打开编译器的关键点性能优化(point performance compiler optimizations),预计在后续版本中将默认开启. (从 5.0 update 6 开始引入.)</td>
 		</tr>
 		<tr valign="top">
-			<td>-XX:CompileThreshold=10000</td><td>Number of method invocations/branches before compiling [-client: 1,500]</td>
+			<td>-XX:CompileThreshold=10000</td><td>触发JIT执行编译时方法执行/分支(invocations/branches)的次数. 客户端JVM默认1500次[-client: 1,500]</td>
 		</tr>
 		<tr valign="top">
-			<td>-XX:LargePageSizeInBytes=4m</td><td>Sets the large page size used for the Java heap. (从 1.4.0 update 1 开始引入.) [amd64: 2m.]</td>
+			<td>-XX:LargePageSizeInBytes=4m</td><td>设置堆内存的大页容量(large page size). (从 1.4.0 update 1 开始引入.) [amd64: 2m.]</td>
 		</tr>
 		<tr valign="top">
-			<td>-XX:MaxHeapFreeRatio=70</td><td>Maximum percentage of heap free after GC to avoid shrinking.</td>
+			<td>-XX:MaxHeapFreeRatio=70</td><td>GC之后避免收缩(shrinking)的堆内存自由空间最大百分比.</td>
 		</tr>
 		<tr valign="top">
 			<td>-XX:MaxNewSize=size</td><td>Maximum size of new generation (in bytes). Since 1.4, MaxNewSize is computed as a function of NewRatio. [1.3.1 Sparc: 32m; 1.3.1 x86: 2.5m.]</td>
