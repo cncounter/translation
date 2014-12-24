@@ -284,10 +284,10 @@ JVM选项大致可以分为以下几类:
 			&lt;cmd args&gt;"</td><td>在首次抛出 OutOfMemoryError 时运行用户指定的命令(user-defined commands). (从 1.4.2 update 12 , 以及 JDK 6 开始引入)</td>
 		</tr>
 		<tr valign="top">
-			<td>-XX:-PrintClassHistogram</td><td>Print a histogram of class instances on Ctrl-Break. <em>可动态配置(Manageable)</em>. (从 1.4.2 开始引入.) The <a href="http://docs.oracle.com/javase/6/docs/technotes/tools/share/jmap.html">jmap -histo</a> command provides equivalent functionality.</td>
+			<td>-XX:-PrintClassHistogram</td><td>在按下 Ctrl-Break 时打印出类实例直方图(Print a histogram of class instances on Ctrl-Break). <em>可动态配置(Manageable)</em>. (从 1.4.2 开始引入.) 命令 <a href="http://docs.oracle.com/javase/6/docs/technotes/tools/share/jmap.html">jmap -histo</a> 提供了等价的功能.</td>
 		</tr>
 		<tr valign="top">
-			<td>-XX:-PrintConcurrentLocks</td><td>Print java.util.concurrent locks in Ctrl-Break thread dump. <em>可动态配置(Manageable)</em>. (从 JDK6 开始引入.) The <a href="http://docs.oracle.com/javase/6/docs/technotes/tools/share/jstack.html">jstack -l</a> command provides equivalent functionality.</td>
+			<td>-XX:-PrintConcurrentLocks</td><td>在使用 Ctrl-Break 进行线程转储时(thread dump)打印 java.util.concurrent 锁. <em>可动态配置(Manageable)</em>. (从 JDK6 开始引入.) 命令 <a href="http://docs.oracle.com/javase/6/docs/technotes/tools/share/jstack.html">jstack -l</a> 提供了等价的功能.</td>
 		</tr>
 		<tr valign="top">
 			<td>-XX:-PrintCommandLineFlags</td><td>打印命令行中的参数标志(flags). (从 5.0 开始引入.)</td>
@@ -308,7 +308,7 @@ JVM选项大致可以分为以下几类:
 			<td>-XX:-PrintTenuringDistribution</td><td>打印对象生命周期年龄信息(tenuring age information).</td>
 		</tr>
 		<tr valign="top">
-			<td>-XX:-PrintAdaptiveSizePolicy</td><td>Enables printing of information about adaptive generation sizing.</td>
+			<td>-XX:-PrintAdaptiveSizePolicy</td><td>启用自适应分代大小信息的打印(Enables printing of information about adaptive generation sizing).</td>
 		</tr>
 		<tr valign="top">
 			<td>-XX:-TraceClassLoading</td><td>跟踪(Trace)类的加载.</td>
@@ -332,13 +332,13 @@ JVM选项大致可以分为以下几类:
 			<td>-XX:ParallelGCThreads=n</td><td>设置 年轻代与老年代垃圾收集的并行线程数. 各个平台上的JVM默认值会有很大差别.</td>
 		</tr>
 		<tr valign="top">
-			<td>-XX:+UseCompressedOops</td><td>Enables the use of compressed pointers (object references represented as 32 bit offsets instead of 64-bit pointers) for optimized 64-bit performance with Java heap sizes less than 32gb.</td>
+			<td>-XX:+UseCompressedOops</td><td>启用指针压缩(对象引用使用32位偏移量表示,而不是64位指针),在Java堆内存大小 小于 32gb 时用来对64位JVM进行优化.</td>
 		</tr>
 		<tr valign="top">
-			<td>-XX:+AlwaysPreTouch</td><td>Pre-touch the Java heap during JVM initialization. Every page of the heap is thus demand-zeroed during initialization rather than incrementally during application execution.</td>
+			<td>-XX:+AlwaysPreTouch</td><td> 在 JVM 初始化期间对Java堆内存进行摸底(Pre-touch). 因此能可以在初始化期间将堆内存的每一页(Every page of the heap)都写0 (demand-zeroed),而不必等到应用程序执行时再慢慢进行.</td>
 		</tr>
 		<tr valign="top">
-			<td>-XX:AllocatePrefetchDistance=n</td><td>Sets the prefetch distance for object allocation. Memory about to be written with the value of new objects is prefetched into cache at this distance (in bytes) beyond the address of the last allocated object. Each Java thread has its own allocation point. 各个平台上的JVM默认值会有很大差别.</td>
+			<td>-XX:AllocatePrefetchDistance=n</td><td>为对象内存分配(object allocation)设置预取距离(prefetch distance). 即将写入新对象值的内存,会连同最近分配的对象地址后一段距离(单位: 字节 byte)被一起预取到 cache 中. 每个 Java 线程都有自己的分配点(allocation point). 各个平台上的JVM默认值会有很大差别.</td>
 		</tr>
 		<tr valign="top">
 			<td>-XX:InlineSmallCode=n</td><td>只有在以前编译好的方法生成的本地机器码数量小于这个值时才会被内联(Inline). 各个平台上的JVM默认值会有很大差别.</td>
