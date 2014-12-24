@@ -177,28 +177,28 @@ JVM选项大致可以分为以下几类:
 			<td>-XX:MaxHeapFreeRatio=70</td><td>GC之后避免收缩(shrinking)的堆内存自由空间最大百分比.</td>
 		</tr>
 		<tr valign="top">
-			<td>-XX:MaxNewSize=size</td><td>Maximum size of new generation (in bytes). Since 1.4, MaxNewSize is computed as a function of NewRatio. [1.3.1 Sparc: 32m; 1.3.1 x86: 2.5m.]</td>
+			<td>-XX:MaxNewSize=size</td><td>年轻代(new generation）的最大尺寸(单位: 字节,byte). 从JDK 1.4开始, MaxNewSize 的值根据 NewRatio 计算得出. [1.3.1 Sparc: 32m; 1.3.1 x86: 2.5m.]</td>
 		</tr>
 		<tr valign="top">
-			<td>-XX:MaxPermSize=64m</td><td>Size of the Permanent Generation.&nbsp; [5.0 and newer: 64 bit VMs are scaled 30% larger; 1.4 amd64: 96m; 1.3.1 -client: 32m.]</td>
+			<td>-XX:MaxPermSize=64m</td><td>持久代(Permanent Generation, Class,常量等信息放在这里,最新的String常量池已移出持久代)的大小.&nbsp; [5.0 and newer: 64 bit VMs are scaled 30% larger; 1.4 amd64: 96m; 1.3.1 -client: 32m.]</td>
 		</tr>
 		<tr valign="top">
-			<td>-XX:MinHeapFreeRatio=40</td><td>Minimum percentage of heap free after GC to avoid expansion.</td>
+			<td>-XX:MinHeapFreeRatio=40</td><td>GC后避免扩充(expansion)的最小堆内存自由空间百分比.</td>
 		</tr>
 		<tr valign="top">
-			<td>-XX:NewRatio=2</td><td>Ratio of old/new generation sizes. [Sparc -client: 8; x86 -server: 8; x86 -client: 12.]-client: 4 (1.3) 8 (1.3.1+), x86: 12]</td>
+			<td>-XX:NewRatio=2</td><td>年轻代与老年代(new/old generation)的比值(Ratio). [Sparc -client: 8; x86 -server: 8; x86 -client: 12.]-client: 4 (1.3) 8 (1.3.1+), x86: 12]</td>
 		</tr>
 		<tr valign="top">
-			<td>-XX:NewSize=2m</td><td>Default size of new generation (in bytes) [5.0 and newer: 64 bit VMs are scaled 30% larger; x86: 1m; x86, 5.0 and older: 640k]</td>
+			<td>-XX:NewSize=2m</td><td>年轻代(new generation）的默认大小 (单位: 字节,byte) [5.0 及以后版本: 64 bit VM 为 30% 以上比例; x86: 1m; x86, 5.0 及更早版本为: 640k]</td>
 		</tr>
 		<tr valign="top">
-			<td>-XX:ReservedCodeCacheSize=32m</td><td>Reserved code cache size (in bytes) - maximum code cache size. [Solaris 64-bit, amd64, and -server x86: 2048m; in 1.5.0_06 and earlier, Solaris 64-bit and amd64: 1024m.]</td>
+			<td>-XX:ReservedCodeCacheSize=32m</td><td>保留代码缓存空间大小(Reserved code cache size 单位: 字节, byte) - 也是最大(maximum) 代码缓存空间大小. [Solaris 64-bit, amd64, 以及 -server x86: 2048m; 在 1.5.0_06 及更早版本的 Solaris 64-bit 和 amd64: 1024m.]</td>
 		</tr>
 		<tr valign="top">
-			<td>-XX:SurvivorRatio=8</td><td>Ratio of eden/survivor space size [Solaris amd64: 6; Sparc in 1.3.1: 25; other Solaris platforms in 5.0 and earlier: 32]</td>
+			<td>-XX:SurvivorRatio=8</td><td>(年轻代之中,)新生代/存活区(eden/survivor)的大小比值 [Solaris amd64: 6; Sparc in 1.3.1: 25; 其他 Solaris 版本在5.0以及更早版本中是: 32]</td>
 		</tr>
 		<tr valign="top">
-			<td>-XX:TargetSurvivorRatio=50</td><td>Desired percentage of survivor space used after scavenge.</td>
+			<td>-XX:TargetSurvivorRatio=50</td><td>清理(scavenge)之后期待的存活区(survivor)空间占用率.</td>
 		</tr>
 		<tr valign="top">
 			<td>-XX:ThreadStackSize=512</td><td>Thread Stack Size (in Kbytes). (0 means use default stack size) [Sparc: 512; Solaris x86: 320 (was 256 prior in 5.0 and earlier); Sparc 64 bit: 1024; Linux amd64: 1024 (was 0 in 5.0 and earlier); all others 0.]</td>
@@ -207,7 +207,7 @@ JVM选项大致可以分为以下几类:
 			<td>-XX:+UseBiasedLocking</td><td>Enable biased locking. For more details, see this <a href="/technetwork/java/tuning-139912.html#section4.2.5">tuning example</a>. (从 5.0 update 6 开始引入.) [5.0: false]</td>
 		</tr>
 		<tr valign="top">
-			<td>-XX:+UseFastAccessorMethods</td><td>Use optimized versions of Get&lt;Primitive&gt;Field.</td>
+			<td>-XX:+UseFastAccessorMethods</td><td>对Get原生类型属性域(&lt;Primitive&gt;Field)方法进行优化.</td>
 		</tr>
 		<tr valign="top">
 			<td>-XX:-UseISM</td><td>Use Intimate Shared Memory. [对 non-Solaris 平台不可用.] For details, see <a href="/technetwork/java/ism-139376.html">Intimate Shared Memory</a>.</td>
