@@ -1,10 +1,10 @@
 JDK7的HotSpot启动参数
 ==
 
-**请注意: 此文档只适用于 JDK 7 及更早期版本. 如果是 JDK 8,请参考 [Windows](http://docs.oracle.com/javase/8/docs/technotes/tools/windows/java.html), [Solaris](http://docs.oracle.com/javase/8/docs/technotes/tools/unix/java.html), [Linux](http://docs.oracle.com/javase/8/docs/technotes/tools/unix/java.html) 以及 [Mac OS X](http://docs.oracle.com/javase/8/docs/technotes/tools/unix/java.html) 版本参考手册的相关页面.**
+**请注意: 此文档只适用于JDK 7 及以前版本. 如果使用JDK 8,请访问 [Windows](http://docs.oracle.com/javase/8/docs/technotes/tools/windows/java.html), [Solaris](http://docs.oracle.com/javase/8/docs/technotes/tools/unix/java.html), [Linux](http://docs.oracle.com/javase/8/docs/technotes/tools/unix/java.html) 及 [Mac OS X](http://docs.oracle.com/javase/8/docs/technotes/tools/unix/java.html) 参考手册页面.**
 
 
-本文档展示说明会影响Java HotSpot虚拟机性能特征的典型命令行选项和环境变量。除非另外注明,本文档中的所有信息都适用于 Java HotSpot Client VM 和 Java HotSpot Server VM.
+本文档描述会影响Java HotSpot虚拟机性能与特征的命令行参数和环境变量。 文档中的所有信息一般都适用于 Java HotSpot Client VM 和 Java HotSpot Server VM, 除非另外注明.
 
 
 ## Java HotSpot VM 参数分类 ##
