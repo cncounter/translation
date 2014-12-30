@@ -14,7 +14,7 @@
 
 ## 1.
 
-如果你曾住在某个多雨的城市, 主要靠小汽车出行, 你可能会对 Rain-X 很熟悉。 擦一些在你的挡风玻璃上, 当它稳定以后, 即便你开车时下器倾盆大雨也无需打开雨刷了(但不建议你真的不打开)。 Rain-X是一种疏水性涂料,不溶于水,能给你带来雨刷给不了的清晰路况。 虽然疏水性涂料也不沾染其他液体,但主要还是防水, 如同你的白衬衫色礼服, 水并不是唯一不沾染的液体。 加州大学洛杉矶分校(UCLA)的工程师们创造了一种比普通疏水性涂料有效很多倍的 superomniphobic, 它依赖表面纹理, 而不是一劳永逸的涂层。
+如果你曾住在某个多雨的城市, 靠小汽车代步, 你可能会对 Rain-X 很熟悉。 擦一些在你的挡风玻璃上, 当它稳定以后, 即便你开车时下器倾盆大雨也无需打开刮雨刷了(但不建议你真的不打开)。 Rain-X是一种疏水性涂料,不溶于水,给你刮雨刷给不了的清晰路况。 虽然疏水性涂料也不沾染其他液体,但主要还是用于防水, 如同你的白衬衫礼服, 也不沾染很多种液体,水并不是唯一。 加州大学洛杉矶分校(UCLA) 的工程师们创造了一种比普通疏水涂料强效很多倍的 superomniphobic, 它依赖表面纹理, 而不是一劳永逸的涂层。
 
 
 If you have ever lived in a frequently rainy area of the world where the main mode of transportation is driving, you’re likely very familiar with products like Rain-X. Rub some of it on your windshield, let it settle, and you can practically drive through a downpour without having to turn your windshield wipers on (though we wouldn’t recommend it). Rain-X is a superhydrophobic coating that repels water, giving you a clear view of the road ahead even when wipers can’t. Though superhydrophobic coatings can repel other liquids, its main focus is water, and as your white dress shirt is probably aware, water isn’t the only liquid that can spill. Engineers at UCLA have created a liquid repellent so much more effective than superhydrophobic coating that it’s classified as superomniphobic — and it’s based on surface texture, rather than a set-and-forget coating.
