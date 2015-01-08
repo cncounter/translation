@@ -45,11 +45,11 @@ Object类中只有这么一个 static 方法,其余的都是实例方法, 也就
 
 返回代表此对象的hash code(散列码)值. 返回值类型为 `int`. 
 
-默认的实现如下:
+默认实现是native方法,代码如下:
 
     public native int hashCode();
 
-hashCode()方法是为了支持哈希表(hash tables)而提供的,比如 `java.util.HashMap`.
+当然,你也可以在自己的类中覆写(Override)此方法. hashCode()方法是为了支持哈希表(hash tables)而提供的,比如 `java.util.HashMap`.
 
 `hashCode`方法的通用约定如下:
 
@@ -70,6 +70,23 @@ hashCode()方法是为了支持哈希表(hash tables)而提供的,比如 `java.u
 也就是判断是不是同样的内存地址. 如果没有重写 equals方法,则只有 this 等于 this.(原因是同一个对象可能会有多个引用指向它).
 
 ## clone()
+
+创建并返回此对象的一个拷贝.
+
+一般约定:
+
+- 表达式 `x.clone() != x` 的值为 `true`
+- `x.clone().getClass() == x.getClass()` 的值也为 `true`
+
+但也不是绝对要求,请根据实际情况决定.
+
+典型的约定是:
+
+- `x.clone().equals(x)` 的值为 `true`
+
+但也不是绝对性要求,具体情况有时候会比较复杂,请根据需求和设计而定.
+
+
 
     protected native Object clone() throws 
 		CloneNotSupportedException;
