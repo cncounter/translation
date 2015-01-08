@@ -43,23 +43,31 @@ Object类中只有这么一个 static 方法,其余的都是实例方法, 也就
 
 ## hashCode()
 
-
-返回代表此对象的散列码(hash code)的值.
+返回代表此对象的hash code(散列码)值. 返回值类型为 `int`. 
 
 默认的实现如下:
 
     public native int hashCode();
 
+hashCode()方法是为了支持哈希表(hash tables)而提供的,比如 `java.util.HashMap`.
 
+`hashCode`方法的通用约定如下:
+
+-
 
 
 
 ## equals()
 
+判断其他对象是否 "等于" 此对象.
+
+默认实现如下:
+
     public boolean equals(Object obj) {
         return (this == obj);
     }
 
+也就是判断是不是同样的内存地址. 如果没有重写 equals方法,则只有 this 等于 this.(原因是同一个对象可能会有多个引用指向它).
 
 ## clone()
 
