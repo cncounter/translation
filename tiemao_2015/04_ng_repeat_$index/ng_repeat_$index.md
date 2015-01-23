@@ -107,6 +107,7 @@ BUG其实是在控制器里面:
 第四个教训是不要破坏抽象 —— 这一点很容易被忽略。理论上 `$index` 是由 `ng-repeat` 创建的一个 “模板变量(template variable)”。 这只在 repeat 块里面有意义(并正确起作用)。 当我们将它的值传递到外面时,它就失去了上下文从而不再有效。 如果确实想让它在 repeat 之外依然有效,则必须在控制器中也进行过滤,这就需要一些不是很必要的重复代码。 值得庆幸的是本文中介绍的模式可以用来避免这种情况。
 
 
+GitHub版: [https://github.com/cncounter/translation/blob/master/tiemao_2015/04_ng_repeat_%24index/ng_repeat_%24index.md](https://github.com/cncounter/translation/blob/master/tiemao_2015/04_ng_repeat_%24index/ng_repeat_%24index.md)
 
 原文链接: [AngularJS best practices: Be careful when using ng-repeat’s $index](http://codeutopia.net/blog/2014/11/10/angularjs-best-practices-avoid-using-ng-repeats-index/)
 
