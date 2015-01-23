@@ -1,29 +1,17 @@
 # AngularJS最佳实践: 请小心使用 ng-repeat 中的 $index
 
 
-“A customer reported they deleted an item and the wrong item got deleted!”
+“有客户投诉，说在删除指定的某条记录时,结果删掉的却是另外一条记录!”
 
-“一个客户说他们删除一个条目和错误的条目被删除!”
+看起来是个很严重的BUG。 有一次我们在工作中碰到了这个问题。 要定位这个BUG非常麻烦, 因为客户也不清楚如何重现这个问题。
 
-
-Sounds like a pretty serious bug. This is what we got one time at work. Attempting to locate it was quite difficult, because naturally the customer had no idea what they did to reproduce the issue.
-
-
-听起来像一个非常严重的错误。 这就是我们有一个时间在工作。 试图找到它很困难,因为自然客户不知道他们做了什么重现这个问题。
+后来发现这个Bug是由于在 `ng-repeat` 中使用了 `$index` 引发的。下面一起来看看这个错误是如何引发的, 以及如何避免这种bug产生,然后说说我们从中得到的经验和教训。
 
 
-Turns out the bug was caused by using `$index` in an `ng-repeat`. Let’s take a look at how this happens, and a super simple way to avoid this type of bug entirely, and also a few lessons we can learn from this.
+### 一个简单动作(action)的列表
 
 
-错误是由于使用 美元指数 在一个 ng-repeat 。 让我们看看这一切发生的时候,和一个超级简单的方法,要完全避免这种类型的错误,我们可以从中学习也有一些教训。
-
-### A simple list with an action
-
-Let’s look at an example of a perfectly valid `ng-repeat`, and its controller.
-
-### 一个简单的列表,一个动作
-
-让我们来看看一个完全有效的例子 ng-repeat ,它的控制器。
+先来看看一个完整有效的`ng-repeat`示例。
 
 	<ul ng-controller="ListCtrl">
 	  <li ng-repeat="item in items">
@@ -32,7 +20,7 @@ Let’s look at an example of a perfectly valid `ng-repeat`, and its controller.
 	  </li>
 	</ul>
 
-<br/>
+对应的控制器(controller)如下:
 
 	app.controller('ListCtrl', ['$scope', function($scope) {
 	  //items come from somewhere, from where doesn't matter for this example
@@ -44,21 +32,14 @@ Let’s look at an example of a perfectly valid `ng-repeat`, and its controller.
 	  };
 	}]);
 
-Looks OK, right? Nothing particularly special about this code.
+看起来没什么问题,对吗? 这段代码也没有任何特别值得注意的。
 
-看起来好了,对吗? 这段代码看上去没有任何特别之处。
 
-### Adding a filter
+### 添加一个过滤器(filter)
 
-### 添加一个过滤器
+然后,让我们来做一个小小的修改: 给列表添加一个过滤器。 这是很常见的做法,如果列表很长的话,例如允许用户进行搜索。
 
-Now, let’s do a small change: Let’s add a filter to the list. This is a reasonably common thing to do if you have a long list, for example to allow the user to search the list.
-
-现在,让我们来做一个小改变:让我们添加一个过滤器列表中。 这是一个相当常见的事情如果你有一长串,例如允许用户搜索列表。
-
-For sake of this example, assume `searchFilter` allows us to filter the list by some search query.
-
-对于这个例子,假设 searchFilter 让我们通过一些搜索过滤列表查询。
+为了方便起见, 假设我们通过 `searchFilter` 来查询列表中的记录。
 
 	<ul ng-controller="ListCtrl">
 	  <li ng-repeat="item in items | searchFilter">
@@ -67,40 +48,26 @@ For sake of this example, assume `searchFilter` allows us to filter the list by 
 	  </li>
 	</ul>
 
-The controller code stays the same. Still looks good, right?
 
-控制器代码保持不变。 仍然看起来不错,是吧?
+控制器的代码保持不变。 看起来仍然没有问题,是吧?
 
-There’s actually a bug in there now. Can you find it? Would you have thought about it if I hadn’t mentioned it?
-
-实际上,这里有一个错误在那里了。 你能找到它吗? 你会想如果我没有提到吗?
+事实上,有一个bug藏在里面。 如果我不说, 你能找到吗? 如果能找到,你就已经是Angular大牛了.
 
 
-### Using $index should be avoided
+### 请尽量避免使用 `$index`
 
-The bug is in the controller:
-
-
-### 使用 美元指数 应该避免
-
-这个错误是在控制器:
+BUG其实是在控制器里面:
 
 	$scope.remove = function(index) {
 	  var item = $scope.items[index];
 	  removeItem(item);
 	};
 
-As we use the index here, we will run into problems as soon as we have filtered the list in a way which causes the indexes to not match the original list.
+
+这里使用了 index参数, 然后就遇到了BUG: 过滤后的索引(indexs)不匹配原始列表的索引。
 
 
-我们这里使用索引,我们遇到问题就会过滤列表的方式导致索引不匹配原始列表。
-
-
-
-Thankfully there’s a really simple way to avoid this: Instead of using `$index`, prefer to pass the actual objects around.
-
-
-幸运的是有一个很简单的方法来避免这种情况:代替使用 美元指数 ,更喜欢通过实际的对象。
+幸运的是,有一个很简单的方法来避免这种问题: 不要使用`$index`,而改成实际的item对象。
 
 	<ul ng-controller="ListCtrl">
 	  <li ng-repeat="item in items | searchFilter">
@@ -109,31 +76,23 @@ Thankfully there’s a really simple way to avoid this: Instead of using `$index
 	  </li>
 	</ul>
 
-<br/>
+控制器如下所示:
 
 	$scope.remove = function(item) {
 	  removeItem(item);
 	};
 
 
-Notice how I changed `remove($index)` into `remove(item)`, and changed the `$scope.remove` function to operate directly on the object instead.
-
-注意,我改变了 删除(美元指数) 成 删除(项目) ,改变了 scope.remove美元 函数来直接操作的对象。
+注意, 这里将 `remove($index)` 改成 `remove(item)`, 并修改了 `$scope.remove` 函数来直接操作传过来的对象。
 
 
-This simple change avoids the bug issue entirely.
+这个小小的修改就完全避免了刚才的BUG。
 
-这个简单的改变完全避免了错误问题。
-
-
-To better illustrate the problem and the solution, you can use this [interactive example](http://plnkr.co/edit/JVQ1yURgQEIrwXFoQQxl?p=preview).
+为了更好地说明问题以及解决方案,请参考 [interactive example](http://plnkr.co/edit/JVQ1yURgQEIrwXFoQQxl?p=preview) 。
 
 
-为了更好的说明问题和解决方案,你可以使用这个 互动的例子 。
+### 从中可以学到什么?
 
-### What can we learn from this?
-
-### 我们可以从这里学到什么?
 
 The first lesson is of course that we should be careful when using `$index`, as it can easily cause bugs when used in certain ways.
 
