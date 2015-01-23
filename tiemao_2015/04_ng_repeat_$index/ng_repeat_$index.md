@@ -94,30 +94,17 @@ BUG其实是在控制器里面:
 ### 从中可以学到什么?
 
 
-The first lesson is of course that we should be careful when using `$index`, as it can easily cause bugs when used in certain ways.
+
+第一个教训当然是在使用 `$index` 要小心一点,因为以某些方式使用时很可能会产生BUG。
 
 
-当然第一个教训是,我们应该在使用时要小心 美元指数 ,因为它可以很容易地导致错误使用时在某些方面。
-
-The second lesson is that by recognizing patterns like this, you can establish better ways of doing things that can avoid certain types of bugs entirely. I’m definitely recommending everyone to avoid `$index` now, and as a result, their code will have less bugs from just this simple change of thinking.
+第二个教训是,请记住类似这样的模式,则可以用更好的做事方式,可以完全避免某些类型的BUG。 我强烈建议大家现在不要使用 `$index`, 从这种简单的思维转变中,就可以减少代码中的很多BUG。
 
 
-
-第二个教训是,认识到这样的模式,您可以建立更好的做事方式,完全可以避免某些类型的错误。 我绝对推荐大家避免的 美元指数 现在,因此,他们的代码会减少错误的思维从这个简单的改变。
-
-
-The third lesson is tests won’t always help you. Even if you have automated tests covering something like this, it’s quite easy for them to miss this, because the bugs caused by this depend so much on the specific inputs given. The bug won’t always show itself, even when using filtering.
+第三个教训是测试并不是什么时候都有用。 即便有自动化测试,也覆盖了足够多的情形, 但对于依赖特定输入的情况,也很容易错过某些BUG。 错误本身并不是每次都会出现,即使你也用过滤来测试。
 
 
-第三个教训是测试并不总是帮助你。 即使你有自动化测试覆盖这样的事情,很容易错过这个,因为造成的错误这如此依赖特定的输入。 错误本身并不总是显示,即使使用过滤。
-
-
-The fourth lesson is don’t break abstraction – This one is very easy to miss. Technically `$index` is a “template variable” created by `ng-repeat`. It’s only accurate and has meaning inside the repeat block. When we pass the value out, it loses its context and it’s no longer valid. In order for it to be valid outside the repeat, we would also have to filter the list in our controller, which would require some code duplication which should be avoided. Thankfully the pattern introduced in this article can be used to avoid this.
-
-第四个教训是不要打破抽象——这个小姐很容易在技术上 美元指数 是一个“模板变量”了吗 ng-repeat 。 这只是在重复块准确和有意义。 当我们通过价值,它失去了它的上下文不再有效。 为了让它有效重复外,我们还必须过滤列表在我们的控制器,这将需要一些应该避免代码重复。 值得庆幸的是在这篇文章中介绍的模式可以避免这种情况。
-
-
-
+第四个教训是不要破坏抽象 —— 这一点很容易被忽略。理论上 `$index` 是由 `ng-repeat` 创建的一个 “模板变量(template variable)”。 这只在 repeat 块里面有意义(并正确起作用)。 当我们将它的值传递到外面时,它就失去了上下文从而不再有效。 如果确实想让它在 repeat 之外依然有效,则必须在控制器中也进行过滤,这就需要一些不是很必要的重复代码。 值得庆幸的是本文中介绍的模式可以用来避免这种情况。
 
 
 
