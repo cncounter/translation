@@ -38,5 +38,5 @@ CNCounter translation
 
 ### 2015年
 
-1. **[AngularJS最佳实践: 请小心使用 ng-repeat 中的 $index](tiemao_2014/G1/G1.md)**
+1. **[AngularJS最佳实践: 请小心使用 ng-repeat 中的 $index](tiemao_2015/04_ng_repeat_$index/ng_repeat_$index.md)**
 
