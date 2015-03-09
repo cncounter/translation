@@ -39,4 +39,5 @@ CNCounter translation
 ### 2015年
 
 1. **[AngularJS最佳实践: 请小心使用 ng-repeat 中的 $index](tiemao_2015/04_ng_repeat_$index/ng_repeat_$index.md)**
+1. **[巧用JSON.stringify()生成漂亮格式的JSON字符串](tiemao_2015/05_JSON_indent/05_JSON_indent.md)**
 
