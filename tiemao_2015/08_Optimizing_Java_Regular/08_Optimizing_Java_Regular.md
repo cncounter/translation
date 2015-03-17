@@ -1,26 +1,25 @@
 # Optimizing regular expressions in Java
-
-# Java中优化正则表达式
+# Java正则表达式优化
 
 
 ### A guide to pattern matching without the performance drag
 
-### 模式匹配指南没有阻力性能
+### 消除模式匹配的性能障碍
 
 
 If you've struggled with regular expressions that took hours to match when you needed them to complete in seconds, this article is for you. Java developer Cristian Mocanu explains where and why the regex pattern-matching engine tends to stall, then shows you how to make the most of backtracking rather than getting lost in it, how to optimize greedy and reluctant quantifiers, and why possessive quantifiers, independent grouping, and lookarounds are your friends.
 
-如果你在正则表达式,花了几个小时来匹配当你需要他们在几秒钟内完成,这篇文章是给你的。 Java开发人员克里斯蒂安·Mocanu解释了正则表达式模式匹配引擎,以及为什么会停滞,然后向您展示如何充分利用回溯而不是迷失,如何优化贪婪和不情愿的量词,量词,为什么占有欲很强,独立的分组,看看是你的朋友。
+如果你只是偶尔需要,却花了大量的时间来匹配正则表达式,那么这篇文章很适合你看。 Java程序员 Cristian Mocanu 将为你讲解正则表达式模式匹配引擎(regex pattern-matching engine)在什么地方会停滞(stall),以及停滞的原因； 然后向您展示如何充分利用回溯(backtracking)，而不要迷失； 如何优化贪婪量词(greedy quantifiers)以及 惰性量词(reluctant quantifiers)； 以及为什么 占有量词(possessive quantifiers), 固化分组(independent grouping), 环视(lookarounds)是很有效的处理方法。
 
 
 > Writing a regular expression is more than a skill -- it's an art.
 > 
+> 编写正则表达式不仅仅是一种技巧 —— 更是一门艺术。
+> 
 > -- Jeffrey Friedl
 
-写一个正则表达式是一个多技能——它是一种艺术。
 
-——Jeffrey fiedl的用于检查电子邮件地址
-
+##
 
 
 
@@ -93,4 +92,7 @@ With the above example you've seen how the NFA uses backtracking for pattern mat
 
 
 原文链接: [http://www.javaworld.com/article/2077757/core-java/optimizing-regular-expressions-in-java.html](http://www.javaworld.com/article/2077757/core-java/optimizing-regular-expressions-in-java.html)
+
+
+> 杯具. http://blog.csdn.net/mydeman/article/details/1800636
 
