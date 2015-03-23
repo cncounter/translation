@@ -1,6 +1,6 @@
 # What you need to know about Hadoop right now
 
-# 你现在需要知道Hadoop什么
+# Hadoop现状
 
 ### Phoenix, Kafka, and Falcon fill some important niches in Hadoop's growing ecosystem
 
@@ -9,7 +9,7 @@
 
 Last year I gave a crunch list of [what you should know about Hadoop](http://www.infoworld.com/article/2608249/application-development/know-this-right-now-about-hadoop.html). It has been a couple months short of a year since then, but I thought I'd check in and see how you’re coming along -- and add a few more technologies to the list.
 
-去年我给 [紧缩的你应该知道Hadoop列表](http://www.infoworld.com/article/2608249/application-development/know-this-right-now-about-hadoop.html) 。 这是一个两个月的一年,但是我想检查,看看你不上车,向列表添加更多的技术。
+去年我给 [你应该了解的Hadoop知识](http://www.infoworld.com/article/2608249/application-development/know-this-right-now-about-hadoop.html) 。 这是一个两个月的一年,但是我想检查,看看你不上车,向列表添加更多的技术。
 
 
 To start, I hope you didn’t forget your fundamentals. Yarn and HDFS are no less important now than last year. Plus, I hope you remembered the ecosystem stuff. In fact, HBase is even more vital and Cassandra is on fire in the marketplace, although many now consider it to be its own thing outside of Hadoop. (If you think your brain is running out of room, at least you can forget that HAWQ or Greenplum ever existed, since [Pivotal soon will](http://www.infoworld.com/article/2885334/application-development/what-pivotals-big-open-source-move-really-means.html).)
