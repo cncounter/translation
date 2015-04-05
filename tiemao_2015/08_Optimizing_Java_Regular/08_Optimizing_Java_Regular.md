@@ -1,92 +1,130 @@
-# Optimizing regular expressions in Java
 # Java正则表达式优化
 
 
-### A guide to pattern matching without the performance drag
-
-### 消除模式匹配的性能障碍
+### 副标题: 填平模式匹配中的性能大坑
 
 
-If you've struggled with regular expressions that took hours to match when you needed them to complete in seconds, this article is for you. Java developer Cristian Mocanu explains where and why the regex pattern-matching engine tends to stall, then shows you how to make the most of backtracking rather than getting lost in it, how to optimize greedy and reluctant quantifiers, and why possessive quantifiers, independent grouping, and lookarounds are your friends.
-
-如果你只是偶尔需要,却花了大量的时间来匹配正则表达式,那么这篇文章很适合你看。 Java程序员 Cristian Mocanu 将为你讲解正则表达式模式匹配引擎(regex pattern-matching engine)在什么地方会停滞(stall),以及停滞的原因； 然后向您展示如何充分利用回溯(backtracking)，而不要迷失； 如何优化贪婪量词(greedy quantifiers)以及 惰性量词(reluctant quantifiers)； 以及为什么 占有量词(possessive quantifiers), 固化分组(independent grouping), 环视(lookarounds)是很有效的处理方法。
+> 杯具,找到一篇翻译好的博客. [http://blog.csdn.net/mydeman/article/details/1800636](http://blog.csdn.net/mydeman/article/details/1800636)
 
 
-> Writing a regular expression is more than a skill -- it's an art.
-> 
-> 编写正则表达式不仅仅是一种技巧 —— 更是一门艺术。
-> 
-> -- Jeffrey Friedl
+所以，本文就不发表，也不排版，下面的内容只是从文中拷贝作为备份。以免CSDN抽风.
+
+>>>> --------------------------
+>>>> --------------------------
 
 
-##
+原文地址： [http://www.javaworld.com/javaworld/jw-09-2007/jw-09-optimizingregex.html](http://www.javaworld.com/javaworld/jw-09-2007/jw-09-optimizingregex.html)
+
+如果你花费了数小时和正则表达式做斗争，只是为了让它完成它几秒内就可以完成的匹配，那么这篇文章正是为你量身定做的。Cristian Mocanu指出了在什么地方正则模式匹配会发生延迟，并且解释了为什么。然后，他演示了如何做更多的回缩（backtracking）而不是迷失在其中，如何优化贪婪模式和勉强模式（译者注--这个翻译是在网上查到，总感觉不太合适，原文是reluctant quantifier），以及Possessive quantifiers（译者注--这个有的地方称为抢占量子）、独立分组（independent grouping）和环视（look-around）为什么是你的朋友。
+
+>编写正则表达式不仅仅是一种技巧，更是一种艺术 
+>
+>--Jeffrey Friedl
+
+本文中，我将介绍一些正则表达式中使用默认的java.util.regex包的常见缺点。我将解释为什么回缩（backtracking）既是使用正则表达式进行模式匹配的基础，又是应用程序代码中的常见瓶颈；为什么在使用贪婪模式和勉强模式要学会谨慎，以及它是你正则表达式优化的要素。然后我会介绍优化正则表达的技巧，并讨论通过Java模式匹配引擎运行新的正则表达式时会发生什么。
+
+基于本文的目的，我假设你已经有使用正则表达式的经验，并且对在Java代码中优化它们抱有很大的兴趣。本文主题包括简单和自动优化优化技巧，以及如何使用抢占量子（possessive quantifiers）、独立分组（independent grouping）和环视（lookarounds）优化贪婪模式和勉强模式（greedy and reluctant quantifiers）。关于Java中正则表达式的介绍，请参考本文的资源部分。
+
+### Java模式匹配引擎和回缩（The Java pattern-matching engine and backtracking）
+
+java.util.regex包使用一种称为非确定性的有限自动机（Nondeterministic Finite Automaton，简称为NFA）的模式匹配引擎。之所以称之为非确定性的，是因为当尝试使用输入的字符串匹配一个正则表达式时，每一个字符会因为正则表达式的不同部分而被多次检查。这也是一种在.NET、PHP、Perl、Python和Ruby被广泛使用的引擎。它将大部分的权利交到了程序员手里，提供了宽范围的量词和其他专有的结构如环视（lookarounds），在后面部分将会讨论。
+
+NFA在本质上使用回缩。通常情况下，并非只有一种方式在给定的字符串上使用正则表达式，因此模式匹配引擎会尝试所有情况，直到它宣布失败。为了更好的理解NFA和回缩（backtracking），考虑下面的
+例子：
+
+正则表达式是“sc(ored|ared|oring)x”，输入字符串是“scared”。
+
+首先引擎会寻找“sc”，由于在输入字符串的起始两个字符，因此会立即找到。然后，它会从输入字符串的第三个字符开始尝试匹配“ored”。没有匹配项，它就回到第三个字符，尝试“ared”。找到匹配，于是它继续向前，尝试匹配“x”。不能找到匹配，它将返回第三个字符，寻找“oring”。仍然没有匹配，于是它就返回到输入字符串的第二个字符，开始寻找另外一个“sc”。一直到达输入字符串的结束，它将宣布失败。
+
+###回缩的优化小技巧（Optimization tips for backtracking）
+
+通过上面的例子，你已经看到了NFA如何使用回缩进行模式匹配的，同时你也会发现回缩存在的一个问题。甚至在上面十分简单的例子中，引擎为了将输入字符串匹配到正则表达式不得不回退数次。不难想象，如果回缩使失去控制，将会对你的应用程序的性能发生什么样的影响。优化正则表达式的一个重要部分就是最小化回缩的数量。
+
+Java模式匹配引擎有一些可以自由支配的优化规则，并可以自动应用它们。在本文稍后的部分我将会讨论其中的一些规则。不幸的是，你不能总是依赖引擎来优化你的正则表达式。在上面的例子中，正则表达式的确可以相当快地匹配，但是在多数情况中，对于引擎自动优化来说，表达式过于复杂，而输入字符串也过大。
+
+由于回缩，在现实场景中正则表达式有时候会遇到花费数小时完成匹配的情况。更惨的是，引擎会花费比匹配成功更长的时间声明正则表达式不匹配输入字符串。牢记这个重要的事实。当你想要测试正则表达式的速度时，使用其不能匹配的字符串进行测试。其中，特别是使用几乎匹配的字符串，因为它们会消耗最长的时间。
+现在，我们考虑一些可以优化正则表达式的针对回缩的方法。
+
+###优化正则表达式的简单方法（Simple ways to optimize regular expressions）
+
+在本文后面的部分，我会介绍更加复杂的方法，你可以使用它们优化Java中的正则表达式。不过，作为开始，这里是一些可以节省时间的简单优化方式：
+
+1、如果在程序中多次使用同一个正则表达式，一定要用Pattern.compile()编译，代替直接使用Pattern.matches()。如果一次次对同一个正则表达式使用Pattern.matches()，例如在循环中，没有编译的正则表达式消耗比较大。因为matches()方法每次都会预编译使用的表达式。另外，记住你可以通过调用reset()方法对不同的输入字符串重复使用Matcher对象。
+
+2、留意选择（Beware of alternation）。类似“(X|Y|Z)”的正则表达式有降低速度的坏名声，所以要多留心。首先，考虑选择的顺序，那么要将比较常用的选择项放在前面，因此它们可以较快被匹配。另外，尝试提取共用模式；例如将“(abcd|abef)”替换为“ab(cd|ef)”。后者匹配速度较快，因为NFA会尝试匹配ab，如果没有找到就不再尝试任何选择项。（在当前情况下，只有两个选择项。如果有很多选择项，速度将会有显著的提升。）选择的确会降低程序的速度。在我的测试中，表达式“`.*(abcd|efgh|ijkl).*`”要比调用String.indexOf()三次——每次针对表达式中的一个选项——慢三倍。
+
+3、获取每次使用引起小损失的分组。如果你实际并不需要获取一个分组内的文本，那么就使用非捕获分组。例如使用“(?:X)”代替“(X)”。
+
+###让引擎完成优化（Let the engine do the work for you）
+
+如上面我所提到的，java.util.regex包可以编译正则表达式时对其优化。例如，正则表达式中包含了一个必须在输入字符串中出现的字符串（或者整个表达式都不匹配），引擎有时会首先搜索该字符串，如果没有找到匹配就会报告失败，不再检查整个正则表达式。
+
+另外非常有用地自动优化正则表达式的方式让引擎根据正则表达式中的期望长度检查输入字符串的长度。例如，表达式“/d{100}”是内在优化的，以致于如果输入字符串不是100个字符，引擎就会报告失败，而不再考察整个正则表达式。
+
+无论何时编写复杂的正则表达式时，尝试找出一种编写方式使引擎可以识别和优化这些特殊情况。例如，不要在分组或选择中隐藏命令字符串，因为引擎不会识别它们。若有可能，指定你想要匹配的输入字符串的长度也是相当有用的，如上例所示。
+
+###优化贪婪模式和勉强模式（Optimizing greedy and reluctant quantifiers）
+
+你已经有了如何优化正则表达式的基本概念，其中一些方式可以让引擎来完成优化。现在我们讨论优化贪婪模式和勉强模式。贪婪模式量词如“`*`”或“`+`”，会首先从输入字符串中尝试匹配尽可能多的字符，即使这意味着字符串中的剩下的内容已经不足以匹配正则表达式的其余部分。如果是这样，贪婪模式量词就会回缩，返回字符，知道可以完全匹配或者没有字符了。勉强（或者lazy）模式，另一方面，会首先尝试匹配输入字符串中尽可能少的字符。
+
+那么举个例子，比如说你想优化一个子表达式“`.*a`”。如果字符a在输入字符串临近结尾处，使用贪婪模式量词“`*`”较好。如果这个字符在输入字符串的开始位置附近，使用勉强模式的量词“`*?`”好一些，可以将子表达式改为“`.*?a`”。通常情况下，我注意到勉强模式比贪婪模式稍微快一些。
+
+另外一个编写正则表达式技巧是比较明确的。尽量少使用普通的子结构像“`.*`”，因为它们会引起很多回缩，特别是剩余的表达式不能匹配输入字符串时。例如，如果你想获取输入字符串中两个a之间的内容，可以使用“`a([^a]*)a`”代替“`a(.*)a`”。
+
+### 抢占量子和独立分组（Possessive quantifiers and independent grouping）
+
+抢占量子和独立分组是优化正则表达式最有用的操作符。无论何时使用它们你都可以戏剧性地改善表达式的运行时间。抢占量子由额外的“+”表示，例如表达式中“`X?+`”、“`X*+`”和“`X++`”。独立分组的符号是“`(?>X)`”。
+
+我曾经同时使用抢占量子和独立分组成功地将正则表达式的运行从几分钟减少几秒钟。两种操作符都会使模式匹配引擎的针对分组的回缩行为失去作用。它们会尝试匹配它们的表达式就像贪婪模式一样，但是如果不能匹配，它们不会返回已经匹配的字符，即使引起整个表达式失败。
+
+它们之间的差异是非常微妙的。你最好通过比较抢占量子“`(X)*+`”和独立分组“`(?>X)*`”来了解。前者，抢占量子会取消针对X子表达式和“`*`”量词的回缩。后者，只有针对X子表达式的回缩会取消，而分组之外的“`*`”操作符，不受独立分组的影响，还是可以任意回缩。
+
+你怎么优化这个正则表达式？（How would you optimize this regular expression?）
+
+现在我们看一个优化的例子。假如你尝试在一个长输入字符串中匹配子表达式“`[^a]*a`”，输入字符串中只有重复出现的字母b。这个表达式将会失败，因为输入字符串没有包含字母a。因为模式匹配引擎不知道这一点，你会尝试匹配表达式“`[^a]*`”。因为“`*`”是一个贪婪模式量词，它会获取所有字符直到输入字符串结束，然后开始回退，寻找匹配时每次返回一个字符。
+
+当不能再回缩时，这个表达式就会失败，这会花费不少时间。更坏的是，因为“`[^a]*`”获取所有不是a的字符，即使回缩作用也不大。
+
+解决方法是将表达式由“`[^a]*a`”改为“`[^a]*+a`”，使用抢占量子“`*+`”。新表达式会更快失败，因为一旦它阐释匹配所有非a子符，它不回缩；于是在此处匹配失败。
+
+###环视结构（Lookaround constructs）
+
+如果你想写一个匹配除某些字符之外的任意字符的正则表达式，可以很轻松写出类似“`[^abc]*`”这样的表达式，它表示：匹配除a、b或c之外的任意字符。但是，如果你想匹配如“cab”或“cba”而不是“abc”这样的字符串时应该怎么做呢？
+对于这种情况，你可以使用环视结构（lookaround constructs）。java.util.regex包包含了四种类型：
+
+- 1、正向向前寻找（Positive lookahead）：“`(?=X)`”
+- 2、负向向前寻找（Negative lookaheade）：“`(?!X)`”
+- 3、正向向后寻找（Positive lookbehind）：“`(?<=X)`”
+- 4、负向向后寻找（Negative lookbehind）：“`(?<!X)`”
+
+此处正向（Positive）是指你希望表达式匹配，而负向（Negative）则表示你不想表达式匹配。向前查找（Lookahead）是指你想搜索输入字符串中当前位置的右面部分。向后查找（Lookbehind）则是指搜索当前位置的左面部分。请紧记，环视结构只是向前或向后看，实际上并不改变输入字符串的当前位置。比如说，你可以在表达式“`((?!abc).)*`”使用负向向前寻找操作符“?!”匹配任何除“abc”外的任何顺序的字符。
+
+###实战环视结构（Lookarounds in practice）
+
+在编写正则表达式时，环视结构可以在更细节上提供帮助，在匹配性能会有明显的效果。代码1演示了一个非常简单的例子：使用正则表达式匹配HTML域。
+
+代码1. 匹配HTML域
+
+	Regular expression: "<img.*src=(/S*)/>"
+	Input string 1: "<img border=1 src=image.jpg />"
+	Input string 2: "<img src=src=src=src= .... many src= ... src=src=>"
+
+代码1中的正则表达式的目的是匹配HTML的image标签中的src属性的内容。我特意简化了这个表达式，假定在src之后没有其他属性，这样可以将精力集中到性能上。
+这个表达式匹配输入的字符串“string 1”时速度足够快，但是尝试匹配输入字符串“string 2”并宣布失败时花费了很长时间（随着输入字符串的长度成指数增长）。它匹配失败是因为输入字符串结尾没有“/>”。为了优化这个表达式，看一下第一个“`.*`”结构。它匹配“src”之前的任何属性，但是太普通并且匹配次数太多了。事实上，这个结构应该只匹配除“src”之外的属性。
+重写的表达式“`<img((?!src=).)*src=(/S*)/>`”处理大且不匹配的字符串的速度要比原来的快将近100倍。
 
 
+>###为什么不是lazy模式？
+> 你可能会认为我会使用勉强模式“`.*?`”优化代码1中的正则表达式。事实上，“`<img.*?src=(.*)/>`”能够轻易地匹配第一个遇到的“`src=`”。这个解决方案在该正则表达式可以匹配的时候能够正常工作。如果它不能匹配输入字符串，然而，它将开始回缩，然后消耗和贪婪模式同样长的时间。记住，首先使用不能匹配的字符串测试正则表达式。
 
-In this article I introduce some of the common weaknesses in regular expressions using the default java.util.regex package. I explain why backtracking is both the foundation of pattern matching with regular expressions and a frequent bottleneck in application code, why you should exercise caution when using greedy and reluctant quantifiers, and why it is essential to benchmark your regex optimizations. I then introduce several techniques for optimizing regular expressions, and discuss what happens when I run my new expressions through the Java pattern-matching engine.
+###注意StackOverflowError（A note about the StackOverflowError）
 
-在本文中,我将介绍一些常见的弱点在正则表达式中使用默认值 java.util.regex 包中。 我解释为什么回溯是用正则表达式模式匹配的基础和频繁的瓶颈在应用程序代码中,为什么时,您应该保持谨慎使用贪婪和不情愿的量词,以及为什么基准你的正则表达式的优化至关重要。 然后我介绍几个技术优化正则表达式,并讨论发生了什么当我运行我的新表达式通过Java模式匹配引擎。
+有时regex包中的Pattern类会抛出StackOverflowError。这是已知的bug #5050507的表现，它自从Java 1.4就存在于java.util.regex包中。这个bug仍然存在，因为它是“won't fix”的状态。这个错误的出现是因为，Pattern类把一个正则表达式编译为一个用来寻找匹配的小程序。这个程序被递归调用，有时太多的递归就会导致该错误的出现。更多细节请参考bug描述。看起来大部分是在使用选择（alternation）的出现。
+如果你碰到了这个错误，尝试重写正则表达式，或者分为几个子表达式，然后分别单独执行。后者有时设置会提高性能。
 
+##总结（In conclusion）
 
-For the purpose of this article I assume that you already have some experience using regular expressions and are most interested in learning how to optimize them in Java code. Topics covered include simple and automated optimization techniques as well as how to optimize greedy and reluctant quantifiers using possessive quantifiers, independent grouping, and lookarounds. See the Resources section for an [introduction to regular expressions in Java](http://www.javaworld.com/article/2077757/core-java/optimizing-regular-expressions-in-java.html#resources).
-
-
-
-对于本文的目的,我认为你已经有一些经验使用正则表达式和最感兴趣的学习如何优化Java代码。 主题包括简单和自动优化技术以及如何优化贪婪和不情愿的量词使用物主量词,独立的分组,看看。 请参见参考资料部分的 [介绍用Java正则表达式](http://www.javaworld.com/article/2077757/core-java/optimizing-regular-expressions-in-java.html#resources) 。
-
-> ####Notation
-> 
-> I use double quotes ("") to delimit regular expressions and input strings, X, Y, Z to denote regular sub-expressions or a portion of a regular expression, and a, b, c, d (et-cetera) to denote single characters.
-
-符号
-
-我使用双引号( ”“ )划入正则表达式和输入字符串, x,y,z 表示普通子表达式或正则表达式的一部分,和 a,b,c,d (等等)来表示单个字符。
-
-
-### The Java pattern-matching engine and backtracking
-
-### Java模式匹配引擎和回溯
-
-
-
-The `java.util.regex` package uses a type of pattern-matching engine called a Nondeterministic Finite Automaton, or NFA. It's called *nondeterministic* because while trying to match a regular expression on a given string, each character in the input string might be checked several times against different parts of the regular expression. This is a widely used type of engine also found in .NET, PHP, Perl, Python, and Ruby. It puts great power into the hands of the programmer, offering a wide range of quantifiers and other special constructs such as lookarounds, which I'll discuss later in the article.
-
-的 java.util.regex 包使用一种模式匹配引擎称为非确定性有限自动机,或NFA。 这就是所谓的 不确定性 因为在试图匹配正则表达式在给定的字符串,输入字符串中的每个字符可能会检查几次对正则表达式的不同部分。 这是一种广泛使用的引擎还发现。 净、PHP、Perl、Python和Ruby。 它让大国手中的程序员,提供一个广泛的量词和其他特殊结构如看看,我将在本文后面讨论。
-
-
-At heart, the NFA uses *backtracking*. Usually there isn't only one way to apply a regular expression on a given string, so the pattern-matching engine will try to exhaust all possibilities until it declares failure. To better understand the NFA and backtracking, consider the following example:
-
-
-从本质上说,NFA的用途 回溯 。 通常没有只有一种方式应用正则表达式在给定的字符串,所以模式匹配引擎将尝试排气所有可能性,直到宣布失败。 为了更好地理解NFA,回溯,考虑下面的例子:
-
-
-> The regular expression is "`sc(ored|ared|oring)x`" The input string is "`scared`"
-
-
-正则表达式是“ sc(或|火鸟|打鼾)x “输入字符串” 害怕 ”
-
-First, the engine will look for "`sc`" and find it immediately as the first two characters in the input string. It will then try to match "`ored`" starting from the third character in the input string. That won't match, so it will go back to the third character and try "`ared`". This will match, so it will go forward and try to match "`x`". Finding no match there, it will go back again to the third character and search for "`oring`". This won't match either, and so it will go back to the second character in the input string and try to search for another "`sc`". Upon reaching the end of the input string it will declare failure.
-
-
-首先,引擎将寻找” SC ”,立即找到它的前两个字符输入字符串。 它将尝试匹配” 或 “从第三输入字符串中的字符。 不匹配,所以它将回到第三性格和尝试“ 火鸟 ”。 这将匹配,所以它会继续前进,试图匹配” X ”。 在这里没有发现匹配,它将再次回到第三性格和搜索“ 打鼾 ”。 这也不匹配,所以它将回到第二个输入字符串中的字符并尝试寻找另一个“ SC ”。 到达输入字符串的结束,它将宣布失败。
-
-### Optimization tips for backtracking
-
-### 优化技巧回溯
-
-With the above example you've seen how the NFA uses backtracking for pattern matching, and you've also discovered one of the problems with backtracking. Even in the simple example above the engine had to backtrack several times while trying to match the input string to the regular expression. It's easy to imagine what could happen to your application performance if backtracking got out of hand. An important part of optimizing a regular expression is minimizing the amount of backtracking that it does.
-
-
-在上面的例子中您已经看到NFA如何使用模式匹配的回溯,和你也发现回溯的问题之一。 即使在发动机上面的简单的例子必须回溯几次,试图匹配输入字符串的正则表达式。 很容易想象会发生什么你的应用程序的性能,如果回溯失控。 优化正则表达式的一个重要组成部分是最小化的回溯。
-
-
-> ... 其他部分页面
-
-
-
-
-
-
+正则表达式不应该花费数小时匹配，特别是应用程序只有几秒时间时。在本文中，我介绍了 `java.util.regex` 包的一些弱点，并且向你展示了如何克服这些弱点。像回缩（backtracking）这样的简单瓶颈只需要一些小小的技巧，而像贪婪模式和勉强模式（greedy and reluctant quantifiers）这样的罪魁祸首就需要更加仔细的考虑。在某些情况下，你可以完全替换它们，而在另外一些情况下，可以使用“环视（lookaround）”。无论哪种方式，你已经掌握了一些正则表达式的提升速度的技巧。
 
 
 
@@ -94,5 +132,4 @@ With the above example you've seen how the NFA uses backtracking for pattern mat
 原文链接: [http://www.javaworld.com/article/2077757/core-java/optimizing-regular-expressions-in-java.html](http://www.javaworld.com/article/2077757/core-java/optimizing-regular-expressions-in-java.html)
 
 
-> 杯具. http://blog.csdn.net/mydeman/article/details/1800636
 

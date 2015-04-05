@@ -1,0 +1,1226 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Java基础 - Exception</title>
+<!-- jQuery文件 -->
+<script src="http://cdn.bootcss.com/jquery/1.10.2/jquery.min.js"></script>
+<script type="text/javascript">
+	$(function() {
+		//
+		var $translatetable = $(".translatetable");
+		// 奇偶元素
+		var $tdeven = $("tr td:even", $translatetable);
+		var $tdodd = $("tr td:odd", $translatetable);
+		//
+		$tdeven.addClass("language").addClass("english");
+		$tdodd.addClass("language").addClass("chinese");
+		//
+		var $hidden_english = $("#hidden_english");
+		var $show_english = $("#show_english");
+		var $hidden_chinese = $("#hidden_chinese");
+		var $show_chinese = $("#show_chinese");
+		$hidden_english.click(function(){
+			$tdeven.addClass("hide");
+			$(this).addClass("hide");
+			$show_english.removeClass("hide");
+		});
+		$show_english.click(function(){
+			$tdeven.removeClass("hide");
+			$(this).addClass("hide");
+			$hidden_english.removeClass("hide");
+		});
+		$hidden_chinese.click(function(){
+			$tdodd.addClass("hide");
+			$(this).addClass("hide");
+			$show_chinese.removeClass("hide");
+		});
+		$show_chinese.click(function(){
+			$tdodd.removeClass("hide");
+			$(this).addClass("hide");
+			$hidden_chinese.removeClass("hide");
+		});
+	});
+</script>
+<style>
+* {
+	margin: 0;
+	padding: 0;
+}
+
+html,body {
+	width:100%;
+	height: 100%;
+}
+
+textarea {
+	resize: none;
+}
+
+pre{
+	background-color: #333;
+	color: #F8F8F8;
+}
+
+.hide{
+	display:none;
+	visibility: hidden;
+}
+.floatright{
+	float: right;
+}
+/* book*/
+.translatetable{
+	margin-top: 20px;
+	margin-left: 1%;
+	width:98%;
+	border-collapse:collapse;
+}
+.translatetable th{
+	width:49%;
+	font-size: 20px;
+	line-height: 30px;
+}
+.translatetable img{
+	width:95%;
+	font-size: 20px;
+	line-height: 30px;
+}
+.language {
+	width: 49%;
+	border:1px solid #DDDDDD;
+	margin: 1px;
+	padding: 5px;
+}
+
+.language.english {
+	color: blue;
+}
+
+.language.chinese {
+	color: black;
+}
+
+.h2 {
+	font-family: "heading", sans-serif;
+	font-size: 24px;
+	margin-top: 30px;
+	margin-bottom: 10px;
+	letter-spacing: -1px;
+}
+</style>
+</head>
+<body>
+	<h1>Learning Java - Exception(Java基础 : Exception)</h1>
+	<hr />
+	<div>
+		<div class="floatright">
+				<a id="hidden_english" href="javascript:void(0)">Hidden English</a>
+				<a id="show_english" class="hide" href="javascript:void(0)">Show English</a>
+				/
+				<a id="hidden_chinese"  href="javascript:void(0)">隐藏中文</a>
+				<a id="show_chinese" class="hide"   href="javascript:void(0)">显示中文</a>
+				<span> </span>
+		</div>
+	</div>
+	<div>
+	<table class="translatetable">
+		<tr class="h1">
+			<td>English
+			</td>
+			<td>中文
+			</td>
+		</tr>
+
+		<tr>
+			<td class="h2">Exceptions</td>
+			<td class="h2">异常</td>
+		</tr>
+
+		<tr>
+			<td>Java has its roots in embedded systems—software that runs
+				inside specialized devices, such as handheld computers, cellular
+				phones, and fancy toasters. In those kinds of applications, it’s
+				especially important that software errors be handled robustly. Most
+				users would agree that it’s unacceptable for their phone to simply
+				crash or for their toast (and perhaps their house) to burn because
+				their software failed. Given that we can’t eliminate the possibility
+				of software errors, it’s a step in the right direction to recognize
+				and deal with anticipated application-level errors methodically.</td>
+			<td>Java起源于嵌入式系统 —— 嵌入式系统运行 在专用设备上,如掌上电脑、手机, 或者高档智能烤面包机。
+				对于这些特殊应用,对软件错误进行可靠的处理是非常重要的。 绝大部分用户都不会接受仅仅是软件的一部分操作失败就导致  手机系统崩溃,或者是面包(或者是他们的房间)着火 这类悲剧的后果。 考虑到我们不能完全排除软件错误的可能性,所以 识别并有效地处理预期中可能会发生的软件
+				错误才是正确的做法。</td>
+		</tr>
+
+		<tr>
+			<td>Dealing with errors in some languages is entirely the
+				responsibility of the programmer. The language itself provides no
+				help in identifying error types and no tools for dealing with them
+				easily. In the C language, a routine generally indicates a failure
+				by returning an “unreasonable” value (e.g., the idiomatic -1 or
+				null). As the programmer, you must know what constitutes a bad
+				result and what it means. It’s often awkward to work around the
+				limitations of passing error values in the normal path of data
+				flow.[9] An even worse problem is that certain types of errors can
+				legitimately occur almost anywhere, and it’s prohibitive and
+				unreasonable to explicitly test for them at every point in the
+				software.</td>
+			<td>处理一些语言错误是完全的责任 的程序员。 语言本身没有提供帮助识别 错误类型和没有工具来处理它们。 在C语言中, 程序通常表明失败通过返回一个“不合理的” (如价值。 ,惯用 1 或 空 )。 作为程序员,你必须知道 什么是一个糟糕的结果,这意味着什么。 通常很尴尬 工作的局限性在正常路径传递错误值 数据流。 [9] 一个更糟糕的问题是,某些类型的错误 合理发生的几乎任何地方,禁止和不合理 显式地在每一个点在软件测试。</td>
+		</tr>
+
+		<tr>
+			<td>Java offers an elegant solution to these problems through
+				exceptions. (Java exception handling is similar to, but not quite
+				the same as, exception handling in C++.) An exception indicates an
+				unusual condition or an error condition. Program control becomes
+				unconditionally transferred or “thrown” to a specially designated
+				section of code where it’s caught and handled. In this way, error
+				handling is orthogonal to (or independent of) the normal flow of the
+				program. We don’t have to have special return values for all of our
+				methods; errors are handled by a separate mechanism. Control can be
+				passed a long distance from a deeply nested routine and handled in a
+				single location when that is desirable, or an error can be handled
+				immediately at its source. A few standard Java API methods still
+				return -1 as a special value, but these are generally limited to
+				situations where we are expecting a special value and the situation
+				is not really out of bounds.[10]</td>
+			<td>Java提供了一个优雅的解决这些问题 异常 。 (Java异常处理是相似的, 但不太一样,在c++异常处理)。 一个 异常 表明一个不寻常的条件或一个错误 条件。 程序控制成为无条件转让或 “扔”到一个特别的抓住并指定的部分代码 处理。 通过这种方式,错误处理是正交(或独立) 程序的正常流动。 我们不需要有特殊的回报 我们所有的值方法;错误是由一个单独的处理机制。 控制可以通过从深层嵌套的例行公事,很长一段距离 处理在一个位置,是可取的,或者是一个错误 立刻处理它的源头。 一些标准Java API方法 返回 1 作为一种特殊的价值,但这些 通常是有限的情况下,我们期待一个特殊的价值 情况并不是界限。 [10]</td>
+		</tr>
+
+		<tr>
+			<td>A Java method is required to specify the exceptions it can
+				throw (i.e., the ones that it doesn’t catch itself), and the
+				compiler makes sure that callers of the method handle them. In this
+				way, the information about what errors a method can produce is
+				promoted to the same level of importance as its argument and return
+				types. You may still decide to punt and ignore obvious errors, but
+				in Java you must do so explicitly. (We’ll discuss “runtime
+				exceptions,” which are not required to be declared or handled by the
+				method, in a moment.)</td>
+			<td>Java方法需要指定异常抛出 (即。 ,那些没有抓住本身),和编译器确保 该方法的调用者处理。 通过这种方式,信息 错误的方法会产生什么是相同级别的提升 作为它的参数和返回类型的重要性。 你还可以决定撒手不干 和忽略明显的错误,但是在Java必须显式地这样做。 (我们将 讨论“运行时异常”,不需要或声明 处理的方法。)</td>
+		</tr>
+
+		<tr>
+			<td class="h2">Exceptions and Error Classes</td>
+			<td class="h2">异常和错误类</td>
+		</tr>
+
+		<tr>
+			<td>Exceptions are represented by instances of the class java.lang.Exception and its subclasses. Subclasses of Exception can hold specialized information (and possibly behavior) for different kinds of exceptional conditions. However, more often they are simply “logical” subclasses that serve only to identify a new exception type. Figure 4-1 shows the subclasses of Exception in the java.lang package. It should give you a feel for how exceptions are organized. Most other packages define their own exception types, which usually are subclasses of Exception itself or of its important subclass RuntimeException, which we’ll get to in a moment.</td>
+			<td>异常是由类的实例表示 java.lang.Exception 和 它的子类。 的子类 异常 可以容纳专业信息 (和可能行为)为不同类型的异常情况。 然而,通常他们只是子类,只提供“逻辑” 确定一个新的异常类型。 图4 - 1 显示的子类 异常 在 . lang 包中。 它 应该给你一个例外是如何组织的。 大多数其他 包定义自己的异常类型,通常是子类 的 异常 本身或它的 重要的子类 RuntimeException ,这 我们会在一个时刻。</td>
+		</tr>
+		<tr>
+			<td>For example, an important exception class is IOException in the package java.io. The IOException class extends Exception and has many subclasses for typical I/O problems (such as a FileNotFoundException) and networking problems (such as a MalformedURLException). Network exceptions belong to the java.net package. Another important descendant of IOException is RemoteException, which belongs to the java.rmi package. It is used when problems arise during remote method invocation (RMI). Throughout this book, we mention exceptions you need to be aware of as we encounter them.</td>
+			<td>例如,类是一个重要的例外 IOException 在 包 io 。 的 IOException 类继承了 异常 和有很多典型的子类 (如I / O问题 FileNotFoundException )和网络问题 (如 畸形的 URL 异常 )。 网络异常属于 的 Java.net 包中。 另一个 重要的后裔 IOException 是 RemoteException异常 ,这 属于 java.rmi 包中。 它用于当问题出现在远程方法 调用(RMI)。 在本书中,我们提到你需要例外 意识到当我们遇到他们。</td>
+		</tr>
+		<tr class="figute">
+			<td><img src="http://orm-chimera-prod.s3.amazonaws.com/1234000001805/figs/lj4e_0401.png" alt="The java.lang.Exception subclasses"></td>
+			<td><img src="http://orm-chimera-prod.s3.amazonaws.com/1234000001805/figs/lj4e_0401.png" alt="The java.lang.Exception subclasses"></td>
+		</tr>
+		<tr>
+			<td>Figure 4-1. The java.lang.Exception subclasses</td>
+			<td>图4 - 1。 . lang。 异常的子类</td>
+		</tr>
+		<tr>
+			<td></td>
+			<td></td>
+		</tr>
+
+		<tr>
+			<td>An Exception object is created by the code at the point where the error condition arises. It can be designed to hold any information that is necessary to describe the exceptional condition and also includes a full stack trace for debugging. (A stack trace is the list of all the methods called and the order in which they were called to reach the point where the exception was thrown.) The Exception object is passed as an argument to the handling block of code, along with the flow of control. This is where the terms throw and catch come from: the Exception object is thrown from one point in the code and caught by the other, where execution resumes.</td>
+			<td>一个 异常 创建对象 的代码出现的错误条件。 它可以 设计用来保存任何必要的信息来描述的 异常条件,还包括一个完整的 堆栈 跟踪 进行调试。 (一个堆栈跟踪的所有列表 方法调用和他们的顺序到达 点异常被抛出。) 的 异常 对象作为参数传递 处理的代码块,以及流控制。 这是 在条款 扔 和 抓 来自: 异常 对象从一个点 代码和被其他,执行恢复。
+			</td>
+		</tr>
+
+		<tr>
+			<td>The Java API also defines the java.lang.Error class for unrecoverable errors. The subclasses of Error in the java.lang package are shown in Figure 4-2. A notable Error type is AssertionError, which is used by the Java assert statement to indicate a failure (assertions are discussed later in this chapter). A few other packages define their own subclasses of Error, but subclasses of Error are much less common (and less useful) than subclasses of Exception. You generally needn’t worry about these errors in your code (i.e., you do not have to catch them); they are intended to indicate fatal problems or virtual machine errors. An error of this kind usually causes the Java interpreter to display a message and exit. You are actively discouraged from trying to catch or recover from them because they are supposed to indicate a fatal program bug, not a routine condition.</td>
+			<td>Java API还定义了 java.lang.Error 类 不可恢复的错误。 的子类 错误 在 . lang 包所示 图4 - 2 。 一个显著的 错误 类型是 AssertionError ,这 使用Java 断言 声明 表明失败(断言在本章后面讨论)。 一个 其他一些包的定义自己的子类 错误 ,但是子类 错误 不太常见的(和不那么有用) 比的子类 异常 。 你 一般不必担心这些错误代码(即。 ,你 没有赶上);他们的目的是显示或致命的问题 虚拟机错误。 这种错误通常会导致Java 翻译显示消息并退出。 你是积极鼓励 从试图捕捉或恢复他们,因为他们应该 显示一个致命的程序错误,不是一个常规条件。</td>
+		</tr>
+
+		<tr class="figute">
+			<td><img src="http://orm-chimera-prod.s3.amazonaws.com/1234000001805/figs/lj4e_0402.png" alt="The java.lang.Error subclasses"></td>
+			<td><img src="http://orm-chimera-prod.s3.amazonaws.com/1234000001805/figs/lj4e_0402.png" alt="The java.lang.Error subclasses"></td>
+		</tr>
+
+		<tr>
+			<td>Figure 4-2. The java.lang.Error subclasses</td>
+			<td>图4 - 2。 . lang。 错误的子类</td>
+		</tr>
+
+		<tr>
+			<td>Both Exception and Error are subclasses of Throwable. The Throwable class is the base class for objects that can be “thrown” with the throw statement. In general, you should extend only Exception, Error, or one of their subclasses.</td>
+			<td>这两个 异常 和 错误 子类的 Throwable 。 的 Throwable 类是对象的基类 “扔” 扔 声明。 一般来说,应该扩展 异常 , 错误 ,或者他们的一个子类。</td>
+		</tr>
+
+		<tr>
+			<td class="h2">Exception Handling</td>
+			<td class="h2">异常处理</td>
+		</tr>
+		<tr>
+			<td>The try/catch guarding statements wrap a block of code and catch designated types of exceptions that occur within it:</td>
+			<td>的 try / catch 守卫 语句包装和捕获指定类型的异常的代码块 这发生在:</td>
+		</tr>
+
+		<tr class="code">
+			<td>
+				<pre class="programlisting" data-language="java">
+    try {
+	      readFromFile("foo");
+	      ...
+	  }
+	  catch ( Exception e ) {
+	      // Handle error
+	      System.out.println( "Exception while reading file: " + e );
+	      ...
+	  }
+				</pre>
+			</td>
+			<td>
+				<pre class="programlisting" data-language="java">
+    try {
+	      readFromFile("foo");
+	      ...
+	  }
+	  catch ( Exception e ) {
+	      // Handle error
+	      System.out.println( "Exception while reading file: " + e );
+	      ...
+	  }
+				</pre>
+			</td>
+		</tr>
+
+		<tr>
+			<td>In this example, exceptions that occur within the body of the try portion of the statement are directed to the catch clause for possible handling. The catch clause acts like a method; it specifies as an argument the type of exception it wants to handle and if it’s invoked, it receives the Exception object as an argument. Here, we receive the object in the variable e and print it along with a message.</td>
+			<td>在这个例子中,身体内的发生的异常 试一试 声明的一部分 定向到 抓 条款为 可能的处理。 的 抓 条款 就像一个方法;它指定作为参数异常的类型 想处理,如果调用,它接收 异常 对象作为参数。 在这里,我们 接收对象的变量 E 和打印一条消息。
+			</td>
+			
+		</tr>
+
+		<tr>
+			<td>A try statement can have multiple catch clauses that specify different types (subclasses) of Exception:</td>
+			<td>一个 试一试 声明可以有 多个 抓 条款,指定 不同类型(子类) 异常 :
+			</td>
+		</tr>
+
+		<tr class="code">
+			<td>
+				<pre class="programlisting" data-language="java">
+    try {
+        readFromFile("foo");
+        ...
+    }
+    catch ( FileNotFoundException e ) {
+        // Handle file not found
+        ...
+    }
+    catch ( IOException e ) {
+        // Handle read error
+        ...
+    }
+    catch ( Exception e ) {
+        // Handle all other errors
+        ...
+    }
+				</pre>
+			</td>
+			<td>
+				<pre class="programlisting" data-language="java">
+    try {
+        readFromFile("foo");
+        ...
+    }
+    catch ( FileNotFoundException e ) {
+        // Handle file not found
+        ...
+    }
+    catch ( IOException e ) {
+        // Handle read error
+        ...
+    }
+    catch ( Exception e ) {
+        // Handle all other errors
+        ...
+    }
+				</pre>
+			</td>
+		</tr>
+
+		<tr>
+			<td>The catch clauses are evaluated in order, and the first assignable match is taken. At most, one catch clause is executed, which means that the exceptions should be listed from most to least specific. In the previous example, we anticipate that the hypothetical readFromFile() can throw two different kinds of exceptions: one for a file not found and another for a more general read error. In the preceding example, FileNotFoundException is a subclass of IOException, so if the first catch clause were not there, the exception would be caught by the second in this case. Similarly, any subclass of Exception is assignable to the parent type Exception, so the third catch clause would catch anything passed by the first two. It acts here like the default clause in a switch statement and handles any remaining possibilities. We’ve shown it here for completeness, but in general you want to be as specific as possible in the exception types you catch.</td>
+			<td>的 抓 条款进行评估 顺序,第一个可转让的匹配。 最多一个 抓 条款执行,这意味着 应该由多到少列出特定异常。 在前面的 例子中,我们假设的预测 readFromFile() 能把两种不同吗 的例外:一个文件没有找到,另一个更普遍 读取错误。 在前面的例子中, FileNotFoundException 是一个子类 IOException ,所以如果第一 抓 条款没有例外 在这种情况下会被第二个。 同样,任何子类 异常 分配到父吗 类型 异常 ,所以第三 抓 条款将抓住任何通过 前两个。 它喜欢在这里 默认的 条款在 开关 声明和处理任何剩余 的可能性。 我们这里所示的完整性,但总的来说你 想要尽可能具体的异常类型 抓住。</td>
+		</tr>
+
+		<tr>
+			<td>One beauty of the try/catch scheme is that any statement in the try block can assume that all previous statements in the block succeeded. A problem won’t arise suddenly because a programmer forgot to check the return value from a method. If an earlier statement fails, execution jumps immediately to the catch clause; later statements are never executed.</td>
+			<td>一个美丽的 try / catch 计划中的任何声明 试一试 块可以假设所有以前的 语句块中成功了。 突然一个问题不会出现 因为程序员忘记检查方法的返回值。 如果 早前声明失败,立即执行跳转 抓 从来都不是条款;后来语句 执行。
+			</td>
+		</tr>
+
+		<tr>
+			<td>In Java 7, there is an alternative to using multiple catch clauses, and that is to handle multiple discrete exception types in a single catch clause using the “|” or syntax:</td>
+			<td>在Java 7中,有一个使用多个的替代品 抓 条款,这是处理多个 在一个离散的异常类型 抓 使用“|”或条款 语法:</td>
+		</tr>
+
+		<tr>
+			<td>
+			<pre class="programlisting" data-language="java">
+    try {
+        // read from network...
+        // write to file..
+    catch ( ZipException | SSLException e ) {
+        logException( e );
+    }
+			</pre>
+			</td>
+			<td>
+			<pre class="programlisting" data-language="java">
+    try {
+        // read from network...
+        // write to file..
+    catch ( ZipException | SSLException e ) {
+        logException( e );
+    }
+			</pre>
+			</td>
+		</tr>
+
+		<tr>
+			<td>Using this “|” or syntax, we receive both types of exception in the same catch clause. So, what is the actual type of the e variable that we are passing to our log method? (What can we do with it?) In this case, it will be neither ZipException nor SSLException but IOException, which is the two exceptions’ nearest common ancestor (the closest parent class type to which they are both assignable). In many cases, the nearest common type among the two or more argument exception types may simply be Exception, the parent of all exception types. The difference between catching these discrete exception types with a multiple-type catch clause and simply catching the common parent exception type is that we are limiting our catch to only these specifically enumerated exception types and we will not catch all the other IOException types, as would be the alternative in this case. The combination of multiple-type catch and ordering your catch clauses from most specific to most broad (“narrow” to “wide”) types gives you great flexibility to structure your catch clauses to consolidate handling logic where it is appropriate and to not repeat code. There are more nuances to this feature, and we will return to it after we have discussed “throwing” and “rethrowing” exceptions.</td>
+			<td>使用这种“|”或语法,我们收到两种类型的异常 相同的 抓 条款。 那么,什么是 实际的类型 E 变量 我们通过我们的日志方法? (我们能做些什么?) 在这 情况下,它既不会 ZipException 也不 SSLException 但 IOException ,这是两个例外的 最近的共同祖先(最近的父类类型 可转让)。 在许多情况下,最近的两个中常见 或多个参数异常类型可能只是 异常 的母公司所有异常类型。 捕捉这些离散异常类型之间的区别 multiple-type 抓 子句和简单 捕捉到公共父异常类型是我们限制 抓 只有这些专 枚举异常类型,我们不会赶上所有其他 IOException 类型,将是另一种选择 在这种情况下。 multiple-type的结合 抓 你和排序 抓 从最具体的条款最广泛 (“狭义”到“宽”)给了你极大的灵活性的结构类型 抓 条款整合处理 逻辑适合它的地方和不重复的代码。 有更多的 细微差别,这个特性,我们后,我们将返回它 讨论了“扔”和“将”例外。</td>
+		</tr>
+
+		<tr class="h2">
+			<td>Bubbling Up</td>
+			<td>冒泡了</td>
+		</tr>
+
+		<tr>
+			<td>What if we hadn’t caught the exception? Where would it have gone? Well, if there is no enclosing try/catch statement, the exception pops up from the method in which it originated and is thrown from that method up to its caller. If that point in the calling method is within a try clause, control passes to the corresponding catch clause. Otherwise, the exception continues propagating up the call stack, from one method to its caller. In this way, the exception bubbles up until it’s caught, or until it pops out of the top of the program, terminating it with a runtime error message. There’s a bit more to it than that because in this case, the compiler might have forced us to deal with it along the way, but we’ll get back to that in a moment.
+			</td>
+			<td>如果我们没有了例外呢? 它会在哪里 已经去了? 好吧,如果没有封闭 try / catch 声明中, 除了弹出它的起源,从方法 从该方法的调用者。 如果在调用 方法是在一个 试一试 条款, 传递到相应的控制 抓 条款。 否则,异常 调用堆栈继续传播,从一个方法调用者。 通过这种方式,除了泡沫直到抓到,或直到它 持久性有机污染物的顶部的项目,终止运行时错误 消息。 有更多比,因为在这种情况下, 编译器可能会迫使我们来解决它,但是我们会 回去,在一个时刻。
+			</td>
+		</tr>
+
+		<tr>
+			<td>Let’s look at another example. In Figure 4-3, the method getContent() invokes the method openConnection() from within a try/catch statement. In turn, openConnection() invokes the method sendRequest(), which calls the method write() to send some data.</td>
+			<td>让我们看看另一个例子。 在 图4 - 3 ,该方法 getContent() 调用方法 openConnection() 从在一个 try / catch 声明。 反过来, openConnection() 调用方法 sendRequest() 调用该方法 Write() 发送一些数据。</td>
+		</tr>
+
+		<tr class="figute">
+			<td><img src="http://orm-chimera-prod.s3.amazonaws.com/1234000001805/figs/lj4e_0403.png" alt="Exception propagation"></td>
+			<td><img src="http://orm-chimera-prod.s3.amazonaws.com/1234000001805/figs/lj4e_0403.png" alt="Exception propagation"></td>
+		</tr>
+
+		<tr>
+			<td>Figure 4-3. Exception propagation</td>
+			<td>图4 - 3。 异常传播</td>
+		</tr>
+
+		<tr>
+			<td>In this figure, the second call to write() throws an IOException. Since sendRequest() doesn’t contain a try/catch statement to handle the exception, it’s thrown again from the point where it was called in the method openConnection(). Since openConnection() doesn’t catch the exception either, it’s thrown once more. Finally, it’s caught by the try statement in getContent() and handled by its catch clause. Notice that each throwing method must declare with a “throws” clause that it can throw the particular type of exception. We’ll discuss this shortly.</td>
+			<td>在这个图中,第二个调用 Write() 抛出一个 IOException 。 自 sendRequest() 不包含 try / catch 语句来处理异常, 又是扔的地方被称为方法 openConnection() 。 自 openConnection() 不捕获异常 要么,扔一次。 最后,它的发现 试一试 声明 getContent() 和处理的 抓 条款。 注意,每个投掷方法 必须声明“抛出”条款,它可以把特定的吗 类型的异常。 我们很快就会讨论这个。
+			</td>
+		</tr>
+
+		<tr class="h2">
+			<td>Stack Traces</td>
+			<td>堆栈跟踪</td>
+		</tr>
+
+		<tr>
+			<td>Because an exception can bubble up quite a distance before it is caught and handled, we may need a way to determine exactly where it was thrown. It’s also very important to know the context of how the point of the exception was reached; that is, which methods called which methods to get to that point. For these kinds of debugging and logging purposes, all exceptions can dump a stack trace that lists their method of origin and all the nested method calls it took to arrive there. Most commonly, the user sees a stack trace when it is printed using the printStackTrace() method.</td>
+			<td>因为一个异常可以泡沫相当远的距离 捕获和处理,我们可能需要一种方法来确定确切位置 这是抛出。 这也是非常重要的知道如何的上下文中 例外是达到的;也就是说,哪些方法称为 要实现这一点的方法。 对于这些类型的调试和日志记录 目的,所有的异常可以转储一个堆栈跟踪,列出他们的方法 原产地和所有嵌套的方法调用,准时到达那里。 大多数 通常,用户将看到一个堆栈跟踪印刷时使用 printStackTrace() 方法。</td>
+		</tr>
+
+		<tr>
+			<td><pre class="programlisting" data-language="java">
+    try {
+        // complex, deeply nested task
+    } catch ( Exception e ) {
+        // dump information about exactly where the exception occurred
+        e.printStackTrace( System.err );
+        ...
+    }
+			</pre></td>
+			<td><pre class="programlisting" data-language="java">
+    try {
+        // complex, deeply nested task
+    } catch ( Exception e ) {
+        // dump information about exactly where the exception occurred
+        e.printStackTrace( System.err );
+        ...
+    }
+			</pre></td>
+		</tr>
+
+		<tr>
+			<td>For example, the stack trace for an exception might look like this:</td>
+			<td>例如,为一个异常堆栈跟踪可能的样子 这样的:</td>
+		</tr>
+
+		<tr>
+			<td>
+			<pre class="programlisting" data-language="java">
+    java.io.FileNotFoundException: myfile.xml
+          at java.io.FileInputStream.<init>(FileInputStream.java)
+          at java.io.FileInputStream.<init>(FileInputStream.java)
+          at MyApplication.loadFile(MyApplication.java:137)
+          at MyApplication.main(MyApplication.java:5)
+			</pre>
+			</td>
+			<td>
+			<pre class="programlisting" data-language="java">
+    java.io.FileNotFoundException: myfile.xml
+          at java.io.FileInputStream.<init>(FileInputStream.java)
+          at java.io.FileInputStream.<init>(FileInputStream.java)
+          at MyApplication.loadFile(MyApplication.java:137)
+          at MyApplication.main(MyApplication.java:5)
+			</pre>
+			</td>
+		</tr>
+
+		<tr>
+			<td>This stack trace indicates that the main() method of the class MyApplication called the method loadFile(). The loadFile() method then tried to construct a FileInputStream, which threw the FileNotFoundException. Note that once the stack trace reaches Java system classes (like FileInputStream), the line numbers may be lost. This can also happen when the code is optimized by some virtual machines. Usually, there is a way to disable the optimization temporarily to find the exact line numbers. However, in tricky situations, changing the timing of the application can affect the problem you’re trying to debug, and other debugging techniques may be required.</td>
+			<td>这个堆栈跟踪显示 main() 方法的类 myApplication 调用的方法 将() 。 的 将() 然后试图构造一个方法 fileinputstream ,把 FileNotFoundException 。 请注意,一旦 堆栈跟踪达到Java系统类(如 fileinputstream ),行号 丢失。 这也可以发生在一些虚拟的代码进行了优化 机器。 通常,有一种方法可以禁用优化 暂时找到确切的行号。 然而,在复杂的 情况下,改变应用程序的时间会影响 你想要调试的问题,和其他调试技术 必需的。</td>
+		</tr>
+
+		<tr>
+			<td>Methods on the exception allow you to retrieve the stack trace information programmatically as well by using the Throwable getStackTrace() method. (Throwable is the base class of Exception and Error.) This method returns an array of StackTraceElement objects, each of which represents a method call on the stack. You can ask a StackTraceElement for details about that method’s location using the methods getFileName(), getClassName(), getMethodName(), and getLineNumber(). Element zero of the array is the top of the stack, the final line of code that caused the exception; subsequent elements step back one method call each until the original main() method is reached.</td>
+			<td>方法允许您检索的异常堆栈 跟踪信息以编程方式使用 Throwable getStackTrace() 方法。 ( Throwable 基类的吗 异常 和 错误 )。 该方法返回一个数组 StackTraceElement 对象,每个代表一个方法调用栈上的。 你可以 问一个 StackTraceElement 详情 关于使用方法,方法的位置 给getFileName() , getClassName() , getMethodName() , getLineNumber() 。 零的数组元素 堆栈的顶部,最后一行的代码导致异常; 后续元素直到原退一步一个方法调用 main() 方法达到。
+			</td>
+		</tr>
+		
+		<tr class="h2">
+			<td>Checked and Unchecked Exceptions</td>
+			<td>检查和未经检查的异常</td>
+		</tr>
+		
+		<tr>
+			<td>We mentioned earlier that Java forces us to be explicit about our error handling, but it’s not necessary to require that every conceivable type of error be handled explicitly in every situation. Java exceptions are therefore divided into two categories: checked and unchecked. Most application-level exceptions are checked, which means that any method that throws one, either by generating it itself (as we’ll discuss later) or by ignoring one that occurs within it, must declare that it can throw that type of exception in a special throws clause in its method declaration. We haven’t yet talked in detail about declaring methods (see Chapter 5). For now, all you need to know is that methods have to declare the checked exceptions they can throw or allow to be thrown.</td>
+			<td>我们前面提到的,Java迫使我们要明确 对我们的错误处理,但这不是必要的要求每一个 可以想象类型的错误处理显式地在任何情况下。 java 因此,异常分为两类: 检查 和 无节制的 。 大多数 应用级异常检查,这意味着任何方法 扔一个,要么通过生成它本身(我们稍后将讨论) 或忽视发生在它,必须声明,它可以把 一种特殊类型的异常 抛出 方法声明的条款。 我们 还没有详细谈论声明(见方法 第五章 )。 现在,所有你需要知道的是, 方法必须声明它们会抛出检查异常或允许 被扔。
+			</td>
+		</tr>
+		
+		<tr>
+			<td>Again in Figure 4-3, notice that the methods openConnection() and sendRequest() both specify that they can throw an IOException. If we had to throw multiple types of exceptions, we could declare them separated by commas:</td>
+			<td>一次又一次的 图4 - 3 ,请注意 的方法 openConnection() 和 sendRequest() 他们都指定 可以抛出一个 IOException 。 如果我们有 把多种类型的异常,我们可以声明它们分离 由逗号分隔:
+			</td>
+		</tr>
+		
+		<tr>
+			<td>
+			
+			<pre class="programlisting" data-language="java">
+    void readFile( String s ) throws IOException, InterruptedException {
+        ...
+    }
+			</pre>
+			</td>
+			<td>
+			
+			<pre class="programlisting" data-language="java">
+    void readFile( String s ) throws IOException, InterruptedException {
+        ...
+    }
+			</pre>
+			</td>
+		</tr>
+		
+		<tr>
+			<td>The throws clause tells the compiler that a method is a possible source of that type of checked exception and that anyone calling that method must be prepared to deal with it. The caller must then either use a try/catch block to handle it, or it must, in turn, declare that it can throw the exception from itself.</td>
+			<td>的 抛出 条款告诉 编译器的方法是一个可能的来源,类型的检查 例外,任何调用,方法必须准备交易 与它。 调用者必须使用 try / catch 块来处理它,也必须 又宣布可以从本身抛出的异常。
+			</td>
+		</tr>
+		
+		<tr>
+			<td>In contrast, exceptions that are subclasses of either the class java.lang.RuntimeException or the class java.lang.Error are unchecked. See Figure 4-1 for the subclasses of RuntimeException. (Subclasses of Error are generally reserved for serious class loading or runtime system problems.) It’s not a compile-time error to ignore the possibility of these exceptions; methods also don’t have to declare they can throw them. In all other respects, unchecked exceptions behave the same as other exceptions. We are free to catch them if we wish, but in this case we aren’t required to.</td>
+			<td>相比之下,异常的子类的类 java.lang.RuntimeException 或 类 java.lang.Error 无节制的。 看到 图4 - 1 的子类 RuntimeException 。 (子类 错误 通常是留给 严重的类加载和运行时系统问题)。 这不是一个 编译时错误忽略这些异常的可能性; 方法还没有宣布他们可以扔。 在所有其他 方面,未经检查的异常行为和其他异常一样。 我们 如果我们希望是免费的去赶他们,但在这种情况下,我们需要不 出现。</td>
+		</tr>
+		
+		<tr>
+			<td>Checked exceptions are intended to cover application-level problems, such as missing files and unavailable hosts. As good programmers (and upstanding citizens), we should design software to recover gracefully from these kinds of conditions. Unchecked exceptions are intended for system-level problems, such as “out of memory” and “array index out of bounds.” While these may indicate application-level programming errors, they can occur almost anywhere and usually aren’t possible to recover from. Fortunately, because they are unchecked exceptions, you don’t have to wrap every one of your array-index operations in a try/catch statement (or declare all of the calling methods as a potential source of them).</td>
+			<td>已检查的异常旨在覆盖应用程序级 问题,如丢失的文件和不可用的主机。 一样好 程序员和正直的公民,我们应该设计软件 恢复优雅地从这些类型的条件。 未经检查的异常 目的是系统级的问题,比如“内存不足”和 “数组索引越界。 “虽然这可能表明应用程序级 编程错误,他们可以和通常不发生任何地方 可以恢复。 幸运的是,因为他们是无节制的 例外,你不必array-index包装每一个人 操作在一个 try / catch 声明 (或声明所有的调用方法的潜在来源 它们)。
+			</td>
+		</tr>
+		
+		<tr>
+			<td>To sum up, checked exceptions are problems that a reasonable application should try to handle gracefully; unchecked exceptions (runtime exceptions or errors) are problems from which we would not normally expect our software to recover. Error types are those explicitly intended to be conditions that we should not normally try to handle or recover from.</td>
+			<td>
+总之,检查异常是一个合理的问题 应用程序应该尽量处理优雅;未经检查的异常 (运行时异常或错误)我们不会的问题 通常期望我们的软件恢复。 错误类型是 明确目的条件,通常我们不应该尝试 处理或恢复。</td>
+		</tr>
+		
+		<tr class="h2">
+			<td>Throwing Exceptions</td>
+			<td>抛出异常</td>
+		</tr>
+		
+		<tr>
+			<td>We can throw our own exceptions—either instances of Exception, one of its existing subclasses, or our own specialized exception classes. All we have to do is create an instance of the Exception and throw it with the throw statement:</td>
+			<td>我们可以把我们自己的exceptions-either实例 异常 ,其现有之一 子类,或者我们自己的专门的异常类。 我们要做的 创建的一个实例吗 异常 和把它 扔 声明:
+			</td>
+		</tr>
+		
+		<tr>
+			<td>
+			<pre class="programlisting" data-language="java">
+    throw new IOException();
+			</pre>
+			</td>
+			<td>
+			<pre class="programlisting" data-language="java">
+    throw new IOException();
+			</pre>
+			</td>
+		</tr>
+		
+		<tr>
+			<td>Execution stops and is transferred to the nearest enclosing try/catch statement that can handle the exception type. (There is little point in keeping a reference to the Exception object we’ve created here.) An alternative constructor lets us specify a string with an error message:</td>
+			<td>停止执行,并转移到最近的封闭 try / catch 声明中可以处理 异常类型。 (有小点的引用 异常 我们已经创建了对象。) 另一个构造函数允许我们指定一个字符串,一个错误 信息:
+			</td>
+		</tr>
+		
+		<tr>
+			<td>
+			<pre class="programlisting" data-language="java">
+        throw new IOException("Sunspots!");
+			</pre>
+			</td>
+			<td>
+			<pre class="programlisting" data-language="java">
+        throw new IOException("Sunspots!");
+			</pre>
+			</td>
+		</tr>
+		
+		<tr>
+			<td>You can retrieve this string by using the Exception object’s getMessage() method. Often, though, you can just print (or toString()) the exception object itself to get the message and stack trace.</td>
+			<td>你可以通过使用检索这个字符串 异常 对象的 getMessage() 方法。 但是通常情况下,你可以打印(或 toString() )异常对象本身 消息和堆栈跟踪。
+			</td>
+		</tr>
+		
+		<tr>
+			<td>By convention, all types of Exception have a String constructor like this. The preceding String message is not very useful. Normally, it will throw a more specific subclass Exception, which captures details or at least a more specific string explanation. Here’s another example:</td>
+			<td>按照惯例,所有类型的 异常 有一个 字符串 这样的构造函数。 前面的 字符串 消息不是很有用。 通常情况下,它会抛出一个更具体的子类 异常 或者至少,捕捉细节 一个更具体的字符串解释。 这里还有一个例子:
+			</td>
+		</tr>
+		
+		<tr>
+			<td>
+			<pre class="programlisting" data-language="java">
+    public void checkRead( String s ) {
+        if ( new File(s).isAbsolute() || (s.indexOf("..") != -1) )
+            throw new SecurityException(
+               "Access to file : "+ s +" denied.");
+    }
+			</pre>
+			</td>
+			<td>
+			<pre class="programlisting" data-language="java">
+    public void checkRead( String s ) {
+        if ( new File(s).isAbsolute() || (s.indexOf("..") != -1) )
+            throw new SecurityException(
+               "Access to file : "+ s +" denied.");
+    }
+			</pre>
+			</td>
+		</tr>
+		
+		<tr>
+			<td>In this code, we partially implement a method to check for an illegal path. If we find one, we throw a SecurityException with some information about the transgression.</td>
+			<td>在这段代码中,我们部分实现方法来检查 非法的路径。 如果我们找到一个,扔一个 SecurityException 与 一些关于犯罪的信息。
+			</td>
+		</tr>
+		
+		<tr>
+			<td>Of course, we could include any other information that is useful in our own specialized subclasses of Exception. Often, though, just having a new type of exception is good enough because it’s sufficient to help direct the flow of control. For example, if we are building a parser, we might want to make our own kind of exception to indicate a particular kind of failure:</td>
+			<td>当然,我们可以包括任何其他有用的信息 在我们自己的专业的子类 异常 。 但是通常情况下,只是有一个新的 类型的异常是足够好,因为它足以帮助直接 流控制。 例如,如果我们正在构建一个解析器,我们可以 想让自己的异常来表示一种特殊的 失败:
+			</td>
+		</tr>
+		
+		<tr>
+			<td>
+			<pre class="programlisting" data-language="java">
+    class ParseException extends Exception {
+        ParseException() {
+            super();
+        }
+        ParseException( String desc ) {
+            super( desc );
+        }
+    }
+			</pre>
+			</td>
+			<td>
+			<pre class="programlisting" data-language="java">
+    class ParseException extends Exception {
+        ParseException() {
+            super();
+        }
+        ParseException( String desc ) {
+            super( desc );
+        }
+    }
+			</pre>
+			</td>
+		</tr>
+		
+		<tr>
+			<td>See Chapter 5 for a full description of classes and class constructors. The body of our Exception class here simply allows a ParseException to be created in the conventional ways we’ve created exceptions previously (either generically or with a simple string description). Now that we have our new exception type, we can guard like this:</td>
+			<td>看到 第五章 对于一个完整的描述 类和类构造函数。 我们的身体 异常 类在这里简单地允许 ParseException 是 传统方法中创建之前我们已经创建了异常 (一般或与一个简单的字符串描述)。 现在,我们 有新的异常类型,我们可以保护这样的:
+			</td>
+		</tr>
+		
+		<tr>
+			<td>
+			<pre class="programlisting" data-language="java">
+    ...
+    try {
+        parseStream( input );
+    } catch ( ParseException pe ) {
+        // Bad input...
+    } catch ( IOException ioe ) {
+        // Low-level communications problem
+    }
+			</pre>
+			</td>
+			<td>
+			<pre class="programlisting" data-language="java">
+    ...
+    try {
+        parseStream( input );
+    } catch ( ParseException pe ) {
+        // Bad input...
+    } catch ( IOException ioe ) {
+        // Low-level communications problem
+    }
+			</pre>
+			</td>
+		</tr>
+		
+		<tr>
+			<td>As you can see, although our new exception doesn’t currently hold any specialized information about the problem (it certainly could), it does let us distinguish a parse error from an arbitrary I/O error in the same chunk of code.</td>
+			<td>正如你所看到的,虽然我们目前新例外不持有 任何专业的信息问题(当然可能) 并让我们区分解析错误一个任意的I / O错误的 相同的代码。
+			</td>
+		</tr>
+		
+		<tr class="h2">
+			<td>Chaining and rethrowing exceptions</td>
+			<td>链接并将异常</td>
+		</tr>
+		
+		<tr>
+			<td>Sometimes you’ll want to take some action based on an exception and then turn around and throw a new exception in its place. This is common when building frameworks where low-level detailed exceptions are handled and represented by higher-level exceptions that can be managed more easily. For example, you might want to catch an IOException in a communications package, possibly perform some cleanup, and ultimately throw a higher-level exception of your own, maybe something like LostServerConnection.
+			</td>
+			<td>有时你想要基于一个采取一些行动 异常,然后转身抛出新的异常。 这是常见的构建框架时,低层次的细节 异常处理和由更高级别的异常 可以更容易管理。 例如,您可能想要抓一个 IOException 在一个通信 包,可能执行一些清理工作, 最终 抛出一个高级 除了你自己,也许类似 LostServerConnection 。</td>
+		</tr>
+		
+		<tr>
+			<td>You can do this in the obvious way by simply catching the exception and then throwing a new one, but then you lose important information, including the stack trace of the original “causal” exception. To deal with this, you can use the technique of exception chaining. This means that you include the causal exception in the new exception that you throw. Java has explicit support for exception chaining. The base Exception class can be constructed with an exception as an argument or the standard String message and an exception:
+			</td>
+			<td>你可以在明显的方式简单地捕捉到 异常,然后再扔一个新的,但是你失去了重要 的堆栈跟踪信息,包括原始的“因果” 例外。 为了解决这一问题,您可以使用的技术 异常链 。 这意味着你有 因果你抛出异常的异常。 Java 显式支持异常链。 基地 异常 类可以由一个 异常作为参数或标准 字符串 消息和异常:
+			</td>
+		</tr>
+		<tr>
+		
+			<td>
+			<pre class="programlisting" data-language="java">
+    throw new Exception( "Here's the story...", causalException );
+			</pre>
+			</td>
+			<td>
+			<pre class="programlisting" data-language="java">
+    throw new Exception( "Here's the story...", causalException );
+			</pre>
+			</td>
+		</tr>
+		
+		<tr>
+			<td>You can get access to the wrapped exception later with the getCause() method. More importantly, Java automatically prints both exceptions and their respective stack traces if you print the exception or if it is shown to the user.
+			</td>
+			<td>你可以访问后的包装异常 getCause() 方法。 更重要的是,Java自动打印异常和他们 各自的堆栈跟踪显示如果您打印异常或者 给用户。
+			</td>
+		</tr>
+		
+		<tr>
+			<td>You can add this kind of constructor to your own exception subclasses (delegating to the parent constructor) or you can take advantage of this pattern by using the Throwable method initCause() to set the causal exception explicitly after constructing your exception and before throwing it:</td>
+			<td>你可以将这种构造函数添加到自己的例外 子类(委派到父的构造函数)或你可以 利用这个模式使用 Throwable 方法 initCause() 设置 因果的异常构造异常和后明确 在投掷之前:
+			</td>
+		</tr>
+		
+		<tr>
+			<td>
+			<pre class="programlisting" data-language="java">
+    try {
+      // ...
+    } catch ( IOException cause ) {
+      Exception e =
+        new IOException("What we have here is a failure to communicate...");
+      e.initCause( cause );
+      throw e;
+    }
+			</pre>
+			</td>
+			<td>
+			<pre class="programlisting" data-language="java">
+    try {
+      // ...
+    } catch ( IOException cause ) {
+      Exception e =
+        new IOException("What we have here is a failure to communicate...");
+      e.initCause( cause );
+      throw e;
+    }
+			</pre>
+			</td>
+		</tr>
+		
+		<tr>
+			<td>Sometimes it’s enough to simply do some logging or take some action and then rethrow the original exception:
+			</td>
+			<td>有时它足够简单的做一些日志记录或带一些 这个食谱收益率有多少盎司?
+			</td>
+		</tr>
+		
+		<tr>
+			<td>
+			<pre class="programlisting" data-language="java">
+    try {
+      // ...
+    } catch ( IOException cause ) {
+      log( e ); // Log it
+      throw e;  // rethrow it
+    }
+			</pre>
+			</td>
+			<td>
+			<pre class="programlisting" data-language="java">
+    try {
+      // ...
+    } catch ( IOException cause ) {
+      log( e ); // Log it
+      throw e;  // rethrow it
+    }
+			</pre>
+			</td>
+		</tr>
+		
+		<tr>
+			<td>But be aware that if you do that, the stack trace included in the exception will show the new throw location as the origin.
+			</td>
+			<td>但是请注意,如果你这样做,堆栈跟踪 包括在异常将显示新扔的位置 来源。
+			</td>
+		</tr>
+		
+		<tr class="h2">
+			<td>Narrowed rethrow</td>
+			<td>缩小重新抛出</td>
+		</tr>
+		
+		<tr>
+			<td>Prior to Java 7 if you wanted to handle a bunch of exception types in a single catch clause and then rethrow the original exception, you would inevitably end up widening the declared exception type to what was required to catch them all or having to do a lot of work to avoid that. In Java 7, the compiler has become smarter and can now do most of the work for us by allowing us to narrow the type of exceptions thrown back to the original types in most cases. This is best explained by example:</td>
+			<td>Java 7之前如果你想处理一大堆例外 类型在一个 抓 条款和 然后重新抛出原始异常,你最终将不可避免地 扩大所需宣布异常类型是什么 他们全部或不得不做很多工作要避免这样做。 在Java 7, 编译器已经变得更聪明,现在可以为我们做大部分的工作 让我们缩小例外扔回的类型 原始类型在大多数情况下。 这是最好的解释 例子:</td>
+		</tr>
+		
+		<tr>
+			<td>
+			<pre class="programlisting" data-language="java">
+void myMethod() throws ZipException, SSLException
+{
+    try {
+        // Possible cause of ZipException or SSLException
+    } catch ( Exception e ) {
+        log( e );
+        throw e;
+    }
+}
+			</pre>
+			</td>
+			<td>
+			<pre class="programlisting" data-language="java">
+void myMethod() throws ZipException, SSLException
+{
+    try {
+        // Possible cause of ZipException or SSLException
+    } catch ( Exception e ) {
+        log( e );
+        throw e;
+    }
+}
+			</pre>
+			</td>
+		</tr>
+		
+		<tr>
+			<td>In this example, we are exceedingly lazy and simply catch all exceptions with a broad catch Exception clause in order to log them prior to rethrowing. Prior to Java 7, the compiler would have insisted that the throws clause of our method declare that it throws the broad Exception type as well. However, the Java compiler is now smart enough in most cases to analyze the actual types of exceptions that may be thrown and allow us to prescribe the precise set of types. The same would be true if we had used the mutiple-type catch clause in this example, as you might have guessed. The preceding is a bit less intuitive, but very useful in shoring up the specificity of exception handling of code, including code written prior to Java 7, without requiring potentially tricky reworking of catch clauses.
+			</td>
+			<td>在这个例子中,我们是非常懒惰,只是抓住 所有的异常捕获 异常 条款以日志之前 将。 Java 7之前,编译器就会坚持 的 抛出 我们的方法的条款 宣布,它将广泛 异常 类型。 然而,Java 在大多数情况下,编译器现在足够聪明来分析实际的类型 将会抛出的异常,让我们开出的精确 组类型。 亦是如此,如果我们使用了mutiple-type 抓 条款在本例中, 你可能已经猜到了。 前面有点不那么直观,但 非常有用的支持异常处理的特异性 代码,包括Java 7之前编写的代码,不需要 潜在棘手的返工 抓 条款。</td>
+		</tr>
+		
+		<tr class="h2">
+			<td>try Creep</td>
+			<td>尝试蠕变</td>
+		</tr>
+		
+		<tr>
+			<td>The try statement imposes a condition on the statements that it guards. It says that if an exception occurs within it, the remaining statements are abandoned. This has consequences for local variable initialization. If the compiler can’t determine whether a local variable assignment placed inside a try/catch block will happen, it won’t let us use the variable. For example:
+			</td>
+			<td>的 试一试 声明 强加一个条件语句,警卫。 它说,如果一个 异常发生在它,剩下的语句被遗弃了。 这 为局部变量初始化的后果。 如果编译器 不能确定是否一个本地变量赋值放在一个 try / catch 块会发生时,它不会 让我们使用这个变量。 例如:
+			</td>
+		</tr>
+		
+		<tr>
+			<td>
+			<pre class="programlisting" data-language="java">
+    void myMethod() {
+        int foo;
+
+        try {
+            foo = getResults();
+        }
+        catch ( Exception e ) {
+            ...
+        }
+
+        int bar = foo;  // Compile-time error: foo may not have been initialized
+			</pre>
+			</td>
+			<td>
+			<pre class="programlisting" data-language="java">
+    void myMethod() {
+        int foo;
+
+        try {
+            foo = getResults();
+        }
+        catch ( Exception e ) {
+            ...
+        }
+
+        int bar = foo;  // Compile-time error: foo may not have been initialized
+			</pre>
+			</td>
+		</tr>
+		
+		<tr>
+			<td>In this example, we can’t use foo in the indicated place because there’s a chance it was never assigned a value. One obvious option is to move the assignment inside the try statement:</td>
+			<td>在这个例子中,我们不能使用 喷火 在指定的地方,因为有一个 机会从来就不是分配一个值。 一个显而易见的选择是移动 分配内 试一试 声明:
+			</td>
+		</tr>
+		
+		<tr>
+			<td>
+			<pre class="programlisting" data-language="java">
+    try {
+        foo = getResults();
+
+        int bar = foo;  // Okay because we get here only
+                        // if previous assignment succeeds
+    }
+    catch ( Exception e ) {
+        ...
+    }
+			</pre>
+			</td>
+			<td>
+			<pre class="programlisting" data-language="java">
+    try {
+        foo = getResults();
+
+        int bar = foo;  // Okay because we get here only
+                        // if previous assignment succeeds
+    }
+    catch ( Exception e ) {
+        ...
+    }
+			</pre>
+			</td>
+		</tr>
+		
+		<tr>
+			<td>Sometimes this works just fine. However, now we have the same problem if we want to use bar later in myMethod(). If we’re not careful, we might end up pulling everything into the try statement. The situation changes, however, if we transfer control out of the method in the catch clause:</td>
+			<td>有时这样做挺好。 然而,现在我们有相同的 如果我们想使用问题 酒吧 晚些时候 在 myMethod() 。 如果我们不小心, 我们可能会拉到的一切 试一试 声明。 然而,形势的变化 如果我们传输控制方法 抓 条款:</td>
+		</tr>
+		
+		<tr>
+			<td>
+			<pre class="programlisting" data-language="java">
+    try {
+        foo = getResults();
+    }
+    catch ( Exception e ) {
+        ...
+        return;
+    }
+
+    int bar = foo;  // Okay because we get here only
+                    // if previous assignment succeeds
+			</pre>
+			</td>
+			<td>
+			<pre class="programlisting" data-language="java">
+    try {
+        foo = getResults();
+    }
+    catch ( Exception e ) {
+        ...
+        return;
+    }
+
+    int bar = foo;  // Okay because we get here only
+                    // if previous assignment succeeds
+			</pre>
+			</td>
+		</tr>
+		
+		<tr>
+			<td>The compiler is smart enough to know that if an error had occurred in the try clause, we wouldn’t have reached the bar assignment, so it allows us to refer to foo. Your code will dictate its own needs; you should just be aware of the options.</td>
+			<td>编译器是足够聪明知道,如果发生一个错误 在 试一试 条款,我们就不会 达到了 酒吧 赋值,因此 让我们参考 喷火 。 你的代码 将决定自己的需求,你就应该意识到吗 选项。
+			</td>
+		</tr>
+		
+		<tr class="h2">
+			<td>The finally Clause</td>
+			<td>最后条款</td>
+		</tr>
+		
+		<tr>
+			<td>What if we have something important to do before we exit our method from one of the catch clauses? To avoid duplicating the code in each catch branch and to make the cleanup more explicit, you can use the finally clause. A finally clause can be added after a try and any associated catch clauses. Any statements in the body of the finally clause are guaranteed to be executed no matter how control leaves the try body, whether an exception was thrown or not:</td>
+			<td>如果我们有重要的事情要做之前我们退出 我们的方法之一 抓 条款吗? 以避免复制代码 抓 分支, 使清洁更明确的,您可以使用 最后 条款。 一个 最后 后可以添加的条款 试一试 和任何相关的 抓 条款。 身体的任何语句 的 最后 保证条款 无论多么执行控制离开 试一试 身体,是否被抛出一个异常 不是:</td>
+		</tr>
+		
+		<tr>
+			<td>
+			<pre class="programlisting" data-language="java">
+    try {
+        // Do something here
+
+    }
+    catch ( FileNotFoundException e ) {
+        ...
+    }
+    catch ( IOException e ) {
+        ...
+    }
+    catch ( Exception e ) {
+        ...
+    }
+    finally {
+        // Cleanup here is always executed
+    }
+			</pre>
+			</td>
+			<td>
+			<pre class="programlisting" data-language="java">
+    try {
+        // Do something here
+
+    }
+    catch ( FileNotFoundException e ) {
+        ...
+    }
+    catch ( IOException e ) {
+        ...
+    }
+    catch ( Exception e ) {
+        ...
+    }
+    finally {
+        // Cleanup here is always executed
+    }
+			</pre>
+			</td>
+		</tr>
+		
+		<tr>
+			<td>In this example, the statements at the cleanup point are executed eventually, no matter how control leaves the try. If control transfers to one of the catch clauses, the statements in finally are executed after the catch completes. If none of the catch clauses handles the exception, the finally statements are executed before the exception propagates to the next level.</td>
+			<td>在本例中,语句在清理点执行 最后,无论多么控制离开 试一试 。 如果控制转移的 抓 条款,声明 最后 执行后 抓 完成。 如果没有一个 抓 条款处理异常, 的 最后 执行语句 前的异常传播到下一个水平。
+			</td>
+		</tr>
+		
+		<tr>
+			<td>If the statements in the try execute cleanly, or if we perform a return , break, or continue, the statements in the finally clause are still executed. To guarantee that some operations will run, we can even use try and finally without any catch clauses:</td>
+			<td>如果语句中 试一试 执行清洁,或如果我们执行 返回 , 打破 ,或 继续 , 语句的 最后 条款是 仍在执行。 保证一些操作运行,我们甚至可以 使用 试一试 和 最后 没有任何 抓 条款:
+			</td>
+		</tr>
+		
+		<tr>
+			<td>
+			<pre class="programlisting" data-language="java">
+    try {
+        // Do something here
+        return;
+    }
+    finally {
+        System.out.println("Whoo-hoo!");
+    }
+			</pre>
+			</td>
+			<td>
+			<pre class="programlisting" data-language="java">
+    try {
+        // Do something here
+        return;
+    }
+    finally {
+        System.out.println("Whoo-hoo!");
+    }
+			</pre>
+			</td>
+		</tr>
+		
+		<tr>
+			<td>Exceptions that occur in a catch or finally clause are handled normally; the search for an enclosing try/catch begins outside the offending try statement, after the finally has been executed.
+			</td>
+			<td>发生的异常 抓 或 最后 一般条款处理; 寻找一个封闭 try / catch 开始在冒犯 试一试 声明中,后 最后 一直 执行。
+			</td>
+		</tr>
+		
+		<tr class="h2">
+			<td>Try with Resources</td>
+			<td>试着与资源</td>
+		</tr>
+		
+		<tr>
+			<td>A common use of the finally clause is to ensure that resources used in a try clause are cleaned up, no matter how the code exits the block.</td>
+			<td>一个共同的使用 最后 条款是确保资源 用于 试一试 条款都清理干净, 无论如何退出的代码块。
+			</td>
+		</tr>
+		
+		<tr>
+			<td>
+			<pre class="programlisting" data-language="java">
+    try {
+        // Socket sock = new Socket(...);
+        // work with sock
+    } catch( IOException e ) {
+        ...
+    }
+    finally {
+        if ( sock != null ) { sock.close(); }
+    }
+			</pre>
+			</td>
+			<td>
+			<pre class="programlisting" data-language="java">
+    try {
+        // Socket sock = new Socket(...);
+        // work with sock
+    } catch( IOException e ) {
+        ...
+    }
+    finally {
+        if ( sock != null ) { sock.close(); }
+    }
+			</pre>
+			</td>
+		</tr>
+		
+		<tr>
+			<td>What we mean by “clean up” here is to deallocate expensive resources or close connections such as files, sockets, or database connections. In some cases, these resources might get cleaned up on their own eventually as Java reclaimed the garbage, but that would at best be at an unknown time in the future and at worst may never happen or may not happen before you run out of resources. So it is always best to guard against these situations. There are two problems with this venerable approach: first, it requires extra work to carry out this pattern in all of your code, including important things like null checks as shown in our example, and second, if you are juggling multiple resources in a single finally block, you have the possibility of your cleanup code throwing an exception (e.g., on close()) and leaving the job unfinished.
+			</td>
+			<td>这里我们所说的“清理”是释放 昂贵的资源或密切的关系,如文件、套接字或 数据库连接。 在某些情况下,这些资源可能会打扫 最终在自己的Java垃圾回收,但这将 在未来充其量是一个未知的时候,在最坏的情况可能永远不会 发生或不发生在你的资源。 因此它是 最好防止这些情况。 有两个问题 这种古老的方法:首先,它需要额外的工作来开展 这个模式在你所有的代码中,包括空等重要的事情 检查我们的示例所示,第二,如果你在多个 资源在一个 最后 块, 你已经清理代码抛出异常的可能性 (如。 ,在 close() )和离开 未完成的工作。
+			</td>
+		</tr>
+		
+		<tr>
+			<td>In Java 7, things have been greatly simplified via the new “try with resources” form of the try clause. In this form, you may place one or more resource initialization statements within parentheses after a try keyword and those resources will automatically be “closed” for you when control leaves the try block.</td>
+			<td>在Java 7中,通过新事物已经大大简化 ” 试一试 与资源”的形式 试一试 条款。 在这种形式,您可能 括号内的一个或多个资源初始化语句 后 试一试 关键字和那些 资源将自动为你“封闭”当控制叶子 试一试 块。
+			</td>
+		</tr>
+		
+		<tr>
+			<td>
+			<pre class="programlisting" data-language="java">
+    try (
+        Socket sock = new Socket("128.252.120.1", 80);
+        FileWriter file = new FileWriter("foo");
+    )
+    {
+        // work with sock and file
+    } catch ( IOException e ) { 
+        ... 
+    }
+			</pre>
+			</td>
+			<td>
+			<pre class="programlisting" data-language="java">
+    try (
+        Socket sock = new Socket("128.252.120.1", 80);
+        FileWriter file = new FileWriter("foo");
+    )
+    {
+        // work with sock and file
+    } catch ( IOException e ) { 
+        ... 
+    }
+			</pre>
+			</td>
+		</tr>
+		
+		<tr>
+			<td>In this example, we initialize both a Socket object and a FileWriter object within the try-with-resources clause and use them within the body of the try statement. When control leaves the try statement, either after successful completion or via an exception, both resources are automatically closed by calling their close() method. Resources are closed in the reverse of the order in which they were constructed, so dependencies among them can be accommodated. This behavior is supported for any class that implements the AutoCloseable interface (which, at current count, over 100 different built-in classes do). The close() method of this interface is prescribed to release all resources associated with the object, and you can implement this easily in your own classes as well. When using try with resources, we don’t have to add any code specifically to close the file or socket; it is done for us automatically.
+			</td>
+			<td>在这个例子中,我们初始化两种 套接字 对象和一个 filewriter 内的对象 试一试 -with-resources条款和使用它们 的主体 试一试 声明。 当 控制叶 试一试 声明中, 成功完成后或通过一个例外,这两个资源 通过调用他们自动关闭吗 close() 方法。 资源是关闭的 相反的顺序 他们 构造,所以可以调和他们之间的依赖关系。 这 行为是任何类,实现了支持 AutoCloseable 接口 (目前的统计,超过100种不同的内置类)。 的 close() 该接口的方法 规定释放所有资源与对象相关,和你 可以很容易地实现这个在您自己的类。 当使用 试一试 与资源,我们不需要 特别添加任何代码关闭文件或插座;这是为我们做 自动。
+			</td>
+		</tr>
+
+		<tr>
+			<td>Another problem that try with resources solves is the pesky situation we alluded to where an exception may be thrown during a close operation. Looking back to the prior example in which we used a finally clause to do our cleanup, if an exception had been raised by the close() method, it would have been thrown at that point, completely abandoning the original exception from the body of the try clause. But in using try with resources, we preserve the original exception. If an exception occurs while within the body of the try and one or more exceptions is raised during the subsequent auto-closing operations, it is the original exception from the body of the try that is bubbled up to the caller. Let’s look at an example:</td>
+			<td>另一个问题, 试一试 与 资源解决恼人的情况我们提到一个例外 可能被扔在关闭操作。 回顾之前 我们使用了一个示例 最后 我们清理条款,如果异常已被提出的 close() 方法,这将是 扔在这一点上,完全放弃原来的异常 的主体 试一试 条款。 但在 使用 试一试 与资源,我们保存 最初的例外。 如果发生异常时的身体内 的 试一试 和一个或多个异常 提出了在后续自动操作,它是原始的 异常的身体 试一试 这是给调用者冒了出来。 让我们来看一个 例子:
+			</td>
+		</tr>
+
+		<tr>
+			<td>
+			<pre class="programlisting" data-language="java">
+    try (
+        Socket sock = new Socket("128.252.120.1", 80); // potential exception #3
+        FileWriter file = new FileWriter("foo"); // potential exception #2
+    )
+    {
+        // work with sock and file // potential exception #1
+    }
+			</pre>
+			</td>
+			<td>
+			<pre class="programlisting" data-language="java">
+    try (
+        Socket sock = new Socket("128.252.120.1", 80); // potential exception #3
+        FileWriter file = new FileWriter("foo"); // potential exception #2
+    )
+    {
+        // work with sock and file // potential exception #1
+    }
+			</pre>
+			</td>
+		</tr>
+
+		<tr>
+			<td>Once the try has begun, if an exception occurs as exception point #1, Java will attempt to close both resources in reverse order, leading to potential exceptions at locations #2 and #3. In this case, the calling code will still receive exception #1. Exceptions #2 and #3 are not lost, however; they are merely “suppressed” and can be retrieved via the Throwable getSuppressed() method of the exception thrown to the caller. This returns an array of all of the supressed exceptions.</td>
+			<td>一旦 试一试 已经开始,如果一个吗 异常是异常点# 1、Java将试图关闭 资源以相反的顺序,导致潜在异常的位置 # 2和# 3。 在这种情况下,调用代码仍然可以接收到异常 # 1。 异常# 2和# 3是不会丢失,然而,他们只是 “镇压”,可以通过检索 Throwable getSuppressed() 的方法 异常抛给调用者。 这将返回一个数组的所有 supressed例外。
+			</td>
+		</tr>
+
+		<tr class="h2">
+			<td>Performance Issues</td>
+			<td>性能问题</td>
+		</tr>
+
+		<tr>
+			<td>Because of the way the Java virtual machine is implemented, guarding against an exception being thrown (using a try) is free. It doesn’t add any overhead to the execution of your code. However, throwing an exception is not free. When an exception is thrown, Java has to locate the appropriate try/catch block and perform other time-consuming activities at runtime.</td>
+			<td>因为Java虚拟机 实现,防范被抛出一个异常(使用 试一试 )是免费的。 它不添加任何 执行你的代码的开销。 然而,抛出异常 不是免费的。 在抛出异常时,Java来定位 适当的 try / catch 块和 在运行时执行其他耗时的活动。
+			</td>
+		</tr>
+
+		<tr>
+			<td>The result is that you should throw exceptions only in truly “exceptional” circumstances and avoid using them for expected conditions, especially when performance is an issue. For example, if you have a loop, it may be better to perform a small test on each pass and avoid throwing the exception rather than throwing it frequently. On the other hand, if the exception is thrown only once in a gazillion times, you may want to eliminate the overhead of the test code and not worry about the cost of throwing that exception. The general rule should be that exceptions are used for “out of bounds” or abnormal situations, not routine and expected conditions (such as the end of a file).</td>
+			<td>结果就是,你应该只在真正抛出异常 “特殊”情况下,避免使用他们的预期 条件,尤其是性能是一个问题。 例如,如果你 有一个循环,它可能是更好的执行每一次小测试, 经常避免抛出的异常,而不是扔。 在 另一方面,如果异常保准只有一次, 你可能想要消除测试代码的开销,而不是担心 抛出的异常的成本。 一般规则 例外是用于“界外”或异常情况下,不是 常规和预期条件(例如文件)的结束。
+			</td>
+		</tr>
+	</table>
+	</div>
+	<div></div>
+</body>
+</html>
