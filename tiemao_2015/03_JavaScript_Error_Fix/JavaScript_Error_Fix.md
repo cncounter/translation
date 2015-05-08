@@ -1,4 +1,6 @@
-# JavaScript 常见错误(Error)及如何修正
+# JavaScript 的坑人错误(Error)及修正
+
+看到一篇译文: [JS错误的诊断与修复](http://blog.csdn.net/whqet/article/details/43222709)
 
 JavaScript can be a nightmare to debug: Some errors it gives can be very difficult to understand at first, and the line numbers given aren’t always helpful either. Wouldn’t it be useful to have a list where you could look to find out what they mean and how to fix them? Here you go!
 
