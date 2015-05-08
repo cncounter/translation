@@ -1,15 +1,15 @@
 # What you need to know about Hadoop right now
 
-# Hadoop现状
+# 程序员应该了解的Hadoop现状
 
 ### Phoenix, Kafka, and Falcon fill some important niches in Hadoop's growing ecosystem
 
-### Phoenix, Kafka, and Falcon 日益增长的生态系统中一些重要的利基市场
+### 副标题: Phoenix, Kafka 和 Falcon 填补了 Hadoop 生态重要的市场空白
 
 
 Last year I gave a crunch list of [what you should know about Hadoop](http://www.infoworld.com/article/2608249/application-development/know-this-right-now-about-hadoop.html). It has been a couple months short of a year since then, but I thought I'd check in and see how you’re coming along -- and add a few more technologies to the list.
 
-去年我给 [你应该了解的Hadoop知识](http://www.infoworld.com/article/2608249/application-development/know-this-right-now-about-hadoop.html) 。 这是一个两个月的一年,但是我想检查,看看你不上车,向列表添加更多的技术。
+去年我写了一篇文章:  [程序员应该了解的Hadoop知识](http://www.infoworld.com/article/2608249/application-development/know-this-right-now-about-hadoop.html) 。 转眼一年过去了,我认为应该更新一下,看看有哪些变化, 并且增加一些技术列表。
 
 
 To start, I hope you didn’t forget your fundamentals. Yarn and HDFS are no less important now than last year. Plus, I hope you remembered the ecosystem stuff. In fact, HBase is even more vital and Cassandra is on fire in the marketplace, although many now consider it to be its own thing outside of Hadoop. (If you think your brain is running out of room, at least you can forget that HAWQ or Greenplum ever existed, since [Pivotal soon will](http://www.infoworld.com/article/2885334/application-development/what-pivotals-big-open-source-move-really-means.html).)
@@ -76,5 +76,20 @@ I hope you boned up last year and are ready for these little additions to your k
 
 我希望你去年去骨,准备好这些小增加你的知识基础。 我希望Kerberos没有咬你太难或凤凰不消耗你太多。 Hadoop是一个日益增长的生态系统,它可以是一个挑战,但我相信你!
 
+
+相关链接: 
+
+- [Storm or Spark: Choose your real-time weapon](http://www.javaworld.com/article/2855755/big-data/storm-or-spark-choose-your-real-time-weapon.html)
+- [Know this right now about Hadoop](http://www.javaworld.com/article/2158789/data-storage/know-this-right-now-about-hadoop.html)
+- [Review: The big 4 Java IDEs compared](http://www.javaworld.com/article/2866811/developer-tools-ide/java-ide-shoot-out-eclipse-vs-netbeans-vs-jdeveloper-vs-intellij-idea.html)
+- [HTTP/2: A jump-start for Java developers](http://www.javaworld.com/article/2916548/java-web-development/http-2-for-java-developers.html)
+
+
+
 原文链接： [What you need to know about Hadoop right now](http://www.javaworld.com/article/2896317/big-data/what-you-need-to-know-about-hadoop-right-now.html)
 
+原文日期: 2015年03月12日
+
+翻译日期: 2015年05月09日
+
+翻译人员: [铁锚 http://blog.csdn.net/renfufei](http://blog.csdn.net/renfufei)
