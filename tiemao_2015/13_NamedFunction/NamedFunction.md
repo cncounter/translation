@@ -1,4 +1,8 @@
-# Named function expressions demystified
+# JavaScript函数表达式详解
+
+###
+
+看到一篇译文: [揭秘命名函数表达式](http://www.cnblogs.com/TomXu/archive/2011/12/29/2290308.html)
 
 
 ###Introduction
