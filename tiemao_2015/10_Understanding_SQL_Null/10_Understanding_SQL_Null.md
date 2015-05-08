@@ -5,7 +5,7 @@
 虽然熟练掌握SQL的人对于Null不会有什么疑问，但总结得很全的文章还是很难找，看到一篇英文版的, 感觉还不错。
 
 
-[Tony Hoare 在1965年发明了 null 引用](http://en.wikipedia.org/wiki/Tony_Hoare#Apologies_and_retractions), 并认为这是他犯下的“几十亿美元的错误”. 即便是50年后的今天, SQL中的 null 值还是导致许多常见错误的罪魁祸首.
+[Tony Hoare 在1965年发明了 null 引用](http://en.wikipedia.org/wiki/Tony_Hoare#Apologies_and_retractions), 并认为这是他犯下的“十亿美元的错误”. 即便是50年后的今天, SQL中的 null 值还是导致许多常见错误的罪魁祸首.
 
 我们一起来看那些最令人震惊的情况。
 
