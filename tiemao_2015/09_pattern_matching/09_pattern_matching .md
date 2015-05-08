@@ -4,7 +4,7 @@
 
 ### Discover the elegance of regular expressions in text-processing scenarios that involve pattern matching
 
-### 副标题: 在文本处理场景中执行模式匹配时发现正则表达式的优雅
+### 副标题: 在文本处理中发现正则表达式的优雅
 
 
 
@@ -25,7 +25,7 @@ Regular expressions often confuse newcomers. However, this article dispels much 
 
 <br/>
 
-> ## 注意
+> ##提示
 >正则表达式的悠久的历史开始于自动机的理论计算机科学领域的理论和形式语言理论。历史继续Unix和其他操作系统,在正则表达式中经常使用Unix和类Unix实用程序:例子包括awk(一种编程语言,使复杂的文本分析和manipulation-named后其创造者,阿霍,温伯格,和克尼汉),emacs(开发人员的编辑),grep(一个程序匹配正则表达式在一个或多个文本文件和代表全局正则表达式打印)。
 
 
@@ -40,6 +40,10 @@ Java's java.util.regex package supports pattern matching via its Pattern, Matche
 - Pattern objects, also known as patterns, are compiled regexes
 - Matcher objects, or matchers, are engines that interpret patterns to locate matches in character sequences, objects whose classes implement the java.lang.CharSequence interface and serve as text sources
 - PatternSyntaxException objects describe illegal regex patterns
+
+- Pattern 对象, 也称为模式, 是编译后的 regex
+- Matcher 对象, or matchers, are engines that interpret patterns to locate matches in character sequences, objects whose classes implement the java.lang.CharSequence interface and serve as text sources
+- PatternSyntaxException 对象用来描述不合法的 regex patterns
 
 Listing 1 introduces those classes:
 
@@ -788,8 +792,7 @@ Jeff Friesen has been involved with computers for the past 23 years. He holds a 
 
 ### Learn more about this topic
 
-- Download this article's source code and resource files
-- http://images.techhive.com/downloads/idge/imported/article/jvw/2003/02/jw-0207-java101.zip
+- [Download this article's source code and resource files](http://images.techhive.com/downloads/idge/imported/article/jvw/2003/02/jw-0207-java101.zip)
 - For a glossary specific to this article, homework, and more, see the Java 101 study guide that accompanies this article
 - http://www.javaworld.com/javaworld/jw-02-2003/jw-0207-java101guide.html
 - "Magic with MerlinParse Sequences of Characters with the New regex Library," John Zukowski (IBM developerWorks, August 2002) explores java.util.regex's support for pattern matching and presents a complete example that finds the longest word in a text file
