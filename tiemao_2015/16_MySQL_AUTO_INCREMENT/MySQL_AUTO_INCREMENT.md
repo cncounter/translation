@@ -180,6 +180,7 @@ MySQL自动增长使用的关键字是 `AUTO_INCREMENT`; 因为属于 DDL，所�
 MySQL的自动增长列, 保证了不重复,不保证中间不跳号(当然,不跳号只有某些特殊业务有需求)。特别是在事务执行环境里执行时, 为了不影响逻辑与性能，也只能采用这种处理方式。
 
 
+GitHub版本: [https://github.com/cncounter/translation/blob/master/tiemao_2015/16_MySQL_AUTO_INCREMENT/MySQL_AUTO_INCREMENT.md](https://github.com/cncounter/translation/blob/master/tiemao_2015/16_MySQL_AUTO_INCREMENT/MySQL_AUTO_INCREMENT.md)
 
 作者: [铁锚 http://blog.csdn.net/renfufei](http://blog.csdn.net/renfufei)
 
