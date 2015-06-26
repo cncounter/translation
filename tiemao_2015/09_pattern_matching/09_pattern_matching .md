@@ -35,7 +35,10 @@ Regular expressions often confuse newcomers. However, this article dispels much 
 
 A regular expression, also known as a regex or regexp, is a string whose pattern (template) describes a set of strings. The pattern determines what strings belong to the set, and consists of literal characters and metacharacters, characters that have special meaning instead of a literal meaning. The process of searching text to identify matches—strings that match a regex's pattern—is pattern matching.
 
-Java's java.util.regex package supports pattern matching via its Pattern, Matcher, and PatternSyntaxException classes:
+正则表达式,也称为 **regex** 或 **regexp** ,按照[大漠穷秋](http://damoqiongqiu.iteye.com/ "angularjs 牛人大漠穷秋的博客")的说法，这个名字翻译得是很差的,但由于历史原因,为了兼容性所以就一直统一为“正则表达式”。这是用来描述一类字符串的模板(pattern, template)。模板决定了哪些字符串属于这个集合，正则表达式模板由文本字符和元字符组成, metacharacters 在正则表达式中具有特殊的含义,而不只是单纯的字符。搜索文本来确定匹配哪些 strings 的过程就叫做模式匹配。
+
+
+Java's `java.util.regex` package supports pattern matching via its Pattern, Matcher, and PatternSyntaxException classes:
 
 - Pattern objects, also known as patterns, are compiled regexes
 - Matcher objects, or matchers, are engines that interpret patterns to locate matches in character sequences, objects whose classes implement the java.lang.CharSequence interface and serve as text sources
