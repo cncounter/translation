@@ -1,4 +1,4 @@
-# GPS 工作原理详解
+# 带你了解 GPS 的工作原理
 
 ![](01_news-2016-q7-05c.jpg)
 
@@ -6,11 +6,14 @@
 
 迷失在开车是艺术接近了。 GPS汽车导航系统,在仪表板上的便携式导航设备,或在你的智能手机,很容易拉起地图,看你在哪里,或者要去哪里。 最难的部分可能是说话或键控数据中如果你的车有一个笨拙的接口,或如果它不让你输入一个地址在汽车移动,即使你开车经过一个粗略的社区在机场外的一个出租。
 
-这里有一个记者招待会上GPS是什么,今天在汽车,它可以帮你做什么,什么是可能的在不久的将来。 GPS将使你更安全,路线你周围的交通延误,帮助你找到附近的服务,并帮助商人接触你可能会或可能不会想要销售你的服务。
+
+Here’s a backgrounder on what GPS is, what it can do for you today in cars, and what’s possible in the near future. GPS will make you safer, route you around traffic delays, help you find nearby services, and help merchants reach out to sell you services you may or may not want.
+
+本文将向您介绍什么是GPS，和汽车集成起来可以做些什么，以及在不远的将来可能会是什么状况。GPS会让你更安全、避开拥堵路段、找到附近的服务，并让服务商联系到你(其中有你喜欢的，也有你讨厌的)。
 
 ![](02_GPS-tomtom-car-satellite-illo.jpg)
 
-全球定位系统是如何工作的(可能超过你想知道)
+全球定位系统是如何工作的(简直超乎你的想象)
 
 自1994年以来,24个GPS卫星在绕地球轨道环行13000英里在六组,或飞机。 他们没有固定的开销(同步),但以8000英里每小时的速度由西向东移动,地球轨道(经过同一地点),一天两次。 是一个原子钟。 每颗卫星不断报告:
 
