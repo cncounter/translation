@@ -44,6 +44,9 @@
     	   		message = eval("("+ message + ")");
 	    	}
 
+控制台调试结果如下所示:
+
+![](01_console_demo.png)
 
 
 日期: 2015年08月03日
