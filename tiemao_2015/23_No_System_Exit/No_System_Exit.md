@@ -107,7 +107,32 @@
 	退出的状态码为: 42
 	Printing works
 
+### 原问题
 
+原来的问题如下:
+
+> I've got a few methods that should call System.exit() on certain inputs. Unfortunately, testing these cases causes JUnit to terminate! Putting the method calls in a new Thread doesn't seem to help, since System.exit() terminates the JVM, not just the current thread. Are there any common patterns for dealing with this? For example, can I subsitute a stub for System.exit()?
+
+大意是:
+
+> 有一些方法需要测试, 但是在某些特定的输入时就会调用 `System.exit()`。这就杯具了,这时候 JUnit 测试也跟着退出了! 用一个新线程来调用这种方法也没什么用, 因为 `System.exit()` 会停止JVM , 而不是退出当前线程。有什么通用的模式来处理这种情况吗? 例如,我能替换掉 `System.exit()` 方法吗?
+
+
+
+建议如下:
+
+> Instead of terminating with System.exit(whateverValue), why not throw an unchecked exception? In normal use it will drift all the way out to the JVM's last-ditch catcher and shut your script down (unless you decide to catch it somewhere along the way, which might be useful someday).
+
+> In the JUnit scenario it will be caught by the JUnit framework, which will report that such-and-such test failed and move smoothly along to the next.
+
+翻译如下:
+
+> 在程序中调用 `System.exit(whateverValue)` 是一种很不好的编程习惯, 这种情况为什么不抛出一个未检测的异常(unchecked exception)呢? 如果程序中不进行捕获(catch), 抛出的异常会一路漂移到 JVM , 然后就会退出程序(只有主线程的话)。
+
+> 在 JUnit 的测试场景中异常会被 JUnit 框架捕获, 然后就会报告说某某某测试执行失败,然后就继续下一个单元测试了。
+
+
+当然,给出的解决方案就是前面的那段代码. 你还可以阅读下面的参考文章，查找其他的解决方案。
 
 
 ### 参考文章:
