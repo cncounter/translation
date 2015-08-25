@@ -15,6 +15,97 @@
 因为`System.exit()` 是一种很暴力的手段，如果在 Client 模式下自己写个小程序无所谓,但是在 Server 上多个程序、或者多线程时就会有很大的麻烦。
 
 
+### 底层源码
+
+
+
+1.先来看看静态方法 `System.exit()` 的源码:
+
+    // System.exit()
+    public static void exit(int status) {
+        Runtime.getRuntime().exit(status);
+    }
+
+应该说很简单, 只是简单地调用运行时的 exit 方法.
+
+2.然后我们看运行时的实例方法 `exit`:
+
+    // Runtime.exit()
+    public void exit(int status) {
+        SecurityManager security = System.getSecurityManager();
+        if (security != null) {
+            security.checkExit(status);
+        }
+        Shutdown.exit(status);
+    }
+
+如果有安全管理器，那么就让安全管理器执行 `checkExit`退出权限检查。
+
+如果检查不通过，安全管理器就会抛出异常(这就是约定！)。 
+
+然后当前线程就会往外一路抛异常，如果不捕获，那么该线程就会退出。
+
+此时如果没有其他的前台线程正在运行，那么JVM也会跟着退出。
+
+3.`Shutdown` 是 **java.lang** 包下面的一个类。
+
+访问权限是 default, 所以我们在API中是不能调用的。
+
+
+    // Shutdown.exit()
+    static void exit(int status) {
+        boolean runMoreFinalizers = false;
+        synchronized (lock) {
+            if (status != 0) runFinalizersOnExit = false;
+            switch (state) {
+            case RUNNING:       /* Initiate shutdown */
+                state = HOOKS;
+                break;
+            case HOOKS:         /* Stall and halt */
+                break;
+            case FINALIZERS:
+                if (status != 0) {
+                    /* Halt immediately on nonzero status */
+                    halt(status);
+                } else {
+                    /* Compatibility with old behavior:
+                     * Run more finalizers and then halt
+                     */
+                    runMoreFinalizers = runFinalizersOnExit;
+                }
+                break;
+            }
+        }
+        if (runMoreFinalizers) {
+            runAllFinalizers();
+            halt(status);
+        }
+        synchronized (Shutdown.class) {
+            /* Synchronize on the class object, causing any other thread
+             * that attempts to initiate shutdown to stall indefinitely
+             */
+            sequence();
+            halt(status);
+        }
+    }
+
+
+
+其中有一些同步方法进行锁定。 退出逻辑是调用了 `halt` 方法。
+
+
+
+    // Shutdown.halt()
+    static void halt(int status) {
+        synchronized (haltLock) {
+            halt0(status);
+        }
+    }
+
+    static native void halt0(int status);
+
+然后就是调用 native 的 `halt0()` 方法让 JVM "**自杀**"了。
+
 ### 示例
 
 使用安全管理器的实现代码如下所示:
