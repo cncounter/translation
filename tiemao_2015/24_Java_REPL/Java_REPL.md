@@ -1,4 +1,4 @@
-# REPL对Java有什么用?
+# Java9: REPL抢先玩!
 
 What REPL means for Java
 
@@ -53,53 +53,61 @@ Shortening turnaround time and feedback loops as much as possible is incredibly 
 
 While many of the systems using Java are beyond the complexity of what could be handled by an interactive REPL, the mere presence of a REPL in the JDK means that someone, somewhere will find an amazing use case for it in no time. The fact that JShell exposes an API basically ensures that IDE developers are going to integrate this REPL into the tools we use to write code. Just wait till the Java REPL is part of every IDE!
 
+<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+
+## 开始使用JShell
+
+Get started with JShell
+
+需要解释一下, 在写这篇文章时, JDK 9  开发者预览版中并不包含 Kulla 项目, 因为 REPL环境还处于开发阶段。所以你需要克隆 Mercurial 项目的源代码, 编译JDK, 还要自己编译JShell。
 
 
-## 等待继续。。。。。。
+It's important to realize that using the in-development REPL, Project Kulla, is not for the faint of heart. Kulla, aka JShell, isn't part of the JDK 9 preview bundle at the time of writing, so you'll have to clone a Mercurial project, compile the JDK, and compile JShell yourself. 
 
 
-开始使用JShell
+这个过程可能需要几个小时, 特别是如果你对JDK源码不熟的情况下。 必须禁止把警告当成错误, 如果是在 OSX 上编译，请确保已经安装了 XCode 以及 XQuartz 这个  freetype 库。 可以按照下面的步骤来安装和运行 Kulla项目。
 
-重要的是意识到使用研中的REPL项目Kulla,不是一时的事。 Kulla, 又名 JShell,不是JDK的一部分9预览包在写这篇文章的时候,所以你要克隆一个Mercurial项目,编译JDK和编译JShell自己。 留出一个小时这一过程,特别是如果你不正常扔在JDK源代码。 你必须禁用警告作为错误,如果您正在构建OSX确保你安装XCode连同XQuartz freetype的图书馆。 按照下面的说明来安装和运行项目Kulla在您的Java开发环境。
+Set aside an hour for this process, especially if you aren't normally throwing around JDK source code. You'll have to disable warnings as errors, and if you are building on OSX make sure that you've installed XCode along with XQuartz for the freetype library. Follow the instructions below to install and run Project Kulla in your Java development environment.
 
-1。 安装Java 9
 
-JShell你需要运行 下载并安装最新的早期访问预览构建Java 9 。 一旦你下载Java 9设置 JAVA_HOME 环境变量和运行 java - version 来验证您的安装。 这可能是一个痛苦,特别是在OSX,所以值得反复检查!
+### 1.安装Java 9
 
-2。 安装Kulla Mercurial和项目
+使用 JShell，需要下载并安装 [最新的Java 9开发者早起预览版](https://jdk9.java.net/download/) 。 安装完成后需要设置环境变量 **`JAVA_HOME`** , 接着可以在命令行运行 `java - version` 来看看配置是否正确。 这中间有一些坑，特别是在 OSX 系统上, 所以特别提醒一下!
 
-项目Kulla OpenJDK项目所以你得 克隆Mercurial存储库 编译它。
+To run JShell you'll need to [download and install the latest early access preview build for Java 9](https://jdk9.java.net/download/). Once you've downloaded Java 9 set your **`JAVA_HOME`** environment variable and run java –version to verify your installation. This can be a pain, particularly on OSX, so it's worth double checking!
 
-接下来你将 克隆Kulla存储库 :
+### 2. 安装Kulla Mercurial和项目
 
+Kulla 也是一个 OpenJDK项目, 所以你需要 [克隆 Mercurial 仓库](https://mercurial.selenic.com/downloads)并执行编译。
+
+然后需要 [克隆 Kulla 仓库](http://hg.openjdk.java.net/kulla/dev%20kulla) :
 
 	hg clone http://hg.openjdk.java.net/kulla/dev kulla
 
-
-然后您将配置构建:
-
+接着是配置编译环境:
 
 	cd kulla
 	bash ./configure --disable-warnings-as-errors
 	make images
 
 
-3。 编译并运行REPL
+### 3. 编译并运行REPL
 
-REPL编译的代码:
+下面是编译 REPL 的脚本:
 
 	cd langtools/repl;
 	bash ./scripts/compile.sh
 
-这里的代码运行:
 
+通过下面的脚本来运行:
 
 	bash ./scripts/run.sh 
 
-正如我所指出的,Java的REPL特性尚未准备好一般消费,但我们仍然可以把它提前试驾!
+前面我们也解释过了, Java 的 REPL 功能还没到一般人可以使用的阶段, 但我们这些程序员可以抢先玩一玩!
 
 
-## 你的数学
+## 执行数学运算
+
 
 初始的示例JShell能做什么,让我们评估使用一些简单的表达式 java.lang.Math :
 
