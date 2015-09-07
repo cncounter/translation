@@ -80,9 +80,9 @@ To run JShell you'll need to [download and install the latest early access previ
 
 Kulla 也是一个 OpenJDK项目, 所以你需要 [克隆 Mercurial 仓库](https://mercurial.selenic.com/downloads)并执行编译。
 
-然后需要 [克隆 Kulla 仓库](http://hg.openjdk.java.net/kulla/dev%20kulla) :
+然后需要 [克隆 Kulla 仓库](http://hg.openjdk.java.net/kulla/dev/kulla) :
 
-	hg clone http://hg.openjdk.java.net/kulla/dev kulla
+	hg clone http://hg.openjdk.java.net/kulla/dev/kulla
 
 接着是配置编译环境:
 
