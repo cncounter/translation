@@ -32,6 +32,8 @@ Intentional globals aside, leaking global variables is bad practice and a result
 				}
 			});
 		};
+		// 必须在 设置 src 属性之前添加 onload 事件。
+		// 在 onload 里面 contentWindow 才变得可用! 
 		iframe.src = 'about:blank';
 		document.body.appendChild(iframe);
 	})();
