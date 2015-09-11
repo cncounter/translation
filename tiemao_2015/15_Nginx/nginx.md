@@ -40,6 +40,8 @@
 	# 关闭防火墙,简单粗暴的
 	service iptables stop
 
+如果你没有权限执行这些操作，你可能需要使用 `sudo` 权限
+
 
 # 配置Nginx反向代理
 
