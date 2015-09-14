@@ -13,7 +13,10 @@ What REPL means for Java
 
 ### 副标题: Java 9即将支持 REPL, JShell 有可能会改变程序员学习和使用 Java 的方式
 
-> 这样一个控制台有什么好处呢? 译者的体验是, 在测试字符串，正则等很简单的程序时，真的是非常方便的.
+
+> **有个段子说： 为什么程序员看起来整天都无所事事的呢? 他们正在编译代码。。。**
+
+> 如果有一个交互式的控制台有什么好处呢? 译者的体验是, 在测试字符串，正则等很简单的程序时，真的是太方便了.
 
 Coming in Java 9, JShell will change how developers learn and write Java code
 
@@ -317,17 +320,19 @@ JShell还可以设置初始化配置文件并自动加载。 你可以随意编�
 执行 `/edit` 命令会打开一个简单的编辑器, 在里面可以改变类的定义,然后类会被立即更新。
 
 
-
-<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
-
 ## 这算什么高科技?
 
 
-Clojure或LISP程序员谈论他们如何发展每天,和你会发现他们在REPL代码。 他们不写脚本,然后执行它们一样他们花费了大量的开发时间改变代码交互。 如果你有几个小时空闲,问一个Scala或Clojure REPL开发人员。 它们是如何工作的。
+如果问 Clojure 或 LISP 程序员如何写代码, 你会发现他们都是在REPL环境中做的开发。 而不是先写代码,然后再去执行， 因为这样会浪费大量的时间来做交互。 如果你有空的话, 可以和 Scala 或Clojure 程序员聊一聊 REPL。看看他们是如何工作的。
 
-从Scala或Clojure Java的另一种语言。 Java开发人员支出的日子不专注于单一的LISP程序可能包含整个结构在一些语句。 大多数Java程序需要安装正常运行,虽然最近的更改语言减少了系统的行数用Java编写我们还测量我们的系统的复杂性在成千上万行代码。 一个简单的 人 上面列出的例子不是有用的代码,和最有用的代码在Java中带有的复杂性将很难适应REPL-based编程环境。
+与 Scala或Clojure 不同，Java 是另一种不同的语言。 Java 开发人员不会花太多时间来关注某几行普通的代码，而LISP程序可能就只包含在这几句话之中。 大多数Java程序都需要进行安装，配置才能正常运行, 虽然最新版的语言减少了代码的行数，但我们还是随随便便就能用Java编写出上万行代码的复杂系统。 上面所列出的 Person 类并没有多少用处, 在Java中最有用的代码往往非常复杂,也很难在 REPL-based 编程环境中书写。
 
-Scala和Clojure开发人员实践的东西 Clojure编程 作者 底盘Emerick “迭代开发”这并不依赖于一个基于文件的工作流。 Java开发人员依赖的库,复杂的依赖关系层次结构,如Tomcat或TomEE容器。 因为这个原因我不预测,REPL-oriented IDE编程将取代传统的Java开发。 相反,我看到Java REPL提供几个不同的利益和机遇。
+Scala和Clojure 开发人员的编程环境被 《Clojure Programming》的作者[Chas Emerick](http://cemerick.com/) 称为 “迭代开发(iterative development)”， 不需要依赖文件系统。 但是 Java 开发需要依赖很多类库, 会有很复杂的依赖, 还要依赖容器(如Tomcat或TomEE)。 因此我想说, 面向 REPL 的这种编程方式并不会取代传统的 IDE编程。 相反,我觉得Java 的 REPL 提供了下面这些好处和机遇。
+
+
+
+<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+
 
 1。 学习Java :因为Java程序开发人员需要如此多的设置可以挑战学习快速理解语法的语言。 Java 9的REPL将成为主要方式,新的开发人员面对的基本语法。
 
