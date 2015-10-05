@@ -90,22 +90,24 @@ MySQL 转换函数与运算符
 `CHAR(N)`的结果为最多N个字符。
 
 ##
+
 ##
+
 ##
 
 
-通常情况下,你不能比较一个BLOB值或其他二进制字符串以不区分大小写的方式,因为二进制字符串没有字符集,因此没有字母盘的概念。执行不区分大小写的比较,使用()函数将值转换为一个二进制字符串。使用字符串排序的比较结果。例如,如果结果的字符集不区分大小写排序,这样操作是不区分大小写:
+一般来说,用不区分大小写的方式并不能比较 `BLOB` 值或者其他二进制串, 因为二进制串是没有字符集的,因此也没有字母的概念。如果要不区分大小写, 可以用 `CONVERT()` 将值转换为非二进制的字符串再来比较。比较的结果根据字符集排序而定。例如,假设字符集不区分大小写, 那么 `like` 操作也就不区分大小写:
 
 	SELECT 'A' LIKE CONVERT(blob_col USING latin1) FROM tbl_name;
 
-使用不同的字符集,用它的名字代替latin1前声明中的一个。为转换后的字符串,指定一个特定的排序使用核对条款()调用转换后,正如10.1.9.2节中所描述的那样,“把()和()。例如,要使用latin1_german1_ci:
+要使用其他字符集, 只要把里面的 `latin1` 替换掉就行。为转换后的字符串指定特定的排序规则, 可以在 `CONVERT()` 函数调用后面跟上 `COLLATE` 从句, 正如 [10.1.9.2 节 “CONVERT() and CAST()”](http://dev.mysql.com/doc/refman/5.6/en/charset-convert.html) 中所描述的. 例如,使用 `latin1_german1_ci` 排序:
 
 	SELECT 'A' LIKE CONVERT(blob_col USING latin1) COLLATE latin1_german1_ci
 	  FROM tbl_name;
 
-转换()可以更广泛用于比较的字符串表示在不同的字符集。
+`CONVERT()` 可以在不同的字符集之中进行比较。
 
-低()(和上())应用于二进制时无效的字符串(二进制、VARBINARY BLOB)。执行文书夹转换,将字符串转换成一个二进制字符串:
+`LOWER()` 和 `UPPER()` 对于二进制字符串是无效的(包括 `BINARY`, `VARBINARY`, `BLOB`)。要进行大小写转换,需要先将字符串转换成非二进制形式:
 
 	mysql> SET @str = BINARY 'New York';
 	mysql> SELECT LOWER(@str), LOWER(CONVERT(@str USING latin1));
@@ -115,36 +117,37 @@ MySQL 转换函数与运算符
 	| New York    | new york                          |
 	+-------------+-----------------------------------+
 
-演员功能是有用的,当你想创建一个列与一个特定的类型在创建表……SELECT语句:
+转换函数可以用来创建特定类型的列,比如在 ` CREATE TABLE ... SELECT`语句之中:
 
 	CREATE TABLE new_table SELECT CAST('2000-01-01' AS DATE);
 
-功能也可以用于词法顺序排序枚举列。正常情况下,分类枚举列使用内部发生数值。铸造CHAR结果的值在一个词汇:
+转换函数也可以用来按定义的单词将 `ENUM` 列排序 。正常情况下, 枚举列是根据内部的数值表示来进行排序的。按字母排序 `CHAR` 类型的结果:
 
 	SELECT enum_col FROM tbl_name ORDER BY CAST(enum_col AS CHAR);
 
-铸造(str作为二进制)是一样的二进制str。铸造(expr为CHAR)将表达式作为字符串的默认字符集。
+`CAST(str AS BINARY)` 和  `BINARY str` 等价。`CAST(expr AS CHAR)` 将表达式当作默认字符集来处理。
 
-铸造()也改变了结果如果你使用它作为一个更复杂的表达式如CONCAT(日期:,(()现在日期))。
+`CAST()` 可能会改变复杂表达式的结果，例如 ` CONCAT('Date: ',CAST(NOW() AS DATE))`。
 
-你不应该使用CAST()来提取不同格式的数据,而是使用字符串函数像左()或()提取。参见12.7节,“日期和时间函数”。
+这里就不应该使用 `CAST()` 来提取不同格式的数据,而应该使用字符串函数，如  `LEFT()` 或者 `EXTRACT()`。详情请参考  [Section 12.7, “Date and Time Functions”](http://dev.mysql.com/doc/refman/5.6/en/date-and-time-functions.html)。
 
-字符串转换为数值在数字环境中,您通常不需要做任何事除了使用字符串值,好像一个号码:
+要把字符串转换为数值来进行处理, 一般是不需要手工处理的，MySQL会进行隐式的类型转换:
 
+	SELECT 1+'1';
 
-	mysql> SELECT 1+'1';
-	       -> 2
-
-
-如果你使用一个字符串在算术运算,它是在表达式求值转换为浮点数。
-
-如果你使用一个数字在字符串背景下,数字自动转换为一个字符串:
-
-	mysql> SELECT CONCAT('hello you ',2);
-	        -> 'hello you 2'
+> 2
 
 
-MySQL 5.6.4之前,当使用一个显式的演员()在一份声明中时间戳值,不选择任何表,MySQL 5.6作为字符串处理的价值之前执行任何转换。这导致被截断值转换为数字类型时,如下所示:
+在算术运算中, string 会在表达式求值阶段转换为浮点数。
+
+如果需要将数字当成字符串来处理, MySQL也会自动进行转换:
+
+	SELECT CONCAT('hello you ',2);
+
+> 'hello you 2'
+
+
+在 MySQL 5.6.4之前的版本,用 `CAST()` 处理 `TIMESTAMP` 时， 如果不从具体的表中选取值, MySQL 5.6 会在执行转换之前把值优先当成字符串来对待。这在转换为数字时可能会导致截断,如下所示:
 
 	mysql> SELECT CAST(TIMESTAMP '2014-09-08 18:07:54' AS SIGNED);
 	+-------------------------------------------------+
@@ -163,18 +166,22 @@ MySQL 5.6.4之前,当使用一个显式的演员()在一份声明中时间戳值
 	1 row in set (0.00 sec)
 
 
-这并不适用于选择时从一个表行,如下所示:
+但如果从一张表中选取行时并不会这样,如下所示:
 
-	mysql> USE test;
+	USE test;
 	
-	Database changed
-	mysql> CREATE TABLE c_test (col TIMESTAMP);
-	Query OK, 0 rows affected (0.07 sec)
+>Database changed
+
+	CREATE TABLE c_test (col TIMESTAMP);
+
+>Query OK, 0 rows affected (0.07 sec)
 	
-	mysql> INSERT INTO c_test VALUES ('2014-09-08 18:07:54');
-	Query OK, 1 row affected (0.05 sec)
+	INSERT INTO c_test VALUES ('2014-09-08 18:07:54');
+
+>Query OK, 1 row affected (0.05 sec)
 	
-	mysql> SELECT col, CAST(col AS UNSIGNED) AS c_col FROM c_test;
+	SELECT col, CAST(col AS UNSIGNED) AS c_col FROM c_test;
+>
 	+---------------------+----------------+
 	| col                 | c_col          |
 	+---------------------+----------------+
@@ -183,9 +190,11 @@ MySQL 5.6.4之前,当使用一个显式的演员()在一份声明中时间戳值
 	1 row in set (0.00 sec)
 
 
-在MySQL 5.6.4后来,CAST()处理时间戳值查询不选择任何行以同样的方式,对于那些这样做,如下所示:
+在MySQL 5.6.4 之后, 修复了这个问题,如下所示:
 
-	mysql> SELECT CAST(TIMESTAMP '2014-09-08 18:07:54' AS SIGNED);
+	SELECT CAST(TIMESTAMP '2014-09-08 18:07:54' AS SIGNED);
+
+>
 	+-------------------------------------------------+
 	| CAST(TIMESTAMP '2014-09-08 18:05:07' AS SIGNED) |
 	+-------------------------------------------------+
@@ -194,36 +203,40 @@ MySQL 5.6.4之前,当使用一个显式的演员()在一份声明中时间戳值
 	1 row in set (0.00 sec)
 
 
-隐式转换信息的数字字符串,参见12.2节,“表达式求值类型转换”。
+关于数字和字符串的隐式转换, 参见 [12.2节 “Type Conversion in Expression Evaluation”](http://dev.mysql.com/doc/refman/5.6/en/type-conversion.html).
 
-MySQL支持64位算术与签署和无符号值。如果您使用的是数字运营商(比如+或-)的一个操作数是一个无符号整数,其结果是无符号在默认情况下(参见12.6.1算术运算符)。你可以覆盖使用符号(或无符号把操作符将签署或无符号值64位整数,分别。
+MySQL支持有符号的和无符号的64位算术运算。如果您使用的是数字运算符(如加 `+` 或减 `-`), 其中的一个操作数是无符号整数, 那默认情况下结果就是无符号数(参见 [12.6.1 算术运算符](http://dev.mysql.com/doc/refman/5.6/en/arithmetic-functions.html))。可以通过指定 `SIGNED` 或者 `UNSIGNED` 来进行转换。
 
-	mysql> SELECT CAST(1-2 AS UNSIGNED)
-	        -> 18446744073709551615
-	mysql> SELECT CAST(CAST(1-2 AS UNSIGNED) AS SIGNED);
-	        -> -1
+	SELECT CAST(1-2 AS UNSIGNED)
 
-如果操作数是一个浮点值,结果是一个浮点值,不影响前面的规则。(在这种情况下,小数列值被视为浮点值。)
+> 18446744073709551615
 
-	mysql> SELECT CAST(1 AS UNSIGNED) - 2.0;
-	        -> -1.0
+	SELECT CAST(CAST(1-2 AS UNSIGNED) AS SIGNED);
 
+> -1
 
-SQL模式影响转换操作的结果。例子:
+如果有操作数是浮点值, 那么结果就是浮点值, 不受前面规则的影响。(在这种情况下, ` DECIMAL` 列被视为浮点值。)
 
-- 如果你“零”日期字符串转换为日期,()和()返回NULL和转换时产生警告NO_ZERO_DATE启用SQL模式。
+	SELECT CAST(1 AS UNSIGNED) - 2.0;
 
-- 为整数减法,如果启用了NO_UNSIGNED_SUBTRACTION SQL模式,减法结果即使签署任何操作数是无符号的。
-
-有关更多信息,请参见5.1.7部分,“服务器SQL模式”。
+> -1.0
 
 
+SQL模式影响转换操作的结果。例如:
+
+- 如果转换零值的日期串为日期,  **CONVERT()** 和 **CAST()** 都会返回 `NULL` , 并在 **NO_ZERO_DATE** 模式下产生警告。
+
+- 对于整数的减法,如果启用了 `NO_UNSIGNED_SUBTRACTION` 模式, 减法结果是有符号数,即便其中一个是无符号数。
+
+更多信息请参见 [5.1.7节 “Server SQL Modes”](http://dev.mysql.com/doc/refman/5.6/en/sql-mode.html)。
 
 
 
 
 
-> **如何将 BLOB 转换为 UTF8 的 `char`**
+
+
+####**如何将 BLOB 转换为 UTF8 的 `char`**
 
 > 首先，请查看 BLOB 里面存储的是什么编码的byte。是 `utf8` 还是其他字符集?
 
@@ -237,8 +250,6 @@ SQL模式影响转换操作的结果。例子:
 
 原文链接: [Cast Functions and Operators](http://dev.mysql.com/doc/refman/5.6/en/cast-functions.html)
 
-原文日期: 
-
-翻译日期: 
+翻译日期: 2015年10月03日
 
 翻译人员: [铁锚 http://blog.csdn.net/renfufei](http://blog.csdn.net/renfufei)
