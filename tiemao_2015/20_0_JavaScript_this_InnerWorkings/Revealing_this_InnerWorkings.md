@@ -231,7 +231,7 @@ infoq: [深入浅出ES6(1~10)系列](http://www.infoq.com/cn/articles/es6-in-dep
 
 babeljs-ES6: [https://babeljs.io/repl/](https://babeljs.io/repl/)
 
-[掌握JS的“`this`” (一)](../20_0_JavaScript_this_InnerWorkings/Revealing_this_InnerWorkings.md)
+[掌握JS中的“`this`” (一)](../20_0_JavaScript_this_InnerWorkings/Revealing_this_InnerWorkings.md)
 
  [掌握JS中的“`this`” (二)](../20_JavaScript_Mastering_this/JavaScript_Mastering_this.md)
 

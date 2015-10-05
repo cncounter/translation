@@ -1,7 +1,7 @@
 # 掌握JS中的“`this`” (二)
 
 
-在上一篇文章 [掌握JS的“`this`” (一)](../20_0_JavaScript_this_InnerWorkings/Revealing_this_InnerWorkings.md) 里面, 我们学会了如何正确使用JavaScript中的 `this` 关键字及其基本原理。我们也知道决定 `this` 指向哪个对象的关键因素, 是找出当前的执行上下文(execution context)。但如果执行上下文不按正常的方式进行设置,问题可能就会变得很棘手。在本文中,我会着重提示在哪些地方会发生这种情况, 以及用什么方式可以弥补。
+在上一篇文章 [掌握JS中的“`this`” (一)](../20_0_JavaScript_this_InnerWorkings/Revealing_this_InnerWorkings.md) 里面, 我们学会了如何正确使用JavaScript中的 `this` 关键字及其基本原理。我们也知道决定 `this` 指向哪个对象的关键因素, 是找出当前的执行上下文(execution context)。但如果执行上下文不按正常的方式进行设置,问题可能就会变得很棘手。在本文中,我会着重提示在哪些地方会发生这种情况, 以及用什么方式可以弥补。
 
 ## 解决常见问题
 
@@ -191,7 +191,7 @@ infoq: [深入浅出ES6(1~10)系列](http://www.infoq.com/cn/articles/es6-in-dep
 
 babeljs-ES6: [https://babeljs.io/repl/](https://babeljs.io/repl/)
 
-[掌握JS的“`this`” (一)](../20_0_JavaScript_this_InnerWorkings/Revealing_this_InnerWorkings.md)
+[掌握JS中的“`this`” (一)](../20_0_JavaScript_this_InnerWorkings/Revealing_this_InnerWorkings.md)
 
  [掌握JS中的“`this`” (二)](../20_JavaScript_Mastering_this/JavaScript_Mastering_this.md)
 
