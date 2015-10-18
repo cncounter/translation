@@ -78,6 +78,6 @@
 
 原文链接: [Understanding Garbage Collection Logs](https://plumbr.eu/blog/garbage-collection/understanding-garbage-collection-logs)
 
-翻译日期: 2015年10月17日
+翻译日期: 2015年10月18日
 
 翻译人员: [铁锚 http://blog.csdn.net/renfufei](http://blog.csdn.net/renfufei)
