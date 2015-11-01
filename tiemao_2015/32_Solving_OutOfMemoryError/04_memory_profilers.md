@@ -1,11 +1,11 @@
-Solving OutOfMemoryError (part 4) – memory profilers
+搞定内存溢出(part 4) – 内存分析器
 ==
 
 
-It is about time to continue our Solving OutOfMemoryError blog post series. In retrospect, so far we have covered: Part 1 described the Story of solving an OutOfMemoryError [through the eyes of a Developer](https://plumbr.eu/blog/blog/solving-outofmemoryerror-story-of-a-developer), Part 2 explained how [the Ops usually tackle the OutOfMemoryError problem](https://plumbr.eu/blog/blog/solving-outofmemoryerror-why-didnt-operations-solve-it), and Part 3  started looking at [where to start solving the OutOfMemoryError](https://plumbr.eu/blog/blog/solving-outofmemoryerror-where-do-you-start). A couple of next posts will now look at the existing tools that you can use to find a Java memory leak.
+It is about time to continue our 搞定内存溢出blog post series. In retrospect, so far we have covered: Part 1 described the Story of solving an OutOfMemoryError [through the eyes of a Developer](https://plumbr.eu/blog/blog/solving-outofmemoryerror-story-of-a-developer), Part 2 explained how [the Ops usually tackle the OutOfMemoryError problem](https://plumbr.eu/blog/blog/solving-outofmemoryerror-why-didnt-operations-solve-it), and Part 3  started looking at [where to start solving the OutOfMemoryError](https://plumbr.eu/blog/blog/solving-outofmemoryerror-where-do-you-start). A couple of next posts will now look at the existing tools that you can use to find a Java memory leak.
 
 
-Our past experience, which is supported by a quick search on Google and Stackoverflow, shows that the first set of tools people tend to jump to when solving memory problems in production is memory profilers. Among them, VisualVM, YourKit and JProbe seem to be the most popular.
+Our past experience, which is supported by a quick search on Google and Stackoverflow, shows that the first set of tools people tend to jump to when solving memory problems in production is 内存分析器. Among them, VisualVM, YourKit and JProbe seem to be the most popular.
 
 
 Let’s use our leaking Pet Clinic sample application as our “dying patient” and, using these three tools, try to find out why it crashes with OutOfMemoryError.
@@ -108,7 +108,7 @@ From here you need more than luck to deduce anything leading to the cause of the
 
 
 
-> **广告:** Did you know that 20% of Java applications have memory leaks? Don’t kill your application – instead find and fix leaks with [Plumbr](https://plumbr.eu/memory-leak) in minutes.
+> **广告:** 你知道大约 20% 的Java系统存在内存泄漏(memory leak)吗? 不要老是去杀进程,你可以通过 [Plumbr](https://plumbr.eu/memory-leak) 来快速排查问题.
 
 
 
@@ -123,19 +123,19 @@ In the next article we will see if memory dump analyzers can come to the rescue.
 
 
 
-### Solving OutOfMemoryError 系列文章
+### 搞定内存溢出系列文章
 
-- [Solving OutOfMemoryError (part 1) – story of a developer](01_story_of_a_developer.md)
+- [搞定内存溢出(part 1) – 程序员的那些事](01_story_of_a_developer.md)
 
-- [Solving OutOfMemoryError (part 2) – why didn’t operations solve it?](02_why_did_not_operations_solve_it.md)
+- [搞定内存溢出(part 2) – 为什么运营搞不定?](02_why_did_not_operations_solve_it.md)
 
-- [Solving OutOfMemoryError (part 3) – where do you start?](03_where_do_you_start.md)
+- [搞定内存溢出(part 3) – 从哪里下手?](03_where_do_you_start.md)
 
-- [Solving OutOfMemoryError (part 4) – memory profilers](04_memory_profilers.md)
+- [搞定内存溢出(part 4) – 内存分析器](04_memory_profilers.md)
 
-- [Solving OutOfMemoryError (part 5) – JDK Tools](05_JDK_Tools.md)
+- [搞定内存溢出(part 5) – JDK自带的工具](05_JDK_Tools.md)
 
-- [Solving OutOfMemoryError (part 6) – Dump is not a waste](06_Dump_is_not_a_waste.md)
+- [搞定内存溢出(part 6) – Dump 没想象中那么麻烦](06_Dump_is_not_a_waste.md)
 
 
 

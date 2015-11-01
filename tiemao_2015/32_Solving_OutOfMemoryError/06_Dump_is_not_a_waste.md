@@ -1,4 +1,4 @@
-Solving OutOfMemoryError (part 6) – Dump is not a waste
+搞定内存溢出(part 6) – Dump 没想象中那么麻烦
 ==
 
 
@@ -37,7 +37,7 @@ The practical examples below will once more be based on our sample leaking PetCl
 
 
 
-> **广告:** Did you know that 20% of Java applications have memory leaks? Don’t kill your application – instead find and fix leaks with [Plumbr](https://plumbr.eu/memory-leak) in minutes.
+> **广告:** 你知道大约 20% 的Java系统存在内存泄漏(memory leak)吗? 不要老是去杀进程,你可以通过 [Plumbr](https://plumbr.eu/memory-leak) 来快速排查问题.
 
 
 
@@ -105,20 +105,20 @@ We are approaching the end of the blog post series on Solving the OutOfMemoryErr
 
 
 
-### Solving OutOfMemoryError 系列文章
+### 搞定内存溢出系列文章
 
 
-- [Solving OutOfMemoryError (part 1) – story of a developer](01_story_of_a_developer.md)
+- [搞定内存溢出(part 1) – 程序员的那些事](01_story_of_a_developer.md)
 
-- [Solving OutOfMemoryError (part 2) – why didn’t operations solve it?](02_why_did_not_operations_solve_it.md)
+- [搞定内存溢出(part 2) – 为什么运营搞不定?](02_why_did_not_operations_solve_it.md)
 
-- [Solving OutOfMemoryError (part 3) – where do you start?](03_where_do_you_start.md)
+- [搞定内存溢出(part 3) – 从哪里下手?](03_where_do_you_start.md)
 
-- [Solving OutOfMemoryError (part 4) – memory profilers](04_memory_profilers.md)
+- [搞定内存溢出(part 4) – 内存分析器](04_memory_profilers.md)
 
-- [Solving OutOfMemoryError (part 5) – JDK Tools](05_JDK_Tools.md)
+- [搞定内存溢出(part 5) – JDK自带的工具](05_JDK_Tools.md)
 
-- [Solving OutOfMemoryError (part 6) – Dump is not a waste](06_Dump_is_not_a_waste.md)
+- [搞定内存溢出(part 6) – Dump 没想象中那么麻烦](06_Dump_is_not_a_waste.md)
 
 
 
