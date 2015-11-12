@@ -3,47 +3,66 @@
 
 ## 安装Nginx
 
-	# 查看相关信息
+### 查看相关信息
 	
 	yum info nginx
 	
 	yum info httpd
-	
-	# 移除 httpd,也就是 Apache
+
+
+### 如果没有找到nginx下载源,那么,可以执行rpm
+
+	sudo rpm -ivh http://nginx.org/packages/centos/6/noarch/RPMS/nginx-release-centos-6-0.el6.ngx.noarch.rpm
+
+其他平台或版本的包请访问: [http://nginx.org/packages/centos/](http://nginx.org/packages/centos/)
+
+
+### 移除 httpd,也就是 Apache
+
 	yum remove httpd -y
 	
 	
-	#  安装 nginx
+###  安装 nginx
+
 	yum install nginx -y
+
 	
 	
-	#设置 nginx 自启动
+###设置 nginx 自启动
+
 	chkconfig nginx on
 	
-	# 查看服务自启动情况
+### 查看服务自启动情况
+
 	chkconfig
 	
-	# 启动nginx服务
+### 启动nginx服务
+
 	service nginx start
 	
 	
-	#  查看端口监听状态
+###  查看端口监听状态
+
 	netstat -ntl
 	
-	# 此时你可以访问试试了
-	# 例如: http://192.168.1.111:8080 等
-	
-	# 如果访问不了,请 ping 一下试试
-	# 或者查看 iptables 防火墙状态
+> 此时你可以访问试试了
+> 
+> 例如: http://192.168.1.111:8080 等
+>	
+> 如果访问不了,请 ping 一下试试
+
+### 查看 iptables 防火墙状态
+
 	service iptables status
 	
-	# 关闭防火墙,简单粗暴的
+### 关闭防火墙,简单粗暴的
+
 	service iptables stop
 
-如果你没有权限执行这些操作，你可能需要使用 `sudo` 权限
+>如果你没有权限执行这些操作，你可能需要使用 `sudo` 权限
 
 
-# 配置Nginx反向代理
+### 配置Nginx反向代理
 
 > **/etc/nginx/nginx.conf**
 
@@ -89,9 +108,10 @@
 	}
 
 
+ **注意**: upstream.conf 和 cncounter.com.conf 是 http的子元素.
 
 
-> 做负载的配置: **/etc/nginx/upstream.conf**
+> 做负载的配置: `/etc/nginx/upstream.conf`
 
 	upstream www.cncounter.com {
 	    server 127.0.0.1:8080;
@@ -140,6 +160,8 @@
 	service nginx stop
 	
 	service nginx start
+
+	service nginx reload
 
 
 
