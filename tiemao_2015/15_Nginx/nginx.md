@@ -10,13 +10,6 @@
 	yum info httpd
 
 
-### 如果没有找到nginx下载源,那么,可以执行rpm
-
-	sudo rpm -ivh http://nginx.org/packages/centos/6/noarch/RPMS/nginx-release-centos-6-0.el6.ngx.noarch.rpm
-
-其他平台或版本的包请访问: [http://nginx.org/packages/centos/](http://nginx.org/packages/centos/)
-
-
 ### 移除 httpd,也就是 Apache
 
 	yum remove httpd -y
@@ -25,6 +18,13 @@
 ###  安装 nginx
 
 	yum install nginx -y
+
+
+### 如果没有找到nginx下载源,那么,可以执行rpm
+
+	sudo rpm -ivh http://nginx.org/packages/centos/6/noarch/RPMS/nginx-release-centos-6-0.el6.ngx.noarch.rpm
+
+其他平台或版本的包请访问: [http://nginx.org/packages/centos/](http://nginx.org/packages/centos/)
 
 	
 	
