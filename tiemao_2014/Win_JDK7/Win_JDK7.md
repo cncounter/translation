@@ -30,7 +30,9 @@ JDK安装没有什么好说的, 设置 Path,以及 JAVA_HOME 即可:
 值为
 	D:\Develop\java\jdk1.7.0_60\bin;
 
-建议设置到最前面.如下图所示:
+建议设置到最前面, 原因在于Oracle的 JRE 会将 java.exe 等文件拷贝到 C:\Windows\System32\ 目录下。如果将 JDK\bin 放到 path 末尾,则优先会查找到 System32 下面的 java.exe ，有时候会出一些问题。
+
+如下图所示:
 
 ![](01_Path.png)
 
