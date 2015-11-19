@@ -38,7 +38,7 @@ When you use ‘classpath:’ for an Ant style wildcard search, Spring uses a si
 Using the ‘classpath*:’ prefix fixes the problem. It indicates that the resource loader should look in all directories on the classpath, so making this change solved our problem. Apparently Spring maintains both prefixes because limitations in the Classloader (at the specification level) make it difficult to search for resources in the classpath root when performing wildcard searches across all classpath directories. This suggest it might be good practice to always create a directory to contain resources you might otherwise want to put in the classpath root and always use the ‘claspath*:’ prefix.
 
 
-后来我们使用 ‘`classpath*:`’ 前缀解决了这个问题。这个前缀让资源加载器(resource loader) 应去扫描 classpath 中的所有目录。因为规范中 ClassLoader 的限制, 导致Spring 在进行通配符(wildcard)查找时很难去扫描所有 classpath 下的 root 路径, 所以 Spring 兼容了这两种前缀。通过这次填坑, 我们认为最佳实践是创建一个目录来存放可能需要放到 classpath 里面的资源, 并使用 “ `claspath*:` ” 这种前缀形式。
+后来我们使用 ‘`classpath*:`’ 前缀解决了这个问题。这个前缀让资源加载器(resource loader) 扫描 classpath 中的所有目录。因为 ClassLoader 规范的限制, 导致Spring 在进行通配符(wildcard)查找时很难去扫描所有 classpath 下的 root 路径, 所以 Spring 兼容了这两种前缀。通过这次填坑, 我们认为最佳实践是创建一个目录来存放可能需要放到 classpath 里面的资源, 并使用 “ `claspath*:` ” 前缀来带着通配符模式的资源。
 
 
 > **相关链接** : [附6.7.2 在 resource path 中使用通配符(wildcard)](http://docs.spring.io/autorepo/docs/spring/3.2.x/spring-framework-reference/html/resources.html#resources-app-ctx-wildcards-in-resource-paths)
