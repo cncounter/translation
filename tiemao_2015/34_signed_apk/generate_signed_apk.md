@@ -68,6 +68,7 @@ Country Code (XX) 应该是 **CN**, 如下图所示:
 
 然后继续即可。
 
+如果需要了解更多,请参考官方链接。
 
 官方链接:[http://developer.android.com/intl/zh-cn/tools/publishing/app-signing.html](http://developer.android.com/intl/zh-cn/tools/publishing/app-signing.html)
 
