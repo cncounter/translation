@@ -4,13 +4,13 @@
 Another day in the office. Except that you get another call from the operations saying they now have to restart your production application every three hours. And they seem to be somewhat annoyed with this. You have a feeling that their emotion is in correlation to the number of phone calls customer support is getting lately – which has skyrocketed in the past few weeks.
 
 
-某天你正在公司写代码的时候。你接到了运营人员打过来的电话, 说现在每三小时就得重启一次你们的系统。语气不太友好,看起来他们也不喜欢天天干这种傻事。你有一种感觉, 他们的情绪跟最近两周客户投诉的电话差不多被打爆了有很大的关系。
+某天你正在公司写代码的时候。你接到了运营人员打过来的电话, 说现在每三小时就得重启一次你们的系统。语气不太友好,看起来他们也不喜欢天天干这种傻事。你有一种感觉, 他们的情绪跟最近两周客户投诉电话快被打爆了有很大的关系。
 
 
 I’m sure you have been there. And I am also sure you wish you would never have to be there again.
 
 
-我相信你肯定体验过这种滋味。但肯定不好受。
+你可能感受过这种滋味。但肯定不好受。
 
 
 
