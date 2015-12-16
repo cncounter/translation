@@ -195,6 +195,9 @@ OK. 此时算是可以交付给用户下载的版本了。
 简单优化:Zipalign [http://www.cnblogs.com/xirihanlin/archive/2010/04/12/1710164.html](http://www.cnblogs.com/xirihanlin/archive/2010/04/12/1710164.html)
 
 
+GitHub版本 : [https://github.com/cncounter/translation/blob/master/tiemao_2015/34_signed_apk/generate_signed_apk.md](https://github.com/cncounter/translation/blob/master/tiemao_2015/34_signed_apk/generate_signed_apk.md)
+
+
 日期: 2015年11月28日
 
 作者: [铁锚 http://blog.csdn.net/renfufei](http://blog.csdn.net/renfufei)
