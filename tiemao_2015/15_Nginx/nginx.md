@@ -235,17 +235,24 @@
 
 > renfufei.com.conf
 
+这段配置的意思是,如果域名不是 `www.renfufei.com`, 则重定向到 `http://www.renfufei.com`。协议也变了。
+
 	server
 	{
 	    listen 80;
 	    listen 443 ssl;
 	    server_name    renfufei.com www.renfufei.com;
 	    if ($http_host !~ "^www.renfufei.com$") {
-		rewrite  ^(.*)    http://www.renfufei.com$1 permanent;
+	        rewrite  ^(.*)    http://www.renfufei.com$1 permanent;
 	    }
 	}
 
+
 > cncounter.com.conf
+
+这段配置的意思是, 如果域名不是 `www.cncounter.com`, 则重定向到 `http://www.cncounter.com`。协议也变了。
+
+如果是 `www.cncounter.com`,那么就反向代理到 tomcat:8080 , 反向代理的配置请参见后面的 `upstream.conf` 。
 
 	server
 	{
@@ -259,65 +266,88 @@
 		access_log off;
 	    }
 	    if ($http_host !~ "^www.cncounter.com$") {
-		rewrite  ^(.*)    http://www.cncounter.com$1 permanent;
+	        rewrite  ^(.*)    http://www.cncounter.com$1 permanent;
 	    }
-
+	
 	    location / {
-		 root    /usr/local/cncounter_webapp/cncounter/;
-		 proxy_redirect off ;
-		 proxy_set_header Host $host;
-		 proxy_set_header X-Real-IP $remote_addr;
-		 proxy_set_header REMOTE-HOST $remote_addr;
-		 proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-		 client_max_body_size 50m;
-		 client_body_buffer_size 256k;
-		 proxy_connect_timeout 30;
-		 proxy_send_timeout 30;
-		 proxy_read_timeout 60;
-		 proxy_buffer_size 256k;
-		 proxy_buffers 4 256k;
-		 proxy_busy_buffers_size 256k;
-		 proxy_temp_file_write_size 256k;
-		 proxy_next_upstream error timeout invalid_header http_500 http_503 http_404;
-		 proxy_max_temp_file_size 128m;
-		 proxy_pass    http://www.cncounter.com;
+	         root    /usr/local/cncounter_webapp/cncounter/;
+	         proxy_redirect off ;
+	         proxy_set_header Host $host;
+	         proxy_set_header X-Real-IP $remote_addr;
+	         proxy_set_header REMOTE-HOST $remote_addr;
+	         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+	         client_max_body_size 50m;
+	         client_body_buffer_size 256k;
+	         proxy_connect_timeout 30;
+	         proxy_send_timeout 30;
+	         proxy_read_timeout 60;
+	         proxy_buffer_size 256k;
+	         proxy_buffers 4 256k;
+	         proxy_busy_buffers_size 256k;
+	         proxy_temp_file_write_size 256k;
+	         proxy_next_upstream error timeout invalid_header http_500 http_503 http_404;
+	         proxy_max_temp_file_size 128m;
+	         proxy_pass    http://www.cncounter.com;
 	    }
 	}
 
 
+> upstream.conf
+
+这段配置是用于负载均衡的, 当然,这里只有1个后端服务器.
+
+    upstream www.cncounter.com {
+        server 127.0.0.1:8080;
+    }
+
 > nginx.conf
+
+nginx 的配置文件. 引用了上面的那几个配置文件。
+
+需要注意的是, http
+ 下面的 `ssl_certificate` 和 `ssl_certificate_key` 这个配置, https 会使用到. 相当于全局配置. 如果多个IP， 多个HTTPS 证书, 则应该在 server 内单独指定,不要使用全局。
 
 	user              nginx;
 	worker_processes  1;
+	
 	error_log  /var/log/nginx/error.log;
+	
 	pid        /var/run/nginx.pid;
-
+	
 	events {
 	    use epoll;  
 	    worker_connections  1024;
 	}
-
+	
 	http {
 	    include       /etc/nginx/mime.types;
 	    default_type  application/octet-stream;
-
+	
 	    log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
-			      '$status $body_bytes_sent "$http_referer" '
-			      '"$http_user_agent" "$http_x_forwarded_for"';
-
+	                      '$status $body_bytes_sent "$http_referer" '
+	                      '"$http_user_agent" "$http_x_forwarded_for"';
+	
 	    access_log  /var/log/nginx/access.log  main;
-
+	
 	    sendfile        on;
-	    #tcp_nopush     on;
+	
 	    keepalive_timeout  65;
+	
 	    gzip  on;
+	
+	    ssl_certificate  /etc/nginx/server.crt;
+	    ssl_certificate_key  /etc/nginx/server_nopwd.key;
 	    
 	    include /etc/nginx/conf.d/*.conf;
+	
 	    include     upstream.conf;
 	    include     cncounter.com.conf; 
 	    include     renfufei.com.conf;
 	}
 
-[杯具，好像https还是访问不了].
+
+经测试是OK的, 当然, https下,引用其他网站的 http 资源,就会出错。
+
+
 
 
