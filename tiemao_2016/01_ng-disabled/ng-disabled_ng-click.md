@@ -43,8 +43,7 @@ ng-disabled 不起作用的解决办法
 
 
 
-
-
+欢迎加入: [CNC开源组件开发交流群 316630025](http://jq.qq.com/?_wv=1027&k=Z4v6kn)
 
 原文链接: [http://baudehlo.com/2014/02/24/angular-js-ng-click-still-fires-when-div-is-ngdisabled/](http://baudehlo.com/2014/02/24/angular-js-ng-click-still-fires-when-div-is-ngdisabled/)
 
