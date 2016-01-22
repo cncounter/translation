@@ -1,6 +1,6 @@
 # 通用数据字典表结构设计
 
->本文基于初学者的角度来分析数据字典表的设计。 对于有经验的程序员来说可能有点墨迹了,所以如果你对数据字典的设计比较熟悉,那么粗略看一下即可。
+>本文带领初学者一步步分析数据字典表的设计。 对于有经验的程序员来说可能有点墨迹了,所以如果你对数据字典的设计比较熟悉,那么粗略看一下即可。
 
 
 ## 简述
@@ -161,27 +161,25 @@ ID、排序
 数据类型、附加说明、乐观锁版本号、检索标识。
 
 
-	CREATE TABLE `dict_common` (
-		`id` BIGINT(20) NOT NULL COMMENT '自增ID',
-		`dict_code` VARCHAR(64) NOT NULL COMMENT '编码',
-		`dict_desc` VARCHAR(64) NOT NULL COMMENT '名称',
-		`category_code` VARCHAR(64) NOT NULL COMMENT '分类编码',
-		`category_desc` VARCHAR(64) NULL DEFAULT NULL COMMENT '分类说明',
-		`sort_no` INT(8) NOT NULL DEFAULT '999' COMMENT '排序编号',
-		`data_type` VARCHAR(64) NOT NULL DEFAULT 'STRING' COMMENT '数据类型',
-		`remark` VARCHAR(128) NULL DEFAULT NULL COMMENT '附加说明',
-		`loc_code` VARCHAR(64) NULL DEFAULT NULL COMMENT '检索标识',
-		`create_user_id` BIGINT(20) NULL DEFAULT '0' COMMENT '创建人ID',
-		`update_user_id` BIGINT(20) NULL DEFAULT '0' COMMENT '修改人ID',
-		`create_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-		`update_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-		`version` INT(8) NOT NULL DEFAULT '0' COMMENT '乐观锁版本号',
-		PRIMARY KEY (`id`),
-		UNIQUE INDEX `dict_code_category_code` (`dict_code`, `category_code`)
-	)
-	COMMENT='通用数据字典'
-	COLLATE='utf8_general_ci'
-	ENGINE=InnoDB;
+	CREATE TABLE IF NOT EXISTS `dict_common` (
+	  `id` bigint(20) unsigned NOT NULL COMMENT '自增ID',
+	  `dict_code` varchar(64) NOT NULL COMMENT '编码',
+	  `dict_desc` varchar(64) NOT NULL COMMENT '名称',
+	  `category_code` varchar(64) NOT NULL COMMENT '分类编码',
+	  `category_desc` varchar(64) DEFAULT NULL COMMENT '分类说明',
+	  `sort_no` int(8) unsigned NOT NULL DEFAULT '999' COMMENT '排序编号',
+	  `data_type` varchar(64) NOT NULL DEFAULT 'STRING' COMMENT '数据类型',
+	  `remark` varchar(128) DEFAULT NULL COMMENT '附加说明',
+	  `locate_code` varchar(64) DEFAULT NULL COMMENT '检索标识',
+	  `create_id` bigint(20) unsigned DEFAULT '0' COMMENT '创建人ID',
+	  `update_id` bigint(20) unsigned DEFAULT '0' COMMENT '修改人ID',
+	  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+	  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+	  `version` int(8) NOT NULL DEFAULT '0' COMMENT '乐观锁版本号',
+	  PRIMARY KEY (`id`),
+	  UNIQUE KEY `dict_code_category_code` (`dict_code`,`category_code`)
+	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='通用数据字典';
+
 
 
 
@@ -204,33 +202,39 @@ ID、排序
 建表语句: MySQL
 
 
-	CREATE TABLE `dict_common` (
-		`id` BIGINT(20) NOT NULL COMMENT '自增ID',
-		`dict_code` VARCHAR(64) NOT NULL COMMENT '编码',
-		`dict_desc` VARCHAR(64) NOT NULL COMMENT '名称',
-		`category_code` VARCHAR(64) NOT NULL COMMENT '分类编码',
-		`category_desc` VARCHAR(64) NULL DEFAULT NULL COMMENT '分类说明',
-		`sort_no` INT(8) NOT NULL DEFAULT '999' COMMENT '排序编号',
-		`data_type` VARCHAR(64) NOT NULL DEFAULT 'STRING' COMMENT '数据类型',
-		`remark` VARCHAR(128) NULL DEFAULT NULL COMMENT '附加说明',
-		`loc_code` VARCHAR(64) NULL DEFAULT NULL COMMENT '检索标识',
-		`create_user_id` BIGINT(20) NULL DEFAULT '0' COMMENT '创建人ID',
-		`update_user_id` BIGINT(20) NULL DEFAULT '0' COMMENT '修改人ID',
-		`create_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-		`update_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-		`version` INT(8) NOT NULL DEFAULT '0' COMMENT '乐观锁版本号',
-		PRIMARY KEY (`id`),
-		UNIQUE INDEX `dict_code_category_code` (`dict_code`, `category_code`)
-	)
-	COMMENT='通用数据字典'
-	COLLATE='utf8_general_ci'
-	ENGINE=InnoDB;
+	CREATE TABLE IF NOT EXISTS `dict_common` (
+	  `id` bigint(20) unsigned NOT NULL COMMENT '自增ID',
+	  `dict_code` varchar(64) NOT NULL COMMENT '编码',
+	  `dict_desc` varchar(64) NOT NULL COMMENT '名称',
+	  `category_code` varchar(64) NOT NULL COMMENT '分类编码',
+	  `category_desc` varchar(64) DEFAULT NULL COMMENT '分类说明',
+	  `sort_no` int(8) unsigned NOT NULL DEFAULT '999' COMMENT '排序编号',
+	  `data_type` varchar(64) NOT NULL DEFAULT 'STRING' COMMENT '数据类型',
+	  `remark` varchar(128) DEFAULT NULL COMMENT '附加说明',
+	  `locate_code` varchar(64) DEFAULT NULL COMMENT '检索标识',
+	  `create_id` bigint(20) unsigned DEFAULT '0' COMMENT '创建人ID',
+	  `update_id` bigint(20) unsigned DEFAULT '0' COMMENT '修改人ID',
+	  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+	  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+	  `version` int(8) NOT NULL DEFAULT '0' COMMENT '乐观锁版本号',
+	  PRIMARY KEY (`id`),
+	  UNIQUE KEY `dict_code_category_code` (`dict_code`,`category_code`)
+	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='通用数据字典';
+
+
+id 统一为 bigint(20); 
+
+在 MySQL 5.6 及以后, `DATETIME` 列就可以使用 `CURRENT_TIMESTAMP` 默认值， 而且也支持多列同时设置为 `ON UPDATE CURRENT_TIMESTAMP`。
 
 
 
 
+日期: 2016年01月23日
+
+作者: [铁锚 http://blog.csdn.net/renfufei](http://blog.csdn.net/renfufei)
 
 
+ 
 
 
 
