@@ -7,7 +7,7 @@ MySQL现在是一个更好的NoSQL解决方案。我们这样说是因为在存�
 近年来,NoSQL引擎已成为主流。许多开发者将NoSQL引擎(包括:  MongoDB, Cassandra, Redis, 和 Hadoop等)视为最优解，同时不赞成使用旧的 SQL 引擎。
 
 
-选择NoSQL数据库通常是因为炒作,或者是认为关系数据库解决不了和NoSQL相关的事。普通工程师在选择数据库时往往会忽视运营成本,稳定性和成熟度等问题。更多关于各种NoSQL(以及SQL)引擎的区别,以及局限性等方面的问题，请参考 Aphyr 上的 Jepsen专栏文章。
+选择NoSQL数据库通常是因为炒作,或者是认为关系数据库解决不了和NoSQL相关的事。普通工程师在选择数据库时往往会忽视运营成本,稳定性和成熟度等问题。更多关于各种NoSQL(以及SQL)引擎的区别,以及局限性等方面的问题，请参考 Aphyr 上的 [Jepsen专栏文章](https://aphyr.com/tags/jepsen)。
 
 
 本文将阐释为什么用MySQL存储 键/值 数据比大多数专用NoSQL引擎更适合的原因,并提供相应的指导步骤。
@@ -145,7 +145,7 @@ MySQL现在是一个更好的NoSQL解决方案。我们这样说是因为在存�
 
 
 
-原文链接: [http://engineering.wix.com/2015/12/10/scaling-to-100m-mysql-is-a-better-nosql/](http://engineering.wix.com/2015/12/10/scaling-to-100m-mysql-is-a-better-nosql/)
+原文链接(需要翻墙): [http://engineering.wix.com/2015/12/10/scaling-to-100m-mysql-is-a-better-nosql/](http://engineering.wix.com/2015/12/10/scaling-to-100m-mysql-is-a-better-nosql/) 
 
 原文日前: 2015年12月10日
 
