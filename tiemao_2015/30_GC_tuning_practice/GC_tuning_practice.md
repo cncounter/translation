@@ -16,7 +16,7 @@ Instead of giving in to temptation for tweaking random parts of the application,
 
 1. 列出性能目标(State your performance goals)
 2. 执行测试(Run tests)
-3. 衡量性能(Measure)
+3. 衡量结果(Measure)
 4. 与目标进行对比(Compare to goals)
 5. 修改某个配置,然后从第2步开始继续测试(Make a change and go back to running tests)
 
