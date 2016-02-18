@@ -1,6 +1,8 @@
 GC调优实战
 ==
 
+[请跳转到 https://github.com/cncounter/gc-handbook](https://github.com/cncounter/gc-handbook)
+
 ![](garbage-collection.jpeg)
 
 Tuning Garbage Collection is no different from any other performance-tuning activities.
@@ -160,7 +162,7 @@ For this, the code above was run for 10 minutes on three different configuration
 
 The experiment ran the same code with different GC algorithms and different heap size to measure the duration of garbage collection pauses with regards to latency and throughput. Details of the experiments and interpretation of results are presented in our [Garbage Collection Handbook](https://plumbr.eu/handbook/gc-tuning#tuning-for-latency). Take a look at the handbook for examples in how simple changes in configuration turn the example to behave completely differently in regards of latency, throughput of capacity.
 
-实验中,将同样的代码运行在不同的GC算法和不同的堆内存下, 用来衡量垃圾收集的暂停时间,这关系到响应延迟和吞吐量。实验的细节和关于结果的详细解释发表在我们的[垃圾收集手册](https://plumbr.eu/handbook/gc-tuning#tuning-for-latency)里面。请查看手册以了解如何尽可能简单地配置示例程序,以表现出完全不同的延迟,吞吐量和处理能力。
+实验中,将同样的代码运行在不同的GC算法和不同的堆内存下, 用来衡量垃圾收集的暂停时间,这关系到响应延迟和吞吐量。实验的细节和关于结果的详细解释发表在我们的[垃圾收集手册](https://plumbr.eu/handbook/gc-tuning#tuning-for-latency) 里面。请查看手册以了解如何尽可能简单地配置示例程序,以表现出完全不同的延迟,吞吐量和处理能力。
 
 Note that in order to keep the example as simple as possible only a limited amount of input parameters were changed, for example the experiments do not test on different number of cores or with a different heap layout.
 
