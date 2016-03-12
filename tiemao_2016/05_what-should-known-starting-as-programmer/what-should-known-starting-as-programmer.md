@@ -1,35 +1,36 @@
-# 程序员职场必知必会
-
-> ### 给年轻开发者的8个职场建议
+#  [好文推荐] 给年轻开发者的8条建议
 
 
 As the old Faces song "[Ooh La La](http://en.wikipedia.org/wiki/Ooh_La_La_(Faces_song))" goes, I wish that I knew what I know now when I was younger. Back then, I simply loved to code and could have cared less about my "career" or about playing well with others. I could have saved myself a ton of trouble if I'd just followed a few simple practices.
 
-老面孔的歌“哦啦啦”,我希望我知道现在我知道我年轻的时候。当时,
+
+如同老歌 "[Ooh La La](http://en.wikipedia.org/wiki/Ooh_La_La_(Faces_song))" 所唱的一样,我多希望年轻时就学到那些现在才懂的道理呀。那时候,我心里只有代码,不会去思考职业生涯，也不会主动去和别人维持良好的关系。如果遵循一些简单的原则,那至少就不会一次次地掉进坑里,要少操多少心呀!
 
 
 ##1.Take names.
 
 I was really focused on computers early in my career and considered people to be minor annoyances who kept me from being one with my beloved machine. OK, I'm exaggerating a little. Despite meeting many industry luminaries and people that would have been worthwhile to befriend, I didn't keep any business cards. I didn't bother to remember their names and never checked in on them. I only went to user groups (there wasn't meetup.com when I started and it wasn't a big thing for a while after) when I needed a job.
 
-## 1.取的名字。
+## 1.记住联系方式
 
-我很关注电脑在我职业生涯的早期,认为人是小烦恼使我和我心爱的人从一个机器。好吧,我夸张一点.尽管许多行业名人和会议是值得交朋友的人,我没有保留任何名片.我没有费心去记住他们的名字,从来没有检入。我只去了用户组(没有聚会.com当我开始也不是一件大事后一段时间)当我需要一份工作。
+我刚毕业时一门心思都扑在计算机上,如果谁让我离开心爱的电脑甚至会比较反感。好吧,这样说可能夸张了一点. 尽管认识很多行内专家,参加各种交流会议也认识了很多值得交往的朋友, 但很可惜,没有存下来他们的任何名片,或者是通讯方式. 也没有花心思去记。只有在找工作时会加一些邮箱联系人(那时候还没有 meetup.com, 也没有微信)。
 
 
 I realize the concept of needing a job seems a little quaint to some of you [younger developers](http://www.infoworld.com/d/application-development/r-u-mdrn-how-lure-hipster-hackers-240650). But take it from me -- there've been times when merely saying you're a developer and knowing basic syntax and how to search (there was no Google when I started) was not enough to [find immediate employment](http://www.infoworld.com/d/application-development/tech-boom-the-war-top-developer-talent-231709). There was a time when developers actually called headhunters versus being [spammed by them endlessly](http://www.infoworld.com/d/application-development/stop-headhunters-ruining-meetups-234791). This will happen again, eventually.
 
-我意识到需要工作的概念似乎有点古怪的你年轻的开发人员.但相信我的话,有时一直只是说你是一名开发人员和了解基本语法以及如何搜索(没有谷歌当我开始)并不足以找到立竿见影 就业。曾经有一段时间当开发人员实际上叫做猎头和被他们无休止的骚扰。这将会再次发生,最终。
+
+对于 [现在的程序员](http://www.infoworld.com/d/application-development/r-u-mdrn-how-lure-hipster-hackers-240650) 来说, “需要工作” 这个概念可能有点古怪. 但说真的, 那时候如果你只会点基本的语法和使用搜索引擎(还没有谷歌), [短时间内很难找到工作]((http://www.infoworld.com/d/application-development/tech-boom-the-war-top-developer-talent-231709))。曾经有一段时间程序员把找猎头称为是 [无尽的骚扰]((http://www.infoworld.com/d/application-development/stop-headhunters-ruining-meetups-234791))。以后的日子里这很可能会再次发生。
 
 
 More important, a lot of developers who were more skilled than I am have had far less interesting careers and less success because they never put themselves out there. They never met the right people at the right moments. Hey, timing and luck are great, but you also make your own opportunities. The first nine times you go to a large gathering and no one speaks to you and you're left with all the perks of being a wallflower are practice for the 10th time when you meet someone interesting.
 
-更重要的是,很多比我更熟练的开发人员有更有趣的职业,更不成功,因为他们从不把自己.他们没有遇到正确的人在正确的时刻。嘿,时机和运气很好,但你也使自己的机会.第一个9倍你去一个大型聚会,没有人对你说话时,你剩下的所有津贴做壁花,第十次练习当你遇到有趣的人。
+
+更重要的是, 很多比我经验丰富的程序员工作也不开心,甚至不能算是成功。或者是没有机会,或者是没有在正确的时间遇到合适的人。确实, 时机和运气都很重要, 但你也可以自己创造机会. 可能前9次你去参加交流活动都没人和你聊得来,你只是去做鲜花和陪衬, 但也许第十次你就会遇到真正的贵人。
 
 
 Also, take note of your peers. If you're an early 20-something, chances are you have no real power or influence, and neither do your peers. In five to 10 years, that will all be different and the person who you ignored because they were boring and couldn't help you will be the person who could have won you an important opportunity.
 
-同时,注意你的同行。如果你是一个20多岁的早期,你没有真正的权力或影响力,也不做你的同行。在5到10年,都是不同的,你忽略了因为他们无聊的人,不能帮助你将能赢得了你的一个重要机会的人。
+同时, 关注你的小伙伴(peers)。如果在20岁左右, 你没有什么威望和影响力, 你的小伙伴也差不多是这样。但5到10年之后,情况就不一样了,你觉得无聊或者烦人的那些人,很可能会帮助你得到某些重要的机会。
 
 
 ## 2. Problem solving. 
