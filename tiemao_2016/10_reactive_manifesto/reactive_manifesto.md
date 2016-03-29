@@ -32,9 +32,7 @@ Message Driven: Reactive Systems rely on asynchronous message-passing to establi
 
 
 
-<img src="01_reactive-traits.svg" style="
-    width: 600px;
-">
+<img src="01_reactive-traits.svg" style="width: 600px;">
 
 
 
@@ -45,5 +43,5 @@ Large systems are composed of smaller ones and therefore depend on the Reactive 
 
 September 16 2014
 
-[http://www.reactivemanifesto.org/](http://www.reactivemanifesto.org/)
+	[http://www.reactivemanifesto.org/](http://www.reactivemanifesto.org/)
 
