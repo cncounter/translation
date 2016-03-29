@@ -11,7 +11,7 @@
 			c0-6.6,5.4-12,12-12h212c6.6,0,12,5.4,12,12v35c0,6.6-5.4,12-12,12H290z"/>
 		<path fill-rule="evenodd" clip-rule="evenodd" fill="#445DE9" d="M502,14H290c-4.4,0-8,3.6-8,8v35c0,4.4,3.6,8,8,8h212
 			c4.4,0,8-3.6,8-8V22C510,17.5,506.4,14,502,14z"/>
-		<text transform="matrix(1 0 0 1 347.9999 42.9651)" fill="#FFFFFF" font-family="'HelveticaNeue'" font-size="18">Responsive</text>
+		<text transform="matrix(1 0 0 1 307.9999 42.9651)" fill="#FFFFFF" font-family="'HelveticaNeue'" font-size="18">及时响应(Responsive)</text>
 		<g>
 			<path opacity="0.4" fill-rule="evenodd" clip-rule="evenodd" fill="#445DE9" d="M555,177c-8.8,0-16-7.2-16-16v-35
 				c0-8.8,7.2-16,16-16h212c8.8,0,16,7.2,16,16v35c0,8.8-7.2,16-16,16H555z"/>
@@ -19,7 +19,7 @@
 				c0-6.6,5.4-12,12-12h212c6.6,0,12,5.4,12,12v35c0,6.6-5.4,12-12,12H555z"/>
 			<path fill-rule="evenodd" clip-rule="evenodd" fill="#445DE9" d="M767,118H555c-4.4,0-8,3.6-8,8v35c0,4.4,3.6,8,8,8h212
 				c4.4,0,8-3.6,8-8v-35C775,121.5,771.4,118,767,118z"/>
-			<text transform="matrix(1 0 0 1 625.0005 149.2253)" fill="#FFFFFF" font-family="'HelveticaNeue-Medium'" font-size="18">Resilient</text>
+			<text transform="matrix(1 0 0 1 595.0005 149.2253)" fill="#FFFFFF" font-family="'HelveticaNeue-Medium'" font-size="18">韧性(Resilient)</text>
 		</g>
 		<g>
 			<path opacity="0.4" fill-rule="evenodd" clip-rule="evenodd" fill="#445DE9" d="M290,282c-8.8,0-16-7.2-16-16v-35
@@ -29,7 +29,7 @@
 			<path fill-rule="evenodd" clip-rule="evenodd" fill="#445DE9" d="M502,223H290c-4.4,0-8,3.6-8,8v35c0,4.4,3.6,8,8,8h212
 				c4.4,0,8-3.6,8-8v-35C510,226.5,506.4,223,502,223z"/>
 		</g>
-		<text transform="matrix(1 0 0 1 329.11 253.9655)" fill="#FFFFFF" font-family="'HelveticaNeue-Medium'" font-size="18">Message Driven</text>
+		<text transform="matrix(1 0 0 1 289.11 253.9655)" fill="#FFFFFF" font-family="'HelveticaNeue-Medium'" font-size="18">消息驱动(Message Driven)</text>
 		<g>
 			<path opacity="0.4" fill-rule="evenodd" clip-rule="evenodd" fill="#445DE9" d="M24,177c-8.8,0-16-7.2-16-16v-35
 				c0-8.8,7.2-16,16-16h212c8.8,0,16,7.2,16,16v35c0,8.8-7.2,16-16,16H24z"/>
@@ -37,7 +37,7 @@
 				c0-6.6,5.4-12,12-12h212c6.6,0,12,5.4,12,12v35c0,6.6-5.4,12-12,12H24z"/>
 			<path fill-rule="evenodd" clip-rule="evenodd" fill="#445DE9" d="M236,118H24c-4.4,0-8,3.6-8,8v35c0,4.4,3.6,8,8,8h212
 				c4.4,0,8-3.6,8-8v-35C244,121.5,240.4,118,236,118z"/>
-			<text transform="matrix(1 0 0 1 98.9999 148.965)" fill="#FFFFFF" font-family="'HelveticaNeue-Medium'" font-size="18">Elastic</text>
+			<text transform="matrix(1 0 0 1 68.9999 148.965)" fill="#FFFFFF" font-family="'HelveticaNeue-Medium'" font-size="18">弹性(Elastic)</text>
 		</g>
 	</g>
 </g>
