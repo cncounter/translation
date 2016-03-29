@@ -1,6 +1,4 @@
-# The Reactive Manifesto
-
-# 被动的宣言
+# 响应式宣言
 
 
 Organisations working in disparate domains are independently discovering patterns for building software that look the same. These systems are more robust, more resilient, more flexible and better positioned to meet modern demands.
@@ -58,12 +56,11 @@ Large systems are composed of smaller ones and therefore depend on the Reactive 
 大型系统是由较小的,因此取决于他们的选民的反应特性.这意味着反应系统各级应用设计原则所以这些属性应用的规模,使它们可组合.世界上最大的系统依赖架构基于这些属性和服务每天数十亿人的需要.是时候从一开始就有意识地应用这些设计原则而不是每次都重新发现他们。
 
 
-September 16 2014
 
 2014年9月16日
 
 
-	[http://www.reactivemanifesto.org/](http://www.reactivemanifesto.org/)
+[http://www.reactivemanifesto.org/](http://www.reactivemanifesto.org/)
 
 
 
