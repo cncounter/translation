@@ -42,7 +42,8 @@ Resilient: The system stays responsive in the face of failure. This applies not 
 
 Elastic: The system stays responsive under varying workload. Reactive Systems can react to changes in the input rate by increasing or decreasing the resources allocated to service these inputs. This implies designs that have no contention points or central bottlenecks, resulting in the ability to shard or replicate components and distribute inputs among them. Reactive Systems support predictive, as well as Reactive, scaling algorithms by providing relevant live performance measures. They achieve elasticity in a cost-effective way on commodity hardware and software platforms.
 
-**弹性(Elastic)**: 不同工作负载下的系统仍然可以作出响应。反应式系统可以应对变化的输入率增加或减少这些输入的资源分配服务.这意味着设计没有争用点或中央瓶颈,导致碎片的能力或复制组件和分发输入其中.反应式系统支持预测,以及活性、缩放算法通过提供相应的现场表演措施.他们elasticity实现cost-effective in a way据commodity硬件和软件platforms。
+**弹性(Elastic)**: 不同工作负载下的系统都可以作出快速响应。反应式系统可以根据需要服务的量来动态增加或减少资源. 这意味着设计中没有争用点或者中央瓶颈, 具有分片能力或者组件复制, 并将输入分发给他们. 反应式系统支持预测, 以及反应性、通过动态性能措施提供相应的缩放算法. 他们以具有成本效益的方式实现弹性商品硬件和软件平台
+。
 
 
 Message Driven: Reactive Systems rely on asynchronous message-passing to establish a boundary between components that ensures loose coupling, isolation, location transparency, and provides the means to delegate errors as messages. Employing explicit message-passing enables load management, elasticity, and flow control by shaping and monitoring the message queues in the system and applying back-pressure when necessary. Location transparent messaging as a means of communication makes it possible for the management of failure to work with the same constructs and semantics across a cluster or within a single host. Non-blocking communication allows recipients to only consume resources while active, leading to less system overhead.
