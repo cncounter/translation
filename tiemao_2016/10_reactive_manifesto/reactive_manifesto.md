@@ -52,7 +52,7 @@ Message Driven: Reactive Systems rely on asynchronous message-passing to establi
 **消息驱动**(`Message Driven`): 反应式系统依赖[异步](http://www.reactivemanifesto.org/glossary#Asynchronous) [消息传递](http://www.reactivemanifesto.org/glossary#Message-Driven)机制, 以确定各种组件的边界, 并确保松耦合(loose coupling)、隔离性(isolation)、[位置透明性(location transparency)](http://www.reactivemanifesto.org/glossary#Location-Transparency), 并提供将[错误](http://www.reactivemanifesto.org/glossary#Failure)封装为消息的手段。采用显式的消息传递, 通过监测系统中的消息队列, 以支持负载管理(load management), 弹性扩容(elasticity) 和流量控制(flow control)。必要时甚至可以采用[背压(back-pressure)](http://www.reactivemanifesto.org/glossary#Back-Pressure)。 位置透明的消息传递机制, 使得对集群和单个主机的失败管理具有相同的结构和语义。[非阻塞](http://www.reactivemanifesto.org/glossary#Non-Blocking)通信允许接收者只在活动时消耗[资源](http://www.reactivemanifesto.org/glossary#Resource)，有效减少系统开销。
 
 
-<img src="01_reactive-traits.svg" style="width: 600px;">
+![](01_reactive-traits.png)
 
 
 
