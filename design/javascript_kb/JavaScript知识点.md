@@ -14,6 +14,7 @@
 3. 网络知识
 
    HTTP、状态码
+   域名、ip、端口、hosts、DNS、Nginx
 
 4. HTML + CSS 基础
 
