@@ -27,6 +27,8 @@
   var, 全局赋值, window["xxx"], window.xxx
   typeof: number,string,boolean,object,undefined,function
 
+   数组,pop,push,[]
+
 
 2. 函数基础
 
@@ -35,7 +37,15 @@
 
 3. DOM 基础
 
+  document
+
+  表单、输入框
+
+  事件、传播
+
 4. BOM 基础
+
+  window
 
 5. AJAX基础
 
