@@ -91,3 +91,46 @@
 
 	   };
 	})()
+
+
+
+
+JavaScript的原型链
+
+
+函数作为构造函数:
+
+
+	// 共用对象,这是普通对象
+	var PersonProto = {
+		personType : "黄种人",
+		sayType : function(){
+			alert("this.personType=" + this.personType);
+		}
+	};
+
+	// 构造函数
+	function Teacher(){
+		this.name = this.personType;
+		//
+		this.teacherType="好老师";
+		this.sayTeacherType=function(){
+			alert("this.teacherType=" + this.teacherType);
+		};
+	};
+	//
+	Teacher.prototype = PersonProto;
+	//
+	function Student(){
+		this.personType = "好学生";
+	};
+	Student.prototype = PersonProto;
+
+	//
+	var tt = new Teacher();
+	var ss = new Student();
+
+	tt.sayType();
+	tt.sayTeacherType();
+	ss.sayType();
+
