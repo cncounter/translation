@@ -130,7 +130,7 @@ JavaScript的原型链
 	var tt = new Teacher();
 	var ss = new Student();
 
-	tt.sayType();
-	tt.sayTeacherType();
-	ss.sayType();
+	tt.sayType(); // this.personType=黄种人
+	tt.sayTeacherType(); // this.teacherType=好老师
+	ss.sayType(); // this.personType=好学生
 
