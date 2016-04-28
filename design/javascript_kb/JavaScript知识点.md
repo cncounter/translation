@@ -105,7 +105,7 @@ JavaScript的原型链
 	var PersonProto = {
 		personType : "黄种人",
 		sayType : function(){
-			alert("this.personType=" + this.personType);
+			console.dir("this.personType=" + this.personType);
 		}
 	};
 
@@ -115,7 +115,7 @@ JavaScript的原型链
 		//
 		this.teacherType="好老师";
 		this.sayTeacherType=function(){
-			alert("this.teacherType=" + this.teacherType);
+			console.dir("this.teacherType=" + this.teacherType);
 		};
 	};
 	//
