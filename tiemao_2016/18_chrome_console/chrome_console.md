@@ -74,6 +74,18 @@ copy()
 
 
 
+指南英文地址: [https://developer.chrome.com/devtools/docs/console](https://developer.chrome.com/devtools/docs/console)
+
+
+
+
+
+
+
+
+
+
+
 
 
 
