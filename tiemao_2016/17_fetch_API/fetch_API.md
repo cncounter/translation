@@ -1,16 +1,16 @@
-# fetch API
+# 新一代AJAX简介: fetch API
 
 
 One of the worst kept secrets about AJAX on the web is that the underlying API for it, XMLHttpRequest, wasn't really made for what we've been using it for.  We've done well to create elegant APIs around XHR but we know we can do better.  Our effort to do better is the fetch API.  Let's have a basic look at the new window.fetch method, available now in Firefox and Chrome Canary.
 
-最糟糕的一个AJAX在web上保持秘密在于底层API,XMLHttpRequest,并不是真的为我们已经使用它了.我们已经做得很好创造优雅的api在XHR但我们知道,我们可以做得更好。我们努力做得更好是获取API。让我们有一个基本的新窗口.获取方法,可用在Firefox和Chrome金丝雀。
+AJAX最恶心的事情莫过于底层API的丑陋了. XMLHttpRequest, 并不是为如今的使用方式的而设计的. 虽然如今各种框架对 XHR 的封装已经很优雅很友好, 但我们可以做得更好。更好的方式是 fetch API。下面简单介绍下 window.fetch 方法, 已经在 Firefox 和 Chrome Canary 版本中可用了。
 
 
 ## XMLHttpRequest
 
 XHR is a bit overcomplicated in my opinion, and don't get me started on why "XML" is uppercase but "Http" is camel-cased.  Anyways, this is how you use XHR now:
 
-XHR有点复杂的在我看来,,别让我开始为什么“XML”大写,但“Http”是“骆峰式”。不管怎样,这是你如何使用XHR现在:
+XHR在我看来有点复杂, 别让我解释为什么“XML”是大写,而“Http”是“骆峰式”写法。不管怎样, 使用XHR的方式一般是这样:
 
 
 	// Just getting XHR is a mess!
@@ -27,7 +27,7 @@ XHR有点复杂的在我看来,,别让我开始为什么“XML”大写,但“Ht
 	    catch (e) {}
 	  }
 	}
-
+	
 	// Open, send.
 	request.open('GET', 'https://davidwalsh.name/ajax-endpoint', true);
 	request.send(null);
@@ -35,16 +35,16 @@ XHR有点复杂的在我看来,,别让我开始为什么“XML”大写,但“Ht
 
 Of course our JavaScript frameworks make XHR more pleasant to work with, but what you see above is a simple example of the XHR mess.
 
-当然我们的JavaScript框架使XHR更加愉快,但你在上面看到的是一个简单的例子XHR混乱。
+当然JavaScript框架使得操作XHR也很方便,但你在上面看到的是一个XHR混乱的简单例子。
 
 
 ## Basic `fetch` Usage
 
-## 基本的“获取”使用
+## `fetch`的基本使用
 
 A fetch function is now provided in the global window scope, with the first argument being the URL:
 
-获取函数现在在全球提供窗口范围,第一个参数是网址:
+fetch 函数在 global window 作用域下可用, 第一个参数是URL:
 
 
 	// url (required), options (optional)
@@ -59,7 +59,7 @@ A fetch function is now provided in the global window scope, with the first argu
 
 Much like the updated Battery API, the fetch API uses JavaScript Promises to handle results/callbacks:
 
-就像电池更新的API,fetch API使用JavaScript将处理结果/回调:
+和Battery API 一样,fetch API使用JavaScript Promises 来处理结果/回调:
 
 
 	// Simple response handling
@@ -68,7 +68,7 @@ Much like the updated Battery API, the fetch API uses JavaScript Promises to han
 	}).catch(function(err) {
 		// Error :(
 	});
-
+	
 	// Chaining for more "advanced" handling
 	fetch('/some/url').then(function(response) {
 		return //...
@@ -81,7 +81,7 @@ Much like the updated Battery API, the fetch API uses JavaScript Promises to han
 
 If you aren't used to then yet, get used to it -- it will soon be everywhere.
 
-如果你不习惯,习惯它,它很快就会无处不在。
+如果你还不习惯,那就学习一下,因为很快就会无处不在。
 
 
 ## Request Headers
@@ -96,19 +96,19 @@ The ability to set request headers is important in request flexibility. You can 
 
 	// Create an empty Headers instance
 	var headers = new Headers();
-
+	
 	// Add a few headers
 	headers.append('Content-Type', 'text/plain');
 	headers.append('X-My-Custom-Header', 'CustomValue');
-
+	
 	// Check, get, and set header values
 	headers.has('Content-Type'); // true
 	headers.get('Content-Type'); // "text/plain"
 	headers.set('Content-Type', 'application/json');
-
+	
 	// Delete a header
 	headers.delete('X-My-Custom-Header');
-
+	
 	// Add initial values
 	var headers = new Headers({
 		'Content-Type': 'text/plain',
@@ -126,7 +126,7 @@ You can use the append, has, get, set, and delete methods to modify request head
 			'Content-Type': 'text/plain'
 		})
 	});
-
+	
 	fetch(request).then(function() { /* handle response */ });
 
 
@@ -160,10 +160,10 @@ A Request instance represents the request piece of a fetch call. By passing fetc
 * headers headers object -美联社
 * referrer referrer of the request -
 * mode -连续,no-cors,same-origin
-*凭证——饼干应该请求吗?省略,同源
-*重定向-,错误,手工
-*完整性——子资源完整性价值
-*缓存,缓存模式(默认情况下,刷新,no - cache)
+  *凭证——饼干应该请求吗?省略,同源
+  *重定向-,错误,手工
+  *完整性——子资源完整性价值
+  *缓存,缓存模式(默认情况下,刷新,no - cache)
 
 
 A sample Request usage may look like:
@@ -229,10 +229,10 @@ The fetch's then method is provided a Response instance but you can also manuall
 *类型——基本歌珥
 * url
 * useFinalURL -布尔如果url是最后的url
-*状态,状态代码(例:200、404等)
-*好——布尔成功的响应(状态范围在200 - 299年)
+  *状态,状态代码(例:200、404等)
+  *好——布尔成功的响应(状态范围在200 - 299年)
 * statusText -状态代码(例:好)
-*头-头与反应相关联的对象。
+  *头-头与反应相关联的对象。
 
 
 <br/>
@@ -245,7 +245,7 @@ The fetch's then method is provided a Response instance but you can also manuall
 		status: 404,
 		url: '/'
 	});
-
+	
 	// The fetch's `then` gets a Response instance back
 	fetch('/')
 		.then(function(responseObj) {
