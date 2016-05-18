@@ -1,16 +1,16 @@
-# 新一代AJAX简介: fetch API
+# AJAX新一代API简介: fetch
 
 
 One of the worst kept secrets about AJAX on the web is that the underlying API for it, XMLHttpRequest, wasn't really made for what we've been using it for.  We've done well to create elegant APIs around XHR but we know we can do better.  Our effort to do better is the fetch API.  Let's have a basic look at the new window.fetch method, available now in Firefox and Chrome Canary.
 
-AJAX最恶心的事情莫过于底层API的丑陋了. XMLHttpRequest, 并不是为如今的使用方式的而设计的. 虽然如今各种框架对 XHR 的封装已经很优雅很友好, 但我们可以做得更好。更好的方式是 fetch API。下面简单介绍下 window.fetch 方法, 已经在 Firefox 和 Chrome Canary 版本中可用了。
+AJAX最恶心的事情莫过于丑陋的底层API了.  **XMLHttpRequest** 的设计并非是为如今的使用方式而考虑的. 虽然各种框架对 **XHR** 的封装已足够好用, 但我们还可以做得更好。更好的方式是使用 fetch API。下面简单介绍下 `window.fetch` 方法, 在最新版的 Firefox 和 Chrome 中已经可以使用了。
 
 
 ## XMLHttpRequest
 
 XHR is a bit overcomplicated in my opinion, and don't get me started on why "XML" is uppercase but "Http" is camel-cased.  Anyways, this is how you use XHR now:
 
-XHR在我看来有点复杂, 别让我解释为什么“XML”是大写,而“Http”是“骆峰式”写法。不管怎样, 使用XHR的方式一般是这样:
+XHR在我看来有点复杂, 别让我解释为什么“XML”是大写,而“Http”是“骆峰式”写法。不管怎样, 使用XHR的方式大致如下:
 
 
 	// Just getting XHR is a mess!
@@ -40,11 +40,11 @@ Of course our JavaScript frameworks make XHR more pleasant to work with, but wha
 
 ## Basic `fetch` Usage
 
-## `fetch`的基本使用
+## 基本的 `fetch` 使用
 
 A fetch function is now provided in the global window scope, with the first argument being the URL:
 
-fetch 函数在 global window 作用域下可用, 第一个参数是URL:
+`fetch` 函数在 global window 作用域下可用, 第一个参数是URL:
 
 
 	// url (required), options (optional)
@@ -53,63 +53,62 @@ fetch 函数在 global window 作用域下可用, 第一个参数是URL:
 	}).then(function(response) {
 		
 	}).catch(function(err) {
-		// Error :(
+		// 出错了;等价于 then 的第二个参数,但这样更直观 :(
 	});
 
 
 Much like the updated Battery API, the fetch API uses JavaScript Promises to handle results/callbacks:
 
-和Battery API 一样,fetch API使用JavaScript Promises 来处理结果/回调:
+和Battery API 一样, fetch API 也使用了 JavaScript Promises 来处理结果/回调:
 
 
-	// Simple response handling
+	// 对响应的简单处理
 	fetch('/some/url').then(function(response) {
 		
 	}).catch(function(err) {
-		// Error :(
+		// 出错了;等价于 then 的第二个参数,但这样更直观 :(
 	});
 	
-	// Chaining for more "advanced" handling
+	// 链式处理,将异步变为类似单线程的写法: 高级用法.
 	fetch('/some/url').then(function(response) {
-		return //...
+		return //... 执行成功, 第1步...
 	}).then(function(returnedValue) {
-		// ...
+		// ... 执行成功, 第2步...
 	}).catch(function(err) {
-		// Error :(
+		// 中途任何地方出错...在此处理 :( 
 	});
 
 
 If you aren't used to then yet, get used to it -- it will soon be everywhere.
 
-如果你还不习惯,那就学习一下,因为很快就会无处不在。
+如果你还不习惯这种写法,那最好学习一下,因为很快就会全面流行。
 
 
-## Request Headers
 
-## 请求头
+## 请求头(Request Headers)
 
 
 The ability to set request headers is important in request flexibility. You can work with request headers by executing new Headers():
 
-在请求设置请求头的能力是重要的灵活性。你可以处理请求头通过执行新标题():
+允许自己设置请求头极大地增强了请求的灵活性。可以通过 `new Headers()` 来处理请求头:
 
 
-	// Create an empty Headers instance
+	// 创建一个空的 Headers 对象,注意是Headers，不是Header
 	var headers = new Headers();
 	
-	// Add a few headers
+	// 添加(append)请求头信息
 	headers.append('Content-Type', 'text/plain');
 	headers.append('X-My-Custom-Header', 'CustomValue');
 	
-	// Check, get, and set header values
+	// 判断(has), 获取(get), 以及修改(set)请求头的值
 	headers.has('Content-Type'); // true
 	headers.get('Content-Type'); // "text/plain"
 	headers.set('Content-Type', 'application/json');
 	
-	// Delete a header
+	// 删除某条请求头信息(a header)
 	headers.delete('X-My-Custom-Header');
 	
-	// Add initial values
+	// 创建对象时设置初始化信息
 	var headers = new Headers({
 		'Content-Type': 'text/plain',
 		'X-My-Custom-Header': 'CustomValue'
@@ -118,7 +117,7 @@ The ability to set request headers is important in request flexibility. You can 
 
 You can use the append, has, get, set, and delete methods to modify request headers. To use request headers, create a Request instance :
 
-得到,你可以使用附加的,集和delete方法修改请求头。使用请求头,创建一个请求实例:
+可以使用 **append**, **has**, **get**, **set**, 以及 **delete** 方法来修改请求头。使用请求头需要创建一个 `Request `  对象:
 
 
 	var request = new Request('/some-url', {
@@ -132,43 +131,36 @@ You can use the append, has, get, set, and delete methods to modify request head
 
 Let's have a look at what Response and Request do!
 
-让我们看一看响应和请求做!
+下面看一看 **Response** 和**Request** 怎么使用!
 
 
-## Request
 
-## 请求
+## Request 简介
 
 
 A Request instance represents the request piece of a fetch call. By passing fetch a Request you can make advanced and customized requests:
 
-一块请求实例表示请求的取回电话。通过获取请求你可以先进和定制的请求:
+Request 对象表示一次 fetch 调用的请求信息。通过 Request  参数调用 fetch, 可以执行高级的自定义请求:
 
 
-* method - GET, POST, PUT, DELETE, HEAD
-* url - URL of the request
-* headers - associated Headers object
-* referrer - referrer of the request
-* mode - cors, no-cors, same-origin
-* credentials - should cookies go with the request? omit, same-origin
+
+
+* method - 支持 GET, POST, PUT, DELETE, HEAD
+* url - 请求的 URL
+* headers - 对应的 Headers 对象
+* referrer - 请求的 referrer 信息
+* mode - 可以设置 cors, no-cors, same-origin
+* credentials - 设置 cookies 是否随请求一起发送。可以设置: omit, same-origin
 * redirect - follow, error, manual
 * integrity - subresource integrity value
-* cache - cache mode (default, reload, no-cache)
+* cache - 设置 cache 模式 (default, reload, no-cache)
 
-* method - GET、POST、PUT、删除、头
-* url - url of the request
-* headers headers object -美联社
-* referrer referrer of the request -
-* mode -连续,no-cors,same-origin
-  *凭证——饼干应该请求吗?省略,同源
-  *重定向-,错误,手工
-  *完整性——子资源完整性价值
-  *缓存,缓存模式(默认情况下,刷新,no - cache)
+
 
 
 A sample Request usage may look like:
 
-一个示例请求使用可能看起来像:
+Request 的示例如下:
 
 
 	var request = new Request('/users.json', {
@@ -180,18 +172,19 @@ A sample Request usage may look like:
 		})
 	});
 	
-	// Now use it!
+	// 使用!
 	fetch(request).then(function() { /* handle response */ });
+
 
 
 Only the first parameter, the URL, is required. Each property becomes read only once the Request instance has been created. Also important to note that Request has a clone method which is important when using fetch within the Service Worker API -- a Request is a stream and thus must be cloned when passing to another fetch call.
 
-URL,只有第一个参数是必需的。每个属性变成只读一次请求实例创建.也一定要注意,要求有一个克隆的方法是很重要的,在使用中获取服务工人API——请求流,因此必须采用克隆时传递到另一个地方 取回电话。
+只有第一个参数 URL 是必需的。只要 Request  对象创建完成, 那么所有属性都变成只读属性. 也请注意, Request 有一个很重要的 `clone ` 方法, 特别是在 Service Worker API 中使用时 —— 一个 Request 就是一个流(stream), 因此如果要传递给另一个 fetch 方法,则需要进行克隆。
 
 
 The fetch signature, however, acts like Request so you could also do:
 
-获取签名,然而,就像请求你也可以做:
+fetch 的参数签名(signature), 和 Request 很像, 示例如下:
 
 
 	fetch('/users.json', {
@@ -204,14 +197,14 @@ The fetch signature, however, acts like Request so you could also do:
 	}).then(function() { /* handle response */ });
 
 
+
 You'll likely only use Request instances within Service Workers since the Request and fetch signatures can be the same. ServiceWorker post coming soon!
 
-你可能会只使用请求实例在服务工人自请求和获取签名可以是相同的。ServiceWorker帖子很快!
+因为 Request and fetch 的签名一致, 所以在 Service Workers 中, 你可能会更喜欢使用 Request 实例。关于 ServiceWorker 的相关博客也会很快奉上!
 
 
-##Response
 
-##响应
+##Response 简介
 
 
 The fetch's then method is provided a Response instance but you can also manually create Response objects yourself -- another situation you may encounter when using service workers. With a Response you can configure:
