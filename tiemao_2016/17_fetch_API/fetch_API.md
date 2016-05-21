@@ -1,19 +1,19 @@
-# AJAX新一代API简介: fetch
+# fetch简介:  未来的Ajax API
 
 
 One of the worst kept secrets about AJAX on the web is that the underlying API for it, XMLHttpRequest, wasn't really made for what we've been using it for.  We've done well to create elegant APIs around XHR but we know we can do better.  Our effort to do better is the fetch API.  Let's have a basic look at the new window.fetch method, available now in Firefox and Chrome Canary.
 
-AJAX最恶心的事情莫过于丑陋的底层API了.  **XMLHttpRequest** 的设计并非是为如今的使用方式而考虑的. 虽然各种框架对 **XHR** 的封装已足够好用, 但我们还可以做得更好。更好的方式是使用 fetch API。下面简单介绍下 `window.fetch` 方法, 在最新版的 Firefox 和 Chrome 中已经可以使用了。
+AJAX最恶心的事情莫过于丑陋的底层API了.  **XMLHttpRequest** 的设计并非是为如今的使用方式而考虑的. 虽然各种框架对 **XHR** 的封装已足够好用, 但我们还可以做得更好。更好的方式是使用 `fetch` API。下面简单介绍下 `window.fetch` 方法, 在最新版的 Firefox 和 Chrome 中已经可以使用了。
 
 
 ## XMLHttpRequest
 
 XHR is a bit overcomplicated in my opinion, and don't get me started on why "XML" is uppercase but "Http" is camel-cased.  Anyways, this is how you use XHR now:
 
-XHR在我看来有点复杂, 别让我解释为什么“XML”是大写,而“Http”是“骆峰式”写法。不管怎样, 使用XHR的方式大致如下:
+[XHR](https://davidwalsh.name/xmlhttprequest) 在我看来有点复杂, 别让我解释为什么“XML”是大写,而“Http”是“骆峰式”写法。不管怎样, 使用XHR的方式大致如下:
 
 
-	// Just getting XHR is a mess!
+	// 获取 XHR 非常混乱!
 	if (window.XMLHttpRequest) { // Mozilla, Safari, ...
 	  request = new XMLHttpRequest();
 	} else if (window.ActiveXObject) { // IE
@@ -28,7 +28,7 @@ XHR在我看来有点复杂, 别让我解释为什么“XML”是大写,而“Ht
 	  }
 	}
 	
-	// Open, send.
+	// 打开连接, 发送数据.
 	request.open('GET', 'https://davidwalsh.name/ajax-endpoint', true);
 	request.send(null);
 
@@ -38,16 +38,15 @@ Of course our JavaScript frameworks make XHR more pleasant to work with, but wha
 当然JavaScript框架使得操作XHR也很方便,但你在上面看到的是一个XHR混乱的简单例子。
 
 
-## Basic `fetch` Usage
 
-## 基本的 `fetch` 使用
+##  `fetch` 的基本使用
 
 A fetch function is now provided in the global window scope, with the first argument being the URL:
 
-`fetch` 函数在 global window 作用域下可用, 第一个参数是URL:
+`fetch` 函数是全局量 `window` 的一个方法, 第一个参数是URL:
 
 
-	// url (required), options (optional)
+	// url (必须), options (可选)
 	fetch('/some/url', {
 		method: 'get'
 	}).then(function(response) {
@@ -57,9 +56,9 @@ A fetch function is now provided in the global window scope, with the first argu
 	});
 
 
-Much like the updated Battery API, the fetch API uses JavaScript Promises to handle results/callbacks:
+Much like the updated [Battery API](https://davidwalsh.name/javascript-battery-api), the fetch API uses JavaScript Promises to handle results/callbacks:
 
-和Battery API 一样, fetch API 也使用了 JavaScript Promises 来处理结果/回调:
+和[Battery API](https://davidwalsh.name/javascript-battery-api) 一样, fetch API 也使用了 [JavaScript Promises](https://davidwalsh.name/promises) 来处理结果/回调:
 
 
 	// 对响应的简单处理
@@ -81,7 +80,7 @@ Much like the updated Battery API, the fetch API uses JavaScript Promises to han
 
 If you aren't used to then yet, get used to it -- it will soon be everywhere.
 
-如果你还不习惯这种写法,那最好学习一下,因为很快就会全面流行。
+如果你还不习惯这种 `then` 方式的写法,那最好学习一下,因为很快就会全面流行。
 
 
 
@@ -131,7 +130,7 @@ You can use the append, has, get, set, and delete methods to modify request head
 
 Let's have a look at what Response and Request do!
 
-下面看一看 **Response** 和**Request** 怎么使用!
+下面介绍 `Response` 和`Request` 怎么使用!
 
 
 
@@ -145,22 +144,22 @@ Request 对象表示一次 fetch 调用的请求信息。通过 Request  参数�
 
 
 
-* method - 支持 GET, POST, PUT, DELETE, HEAD
-* url - 请求的 URL
-* headers - 对应的 Headers 对象
-* referrer - 请求的 referrer 信息
-* mode - 可以设置 cors, no-cors, same-origin
-* credentials - 设置 cookies 是否随请求一起发送。可以设置: omit, same-origin
-* redirect - follow, error, manual
-* integrity - subresource integrity value
-* cache - 设置 cache 模式 (default, reload, no-cache)
+* `method` - 支持 `GET`, `POST`, `PUT`, `DELETE`, `HEAD`
+* `url` - 请求的 URL
+* `headers` - 对应的 `Headers` 对象
+* `referrer` - 请求的 referrer 信息
+* `mode` - 可以设置 `cors`, `no-cors`, `same-origin`
+* `credentials` - 设置 cookies 是否随请求一起发送。可以设置: `omit`, `same-origin`
+* `redirect` - `follow`, `error`, `manual`
+* `integrity` - subresource integrity value
+* `cache` - 设置 cache 模式 (`default`, `reload`, `no-cache`)
 
 
 
 
 A sample Request usage may look like:
 
-Request 的示例如下:
+`Request` 的示例如下:
 
 
 	var request = new Request('/users.json', {
@@ -179,12 +178,12 @@ Request 的示例如下:
 
 Only the first parameter, the URL, is required. Each property becomes read only once the Request instance has been created. Also important to note that Request has a clone method which is important when using fetch within the Service Worker API -- a Request is a stream and thus must be cloned when passing to another fetch call.
 
-只有第一个参数 URL 是必需的。只要 Request  对象创建完成, 那么所有属性都变成只读属性. 也请注意, Request 有一个很重要的 `clone ` 方法, 特别是在 Service Worker API 中使用时 —— 一个 Request 就是一个流(stream), 因此如果要传递给另一个 fetch 方法,则需要进行克隆。
+只有第一个参数 URL 是必需的。只要 `Request`  对象创建完成, 那么所有属性都变成只读属性. 也请注意, `Request` 有一个很重要的 `clone ` 方法, 特别是在 Service Worker API 中使用时 —— 一个 Request 就是一个流(stream), 因此如果要传递给另一个 `fetch` 方法,则需要进行克隆。
 
 
 The fetch signature, however, acts like Request so you could also do:
 
-fetch 的参数签名(signature), 和 Request 很像, 示例如下:
+`fetch` 的方法签名(signature,可理解为参数配置), 和 `Request` 很像, 示例如下:
 
 
 	fetch('/users.json', {
@@ -209,15 +208,15 @@ You'll likely only use Request instances within Service Workers since the Reques
 
 The fetch's then method is provided a Response instance but you can also manually create Response objects yourself -- another situation you may encounter when using service workers. With a Response you can configure:
 
-**Response** 代表响应, **fetch** 的 `then` 方法提供了一个 Response 实例, 但你也可以手动创建 Response 对象 —— 比如在 service workers 中可能会用到. **Response** 可以配置的参数包括:
+**Response** 代表响应, **fetch** 的 `then` 方法提供了一个 `Response` 实例, 但你也可以手动创建 `Response` 对象 —— 比如在 service workers 中可能会用到. **Response** 可以配置的参数包括:
 
-* type - 类型,支持: basic, cors
-* url
-* useFinalURL - Boolean 值, 代表 url 是否是最终 URL
-* status - 状态码 (例如: 200, 404, 等等)
-* ok - Boolean值,代表成功响应(status 值在 200-299 之间)
-* statusText - 状态值(例如: OK)
-* headers - 与响应相关联的 Headers 对象.
+* `type` - 类型,支持: `basic`, `cors`
+* `url`
+* `useFinalURL` - Boolean 值, 代表 `url` 是否是最终 URL
+* `status` - 状态码 (例如: `200`, `404`, 等等)
+* `ok` - Boolean值,代表成功响应(status 值在 200-299 之间)
+* `statusText` - 状态值(例如: `OK`)
+* `headers` - 与响应相关联的 Headers 对象.
 
 
 
@@ -240,17 +239,17 @@ The fetch's then method is provided a Response instance but you can also manuall
 
 The Response also provides the following methods:
 
-Response  还提供了以下方法:
+`Response`  提供的方法如下:
 
 
-* clone() -  创建一个新的 Response 克隆对象.
-* error() - 返回一个新的,与网络错误相关的 Response 对象.
-* redirect() - 重定向,使用新的 URL 创建新的 response 对象..
-* arrayBuffer() - Returns a promise that resolves with an ArrayBuffer.
-* blob() - 返回一个 promise,   resolves 是一个 Blob.
-* formData() - 返回一个 promise,   resolves 是一个 FormData 对象.
-* json() - 返回一个 promise,   resolves 是一个 JSON 对象.
-* text() - 返回一个 promise,   resolves 是一个 USVString (text).
+* `clone()` -  创建一个新的 Response 克隆对象.
+* `error()` - 返回一个新的,与网络错误相关的 Response 对象.
+* `redirect()` - 重定向,使用新的 URL 创建新的 response 对象..
+* `arrayBuffer()` - Returns a promise that resolves with an ArrayBuffer.
+* `blob()` - 返回一个 promise,   resolves 是一个 Blob.
+* `formData()` - 返回一个 promise,   resolves 是一个 FormData 对象.
+* `json()` - 返回一个 promise,   resolves 是一个 JSON 对象.
+* `text()` - 返回一个 promise,   resolves 是一个 USVString (text).
 
 
 
@@ -258,12 +257,12 @@ Response  还提供了以下方法:
 
 ## Handling JSON
 
-## 处理JSON
+## 处理 JSON
 
 
 Let's say you make a request for JSON -- the resulting callback data has a json method for converting the raw data to a JavaScript object:
 
-假设你做一个JSON请求——由此产生的回调数据有一个JSON方法将原始数据转换成一个JavaScript对象:
+假设需要请求 JSON —— 结果的回调数据中有一个`json`方法,用来将原始数据转换成一个 JavaScript 对象:
 
 
 	fetch('https://davidwalsh.name/demo/arsenal.json').then(function(response) { 
@@ -277,7 +276,9 @@ Let's say you make a request for JSON -- the resulting callback data has a json 
 
 Of course that's a simple JSON.parse(jsonString), but the json method is a handy shortcut.
 
-当然这是一个简单JSON.parse(jsonString),但json方法是一个方便的捷径。
+当然这很简单 ,只是封装了 `JSON.parse(jsonString)` 而已, 但 `json` 方法还是很方便的。
+
+
 
 
 ## Handling Basic Text/HTML Responses
@@ -285,9 +286,10 @@ Of course that's a simple JSON.parse(jsonString), but the json method is a handy
 ## 处理基本的Text / HTML响应
 
 
+
 JSON isn't always the desired request response format so here's how you can work with an HTML or text response:
 
-JSON并不总是理想的请求响应格式这里是如何使用HTML或文本响应:
+ JSON 并不总是理想的请求/响应数据格式, 那么我们看看如何处理 HTML或文本响应:
 
 
 	fetch('/next/page')
@@ -301,17 +303,22 @@ JSON并不总是理想的请求响应格式这里是如何使用HTML或文本响
 
 You can get the response text via chaining the Promise's then method along with the text() method.
 
-你可以通过链接文本承诺的响应的方法和文本()方法。
+如上面的代码所示, 可以在 Promise 的链式 `then` 方法中, 先返回 `text()` 结果 ,再获取 text 。
+
+
 
 
 ## Handling Blob Responses
 
-## 处理Blob反应
+## 处理Blob结果
+
 
 
 If you want to load an image via fetch, for example, that will be a bit different:
 
-如果你想负载通过获取图像,例如,将略有不同:
+如果你想通过 fetch 加载图像, 则会略有不同:
+
+
 
 
 	fetch('flowers.jpg')
@@ -323,19 +330,19 @@ If you want to load an image via fetch, for example, that will be a bit differen
 		});
 
 
+
 The blob() method of the Body mixin takes a Response stream and reads it to completion.
 
-身体mixin的blob()方法接受一个响应流和读取完成。
+Body mixin 的 `blob()` 方法接受响应流(Response stream), 并且将其读完。
 
 
-## Posting Form Data
 
-## 发布表单数据
+## 提交表单数据(Posting Form Data)
 
 
 Another common use case for AJAX is sending form data -- here's how you would use fetch to post form data:
 
-AJAX的另一个常见的用例是发送表单数据——这是如何使用post表单数据获取:
+另一个常用的 AJAX 用例是提交表单数据 —— 示例代码如下:
 
 
 	fetch('/submit', {
@@ -346,7 +353,7 @@ AJAX的另一个常见的用例是发送表单数据——这是如何使用post
 
 And if you want to POST JSON to the server:
 
-如果你想发布JSON的服务器:
+如果你想发送JSON给服务器:
 
 
 	fetch('/submit-json', {
@@ -360,30 +367,34 @@ And if you want to POST JSON to the server:
 
 Very easy, very eye-pleasing as well!
 
-非常简单,非常有视觉享受!
+非常非常简单, 妈妈再也不用担心我的心情!
 
 
-## Unwritten Story
 
-## 不成文的故事
+## 还没说完的故事(Unwritten Story)
 
 While fetch is a nicer API to use, the API current doesn't allow for canceling a request, which makes it a non-starter for many developers.
 
-获取更好的API来使用时,API当前不允许取消的请求,这使得它对许多开发人员不可能成功。
+`fetch` 是个很实用的API , 但不允许取消请求, 这就是使得很多开发人员暂时不会采用它。
 
 
 The new fetch API seems much saner and simpler to use than XHR.  After all, it was created so that we could do AJAX the right way; fetch has the advantage of hindsight.  I can't wait until fetch is more broadly supported!
 
-新的获取API似乎比XHR更理智的和简单的使用。毕竟,它,这样我们就可以创建AJAX的正确方法,获取了事后的优势.我不能等待,直到获取更广泛的支持!
+新的 `fetch`  API 比起 XHR 更智能也更简单。毕竟,它就是为了让我们创建AJAX而设计的, 具有后发的优势. 我已经迫不及待了, 即使现在支持度没那么广!
 
 
 This is meant to be an introduction to fetch.  For a more in depth look, please visit Introduction to Fetch.  And if you're looking for a polyfill, check out GitHub's implementation.
 
-这是一个介绍取回。更深入地看,请访问介绍取回。如果你正在寻找一个polyfill,看看GitHub的实现。
+这只是一篇对 `fetch` 的介绍文章。更深入地看,请访问 [Fetch简介](https://developers.google.com/web/updates/2015/03/introduction-to-fetch)。如果你要寻找一个 [polyfill](http://www.cnblogs.com/ziyunfei/archive/2012/09/17/2688829.html), 可以参考GitHub上的 [fetch实现](https://github.com/github/fetch)。
 
 
 
+翻译人员: [铁锚 http://blog.csdn.net/renfufei](http://blog.csdn.net/renfufei)
 
 
-https://davidwalsh.name/fetch
+翻译时间: 2016年5月21日
+
+原文时间: 2016年4月15日
+
+原文链接: [https://davidwalsh.name/fetch](https://davidwalsh.name/fetch)
 
