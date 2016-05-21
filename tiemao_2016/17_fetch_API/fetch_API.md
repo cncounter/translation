@@ -200,7 +200,7 @@ fetch 的参数签名(signature), 和 Request 很像, 示例如下:
 
 You'll likely only use Request instances within Service Workers since the Request and fetch signatures can be the same. ServiceWorker post coming soon!
 
-因为 Request and fetch 的签名一致, 所以在 Service Workers 中, 你可能会更喜欢使用 Request 实例。关于 ServiceWorker 的相关博客也会很快奉上!
+因为 Request and fetch 的签名一致, 所以在 Service Workers 中, 你可能会更喜欢使用 Request 实例。关于 ServiceWorker 的相关博客请等待后续更新!
 
 
 
@@ -209,29 +209,20 @@ You'll likely only use Request instances within Service Workers since the Reques
 
 The fetch's then method is provided a Response instance but you can also manually create Response objects yourself -- another situation you may encounter when using service workers. With a Response you can configure:
 
-获取的方法提供了一个反应实例但是你也可以自己手动创建响应对象——另一种情况,你可能会遇到当使用服务的工人.您可以配置响应:
+**Response** 代表响应, **fetch** 的 `then` 方法提供了一个 Response 实例, 但你也可以手动创建 Response 对象 —— 比如在 service workers 中可能会用到. **Response** 可以配置的参数包括:
 
-* type - basic, cors
+* type - 类型,支持: basic, cors
 * url
-* useFinalURL - Boolean for if url is the final URL
-* status - status code (ex: 200, 404, etc.)
-* ok - Boolean for successful response (status in the range 200-299)
-* statusText - status code (ex: OK)
-* headers - Headers object associated with the response.
-
-*类型——基本歌珥
-* url
-* useFinalURL -布尔如果url是最后的url
-  *状态,状态代码(例:200、404等)
-  *好——布尔成功的响应(状态范围在200 - 299年)
-* statusText -状态代码(例:好)
-  *头-头与反应相关联的对象。
+* useFinalURL - Boolean 值, 代表 url 是否是最终 URL
+* status - 状态码 (例如: 200, 404, 等等)
+* ok - Boolean值,代表成功响应(status 值在 200-299 之间)
+* statusText - 状态值(例如: OK)
+* headers - 与响应相关联的 Headers 对象.
 
 
-<br/>
 
 
-	// Create your own response for service worker testing
+	// 在 service worker 测试中手动创建 response
 	// new Response(BODY, OPTIONS)
 	var response = new Response('.....', {
 		ok: false,
@@ -239,35 +230,31 @@ The fetch's then method is provided a Response instance but you can also manuall
 		url: '/'
 	});
 	
-	// The fetch's `then` gets a Response instance back
+	// fetch 的 `then` 会传入一个 Response 对象
 	fetch('/')
 		.then(function(responseObj) {
 			console.log('status: ', responseObj.status);
 		});
 
 
+
 The Response also provides the following methods:
 
-响应还提供了以下方法:
+Response  还提供了以下方法:
 
 
-* clone() - Creates a clone of a Response object.
-* error() - Returns a new Response object associated with a network error.
-* redirect() - Creates a new response with a different URL.
+* clone() -  创建一个新的 Response 克隆对象.
+* error() - 返回一个新的,与网络错误相关的 Response 对象.
+* redirect() - 重定向,使用新的 URL 创建新的 response 对象..
 * arrayBuffer() - Returns a promise that resolves with an ArrayBuffer.
-* blob() - Returns a promise that resolves with a Blob.
-* formData() - Returns a promise that resolves with a FormData object.
-* json() - Returns a promise that resolves with a JSON object.
-* text() - Returns a promise that resolves with a USVString (text).
+* blob() - 返回一个 promise,   resolves 是一个 Blob.
+* formData() - 返回一个 promise,   resolves 是一个 FormData 对象.
+* json() - 返回一个 promise,   resolves 是一个 JSON 对象.
+* text() - 返回一个 promise,   resolves 是一个 USVString (text).
 
-*克隆()创建了一个克隆的响应对象。
-*误差()返回一个新的响应对象与网络相关的错误。
-*()——创建一个新的重定向响应与一个不同的URL。
-* arrayBuffer()返回一个承诺,解决arrayBuffer。
-* blob()返回一个承诺,解决一个blob。
-* formData()返回一个承诺,解决formData对象。
-* json()返回一个承诺,解析json对象。
-* text(),返回一个承诺解决USVString(文本)。
+
+
+
 
 ## Handling JSON
 
