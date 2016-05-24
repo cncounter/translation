@@ -3,7 +3,7 @@
 
 One of the worst kept secrets about AJAX on the web is that the underlying API for it, XMLHttpRequest, wasn't really made for what we've been using it for.  We've done well to create elegant APIs around XHR but we know we can do better.  Our effort to do better is the fetch API.  Let's have a basic look at the new window.fetch method, available now in Firefox and Chrome Canary.
 
-AJAX半遮半掩的底层API是饱受诟病的一件事情.  **XMLHttpRequest** 并不是为如今的使用方式而设计的.  虽然各种框架对 **XHR** 的封装已经足够好用, 但我们可以做得更好。更好用的API是 `fetch` 。下面简单介绍 `window.fetch` 方法, 其在最新版的 Firefox 和 Chrome 中已经可以使用了。
+AJAX半遮半掩的底层API是饱受诟病的一件事情.  **XMLHttpRequest** 并不是专为Ajax而设计的.  虽然各种框架对 **XHR** 的封装已经足够好用, 但我们可以做得更好。更好用的API是 `fetch` 。下面简单介绍 `window.fetch` 方法, 其在最新版的 Firefox 和 Chrome 中已经可以使用了。
 
 
 ## XMLHttpRequest
