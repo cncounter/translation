@@ -95,20 +95,8 @@ The `<w:tbl>` element can contain a whole host of elements, mostly related to tr
         <span >tblGrid</span>
       </td>
       <td>
-        Specifies the columns for the table.  See Table
-        <a href="WPtableGrid.php">Table Columns</a>.
-        <div class="ECMAref">
-          <span style="font-weight:bold">Reference:</span>  ECMA-376, 3rd Edition (June, 2011), Fundamentals and Markup Language Reference § 17.4.49.
-        </div>
-      </td>
-    </tr>
-    <tr>
-      <td>
-        <span >tblGrid</span>
-      </td>
-      <td>
-        指定表格的列.  详情请参考: 
-        <a href="WPtableGrid.php">Table Columns</a>.
+        指定表格的列(column).  详情请参考: 
+        <a href="http://officeopenxml.com/WPtableGrid.php">Grid/Column Definition</a>.
         <div class="ECMAref">
           <span style="font-weight:bold">规范参考:</span>  ECMA-376, 3rd Edition (June, 2011), Fundamentals and Markup Language Reference § 17.4.49.
         </div>
@@ -119,20 +107,8 @@ The `<w:tbl>` element can contain a whole host of elements, mostly related to tr
         <span >tblPr</span>
       </td>
       <td>
-        Specifies the table-wide properties for the table.  These properties can be overridden by individual table level exception, row, and cell-level properties.  See Table
-        <a href="WPtableProperties.php">Table properties</a>.
-        <div class="ECMAref">
-          <span style="font-weight:bold">Reference:</span>  ECMA-376, 3rd Edition (June, 2011), Fundamentals and Markup Language Reference § 17.4.60.
-        </div>
-      </td>
-    </tr>
-    <tr>
-      <td>
-        <span >tblPr</span>
-      </td>
-      <td>
-        指定表格级别的默认属性(table-wide properties).  这些属性可以被各个子元素自己的属性覆盖(table, row, and cell-level properties).  详情请参考: 
-        <a href="WPtableProperties.php">Table properties</a>.
+        指定表格级别的默认属性(table-wide properties).  这些属性可以被各个子元素的属性覆盖(be overridden by individual table level exception, row, and cell-level properties).  详情请参考: 
+        <a href="http://officeopenxml.com/WPtableProperties.php">WPtableProperties</a>.
         <div class="ECMAref">
           <span style="font-weight:bold">规范参考:</span>  ECMA-376, 3rd Edition (June, 2011), Fundamentals and Markup Language Reference § 17.4.60.
         </div>
@@ -143,21 +119,8 @@ The `<w:tbl>` element can contain a whole host of elements, mostly related to tr
         <span >tr</span>
       </td>
       <td>
-        Specifies a table row.  See Table
-        <a href="WPtableRow.php">Table Row</a>.
-        <div class="ECMAref">
-          <span style="font-weight:bold">Reference:</span>  ECMA-376, 3rd Edition (June, 2011), Fundamentals and Markup Language Reference § 17.4.79.
-        </div>
-        <p></p>
-      </td>
-    </tr>
-    <tr>
-      <td>
-        <span >tr</span>
-      </td>
-      <td>
-        指定表格的列(row).  详情请参考: 
-        <a href="WPtableRow.php">Table Row</a>.
+        指定表格的列(table row).  详情请参考: 
+        <a href="http://officeopenxml.com/WPtableRow.php">WPtableRow</a>.
         <div class="ECMAref">
           <span style="font-weight:bold">规范参考:</span>  ECMA-376, 3rd Edition (June, 2011), Fundamentals and Markup Language Reference § 17.4.79.
         </div>
