@@ -1,10 +1,14 @@
-# Wordprocessing Tables
+# XML格式Word中的表格(Wordprocessing Tables)
 
 
 
-## Structure
+## 格式(Structure)
 
 A table consists of rows and cells and is structured much like an HTML table. It is defined with the `<w:tbl>` element.
+
+
+Word(XML格式,OOXML)中的表格(table)由行(row)和单元格(cell) 组成, 与 HTML 中的 table 元素结构相似. 使用 `<w:tbl>` 元素来定义.
+
 
 	<w:tbl>
 		<w:tblPr>
@@ -56,26 +60,33 @@ A table consists of rows and cells and is structured much like an HTML table. It
 
 > **Note**:  When two adjacent tables having the same style are present together without any intervening `<w:p>` elements, the tables are treated as a single table.
 
+> **提示**:  如果两个相邻的 table, 样式相同,并且中间没有 `<w:p>` 元素间隔, 则被当作单个 table。
+
+
 Reference:  ECMA-376, 3rd Edition (June, 2011), Fundamentals and Markup Language Reference § 17.4.38.
 
-## Word 2007 Example:
 
+
+## Word 2007 的效果图如下:
 
 
 ![Table](wp-table-1.gif)
 
 
 
-### Elements:
+### 子元素(Element):
 
 The `<w:tbl>` element can contain a whole host of elements, mostly related to tracking revisions and adding custom XML. The core elements are shown below.
+
+`<w:tbl>` 可以包含各种元素, 主要是跟踪修改相关的,或者是自定义的XML。主要的核心元素如下所示。
+
 
 
 <table  width="100%">
   <thead>
     <tr>
-      <th>Element</th>
-      <th>Description</th>
+      <th>元素(Element)</th>
+      <th>说明(Description)</th>
     </tr>
   </thead>
   <tbody>
@@ -93,6 +104,18 @@ The `<w:tbl>` element can contain a whole host of elements, mostly related to tr
     </tr>
     <tr>
       <td>
+        <span >tblGrid</span>
+      </td>
+      <td>
+        指定表格的列.  详情请参考: 
+        <a href="WPtableGrid.php">Table Columns</a>.
+        <div class="ECMAref">
+          <span style="font-weight:bold">规范参考:</span>  ECMA-376, 3rd Edition (June, 2011), Fundamentals and Markup Language Reference § 17.4.49.
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td>
         <span >tblPr</span>
       </td>
       <td>
@@ -100,6 +123,18 @@ The `<w:tbl>` element can contain a whole host of elements, mostly related to tr
         <a href="WPtableProperties.php">Table properties</a>.
         <div class="ECMAref">
           <span style="font-weight:bold">Reference:</span>  ECMA-376, 3rd Edition (June, 2011), Fundamentals and Markup Language Reference § 17.4.60.
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <span >tblPr</span>
+      </td>
+      <td>
+        指定表格级别的默认属性(table-wide properties).  这些属性可以被各个子元素自己的属性覆盖(table, row, and cell-level properties).  详情请参考: 
+        <a href="WPtableProperties.php">Table properties</a>.
+        <div class="ECMAref">
+          <span style="font-weight:bold">规范参考:</span>  ECMA-376, 3rd Edition (June, 2011), Fundamentals and Markup Language Reference § 17.4.60.
         </div>
       </td>
     </tr>
@@ -116,13 +151,26 @@ The `<w:tbl>` element can contain a whole host of elements, mostly related to tr
         <p></p>
       </td>
     </tr>
+    <tr>
+      <td>
+        <span >tr</span>
+      </td>
+      <td>
+        指定表格的列(row).  详情请参考: 
+        <a href="WPtableRow.php">Table Row</a>.
+        <div class="ECMAref">
+          <span style="font-weight:bold">规范参考:</span>  ECMA-376, 3rd Edition (June, 2011), Fundamentals and Markup Language Reference § 17.4.79.
+        </div>
+        <p></p>
+      </td>
+    </tr>
   </tbody>
 </table>
 
 
 <br/>
 
-> ### Related Open Document Format (ODF) Property:
+> ### 相关的ODF(Open Document Format) 属性:
 
 
 A table in the ODF format is specified with `<table:table>` element. A table consists of rows and columns. Rows are divided into cells, and columns are implied by taking all cells with the same position within the rows. A table can appear within a `<office:text>`, within a section, within a table cell, a header, or a footer, among others.
@@ -164,7 +212,7 @@ The most commonly used attributes are below.
         <span class="attributeName">table:name</span>
       </td>
       <td>
-        <p>Specifies a unique name.</p>
+        <p>指定唯一名字(unique name).</p>
       </td>
     </tr>
     <tr>
@@ -172,7 +220,7 @@ The most commonly used attributes are below.
         <span class="attributeName">table:style-name</span>
       </td>
       <td>
-        <p>Specifies a table style for the table.</p>
+        <p>定义表格样式(table style).</p>
       </td>
     </tr>
     <tr>
@@ -180,7 +228,7 @@ The most commonly used attributes are below.
         <span class="attributeName">xml:id</span>
       </td>
       <td>
-        <p>Specifies a unique ID and is standardized by the W3C (xml-id).</p>
+        <p>指定唯一ID,遵循W3C (xml-id)标准.</p>
       </td>
     </tr>
     <tr>
@@ -189,8 +237,8 @@ The most commonly used attributes are below.
       </td>
       <td>
         <p>
-          Specifies whether the table is protected so the user cannot edit it. Values are
-          <span class="attributeValue">true</span> and
+          指定 table 是否被保护, 如果被保护,则用户不能编辑. 可指定的值包括:
+          <span class="attributeValue">true</span> 和
           <span class="attributeValue">false</span>.
         </p>
       </td>
@@ -278,7 +326,7 @@ The most commonly used elements are below.
 </table>
 
 
-## Related HTML/CSS Property:
+## 对应的 HTML/CSS 属性为:
 
 
 	<table style="width:100%;">
@@ -292,7 +340,7 @@ The most commonly used elements are below.
 
 
 
-### HTML/CSS Example:
+### HTML/CSS 示例效果如下:
 
 
 <table style="width:100%">
