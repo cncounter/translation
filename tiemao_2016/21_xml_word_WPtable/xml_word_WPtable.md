@@ -331,3 +331,58 @@ The most commonly used elements are below.
 原文链接: [http://officeopenxml.com/WPtable.php](http://officeopenxml.com/WPtable.php)
 
 原文日期:  约 2012-05-01
+
+## 附加信息
+
+
+
+XML中可以有换行,最好把换行给去除
+
+XML格式的Word文档,主要有2类元素组成: <w:p> 和 <w:tbl>
+
+参见: http://officeopenxml.com/WPcontentOverview.php
+
+
+
+
+	##########################################
+
+
+
+
+
+	1. <w:p> 标签为段落
+
+	1.1. <w:pPr>	段落属性
+
+	2. <w:tbl> 为表格
+
+	3. <w:tblPr> 为表格级别的默认属性,可被覆盖
+
+	3.1. <w:tblW/> 表格宽度,Width
+
+	3.2. <w:jc/> 对齐方式
+
+	3.3. <w:tblBorders> 边框, 上下左右, insideH, insideV等
+
+	4. <w:tblGrid> 列集合,由多个 <w:gridCol> 组成.
+
+	5. <w:gridCol> 列, 与各行的 cell 有很大关系,跨列...
+
+	5. <w:tr> 行
+
+	5.1. <w:tc> 单元格
+
+	5.1.1 <w:tcW>
+
+	6. <w:r>	Run, 可以包含,文本,图片,符号,分隔符等
+
+	6.1. <w:rPr> Run的属性
+
+	6.2. <w:t>	文本,text
+
+
+
+	##########################################
+
+
