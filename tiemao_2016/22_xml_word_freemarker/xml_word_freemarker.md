@@ -57,7 +57,7 @@ Microsoft Word 程序直接提供两种格式的转换. 方法为: `文件菜单
 
 ## docx 格式的Word替换
 
-既然 docx 文件就是 zip 格式的,那么我们就可以将其中重要的的 .xml 给替换，就可以生成一个新的 docx 文档了。
+既然 docx 文件就是 zip 格式的,那么我们就可以将其中重要的 document.xml 给替换，就可以生成一个新的 docx 文档了。
 
 ![](01_word_document.png)
 
@@ -240,7 +240,7 @@ Microsoft Word 程序直接提供两种格式的转换. 方法为: `文件菜单
 	    }
 
 
-	    public static synchronized void parseStrategy2DocxAndClose(ExportVO bean, OutputStream outputStream){
+	    public static synchronized void parse2DocxAndClose(ExportVO bean, OutputStream outputStream){
 		Map<String, Object> modelMap = new HashMap<>();
 		if(null != bean){
 		    modelMap = BeanUtils.toMap(bean);
@@ -435,7 +435,7 @@ Microsoft Word 程序直接提供两种格式的转换. 方法为: `文件菜单
 	import java.io.FileOutputStream;
 	import java.util.List;
 
-	public class TestExportStrategy {
+	public class TestExport {
 
 	private Log logger = LogFactory.getLog(this.getClass());
 	
