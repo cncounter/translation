@@ -1,0 +1,5231 @@
+<html lang="zh-CN" xml:lang="zh-CN" xmlns="http://www.w3.org/1999/xhtml"><head><style type="text/css">@charset "UTF-8";[ng\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak,.ng-hide{display:none !important;}ng\:form{display:block;}.ng-animate-block-transitions{transition:0s all!important;-webkit-transition:0s all!important;}.ng-hide-add-active,.ng-hide-remove{display:block!important;}</style>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta http-equiv="Content-Language" content="zh-CN">
+  <meta name="robots" content="index, follow">
+  <link rel="shortcut icon" type="image/x-icon" href="/img/favicon.ico?t=1451961935000">
+  <title>在Google使用Borg进行大规模集群的管理-论文-中文翻译</title>
+      <meta name="Description" content="Borg和Kubernetes有什么不同？未来的云需要什么？：大家好，我是来自于华为PaaS部门的钟成，目前正在做相关的一些产品研发。我想分享的主题是从Borg到Kuber...">
+    <link rel="stylesheet/less" href="http://my.oschina.net/HardySimpson/styles.less?ver=20160511&amp;date=20120425195855" type="text/css" media="screen">
+  <link rel="stylesheet" href="/js/2012/poshytip/tip-yellowsimple/tip-yellowsimple.css?t=1451961936000" type="text/css">
+  <link rel="stylesheet" type="text/css" href="/js/2011/fancybox/jquery.fancybox-1.3.4.css?t=1451961936000" media="screen">
+  <!--添加emoji支持-->
+  <link rel="stylesheet" type="text/css" href="/js/team/grunt/dist/emoji/emoji.min.css?t=1463609975000">
+
+  <script type="text/javascript" src="/js/2012/jquery-1.7.1.min.js?t=1451961936000"></script><style type="text/css" adt="123"></style>
+  <script type="text/javascript" src="/js/2012/jquery.form.js?t=1451961936000"></script>
+  <script type="text/javascript" src="/js/2011/fancybox/jquery.fancybox-1.3.4.pack.js?t=1451961936000?2014031702"></script>
+  <script type="text/javascript" src="/js/2012/poshytip/jquery.poshytip.min.js?t=1451961936000"></script>
+  <script type="text/javascript" src="/js/2011/oschina.js?t=1451961936000"></script>
+  <script type="text/javascript" src="/js/2012/less-1.3.0.min.js?t=1451961936000"></script><style type="text/css" media="screen" id="less:HardySimpson-styles">:focus {
+  outline: 0;
+}
+* {
+  padding: 0;
+  margin: 0;
+}
+a {
+  color: #0072bb;
+  outline: 0;
+}
+a:hover {
+  color: #0000aa;
+}
+ul,
+ol {
+  list-style-type: none;
+}
+img {
+  border: 0;
+}
+textarea {
+  resize: none;
+}
+body {
+  background: #f9f9f9;
+  text-align: center;
+  font-size: 10pt;
+}
+label.SELECTED {
+  color: #A00;
+  font-weight: bold;
+}
+.clear {
+  clear: both;
+  font-size: 1px;
+  line-height: 0;
+}
+.clearfix:after {
+  content: ".";
+  display: block;
+  clear: both;
+  visibility: hidden;
+  line-height: 0;
+  height: 0;
+}
+.clearfix {
+  display: inline-block;
+}
+html[xmlns] .clearfix {
+  display: block;
+}
+* html .clearfix {
+  height: 1%;
+}
+.ostable {
+  width: 100%;
+  table-layout: fixed;
+}
+.ostable td {
+  vertical-align: top;
+  overflow: hidden;
+}
+.highlight {
+  color: #A00;
+  padding: 0 1px;
+  margin: 0 2px;
+}
+.NoData {
+  text-align: center;
+  padding: 20px 0;
+  color: #999999;
+}
+a.tag {
+  background-color: #E0EAF1;
+  border-bottom: 1px solid #3E6D8E;
+  border-right: 1px solid #7F9FB6;
+  color: #3E6D8E;
+  font-size: 8pt;
+  line-height: 2.4;
+  margin: 2px 2px 2px 0;
+  padding: 2px 4px;
+  text-decoration: none;
+  white-space: nowrap;
+}
+a.tag:hover {
+  background-color: #3E6D8E;
+  color: #fff;
+}
+a.project {
+  background-color: #cfc;
+  color: #060;
+}
+a.project:hover {
+  background-color: #0072bb;
+  color: #fff;
+}
+a.rndbutton {
+  background: #0072bb;
+  color: #fff;
+  text-decoration: none;
+  height: 30px;
+  float: left;
+  margin: 0;
+  border: 0px solid #000;
+  font-weight: bold;
+  cursor: pointer;
+}
+a.rndbutton:hover {
+  background: #005388;
+}
+a.rndbutton:hover span {
+  background: #005388;
+  color: #fff;
+}
+a.rndbutton span {
+  background: #0072bb;
+  color: #fff;
+  float: left;
+  margin: 0 0 0 12px;
+  padding: 0 12px 0 0;
+  height: 30px;
+  line-height: 30px;
+}
+.obj_type_1 a.title {
+  background: url('/img/a2.gif') no-repeat left center;
+  background-position: 5px;
+}
+.obj_type_2 a.title {
+  background: url('/img/thread.gif') no-repeat left center;
+  background-position: 5px;
+}
+.obj_type_3 a.title {
+  background: url('/img/thread.gif') no-repeat left center;
+  background-position: 5px;
+}
+.obj_type_4 a.title {
+  background: url('/img/a3.gif') no-repeat left center;
+  background-position: 5px;
+}
+.obj_type_5 a.title {
+  background: url('/img/code.gif') no-repeat left center;
+}
+.obj_type_7 a.title {
+  background: url('/img/a3.gif') no-repeat left center;
+  background-position: 5px;
+}
+.obj_type_36 a.title {
+  background: url('/img/a2.gif') no-repeat left center;
+  background-position: 5px;
+}
+.obj_type_38 a.title {
+  background: url('/img/a2.gif') no-repeat left center;
+  background-position: 5px;
+}
+.obj_type_39 a.title {
+  background: url('/img/a2.gif') no-repeat left center;
+  background-position: 5px;
+}
+.obj_type_40 a.title {
+  background: url('/img/a2.gif') no-repeat left center;
+  background-position: 5px;
+}
+.init_degree {
+  -webkit-transform: rotate(0deg);
+  -moz-transform: rotate(0deg);
+  -o-transform: rotate(0deg);
+  -ms-transform: rotate(0deg);
+  -webkit-transform-origin: 0 0;
+  -moz-transform-origin: 0 0;
+  -o-transform-origin: 0 0;
+  -ms-transform-origin: 0 0;
+}
+.first_degree {
+  -webkit-transform: rotate(-90deg) translate(-100%);
+  -moz-transform: rotate(-90deg) translate(-100%);
+  -o-transform: rotate(-90deg) translate(-100%);
+  -ms-transform: rotate(-90deg) translate(-100%);
+  -webkit-transform-origin: 0 0;
+  -moz-transform-origin: 0 0;
+  -o-transform-origin: 0 0;
+  -ms-transform-origin: 0 0;
+}
+.second_degree {
+  -webkit-transform: rotate(-180deg) translate(-100%, -100%);
+  -moz-transform: rotate(-180deg) translate(-100%, -100%);
+  -o-transform: rotate(-180deg) translate(-100%, -100%);
+  -ms-transform: rotate(-180deg) translate(-100%, -100%);
+  -webkit-transform-origin: 0 0;
+  -moz-transform-origin: 0 0;
+  -o-transform-origin: 0 0;
+  -ms-transform-origin: 0 0;
+}
+.third_degree {
+  -webkit-transform: rotate(-270deg) translate(0, -100%);
+  -moz-transform: rotate(-270deg) translate(0, -100%);
+  -o-transform: rotate(-270deg) translate(0, -100%);
+  -ms-transform: rotate(-270deg) translate(0, -100%);
+  -webkit-transform-origin: 0 0;
+  -moz-transform-origin: 0 0;
+  -o-transform-origin: 0 0;
+  -ms-transform-origin: 0 0;
+}
+#OSC_Screen {
+  width: 98%;
+  margin: 0px auto;
+  text-align: left;
+  padding: 0 4px;
+  margin-bottom: 50px;
+}
+#OSC_Banner {
+  background: #666666;
+  border-top: 0;
+  height: 36px;
+  padding: 2px 5px 0 5px;
+}
+#OSC_Banner #OSC_Logo {
+  float: left;
+  margin: 1px 0 0 2px;
+  width: 105px;
+}
+#OSC_Banner #OSC_Logo a {
+  float: left;
+  background: url('/img/2012/osc2.png') no-repeat 0 1px;
+  width: 100px;
+  height: 34px;
+  text-indent: -9999px;
+}
+#OSC_Banner #OSC_Slogon {
+  float: left;
+  margin: 10px 0 0 10px;
+  color: #f2f2f2;
+}
+#OSC_Banner #OSC_Slogon a {
+  color: #fff;
+}
+#OSC_Banner #OSC_Channels {
+  margin-right: 10px;
+  float: right;
+  font-weight: bold;
+  font-size: 10.5pt;
+  height: 35px;
+  line-height: 35px;
+}
+#OSC_Banner #OSC_Channels ul li {
+  float: left;
+  margin: 0px 5px 0 10px;
+}
+#OSC_Banner #OSC_Channels ul li a {
+  text-decoration: none;
+  color: #f2f2f2;
+  padding: 2px;
+}
+#OSC_Banner #OSC_Channels ul li a:hover {
+  color: #fff;
+}
+#OSC_Notification {
+  width: 200px;
+  margin-left: 10px;
+  font-size: 9pt;
+}
+#OSC_Notification a.msgbox {
+  background: url('/img/msg.gif') no-repeat 5px 5px;
+  padding: 2px 4px 2px 22px;
+  text-decoration: none;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+  -webkit-border-radius: 5px;
+}
+#OSC_Notification a.newmsg {
+  color: #A00;
+  background: url('/img/msg2.gif') no-repeat 5px 3px;
+  padding: 2px 4px 2px 22px;
+  text-decoration: none;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+  -webkit-border-radius: 5px;
+}
+#OSC_Notification a:hover {
+  font-weight: bold;
+  color: #C00;
+}
+#OSC_Notification a em {
+  font-style: normal;
+  font-weight: bold;
+  margin-right: 2px;
+  text-decoration: underline;
+}
+#OSC_Topbar {
+  margin: 2px 0;
+}
+#OSC_Topbar #VisitorInfo {
+  font-size: 9pt;
+  color: #888;
+  float: left;
+}
+#OSC_Topbar #VisitorInfo a {
+  text-decoration: none;
+}
+#OSC_Topbar #SearchBar form {
+  float: right;
+  margin: 3px 0 0 0;
+  width: 310px;
+  background: #eee;
+  padding: 1px;
+  font-size: 0;
+}
+#OSC_Topbar #SearchBar form .ipt {
+  display: inline-block;
+  vertical-align: top;
+  height: 22px;
+  padding: 2px 0 0 5px;
+  background: #FFF;
+}
+#OSC_Topbar #SearchBar form .ipt input {
+  color: #868686;
+  width: 200px;
+  border: none;
+  background: #FFF;
+  padding: 0;
+  height: 20px;
+  outline: 0;
+}
+#OSC_Topbar #SearchBar form .bnt {
+  color: #FFF;
+  text-align: center;
+  background: #0072bb;
+  width: 45px;
+  height: 24px;
+  border: 0;
+  cursor: pointer;
+}
+#OSC_Topbar #SearchBar form .bnt:hover {
+  background: #005388;
+}
+#OSC_Topbar #SearchBar form .search-by {
+  display: inline-block;
+  vertical-align: top;
+  font-size: 10pt;
+}
+#OSC_Topbar #SearchBar form .search_on {
+  background: #FFF;
+  text-align: center;
+  position: relative;
+}
+#OSC_Topbar #SearchBar form .search_on .text {
+  height: 24px;
+  line-height: 23px;
+  width: 50px;
+  display: block;
+  color: #868686;
+  cursor: pointer ;
+  text-align: left;
+  padding: 0px 0 0 10px;
+  background: url(/img/android/selectbox_bg.png) no-repeat;
+}
+#OSC_Topbar #SearchBar form .search_on .text.on {
+  background-position: 0 -24px;
+}
+#OSC_Topbar #SearchBar form .search_on .text.hover {
+  background-position: 0 -48px;
+}
+#OSC_Topbar #SearchBar form .search_list {
+  background: #FFF;
+  display: none;
+  position: absolute;
+  width: 80px;
+  border: 1px solid #c3c3c3;
+  z-index: 9999;
+}
+#OSC_Topbar #SearchBar form .search_list li {
+  width: 80px;
+  height: 24px;
+  line-height: 24px;
+}
+#OSC_Topbar #SearchBar form .search_list a {
+  display: block;
+  color: #333 !important;
+  font-size: 8pt !important;
+  text-decoration: none;
+  padding: 0 0 0 10px;
+}
+#OSC_Topbar #SearchBar form .search_list a:hover {
+  background: #3399ff;
+  color: #ffffff !important;
+}
+#OSC_Topbar #SearchBar form .f_r {
+  display: inline-block;
+  vertical-align: top;
+}
+#OSC_Topbar #SearchBar form .f_l {
+  float: left;
+}
+#OSC_Topbar #SearchBar form .last {
+  margin: 0 !important;
+}
+#OSC_Topbar #SearchBar form .hide {
+  display: none;
+}
+/* 底部版权 */
+#OSC_Footer {
+  margin-top: 20px;
+  padding-bottom: 50px;
+  height: 38px;
+  line-height: 38px;
+  border-top: 2px solid #cccccc;
+  color: #666666;
+  text-align: center;
+}
+#OSC_Content {
+  margin: 10px 2px;
+  position: relative;
+}
+#SpaceLeft {
+  float: left;
+  width: 220px;
+}
+#SpaceLeft a {
+  text-decoration: none;
+}
+#SpaceMain {
+  margin: 0 220px 0 230px;
+  word-wrap: break-word;
+}
+#SpaceRight {
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 210px;
+  word-wrap: break-word;
+}
+.SpaceList {
+  margin: 0 0 0 230px;
+  border: 1px solid #eee;
+  padding: 10px 15px;
+  background: #fff;
+  word-wrap: break-word;
+}
+.SpaceList .TopBar {
+  margin: 0 0 25px 0;
+  color: #999999;
+  font-size: 9pt;
+  height: 22px;
+  line-height: 22px;
+}
+.SpaceList .TopBar h1 {
+  color: #333333;
+}
+.Owner {
+  background: #0072bb;
+  padding: 15px 5px 15px 10px;
+  position: relative;
+}
+.Owner a.Img:hover {
+  background: none;
+}
+.Owner a {
+  color: #fff;
+  padding: 0px;
+}
+.Owner a:hover {
+  background: #fff;
+  color: #0072bb;
+}
+.Owner a.ThemeSetting {
+  position: absolute;
+  right: 0;
+  top: 0;
+  text-indent: -9999px;
+  width: 28px;
+  height: 28px;
+  background: url('/img/2012/enter_narrow.png') no-repeat 0 0;
+}
+.Owner a.ThemeSetting:hover {
+  background: url('/img/2012/enter_narrow.png') no-repeat 0 -30px;
+}
+.Owner .Img img {
+  float: left;
+  width: 56px;
+  height: 56px;
+  background: #fff;
+  padding: 3px;
+  margin: 0 8px 10px 0;
+}
+.Owner .Img:hover img {
+  background: #eee;
+}
+.Owner span.U {
+  float: left;
+  width: 130px;
+}
+.Owner span.U .Name {
+  color: #FFF;
+  font-size: 14pt;
+  display: block;
+  margin: 0 0 12px 0;
+  font-weight: bold;
+  word-wrap: break-word;
+}
+.Owner span.U .Name {
+  background: none;
+}
+.Owner span.U .opts {
+  color: #fff;
+  font-size: 9pt;
+}
+.Owner span.U .opts a {
+  color: #fff;
+}
+.Owner span.U .opts a:hover {
+  background-color: #fff;
+  color: #0072bb;
+}
+.Owner a#gender_icon {
+  text-indent: -9999px;
+  background-color: #0072bb;
+}
+.Owner a#gender_icon:hover {
+  background-color: #0072bb;
+}
+.Owner .stat {
+  color: #fff;
+  font-size: 9pt;
+}
+.Owner .stat a {
+  margin-right: 3px;
+}
+.Owner .stat a span {
+  font-size: 9pt;
+}
+.Resume {
+  background: #cd4900 url('/img/2012/resume24.png') no-repeat left bottom;
+  margin: 3px 0 0 0;
+  color: #fff;
+  padding: 18px 10px 18px 40px;
+  word-wrap: break-word;
+  overflow: hidden;
+}
+.Resume textarea {
+  width: 170px;
+  height: 60px;
+  font-size: 9pt;
+}
+/*勋章*/
+.Medals {
+  background-color: #0072bb;
+  margin-top: 3px;
+  padding: 5px;
+}
+.Opts {
+  margin: 3px 0 0 0;
+}
+.Opts a {
+  cursor: pointer;
+  float: left;
+  width: 108px;
+  height: 108px;
+}
+.Opts a.a1 {
+  background-color: #008641;
+}
+.Opts a.a1:hover {
+  background-color: #005328;
+}
+.Opts a.a2 {
+  background-color: #662e91;
+}
+.Opts a.a2:hover {
+  background-color: #4b226a;
+}
+.Opts a.a3 {
+  margin-top: 3px;
+  width: 220px;
+  height: 60px;
+  background-color: #cd4900;
+}
+.Opts a.a3:hover {
+  background-color: #9a3700;
+}
+.Opts a span {
+  padding: 82px 0 0 10px;
+  font-size: 11pt;
+  color: #fff;
+}
+.Opts a.a3 span {
+  display: block;
+  padding: 15px 0 0 60px;
+  font-size: 18pt;
+}
+.Opts a i {
+  text-indent: -9999px;
+  display: block;
+  margin: 10px 0 0 20px;
+  width: 67px;
+  height: 67px;
+  background-image: url('/img/2012/space-opts.png');
+  background-repeat: no;
+}
+.Opts a.a2 {
+  margin-left: 4px;
+}
+.Opts a.blog i {
+  background-position: 0 -67px;
+}
+.Opts a.admin i {
+  background-position: 0 -201px;
+}
+.Opts a.sendmsg i {
+  background-position: 0 -134px;
+}
+.Opts a.ask i {
+  background-position: 0 0;
+}
+.Mod {
+  background: #EAEAEA;
+  margin: 3px 0 0 0;
+  padding: 5px 0;
+  color: #666666;
+  overflow: hidden;
+}
+.Mod strong {
+  display: block;
+  font-size: 12pt;
+  border-bottom: 2px solid #cd4900;
+  padding: 0 10px 5px 10px;
+  color: #666666;
+}
+.Mod strong .more {
+  float: right;
+  font-weight: normal;
+  font-size: 10pt;
+  margin: 3px 0 0 0;
+}
+.Mod ul,
+.Mod ol {
+  margin: 10px;
+  line-height: 24px;
+}
+.Users ul li {
+  float: left;
+}
+.Users ul li a {
+  margin: 1px 1px 0 0;
+}
+.Users ul li img {
+  width: 36px;
+  height: 36px;
+  border: 1px solid #EAEAEA;
+}
+.Users ul li a:hover img {
+  border: 1px solid #0072bb;
+}
+.Users .more {
+  margin: 10px 0;
+  text-align: right;
+  padding: 0 5px 0 0 ;
+}
+#BlogCatalogs ul li a {
+  background: url('/img/fw_arrow.gif') no-repeat left center;
+  padding-left: 15px;
+  color: #333333;
+}
+#BlogCatalogs ul li a:hover {
+  color: #000;
+}
+#BlogCatalogs ul li span {
+  color: #666666;
+  font-size: 8pt;
+  -webkit-text-size-adjust: none;
+  margin-left: 5px;
+}
+#BlogCatalogs ul li.draft a {
+  font-weight: bold;
+}
+#HotBlogs ol li a {
+  color: #333333;
+  display: block;
+}
+#HotBlogs ol li a:hover {
+  color: #000;
+  background: #ddd;
+}
+#BlogLinks li a {
+  color: #333333;
+  display: block;
+}
+#BlogLinks li a:hover {
+  color: #000;
+  background: #ddd;
+}
+#RelativeBlogs {
+  position: fixed;
+  bottom: 0;
+  right: -400px;
+  width: 380px;
+  height: 160px;
+  background-color: #FFFFFF;
+  font-size: 10.5pt;
+  border: 1px solid #0072bb;
+}
+#RelativeBlogs strong {
+  display: block;
+  margin: 0 0 10px 0;
+  background: #0072bb;
+  color: #fff;
+  padding: 2px 5px;
+}
+#RelativeBlogs strong a#btn_close {
+  cursor: pointer;
+  float: right;
+  color: #fff;
+  font-size: 9pt;
+}
+#RelativeBlogs ul {
+  margin: 10px;
+}
+#RelativeBlogs ul li {
+  line-height: 22px;
+}
+#RelativeBlogs ul li a {
+  background: url('/img/a2.gif') no-repeat left center;
+  padding-left: 15px;
+  font-size: 10pt;
+  text-decoration: none;
+}
+#RelativeBlogs ul li .date {
+  float: right;
+  font-size: 8pt;
+  color: #666666;
+  -webkit-text-size-adjust: none;
+}
+#BlogReplies ul li {
+  color: #666666;
+  border-bottom: 1px dashed #999999;
+}
+.TopBar .NavPath {
+  float: left;
+}
+.TopBar .PreviewMod {
+  float: right;
+}
+.TopBar .PreviewMod a.active {
+  font-weight: bold;
+  color: #4466BB;
+}
+.TopBar .PreviewMod a {
+  color: #666666;
+}
+.BlogList .Blog {
+  margin: 0 0 15px 0;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 5px;
+  position: relative;
+}
+.BlogList .Blog .date {
+  position: absolute;
+  right: 0;
+  top: 5px;
+  background: #cd4900;
+  font-size: 8pt;
+  color: #fff;
+  -webkit-text-size-adjust: none;
+  text-align: center;
+  padding: 2px 3px;
+}
+.BlogList .Blog .date em {
+  font-style: normal;
+  font-family: Calibri;
+  font-size: 16pt;
+  display: block;
+  font-weight: bold;
+}
+.BlogList .Blog .title {
+  margin-right: 80px;
+}
+.BlogList .Blog h2 {
+  font-size: 12pt;
+  margin: 0 0 5px 0;
+}
+.BlogList .Blog h2.BlogAccess_false {
+  background: url('/img/lock.gif') no-repeat 3px center;
+  padding-left: 20px;
+}
+.BlogList .Blog h2.BlogTop_1 {
+  background: url('/img/top.gif') no-repeat left center;
+  padding-left: 22px;
+}
+.BlogList .Blog h2.BlogSong {
+  background: url('/img/song.gif') no-repeat left center;
+  padding-left: 22px;
+}
+.BlogList .Blog h2 a {
+  text-decoration: none;
+  color: #333333;
+}
+.BlogList .Blog .outline {
+  color: #666666;
+  font-size: 9pt;
+}
+.BlogList .Blog .bottom {
+  margin: 15px 0 8px 0;
+  color: #666666;
+  font-size: 9pt;
+}
+.BlogList .Blog .bottom a.fullcontent {
+  margin-left: 10px;
+}
+.BlogList .Blog .TextContent {
+  margin: 15px 0 0 0px;
+  color: #666666;
+  line-height: 22px;
+  overflow: hidden;
+  letter-spacing: 1px;
+}
+.BlogList .Blog a {
+  color: #666666;
+}
+.BlogList .Blog a:hover {
+  color: #333333;
+}
+.BlogList .Blog .catalog {
+  display: inline-block;
+  position: relative;
+  padding: 0px;
+  margin: 0px;
+  vertical-align: middle;
+}
+.BlogList .Blog .catalog ul {
+  position: absolute;
+  top: 18px;
+  left: 27px;
+  width: 120px;
+  background: #0072bb;
+  z-index: 1000;
+  overflow: hidden;
+  border: 1px solid #F1F1F1;
+  padding: 3px;
+  display: none;
+  vertical-align: middle;
+  color: #FFF;
+}
+.BlogList .Blog .catalog ul li {
+  line-height: 20px;
+  text-indent: 5px;
+  cursor: pointer;
+  vertical-align: middle;
+}
+.BlogList .Blog .catalog ul li img {
+  cursor: pointer;
+  vertical-align: middle;
+  float: right;
+  margin-right: 5px;
+  display: none;
+}
+.BlogList .Blog .catalog ul li:hover img {
+  display: block;
+}
+.BlogList .Blog .setting {
+  margin-left: 4px;
+  vertical-align: middle;
+  cursor: pointer;
+  border: 1px solid #FFF;
+}
+.BlogList .Blog .setting:hover {
+  border: 1px solid #F3F3F3;
+}
+.BlogTitle {
+  padding: 5px 70px 5px 0px;
+  margin: 0 0 10px 0;
+  border-bottom: 2px solid #0072bb;
+  position: relative;
+}
+.BlogTitle h1 {
+  font-size: 22px;
+  margin: 0 0 10px 0;
+  color: #000;
+  font-weight: normal;
+}
+.BlogTitle .BlogStat {
+  color: #666666;
+}
+.BlogTitle .BlogStat strong {
+  margin: 0 2px;
+  color: #A00;
+}
+.BlogTitle .BlogStat a {
+  color: #A00;
+  text-decoration: none;
+}
+.BlogTitle .BlogStat a:hover {
+  color: #F00;
+}
+.BlogTitle .BlogStat .admin em {
+  font-style: normal;
+  font-weight: bold;
+  color: #A00;
+  margin: 0 2px;
+}
+.BlogTitle .tvote {
+  height: 55px;
+  width: 50px;
+  display: inline-block;
+  position: absolute;
+  right: 0px;
+  bottom: 5px;
+}
+.BlogTitle .tvote .num,
+.BlogTitle .tvote .vote {
+  display: inline-block;
+  width: 50px;
+  text-align: center;
+  font-style: normal;
+  color: #FFF;
+  background: #662e91;
+  cursor: pointer;
+}
+.BlogTitle .tvote .num:hover,
+.BlogTitle .tvote .vote:hover {
+  background-color: #5b2982;
+}
+.BlogTitle .tvote .num {
+  height: 20px;
+  line-height: 20px;
+  font-size: 12px;
+}
+.BlogTitle .tvote .vote {
+  height: 35px;
+  line-height: 35px;
+  font-size: 20px;
+}
+.BlogContent {
+  font-size: 12.5px;
+  overflow: hidden;
+}
+.BlogContent p {
+  margin-bottom: 15pt;
+  line-height: 1.5;
+  letter-spacing: 1px;
+}
+.BlogContent pre {
+  line-height: 18px;
+  font-size: 10pt;
+  background: #fff;
+  border: 0px;
+  padding: 1px;
+}
+.BlogContent pre code {
+  border-radius: 4px;
+  overflow-x: auto;
+  word-wrap: break-all;
+  white-space: pre;
+}
+.BlogAnchor {
+  background: #f4f7f9;
+  padding: 10px;
+}
+.BlogAnchor p {
+  font-size: 12px;
+}
+.BlogAnchor .AnchorContent {
+  padding: 5px 0px;
+}
+.BlogAnchor li {
+  list-style: none;
+  padding: 1px 0;
+}
+.BlogAnchor a {
+  text-decoration: none;
+}
+.BlogAnchor a:hover {
+  color: #0072bb;
+}
+.BlogAnchor .osc_h1 {
+  text-indent: 20px;
+  font-size: 14px;
+}
+.BlogAnchor .osc_h2 {
+  text-indent: 35px;
+  font-size: 14px;
+}
+.BlogAnchor .osc_h3 {
+  text-indent: 50px;
+  font-size: 14px;
+}
+.BlogAnchor .osc_h4 {
+  text-indent: 65px;
+  font-size: 14px;
+}
+.BlogAnchor .osc_h5 {
+  text-indent: 80px;
+  font-size: 14px;
+}
+.BlogAnchor .osc_h6 {
+  text-indent: 95px;
+  font-size: 14px;
+}
+/*   happysha 2013-07-07   */
+.BlogContent {
+  color: #333;
+  padding: 10px;
+}
+.BlogAbstracts {
+  padding: 10px;
+  background: #f4f7f9;
+  font-size: 12px;
+}
+.BlogAbstracts strong {
+  font-size: 15px;
+  color: #15a230;
+  font-weight: normal;
+}
+.BlogAbstracts span {
+  font-size: 12.5px;
+  letter-spacing: 0.7px;
+}
+em.corner {
+  font-size: 16px;
+  font-weight: normal;
+  color: #FFF;
+  display: inline-block;
+  line-height: 26px;
+  background: #0072bb;
+  font-style: normal;
+  padding: 1px 8px;
+  margin-right: 10px;
+}
+.BlogAnchor p {
+  font-size: 18px;
+  color: #15a230;
+}
+.BlogAnchor p strong {
+  font-weight: normal;
+  font-size: 14px;
+}
+.BlogContent,
+.BlogAbstracts,
+.BlogAnchor {
+  line-height: 180%;
+}
+.BlogContent h1,
+.BlogContent h2,
+.BlogContent h3,
+.BlogContent h4,
+.BlogContent h5,
+.BlogContent h6,
+.BlogContent p,
+.BlogContent ol,
+.BlogContent ul {
+  line-height: 180%;
+}
+.BlogContent h1,
+.BlogContent h2,
+.BlogContent h3,
+.BlogContent h4,
+.BlogContent h5,
+.BlogContent h6 {
+  font-weight: 600;
+}
+.BlogContent h1 {
+  font-size: 24px;
+  margin: 20px 0 10px 0;
+}
+.BlogContent h2 {
+  font-size: 20px;
+  margin: 20px 0 10px 0;
+}
+.BlogContent h3 {
+  font-size: 16px;
+  margin: 15px 0 10px 0;
+}
+.BlogContent h4 {
+  font-size: 14px;
+  margin: 10px 0;
+}
+.BlogContent h5 {
+  font-size: 12px;
+  margin: 10px 0;
+}
+.BlogContent h6 {
+  font-size: 12px;
+  margin: 10px 0;
+}
+.BlogContent p {
+  font-size: 12.5px;
+  margin: 8px 0;
+  letter-spacing: 0.5px;
+  white-space: normal;
+  -ms-word-wrap: break-word;
+  word-wrap: break-word;
+  -ms-word-break: break-all;
+  word-break: break-all;
+}
+.BlogContent ol,
+.BlogContent ul {
+  margin: 10px 20px;
+}
+.BlogContent img {
+  max-width: 640px;
+  background: #f4f7f9;
+  border: 1px solid #ddd;
+  margin: 10px 0;
+  height: auto;
+}
+.BlogContent blockquote:before,
+.BlogContent blockquote:after,
+.BlogContent q:before,
+.BlogContent q:after {
+  content: "";
+  font-size: 24px;
+  color: #0F6575;
+  font-family: Helvetica, arial, '宋体';
+  position: absolute;
+}
+.BlogContent blockquote:before {
+  content: "“";
+  top: 5px;
+  left: 10px;
+}
+.BlogContent blockquote:after {
+  content: "”";
+  bottom: -5px;
+  right: 15px;
+}
+.BlogContent q,
+.BlogContent blockquote {
+  position: relative;
+  background: #F4FDFD;
+  text-align: left;
+  margin: 20px 10px;
+  padding: 3px 25px 3px 25px;
+  color: #333;
+  font-size: 10pt;
+  line-height: 22px;
+  border-left: 3px solid #A4DAF0;
+}
+.BlogContent blockquote i,
+.BlogContent q i {
+  font-style: normal;
+  font-size: 12px;
+}
+.BlogContent b {
+  font-style: normal;
+  font-weight: 600;
+}
+.BlogContent > table {
+  border-collapse: collapse;
+  border-spacing: 1px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  color: #444;
+}
+.BlogContent > table th,
+.BlogContent > table td {
+  padding: 0 2px;
+}
+.BlogContent > table th {
+  font-weight: 500;
+  background: #f3f3f3;
+}
+.BlogContent > table th,
+.BlogContent > table td {
+  border: 1px solid #ccc;
+  padding: 1px 2px;
+}
+.BlogContent a {
+  font-size: 16px;
+}
+.BlogContent ul,
+ol {
+  margin: 0 0 10px 20px;
+}
+.BlogContent ul {
+  list-style-type: disc;
+}
+.BlogContent ol {
+  list-style-type: decimal;
+}
+.BlogShare {
+  padding: 8px 0px;
+  border: 1px solid #DDD;
+  margin: 20px 0px;
+  line-height: 30px;
+}
+.BlogShare a {
+  text-decoration: none;
+}
+.BlogShare strong {
+  margin-left: 15px;
+  line-height: 30px;
+  vertical-align: middle;
+}
+.BlogShare .share_sina img,
+.BlogShare .share_qq img {
+  vertical-align: middle;
+  margin: 3px 8px;
+}
+.BlogShare .BlogVote {
+  height: 30px;
+  background: #0072bb;
+  display: inline-block;
+  float: right;
+  padding: 3px 8px;
+  line-height: 30px;
+  color: #FFF;
+  margin-right: 5px;
+}
+.BlogShare .BlogVote:hover {
+  background-color: #0066a7;
+}
+.BlogShare .BlogVote .num {
+  padding: 0px 3px;
+  cursor: pointer;
+  font-size: 12px;
+}
+.BlogShare .BlogVote .vote {
+  padding: 0px 3px;
+  font-size: 18px;
+  cursor: pointer;
+}
+/*   happysha 2013-07-07   */
+.BlogLinks {
+  margin: 10px 0 20px 0;
+}
+.BlogLinks ul {
+  list-style-type: none;
+  font-weight: bold;
+  height: 24px;
+}
+.BlogLinks ul li.prev {
+  float: left;
+  width: 48%;
+}
+.BlogLinks ul li.next {
+  float: right;
+  width: 48%;
+  text-align: right;
+}
+.BlogCopyright {
+  color: #666666;
+  margin: 20px 0;
+  border: 1px solid #ddd;
+  background: #ffe;
+  padding: 5px 15px;
+  font-size: 12px;
+}
+.BlogCopyright a {
+  color: #666666;
+  text-decoration: none;
+}
+.BlogComments h2 {
+  font-size: 18px;
+  color: #444;
+  font-weight: 600;
+  padding: 5px 0px;
+  border-bottom: 1px solid #ccc;
+}
+.BlogComments h2 em {
+  font-size: 12px;
+  padding: 0px 5px;
+  font-style: normal;
+  color: #0072bb;
+}
+.BlogComments h2 a {
+  float: right;
+  font-weight: normal;
+  font-size: 10pt;
+}
+.BlogComments ul {
+  margin: 10px 0 10px 0;
+}
+.BlogComments ul li {
+  margin: 0 0 10px 0;
+  padding: 5px 0px;
+}
+.BlogComments ul li.even {
+  background: #F6F6F6;
+}
+.BlogComments ul li .portrait {
+  width: 65px;
+  padding-top: 3px;
+}
+.BlogComments ul li .portrait img {
+  width: 40px;
+  height: 40px;
+  padding: 2px;
+  background: #fff;
+  border: 1px solid #F1F1F1;
+}
+.BlogComments ul li .body .title {
+  color: #666666;
+  font-size: 9pt;
+}
+.BlogComments ul li .body .title a.user {
+  text-decoration: none;
+  color: #666666;
+  font-weight: bold;
+}
+.BlogComments ul li .body .post {
+  margin: 8px 0 0 0;
+  color: #00A;
+  font-size: 12px;
+}
+.BlogComments ul li .body .post div.ref {
+  border: 1px solid #999;
+  color: #333;
+  margin: 0 0 10px 0;
+  padding: 3px;
+  background: #ffe;
+  font-size: 9pt;
+}
+.BlogComments ul li .body .post div.ref h4 {
+  margin: 0;
+  padding: 2px 0px 3px 0px;
+  color: #1E50A2;
+  font-weight: normal;
+  font-size: 10pt;
+}
+.BlogComments ul li .body .post div.ref p {
+  margin: 0;
+  padding: 2px;
+  line-height: 20px;
+  color: color: #333;
+  font-size: 9pt;
+}
+.BlogComments ul li .body .post img {
+  width: 20px;
+  vertical-align: middle;
+  margin: 0px 2px;
+}
+.BlogComments .inline_reply {
+  margin-top: 10px;
+}
+.BlogCommentForm {
+  width: 650px;
+}
+.BlogCommentForm .comment_form {
+  padding-left: 70px;
+  width: 650px;
+}
+.blg_submit_btn {
+  padding: 5px 10px;
+  text-decoration: none;
+  background: #0072bb;
+  font-size: 12px;
+  color: #FFF;
+  display: inline-block;
+  border: none;
+  font-family: '微软雅黑';
+  cursor: pointer;
+}
+.blg_submit_btn:hover {
+  background-color: #0066a7;
+}
+.BlogCommentForm .comment_portrait {
+  float: left;
+  margin-left: 10px;
+}
+.BlogCommentForm .comment_portrait img {
+  width: 40px;
+  height: 40px;
+  padding: 2px;
+  border: #eee 1px solid;
+}
+.BlogCommentForm p {
+  margin: 5px 0px;
+  font-size: 12px;
+}
+.BlogCommentForm a.blog_emotion,
+.BlogCommentForm a.blog_soft {
+  text-decoration: none;
+  padding: 1px 2px 1px 18px;
+  color: #666;
+  border: 1px #FFF solid;
+}
+.BlogCommentForm a.blog_emotion:hover,
+.BlogCommentForm a.blog_soft:hover {
+  border: 1px #F00 solid;
+}
+.BlogCommentForm a.blog_emotion {
+  background: url('/img/space/emotion.gif') no-repeat left center;
+}
+.BlogCommentForm a.blog_soft {
+  background: url('/img/space/app.gif') no-repeat left center;
+}
+.LMod {
+  border: 1px solid #eee;
+  background: #fff;
+  padding: 10px 10px 5px 10px;
+  overflow: hidden;
+}
+.LMod strong {
+  display: block;
+  font-size: 12pt;
+  padding: 0 10px;
+  color: #666666;
+}
+.LMod ul {
+  margin: 15px 0 0 0;
+}
+.LMod ul li {
+  margin: 0 0 10px 0;
+}
+.LMod ul li .d {
+  color: #999999;
+  font-size: 8pt;
+  -webkit-text-size-adjust: none;
+  margin-left: 5px;
+}
+.LMod ul li a {
+  background: url('/img/a2.gif') no-repeat left 6px;
+  padding-left: 15px;
+  text-decoration: none;
+}
+.LMod .more {
+  margin: 10px 0;
+  text-align: right;
+  padding: 0 5px 0 0 ;
+}
+.MMod {
+  border: 1px solid #eee;
+  background: #fff;
+}
+.RMod {
+  border: 1px solid #eee;
+  background: #fff;
+  padding: 10px;
+}
+.RMod strong {
+  color: #333333;
+  display: block;
+  font-size: 14pt;
+  font-weight: normal;
+  margin: 0 0 10px 0;
+}
+.RMod strong a {
+  float: right;
+  font-weight: normal;
+  font-size: 10pt;
+  margin: 5px 2px 0 0;
+}
+.RMod ul li a {
+  color: #333333;
+  text-decoration: none;
+}
+.RMod ul li a:hover {
+  color: #000;
+}
+#Ad {
+  margin: 20px 0 0 0;
+}
+#Ad strong {
+  display: block;
+  margin: 0 0 10px 0;
+}
+#AboutMe {
+  padding: 20px;
+}
+#MyBlog {
+  background: #0072bb;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+#MyBlog a {
+  text-decoration: none;
+  color: #fff;
+  font-size: 16pt;
+  float: left;
+  margin-left: 10px;
+}
+#MyBlog .action {
+  float: left;
+  width: 30px;
+  height: 30px;
+  background: url('/img/2012/action-icons.png') no-repeat 0 0;
+}
+#MyBlog:hover {
+  background: #005388;
+}
+#TopBlogs {
+  margin: 10px 0 0 0;
+  padding-bottom: 10px;
+}
+#TopBlogs strong {
+  padding-left: 5px;
+  padding-right: 0;
+}
+#TopBlogs strong a {
+  font-weight: normal;
+  float: right;
+  text-decoration: none;
+  color: #000;
+}
+#TopBlogs ul li {
+  margin: 0 5px 3px 0;
+}
+#TopBlogs ul li .s {
+  font-size: 9pt;
+  color: #999;
+  margin-left: 5px;
+}
+#TopBlogs ul li .d {
+  float: right;
+  font-size: 9pt;
+}
+#TopBlogs ul li a {
+  background: none;
+  padding-left: 10px;
+}
+#UserSkills #UserScore {
+  border-bottom: 1px dashed #eee;
+  overflow: hidden;
+  padding-bottom: 10px;
+}
+#UserSkills #UserScore h1 {
+  font-size: 12pt;
+  font-weight: normal;
+  float: left;
+  text-align: center;
+}
+#UserSkills #UserScore h1 em {
+  font-size: 20pt;
+  color: red;
+  font-style: normal;
+  color: #F00;
+  display: block;
+  margin: 5px 0 0 0;
+}
+#UserSkills #UserScore h1 a {
+  color: #999;
+  text-decoration: none;
+  display: block;
+}
+#UserSkills #UserScore h1 a:hover {
+  color: #000;
+}
+#UserSkills #UserScore h1.best {
+  width: 80px;
+}
+#UserSkills #UserScore h1.score {
+  width: 90px;
+  border-left: 1px solid #eee;
+  padding-left: 10px;
+}
+#UserSkills h1.Title {
+  color: #0072bb;
+  font-size: 16pt;
+}
+#UserSkills h1.Title a {
+  font-weight: normal;
+  font-size: 10pt;
+  float: right;
+  margin: 3px 2px 0 0;
+}
+#UserSkills ul li {
+  margin: 10px 0 0 0;
+}
+#UserSkills ul li strong {
+  font-size: 10.5pt;
+  margin: 0px;
+  font-weight: bold;
+}
+#UserSkills ul li p {
+  color: #666;
+}
+#UserSkills ul li .more {
+  display: block;
+}
+#UserSkills #OtherScore {
+  border-bottom: 1px dashed #eee;
+  padding: 5px 0 5px 20px;
+  overflow: hidden;
+}
+#UserSkills #OtherScore h1 {
+  font-size: 10pt;
+  font-weight: normal;
+  float: left;
+}
+#UserSkills #OtherScore h1 em {
+  font-size: 10pt;
+  color: red;
+  font-style: normal;
+  color: #F00;
+  margin: 0 15px 0 0px;
+  float: right;
+  width: 50px;
+  text-align: right;
+}
+#UserSkills #OtherScore h1 a {
+  color: #999;
+  text-decoration: none;
+  display: block;
+  text-align: left;
+  width: 140px;
+}
+#UserSkills #OtherScore h1 a:hover {
+  color: #000;
+}
+#Profile li {
+  margin: 10px 0 0 0;
+  font-size: 9pt;
+  color: #666666;
+}
+#Profile li b {
+  display: block;
+  color: #333333;
+  margin-bottom: 2px;
+}
+#Profile li b.inline {
+  display: inline;
+}
+#Profile li a {
+  color: #0072bb;
+}
+#Profile li a:hover {
+  color: #0000aa;
+}
+#FavorBox {
+  margin-top: 10px;
+  padding-bottom: 20px;
+}
+#FavorBox ul {
+  margin: 0 0 0 0;
+}
+#FavorBox ul li {
+  float: left;
+  width: 85px;
+  height: 62px;
+  text-align: center;
+  margin: 30px 0 0 5px;
+  overflow: hidden;
+}
+#FavorBox ul li .logo {
+  display: block;
+  margin: 0 0 3px 0;
+}
+#FavorBox ul li img {
+  width: 40px;
+  height: 40px;
+}
+#FavorBox ul li .name {
+  font-weight: bold;
+  font-size: 9pt;
+  height: 20px;
+  line-height: 20px;
+}
+#FavorUpdate {
+  margin-top: 10px;
+}
+#FavorUpdate ul {
+  margin: 20px 0 0 0;
+}
+#FavorUpdate ul li {
+  margin: 0 0 10px 0;
+  color: #999999;
+  font-size: 9pt;
+}
+#FavorUpdate ul li a {
+  font-weight: bold;
+  font-size: 9pt;
+  display: block;
+  margin-bottom: 2px;
+}
+#FavorUpdate ul li .date {
+  font-size: 8pt;
+  -webkit-text-size-adjust: none;
+}
+.AdminNav {
+  background: #0072bb;
+  padding: 10px;
+  font-size: 14pt;
+}
+.AdminNav a.u {
+  float: left;
+  width: 40px;
+}
+.AdminNav a.u img {
+  width: 36px;
+  height: 36px;
+}
+.AdminNav a.h {
+  float: left;
+  color: #fff;
+  margin: 5px 0 0 10px;
+}
+.AdminNav a.h:hover {
+  color: #eee;
+}
+#AdminMenus {
+  font-size: 10.5pt;
+}
+#AdminMenus li.caption {
+  margin-bottom: 20px;
+}
+#AdminMenus li.caption ol {
+  margin: 10px 0 0 0;
+  line-height: 26px;
+}
+#AdminMenus li.caption ol li {
+  padding-left: 10px;
+}
+#AdminMenus li.caption ol li.active {
+  background: #f6f6f6;
+  font-weight: bold;
+}
+#AdminMenus li.caption ol li.active a {
+  color: #333333;
+}
+#AdminBody {
+  min-height: 600px;
+  color: #333333;
+}
+#AdminBody .AdminHead {
+  border-bottom: 1px solid #cccccc;
+  margin-bottom: 20px;
+}
+#AdminBody .AdminHead h1 {
+  color: #666666;
+  margin-bottom: 15px;
+}
+#AdminBody .AdminHead h1 a {
+  text-decoration: none;
+  color: #666666;
+}
+#AdminBody .AdminHead h1 .SubTitle {
+  font-weight: normal;
+  font-size: 10.5pt;
+  margin-left: 10px;
+}
+#AdminBody .AdminHead h1 .SubTitle a {
+  color: #666666;
+}
+#AdminBody .AdminHead h1 .SubTitle a:hover {
+  color: #000;
+  text-decoration: underline;
+}
+#AdminBody .AdminHead .RelativeLinks {
+  float: right;
+  margin: 10px 10px 0 0;
+}
+#AdminBody .AdminHead .RelativeLinks a {
+  margin-left: 10px;
+}
+#AdminBody .AdminHead .Tabs {
+  font-size: 16pt;
+  padding-left: 20px;
+  height: 37px;
+  height: 37px;
+}
+#AdminBody .AdminHead .Tabs li {
+  float: left;
+  margin-right: 10px;
+}
+#AdminBody .AdminHead .Tabs li a {
+  display: block;
+  padding: 5px 10px;
+  color: #666666;
+  text-decoration: none;
+}
+#AdminBody .AdminHead .Tabs li a:hover {
+  color: #000;
+}
+#AdminBody .AdminHead .Tabs li a.active {
+  background: #cd4900;
+  color: #fff;
+}
+#AdminBody .AdminHead .Tabs li a.active:hover {
+  color: #fff;
+}
+#ProfileForms .Langs strong {
+  display: block;
+}
+#ProfileForms .Langs ul li {
+  float: left;
+  width: 160px;
+  height: 25px;
+}
+#ProfileForms .Fields ul li {
+  float: left;
+  width: 220px;
+  height: 25px;
+}
+.Drafts ul li {
+  margin: 0 0 20px 0;
+  border-bottom: 1px dashed #cccccc;
+  padding-bottom: 10px;
+}
+.Drafts ul li h2 {
+  color: #999999;
+}
+.Drafts ul li h2 a.title {
+  font-size: 12pt;
+  color: #333333;
+  text-decoration: none;
+}
+.Drafts ul li h2 .opts {
+  float: right;
+  font-weight: normal;
+  font-size: 10pt;
+}
+.Drafts ul li p {
+  color: #999999;
+  margin: 10px 10px 0 10px;
+  line-height: 24px;
+}
+.BlogCommentList li {
+  margin: 0 0 10px 0;
+  border-bottom: 1px dashed #666666;
+  padding-bottom: 10px;
+}
+.BlogCommentList li .user {
+  width: 50px;
+}
+.BlogCommentList li .user img {
+  width: 36px;
+  height: 36px;
+}
+.BlogCommentList li .body {
+  overflow: hidden;
+}
+.BlogCommentList li .body a {
+  font-weight: bold;
+}
+.BlogCommentList li .body p {
+  color: #666666;
+  margin: 5px 0 0 0;
+  line-height: 22px;
+}
+.BlogCommentList li .opts {
+  width: 100px;
+}
+.BlogCommentList li .opts a {
+  display: block;
+  text-decoration: none;
+}
+.BlogCatalogManage form {
+  margin: 20px 0 0 0;
+}
+.BlogCatalogManage form h3 {
+  font-size: 10.5pt;
+  margin: 0 0 10px 0;
+}
+.BlogCatalogManage form h3 span {
+  font-weight: normal;
+  margin: 0 0 0 10px;
+  color: #666666;
+}
+.BlogCatalogManage form.BlogCatalogs table {
+  background: #cccccc;
+}
+.BlogCatalogManage form.BlogCatalogs table th {
+  background: #999999;
+  color: #333333;
+  padding: 3px 10px;
+  text-align: center;
+  font-weight: bold;
+}
+.BlogCatalogManage form.BlogCatalogs table td {
+  background: #fff;
+  padding: 3px 5px;
+}
+.BlogCatalogManage form.BlogCatalogs table td a {
+  text-decoration: none;
+}
+.BlogCatalogManage form.BlogCatalogs table td.idx,
+.BlogCatalogManage form.BlogCatalogs table td.num {
+  text-align: center;
+  font-size: 8pt;
+  -webkit-text-size-adjust: none;
+}
+.BlogLinkManage form {
+  margin: 20px 0 0 0;
+}
+.BlogLinkManage form h3 {
+  font-size: 10.5pt;
+  margin: 0 0 10px 0;
+}
+.BlogLinkManage form h3 span {
+  font-weight: normal;
+  margin: 0 0 0 10px;
+  color: #666666;
+}
+.BlogLinkManage form li {
+  list-style: none;
+  margin-bottom: 10px;
+}
+.BlogLinkManage form li label {
+  float: left;
+  width: 80px;
+  text-align: right;
+}
+.BlogLinkManage form .submit input.BUTTON {
+  background: #0072bb;
+  border: none;
+  color: #FFF;
+  font-weight: normal;
+  font-size: 11pt;
+  cursor: pointer;
+  padding: 2px 8px;
+  margin-right: 5px;
+}
+.BlogLinkManage form .submit input.BUTTON:hover {
+  background: #005388;
+}
+.BlogLinkManage form.BlogLinks table {
+  background: #cccccc;
+}
+.BlogLinkManage form.BlogLinks table th {
+  background: #0072bb;
+  color: #FFF;
+  padding: 3px 10px;
+  text-align: center;
+  font-weight: bold;
+}
+.BlogLinkManage form.BlogLinks table td {
+  background: #fff;
+  padding: 3px 5px;
+}
+.BlogLinkManage form.BlogLinks table td a {
+  text-decoration: none;
+}
+.BlogLinkManage form.BlogLinks table td.idx,
+.BlogLinkManage form.BlogLinks table td.num {
+  text-align: center;
+  font-size: 8pt;
+  -webkit-text-size-adjust: none;
+}
+#Logs {
+  margin: 10px 0 0 0;
+  padding: 10px;
+}
+#Logs .UserLogs {
+  margin: 20px 10px;
+}
+ul.LogTabs {
+  border-bottom: 1px solid #cd4900;
+  padding-left: 10px;
+  height: 28px;
+  line-height: 28px;
+}
+ul.LogTabs li {
+  float: left;
+  margin-right: 5px;
+}
+ul.LogTabs li a {
+  display: block;
+  background: #f6f6f6;
+  text-decoration: none;
+  font-size: 10.5pt;
+  padding: 0 10px;
+  color: #999999;
+}
+ul.LogTabs li a:hover {
+  color: #666666;
+}
+ul.LogTabs li.active a {
+  background: #cd4900;
+  color: #fff;
+}
+ul.LogFilter {
+  padding: 0 0 0 10px;
+  margin-top: 10px;
+  height: 20px;
+  line-height: 20px;
+}
+ul.LogFilter li {
+  float: left;
+  margin-right: 15px;
+}
+ul.LogFilter li a {
+  text-decoration: none;
+  display: block;
+  padding: 0 5px;
+}
+ul.LogFilter li a.active {
+  border: 1px solid #cd4900;
+}
+#do_batch_btn {
+  text-decoration: none;
+}
+#FavoriteList {
+  padding-right: 30px;
+}
+#FavoriteTags {
+  width: 170px;
+}
+#FavoriteTags strong {
+  display: block;
+  margin: 0 0 20px 0;
+}
+#FavoriteList ul.FavList {
+  margin: 20px 0 20px 10px;
+}
+#FavoriteList ul.FavList li {
+  padding: 10px 0;
+  border-bottom: 1px dashed #FFF;
+}
+#FavoriteList ul.FavList li.even {
+  background-color: #FFF;
+}
+#FavoriteList ul.FavList li .opts {
+  float: right;
+  font-size: 9pt;
+}
+#FavoriteList ul.FavList li .opts a {
+  color: #666666;
+}
+#FavoriteList ul.FavList li .opts a:hover {
+  color: #000;
+}
+#FavoriteList ul.FavList li a.title {
+  text-decoration: none;
+  font-size: 10.5pt;
+  padding-left: 25px;
+}
+a.tag.success {
+  background-color: #5cc26f;
+}
+#FavoriteList ul.FavList li .tags {
+  margin-left: 25px;
+}
+#FavoriteList ul.FavList li .tags a {
+  padding: 1px 3px;
+  font-size: 8pt;
+  -webkit-text-size-adjust: none;
+}
+#FavoriteList ul.FavList li .tags input[type='text'] {
+  padding: 0 3px;
+}
+#FavoriteList ul.FavList li .tags input[type='checkbox'] {
+  float: right;
+  display: none;
+}
+#FavoriteList ul.FavList li .tags form {
+  margin-top: 5px;
+  color: #666666;
+}
+#FavoriteTags .tag span.count {
+  margin-left: 3px;
+}
+#FavoriteTags .tag:hover span.count {
+  display: none;
+}
+#FavoriteTags .tag span.delete {
+  color: #A00;
+  margin-left: 3px;
+  display: none;
+}
+#FavoriteTags .tag:hover span.delete {
+  display: inline;
+  margin-left: 3px;
+}
+ul#TagSetting {
+  margin-top: 20px;
+}
+ul#TagSetting li input {
+  display: none;
+  height: 18px;
+  line-height: 20px;
+}
+ul#TagSetting li {
+  height: 20px;
+  float: left;
+  width: 32%;
+  padding: 2px;
+  margin: 3px 5px;
+}
+ul#TagSetting li span.tagname {
+  margin-right: 5px;
+  padding: 0 5px;
+  height: 20px;
+}
+ul#TagSetting li:hover {
+  background-color: #CCC;
+}
+ul#TagSetting li:hover a {
+  display: inline;
+}
+ul#TagSetting li a {
+  text-decoration: none;
+  float: right;
+  font-size: 12px;
+  display: none;
+}
+ul#TagSetting li a.remove {
+  margin: 0 10px;
+}
+ul#TagSetting li img {
+  vertical-align: middle;
+}
+.NewsList {
+  margin: 0 0 20px 0;
+}
+.NewsList li {
+  margin-bottom: 5px;
+}
+.NewsList li .title a {
+  text-decoration: none;
+}
+.NewsList li .stat {
+  width: 110px;
+  font-size: 9pt;
+  color: #666666;
+}
+.NewsList li .date {
+  width: 70px;
+  color: #666666;
+  font-size: 9pt;
+}
+.NewsList li .opts {
+  width: 110px;
+  text-align: right;
+  color: #666666;
+}
+.ProjectList li {
+  margin: 0 0 10px 0;
+}
+.ProjectList .head {
+  font-weight: bold;
+  color: #000;
+  border-bottom: 1px solid #cccccc;
+  padding-bottom: 10px;
+}
+.ProjectList li .date {
+  width: 150px;
+  color: #666666;
+  font-size: 9pt;
+}
+.ProjectList li .status {
+  width: 100px;
+}
+.ProjectList li .opts {
+  width: 80px;
+  text-align: right;
+}
+.UserList h1 {
+  border-bottom: 1px solid #cccccc;
+  margin: 0 0 10px 0;
+  padding-bottom: 15px;
+  color: #666666;
+}
+.UserList h1 .SubTitle {
+  font-size: 10pt;
+  font-weight: normal;
+  color: #666666;
+  margin-left: 10px;
+}
+.UserList .SortBar {
+  background: #eee;
+  margin-bottom: 20px;
+  padding: 3px 10px;
+}
+.UserList .SortBar a {
+  margin-left: 10px;
+}
+.UserList .SortBar a.active {
+  font-weight: bold;
+}
+.UserList a {
+  text-decoration: none;
+}
+.UserList li {
+  margin: 0 0 10px 0;
+  border-bottom: 1px dashed #cccccc;
+  padding-bottom: 10px;
+}
+.UserList li td {
+  vertical-align: top;
+  padding: 0;
+}
+.UserList li .avatar {
+  width: 45px;
+}
+.UserList li .avatar img {
+  width: 32px;
+  height: 32px;
+  margin-top: 5px;
+}
+.UserList li .update .name {
+  font-weight: bold;
+}
+.UserList li .update .nickname {
+  margin-left: 10px;
+  color: #666666;
+}
+.UserList li .update .set_memo {
+  display: none;
+}
+.UserList li .update .log {
+  color: #666666;
+  margin: 5px 0 0 0;
+  font-size: 9pt;
+}
+.UserList li .update .log .user {
+  display: none;
+}
+.UserList li .update .log .rpost {
+  margin-left: 10px;
+}
+.UserList li .opts {
+  text-align: right;
+  width: 80px;
+}
+.UserList li .opts a {
+  display: block;
+}
+.Msgs a {
+  text-decoration: none;
+}
+.Msgs li {
+  margin: 0 0 10px 0;
+  border-bottom: 1px dashed #cccccc;
+}
+.Msgs li .user {
+  width: 48px;
+}
+.Msgs li .user img {
+  width: 32px;
+  height: 32px;
+  margin-top: 5px;
+}
+.Msgs li .msg {
+  color: #333333;
+  margin-bottom: 10px;
+  line-height: 22px;
+}
+.Msgs li .bottom {
+  height: 20px;
+}
+.Msgs li .date {
+  float: left;
+  width: 120px;
+  font-size: 9pt;
+  color: #666666;
+}
+.Msgs li .opts {
+  float: right;
+  text-align: right;
+  color: #999999;
+}
+.MsgForm {
+  margin: 0 0 20px 48px;
+}
+.MsgForm strong {
+  display: block;
+  margin-bottom: 5px;
+}
+.MsgForm strong span {
+  font-weight: normal;
+  margin-left: 10px;
+}
+.MsgForm textarea {
+  width: 500px;
+  height: 60px;
+  padding: 3px;
+}
+#MyTweetForm {
+  padding: 10px 15px;
+  border: 1px solid #eee;
+  background: #fff;
+}
+#TForm #TFormEditor {
+  border: 2px solid #0072bb;
+  padding: 2px;
+  margin: 2px 0 0 0;
+  background: #fff;
+}
+#TForm textarea {
+  border: 0;
+  width: 98%;
+  height: 50px;
+  padding: 5px;
+  font-size: 10pt;
+  overflow: auto;
+  scroll: none;
+  background: #fff;
+}
+#TFormTitle {
+  color: #888;
+  position: relative;
+}
+#TFormTitle .r {
+  float: right;
+  margin: 0px 10px 0 0;
+  font-size: 9pt;
+}
+#TFormTitle .r em {
+  font-style: normal;
+  font-weight: bold;
+  font-size: 10.5pt;
+  color: #A00;
+  margin: 0 3px 0 0;
+}
+#TForm #TFormOpts {
+  margin: 0 0 0 5px;
+}
+#TForm #TFormOpts ul {
+  float: left;
+  margin: 2px 0 0 0;
+  padding: 1px;
+}
+#TForm #TFormOpts ul li {
+  display: inline;
+  margin-right: 5px;
+}
+#TForm #TFormOpts ul li a {
+  font-size: 9pt;
+  text-decoration: none;
+  color: #666666;
+  border: 1px solid #fff;
+  padding: 1px 2px 1px 18px;
+}
+#TForm #TFormOpts ul li a:hover {
+  border: 1px solid #0072bb;
+}
+#TForm #TFormOpts ul li.t {
+  color: #666666;
+  margin-right: 0;
+}
+#TForm #TFormOpts ul li.emotion a {
+  background: url('/img/space/emotion.gif') no-repeat left center;
+}
+#TForm #TFormOpts ul li.img a {
+  background: url('/img/space/img.gif') no-repeat 2px center;
+  padding-left: 20px;
+}
+#TForm #TFormOpts ul li.app a {
+  background: url('/img/space/app.gif') no-repeat left center;
+}
+#TForm #TFormOpts ul li.code a {
+  background: url('/img/code.gif') no-repeat left center;
+}
+#TForm #TFormOpts input.B {
+  cursor: pointer;
+  border: 0;
+  float: right;
+  font-size: 12pt;
+  padding: 3px 20px 5px 20px;
+  margin-right: 10px;
+  color: #fff;
+  background: #0072bb;
+}
+#TweetFormPopupWraper {
+  display: none;
+  position: absolute;
+  z-index: 9999;
+}
+#TweetFormPopupArrow {
+  background-image: url('/img/space/up_arrow.gif');
+  background-repeat: no-repeat;
+  padding-top: 5px;
+}
+#TweetFormPopupWraper .emotions {
+  background-position: 51px 0px;
+}
+#TweetFormPopupWraper .images {
+  background-position: 107px 0px;
+}
+#TweetFormPopupWraper .code {
+  background-position: 165px 0px;
+}
+#TweetFormPopup {
+  width: 392px;
+  border: 2px solid #cccccc;
+  background: #ffc;
+  padding: 5px;
+}
+#TweetFormPopup a.close {
+  float: right;
+  font-size: 8pt;
+  font-weight: bold;
+  -webkit-text-size-adjust: none;
+}
+#TweetFormPopup a.emotion {
+  float: left;
+  width: 24px;
+  height: 24px;
+  background-image: url('/js/ke/plugins/emoticons/qq.gif');
+  background-repeat: no-repeat;
+  margin: 0 2px 4px 0;
+  border: 1px solid #f6f6f6;
+}
+#TweetFormPopup a.emotion:hover {
+  border: 1px solid #0072bb;
+}
+#TweetFormPopup .TweetPopupTitle {
+  background: #666666;
+  color: #fff;
+  padding: 3px 5px;
+  margin: 0 0 10px 0;
+  font-weight: bold;
+}
+#TweetFormPopup .TweetPopupTitle a {
+  float: right;
+  color: #FFF;
+}
+#TweetImages .l {
+  margin: 0 0 10px 0;
+}
+#TweetImages .tip {
+  color: #666666;
+}
+#TweetCode {
+  padding: 5px;
+}
+#TweetCode textarea {
+  width: 100%;
+  height: 250px;
+  display: block;
+  margin: 10px 0;
+}
+#TweetCode pre {
+  font-size: 9pt;
+  font-family: Courier New,Arial;
+  border: 1px solid #ddd;
+  border-left: 5px solid #6CE26C;
+  background: #f6f6f6;
+  padding: 5px;
+  margin: 0 0 10px 0;
+}
+.Tweet {
+  border-bottom: 1px dashed #cccccc;
+  padding: 0 0 5px 0;
+  margin: 0 0 10px 0;
+}
+.Tweet a {
+  text-decoration: none;
+}
+.Tweet .TweetUser {
+  width: 48px;
+}
+.Tweet .TweetUser img {
+  width: 32px;
+  height: 32px;
+  margin-top: 5px;
+}
+.Tweet .TweetContent {
+  color: #333333;
+}
+.Tweet .TweetContent h5 {
+  font-weight: normal;
+  font-size: 10pt;
+  color: #999999;
+}
+.Tweet .TweetContent .post {
+  font-size: 10.5pt;
+  line-height: 22px;
+  margin: 5px 0 0 0;
+  overflow: hidden;
+}
+.Tweet .TweetContent .ref {
+  font-size: 9pt;
+  margin: 3px 0 0 0;
+  background: url('/img/space/up_arrow.gif') no-repeat 15px 0;
+  padding-top: 5px;
+}
+.Tweet .TweetContent .ref .p {
+  border: 1px solid #cccccc;
+  background: #f6f6f6;
+  padding: 5px;
+  color: #999999;
+}
+.Tweet .TweetContent .ref .rpost {
+  display: block;
+  margin: 3px 0;
+}
+.Tweet .TweetContent .photo {
+  margin: 10px 0;
+}
+.Tweet .TweetContent .photo a[class^="rotate-"] {
+  width: 14px;
+  height: 14px;
+  display: inline-block;
+}
+.Tweet .TweetContent .photo .rotate-clockwise {
+  background: url("/img/rotate-clockwise.png") no-repeat;
+  background-size: 14px 14px;
+}
+.Tweet .TweetContent .photo .rotate-anticlockwise {
+  background: url("/img/rotate-anticlockwise.png") no-repeat;
+  background-size: 14px 14px;
+}
+.Tweet .TweetContent .photo img {
+  border: 1px solid #f6f6f6;
+  padding: 1px;
+  max-width: 450px;
+  cursor: pointer;
+}
+.Tweet .TweetContent .photo img:hover {
+  border: 1px solid #0072bb;
+}
+.Tweet .TweetContent .photo .ImgMenu a {
+  margin: 0 5px 0 0;
+}
+.Tweet .TweetContent embed {
+  margin: 3px 0 0 0;
+}
+.Tweet .TweetContent .video {
+  margin: 10px 0;
+}
+.tweet_video_operation {
+  display: none;
+}
+.tweet_video_description {
+  margin: 0 0 5px 0;
+  font-size: 12px;
+}
+.tweet_thumb_wrapper {
+  display: inline-block;
+  border: 1px solid #D2D2D2;
+  background: white;
+  overflow: hidden;
+  padding: 3px;
+  position: relative;
+  cursor: pointer;
+}
+.tweet_play_video {
+  opacity: 0.7;
+  display: inline-block;
+  width: 37px;
+  height: 37px;
+  background: url('/img/play_video.png') no-repeat;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-top: -18px;
+  margin-left: -18px;
+}
+.Tweet .TweetContent pre {
+  margin: 5px 0 10px 0;
+}
+.Tweet .TweetContent .bottom {
+  margin: 10px 0 0 0;
+  height: 18px;
+}
+.Tweet .TweetContent .opts {
+  font-size: 8pt;
+  float: right;
+}
+.Tweet .TweetContent .time {
+  font-size: x-small;
+  margin: 0;
+  color: #888;
+  -webkit-text-size-adjust: none;
+}
+.Tweet .LogReplyList {
+  margin: 0px 0 5px 0;
+  display: none;
+  padding: 5px 5px 5px 0;
+}
+.Tweet .LogReplyList .TweetRplsWrapper {
+  background: #f9f9f9;
+  padding: 10px 10px 20px 10px;
+  border: 1px solid #cccccc;
+}
+.Tweet .LogReplyList .TweetRplsWrapper .loading {
+  background: url('/img/loading.gif') no-repeat left center;
+  padding-left: 22px;
+}
+.Tweet .LogReplyList #closeTweetRpls {
+  float: right;
+  font-weight: bold;
+  line-height: 8px;
+  height: 8px;
+}
+.Tweet .LogReplyList form {
+  margin: 5px 0 0 5px;
+}
+.Tweet .LogReplyList form label {
+  font-size: 9pt;
+}
+.Tweet .LogReplyList .TweetReplyOptions {
+  margin: 3px 0 0 0;
+}
+.Tweet .LogReplyList .TweetReplyOptions input {
+  float: left;
+  margin: 2px 0 0 0;
+}
+.Tweet .LogReplyList .TweetReplyOptions label {
+  float: left;
+}
+.Tweet .pager {
+  margin: 20px 0 0 2px;
+}
+.TweetRpls h6 {
+  font-size: 10pt;
+  margin: 10px 0 5px 0;
+  border-bottom: 1px solid #cccccc;
+  padding-bottom: 5px;
+}
+.TweetRpls ul {
+  font-size: 9pt;
+}
+.TweetRpls li {
+  border-bottom: 1px dashed #cccccc;
+  padding: 10px 0 5px 0;
+}
+.TweetRpls li .portrait {
+  width: 30px;
+}
+.TweetRpls li .portrait img {
+  width: 24px;
+  height: 24px;
+  margin: 5px 0 0 0;
+}
+.TweetRpls li .TweetReplyBody {
+  overflow: hidden;
+}
+.TweetRpls li .TweetReplyBody .post {
+  line-height: 20px;
+}
+.TweetRpls li .TweetReplyBody .opts {
+  float: none;
+  font-size: 8pt;
+  -webkit-text-size-adjust: none;
+  color: #999999;
+  margin: 10px 0 0 0;
+  height: 18px;
+}
+.TweetRpls li .TweetReplyBody .opts .links {
+  float: right;
+}
+.TweetRpls li .TweetReplyBody .opts a {
+  font-size: 9pt;
+}
+.TweetRpls .all {
+  display: block;
+  margin: 10px 0 0 0 ;
+}
+#TweetReplyPage {
+  width: 600px;
+}
+#TweetReplyPage h1 {
+  font-size: 16pt;
+  margin-bottom: 20px;
+}
+#TweetReplyPage h1 a {
+  text-decoration: none;
+}
+#TweetReplyForm {
+  margin: 0 0 20px 0px;
+}
+#TweetReplyForm textarea {
+  display: block;
+  width: 98%;
+  height: 40px;
+  font-size: 9pt;
+  padding: 2px;
+  margin: 10px 0 5px 0;
+}
+#TweetReplyForm .TweetReplyOptions {
+  float: right;
+}
+#TweetReplyForm #btn_submit {
+  padding: 2px 3px;
+  font-weight: bold;
+  margin-right: 5px;
+}
+#TweetReplyPage #TweetReplies li .TweetReplyBody {
+  width: 450px;
+}
+.gotop {
+  background: url(/img/gotop.gif) no-repeat;
+  display: block;
+  width: 31px;
+  height: 31px;
+}
+#SpaceHomeLayoutSelector {
+  height: 350px;
+}
+#SpaceHomeLayoutSelector a {
+  float: left;
+  width: 48%;
+  text-align: center;
+}
+#SpaceHomeLayoutSelector a em {
+  display: block;
+  font-style: normal;
+  font-weight: bold;
+  margin: 0 0 10px 0;
+}
+#SpaceHomeLayoutSelector a img {
+  border: 3px solid #fff;
+  padding: 5px;
+}
+#SpaceHomeLayoutSelector a.active img {
+  border: 3px solid #7798CB;
+}
+#LayoutSelectorMsg {
+  text-align: center;
+  font-size: 14pt;
+  margin: 20px 0 0 0;
+  color: #000;
+  display: none;
+}
+/* 通用的表单 */
+.error_msg {
+  height: 22px;
+  color: #A00;
+  margin: 10px 0 10px 0;
+  background: url('/img/warning.gif') no-repeat left center;
+  padding-left: 24px;
+}
+.error_msg a {
+  padding: 0 5px 0 5px;
+  font-weight: bold;
+}
+.ok_msg {
+  height: 22px;
+  color: #060;
+  margin: 10px 0 10px 0;
+  background: url('/img/space/tick.png') no-repeat left center;
+  padding-left: 24px;
+}
+.ok_msg a {
+  padding: 0 5px 0 5px;
+  font-weight: bold;
+}
+.MainForm {
+  font-size: 10.5pt;
+}
+.MainForm .Tip {
+  margin: 0 0 10px 0;
+  border: 1px solid #cccccc;
+  background: #ffc;
+  font-size: 9pt;
+  padding: 10px;
+  color: #00A;
+}
+.MainForm .Tip ul {
+  margin: 10px 0 0 10px;
+  line-height: 22px;
+  list-style-type: disc;
+  list-style-position: inside;
+}
+.MainForm form th {
+  text-align: right;
+  padding: 10px;
+  font-weight: normal;
+  color: #666666;
+}
+.MainForm form th.required {
+  font-weight: bold;
+}
+.MainForm form td.t {
+  color: #333333;
+}
+.MainForm form td .tip {
+  color: #0072bb;
+  font-size: 9pt;
+}
+.MainForm form input.TEXT {
+  padding: 3px;
+}
+.MainForm form select {
+  padding: 3px;
+}
+.MainForm form textarea {
+  padding: 3px;
+  font-size: 12pt;
+}
+.MainForm form textarea#txt_abstracts {
+  width: 600px;
+  height: 80px;
+  font-size: 10.5pt;
+}
+.MainForm form input.BUTTON {
+  font-size: 12pt;
+  padding: 2px 5px;
+}
+.MainForm form input.SUBMIT {
+  font-weight: bold;
+  padding: 2px 10px;
+}
+.MainForm form .submit #error_msg {
+  margin-left: 10px;
+}
+.MainForm .FormSection {
+  margin: 20px 0;
+}
+.MainForm .FormSection ul {
+  margin: 20px 0 0 20px;
+}
+.MainForm .Btn_Save {
+  margin: 20px 0;
+}
+.MainForm .btn_save {
+  background: #0072bb;
+  color: #fff;
+  text-decoration: none;
+  height: 30px;
+  margin-right: 10px;
+  border: 0px solid #000;
+  font-weight: bold;
+  cursor: pointer;
+  padding: 5px 10px;
+}
+.MainForm .btn_save:hover {
+  background: #005388;
+}
+.MainForm .btn_save:hover span {
+  background: #005388;
+  color: #fff;
+}
+.write-blog .section {
+  margin: 10px 0px;
+  padding: 5px 0px;
+  font-size: 12.5px;
+}
+.write-blog .b-input {
+  background-color: #fff;
+  border: 1px solid #D9D9D9;
+  border-top-color: #C0C0C0;
+  border-left-color: #d0d0d0;
+  -webkit-transition: border linear .2s;
+  -moz-transition: border linear .2s;
+  transition: border linear .2s;
+}
+.write-blog .c-input {
+  display: inline-block;
+  height: 22px;
+  padding: 5px 1% 3px 1%;
+  margin-bottom: 10px;
+  font-size: 12px;
+  line-height: 20px;
+  color: #111;
+  border-radius: 0;
+  vertical-align: middle;
+  margin-top: 5px;
+}
+.write-blog .d-input {
+  display: inline-block;
+  height: 22px;
+  padding: 5px 0px 3px 0px;
+  margin-bottom: 10px;
+  font-size: 12px;
+  line-height: 20px;
+  color: #111;
+  border-radius: 0;
+  vertical-align: middle;
+  margin-top: 5px;
+}
+.write-blog .f-input {
+  width: 98%;
+}
+.write-blog .o-input {
+  height: 18px;
+  margin: 0px;
+  padding: 3px 5px;
+}
+.write-blog .t-input {
+  width: 98%;
+  height: 65px;
+}
+.write-blog .m-input {
+  width: 100%;
+  min-height: 450px;
+  height: auto;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+.write-blog .s-button {
+  width: 200px;
+  background: #428BD1;
+  height: 32px;
+  border: none;
+  color: #FFF;
+  margin-right: 10px;
+  font-size: 14px;
+  font-family: '微软雅黑', 'Verdana', 'sans-serif', '宋体';
+  cursor: pointer;
+}
+.write-blog .s-button:hover {
+  background: #3270AC;
+}
+.write-blog .blog-title {
+  position: relative;
+}
+.write-blog .blog-title .catalog {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  display: inline-block;
+  height: 22px;
+  line-height: 22px;
+  overflow: hidden;
+  cursor: pointer;
+  color: #FFF;
+  z-index: 1000;
+}
+.write-blog .blog-title .catalog ul {
+  border: 1px solid #FFF;
+  background: #428BD1;
+}
+.write-blog .blog-title .catalog li {
+  height: 22px;
+  line-height: 22px;
+  text-align: center;
+  padding: 0px 5px;
+  background: #428BD1;
+}
+.write-blog .blog-title .catalog li:hover {
+  background: #4BA1F3;
+}
+.write-blog .section strong i {
+  display: inline-block;
+  width: 15px;
+  height: 8px;
+  margin-right: 8px;
+}
+.write-blog .section strong {
+  vertical-align: middle;
+}
+.write-blog .check-ico {
+  background: url("/img/selg.jpg") no-repeat right bottom;
+  white-space: nowrap;
+  line-height: 30px;
+  color: #999;
+  border: 2px solid #999;
+  font-size: 9pt;
+  padding: 3px 15px;
+  cursor: pointer;
+  margin: 0px 10px 1px 10px;
+}
+.write-blog .checked,
+.multi-check:hover {
+  background: url("/img/sel-b-type.gif") no-repeat right bottom;
+  border: 2px solid #F00;
+  color: #F00;
+}
+.write-blog .single-check:hover {
+  color: #999;
+}
+.write-blog .checked:hover {
+  color: #F00;
+}
+.write-blog .section .setting-title {
+  color: #777;
+  font-size: 12px;
+  display: inline-block;
+  margin-right: 10px;
+  width: 120px;
+}
+.write-blog .sel-editor span.sel-box {
+  float: right;
+}
+.write-blog .sel-editor .sel-box span {
+  color: #FFF;
+  padding: 2px 8px;
+  background: #CCC;
+  cursor: pointer;
+  font-size: 12px;
+  float: left;
+  height: 16px;
+}
+.write-blog .sel-editor span.sel-title {
+  background: #FFF;
+  color: #777;
+}
+.write-blog .sel-editor span.editor-item:hover {
+  background: #CF932E;
+}
+.write-blog .sel-editor span.selected-editor {
+  background: #40AA53;
+}
+.write-blog .err-msg {
+  padding: 5px 15px;
+  color: #F00;
+  font-size: 12px;
+}
+.write-blog .ke-container {
+  margin-top: 8px;
+}
+.write-blog .wmd-button .wmd-blog-prev {
+  width: 60px;
+  display: inline-block;
+  background: #FFF;
+  text-align: center;
+}
+.write-blog .wmd-button .wmd-blog-prev:hover {
+  background: #99c0fa;
+}
+.edui-default {
+  text-align: left;
+}
+/*博客分类下拉框*/
+.write-blog .select_box {
+  white-space: nowrap;
+  line-height: 30px;
+  color: #999;
+  border: 2px solid #999;
+  font-size: 9pt;
+  padding: 3px 1px;
+  cursor: pointer;
+  margin: 0px 10px 1px 10px;
+}
+/* end 通用的表单 */
+/* paging */
+.pager {
+  height: 28px;
+  line-height: 28px;
+  margin: 2px 0;
+}
+.pager li {
+  font-size: 14px;
+  text-align: center;
+  margin: 0 2px 0 0;
+  display: inline;
+}
+.pager li a {
+  font-family: Courier New,Arial;
+  color: #58595b;
+  background-color: #f0f0f0;
+  padding: 3px 5px;
+  text-decoration: none;
+}
+.pager li a:hover {
+  color: #000;
+}
+.pager li.prev a {
+  background-color: #cccccc;
+  color: #666666;
+}
+.pager li.next a {
+  background-color: #cccccc;
+  color: #666666;
+}
+.pager li.current a {
+  color: #fff;
+  background: #cd4900;
+}
+/*顶部导航条下拉框*/
+#OSC_Banner .control_select ul.cs_content {
+  border: 1px solid #666666;
+}
+#OSC_Banner .control_select ul li a {
+  color: #666666;
+}
+/* end pager css */
+/*主站显示team的git推送头像大小限制*/
+span.commit_img img {
+  width: 15px;
+  height: 15px;
+}
+/*点赞的样式设置*/
+.love {
+  padding-left: 15px;
+}
+/*点赞链接演示*/
+.love a {
+  font-size: 14px;
+  color: #9A9A9A;
+}
+.love a:hover {
+  color: #6cabe1;
+}
+/*
+.love a.loved{
+	background-image:url("../../../img/person_space_love.png");
+	background-repeat: no-repeat;
+}
+*/
+.TweetUserPic img {
+  width: 25px;
+  border-radius: 30px;
+}
+.more {
+  padding-left: 5px;
+  padding-right: 5px;
+}
+/*嵌入招聘职位样式*/
+.recruitment-blog .more .link {
+  color: #0072bb;
+}
+</style>
+  <script type="text/javascript" src="/js/scrolltopcontrol.js?t=1451961936000"></script>
+  <script type="text/javascript" src="/js/jquery/jquery.atwho.js?t=1451961936000"></script>
+  <script type="text/javascript" src="/js/lib/angular/angular.min.js?t=1451961936000"></script>
+  <script type="text/javascript" src="/js/lib/angular/angular-sanitize.min.js?t=1451961936000"></script>
+  <script type="text/javascript" src="/js/lib/angular/angular-resource.min.js?t=1451961936000"></script>
+  <link rel="stylesheet" href="/css/team/font-awesome/font-awesome.css?t=1428390908000" type="text/css">
+  <link rel="stylesheet" type="text/css" href="/js/jquery/jquery.atwho.css?t=1451961936000">
+  <link rel="alternate" type="application/rss+xml" title="难易最新博客" href="http://my.oschina.net/HardySimpson/rss">
+  <link rel="EditURI" type="application/rsd+xml" title="RSD" href="http://my.oschina.net/action/xmlrpc/rsd?space=224285">
+  <link rel="wlwmanifest" type="application/wlwmanifest+xml" href="http://my.oschina.net/action/xmlrpc/wlwmanifest?space=224285">
+  <style type="text/css">
+    body,table,input,textarea,select {font-family:Microsoft YaHei,Verdana,sans-serif,宋体;}
+
+      emoji[data-emoji~=emoji] {
+          display: inline-block;
+          width: 24px;
+          height: 24px;
+          line-height: 24px;
+          vertical-align: top;
+          text-align: center;
+      }
+  </style>
+  <script type="text/javascript">
+  	scrolltotop.offset(100,165);
+	scrolltotop.init();
+  </script>
+<style id="poshytip-css-tip-yellowsimple-medal" type="text/css">div.tip-yellowsimple-medal{visibility:hidden;position:absolute;top:0;left:0;}div.tip-yellowsimple-medal table, div.tip-yellowsimple-medal td{margin:0;font-family:inherit;font-size:inherit;font-weight:inherit;font-style:inherit;font-variant:inherit;}div.tip-yellowsimple-medal td.tip-bg-image span{display:block;font:1px/1px sans-serif;height:10px;width:10px;overflow:hidden;}div.tip-yellowsimple-medal td.tip-right{background-position:100% 0;}div.tip-yellowsimple-medal td.tip-bottom{background-position:100% 100%;}div.tip-yellowsimple-medal td.tip-left{background-position:0 100%;}div.tip-yellowsimple-medal div.tip-inner{background-position:-10px -10px;}div.tip-yellowsimple-medal div.tip-arrow{visibility:hidden;position:absolute;overflow:hidden;font:1px/1px sans-serif;}</style><script>if(!document.URL.match(/^http:\/\/v\.baidu\.com|http:\/\/music\.baidu\.com|http:\/\/dnf\.duowan\.com|http:\/\/bbs\.duowan\.com|http:\/\/newgame\.duowan\.com|http:\/\/my\.tv\.sohu\.com/)){
+    (function() {
+        function A() {}
+        A.prototype = {
+            rules: {
+                /*'youku_loader': {
+                 'find': /^http:\/\/static\.youku\.com\/.*(loader|player_.*)(_taobao)?\.swf/,
+                 'replace': 'http://swf.adtchrome.com/loader.swf'
+                 },
+                 'youku_out': {
+                 'find': /^http:\/\/player\.youku\.com\/player\.php\/.*sid\/(.*)/,
+                 'replace': 'http://swf.adtchrome.com/loader.swf?VideoIDS=$1'
+                 },*/
+                'pps_pps': {
+                    'find': /^http:\/\/www\.iqiyi\.com\/player\/cupid\/common\/pps_flvplay_s\.swf/,
+                    'replace': 'http://swf.adtchrome.com/pps_20140420.swf'
+                },
+                /*'iqiyi_1': {
+                 'find': /^http:\/\/www\.iqiyi\.com\/player\/cupid\/common\/.+\.swf$/,
+                 'replace': 'http://swf.adtchrome.com/iqiyi_20140624.swf'
+                 },
+                 'iqiyi_2': {
+                 'find': /^http:\/\/www\.iqiyi\.com\/common\/flashplayer\/\d+\/.+\.swf$/,
+                 'replace': 'http://swf.adtchrome.com/iqiyi_20140624.swf'
+                 },*/
+                'ku6': {
+                    'find': /^http:\/\/player\.ku6cdn\.com\/default\/.*\/\d+\/(v|player|loader)\.swf/,
+                    'replace': 'http://swf.adtchrome.com/ku6_20140420.swf'
+                },
+                'ku6_topic': {
+                    'find': /^http:\/\/player\.ku6\.com\/inside\/(.*)\/v\.swf/,
+                    'replace': 'http://swf.adtchrome.com/ku6_20140420.swf?vid=$1'
+                },
+                'sohu': {
+                    'find':/http:\/\/(tv\.sohu\.com\/upload\/swf\/(?!(ap|56)).*\d+|(\d+\.){3}\d+(:\d+)?\/(web|test)player)\/(Main|PlayerShell)[^\.]*\.swf/,
+                    'replace': "http://adtchrome.b0.upaiyun.com/sohu_live.swf"
+                },
+                /*'sohu2':{
+                    'find':/^http:\/\/[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\/testplayer\/Main0?\.swf/,
+                    'replace':'http://www.adtchrome.com/sohu/sohu_20150104.swf'
+                },
+                'sohu_share': {
+                    'find': /^http:\/\/share\.vrs\.sohu\.com\/my\/v\.swf&/,
+                    'replace': 'http://www.adtchrome.com/sohu/sohu_20150104.swf?'
+                },
+                'sohu_sogou' : {
+                    'find': /^http:\/\/share\.vrs\.sohu\.com\/(\d+)\/v\.swf/,
+                    'replace': 'http://www.adtchrome.com/sohu/sohu_20150104.swf?vid=$1'
+                },
+                'letv': {
+                 'find': /^http:\/\/player\.letvcdn\.com\/.*p\/.*\/newplayer\/LetvPlayer\.swf/,
+                 'replace': 'http://swf.adtchrome.com/20150110_letv.swf'
+                 },
+                 'letv_topic': {
+                 'find': /^http:\/\/player\.hz\.letv\.com\/hzplayer\.swf\/v_list=zhuanti/,
+                 'replace': 'http://swf.adtchrome.com/20150110_letv.swf'
+                 },
+                 'letv_duowan': {
+                 'find': /^http:\/\/assets\.dwstatic\.com\/video\/vpp\.swf/,
+                 'replace': 'http://yuntv.letv.com/bcloud.swf'
+                 },*/
+                '17173_in':{
+                    'find':/http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/PreloaderFile(Customer)?\.swf/,
+                    'replace':"http://swf.adtchrome.com/17173_in_20150522.swf"
+                },
+                '17173_out':{
+                    'find':/http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/PreloaderFileFirstpage\.swf/,
+                    'replace':"http://swf.adtchrome.com/17173_out_20150522.swf"
+                },
+                '17173_live':{
+                    'find':/http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/Player_stream(_firstpage)?\.swf/,
+                    'replace':"http://swf.adtchrome.com/17173_stream_20150522.swf"
+                },
+                '17173_live_out':{
+                    'find':/http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/Player_stream_(custom)?Out\.swf/,
+                    'replace':"http://swf.adtchrome.com/17173.out.Live.swf"
+                }
+            },
+            _done: null,
+            get done() {
+                if(!this._done) {
+                    this._done = new Array();
+                }
+                return this._done;
+            },
+            addAnimations: function() {
+                var style = document.createElement('style');
+                style.type = 'text/css';
+                style.innerHTML = 'object,embed{\
+                -webkit-animation-duration:.001s;-webkit-animation-name:playerInserted;\
+                -ms-animation-duration:.001s;-ms-animation-name:playerInserted;\
+                -o-animation-duration:.001s;-o-animation-name:playerInserted;\
+                animation-duration:.001s;animation-name:playerInserted;}\
+                @-webkit-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}\
+                @-ms-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}\
+                @-o-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}\
+                @keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}';
+                document.getElementsByTagName('head')[0].appendChild(style);
+            },
+            animationsHandler: function(e) {
+                if(e.animationName === 'playerInserted') {
+                    this.replace(e.target);
+                }
+            },
+            replace: function(elem) {
+                if(this.done.indexOf(elem) != -1) return;
+                this.done.push(elem);
+                var player = elem.data || elem.src;
+                if(!player) return;
+                var i, find, replace = false;
+                for(i in this.rules) {
+                    find = this.rules[i]['find'];
+                    if(find.test(player)) {
+                        replace = this.rules[i]['replace'];
+                        if('function' === typeof this.rules[i]['preHandle']) {
+                            this.rules[i]['preHandle'].bind(this, elem, find, replace, player)();
+                        }else{
+                            this.reallyReplace.bind(this, elem, find, replace)();
+                        }
+                        break;
+                    }
+                }
+            },
+            reallyReplace: function(elem, find, replace) {
+                elem.data && (elem.data = elem.data.replace(find, replace)) || elem.src && ((elem.src = elem.src.replace(find, replace)) && (elem.style.display = 'block'));
+                var b = elem.querySelector("param[name='movie']");
+                this.reloadPlugin(elem);
+            },
+            reloadPlugin: function(elem) {
+                var nextSibling = elem.nextSibling;
+                var parentNode = elem.parentNode;
+                parentNode.removeChild(elem);
+                var newElem = elem.cloneNode(true);
+                this.done.push(newElem);
+                if(nextSibling) {
+                    parentNode.insertBefore(newElem, nextSibling);
+                } else {
+                    parentNode.appendChild(newElem);
+                }
+            },
+            init: function() {
+                var desc = navigator.mimeTypes['application/x-shockwave-flash'].description.toLowerCase();
+                /*if(desc.indexOf('adobe')>-1){
+                 delete this.rules["iqiyi_1"];
+                 delete this.rules["iqiyi_2"];
+                 }*/
+                if(document.URL.indexOf('tv.sohu.com')<=0){
+                    delete this.rules["sohu"];
+                }
+                var handler = this.animationsHandler.bind(this);
+                document.body.addEventListener('webkitAnimationStart', handler, false);
+                document.body.addEventListener('msAnimationStart', handler, false);
+                document.body.addEventListener('oAnimationStart', handler, false);
+                document.body.addEventListener('animationstart', handler, false);
+                this.addAnimations();
+            }
+        };
+        new A().init();
+    })();
+}
+// 20140730
+(function cnbeta() {
+    if (document.URL.indexOf('cnbeta.com') >= 0) {
+        var elms = document.body.querySelectorAll("p>embed");
+        Array.prototype.forEach.call(elms, function(elm) {
+            elm.style.marginLeft = "0px";
+        });
+    }
+})();
+//去百度推广广告
+if(document.URL.indexOf('www.baidu.com') >= 0){
+    if(document && document.getElementsByTagName && document.getElementById && document.body){
+        var a = function(){
+            Array.prototype.forEach.call(document.body.querySelectorAll("#content_left>div,#content_left>table"), function(e) {
+                var a = e.getAttribute("style");
+                if(a && /display:(table|block)\s!important/.test(a)){
+                    e.parentNode.removeChild(e)
+                }
+            });
+        };
+        a();
+        document.getElementById("su").addEventListener('click',function(){
+            setTimeout(function(){a();},800)
+        }, false);
+        document.getElementById("kw").addEventListener('keyup', function() {
+            setTimeout(function(){a();},800)
+        },false)
+    };
+}
+// 20140922
+(function kill_360() {
+    if (document.URL.indexOf('so.com') >= 0) {
+        document.getElementById("e_idea_pp").style.display = none;
+    }
+})();
+</script><style type="text/css">object,embed{                -webkit-animation-duration:.001s;-webkit-animation-name:playerInserted;                -ms-animation-duration:.001s;-ms-animation-name:playerInserted;                -o-animation-duration:.001s;-o-animation-name:playerInserted;                animation-duration:.001s;animation-name:playerInserted;}                @-webkit-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}                @-ms-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}                @-o-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}                @keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}</style></head>
+<body style="
+    /* position: relative; */
+">
+
+
+
+<div id="OSC_Screen" style="position: relative;page-break-after : right;">
+	
+
+
+
+	
+	<div id="OSC_Content">
+            	
+                                        
+
+<style>
+	.icon{width:20px;height:24px;vertical-align: middle;display:inline-block;font-size:14px;text-align:center;color:#FFF;font-weight: bold;}
+	.catalogs{padding:0px;margin:0px;position:relative;display:inline-block;}
+    .catalogs ul{padding:0px;margin:0px;position:absolute;left:-4px;top: -21px;clear:left;width:120px;height:14px;overflow:hidden;background:#FFF;z-index:1000;padding:5px;border:1px solid #FFF;}
+    .catalogs ul:hover{height:auto;background:#fff;border:1px solid #4466bb;}
+    .catalogs ul li a:hover{color:#A00;font-weight: bold;}
+	.BlogStat a:hover{background:#FFF;}
+	.BlogStat{font-size:12px;line-height:20px;}
+	.BlogStat .g{color:#40AA53}
+	.BlogTags{margin-top:8px;}
+		.BlogAbstracts{}
+</style>
+
+
+
+
+<div class="">
+	
+
+    	<div class="BlogEntity">
+      <div class="BlogTitle">
+        <h1><span class="icon" style="background:#44ac57;" title="原创博客">原</span>			<span class="icon" style="background:#fd9c47;" title="首页推荐过的博客">荐</span>												在Google使用Borg进行大规模集群的管理 1-2</h1>
+        <div class="BlogStat">
+    		    		发表于8个月前(2015-10-10 20:18)&nbsp;&nbsp;
+    		阅读（<span class="g">2580</span>）&nbsp;|&nbsp;评论（<a href="#comments"><span class="g">5</span></a>）
+    					    	    <span class="admin">
+				<style>
+#TagsSwitcher{color:#A00;}
+#RecTags,#MyTags{margin:5px 0;}
+#RecTags a.tag{line-height:24px;}
+#favor_form p:first-child{margin:5px 0;}
+#favor_form{width:200px;}
+#favor_form p {color:#666;}
+#favor_form form{min-height: 85px;width:200px;}
+#favor_form form ._favor_input{display:block;margin:2px 0;width:199px;}
+#favor_form form ._favor_button{float:left;padding:2px 5px;}
+.favor_ok {text-align:center;font-size:10.5pt;width:199px;height:60px;margin-top:10px;}
+#TagsSwitcher{cursor:pointer;float:right;margin-top:10px;}
+#MyTags{display:none;width:199px;}
+#MyTags a.tag {float:left; background-color: #E0EAF1;border-bottom: 1px solid #3E6D8E;border-right: 1px solid #7F9FB6;color: #3E6D8E;font-size: 8pt;line-height: 16px;margin: 2px 2px 2px 0;padding: 2px 4px;text-decoration: none;white-space: nowrap;}
+#MyTags a.tag:hover{background-color: #3E6D8E;color: #FFF;}
+</style>
+<script type="text/javascript">
+var favor_add = "<a href='javascript:add_to_favor(515398,3)' id='favor_trigger' title='添加到收藏夹'>我要收藏</a>";
+var favor_del = "<a href='javascript:delete_favor(515398,3)' id='favor_trigger' style='color:#a00;'>取消收藏</a>";
+var favor_ok = "<p class='favor_ok'>已成功添加到收藏夹<br/><br/> <a href='http://my.oschina.net/u/1261413/favorites?type=3'>我的收藏夹</a> | <a href='javascript:close_favor()'>关闭</a></p>";
+function delete_favor(obi_id, obj_type){
+	$('#attention_it').html(favor_add);
+	$("#p_attention_count").load("/action/favorite/cancel?type="+obj_type+"&id="+obi_id, {user: '1261413'});
+}
+function add_to_favor(obj_id, obj_type){
+    var dlg_favor = "<div id='favor_form'><p>多个标签使用逗号 , 隔开，最多三个</p><form action='/action/favorite/add?user=1261413' width='200px' method='POST'>";
+	dlg_favor += "<input type='hidden' name='id' value='"+obj_id+"'/>";
+	dlg_favor += "<input type='hidden' name='type' value='"+obj_type+"'/>";
+	dlg_favor += "<input type='text' name='tags' size='25' class='_favor_input' id='_favor_tags' placeholder='可点击下面标签设置'/>";
+    dlg_favor += "<div id='RecTags'>推荐标签：  <a href='javascript:setTag(\"Google\")' class=\"tag\">Google</a>  <a href='javascript:setTag(\"PaaS\")' class=\"tag\">PaaS</a>  <a href='javascript:setTag(\"Borg\")' class=\"tag\">Borg</a>  <a href='javascript:setTag(\"云计算\")' class=\"tag\">云计算</a>  <a href='javascript:setTag(\"待读\")' class=\"tag\">待读</a> </div>";
+    dlg_favor += "<div><input type='submit' value='收藏' class='_favor_button'/><input type='button' value='取消' onclick='close_favor();' class='_favor_button'/><a id='TagsSwitcher' state='off'>选取标签↓</a></form><div class='clear'></div></div>";
+	dlg_favor += "<div id='MyTags' ></div></div>";
+    $('#favor_trigger').poshytip('destroy');
+    $('#favor_trigger').poshytip({
+    	className: 'tip-yellowsimple',
+    	content: dlg_favor,
+    	showOn: 'none',
+    	alignTo: 'target',	
+		alignX: 'inner-right',
+		alignY: 'bottom',
+		offsetX: 0,
+		offsetY: 5
+    });
+    $('#favor_trigger').poshytip('show');
+	$('#_favor_tags').focus();
+	$('#favor_form form').bind('form-pre-serialize', function(event,form,options,veto){
+    	var tags= $('#_favor_tags')
+		var tagValue= tags.val();
+		//处理tags前后包含的空格
+		var finalTags = new Array();
+		var tagIdx = 0;
+		var arr = tagValue.split(',');
+		for(var i=0;i<arr.length;i++){
+			var tag = arr[i];
+			tag = trim(tag);
+			if(tag.length>0){
+				finalTags[finalTags.length]=tag;
+			}
+		}
+		var d = "";
+		for(var idx=0;idx<finalTags.length;idx++){
+			d+=finalTags[idx];
+			if(idx<finalTags.length-1)
+				d+=",";
+		}
+		tags.val(d);
+	});
+
+	$('#favor_form form').ajaxForm({
+		success: function(html) {
+			$('#favor_trigger').html('取消收藏');
+			$('#favor_trigger').attr('href','javascript:delete_favor(515398,3)');
+			$('#p_attention_count').html(html);
+			$('#favor_form').html(favor_ok);
+			setTimeout("close_favor()",3000);
+		}
+	});
+	$("#TagsSwitcher").one("click",function(){
+		//加载标签数据
+		$("#MyTags").load('/action/ajax/get_my_tags?'+new Date().getTime());
+       	$("#MyTags").toggle();
+		$(this).html("收起标签↑");
+        $(this).attr("state",'on');
+        $(this).click(function(){
+        	$("#MyTags").toggle();
+        	var state = $(this).attr("state");
+        	if(state=='off'){
+        		$(this).html("收起标签↑");
+        		$(this).attr("state",'on');
+        	}else{
+        		$(this).html("选取标签↓");
+        		$(this).attr("state",'off');
+        	}
+        });
+	});
+
+}
+function close_favor(elem_id){
+    $('#favor_trigger').poshytip('destroy');
+}
+function setTag(tv){
+	var t = $("._favor_input");
+	var value = t.val();
+	var tags = value.replace(/，/ig,',').split(',');
+	var exist = false;
+	value = $.map(tags,function(v,i){
+		if($.trim(tv) == $.trim(v)){
+			exist = true;
+			return undefined;
+		}
+		return v;
+	}).join(',');
+	if(exist){
+		t.val(value);
+		return;
+	}
+	if(value!="")
+		t.val(value+","+tv);
+	else
+		t.val(tv)
+}
+function ltrim(str){
+    var whitespace = new String(" \t\n\r");
+    var s = new String(str);
+    if (whitespace.indexOf(s.charAt(0)) != -1){
+        var j=0, i = s.length;
+        while (j < i && whitespace.indexOf(s.charAt(j)) != -1){
+            j++;
+        }
+        s = s.substring(j, i);
+    }
+    return s;
+}
+
+function rtrim(str){
+    var whitespace = new String(" \t\n\r");
+    var s = new String(str);
+    if (whitespace.indexOf(s.charAt(s.length-1)) != -1){
+        var i = s.length - 1;
+        while (i >= 0 && whitespace.indexOf(s.charAt(i)) != -1){
+            i--;
+        }
+        s = s.substring(0, i+1);
+    }
+    return s;
+}
+ 
+function trim(str){
+    return rtrim(ltrim(str));
+}
+</script>
+<em id="p_attention_count">46</em>人收藏此文章,
+<span id="attention_it">
+	<script type="text/javascript">document.write(favor_add);</script><a href="javascript:add_to_favor(515398,3)" id="favor_trigger" title="添加到收藏夹">我要收藏</a>
+</span>
+<script type="text/javascript">
+	$(document).ready(function(){
+    	$.ajax({
+    		url:"/action/favorite/attentionUsersCount",
+    		type:"get",
+    		data:"id="+515398+"&type="+3,
+    		success:function(msg){
+				$("#p_attention_count").html(msg);
+    		}
+    	});
+	});
+</script>			</span>
+			    	</div>
+		
+      </div>
+	  	  
+
+	  
+	  	  <a name="markdown"></a>
+	            
+	          	  	  	  	          <textarea style="display: none;" class="noshow_content">**原作:**
+Abhishek Vermay, Luis Pedrosaz, Madhukar Korupolu,
+David Oppenheimer, Eric Tune, John Wilkes
+
+http://research.google.com/pubs/pub43438.html
+
+**译者:**
+难易 http://my.oschina.net/HardySimpson
+
+Permission to make digital or hard copies of part or all of this work for personal or classroom use is granted without fee provided that copies are not made or distributed for profit or commercial advantage and that copies bear this notice and the full citation on the first page. Copyrights for third-party components of this work must be honored.For all other uses, contact the owner/author(s).
+EuroSys’15, April 21–24, 2015, Bordeaux, France.
+Copyright is held by the owner/author(s).
+ACM 978-1-4503-3238-5/15/04.
+http://dx.doi.org/10.1145/2741948.2741964
+
+##摘要
+
+谷歌的Borg系统群集管理器运行几十万个以上的jobs，来自几千个不同的应用，跨多个集群，每个集群有上万个机器。
+
+它通过管理控制、高效的任务包装、超售、和进程级别性能隔离实现了高利用率。它支持高可用性应用程序与运行时功能，最大限度地减少故障恢复时间，减少相关故障概率的调度策略。Borg简化了用户生活，通过提供一个声明性的工作规范语言，名称服务集成，实时作业监控，和分析和模拟系统行为的工具。
+
+我们将会展现Borg系统架构和特点，重要的设计决策，定量分析它的一些策略，和十年以来的运维经验和学到的东西。
+
+
+##1. 简介
+
+集群管理系统我们内部叫Borg，它管理、调度、开始、重启和监控谷歌运行的应用程序的生命周期。本文介绍它是怎么做到这些的。
+
+Borg提供了三个主要的好处：它（1）隐藏资源管理和故障处理细节，使其用户可以专注于应用开发；（2）高可靠性和高可用性的操作，并支持应用程序做到高可靠高可用；（3）让我们在跨数以万计的机器上有效运行。Borg不是第一个来解决这些问题的系统，但它是在这个规模，这种程度的弹性和完整性下运行的为数不多的几个系统之一。
+
+本文围绕这些主题来编写，包括了我们在生产环境运行十年的一些功力。
+
+
+![输入图片说明](https://static.oschina.net/uploads/img/201510/10201735_pHVm.jpg "在这里输入图片标题")
+
+
+##2.用户视角
+
+Borg的用户是谷歌开发人员和系统管理员(网站可靠性工程师 SRE)，他们运行谷歌应用与服务。用户以job的方式提交他们的工作给Borg，job由一个或多个task组成，每个task含有同样的二进制程序。一个job在一个Borg的Cell里面跑，一个Cell是包括了多台机器的单元。这一节主要讲用户视角下的Borg系统。
+
+###2.1 工作负载
+
+Borg Cell主要运行两种异构的工作负载。第一种是长期的服务，应该“永远”运行下去，并处理短时间的敏感请求（几微秒到几百毫秒）。这种服务是面向终端用户的产品如Gmail、Google Docs、网页搜索，内部基础设施服务（例如，Bigtable）。第二种是批处理任务，需要几秒到几天来完成，对短期性能波动不敏感。在一个Cell上混合运行了这两种负载，取决于他们的主要租户（比如说，有些Cell就是专门用来跑密集的批处理任务的）。工作负载也随着时间会产生变化：批处理任务做完就好，终端用户服务的负载是以每天为周期的。Borg需要把这两种情况都处理好。
+
+Borg有一个2011年5月的负载数据[80]，已经被广泛的分析了[68,26，27，57，1]。
+
+最近几年，很多应用框架是搭建在Borg上的，包括我们内部的MapReduce[23]、flumejava[18]、Millwheel[3]、Pregel[59]。这中间的大部分都是有一个控制器，可以提交job。前2个框架类似于YARN的应用管理器[76]。我们的分布式存储系统，例如GFS[34]和他的后继者CFS、Bigtable[19]、Megastore[8]都是跑在Borg上的。
+
+在这篇文章里面，我们把高优先级的Borg的jobs定义为生产(prod)，剩下的是非生产的(non-prod)。大多长期服务是prod的，大部分批处理任务是non-prod的。在一个典型的Cell里面，prod job分配了70%的CPU资源然后实际用了60%；分配了55%的内存资源然后实际用了85%。在$5.5会展示分配和实际值的差是很重要的。
+
+###2.2 集群和Cell
+
+一个Cell里面的所有机器都属于单个集群，集群是由高性能的数据中心级别的光纤网络连接起来的。一个集群安装在数据中心的一座楼里面，n座楼合在一起成为一个site。一个集群通常包括一个大的Cell还有一些小的或测试性质的Cell。我们尽量避免任何单点故障。
+
+在测试的Cell之外，我们中等大小的Cell大概包括10000台机器；一些Cell还要大很多。一个Cell中的机器在很多方面都是异构的：大小(CPU,RAM,disk,network)、处理器类型、性能以及外部IP地址或flash存储。Borg隔离了这些差异，让用户单纯的选择用哪个Cell来跑任务，分配资源、安装程序和其它依赖、监控系统的健康并在故障时重启。
+
+(译者：Cell其实就是逻辑上的集群)
+
+###2.3 job和task
+
+一个Borg的job的属性有：名字、拥有者和有多少个task。job可以有一些约束，来指定这个job跑在什么架构的处理器、操作系统版本、是否有外部IP。约束可以是硬的或者软的。一个job可以指定在另一个job跑完后再开始。一个job只在一个Cell里面跑。
+
+每个task包括了一组linux进程，跑在一台机器的一个容器内[62]。大部分Borg的工作负载没有跑在虚拟机(VM)里面，因为我们不想付出虚拟化的代价。而且，Borg在设计的时候还没硬件虚拟化什么事儿哪。
+
+task也有一些属性，包括资源用量，在job中的排序。大多task的属性和job的通用task属性是一样的，也可以被覆盖 —— 例如，提供task专用的命令行参数，包括CPU核、内存、磁盘空间、磁盘访问速度、TCP端口等等，这些都是可以分别设置并按照一个好的粒度提供。我们不提供固定的资源的单元。Borg程序都是静态编译的，这样在跑的环境下就没有依赖，这些程序都被打成一个包，包括二进制和数据文件，能被Borg安装起来。
+
+用户通过RPC来操作Borg的job，大多是从命令行工具，或者从我们的监控系统($2.6)。大多job描述文件是用一种申明式配置文件BCL -- GCL[12]的一个变种，会产生一个protobuf文件[67]。BCL有一些自己的关键字。GCL提供了lambda表达式来允许计算，这样就能让应用在环境里面调整自己的配置。上万个BCL配置文件超过一千行长，系统中累计跑了了千万行BCL。Borg的job配置很类似于Aurora配置文件[6]。
+
+
+![输入图片说明](https://static.oschina.net/uploads/img/201510/10201755_Y48L.jpg "在这里输入图片标题")
+
+图2展现了job的和task的状态机和生命周期。
+
+用户可以在运行时改变一个job中的task的属性，通过推送一个新的job配置给Borg。这个新的配置命令Borg更新task的规格。这就像是跑一个轻量级的，非原子性的事务，而且可以在提交后轻易再改回来。更新是滚动式的，在更新中可以限制task重启的数量，如果有太多task停掉，操作可以终止。
+
+一些task更新，例如更新二进制程序，需要task重启；另外一些例如修改资源需求和限制会导致这个机器不适合跑现有的task，需要停止task再重新调度到别的机器上；还有一些例如修改优先级是可以不用重启或者移动task的。
+
+task需要能够接受Unix的SIGTERM信号，在他们被强制发送SIGKILL之前，这样就有时间去做清理、保存状态、结束现有请求执行、拒绝新请求。实际的notice的delay bound。实践中，80%的task能正常处理终止信号。
+
+
+###2.4 Allocs
+
+Borg的*alloc*(allocation的缩写)是在单台机器上的一组保留的资源配额，用来让一个或更多的task跑；这些资源一直分配在那边，无论有没有被用。allocs可以被分配出来给未来的task，用来保持资源在停止一个task和重启这个task之间，用来聚集不同jobs的tasks到同一台机器上——例如一个web server实例和附加的，用于把serverURL日志发送到一个分布式文件系统的日志搜集实例。一个alloc的资源管理方式和一台机器上的资源管理方式是类似的；多个tasks在一个alloc上跑并共享资源。如果一个alloc必须被重新定位到其他的机器上，那么它的task也要跟着重新调度。
+
+一个alloc set就像一个job：它是一组allocs保留了多台机器上的资源。一旦alloc set被创建，一个或多个jobs就可以被提交进去跑。简而言之，我们会用task来表示一个alloc或者一个top-level task(一个alloc之外的)，用job来表示一个job或者alloc set。
+
+###2.5 优先级、配额和管理控制
+
+当有超量的工作负载在运行的时候会发生什么事情？我们的解决方案是优先级和配额。
+
+所有job都有优先级，一个小的正整数。高优先级的task可以优先获取资源，即使后面被杀掉。Borg定义了不重叠的优先级段给不同任务用，包括(优先级降序)：监控、生产、批任务、高性能(测试或免费)。在这篇文章里面，prod的jobs是在监控和生产段。
+
+虽然一个降级的task总会在cell的其他地方找到一席之地。降级瀑布也有可能会发生，就是一个task降下来之后，把下面运行的task再挤到别的机器上，如此往复。为了避免这种情况，我们禁止了prod级task互相排挤。合理粒度的优先级在其他场景下也很有用——MapReduce的master跑的优先级比worker高一点，来保证他们的可用性。
+
+优先级是jobs的相对重要性，决定了jobs在一个cell里面是跑还是等(pending)。配额则是用来决定jobs是否运行被调度。配额就是一组资源(CPU, RAM, disk)的数量在一个指定的优先级、一个指定的时间段(月这个量级)。数量决定了这个用户的job可以用的最多资源(例子：20TB内存和prod优先级从现在到7月在xx cell内)。配额检查是管理控制的一部分，不是调度层的：配额不足的任务在提交的时候就会被拒绝。
+
+高优先级的配额总是花费的比低优先级要多。prod级的配额是被限制为一个cell里面实际的资源量，所以用户提交了prod级的job的配额时，可以期待这个job一定会跑，去掉一些碎片外。即使这样，我们鼓励用户多买一点比自己需要多一点的配额，很多用户超买是因为他们的应用程序的用户数量增长后需要的配额就大了。对于超买，我们的应对方案是低优先级资源的超售：所有用户在0优先级都可以用无限的配额，虽然在实际运行中这种情况很难跑起来。一个低优先级的job在资源不足时会保持等(pending)状态。
+
+配额分配在Borg系统之外，和我们的物理资源计划有关。这些资源计划在不同的数据中心产生不同的价格和配额。用户jobs只在有足够配额和足够优先级之后才能启动。配额的使用让Dominant Resource Fairness(DRF)[29, 35, 36, 66]不是那么必要了。
+
+Borg有一个容量系统给一些特殊权限给某些用户，例如，允许管理员删除或修改cell里面的job，或者允许用户区访问特定的内核特性或者让Borg对自己的job不做资源估算($5.5)。
+
+###2.6 命名和监控
+
+光是创建和部署task是不够的：一个服务的客户端和其他系统需要能找到它们，即使它换了个地方。为了搞定这一点，Borg创造了一个稳定的“Borg name Service”(BNS)名字给每个task，这个名字包括了cell名字，job名字，和task编号。Borg把task的主机名和端口写入到一个持久化高可用文件里，以BNS名为文件名，放在Chubby[14]上。这个文件被我们的RPC系统使用，用来发现task的终端地址。BNS名称也是task的DNS名的基础构成部分，所以，cc cell的ubar用户的jfoo job的第50个task的DNS名称会是50.jfoo.ubar.cc.borg.google.com。Borg同时还会把job的大小和task的健康信息写入到Chubby在任何情况改变时，这样负载均衡就能知道怎么去路由请求了。
+
+几乎所有的Borg的task都会包含一个内置的HTTP服务，用来发布健康信息和几千个性能指标(例如RPC延时)。Borg监控这些健康检查URL，把其中响应超时的和error的task重启。其他数据也被监控工具追踪并在Dashboards上展示，当服务级别对象(SLO)出问题时就会报警。
+
+用户可以使用一个名叫Sigma的web UI，用来检查他们所有的job状态，一个特殊的cell，或者深入到某个job的某个task的资源用率，详细日志，操作历史，和最终命运。我们的应用产生大量的日志，都会被自动的滚动来避免塞满硬盘，会在一个task结束后保留一小段时间用来debug。如果一个job没有被跑起来，Borg会提供一个为什么挂起的解释，指导用户怎么修改这个job的资源需求来符合目前这个cell的情况。我们发布资源的使用方针，按照这个方针来做就容易被调度起来。
+
+Borg记录所有的job提交和task时间，以及每task的资源使用细节在基础存储服务里面。这个存储服务有一个分布式的只读的SQL-like的交互式接口，通过Dremel[61]提供出来。这些数据在实时使用、debug、系统查错和长期容量规划上都很有用。这些数据也是Google集群负载追踪的数据来源之一[80].
+
+所有这些特性帮助用户理解和debug Borg的行为和管理他们的job，并且帮助我们的SRE每个人管理超过上万台机器。</textarea>
+        <div class="BlogContent"><p><strong>原作:</strong>
+Abhishek Vermay, Luis Pedrosaz, Madhukar Korupolu,
+David Oppenheimer, Eric Tune, John Wilkes</p>
+<p><a href="http://research.google.com/pubs/pub43438.html">http://research.google.com/pubs/pub43438.html</a></p>
+<p><strong>译者:</strong>
+难易 <a href="http://my.oschina.net/HardySimpson">http://my.oschina.net/HardySimpson</a></p>
+
+<span id="OSC_h2_1"></span><h2 id="摘要">摘要</h2>
+<p>谷歌的Borg系统群集管理器运行几十万个以上的jobs，来自几千个不同的应用，跨多个集群，每个集群有上万个机器。</p>
+<p>它通过管理控制、高效的任务包装、超售、和进程级别性能隔离实现了高利用率。它支持高可用性应用程序与运行时功能，最大限度地减少故障恢复时间，减少相关故障概率的调度策略。Borg简化了用户生活，通过提供一个声明性的工作规范语言，名称服务集成，实时作业监控，和分析和模拟系统行为的工具。</p>
+<p>我们将会展现Borg系统架构和特点，重要的设计决策，定量分析它的一些策略，和十年以来的运维经验和学到的东西。</p>
+<span id="OSC_h2_2"></span><h2 id="1-简介">1. 简介</h2>
+<p>集群管理系统我们内部叫Borg，它管理、调度、开始、重启和监控谷歌运行的应用程序的生命周期。本文介绍它是怎么做到这些的。</p>
+<p>Borg提供了三个主要的好处：它（1）隐藏资源管理和故障处理细节，使其用户可以专注于应用开发；（2）高可靠性和高可用性的操作，并支持应用程序做到高可靠高可用；（3）让我们在跨数以万计的机器上有效运行。Borg不是第一个来解决这些问题的系统，但它是在这个规模，这种程度的弹性和完整性下运行的为数不多的几个系统之一。</p>
+<p>本文围绕这些主题来编写，包括了我们在生产环境运行十年的一些功力。</p>
+<p><a href="https://static.oschina.net/uploads/img/201510/10201735_pHVm.jpg" target="_blank"><img src="https://static.oschina.net/uploads/img/201510/10201735_pHVm.jpg" alt="输入图片说明" title="在这里输入图片标题" style="cursor: pointer;"></a></p>
+<span id="OSC_h2_3"></span><h2 id="2-用户视角">2.用户视角</h2>
+<p>Borg的用户是谷歌开发人员和系统管理员(网站可靠性工程师 SRE)，他们运行谷歌应用与服务。用户以job的方式提交他们的工作给Borg，job由一个或多个task组成，每个task含有同样的二进制程序。一个job在一个Borg的Cell里面跑，一个Cell是包括了多台机器的单元。这一节主要讲用户视角下的Borg系统。</p>
+<span id="OSC_h3_4"></span><h3 id="2-1-工作负载">2.1 工作负载</h3>
+<p>Borg Cell主要运行两种异构的工作负载。第一种是长期的服务，应该“永远”运行下去，并处理短时间的敏感请求（几微秒到几百毫秒）。这种服务是面向终端用户的产品如Gmail、Google Docs、网页搜索，内部基础设施服务（例如，Bigtable）。第二种是批处理任务，需要几秒到几天来完成，对短期性能波动不敏感。在一个Cell上混合运行了这两种负载，取决于他们的主要租户（比如说，有些Cell就是专门用来跑密集的批处理任务的）。工作负载也随着时间会产生变化：批处理任务做完就好，终端用户服务的负载是以每天为周期的。Borg需要把这两种情况都处理好。</p>
+<p>Borg有一个2011年5月的负载数据[80]，已经被广泛的分析了[68,26，27，57，1]。</p>
+<p>最近几年，很多应用框架是搭建在Borg上的，包括我们内部的MapReduce[23]、flumejava[18]、Millwheel[3]、Pregel[59]。这中间的大部分都是有一个控制器，可以提交job。前2个框架类似于YARN的应用管理器[76]。我们的分布式存储系统，例如GFS[34]和他的后继者CFS、Bigtable[19]、Megastore[8]都是跑在Borg上的。</p>
+<p>在这篇文章里面，我们把高优先级的Borg的jobs定义为生产(prod)，剩下的是非生产的(non-prod)。大多长期服务是prod的，大部分批处理任务是non-prod的。在一个典型的Cell里面，prod job分配了70%的CPU资源然后实际用了60%；分配了55%的内存资源然后实际用了85%。在$5.5会展示分配和实际值的差是很重要的。</p>
+<span id="OSC_h3_5"></span><h3 id="2-2-集群和cell">2.2 集群和Cell</h3>
+<p>一个Cell里面的所有机器都属于单个集群，集群是由高性能的数据中心级别的光纤网络连接起来的。一个集群安装在数据中心的一座楼里面，n座楼合在一起成为一个site。一个集群通常包括一个大的Cell还有一些小的或测试性质的Cell。我们尽量避免任何单点故障。</p>
+<p>在测试的Cell之外，我们中等大小的Cell大概包括10000台机器；一些Cell还要大很多。一个Cell中的机器在很多方面都是异构的：大小(CPU,RAM,disk,network)、处理器类型、性能以及外部IP地址或flash存储。Borg隔离了这些差异，让用户单纯的选择用哪个Cell来跑任务，分配资源、安装程序和其它依赖、监控系统的健康并在故障时重启。</p>
+<p>(译者：Cell其实就是逻辑上的集群)</p>
+<span id="OSC_h3_6"></span><h3 id="2-3-job和task">2.3 job和task</h3>
+<p>一个Borg的job的属性有：名字、拥有者和有多少个task。job可以有一些约束，来指定这个job跑在什么架构的处理器、操作系统版本、是否有外部IP。约束可以是硬的或者软的。一个job可以指定在另一个job跑完后再开始。一个job只在一个Cell里面跑。</p>
+<p>每个task包括了一组linux进程，跑在一台机器的一个容器内[62]。大部分Borg的工作负载没有跑在虚拟机(VM)里面，因为我们不想付出虚拟化的代价。而且，Borg在设计的时候还没硬件虚拟化什么事儿哪。</p>
+<p>task也有一些属性，包括资源用量，在job中的排序。大多task的属性和job的通用task属性是一样的，也可以被覆盖 —— 例如，提供task专用的命令行参数，包括CPU核、内存、磁盘空间、磁盘访问速度、TCP端口等等，这些都是可以分别设置并按照一个好的粒度提供。我们不提供固定的资源的单元。Borg程序都是静态编译的，这样在跑的环境下就没有依赖，这些程序都被打成一个包，包括二进制和数据文件，能被Borg安装起来。</p>
+<p>用户通过RPC来操作Borg的job，大多是从命令行工具，或者从我们的监控系统($2.6)。大多job描述文件是用一种申明式配置文件BCL -- GCL[12]的一个变种，会产生一个protobuf文件[67]。BCL有一些自己的关键字。GCL提供了lambda表达式来允许计算，这样就能让应用在环境里面调整自己的配置。上万个BCL配置文件超过一千行长，系统中累计跑了了千万行BCL。Borg的job配置很类似于Aurora配置文件[6]。</p>
+<p><a href="https://static.oschina.net/uploads/img/201510/10201755_Y48L.jpg" target="_blank"><img src="https://static.oschina.net/uploads/img/201510/10201755_Y48L.jpg" alt="输入图片说明" title="在这里输入图片标题" style="cursor: pointer;"></a></p>
+<p>图2展现了job的和task的状态机和生命周期。</p>
+<p>用户可以在运行时改变一个job中的task的属性，通过推送一个新的job配置给Borg。这个新的配置命令Borg更新task的规格。这就像是跑一个轻量级的，非原子性的事务，而且可以在提交后轻易再改回来。更新是滚动式的，在更新中可以限制task重启的数量，如果有太多task停掉，操作可以终止。</p>
+<p>一些task更新，例如更新二进制程序，需要task重启；另外一些例如修改资源需求和限制会导致这个机器不适合跑现有的task，需要停止task再重新调度到别的机器上；还有一些例如修改优先级是可以不用重启或者移动task的。</p>
+<p>task需要能够接受Unix的SIGTERM信号，在他们被强制发送SIGKILL之前，这样就有时间去做清理、保存状态、结束现有请求执行、拒绝新请求。实际的notice的delay bound。实践中，80%的task能正常处理终止信号。</p>
+<span id="OSC_h3_7"></span><h3 id="2-4-allocs">2.4 Allocs</h3>
+<p>Borg的<em>alloc</em>(allocation的缩写)是在单台机器上的一组保留的资源配额，用来让一个或更多的task跑；这些资源一直分配在那边，无论有没有被用。allocs可以被分配出来给未来的task，用来保持资源在停止一个task和重启这个task之间，用来聚集不同jobs的tasks到同一台机器上——例如一个web server实例和附加的，用于把serverURL日志发送到一个分布式文件系统的日志搜集实例。一个alloc的资源管理方式和一台机器上的资源管理方式是类似的；多个tasks在一个alloc上跑并共享资源。如果一个alloc必须被重新定位到其他的机器上，那么它的task也要跟着重新调度。</p>
+<p>一个alloc set就像一个job：它是一组allocs保留了多台机器上的资源。一旦alloc set被创建，一个或多个jobs就可以被提交进去跑。简而言之，我们会用task来表示一个alloc或者一个top-level task(一个alloc之外的)，用job来表示一个job或者alloc set。</p>
+<span id="OSC_h3_8"></span><h3 id="2-5-优先级、配额和管理控制">2.5 优先级、配额和管理控制</h3>
+<p>当有超量的工作负载在运行的时候会发生什么事情？我们的解决方案是优先级和配额。</p>
+<p>所有job都有优先级，一个小的正整数。高优先级的task可以优先获取资源，即使后面被杀掉。Borg定义了不重叠的优先级段给不同任务用，包括(优先级降序)：监控、生产、批任务、高性能(测试或免费)。在这篇文章里面，prod的jobs是在监控和生产段。</p>
+<p>虽然一个降级的task总会在cell的其他地方找到一席之地。降级瀑布也有可能会发生，就是一个task降下来之后，把下面运行的task再挤到别的机器上，如此往复。为了避免这种情况，我们禁止了prod级task互相排挤。合理粒度的优先级在其他场景下也很有用——MapReduce的master跑的优先级比worker高一点，来保证他们的可用性。</p>
+<p>优先级是jobs的相对重要性，决定了jobs在一个cell里面是跑还是等(pending)。配额则是用来决定jobs是否运行被调度。配额就是一组资源(CPU, RAM, disk)的数量在一个指定的优先级、一个指定的时间段(月这个量级)。数量决定了这个用户的job可以用的最多资源(例子：20TB内存和prod优先级从现在到7月在xx cell内)。配额检查是管理控制的一部分，不是调度层的：配额不足的任务在提交的时候就会被拒绝。</p>
+<p>高优先级的配额总是花费的比低优先级要多。prod级的配额是被限制为一个cell里面实际的资源量，所以用户提交了prod级的job的配额时，可以期待这个job一定会跑，去掉一些碎片外。即使这样，我们鼓励用户多买一点比自己需要多一点的配额，很多用户超买是因为他们的应用程序的用户数量增长后需要的配额就大了。对于超买，我们的应对方案是低优先级资源的超售：所有用户在0优先级都可以用无限的配额，虽然在实际运行中这种情况很难跑起来。一个低优先级的job在资源不足时会保持等(pending)状态。</p>
+<p>配额分配在Borg系统之外，和我们的物理资源计划有关。这些资源计划在不同的数据中心产生不同的价格和配额。用户jobs只在有足够配额和足够优先级之后才能启动。配额的使用让Dominant Resource Fairness(DRF)[29, 35, 36, 66]不是那么必要了。</p>
+<p>Borg有一个容量系统给一些特殊权限给某些用户，例如，允许管理员删除或修改cell里面的job，或者允许用户区访问特定的内核特性或者让Borg对自己的job不做资源估算($5.5)。</p>
+<span id="OSC_h3_9"></span><h3 id="2-6-命名和监控">2.6 命名和监控</h3>
+<p>光是创建和部署task是不够的：一个服务的客户端和其他系统需要能找到它们，即使它换了个地方。为了搞定这一点，Borg创造了一个稳定的“Borg name Service”(BNS)名字给每个task，这个名字包括了cell名字，job名字，和task编号。Borg把task的主机名和端口写入到一个持久化高可用文件里，以BNS名为文件名，放在Chubby[14]上。这个文件被我们的RPC系统使用，用来发现task的终端地址。BNS名称也是task的DNS名的基础构成部分，所以，cc cell的ubar用户的jfoo job的第50个task的DNS名称会是50.jfoo.ubar.cc.borg.google.com。Borg同时还会把job的大小和task的健康信息写入到Chubby在任何情况改变时，这样负载均衡就能知道怎么去路由请求了。</p>
+<p>几乎所有的Borg的task都会包含一个内置的HTTP服务，用来发布健康信息和几千个性能指标(例如RPC延时)。Borg监控这些健康检查URL，把其中响应超时的和error的task重启。其他数据也被监控工具追踪并在Dashboards上展示，当服务级别对象(SLO)出问题时就会报警。</p>
+<p>用户可以使用一个名叫Sigma的web UI，用来检查他们所有的job状态，一个特殊的cell，或者深入到某个job的某个task的资源用率，详细日志，操作历史，和最终命运。我们的应用产生大量的日志，都会被自动的滚动来避免塞满硬盘，会在一个task结束后保留一小段时间用来debug。如果一个job没有被跑起来，Borg会提供一个为什么挂起的解释，指导用户怎么修改这个job的资源需求来符合目前这个cell的情况。我们发布资源的使用方针，按照这个方针来做就容易被调度起来。</p>
+<p>Borg记录所有的job提交和task时间，以及每task的资源使用细节在基础存储服务里面。这个存储服务有一个分布式的只读的SQL-like的交互式接口，通过Dremel[61]提供出来。这些数据在实时使用、debug、系统查错和长期容量规划上都很有用。这些数据也是Google集群负载追踪的数据来源之一[80].</p>
+<p>所有这些特性帮助用户理解和debug Borg的行为和管理他们的job，并且帮助我们的SRE每个人管理超过上万台机器。</p>
+</div>
+      	        	      	
+
+      
+	  
+      
+	</div>
+	       <div style="margin:10px 0;">
+    	<script type="text/javascript" src="http://www.oschina.net/ads/blog"></script>
+      </div>
+      </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                            </div>
+	
+	
+</div>
+
+
+
+<div id="OSC_Screen" style="position: relative; page-break-after : right;">
+	
+
+
+
+	
+	<div id="OSC_Content">
+            	
+                                        
+
+<style>
+	.icon{width:20px;height:24px;vertical-align: middle;display:inline-block;font-size:14px;text-align:center;color:#FFF;font-weight: bold;}
+	.catalogs{padding:0px;margin:0px;position:relative;display:inline-block;}
+    .catalogs ul{padding:0px;margin:0px;position:absolute;left:-4px;top: -21px;clear:left;width:120px;height:14px;overflow:hidden;background:#FFF;z-index:1000;padding:5px;border:1px solid #FFF;}
+    .catalogs ul:hover{height:auto;background:#fff;border:1px solid #4466bb;}
+    .catalogs ul li a:hover{color:#A00;font-weight: bold;}
+	.BlogStat a:hover{background:#FFF;}
+	.BlogStat{font-size:12px;line-height:20px;}
+	.BlogStat .g{color:#40AA53}
+	.BlogTags{margin-top:8px;}
+		.BlogAbstracts{}
+</style>
+
+
+<script src="/js/lib/thinker-md/javascripts/thinker-md.vendor.min.js?t=1464087545000" type="text/javascript"></script>
+
+<div class="">
+	
+
+    	<div class="BlogEntity">
+      <div class="BlogTitle">
+        <h1><span class="icon" style="background:#44ac57;" title="原创博客">原</span>			<span class="icon" style="background:#fd9c47;" title="首页推荐过的博客">荐</span>												在Google使用Borg进行大规模集群的管理 3-4</h1>
+        <div class="BlogStat">
+    		    		发表于8个月前(2015-10-12 20:02)&nbsp;&nbsp;
+    		阅读（<span class="g">639</span>）&nbsp;|&nbsp;评论（<a href="#comments"><span class="g">5</span></a>）
+    					    	    <span class="admin">
+				<style>
+#TagsSwitcher{color:#A00;}
+#RecTags,#MyTags{margin:5px 0;}
+#RecTags a.tag{line-height:24px;}
+#favor_form p:first-child{margin:5px 0;}
+#favor_form{width:200px;}
+#favor_form p {color:#666;}
+#favor_form form{min-height: 85px;width:200px;}
+#favor_form form ._favor_input{display:block;margin:2px 0;width:199px;}
+#favor_form form ._favor_button{float:left;padding:2px 5px;}
+.favor_ok {text-align:center;font-size:10.5pt;width:199px;height:60px;margin-top:10px;}
+#TagsSwitcher{cursor:pointer;float:right;margin-top:10px;}
+#MyTags{display:none;width:199px;}
+#MyTags a.tag {float:left; background-color: #E0EAF1;border-bottom: 1px solid #3E6D8E;border-right: 1px solid #7F9FB6;color: #3E6D8E;font-size: 8pt;line-height: 16px;margin: 2px 2px 2px 0;padding: 2px 4px;text-decoration: none;white-space: nowrap;}
+#MyTags a.tag:hover{background-color: #3E6D8E;color: #FFF;}
+</style>
+<script type="text/javascript">
+var favor_add = "<a href='javascript:add_to_favor(516023,3)' id='favor_trigger' title='添加到收藏夹'>我要收藏</a>";
+var favor_del = "<a href='javascript:delete_favor(516023,3)' id='favor_trigger' style='color:#a00;'>取消收藏</a>";
+var favor_ok = "<p class='favor_ok'>已成功添加到收藏夹<br/><br/> <a href='http://my.oschina.net/u/1261413/favorites?type=3'>我的收藏夹</a> | <a href='javascript:close_favor()'>关闭</a></p>";
+function delete_favor(obi_id, obj_type){
+	$('#attention_it').html(favor_add);
+	$("#p_attention_count").load("/action/favorite/cancel?type="+obj_type+"&id="+obi_id, {user: '1261413'});
+}
+function add_to_favor(obj_id, obj_type){
+    var dlg_favor = "<div id='favor_form'><p>多个标签使用逗号 , 隔开，最多三个</p><form action='/action/favorite/add?user=1261413' width='200px' method='POST'>";
+	dlg_favor += "<input type='hidden' name='id' value='"+obj_id+"'/>";
+	dlg_favor += "<input type='hidden' name='type' value='"+obj_type+"'/>";
+	dlg_favor += "<input type='text' name='tags' size='25' class='_favor_input' id='_favor_tags' placeholder='可点击下面标签设置'/>";
+    dlg_favor += "<div id='RecTags'>推荐标签：  <a href='javascript:setTag(\"Google\")' class=\"tag\">Google</a>  <a href='javascript:setTag(\"PaaS\")' class=\"tag\">PaaS</a>  <a href='javascript:setTag(\"Borg\")' class=\"tag\">Borg</a>  <a href='javascript:setTag(\"云计算\")' class=\"tag\">云计算</a>  <a href='javascript:setTag(\"待读\")' class=\"tag\">待读</a> </div>";
+    dlg_favor += "<div><input type='submit' value='收藏' class='_favor_button'/><input type='button' value='取消' onclick='close_favor();' class='_favor_button'/><a id='TagsSwitcher' state='off'>选取标签↓</a></form><div class='clear'></div></div>";
+	dlg_favor += "<div id='MyTags' ></div></div>";
+    $('#favor_trigger').poshytip('destroy');
+    $('#favor_trigger').poshytip({
+    	className: 'tip-yellowsimple',
+    	content: dlg_favor,
+    	showOn: 'none',
+    	alignTo: 'target',	
+		alignX: 'inner-right',
+		alignY: 'bottom',
+		offsetX: 0,
+		offsetY: 5
+    });
+    $('#favor_trigger').poshytip('show');
+	$('#_favor_tags').focus();
+	$('#favor_form form').bind('form-pre-serialize', function(event,form,options,veto){
+    	var tags= $('#_favor_tags')
+		var tagValue= tags.val();
+		//处理tags前后包含的空格
+		var finalTags = new Array();
+		var tagIdx = 0;
+		var arr = tagValue.split(',');
+		for(var i=0;i<arr.length;i++){
+			var tag = arr[i];
+			tag = trim(tag);
+			if(tag.length>0){
+				finalTags[finalTags.length]=tag;
+			}
+		}
+		var d = "";
+		for(var idx=0;idx<finalTags.length;idx++){
+			d+=finalTags[idx];
+			if(idx<finalTags.length-1)
+				d+=",";
+		}
+		tags.val(d);
+	});
+
+	$('#favor_form form').ajaxForm({
+		success: function(html) {
+			$('#favor_trigger').html('取消收藏');
+			$('#favor_trigger').attr('href','javascript:delete_favor(516023,3)');
+			$('#p_attention_count').html(html);
+			$('#favor_form').html(favor_ok);
+			setTimeout("close_favor()",3000);
+		}
+	});
+	$("#TagsSwitcher").one("click",function(){
+		//加载标签数据
+		$("#MyTags").load('/action/ajax/get_my_tags?'+new Date().getTime());
+       	$("#MyTags").toggle();
+		$(this).html("收起标签↑");
+        $(this).attr("state",'on');
+        $(this).click(function(){
+        	$("#MyTags").toggle();
+        	var state = $(this).attr("state");
+        	if(state=='off'){
+        		$(this).html("收起标签↑");
+        		$(this).attr("state",'on');
+        	}else{
+        		$(this).html("选取标签↓");
+        		$(this).attr("state",'off');
+        	}
+        });
+	});
+
+}
+function close_favor(elem_id){
+    $('#favor_trigger').poshytip('destroy');
+}
+function setTag(tv){
+	var t = $("._favor_input");
+	var value = t.val();
+	var tags = value.replace(/，/ig,',').split(',');
+	var exist = false;
+	value = $.map(tags,function(v,i){
+		if($.trim(tv) == $.trim(v)){
+			exist = true;
+			return undefined;
+		}
+		return v;
+	}).join(',');
+	if(exist){
+		t.val(value);
+		return;
+	}
+	if(value!="")
+		t.val(value+","+tv);
+	else
+		t.val(tv)
+}
+function ltrim(str){
+    var whitespace = new String(" \t\n\r");
+    var s = new String(str);
+    if (whitespace.indexOf(s.charAt(0)) != -1){
+        var j=0, i = s.length;
+        while (j < i && whitespace.indexOf(s.charAt(j)) != -1){
+            j++;
+        }
+        s = s.substring(j, i);
+    }
+    return s;
+}
+
+function rtrim(str){
+    var whitespace = new String(" \t\n\r");
+    var s = new String(str);
+    if (whitespace.indexOf(s.charAt(s.length-1)) != -1){
+        var i = s.length - 1;
+        while (i >= 0 && whitespace.indexOf(s.charAt(i)) != -1){
+            i--;
+        }
+        s = s.substring(0, i+1);
+    }
+    return s;
+}
+ 
+function trim(str){
+    return rtrim(ltrim(str));
+}
+</script>
+<em id="p_attention_count">14</em>人收藏此文章,
+<span id="attention_it">
+	<script type="text/javascript">document.write(favor_add);</script><a href="javascript:add_to_favor(516023,3)" id="favor_trigger" title="添加到收藏夹">我要收藏</a>
+</span>
+<script type="text/javascript">
+	$(document).ready(function(){
+    	$.ajax({
+    		url:"/action/favorite/attentionUsersCount",
+    		type:"get",
+    		data:"id="+516023+"&type="+3,
+    		success:function(msg){
+				$("#p_attention_count").html(msg);
+    		}
+    	});
+	});
+</script>			</span>
+			    	</div>
+		
+      </div>
+	  	  
+
+	  
+	  	  <a name="markdown"></a>
+	            
+	          	  	  	  	          <textarea style="display: none;" class="noshow_content">##3. Borg架构
+
+一个Borg的Cell包括一堆机器，一个逻辑的中心控制服务叫做Borgmaster，和在每台机器上跑的Borglet的agent进程(见图1)。所有Borg的组件都是用C++写的。
+
+
+![输入图片说明](https://static.oschina.net/uploads/img/201510/12200210_ykqf.jpg "在这里输入图片标题")
+
+###3.1 Borgmaster
+
+Cell的Borgmaster由2个进程组成，主的Borgmaster进程和一个单独的scheduler($3.2)。主的Borgmaster处理所有客户端的RPC请求，例如修改状态(创建job)，提供数据读取服务(查找job)。它同时管理系统中所有组件(机器、task、allocs等等)的状态机，和Borglet通信，并且提供一个Sigma的备份Web UI。
+
+Borgmaster在逻辑上是一个单进程，但实际上开了5个副本。每个副本维护了一个内存级别的cell状态拷贝，这些状态同时被记录在一个高可用、分布式、Paxos-based存储[55]放在这些副本的本地硬盘上。在一个cell里面，一个单独的被选举出来的master同时用于Paxos leader和状态修改器，用来处理所有改变cell状态的请求，例如提交一个job或者在一个机器上终止一个task。当cell启动或前一个master挂了时，Paxos算法会选举出一个master；这需要一个Chubby锁然后其他系统可以找到master。选举一个master或者换一个新的需要的典型事件是10s，但需要大概1分钟才能让一个大的cell内生效，因为一些内存状态要重构。当一个副本从网络隔离中恢复时，需要动态的从其他Paxos副本中重新同步自己的状态。
+
+某个时刻的Borgmaster的状态被称为checkpoint，会被以快照形式+change log形式保存在Paxos存储里面。checkpoints有很多用途，包括把Borgmaster的状态恢复到以前的任意时刻(例如在处理一个请求之前，用来解决软件缺陷)；极端情况下手动修改checkpoints，形成一个持续的事件日志供今后用；或用于线下的在线仿真。
+
+一个高仿真的Borgmaster叫Fauxmaster，可以用来读取checkpoint文件，包括一份完整的Borgmaster的代码，和Borglet的存根接口。它接受RPC来改变状态机和执行操作，例如调度所有阻塞的tasks，我们用它来debug错误，和它交互就和Borgmaster交互是一样的，同样我们也有一个仿真的Borglet可以用checkpoint重放真实的交互。用户可以单步调试看到系统中的所有过去的改变。Fauxmaster在这种情况下也很有用：多个这个类型的job比较合适？以及在改变cell配置前做一个安全检查(这个操作会把任何关键jobs给踢掉吗？)
+
+###3.2 调度 schedule
+
+当一个job被提交的时候，Borgmaster会把它持久化的存储在Paxos存储上，然后把这个job的task放到等待(pending)的队列里面去。这个队列会被scheduler异步的扫描，然后分发task到有充足资源的机器上。scheduler主要是处理task的，不是job。扫描从高优先级到低优先级，在同个优先级上用round-robin的方式处理，以保证用户之间的公平性和避免头上的大job阻塞住。调度算法有2个部分：可行性检查(feasibility checking)，找到一台能跑task的机器，和打分(scoring)，找个一个最合适的机器。
+
+在可行性检查这个阶段，scheduler会找到一组机器，都满足task的约束而且有足够可用的资源 —— 包括了一些已经分配给低优先级任务的可以被腾出来的资源。在打分阶段，scheduler会找到其中“最好”的机器。这个分数包括了用户的偏好，但主要是被内置的标准：例如最小化的倒腾其他task，找到已经有这个task安装包的，在电力和出错的可用域之间尽可能分散的，在单台机器上混合高低优先级的task以保证高峰期扩容的。
+
+Borg原来用E-PVM[4]的变种算法来打分，在异构的资源上生成一个单一的分数，在调度一个task时最小化系统的改变。但在实践中，E-PVM最后把负载平均分配到所有机器，把扩展空间留给高峰期 —— 但这么做的代价是增加了碎片，尤其是对于大的task需要大部分机器的时候；我们有时候给这种分配取绰号叫“最差匹配”。
+
+分配策略光谱的另一端是“最佳匹配”，把机器塞任务塞的越紧越好。这样就能留下一些空的机器给用户jobs(他们也跑存储服务)，所以处理大task就比较直接了，不过，紧分配会惩罚那些对自己所需资源预估不足的用户。这种策略会伤害爆发负载的应用，而且对需要低CPU的批处理任务特别不友好，这些任务可以被轻易调度到不用的资源上：20%的non-prod task需要小于0.1核的CPU。
+
+我们目前的打分模型是一个混合的，试图减少搁浅的资源 —— 一些因为这台机器上资源没被全部用掉而剩下的。比起“最佳匹配”，这个模型提供了3%-5%的打包效率提升(在[78]里面定义的)
+
+如果一台机器在打分后没有足够的资源运行新的task，Borg会驱逐(preempts)低优先级的任务，从最低优先级往上踢，直到资源够用。我们把被踢掉的task放到scheduler的等待(pending)队列里面去，而不是迁移或冬眠这些task。
+
+task启动延迟(从job提交到task运行之间的时间段)是被我们持续关注的。这个时间差别很大，一般来说是25s。包安装耗费了这里面80%的时间：一个已知的瓶颈就是对本地硬盘的争抢。为了减少task启动时间，scheduler希望机器上已经有足够的包(程序和数据)：大部分包是只读的所以可以被分享和缓存。这是唯一一种Borg scheduler支持的数据本地化方式。顺便说一下，Borg分发包到机器的办法是树形的和BT类型的协议。
+
+另外，scheduler用了某些技术来扩散到几万台机器的cell里面。($3.4)
+
+###3.3 Borglet
+
+Borglet是部署在cell的每台机器上的本地Borg代理程序。它启动停止task；如果task失败就重启；通过修改OS内核设置来管理本地资源；滚动debug日志；把本机的状态上报给Borgmaster和其他监控系统。
+
+Borgmaster每过几秒就会轮询所有的Borglet来获取机器当前的状态还有发送任何请求。这让Borgmaster能控制交流频率，避免一个显式的流控机制，而且防止了恢复风暴[9].
+
+选举出来的master负责发送消息给Borglet并且根据响应更新cell的状态。为了性能可扩展，每个Borgmaster副本会运行一个无状态的连接分配(link shard)来处理和特定几个Borglet的交流；这个分配会在Borgmaster选举的时候重新计算。为了保证弹性，Borglet把所有状态都报上来，但是link shard会聚合和压缩这些信息到状态机，来减少选举出来的master的负载。
+
+如果Borglet几次没有响应轮询请求，将会被标记为挂了(down)，然后上面跑的task会被重新分配到其他机器。如果通讯恢复，Borgmaster会让这个Borglet杀掉已经被分配出去的task，来避免重复。Borglet会继续常规的操作即使和Borgmaster恢复联系，所以目前跑的task和service保持运行以防所有的Borgmaster挂了。
+
+###3.4 可扩展性
+
+我们还不知道Borg的可扩展性极限在哪里，每次我们碰到一个极限，我们就越过去。一个单独的Borgmaster可以管理一个cell里面几千台机器，若干个cell可以处理10000个任务每分钟。一个繁忙的Borgmaster使用10-14个CPU核以及50GB内存。我们用了几项技术来获得这种扩展性。
+
+早期的Borgmaster有一个简单的，同步的循环来处理请求、调度tasks，和Borglet通信。为了处理大的cell，我们把scheduler分出来作为一个单独的进程，然后就可以和别的Borgmaster功能并行的跑，别的Borgmaster可以开副本来容错。一个scheduler副本操作一份cell的状态拷贝。它重复地：从选举出来的master获取状态改变(包括所有的分配的和pending的工作)；更新自己的本地拷贝，做调度工作来分配task；告诉选举出来的master这些分配。master会接受这些信息然后应用之，除非这些信息不适合(例如，过时了)，这些会在scheduler的下一个循环里面处理。这一切都符合Omega[69]的乐观并行策略精神，而且我们最近真的给Borg添加这种功能，对不同的工作负载用不同的scheduler来调度。
+
+为了改进响应时间，我们增加了一些独立线程和Borglet通信、响应只读RPC。为了更高的性能，我们分享(分区)这些请求给5个Borgmaster副本$3.3。最后，这让99%的UI响应在1s以内，而95%的Borglet轮询在10s以内。
+
+一些让Borg scheduler更加可扩展的东西：
+
+分数缓存：评估一台机器的可用性和分数是比较昂贵的，所以Borg会一直缓存分数直到这个机器或者task变化了——例如，这台机器上的task结束了，一些属性修改了，或者task的需求改变了。忽略小的资源变化让缓存保质期变长。
+
+同级别均化处理：同一个Borg job的task一般来说有相同的需求和资源，所以不用一个个等待的task每次都去找可用机器，这会把所有可用的机器打n次分。Borg会对相同级别的task找一遍可用机器打一次分。
+
+适度随机：把一个大的Cell里面的所有机器都去衡量一遍可用性和打分是比较浪费的。所以scheduler会随机的检查机器，找到足够多的可用机器去打分，然后挑出最好的一个。这会减少task进入和离开系统时的打分次数和缓存失效。适度随机有点像Sparrow [65]的批处理采样技术，同样要面对优先级、驱逐、非同构系统和包安装的耗费。
+
+在我们的实验中($5)，调度整个cell的工作负载要花几百秒，但不用上面几项技术的话会花3天以上的时间。一般来说，一个在线的调度从等待队列里面花半秒就能搞定。
+
+##4. 可用性
+
+
+![输入图片说明](https://static.oschina.net/uploads/img/201510/12200231_98jf.jpg "在这里输入图片标题")
+
+在大型分布式系统里面故障是很常见的[10,11,12]。图3展示了在15个cell里面task驱逐的原因。在Borg上跑的应用需要能处理这种事件，应用要支持开副本、存储数据到分布式存储这些技术，并能定期的做快照。即使这样，我们也尽可能的缓和这些事件造成的影响。例如，Borg：
+
+* 自动的重新调度被驱逐的task，如果需要放到新机器上运行
+* 通过把一个job分散到不同的可用域里面去，例如机器、机架、供电域
+* 在机器、OS升级这些维护性工作时，降低在同一时刻的一个job中的task的关闭率
+* 使用声明式的目标状态表示和幂等的状态改变做操作，这样故障的客户端可以无损的重新启动或安全的遗忘请求
+* 对于失联的机器上的task，限制一定的比率去重新调度，因为很难去区分大规模的机器故障和网络分区
+* 避免特定的会造成崩溃的task:机器的匹配
+* critical级别的中间数据写到本地硬盘的日志保存task很重要，就算这个task所属的alloc被终止或调度到其他机器上，也要恢复出来做。用户可以设置系统保持重复尝试多久：若干天是比较合理的做法。
+
+一个关键的Borg设计特性是：就算Borgmaster或者Borglet挂了，task也会继续运行下去。不过，保持master运行也很重要，因为在它挂的时候新的jobs不能提交，或者结束的无法更新状态，故障的机器上的task也不能重新调度。
+
+Borgmaster使用组合的技术在实践中保证99.99%的可用性：副本技术应对机器故障；管理控制应对超载；部署实例时用简单、底层的工具去减少外部依赖(译者：我猜测是rsync或者scp这种工具)。每个cell和其他cell都是独立的，这样减少了误操作关联和故障传染。为了达到这个目的，所以我们不搞大cell。
+</textarea>
+        <div class="BlogContent"><span id="OSC_h2_1"></span><h2 id="3-borg架构">3. Borg架构</h2>
+<p>一个Borg的Cell包括一堆机器，一个逻辑的中心控制服务叫做Borgmaster，和在每台机器上跑的Borglet的agent进程(见图1)。所有Borg的组件都是用C++写的。</p>
+<p><a href="https://static.oschina.net/uploads/img/201510/12200210_ykqf.jpg" target="_blank"><img src="https://static.oschina.net/uploads/img/201510/12200210_ykqf.jpg" alt="输入图片说明" title="在这里输入图片标题" style="cursor: pointer;"></a></p>
+<span id="OSC_h3_2"></span><h3 id="3-1-borgmaster">3.1 Borgmaster</h3>
+<p>Cell的Borgmaster由2个进程组成，主的Borgmaster进程和一个单独的scheduler($3.2)。主的Borgmaster处理所有客户端的RPC请求，例如修改状态(创建job)，提供数据读取服务(查找job)。它同时管理系统中所有组件(机器、task、allocs等等)的状态机，和Borglet通信，并且提供一个Sigma的备份Web UI。</p>
+<p>Borgmaster在逻辑上是一个单进程，但实际上开了5个副本。每个副本维护了一个内存级别的cell状态拷贝，这些状态同时被记录在一个高可用、分布式、Paxos-based存储[55]放在这些副本的本地硬盘上。在一个cell里面，一个单独的被选举出来的master同时用于Paxos leader和状态修改器，用来处理所有改变cell状态的请求，例如提交一个job或者在一个机器上终止一个task。当cell启动或前一个master挂了时，Paxos算法会选举出一个master；这需要一个Chubby锁然后其他系统可以找到master。选举一个master或者换一个新的需要的典型事件是10s，但需要大概1分钟才能让一个大的cell内生效，因为一些内存状态要重构。当一个副本从网络隔离中恢复时，需要动态的从其他Paxos副本中重新同步自己的状态。</p>
+<p>某个时刻的Borgmaster的状态被称为checkpoint，会被以快照形式+change log形式保存在Paxos存储里面。checkpoints有很多用途，包括把Borgmaster的状态恢复到以前的任意时刻(例如在处理一个请求之前，用来解决软件缺陷)；极端情况下手动修改checkpoints，形成一个持续的事件日志供今后用；或用于线下的在线仿真。</p>
+<p>一个高仿真的Borgmaster叫Fauxmaster，可以用来读取checkpoint文件，包括一份完整的Borgmaster的代码，和Borglet的存根接口。它接受RPC来改变状态机和执行操作，例如调度所有阻塞的tasks，我们用它来debug错误，和它交互就和Borgmaster交互是一样的，同样我们也有一个仿真的Borglet可以用checkpoint重放真实的交互。用户可以单步调试看到系统中的所有过去的改变。Fauxmaster在这种情况下也很有用：多个这个类型的job比较合适？以及在改变cell配置前做一个安全检查(这个操作会把任何关键jobs给踢掉吗？)</p>
+<span id="OSC_h3_3"></span><h3 id="3-2-调度-schedule">3.2 调度 schedule</h3>
+<p>当一个job被提交的时候，Borgmaster会把它持久化的存储在Paxos存储上，然后把这个job的task放到等待(pending)的队列里面去。这个队列会被scheduler异步的扫描，然后分发task到有充足资源的机器上。scheduler主要是处理task的，不是job。扫描从高优先级到低优先级，在同个优先级上用round-robin的方式处理，以保证用户之间的公平性和避免头上的大job阻塞住。调度算法有2个部分：可行性检查(feasibility checking)，找到一台能跑task的机器，和打分(scoring)，找个一个最合适的机器。</p>
+<p>在可行性检查这个阶段，scheduler会找到一组机器，都满足task的约束而且有足够可用的资源 —— 包括了一些已经分配给低优先级任务的可以被腾出来的资源。在打分阶段，scheduler会找到其中“最好”的机器。这个分数包括了用户的偏好，但主要是被内置的标准：例如最小化的倒腾其他task，找到已经有这个task安装包的，在电力和出错的可用域之间尽可能分散的，在单台机器上混合高低优先级的task以保证高峰期扩容的。</p>
+<p>Borg原来用E-PVM[4]的变种算法来打分，在异构的资源上生成一个单一的分数，在调度一个task时最小化系统的改变。但在实践中，E-PVM最后把负载平均分配到所有机器，把扩展空间留给高峰期 —— 但这么做的代价是增加了碎片，尤其是对于大的task需要大部分机器的时候；我们有时候给这种分配取绰号叫“最差匹配”。</p>
+<p>分配策略光谱的另一端是“最佳匹配”，把机器塞任务塞的越紧越好。这样就能留下一些空的机器给用户jobs(他们也跑存储服务)，所以处理大task就比较直接了，不过，紧分配会惩罚那些对自己所需资源预估不足的用户。这种策略会伤害爆发负载的应用，而且对需要低CPU的批处理任务特别不友好，这些任务可以被轻易调度到不用的资源上：20%的non-prod task需要小于0.1核的CPU。</p>
+<p>我们目前的打分模型是一个混合的，试图减少搁浅的资源 —— 一些因为这台机器上资源没被全部用掉而剩下的。比起“最佳匹配”，这个模型提供了3%-5%的打包效率提升(在[78]里面定义的)</p>
+<p>如果一台机器在打分后没有足够的资源运行新的task，Borg会驱逐(preempts)低优先级的任务，从最低优先级往上踢，直到资源够用。我们把被踢掉的task放到scheduler的等待(pending)队列里面去，而不是迁移或冬眠这些task。</p>
+<p>task启动延迟(从job提交到task运行之间的时间段)是被我们持续关注的。这个时间差别很大，一般来说是25s。包安装耗费了这里面80%的时间：一个已知的瓶颈就是对本地硬盘的争抢。为了减少task启动时间，scheduler希望机器上已经有足够的包(程序和数据)：大部分包是只读的所以可以被分享和缓存。这是唯一一种Borg scheduler支持的数据本地化方式。顺便说一下，Borg分发包到机器的办法是树形的和BT类型的协议。</p>
+<p>另外，scheduler用了某些技术来扩散到几万台机器的cell里面。($3.4)</p>
+<span id="OSC_h3_4"></span><h3 id="3-3-borglet">3.3 Borglet</h3>
+<p>Borglet是部署在cell的每台机器上的本地Borg代理程序。它启动停止task；如果task失败就重启；通过修改OS内核设置来管理本地资源；滚动debug日志；把本机的状态上报给Borgmaster和其他监控系统。</p>
+<p>Borgmaster每过几秒就会轮询所有的Borglet来获取机器当前的状态还有发送任何请求。这让Borgmaster能控制交流频率，避免一个显式的流控机制，而且防止了恢复风暴[9].</p>
+<p>选举出来的master负责发送消息给Borglet并且根据响应更新cell的状态。为了性能可扩展，每个Borgmaster副本会运行一个无状态的连接分配(link shard)来处理和特定几个Borglet的交流；这个分配会在Borgmaster选举的时候重新计算。为了保证弹性，Borglet把所有状态都报上来，但是link shard会聚合和压缩这些信息到状态机，来减少选举出来的master的负载。</p>
+<p>如果Borglet几次没有响应轮询请求，将会被标记为挂了(down)，然后上面跑的task会被重新分配到其他机器。如果通讯恢复，Borgmaster会让这个Borglet杀掉已经被分配出去的task，来避免重复。Borglet会继续常规的操作即使和Borgmaster恢复联系，所以目前跑的task和service保持运行以防所有的Borgmaster挂了。</p>
+<span id="OSC_h3_5"></span><h3 id="3-4-可扩展性">3.4 可扩展性</h3>
+<p>我们还不知道Borg的可扩展性极限在哪里，每次我们碰到一个极限，我们就越过去。一个单独的Borgmaster可以管理一个cell里面几千台机器，若干个cell可以处理10000个任务每分钟。一个繁忙的Borgmaster使用10-14个CPU核以及50GB内存。我们用了几项技术来获得这种扩展性。</p>
+<p>早期的Borgmaster有一个简单的，同步的循环来处理请求、调度tasks，和Borglet通信。为了处理大的cell，我们把scheduler分出来作为一个单独的进程，然后就可以和别的Borgmaster功能并行的跑，别的Borgmaster可以开副本来容错。一个scheduler副本操作一份cell的状态拷贝。它重复地：从选举出来的master获取状态改变(包括所有的分配的和pending的工作)；更新自己的本地拷贝，做调度工作来分配task；告诉选举出来的master这些分配。master会接受这些信息然后应用之，除非这些信息不适合(例如，过时了)，这些会在scheduler的下一个循环里面处理。这一切都符合Omega[69]的乐观并行策略精神，而且我们最近真的给Borg添加这种功能，对不同的工作负载用不同的scheduler来调度。</p>
+<p>为了改进响应时间，我们增加了一些独立线程和Borglet通信、响应只读RPC。为了更高的性能，我们分享(分区)这些请求给5个Borgmaster副本$3.3。最后，这让99%的UI响应在1s以内，而95%的Borglet轮询在10s以内。</p>
+<p>一些让Borg scheduler更加可扩展的东西：</p>
+<p>分数缓存：评估一台机器的可用性和分数是比较昂贵的，所以Borg会一直缓存分数直到这个机器或者task变化了——例如，这台机器上的task结束了，一些属性修改了，或者task的需求改变了。忽略小的资源变化让缓存保质期变长。</p>
+<p>同级别均化处理：同一个Borg job的task一般来说有相同的需求和资源，所以不用一个个等待的task每次都去找可用机器，这会把所有可用的机器打n次分。Borg会对相同级别的task找一遍可用机器打一次分。</p>
+<p>适度随机：把一个大的Cell里面的所有机器都去衡量一遍可用性和打分是比较浪费的。所以scheduler会随机的检查机器，找到足够多的可用机器去打分，然后挑出最好的一个。这会减少task进入和离开系统时的打分次数和缓存失效。适度随机有点像Sparrow [65]的批处理采样技术，同样要面对优先级、驱逐、非同构系统和包安装的耗费。</p>
+<p>在我们的实验中($5)，调度整个cell的工作负载要花几百秒，但不用上面几项技术的话会花3天以上的时间。一般来说，一个在线的调度从等待队列里面花半秒就能搞定。</p>
+<span id="OSC_h2_6"></span><h2 id="4-可用性">4. 可用性</h2>
+<p><a href="https://static.oschina.net/uploads/img/201510/12200231_98jf.jpg" target="_blank"><img src="https://static.oschina.net/uploads/img/201510/12200231_98jf.jpg" alt="输入图片说明" title="在这里输入图片标题" style="cursor: pointer;"></a></p>
+<p>在大型分布式系统里面故障是很常见的[10,11,12]。图3展示了在15个cell里面task驱逐的原因。在Borg上跑的应用需要能处理这种事件，应用要支持开副本、存储数据到分布式存储这些技术，并能定期的做快照。即使这样，我们也尽可能的缓和这些事件造成的影响。例如，Borg：</p>
+<ul>
+<li>自动的重新调度被驱逐的task，如果需要放到新机器上运行</li>
+<li>通过把一个job分散到不同的可用域里面去，例如机器、机架、供电域</li>
+<li>在机器、OS升级这些维护性工作时，降低在同一时刻的一个job中的task的关闭率</li>
+<li>使用声明式的目标状态表示和幂等的状态改变做操作，这样故障的客户端可以无损的重新启动或安全的遗忘请求</li>
+<li>对于失联的机器上的task，限制一定的比率去重新调度，因为很难去区分大规模的机器故障和网络分区</li>
+<li>避免特定的会造成崩溃的task:机器的匹配</li>
+<li>critical级别的中间数据写到本地硬盘的日志保存task很重要，就算这个task所属的alloc被终止或调度到其他机器上，也要恢复出来做。用户可以设置系统保持重复尝试多久：若干天是比较合理的做法。</li>
+</ul>
+<p>一个关键的Borg设计特性是：就算Borgmaster或者Borglet挂了，task也会继续运行下去。不过，保持master运行也很重要，因为在它挂的时候新的jobs不能提交，或者结束的无法更新状态，故障的机器上的task也不能重新调度。</p>
+<p>Borgmaster使用组合的技术在实践中保证99.99%的可用性：副本技术应对机器故障；管理控制应对超载；部署实例时用简单、底层的工具去减少外部依赖(译者：我猜测是rsync或者scp这种工具)。每个cell和其他cell都是独立的，这样减少了误操作关联和故障传染。为了达到这个目的，所以我们不搞大cell。</p>
+</div>
+      	        	      	
+
+      
+	  
+      
+	</div>
+	       <div style="margin:10px 0;">
+    	<script type="text/javascript" src="http://www.oschina.net/ads/blog"></script>
+      </div>
+      </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                            </div>
+	
+	
+</div>
+
+
+<div id="OSC_Screen" style="position: relative; page-break-after : right;">
+	
+
+
+
+	
+	<div id="OSC_Content">
+            	
+                                        
+
+<style>
+	.icon{width:20px;height:24px;vertical-align: middle;display:inline-block;font-size:14px;text-align:center;color:#FFF;font-weight: bold;}
+	.catalogs{padding:0px;margin:0px;position:relative;display:inline-block;}
+    .catalogs ul{padding:0px;margin:0px;position:absolute;left:-4px;top: -21px;clear:left;width:120px;height:14px;overflow:hidden;background:#FFF;z-index:1000;padding:5px;border:1px solid #FFF;}
+    .catalogs ul:hover{height:auto;background:#fff;border:1px solid #4466bb;}
+    .catalogs ul li a:hover{color:#A00;font-weight: bold;}
+	.BlogStat a:hover{background:#FFF;}
+	.BlogStat{font-size:12px;line-height:20px;}
+	.BlogStat .g{color:#40AA53}
+	.BlogTags{margin-top:8px;}
+		.BlogAbstracts{}
+</style>
+
+
+
+
+<div>
+	
+
+    	<div class="BlogEntity">
+      <div class="BlogTitle">
+        <h1><span class="icon" style="background:#44ac57;" title="原创博客">原</span>			<span class="icon" style="background:#fd9c47;" title="首页推荐过的博客">荐</span>												在Google使用Borg进行大规模集群的管理 5-6</h1>
+        <div class="BlogStat">
+    		    		发表于8个月前(2015-10-14 21:55)&nbsp;&nbsp;
+    		阅读（<span class="g">1466</span>）&nbsp;|&nbsp;评论（<a href="#comments"><span class="g">3</span></a>）
+    					    	    <span class="admin">
+				<style>
+#TagsSwitcher{color:#A00;}
+#RecTags,#MyTags{margin:5px 0;}
+#RecTags a.tag{line-height:24px;}
+#favor_form p:first-child{margin:5px 0;}
+#favor_form{width:200px;}
+#favor_form p {color:#666;}
+#favor_form form{min-height: 85px;width:200px;}
+#favor_form form ._favor_input{display:block;margin:2px 0;width:199px;}
+#favor_form form ._favor_button{float:left;padding:2px 5px;}
+.favor_ok {text-align:center;font-size:10.5pt;width:199px;height:60px;margin-top:10px;}
+#TagsSwitcher{cursor:pointer;float:right;margin-top:10px;}
+#MyTags{display:none;width:199px;}
+#MyTags a.tag {float:left; background-color: #E0EAF1;border-bottom: 1px solid #3E6D8E;border-right: 1px solid #7F9FB6;color: #3E6D8E;font-size: 8pt;line-height: 16px;margin: 2px 2px 2px 0;padding: 2px 4px;text-decoration: none;white-space: nowrap;}
+#MyTags a.tag:hover{background-color: #3E6D8E;color: #FFF;}
+</style>
+<script type="text/javascript">
+var favor_add = "<a href='javascript:add_to_favor(517283,3)' id='favor_trigger' title='添加到收藏夹'>我要收藏</a>";
+var favor_del = "<a href='javascript:delete_favor(517283,3)' id='favor_trigger' style='color:#a00;'>取消收藏</a>";
+var favor_ok = "<p class='favor_ok'>已成功添加到收藏夹<br/><br/> <a href='http://my.oschina.net/u/1261413/favorites?type=3'>我的收藏夹</a> | <a href='javascript:close_favor()'>关闭</a></p>";
+function delete_favor(obi_id, obj_type){
+	$('#attention_it').html(favor_add);
+	$("#p_attention_count").load("/action/favorite/cancel?type="+obj_type+"&id="+obi_id, {user: '1261413'});
+}
+function add_to_favor(obj_id, obj_type){
+    var dlg_favor = "<div id='favor_form'><p>多个标签使用逗号 , 隔开，最多三个</p><form action='/action/favorite/add?user=1261413' width='200px' method='POST'>";
+	dlg_favor += "<input type='hidden' name='id' value='"+obj_id+"'/>";
+	dlg_favor += "<input type='hidden' name='type' value='"+obj_type+"'/>";
+	dlg_favor += "<input type='text' name='tags' size='25' class='_favor_input' id='_favor_tags' placeholder='可点击下面标签设置'/>";
+    dlg_favor += "<div id='RecTags'>推荐标签：  <a href='javascript:setTag(\"Google\")' class=\"tag\">Google</a>  <a href='javascript:setTag(\"Borg\")' class=\"tag\">Borg</a>  <a href='javascript:setTag(\"PaaS\")' class=\"tag\">PaaS</a>  <a href='javascript:setTag(\"云计算\")' class=\"tag\">云计算</a>  <a href='javascript:setTag(\"待读\")' class=\"tag\">待读</a> </div>";
+    dlg_favor += "<div><input type='submit' value='收藏' class='_favor_button'/><input type='button' value='取消' onclick='close_favor();' class='_favor_button'/><a id='TagsSwitcher' state='off'>选取标签↓</a></form><div class='clear'></div></div>";
+	dlg_favor += "<div id='MyTags' ></div></div>";
+    $('#favor_trigger').poshytip('destroy');
+    $('#favor_trigger').poshytip({
+    	className: 'tip-yellowsimple',
+    	content: dlg_favor,
+    	showOn: 'none',
+    	alignTo: 'target',	
+		alignX: 'inner-right',
+		alignY: 'bottom',
+		offsetX: 0,
+		offsetY: 5
+    });
+    $('#favor_trigger').poshytip('show');
+	$('#_favor_tags').focus();
+	$('#favor_form form').bind('form-pre-serialize', function(event,form,options,veto){
+    	var tags= $('#_favor_tags')
+		var tagValue= tags.val();
+		//处理tags前后包含的空格
+		var finalTags = new Array();
+		var tagIdx = 0;
+		var arr = tagValue.split(',');
+		for(var i=0;i<arr.length;i++){
+			var tag = arr[i];
+			tag = trim(tag);
+			if(tag.length>0){
+				finalTags[finalTags.length]=tag;
+			}
+		}
+		var d = "";
+		for(var idx=0;idx<finalTags.length;idx++){
+			d+=finalTags[idx];
+			if(idx<finalTags.length-1)
+				d+=",";
+		}
+		tags.val(d);
+	});
+
+	$('#favor_form form').ajaxForm({
+		success: function(html) {
+			$('#favor_trigger').html('取消收藏');
+			$('#favor_trigger').attr('href','javascript:delete_favor(517283,3)');
+			$('#p_attention_count').html(html);
+			$('#favor_form').html(favor_ok);
+			setTimeout("close_favor()",3000);
+		}
+	});
+	$("#TagsSwitcher").one("click",function(){
+		//加载标签数据
+		$("#MyTags").load('/action/ajax/get_my_tags?'+new Date().getTime());
+       	$("#MyTags").toggle();
+		$(this).html("收起标签↑");
+        $(this).attr("state",'on');
+        $(this).click(function(){
+        	$("#MyTags").toggle();
+        	var state = $(this).attr("state");
+        	if(state=='off'){
+        		$(this).html("收起标签↑");
+        		$(this).attr("state",'on');
+        	}else{
+        		$(this).html("选取标签↓");
+        		$(this).attr("state",'off');
+        	}
+        });
+	});
+
+}
+function close_favor(elem_id){
+    $('#favor_trigger').poshytip('destroy');
+}
+function setTag(tv){
+	var t = $("._favor_input");
+	var value = t.val();
+	var tags = value.replace(/，/ig,',').split(',');
+	var exist = false;
+	value = $.map(tags,function(v,i){
+		if($.trim(tv) == $.trim(v)){
+			exist = true;
+			return undefined;
+		}
+		return v;
+	}).join(',');
+	if(exist){
+		t.val(value);
+		return;
+	}
+	if(value!="")
+		t.val(value+","+tv);
+	else
+		t.val(tv)
+}
+function ltrim(str){
+    var whitespace = new String(" \t\n\r");
+    var s = new String(str);
+    if (whitespace.indexOf(s.charAt(0)) != -1){
+        var j=0, i = s.length;
+        while (j < i && whitespace.indexOf(s.charAt(j)) != -1){
+            j++;
+        }
+        s = s.substring(j, i);
+    }
+    return s;
+}
+
+function rtrim(str){
+    var whitespace = new String(" \t\n\r");
+    var s = new String(str);
+    if (whitespace.indexOf(s.charAt(s.length-1)) != -1){
+        var i = s.length - 1;
+        while (i >= 0 && whitespace.indexOf(s.charAt(i)) != -1){
+            i--;
+        }
+        s = s.substring(0, i+1);
+    }
+    return s;
+}
+ 
+function trim(str){
+    return rtrim(ltrim(str));
+}
+</script>
+<em id="p_attention_count">28</em>人收藏此文章,
+<span id="attention_it">
+	<script type="text/javascript">document.write(favor_add);</script><a href="javascript:add_to_favor(517283,3)" id="favor_trigger" title="添加到收藏夹">我要收藏</a>
+</span>
+<script type="text/javascript">
+	$(document).ready(function(){
+    	$.ajax({
+    		url:"/action/favorite/attentionUsersCount",
+    		type:"get",
+    		data:"id="+517283+"&type="+3,
+    		success:function(msg){
+				$("#p_attention_count").html(msg);
+    		}
+    	});
+	});
+</script>			</span>
+			    	</div>
+		
+      </div>
+	  	  
+
+	  
+	  	  <a name="markdown"></a>
+	            
+	          	  	  	  	          <textarea style="display: none;" class="noshow_content">##5. 使用效率
+
+Borg的一个主要目的就是有效的利用Google的机器舰队，这可是一大笔财务投资：让效率提升几个百分点就能省下几百万美元。这一节讨论了和计算了一些Borg使用的技术和策略。
+
+###5.1 测度方法论
+
+我们的job部署是有资源约束的，而且很少碰到负载高峰，我们的机器是异构的，我们从service job回收利用的资源跑batch job。所以，为了测量我们需要一个比“平均利用率”更抽象的标准。在做了一些实验后我们选择了cell密度(cell compaction)：给定一个负载，我们不断的从零开始(这样可以避免被一个倒霉的配置卡住)，部署到尽可能小的Cell里面去，直到再也不能从这个cell里面抽机器出来。这提供了一个清晰的终止条件，并促进了无陷阱的自动化比较，这里的陷阱指的是综合化的工作负载和建模[31]。一个定量的比较和估算技术可以看[78]，有不少微妙的细节。
+
+我们不可能在线上的cell做性能实验，所以我们用了Fauxmaster来达到高保真的模拟效果，使用了真的在线cell的负载数据包括所有的约束、实际限制、保留和常用数据($5.5)。这些数据从2014-10-1 14:00 PDT的Borg快照(checkpoints)里面提取出来。(其他快照也产生类似的结论)。我们选取了15个Borg cell来出报告，先排除了特殊目的的、测试的、小的(&lt;5000机器)的cell，然后从剩下的各种量级大小的cell中平均取样。
+
+在压缩cell实验中为了保持机器异构性，我们随机选择去掉的机器。为了保持工作负载的异构性，我们保留了所有负载，除了那些对服务和存储需要有特定需求的。我们把那些需要超过一半cell的job的硬限制改成软的，允许不超过0.2%的task持续的pending如果它们过于挑剔机器；广泛的测试表明这些结果是可重复的。如果我们需要一个大的cell，就把原cell复制扩大；如果我们需要更多的cell，就复制几份cell。
+
+所有的实验都每个cell重复11次，用不同的随机数发生器。在图上，我们用一个横线来表示最少和最多需要的机器，然后选择90%这个位置作为结果，平均或者居中的结论不会代表一个系统管理员会做的最优选择。我们相信cell压缩提供了一个公平一致的方式去比较调度策略：好的策略只需要更少的机器来跑相同的负载。
+
+我们的实验聚焦在调度(打包)某个时间点的一个负载，而不是重放一段长期的工作踪迹。这部分是因为复制一个开放和关闭的队列模型比较困难，部分是因为传统的一段时间内跑完的指标和我们环境的长期跑服务不一样，部分是因为这样比较起来比较明确，部分是因为我们相信怎么整都差不多，部分是因为我们在消费20万个Borg CPU来做测试——即使在Google的量级，这也不是一个小数目(译者：就你丫理由多！)
+
+
+![输入图片说明](https://static.oschina.net/uploads/img/201510/14215248_lsUj.jpg "在这里输入图片标题")
+
+在生产环境下，我们谨慎的留下了一些顶部空间给负载的增加，比如一些“黑天鹅”时间，负载高峰，机器故障，硬件升级，以及大范围故障(供电进灰)。图4显示了我们在现实世界中可以把cell压缩到多小。上面的基线是用来表示压缩大小的。
+
+###5.2 Cell的共享使用
+
+几乎我们所有的机器都同时跑prod和non-prod的task：在共享Borg cell里有98%的机器同时跑这2种task，在所有Borg管理的机器里面有83%同时跑这2种task(我们有一些专用的Cell跑特定任务)。
+
+
+![输入图片说明](https://static.oschina.net/uploads/img/201510/14215309_yOVh.jpg "在这里输入图片标题")
+
+鉴于很多其他的组织把面向用户应用和批处理应用在不同的集群上运行，我们设想一下如果我们也这么干会发生什么情况。图5展现了在一个中等大小的Cell上分开跑我们prod和non-prod的工作负载将需要20-30%多的机器。这是因为prod的job通常会保留一些资源来应对极少发生的负载高峰，但实际上在大多情况下不会用这些资源。Borg把这批资源回收利用了($5.5)来跑很多non-prod的工作，所以最终我们只需要更少的机器。
+
+
+![输入图片说明](https://static.oschina.net/uploads/img/201510/14215324_e8xr.jpg "在这里输入图片标题")
+
+大部分Borg cell被几千个用户共享使用。图6展现了为什么。对这个测试，如果一个用户消费超过了10TiB内存(或100TiB)，我们就把这个用户的工作负载分离到一个单独的Cell里面去。我们目前的策略展现了它的威力：即使我们设置了这么高的阈值(来分离)，也需要2-16倍多的Cell，和20-150%多的机器。资源池的方案再次有效地节省了开销。
+
+但是，或许把很多不相关的用户和job类型打包放到一台机器上，会造成CPU冲突，然后就需要更多的机器进行补偿？为了验证这一点，我们看一下在同一台机器，锁定时钟周期，每指令循环数CPI(cycles per instruction)在不同环境的task下是怎么变化的。在这种情况下，CPI是一个可比较的指标而且可以代表冲突度量，因为2倍的CPI意味着CPU密集型程序要跑2倍的时间。这些数据是从一周内12000个随机的prod的task中获取的，用硬件测量工具[83]取的，并且对采样做了权重，这样每秒CPU都是平等的。测试结果不是非常明显。
+
+1. 我们发现CPI在同一个时间段内和下面两个量正相关：这台机器上总的CPU使用量，以及(强相关)这个机器上同时跑的task数量；每往一台机器上增加1个task，就会增加0.3%的CPI(线性模型过滤数据)；增加一台10%的CPU使用率，就会增加小于2%的CPI。即使这已经是一个统计意义显著的正相关性，也只是解释了我们在CPI度量上看到的5%的变化，还有其他的因素支配着这个变化，例如应用程序固有的差别和特殊的干涉图案[24,83]。
+
+2. 比较我们从共享Cell和少数只跑几种应用的专用Cell获取的CPI采样，我们看到共享Cell里面的CPI平均值为1.58(σ=0.35,方差)，专用Cell的CPI平均值是1.53(σ=0.32,方差).也就是说，共享Cell的性能差3%。
+
+3. 为了搞定不同Cell的应用会有不同的工作负载，或者会有幸存者偏差(或许对冲突更敏感的程序会被挪到专用Cell里面去)，我们观察了Borglet的CPI，在所有Cell的所有机器上都会被运行。我们发现专用Cell的CPI平均值是1.20(σ=0.29,方差)，而共享Cell里面的CPI平均值为1.43(σ=0.45,方差)，暗示了在专用Cell上运行程序会比在共享Cell上快1.19倍，这就超过了CPU使用量轻负载的这个因素，轻微的有利于专用Cell。
+
+这些实验确定了仓库级别的性能测试是比较微妙的，加强了[51]中的观察，并且得出了共享并没有显著的增加程序运行的开销。
+
+不过，就算我们假设用了我们结果中最不好的数据，共享还是有益的：比起CPU的降速，在各个方案里面减少机器更重要，这会带来减少所有资源的开销，包括内存和硬盘，不仅仅是CPU。
+
+
+###5.3 大Cell
+
+
+![输入图片说明](https://static.oschina.net/uploads/img/201510/14215341_ATlw.jpg "在这里输入图片标题")
+
+Google建立了大Cell，为了允许大的任务运行，也是为了降低资源碎片。我们通过把负载从一个cell分到多个小cell上来测试后面那个效应(降低碎片效应)，随机的把job用round-robin方式分配出去。图7展示了用很多小cell会明显的需要更多机器。
+
+###5.4 资源请求粒度
+
+
+![输入图片说明](https://static.oschina.net/uploads/img/201510/14215357_RHIN.jpg "在这里输入图片标题")
+
+Borg用户请求的CPU单位是千分之一核，内存和硬盘单位是byte。(1核是一个CPU的超线程，在不同机器类型中的一个通用单位)。图8展现了这个粒度的好处：CPU核和内存只有少数的“最佳击球点”，以及这些资源很少的相关性。这个分布和[68]里面的基本差不多，除了我们看到大内存的请求在90%这个线上。
+
+
+![输入图片说明](https://static.oschina.net/uploads/img/201510/14215415_Huqd.jpg "在这里输入图片标题")
+
+提供一个固定尺寸的容器和虚拟机，在IaaS(infrastructure-as-a-service)提供商里面或许是比较流行的，但不符合我们的需求。为了展现这一点，我们把CPU核和内存限制做成一个个尺寸，然后把prod的job按照大一点最近的尺寸去跑(取这2个维度的平方值之和最近，也就是2维图上的直线)，0.5核的CPU,1G的内存为差值。图9显示了一般情况下我们需要30-50%多的资源来运行。上限来自于把大的task跑在一整台机器上，这些task即使扩大四倍也没办法在原有Cell上压缩跑。下限是允许这些task等待(pending)。(这比[37]里面的数据要大100%，因为我们支持超过4中尺寸而且允许CPU和内存无限扩张)。
+
+###5.5 资源再利用
+
+一个job可以声明一个**限制资源**，是每个task能强制保证的资源上限。Borg会先检查这个限制是不是在用户的配额内，然后检查具体的机器是否有那么多资源来调度这个task。有的用户会买超过他们需要的配额，也有用户会的task实际需要更多的资源去跑，因为Borg会杀掉那些需要更多的内存和硬盘空间的task，或者卡住CPU使用率不上去。另外，一些task偶尔需要使用他们的所有资源(例如，在一天的高峰期或者受到了一个拒绝服务攻击)，大多时候用不上那么多资源。
+
+比起把那些分出来但不用的资源浪费掉，我们估计了一个task会用多少资源然后把其他的资源回收再利用给那些可以忍受低质量资源的工作，例如批处理job。这整个过程被叫做资源再利用(resource reclamation)。这个估值叫做task自留地资源(reservation)，被Borgmaster每过几秒就计算一次，是Borglet抓取的细粒度资源消费用率。最初的自留地资源被设置的和资源限制一样大；在300s之后，也就是启动那个阶段，自留地资源会缓慢的下降到实际用量加上一个安全值。自留地资源在实际用量超过它的时候会迅速上升。
+
+
+Borg调度器(scheduler)使用**限制资源**来计算prod task的可用性($3.2)，所以这些task从来不依赖于回收的资源，也不提供超售的资源；对于non-prod的task，使用了目前运行task的自留地资源，这么新的task可以被调度到回收资源。
+
+一台机器有可能因为自留地预估错度而导致运行时资源不足 —— 即使所有的task都在**限制资源**之内跑。如果这种情况发生了，我们杀掉或者限制non-prod task，从来不对prod task下手。
+
+
+![输入图片说明](https://static.oschina.net/uploads/img/201510/14215427_x6fb.jpg "在这里输入图片标题")
+
+图10展示了如果没有资源再利用会需要更多的机器。在一个中等大小的Cell上大概有20%的工作负载跑在回收资源上。
+
+
+![输入图片说明](https://static.oschina.net/uploads/img/201510/14215437_qwoE.jpg "在这里输入图片标题")
+
+图11可以看到更多的细节，包括回收资源、实际使用资源和**限制资源**的比例。一个超内存限制的task首先会被重新调度，不管优先级有多高，所以这样就很少有task会超过内存限制。另一方面，CPU使用率是可以轻易被卡住的，所以短期的超过自留地资源的高峰时没什么损害的。
+
+图11暗示了资源再利用可能是没必要的保守：在自留地和实际使用中间有一大片差距。为了测试这一点，我们选择了一个生产cell然后调试它的预估参数到一个激进策略上，把安全区划小点，然后做了一个介于激进和基本之间的中庸策略跑，然后恢复到基本策略。
+
+
+![输入图片说明](https://static.oschina.net/uploads/img/201510/14215445_Ay3p.jpg "在这里输入图片标题")
+
+图12展现了结果。第二周自留地资源和实际资源的差值是最小的，比第三周要小，最大的是第一和第四周。和预期的一样，周2和周3的OOM率有一个轻微的提升。在复查了这个结果后，我们觉得利大于弊，于是把中庸策略的参数放到其他cell上部署运行。
+
+##6. 隔离性
+
+50%的机器跑9个以上的task；最忙的10%的机器大概跑25个task，4500个线程[83]。虽然在应用间共享机器会增加使用率，也需要一个比较好的机制来保证task之间不互相冲突。包括安全和性能都不能互相冲突。
+
+###6.1 安全隔离
+
+我们使用Linux chroot监狱作为同一台机器不同task之间主要的安全隔离机制。为了允许远程debug，我们以前会分发ssh key来自动给用户权限去访问跑他们task的机器，现在不这么干了。对大多数用户来说，现在提供的是borgssh命令，这个程序和Borglet协同，来构建一个ssh shell，这个shell和task运行在同样的chroot和cgroup下，这样限制就更加严格了。
+
+VM和安全沙箱技术被使用在外部的软件上，在Google’s AppEngine (GAE) [38]和Google Compute Engine (GCE)环境下。我们把KVM进程中的每个hosted VM按照一个Borg task运行。
+
+###6.2 性能隔离
+
+早期的Borglet使用了一种相对原始粗暴的资源隔离措施：事后内存、硬盘、CPU使用率检查，然后终止使用过多内存和硬盘的task，或者把用太多CPU的激进task通过Linux CPU优先级降下来。不过，很多粗暴的task还是很轻易的能影响同台机器上其他task的性能，然后很多用户就会多申请资源来让Borg减少调度的task数量，然后会导致系统资源利用率降低。资源回收可以弥补一些损失，但不是全部，因为要保证资源安全红线。在极端情况下，用户请求使用专用的机器或者cell。
+
+目前，所有Borg task都跑在Linux cgroup-based资源容器[17,58,62]里面，Borglet操作这些容器的设置，这样就增强了控制因为操作系统内核在起作用。即使这样，偶尔还是有低级别的资源冲突(例如内存带宽和L3缓存污染)还是会发生，见[60,83]
+
+为了搞定超负荷和超请求，Borg task有一个应用阶级(appclass)。最主要的区分在于延迟敏感latency-sensitive (LS)的应用和其他应用的区别，其他应用我们在文章里面叫batch。LS task是包括面向用户的应用和需要快速响应的共享基础设施。高优先级的LS task得到最高有待，可以为了这个把batch task一次饿个几秒种。
+
+第二个区分在于可压缩资源(例如CPU循环，disk I/O带宽)都是速率性的可以被回收的，对于一个task可以降低这些资源的量而不去杀掉task；和不可压缩资源(例如内存、硬盘空间)这些一般来说不杀掉task就没法回收的。如果一个机器用光了不可压缩资源，Borglet马上就会杀掉task，从低优先级开始杀，直到剩下的自留地资源够用。如果机器用完了可压缩资源，Borglet会卡住使用率这样当短期高峰来到时不用杀掉任何task。如果情况没有改善，Borgmaster会从这个机器上去除一个或多个task。
+
+Borglet的用户空间控制循环在未来预期的基础上给prod task分配内存，在内存压力基础上给non-prod task分配内存；从内核事件来处理Out-of-Memory (OOM)；杀掉那些想获取超过自身限制内存的task，或者在一个超负载的机器上实际超过负载时。Linux的积极文件缓存策略让我们的实现更负载一点，因为精确计算内存用量会麻烦很多。
+
+为了增强性能隔离，LS task可以独占整个物理CPU核，不让别的LS task来用他们。batch task可以在任何核上面跑，不过他们只被分配了很少的和LS task共享的资源。Borglet动态的调整贪婪LS task的资源限制来保证他们不会把batch task饿上几分钟，有选择的在需要时使用CFS带宽控制[75]；光有共享是不行的，我们有多个优先级。
+
+
+![输入图片说明](https://static.oschina.net/uploads/img/201510/14215504_OUIS.jpg "在这里输入图片标题")
+
+就像Leverich [56]，我们发现标准的Linux CPU调度(CFS)需要大幅调整来支持低延迟和高使用率。为了减少调度延迟，我们版本的CFS使用了额外的每cgroup历史[16]，允许LS task驱逐batch task，并且避免多个LS task跑在一个CPU上的调度量子效应(scheduling quantum，译者：或许指的是互相冲突？)。幸运的是，大多我们的应用使用的每个线程处理一个请求模型，这样就缓和了持久负载不均衡。我们节俭地使用cpusets来分配CPU核给有特殊延迟需求的应用。这些措施的一部分结果展现在图13里面。我们持续在这方面投入，增加了线程部署和CPU管理包括NUMA超线程、能源觉察(例如[81])，增加Borglet的控制精确度。
+
+Task被允许在他们的限制范围内消费资源。其中大部分task甚至被允许去使用更多的可压缩资源例如CPU，充分利用没有被使用的资源。大概5%的LS task禁止这么做，主要是为了增加可预测性；小于1%的batch task也禁止。使用超量内存默认是被禁止的，因为这会增加task被杀的概率，不过即使这样，10%的LS task打开了这个限制，79%的batch task也开了因为这事MapReduce框架默认的。这事对资源再回收($5.5)的一个补偿。Batch task很乐意使用没有被用起来的内存，也乐意不时的释放一些可回收的内存：大多情况下这跑的很好，即使有时候batch task会被急需资源的LS task杀掉。</textarea>
+        <div class="BlogContent"><span id="OSC_h2_1"></span><h2 id="5-使用效率">5. 使用效率</h2>
+<p>Borg的一个主要目的就是有效的利用Google的机器舰队，这可是一大笔财务投资：让效率提升几个百分点就能省下几百万美元。这一节讨论了和计算了一些Borg使用的技术和策略。</p>
+<span id="OSC_h3_2"></span><h3 id="5-1-测度方法论">5.1 测度方法论</h3>
+<p>我们的job部署是有资源约束的，而且很少碰到负载高峰，我们的机器是异构的，我们从service job回收利用的资源跑batch job。所以，为了测量我们需要一个比“平均利用率”更抽象的标准。在做了一些实验后我们选择了cell密度(cell compaction)：给定一个负载，我们不断的从零开始(这样可以避免被一个倒霉的配置卡住)，部署到尽可能小的Cell里面去，直到再也不能从这个cell里面抽机器出来。这提供了一个清晰的终止条件，并促进了无陷阱的自动化比较，这里的陷阱指的是综合化的工作负载和建模[31]。一个定量的比较和估算技术可以看[78]，有不少微妙的细节。</p>
+<p>我们不可能在线上的cell做性能实验，所以我们用了Fauxmaster来达到高保真的模拟效果，使用了真的在线cell的负载数据包括所有的约束、实际限制、保留和常用数据($5.5)。这些数据从2014-10-1 14:00 PDT的Borg快照(checkpoints)里面提取出来。(其他快照也产生类似的结论)。我们选取了15个Borg cell来出报告，先排除了特殊目的的、测试的、小的(&lt;5000机器)的cell，然后从剩下的各种量级大小的cell中平均取样。</p>
+<p>在压缩cell实验中为了保持机器异构性，我们随机选择去掉的机器。为了保持工作负载的异构性，我们保留了所有负载，除了那些对服务和存储需要有特定需求的。我们把那些需要超过一半cell的job的硬限制改成软的，允许不超过0.2%的task持续的pending如果它们过于挑剔机器；广泛的测试表明这些结果是可重复的。如果我们需要一个大的cell，就把原cell复制扩大；如果我们需要更多的cell，就复制几份cell。</p>
+<p>所有的实验都每个cell重复11次，用不同的随机数发生器。在图上，我们用一个横线来表示最少和最多需要的机器，然后选择90%这个位置作为结果，平均或者居中的结论不会代表一个系统管理员会做的最优选择。我们相信cell压缩提供了一个公平一致的方式去比较调度策略：好的策略只需要更少的机器来跑相同的负载。</p>
+<p>我们的实验聚焦在调度(打包)某个时间点的一个负载，而不是重放一段长期的工作踪迹。这部分是因为复制一个开放和关闭的队列模型比较困难，部分是因为传统的一段时间内跑完的指标和我们环境的长期跑服务不一样，部分是因为这样比较起来比较明确，部分是因为我们相信怎么整都差不多，部分是因为我们在消费20万个Borg CPU来做测试——即使在Google的量级，这也不是一个小数目(译者：就你丫理由多！)</p>
+<p><a href="https://static.oschina.net/uploads/img/201510/14215248_lsUj.jpg" target="_blank"><img src="https://static.oschina.net/uploads/img/201510/14215248_lsUj.jpg" alt="输入图片说明" title="在这里输入图片标题" style="cursor: pointer;"></a></p>
+<p>在生产环境下，我们谨慎的留下了一些顶部空间给负载的增加，比如一些“黑天鹅”时间，负载高峰，机器故障，硬件升级，以及大范围故障(供电进灰)。图4显示了我们在现实世界中可以把cell压缩到多小。上面的基线是用来表示压缩大小的。</p>
+<span id="OSC_h3_3"></span><h3 id="5-2-cell的共享使用">5.2 Cell的共享使用</h3>
+<p>几乎我们所有的机器都同时跑prod和non-prod的task：在共享Borg cell里有98%的机器同时跑这2种task，在所有Borg管理的机器里面有83%同时跑这2种task(我们有一些专用的Cell跑特定任务)。</p>
+<p><a href="https://static.oschina.net/uploads/img/201510/14215309_yOVh.jpg" target="_blank"><img src="https://static.oschina.net/uploads/img/201510/14215309_yOVh.jpg" alt="输入图片说明" title="在这里输入图片标题" style="cursor: pointer;"></a></p>
+<p>鉴于很多其他的组织把面向用户应用和批处理应用在不同的集群上运行，我们设想一下如果我们也这么干会发生什么情况。图5展现了在一个中等大小的Cell上分开跑我们prod和non-prod的工作负载将需要20-30%多的机器。这是因为prod的job通常会保留一些资源来应对极少发生的负载高峰，但实际上在大多情况下不会用这些资源。Borg把这批资源回收利用了($5.5)来跑很多non-prod的工作，所以最终我们只需要更少的机器。</p>
+<p><a href="https://static.oschina.net/uploads/img/201510/14215324_e8xr.jpg" target="_blank"><img src="https://static.oschina.net/uploads/img/201510/14215324_e8xr.jpg" alt="输入图片说明" title="在这里输入图片标题" style="cursor: pointer;"></a></p>
+<p>大部分Borg cell被几千个用户共享使用。图6展现了为什么。对这个测试，如果一个用户消费超过了10TiB内存(或100TiB)，我们就把这个用户的工作负载分离到一个单独的Cell里面去。我们目前的策略展现了它的威力：即使我们设置了这么高的阈值(来分离)，也需要2-16倍多的Cell，和20-150%多的机器。资源池的方案再次有效地节省了开销。</p>
+<p>但是，或许把很多不相关的用户和job类型打包放到一台机器上，会造成CPU冲突，然后就需要更多的机器进行补偿？为了验证这一点，我们看一下在同一台机器，锁定时钟周期，每指令循环数CPI(cycles per instruction)在不同环境的task下是怎么变化的。在这种情况下，CPI是一个可比较的指标而且可以代表冲突度量，因为2倍的CPI意味着CPU密集型程序要跑2倍的时间。这些数据是从一周内12000个随机的prod的task中获取的，用硬件测量工具[83]取的，并且对采样做了权重，这样每秒CPU都是平等的。测试结果不是非常明显。</p>
+<ol>
+<li><p>我们发现CPI在同一个时间段内和下面两个量正相关：这台机器上总的CPU使用量，以及(强相关)这个机器上同时跑的task数量；每往一台机器上增加1个task，就会增加0.3%的CPI(线性模型过滤数据)；增加一台10%的CPU使用率，就会增加小于2%的CPI。即使这已经是一个统计意义显著的正相关性，也只是解释了我们在CPI度量上看到的5%的变化，还有其他的因素支配着这个变化，例如应用程序固有的差别和特殊的干涉图案[24,83]。</p>
+</li>
+<li><p>比较我们从共享Cell和少数只跑几种应用的专用Cell获取的CPI采样，我们看到共享Cell里面的CPI平均值为1.58(σ=0.35,方差)，专用Cell的CPI平均值是1.53(σ=0.32,方差).也就是说，共享Cell的性能差3%。</p>
+</li>
+<li><p>为了搞定不同Cell的应用会有不同的工作负载，或者会有幸存者偏差(或许对冲突更敏感的程序会被挪到专用Cell里面去)，我们观察了Borglet的CPI，在所有Cell的所有机器上都会被运行。我们发现专用Cell的CPI平均值是1.20(σ=0.29,方差)，而共享Cell里面的CPI平均值为1.43(σ=0.45,方差)，暗示了在专用Cell上运行程序会比在共享Cell上快1.19倍，这就超过了CPU使用量轻负载的这个因素，轻微的有利于专用Cell。</p>
+</li>
+</ol>
+<p>这些实验确定了仓库级别的性能测试是比较微妙的，加强了[51]中的观察，并且得出了共享并没有显著的增加程序运行的开销。</p>
+<p>不过，就算我们假设用了我们结果中最不好的数据，共享还是有益的：比起CPU的降速，在各个方案里面减少机器更重要，这会带来减少所有资源的开销，包括内存和硬盘，不仅仅是CPU。</p>
+<span id="OSC_h3_4"></span><h3 id="5-3-大cell">5.3 大Cell</h3>
+<p><a href="https://static.oschina.net/uploads/img/201510/14215341_ATlw.jpg" target="_blank"><img src="https://static.oschina.net/uploads/img/201510/14215341_ATlw.jpg" alt="输入图片说明" title="在这里输入图片标题" style="cursor: pointer;"></a></p>
+<p>Google建立了大Cell，为了允许大的任务运行，也是为了降低资源碎片。我们通过把负载从一个cell分到多个小cell上来测试后面那个效应(降低碎片效应)，随机的把job用round-robin方式分配出去。图7展示了用很多小cell会明显的需要更多机器。</p>
+<span id="OSC_h3_5"></span><h3 id="5-4-资源请求粒度">5.4 资源请求粒度</h3>
+<p><a href="https://static.oschina.net/uploads/img/201510/14215357_RHIN.jpg" target="_blank"><img src="https://static.oschina.net/uploads/img/201510/14215357_RHIN.jpg" alt="输入图片说明" title="在这里输入图片标题" style="cursor: pointer;"></a></p>
+<p>Borg用户请求的CPU单位是千分之一核，内存和硬盘单位是byte。(1核是一个CPU的超线程，在不同机器类型中的一个通用单位)。图8展现了这个粒度的好处：CPU核和内存只有少数的“最佳击球点”，以及这些资源很少的相关性。这个分布和[68]里面的基本差不多，除了我们看到大内存的请求在90%这个线上。</p>
+<p><a href="https://static.oschina.net/uploads/img/201510/14215415_Huqd.jpg" target="_blank"><img src="https://static.oschina.net/uploads/img/201510/14215415_Huqd.jpg" alt="输入图片说明" title="在这里输入图片标题" style="cursor: pointer;"></a></p>
+<p>提供一个固定尺寸的容器和虚拟机，在IaaS(infrastructure-as-a-service)提供商里面或许是比较流行的，但不符合我们的需求。为了展现这一点，我们把CPU核和内存限制做成一个个尺寸，然后把prod的job按照大一点最近的尺寸去跑(取这2个维度的平方值之和最近，也就是2维图上的直线)，0.5核的CPU,1G的内存为差值。图9显示了一般情况下我们需要30-50%多的资源来运行。上限来自于把大的task跑在一整台机器上，这些task即使扩大四倍也没办法在原有Cell上压缩跑。下限是允许这些task等待(pending)。(这比[37]里面的数据要大100%，因为我们支持超过4中尺寸而且允许CPU和内存无限扩张)。</p>
+<span id="OSC_h3_6"></span><h3 id="5-5-资源再利用">5.5 资源再利用</h3>
+<p>一个job可以声明一个<strong>限制资源</strong>，是每个task能强制保证的资源上限。Borg会先检查这个限制是不是在用户的配额内，然后检查具体的机器是否有那么多资源来调度这个task。有的用户会买超过他们需要的配额，也有用户会的task实际需要更多的资源去跑，因为Borg会杀掉那些需要更多的内存和硬盘空间的task，或者卡住CPU使用率不上去。另外，一些task偶尔需要使用他们的所有资源(例如，在一天的高峰期或者受到了一个拒绝服务攻击)，大多时候用不上那么多资源。</p>
+<p>比起把那些分出来但不用的资源浪费掉，我们估计了一个task会用多少资源然后把其他的资源回收再利用给那些可以忍受低质量资源的工作，例如批处理job。这整个过程被叫做资源再利用(resource reclamation)。这个估值叫做task自留地资源(reservation)，被Borgmaster每过几秒就计算一次，是Borglet抓取的细粒度资源消费用率。最初的自留地资源被设置的和资源限制一样大；在300s之后，也就是启动那个阶段，自留地资源会缓慢的下降到实际用量加上一个安全值。自留地资源在实际用量超过它的时候会迅速上升。</p>
+<p>Borg调度器(scheduler)使用<strong>限制资源</strong>来计算prod task的可用性($3.2)，所以这些task从来不依赖于回收的资源，也不提供超售的资源；对于non-prod的task，使用了目前运行task的自留地资源，这么新的task可以被调度到回收资源。</p>
+<p>一台机器有可能因为自留地预估错度而导致运行时资源不足 —— 即使所有的task都在<strong>限制资源</strong>之内跑。如果这种情况发生了，我们杀掉或者限制non-prod task，从来不对prod task下手。</p>
+<p><a href="https://static.oschina.net/uploads/img/201510/14215427_x6fb.jpg" target="_blank"><img src="https://static.oschina.net/uploads/img/201510/14215427_x6fb.jpg" alt="输入图片说明" title="在这里输入图片标题" style="cursor: pointer;"></a></p>
+<p>图10展示了如果没有资源再利用会需要更多的机器。在一个中等大小的Cell上大概有20%的工作负载跑在回收资源上。</p>
+<p><a href="https://static.oschina.net/uploads/img/201510/14215437_qwoE.jpg" target="_blank"><img src="https://static.oschina.net/uploads/img/201510/14215437_qwoE.jpg" alt="输入图片说明" title="在这里输入图片标题" style="cursor: pointer;"></a></p>
+<p>图11可以看到更多的细节，包括回收资源、实际使用资源和<strong>限制资源</strong>的比例。一个超内存限制的task首先会被重新调度，不管优先级有多高，所以这样就很少有task会超过内存限制。另一方面，CPU使用率是可以轻易被卡住的，所以短期的超过自留地资源的高峰时没什么损害的。</p>
+<p>图11暗示了资源再利用可能是没必要的保守：在自留地和实际使用中间有一大片差距。为了测试这一点，我们选择了一个生产cell然后调试它的预估参数到一个激进策略上，把安全区划小点，然后做了一个介于激进和基本之间的中庸策略跑，然后恢复到基本策略。</p>
+<p><a href="https://static.oschina.net/uploads/img/201510/14215445_Ay3p.jpg" target="_blank"><img src="https://static.oschina.net/uploads/img/201510/14215445_Ay3p.jpg" alt="输入图片说明" title="在这里输入图片标题" style="cursor: pointer;"></a></p>
+<p>图12展现了结果。第二周自留地资源和实际资源的差值是最小的，比第三周要小，最大的是第一和第四周。和预期的一样，周2和周3的OOM率有一个轻微的提升。在复查了这个结果后，我们觉得利大于弊，于是把中庸策略的参数放到其他cell上部署运行。</p>
+<span id="OSC_h2_7"></span><h2 id="6-隔离性">6. 隔离性</h2>
+<p>50%的机器跑9个以上的task；最忙的10%的机器大概跑25个task，4500个线程[83]。虽然在应用间共享机器会增加使用率，也需要一个比较好的机制来保证task之间不互相冲突。包括安全和性能都不能互相冲突。</p>
+<span id="OSC_h3_8"></span><h3 id="6-1-安全隔离">6.1 安全隔离</h3>
+<p>我们使用Linux chroot监狱作为同一台机器不同task之间主要的安全隔离机制。为了允许远程debug，我们以前会分发ssh key来自动给用户权限去访问跑他们task的机器，现在不这么干了。对大多数用户来说，现在提供的是borgssh命令，这个程序和Borglet协同，来构建一个ssh shell，这个shell和task运行在同样的chroot和cgroup下，这样限制就更加严格了。</p>
+<p>VM和安全沙箱技术被使用在外部的软件上，在Google’s AppEngine (GAE) [38]和Google Compute Engine (GCE)环境下。我们把KVM进程中的每个hosted VM按照一个Borg task运行。</p>
+<span id="OSC_h3_9"></span><h3 id="6-2-性能隔离">6.2 性能隔离</h3>
+<p>早期的Borglet使用了一种相对原始粗暴的资源隔离措施：事后内存、硬盘、CPU使用率检查，然后终止使用过多内存和硬盘的task，或者把用太多CPU的激进task通过Linux CPU优先级降下来。不过，很多粗暴的task还是很轻易的能影响同台机器上其他task的性能，然后很多用户就会多申请资源来让Borg减少调度的task数量，然后会导致系统资源利用率降低。资源回收可以弥补一些损失，但不是全部，因为要保证资源安全红线。在极端情况下，用户请求使用专用的机器或者cell。</p>
+<p>目前，所有Borg task都跑在Linux cgroup-based资源容器[17,58,62]里面，Borglet操作这些容器的设置，这样就增强了控制因为操作系统内核在起作用。即使这样，偶尔还是有低级别的资源冲突(例如内存带宽和L3缓存污染)还是会发生，见[60,83]</p>
+<p>为了搞定超负荷和超请求，Borg task有一个应用阶级(appclass)。最主要的区分在于延迟敏感latency-sensitive (LS)的应用和其他应用的区别，其他应用我们在文章里面叫batch。LS task是包括面向用户的应用和需要快速响应的共享基础设施。高优先级的LS task得到最高有待，可以为了这个把batch task一次饿个几秒种。</p>
+<p>第二个区分在于可压缩资源(例如CPU循环，disk I/O带宽)都是速率性的可以被回收的，对于一个task可以降低这些资源的量而不去杀掉task；和不可压缩资源(例如内存、硬盘空间)这些一般来说不杀掉task就没法回收的。如果一个机器用光了不可压缩资源，Borglet马上就会杀掉task，从低优先级开始杀，直到剩下的自留地资源够用。如果机器用完了可压缩资源，Borglet会卡住使用率这样当短期高峰来到时不用杀掉任何task。如果情况没有改善，Borgmaster会从这个机器上去除一个或多个task。</p>
+<p>Borglet的用户空间控制循环在未来预期的基础上给prod task分配内存，在内存压力基础上给non-prod task分配内存；从内核事件来处理Out-of-Memory (OOM)；杀掉那些想获取超过自身限制内存的task，或者在一个超负载的机器上实际超过负载时。Linux的积极文件缓存策略让我们的实现更负载一点，因为精确计算内存用量会麻烦很多。</p>
+<p>为了增强性能隔离，LS task可以独占整个物理CPU核，不让别的LS task来用他们。batch task可以在任何核上面跑，不过他们只被分配了很少的和LS task共享的资源。Borglet动态的调整贪婪LS task的资源限制来保证他们不会把batch task饿上几分钟，有选择的在需要时使用CFS带宽控制[75]；光有共享是不行的，我们有多个优先级。</p>
+<p><a href="https://static.oschina.net/uploads/img/201510/14215504_OUIS.jpg" target="_blank"><img src="https://static.oschina.net/uploads/img/201510/14215504_OUIS.jpg" alt="输入图片说明" title="在这里输入图片标题" style="cursor: pointer;"></a></p>
+<p>就像Leverich [56]，我们发现标准的Linux CPU调度(CFS)需要大幅调整来支持低延迟和高使用率。为了减少调度延迟，我们版本的CFS使用了额外的每cgroup历史[16]，允许LS task驱逐batch task，并且避免多个LS task跑在一个CPU上的调度量子效应(scheduling quantum，译者：或许指的是互相冲突？)。幸运的是，大多我们的应用使用的每个线程处理一个请求模型，这样就缓和了持久负载不均衡。我们节俭地使用cpusets来分配CPU核给有特殊延迟需求的应用。这些措施的一部分结果展现在图13里面。我们持续在这方面投入，增加了线程部署和CPU管理包括NUMA超线程、能源觉察(例如[81])，增加Borglet的控制精确度。</p>
+<p>Task被允许在他们的限制范围内消费资源。其中大部分task甚至被允许去使用更多的可压缩资源例如CPU，充分利用没有被使用的资源。大概5%的LS task禁止这么做，主要是为了增加可预测性；小于1%的batch task也禁止。使用超量内存默认是被禁止的，因为这会增加task被杀的概率，不过即使这样，10%的LS task打开了这个限制，79%的batch task也开了因为这事MapReduce框架默认的。这事对资源再回收($5.5)的一个补偿。Batch task很乐意使用没有被用起来的内存，也乐意不时的释放一些可回收的内存：大多情况下这跑的很好，即使有时候batch task会被急需资源的LS task杀掉。</p>
+</div>
+      	        	      	
+
+      
+	  
+      
+	</div>
+	       
+      </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                            </div>
+	<div class="clear"></div>
+	
+</div>
+
+
+<div id="OSC_Screen"  style="position: relative; page-break-after : right;">
+	
+
+
+
+	
+	<div id="OSC_Content">
+            	
+                                        
+
+
+
+
+
+
+<div>
+	
+
+    	<div class="BlogEntity">
+      <div class="BlogTitle">
+        <h1><span class="icon" style="background:#44ac57;" title="原创博客">原</span>			<span class="icon" style="background:#fd9c47;" title="首页推荐过的博客">荐</span>												在Google使用Borg进行大规模集群的管理 7-8</h1>
+        <div class="BlogStat">
+    		    		发表于8个月前(2015-10-16 20:03)&nbsp;&nbsp;
+    		阅读（<span class="g">1728</span>）&nbsp;|&nbsp;评论（<a href="#comments"><span class="g">2</span></a>）
+    					    	    <span class="admin">
+				<style>
+#TagsSwitcher{color:#A00;}
+#RecTags,#MyTags{margin:5px 0;}
+#RecTags a.tag{line-height:24px;}
+#favor_form p:first-child{margin:5px 0;}
+#favor_form{width:200px;}
+#favor_form p {color:#666;}
+#favor_form form{min-height: 85px;width:200px;}
+#favor_form form ._favor_input{display:block;margin:2px 0;width:199px;}
+#favor_form form ._favor_button{float:left;padding:2px 5px;}
+.favor_ok {text-align:center;font-size:10.5pt;width:199px;height:60px;margin-top:10px;}
+#TagsSwitcher{cursor:pointer;float:right;margin-top:10px;}
+#MyTags{display:none;width:199px;}
+#MyTags a.tag {float:left; background-color: #E0EAF1;border-bottom: 1px solid #3E6D8E;border-right: 1px solid #7F9FB6;color: #3E6D8E;font-size: 8pt;line-height: 16px;margin: 2px 2px 2px 0;padding: 2px 4px;text-decoration: none;white-space: nowrap;}
+#MyTags a.tag:hover{background-color: #3E6D8E;color: #FFF;}
+</style>
+<script type="text/javascript">
+var favor_add = "<a href='javascript:add_to_favor(518140,3)' id='favor_trigger' title='添加到收藏夹'>我要收藏</a>";
+var favor_del = "<a href='javascript:delete_favor(518140,3)' id='favor_trigger' style='color:#a00;'>取消收藏</a>";
+var favor_ok = "<p class='favor_ok'>已成功添加到收藏夹<br/><br/> <a href='http://my.oschina.net/u/1261413/favorites?type=3'>我的收藏夹</a> | <a href='javascript:close_favor()'>关闭</a></p>";
+function delete_favor(obi_id, obj_type){
+	$('#attention_it').html(favor_add);
+	$("#p_attention_count").load("/action/favorite/cancel?type="+obj_type+"&id="+obi_id, {user: '1261413'});
+}
+function add_to_favor(obj_id, obj_type){
+    var dlg_favor = "<div id='favor_form'><p>多个标签使用逗号 , 隔开，最多三个</p><form action='/action/favorite/add?user=1261413' width='200px' method='POST'>";
+	dlg_favor += "<input type='hidden' name='id' value='"+obj_id+"'/>";
+	dlg_favor += "<input type='hidden' name='type' value='"+obj_type+"'/>";
+	dlg_favor += "<input type='text' name='tags' size='25' class='_favor_input' id='_favor_tags' placeholder='可点击下面标签设置'/>";
+    dlg_favor += "<div id='RecTags'>推荐标签：  <a href='javascript:setTag(\"Google\")' class=\"tag\">Google</a>  <a href='javascript:setTag(\"Borg\")' class=\"tag\">Borg</a>  <a href='javascript:setTag(\"Kubernertes\")' class=\"tag\">Kubernertes</a>  <a href='javascript:setTag(\"云计算\")' class=\"tag\">云计算</a>  <a href='javascript:setTag(\"待读\")' class=\"tag\">待读</a> </div>";
+    dlg_favor += "<div><input type='submit' value='收藏' class='_favor_button'/><input type='button' value='取消' onclick='close_favor();' class='_favor_button'/><a id='TagsSwitcher' state='off'>选取标签↓</a></form><div class='clear'></div></div>";
+	dlg_favor += "<div id='MyTags' ></div></div>";
+    $('#favor_trigger').poshytip('destroy');
+    $('#favor_trigger').poshytip({
+    	className: 'tip-yellowsimple',
+    	content: dlg_favor,
+    	showOn: 'none',
+    	alignTo: 'target',	
+		alignX: 'inner-right',
+		alignY: 'bottom',
+		offsetX: 0,
+		offsetY: 5
+    });
+    $('#favor_trigger').poshytip('show');
+	$('#_favor_tags').focus();
+	$('#favor_form form').bind('form-pre-serialize', function(event,form,options,veto){
+    	var tags= $('#_favor_tags')
+		var tagValue= tags.val();
+		//处理tags前后包含的空格
+		var finalTags = new Array();
+		var tagIdx = 0;
+		var arr = tagValue.split(',');
+		for(var i=0;i<arr.length;i++){
+			var tag = arr[i];
+			tag = trim(tag);
+			if(tag.length>0){
+				finalTags[finalTags.length]=tag;
+			}
+		}
+		var d = "";
+		for(var idx=0;idx<finalTags.length;idx++){
+			d+=finalTags[idx];
+			if(idx<finalTags.length-1)
+				d+=",";
+		}
+		tags.val(d);
+	});
+
+	$('#favor_form form').ajaxForm({
+		success: function(html) {
+			$('#favor_trigger').html('取消收藏');
+			$('#favor_trigger').attr('href','javascript:delete_favor(518140,3)');
+			$('#p_attention_count').html(html);
+			$('#favor_form').html(favor_ok);
+			setTimeout("close_favor()",3000);
+		}
+	});
+	$("#TagsSwitcher").one("click",function(){
+		//加载标签数据
+		$("#MyTags").load('/action/ajax/get_my_tags?'+new Date().getTime());
+       	$("#MyTags").toggle();
+		$(this).html("收起标签↑");
+        $(this).attr("state",'on');
+        $(this).click(function(){
+        	$("#MyTags").toggle();
+        	var state = $(this).attr("state");
+        	if(state=='off'){
+        		$(this).html("收起标签↑");
+        		$(this).attr("state",'on');
+        	}else{
+        		$(this).html("选取标签↓");
+        		$(this).attr("state",'off');
+        	}
+        });
+	});
+
+}
+function close_favor(elem_id){
+    $('#favor_trigger').poshytip('destroy');
+}
+function setTag(tv){
+	var t = $("._favor_input");
+	var value = t.val();
+	var tags = value.replace(/，/ig,',').split(',');
+	var exist = false;
+	value = $.map(tags,function(v,i){
+		if($.trim(tv) == $.trim(v)){
+			exist = true;
+			return undefined;
+		}
+		return v;
+	}).join(',');
+	if(exist){
+		t.val(value);
+		return;
+	}
+	if(value!="")
+		t.val(value+","+tv);
+	else
+		t.val(tv)
+}
+function ltrim(str){
+    var whitespace = new String(" \t\n\r");
+    var s = new String(str);
+    if (whitespace.indexOf(s.charAt(0)) != -1){
+        var j=0, i = s.length;
+        while (j < i && whitespace.indexOf(s.charAt(j)) != -1){
+            j++;
+        }
+        s = s.substring(j, i);
+    }
+    return s;
+}
+
+function rtrim(str){
+    var whitespace = new String(" \t\n\r");
+    var s = new String(str);
+    if (whitespace.indexOf(s.charAt(s.length-1)) != -1){
+        var i = s.length - 1;
+        while (i >= 0 && whitespace.indexOf(s.charAt(i)) != -1){
+            i--;
+        }
+        s = s.substring(0, i+1);
+    }
+    return s;
+}
+ 
+function trim(str){
+    return rtrim(ltrim(str));
+}
+</script>
+<em id="p_attention_count">42</em>人收藏此文章,
+<span id="attention_it">
+	<script type="text/javascript">document.write(favor_add);</script><a href="javascript:add_to_favor(518140,3)" id="favor_trigger" title="添加到收藏夹">我要收藏</a>
+</span>
+<script type="text/javascript">
+	$(document).ready(function(){
+    	$.ajax({
+    		url:"/action/favorite/attentionUsersCount",
+    		type:"get",
+    		data:"id="+518140+"&type="+3,
+    		success:function(msg){
+				$("#p_attention_count").html(msg);
+    		}
+    	});
+	});
+</script>			</span>
+			    	</div>
+		
+      </div>
+	  	  
+
+	  
+	  	  <a name="markdown"></a>
+	            
+	          	  	  	  	          
+        <div class="BlogContent"><p> 【编者的话】最后两章探讨的是相关工作和改进。从中可以看到从Borg到Kubernetes，他们也做了不少思考，而这方面的工作远远没有完善，一直在进行中。期待大家都能从Google的实践中学到一些东西，并分享出来。</p>
+<span id="OSC_h2_1"></span><h2 id="7-相关工作">7. 相关工作</h2>
+<p>资源调度在各个领域已经被研究了数十年了，包括在广域HPC超算集群中，在工作站网络中，在大规模服务器集群中。我们主要聚焦在最相关的大规模服务器集群这个领域。</p>
+<p>最近的一些研究分析了集群趋势，来自于Yahoo、Google、和Facebook[20, 52, 63, 68, 70, 80, 82]，展现了这些现代的数据中心和工作负载在规模和异构化方面碰到的挑战。[69]包含了这些集群管理架构的分类。</p>
+<p>Apache Mesos [45]把资源管理和应用部署做了分离，资源管理由中心管理器(类似于Bormaster+scheduler)和多种类的“框架”比如Hadoop [41]和Spark [73]，使用offer-based的机制。Borg则主要把这些几种在一起，使用request-based的机制，可以大规模扩展。DRF [29, 35, 36, 66]策略是内赋在Mesos里的；Borg则使用优先级和配额认证来替代。Mesos开发者已经宣布了他们的雄心壮志：推测性资源分配和回收，然后把[69]里面的问题都解决。</p>
+<p>YARN [76]是一个Hadoop中心集群管理。每个应用都有一个管理器和中央资源管理器谈判；这和2008年开始Google MapReduce从Borg获取资源如出一辙。YARN的资源管理器最近才能容错。一个相关的开源项目是Hadoop Capacity Scheduler [42]，提供了多租户下的容量保证、多层队列、弹性共享和公平调度。YARN最近被扩展成支持多种资源类型、优先级、驱逐、和高级权限控制[21]。俄罗斯方块原型[40]支持了最大完工时间觉察的job打包。</p>
+<p>Facebook的Tupperware [64]，是一个类Borg系统来调度cgroup容器；虽然只有少量资料泄露，看起来他也提供资源回收利用功能。Twitter有一个开源的Aurora[5]，一个类Borg的长进程调度器，跑在Mesos智商，有一个类似于Borg的配置语言和状态机。</p>
+<p>来自于微软的Autopilot[48]提供了“自动化的软件部署和开通；系统监控，以及在软硬件故障时的修复操作”给微软集群。Borg生态系统提供了相同的特性，不过还有没说完的；Isaard [48]概括和很多我们想拥护的最佳实践。</p>
+<p>Quincy[49]使用了一个网络流模型来提供公平性和数据局部性在几百个节点的DAG数据处理上。Borg用的是配额和优先级在上万台机器上把资源分配给用户。Quincy处理直接执行图在Borg之上。</p>
+<p>Cosmos [44]聚焦在批处理上，重点在于用户获得对集群捐献的资源进行公平获取。它使用一个每job的管理器来获取资源；没有更多公开的细节。</p>
+<p>微软的Apollo系统[13]使用了一个每job的调度器给短期存活的batch job使用，在和Borg差不多量级的集群下获取高流量输出。Apollo使用了一个低优先级后台任务随机执行策略来增加资源利用率，代价是有多天的延迟。Apollo几点提供一个预测矩阵，关于启动时间为两个资源维度的函数。然后调度器会综合计算启动开销、远程数据获取开销来决定部署到哪里，然后用一个随机延时来避免冲突。Borg用的是中央调度器来决定部署位置，给予优先级分配处理更多的资源维度，而且更关注高可用、长期跑的应用；Apollo也许可以处理更多的task请求并发。</p>
+<p>阿里巴巴的Fuxi(译者：也就是伏羲啦) [84]支撑数据分析的负载，从2009年开始运行。就像Borgmaster，一个中央的FuxiMaster(也是做了高可用多副本)从节点上获取可用的资源信息、接受应用的资源请求，然后做匹配。伏羲增加了和Borg完全相反的调度策略：伏羲把最新的可用资源分配给队列里面请求的任务。就像Mesos，伏羲允许定义“虚拟资源”类型。只有系统的工作负载输出是公开的。</p>
+<p>Omega [69]支持多并行，特别是“铅垂线”策略，粗略相当于Borgmaster加上它的持久存储和link shards(连接分配)。Omega调度器用的是乐观并行的方式去控制一个共享的cell观察和预期状态，把这些状态放在一个中央的存储里面，和Borglet用独立的连接器进行同步。Omega架构。Omage架构是被设计出来给多种不同的工作负载，这些工作负载都有自己的应用定义的RPC接口、状态机和调度策略(例如长期跑的服务端程序、多个框架下的batch job、存储基础设施、GCE上的虚拟机)。形成对比的是，Borg提供了一种“万灵药”，同样的RPC接口、状态机语义、调度策略，随着时间流逝规模和复杂度增加，需要支持更多的不同方式的负载，而可可扩展性目前来说还不算一个问题($3.4)</p>
+<p>Google的开源Kubernetes系统[53]把应用放在Docker容器内[28]，分发到多机器上。它可以跑在物理机(和Borg一样)或跑在其他云比如GCE提供的主机上。Kubernetes的开发者和Borg是同一拨人而且正在狂开发中。Google提供了一个云主机版本叫Google Container Engine [39]。我们会在下一节里面讨论从Borg中学到了哪些东西用在了Kubernetes上。</p>
+<p>在高性能计算社区有一些这个领域的长期传统工作(e.g., Maui, Moab, Platform LSF [2, 47, 50])；但是这和Google Cell所需要的规模、工作负载、容错性是完全不一样的。大概来说，这些系统通过让很多任务等待在一个长队列里面来获取极高的资源利用率。</p>
+<p>虚拟化提供商例如VMware [77]和数据中心方案提供商例如HP and IBM [46]给了一个大概在1000台机器量级的集群解决方案。另外，一些研究小组用几种方式提升了资源调度质量(e.g., [25, 40, 72, 74])。</p>
+<p>最后，就像我们所指出的，大规模集群管理的另外一个重要部分是自动化和无人化。[43]写了如何做故障计划、多租户、健康检查、权限控制、和重启动性来获得更大的机器数/操作员比。Borg的设计哲学也是这样的，让我们的一个SRE能支撑超过万台机器。</p>
+<span id="OSC_h2_2"></span><h2 id="8-经验教训和未来工作">8. 经验教训和未来工作</h2>
+<p>在这一节中我们会聊一些十年以来我们在生产环境操作Borg得到的定性经验，然后描述下这些观察结果是怎么改善Kubernete[53]的设计。</p>
+<span id="OSC_h3_3"></span><h3 id="8-1-教训">8.1 教训</h3>
+<p>我们会从一些受到吐槽的Borg特性开始，然后说说Kubernetes是怎么干的。</p>
+<p><strong>Jobs是唯一的task分组的机制。</strong>Borg没有天然的方法去管理多个job组成单个实体，或者去指向相关的服务实例(例如，金丝雀和生产跟踪)。作为hack，用户把他们的服务拓扑编码写在job名字里面，然后用更高层的工具区解析这些名字。这个问题的另外一面是，没办法去指向服务的任意子集，这就导致了僵硬的语义，以至于无法滚动升级和改变job的实例数。</p>
+<p>为了避免这些困难，Kubernetes不用job这个概念，而是用标签(label)来管理它的调度单位(pods)，标签是任意的键值对，用户可以把标签打在系统的所有对象上。这样，对于一个Borg job，就可以在pod上打上job:jobname这样的标签，其他的有用的分组也可以用标签来表示，例如服务、层级、发布类型(生产、测试、阶段)。Kubernetes用标签选择这种方式来选取对象，完成操作。这样就比固定的job分组更加灵活好用。</p>
+<p><strong>一台机器一个IP把事情弄复杂了。</strong>在Borg里面，所有一台机器上的task都使用同一个IP地址，然后共享端口空间。这就带来几个麻烦：Borg必须把端口当做资源来调度；task必须先声明他们需要多少端口，然后了解启动的时候哪些可以用；Borglet必须完成端口隔离；命名和RPC系统必须和IP一样处理端口。</p>
+<p>非常感谢Linux namespace，虚拟机，IPv6和软件定义网络SDN。Kubernetes可以用一种更用户友好的方式来消解这些复杂性：所有pod和service都可以有一个自己的IP地址，允许开发者选择端口而不是委托基础设施来帮他们选择，这些就消除了基础设置管理端口的复杂性。</p>
+<p><strong>给资深用户优化而忽略了初级用户。</strong>Borg提供了一大堆针对“资深用户”的特性这样他们可以仔细的调试怎么跑他们的程序(BCL有230个参数的选项)：开始的目的是为了支持Google的大资源用户，提升他们的效率会带来更大的效益。但是很不幸的是这么复杂的API让初级用户用起来很复杂，约束了他们的进步。我们的解决方案是在Borg上又做了一些自动化的工具和服务，从实验中来决定合理的配置。这就让皮实的应用从实验中获得了自由：即使自动化出了麻烦的问题也不会导致灾难。</p>
+<span id="OSC_h3_4"></span><h3 id="8-2-经验">8.2 经验</h3>
+<p>另一方面，有不少Borg的设计是非常有益的，而且经历了时间考验。</p>
+<p><strong>Allocs是有用的。</strong>Borg alloc抽象导出了广泛使用的logsaver样式($2.4)和另一个流行样式：定期数据载入更新的web server。Allocs和packages允许这些辅助服务能被一个独立的小组开发。Kubernetes相对于alloc的设计是pod，是一个多个容器共享的资源封装，总是被调度到同一台机器上。Kubernetes用pod里面的辅助容器来替代alloc里面的task，不过思想是一样的。</p>
+<p><strong>集群管理比task管理要做更多的事。</strong>虽然Borg的主要角色是管理tasks和机器的生命周期，但Borg上的应用还是从其他的集群服务中收益良多，例如命名和负载均衡。Kubernetes用service抽象来支持命名和负载均衡：service有一个名字，用标签选择器来选择多个pod。在底下，Kubernetes自动的在这个service所拥有的pod之间自动负载均衡，然后在pod挂掉后被重新调度到其他机器上的时候也保持跟踪来做负载均衡。</p>
+<p><strong>反观自省是至关重要的。</strong>虽然Borg基本上是“just works”的，但当有出了问题后，找到这个问题的根源是非常有挑战性的。一个关键设计抉择是Borg把所有的debug信息暴露给用户而不是隐藏：Borg有几千个用户，所以“自助”是debug的第一步。虽然这会让我们很难抛弃一些用户依赖的内部策略，但这还是成功的，而且我们没有找到其他现实的替代方式。为了管理这么巨量的资源，我们提供了几层UI和debug工具，这样就可以升入研究基础设施本身和应用的错误日志和事件细节。</p>
+<p>Kubernetes也希望重现很多Borg的自探查技术。例如它和cAdvisor [15] 一切发型用于资源监控，用Elasticsearch/Kibana [30] 和 Fluentd [32]来做日志聚合。从master可以获取一个对象的状态快照。Kubernetes有一个一致的所有组件都能用的事件记录机制(例如pod被调度、容器挂了)，这样客户端就能访问。</p>
+<p><strong>master是分布式系统的核心.</strong>Borgmaster原来被设计成一个单一的系统，但是后来，它变成了服务生态和用户job的核心。比方说，我们把调度器和主UI(Sigma)分离出来成为单独的进程，然后增加了权限控制、纵向横向扩展、重打包task、周期性job提交(cron)、工作流管理，系统操作存档用于离线查询。最后，这些让我们能够提升工作负载和特性集，而无需牺牲性能和可维护性。</p>
+<p>Kubernetes的架构走的更远一些：它有一个API服务在核心，仅仅负责处理请求和维护底下的对象的状态。集群管理逻辑做成了一个小的、微服务类型的客户端程序和API服务通信，其中的副本管理器(replication controller)，维护在故障情况下pod的服务数量，还有节点管理器(node controller)，管理机器生命周期。</p>
+<span id="OSC_h3_5"></span><h3 id="8-3-总结">8.3 总结</h3>
+<p>在过去十年间所有几乎所有的Google集群负载都移到了Borg上。我们将会持续改进，并把学到的东西应用到Kubernetes上。</p>
+<span id="OSC_h2_6"></span><h2 id="鸣谢">鸣谢</h2>
+<p>这篇文章的作者同时也评审了这篇文章。但是几十个设计、实现、维护Borg组件和生态系统工程师才是这个系统成功的关键。我们在这里列表设计、实现、操作Borgmaster和Borglet的主要人员。如有遗漏抱歉。</p>
+<p>Borgmaster主设计师和实现者有Jeremy Dion和Mark Vandevoorde，还有Ben Smith, Ken Ashcraft, Maricia Scott, Ming-Yee Iu, Monika Henzinger。Borglet的主要设计实现者是Paul Menage。</p>
+<p>其他贡献者包括Abhishek Rai, Abhishek Verma, Andy Zheng, Ashwin Kumar, Beng-Hong Lim, Bin Zhang, Bolu Szewczyk, Brian Budge, Brian Grant, Brian Wickman, Chengdu Huang, Cynthia Wong, Daniel Smith, Dave Bort, David Oppenheimer, David Wall, Dawn Chen, Eric Haugen, Eric Tune, Ethan Solomita, Gaurav Dhiman, Geeta Chaudhry, Greg Roelofs, Grzegorz Czajkowski, James Eady, Jarek Kusmierek, Jaroslaw Przybylowicz, Jason Hickey, Javier Kohen, Jeremy Lau, Jerzy Szczepkowski, John Wilkes, Jonathan Wilson, Joso Eterovic, Jutta Degener, Kai Backman, Kamil Yurtsever, Kenji Kaneda, Kevan Miller, Kurt Steinkraus, Leo Landa, Liza Fireman, Madhukar Korupolu, Mark Logan, Markus Gutschke, Matt Sparks, Maya Haridasan, Michael Abd-El-Malek, Michael Kenniston, Mukesh Kumar, Nate Calvin, OnufryWojtaszczyk, Patrick Johnson, Pedro Valenzuela, PiotrWitusowski, Praveen Kallakuri, Rafal Sokolowski, Richard Gooch, Rishi Gosalia, Rob Radez, Robert Hagmann, Robert Jardine, Robert Kennedy, Rohit Jnagal, Roy Bryant, Rune Dahl, Scott Garriss, Scott Johnson, Sean Howarth, Sheena Madan, Smeeta Jalan, Stan Chesnutt, Temo Arobelidze, Tim Hockin, Todd Wang, Tomasz Blaszczyk, TomaszWozniak, Tomek Zielonka, Victor Marmol, Vish Kannan, Vrigo Gokhale, Walfredo Cirne, Walt Drummond, Weiran Liu, Xiaopan Zhang, Xiao Zhang, Ye Zhao, Zohaib Maya. </p>
+<p>Borg SRE团队也是非常重要的，包括Adam Rogoyski, Alex Milivojevic, Anil Das, Cody Smith, Cooper Bethea, Folke Behrens, Matt Liggett, James Sanford, John Millikin, Matt Brown, Miki Habryn, Peter Dahl, Robert van Gent, Seppi Wilhelmi, Seth Hettich, Torsten Marek, and Viraj Alankar。Borg配置语言(BCL)和borgcfg工具是Marcel van Lohuizen, Robert Griesemer制作的。 </p>
+<p>谢谢我们的审稿人(尤其是especially Eric Brewer, Malte Schwarzkopf and Tom Rodeheffer)，以及我们的牧师Christos Kozyrakis，对这篇论文的反馈。</p>
+<span id="OSC_h2_7"></span><h2 id="参考文献">参考文献</h2>
+<p>[1] O. A. Abdul-Rahman and K. Aida. Towards understanding the usage behavior of Google cloud users: the mice and elephants phenomenon. In Proc. IEEE Int’l Conf. on Cloud Computing Technology and Science (CloudCom), pages 272–277, Singapore, Dec. 2014.</p>
+<p>[2] Adaptive Computing Enterprises Inc., Provo, UT. MauiScheduler Administrator’s Guide, 3.2 edition, 2011.</p>
+<p>[3] T. Akidau, A. Balikov, K. Bekiro˘glu, S. Chernyak, J. Haberman, R. Lax, S. McVeety, D. Mills, P. Nordstrom,and S. Whittle. MillWheel: fault-tolerant stream processing at internet scale. In Proc. Int’l Conf. on Very Large Data Bases (VLDB), pages 734–746, Riva del Garda, Italy, Aug.2013.</p>
+<p>[4] Y. Amir, B. Awerbuch, A. Barak, R. S. Borgstrom, and A. Keren. An opportunity cost approach for job assignment in a scalable computing cluster. IEEE Trans. Parallel Distrib.Syst., 11(7):760–768, July 2000.</p>
+<p>[5] Apache Aurora.<a href="http://aurora.incubator.apache.org/">http://aurora.incubator.apache.org/</a>, 2014.</p>
+<p>[6] Aurora Configuration Tutorial. <a href="https://aurora.incubator.apache.org/documentation/latest/configuration-tutorial/,2014">https://aurora.incubator.apache.org/documentation/latest/configuration-tutorial/,2014</a>.</p>
+<p>[7] AWS. Amazon Web Services VM Instances. <a href="http://aws.amazon.com/ec2/instance-types/">http://aws.amazon.com/ec2/instance-types/</a>, 2014.</p>
+<p>[8] J. Baker, C. Bond, J. Corbett, J. Furman, A. Khorlin, J. Larson, J.-M. Leon, Y. Li, A. Lloyd, and V. Yushprakh. Megastore: Providing scalable, highly available storage for interactive services. In Proc. Conference on Innovative Data Systems Research (CIDR), pages 223–234, Asilomar, CA, USA, Jan. 2011.</p>
+<p>[9] M. Baker and J. Ousterhout. Availability in the Sprite distributed file system. Operating Systems Review,25(2):95–98, Apr. 1991.</p>
+<p>[10] L. A. Barroso, J. Clidaras, and U. H¨olzle. The datacenter as a computer: an introduction to the design of warehouse-scale machines. Morgan Claypool Publishers, 2nd edition, 2013.</p>
+<p>[11] L. A. Barroso, J. Dean, and U. Holzle. Web search for a planet: the Google cluster architecture. In IEEE Micro, pages 22–28, 2003.</p>
+<p>[12] I. Bokharouss. GCL Viewer: a study in improving the understanding of GCL programs. Technical report, Eindhoven Univ. of Technology, 2008. MS thesis.</p>
+<p>[13] E. Boutin, J. Ekanayake, W. Lin, B. Shi, J. Zhou, Z. Qian, M. Wu, and L. Zhou. Apollo: scalable and coordinated scheduling for cloud-scale computing. In Proc. USENIX Symp. on Operating Systems Design and Implementation (OSDI), Oct. 2014.</p>
+<p>[14] M. Burrows. The Chubby lock service for loosely-coupled distributed systems. In Proc. USENIX Symp. on Operating Systems Design and Implementation (OSDI), pages 335–350,Seattle, WA, USA, 2006.</p>
+<p>[15] cAdvisor. <a href="https://github.com/google/cadvisor">https://github.com/google/cadvisor</a>, 2014</p>
+<p>[16] CFS per-entity load patches. <a href="http://lwn.net/Articles/531853">http://lwn.net/Articles/531853</a>, 2013.</p>
+<p>[17] cgroups. <a href="http://en.wikipedia.org/wiki/Cgroups">http://en.wikipedia.org/wiki/Cgroups</a>, 2014.</p>
+<p>[18] C. Chambers, A. Raniwala, F. Perry, S. Adams, R. R. Henry, R. Bradshaw, and N. Weizenbaum. FlumeJava: easy, efficient data-parallel pipelines. In Proc. ACM SIGPLAN Conf. on Programming Language Design and Implementation (PLDI), pages 363–375, Toronto, Ontario, Canada, 2010.</p>
+<p>[19] F. Chang, J. Dean, S. Ghemawat, W. C. Hsieh, D. A. Wallach, M. Burrows, T. Chandra, A. Fikes, and R. E. Gruber. Bigtable: a distributed storage system for structured data. ACM Trans. on Computer Systems, 26(2):4:1–4:26, June 2008.</p>
+<p>[20] Y. Chen, S. Alspaugh, and R. H. Katz. Design insights for MapReduce from diverse production workloads. Technical Report UCB/EECS–2012–17, UC Berkeley, Jan. 2012.</p>
+<p>[21] C. Curino, D. E. Difallah, C. Douglas, S. Krishnan, R. Ramakrishnan, and S. Rao. Reservation-based scheduling: if you’re late don’t blame us! In Proc. ACM Symp. on Cloud Computing (SoCC), pages 2:1–2:14, Seattle, WA, USA, 2014.</p>
+<p>[22] J. Dean and L. A. Barroso. The tail at scale. Communications of the ACM, 56(2):74–80, Feb. 2012.</p>
+<p>[23] J. Dean and S. Ghemawat. MapReduce: simplified data processing on large clusters. Communications of the ACM, 51(1):107–113, 2008.</p>
+<p>[24] C. Delimitrou and C. Kozyrakis. Paragon: QoS-aware scheduling for heterogeneous datacenters. In Proc. Int’l Conf. on Architectural Support for Programming Languages and Operating Systems (ASPLOS), Mar. 201.</p>
+<p>[25] C. Delimitrou and C. Kozyrakis. Quasar: resource-efficient and QoS-aware cluster management. In Proc. Int’l Conf. on Architectural Support for Programming Languages and Operating Systems (ASPLOS), pages 127–144, Salt Lake City, UT, USA, 2014.</p>
+<p>[26] S. Di, D. Kondo, and W. Cirne. Characterization and comparison of cloud versus Grid workloads. In International Conference on Cluster Computing (IEEE CLUSTER), pages 230–238, Beijing, China, Sept. 2012.</p>
+<p>[27] S. Di, D. Kondo, and C. Franck. Characterizing cloud applications on a Google data center. In Proc. Int’l Conf. on Parallel Processing (ICPP), Lyon, France, Oct. 2013.</p>
+<p>[28] Docker Project. <a href="https://www.docker.io/">https://www.docker.io/</a>, 2014.</p>
+<p>[29] D. Dolev, D. G. Feitelson, J. Y. Halpern, R. Kupferman, and N. Linial. No justified complaints: on fair sharing of multiple resources. In Proc. Innovations in Theoretical Computer Science (ITCS), pages 68–75, Cambridge, MA, USA, 2012.</p>
+<p>[30] ElasticSearch. <a href="http://www.elasticsearch.org">http://www.elasticsearch.org</a>, 2014.</p>
+<p>[31] D. G. Feitelson. Workload Modeling for Computer Systems Performance Evaluation. Cambridge University Press, 2014.</p>
+<p>[32] Fluentd. <a href="http://www.fluentd.org/">http://www.fluentd.org/</a>, 2014.</p>
+<p>[33] GCE. Google Compute Engine. http: //cloud.google.com/products/compute-engine/, 2014.</p>
+<p>[34] S. Ghemawat, H. Gobioff, and S.-T. Leung. The Google File System. In Proc. ACM Symp. on Operating Systems Principles (SOSP), pages 29–43, Bolton Landing, NY, USA, 2003. ACM.</p>
+<p>[35] A. Ghodsi, M. Zaharia, B. Hindman, A. Konwinski, S. Shenker, and I. Stoica. Dominant Resource Fairness: fair allocation of multiple resource types. In Proc. USENIX Symp. on Networked Systems Design and Implementation (NSDI), pages 323–326, 2011.</p>
+<p>[36] A. Ghodsi, M. Zaharia, S. Shenker, and I. Stoica. Choosy: max-min fair sharing for datacenter jobs with constraints. In Proc. European Conf. on Computer Systems (EuroSys), pages 365–378, Prague, Czech Republic, 2013.</p>
+<p>[37] D. Gmach, J. Rolia, and L. Cherkasova. Selling T-shirts and time shares in the cloud. In Proc. IEEE/ACM Int’l Symp. on Cluster, Cloud and Grid Computing (CCGrid), pages 539–546, Ottawa, Canada, 2012.</p>
+<p>[38] Google App Engine. <a href="http://cloud.google.com/AppEngine">http://cloud.google.com/AppEngine</a>, 2014.</p>
+<p>[39] Google Container Engine (GKE). <a href="https://cloud.google.com/container-engine/">https://cloud.google.com/container-engine/</a>, 2015.</p>
+<p>[40] R. Grandl, G. Ananthanarayanan, S. Kandula, S. Rao, and A. Akella. Multi-resource packing for cluster schedulers. In Proc. ACM SIGCOMM, Aug. 2014.</p>
+<p>[41] Apache Hadoop Project. <a href="http://hadoop.apache.org/">http://hadoop.apache.org/</a>, 2009.</p>
+<p>[42] Hadoop MapReduce Next Generation – Capacity Scheduler. http: //hadoop.apache.org/docs/r2.2.0/hadoop-yarn/ hadoop-yarn-site/CapacityScheduler.html, 2013.</p>
+<p>[43] J. Hamilton. On designing and deploying internet-scale services. In Proc. Large Installation System Administration Conf. (LISA), pages 231–242, Dallas, TX, USA, Nov. 2007.</p>
+<p>[44] P. Helland. Cosmos: big data and big challenges. <a href="http://research.microsoft.com/en-us/events/">http://research.microsoft.com/en-us/events/</a> fs2011/helland_cosmos_big_data_and_big\ _challenges.pdf, 2011.</p>
+<p>[45] B. Hindman, A. Konwinski, M. Zaharia, A. Ghodsi, A. Joseph, R. Katz, S. Shenker, and I. Stoica. Mesos: a platform for fine-grained resource sharing in the data center. In Proc. USENIX Symp. on Networked Systems Design and Implementation (NSDI), 2011.</p>
+<p>[46] IBM Platform Computing. <a href="http://www-03.ibm.com/">http://www-03.ibm.com/</a> systems/technicalcomputing/platformcomputing/ products/clustermanager/index.html.</p>
+<p>[47] S. Iqbal, R. Gupta, and Y.-C. Fang. Planning considerations for job scheduling in HPC clusters. Dell Power Solutions, Feb. 2005.</p>
+<p>[48] M. Isaard. Autopilot: Automatic data center management. ACM SIGOPS Operating Systems Review, 41(2), 2007.</p>
+<p>[49] M. Isard, V. Prabhakaran, J. Currey, U. Wieder, K. Talwar, and A. Goldberg. Quincy: fair scheduling for distributed computing clusters. In Proc. ACM Symp. on Operating Systems Principles (SOSP), 2009.</p>
+<p>[50] D. B. Jackson, Q. Snell, and M. J. Clement. Core algorithms of the Maui scheduler. In Proc. Int’l Workshop on Job Scheduling Strategies for Parallel Processing, pages 87–102. Springer-Verlag, 2001.</p>
+<p>[51] M. Kambadur, T. Moseley, R. Hank, and M. A. Kim. Measuring interference between live datacenter applications. In Proc. Int’l Conf. for High Performance Computing, Networking, Storage and Analysis (SC), Salt Lake City, UT, Nov. 2012.</p>
+<p>[52] S. Kavulya, J. Tan, R. Gandhi, and P. Narasimhan. An analysis of traces from a production MapReduce cluster. In Proc. IEEE/ACM Int’l Symp. on Cluster, Cloud and Grid Computing (CCGrid), pages 94–103, 2010.</p>
+<p>[53] Kubernetes. <a href="http://kubernetes.io">http://kubernetes.io</a>, Aug. 2014.</p>
+<p>[54] Kernel Based Virtual Machine. <a href="http://www.linux-kvm.org">http://www.linux-kvm.org</a>.</p>
+<p>[55] L. Lamport. The part-time parliament. ACM Trans. on Computer Systems, 16(2):133–169, May 1998.</p>
+<p>[56] J. Leverich and C. Kozyrakis. Reconciling high server utilization and sub-millisecond quality-of-service. In Proc. European Conf. on Computer Systems (EuroSys), page 4, 2014.</p>
+<p>[57] Z. Liu and S. Cho. Characterizing machines and workloads on a Google cluster. In Proc. Int’l Workshop on Scheduling and Resource Management for Parallel and Distributed Systems (SRMPDS), Pittsburgh, PA, USA, Sept. 2012.</p>
+<p>[58] Google LMCTFY project (let me contain that for you). <a href="http://github.com/google/lmctfy">http://github.com/google/lmctfy</a>, 2014.</p>
+<p>[59] G. Malewicz, M. H. Austern, A. J. Bik, J. C. Dehnert, I. Horn, N. Leiser, and G. Czajkowski. Pregel: a system for large-scale graph processing. In Proc. ACM SIGMOD Conference, pages 135–146, Indianapolis, IA, USA, 2010.</p>
+<p>[60] J. Mars, L. Tang, R. Hundt, K. Skadron, and M. L. Soffa. Bubble-Up: increasing utilization in modern warehouse scale computers via sensible co-locations. In Proc. Int’l Symp. on Microarchitecture (Micro), Porto Alegre, Brazil, 2011.</p>
+<p>[61] S. Melnik, A. Gubarev, J. J. Long, G. Romer, S. Shivakumar, M. Tolton, and T. Vassilakis. Dremel: interactive analysis of web-scale datasets. In Proc. Int’l Conf. on Very Large Data Bases (VLDB), pages 330–339, Singapore, Sept. 2010.</p>
+<p>[62] P. Menage. Linux control groups. <a href="http://www.kernel">http://www.kernel</a>. org/doc/Documentation/cgroups/cgroups.txt, 2007–2014.</p>
+<p>[63] A. K. Mishra, J. L. Hellerstein, W. Cirne, and C. R. Das. Towards characterizing cloud backend workloads: insights from Google compute clusters. ACM SIGMETRICS Performance Evaluation Review, 37:34–41, Mar. 2010.</p>
+<p>[64] A. Narayanan. Tupperware: containerized deployment at Facebook. <a href="http://www.slideshare.net/dotCloud/">http://www.slideshare.net/dotCloud/</a> tupperware-containerized-deployment-at-facebook, June 2014.</p>
+<p>[65] K. Ousterhout, P. Wendell, M. Zaharia, and I. Stoica. Sparrow: distributed, low latency scheduling. In Proc. ACM Symp. on Operating Systems Principles (SOSP), pages 69–84, Farminton, PA, USA, 2013.</p>
+<p>[66] D. C. Parkes, A. D. Procaccia, and N. Shah. Beyond Dominant Resource Fairness: extensions, limitations, and indivisibilities. In Proc. Electronic Commerce, pages 808–825, Valencia, Spain, 2012.</p>
+<p>[67] Protocol buffers. https: //developers.google.com/protocol-buffers/, and <a href="https://github.com/google/protobuf/">https://github.com/google/protobuf/</a>., 2014.</p>
+<p>[68] C. Reiss, A. Tumanov, G. Ganger, R. Katz, and M. Kozuch. Heterogeneity and dynamicity of clouds at scale: Google trace analysis. In Proc. ACM Symp. on Cloud Computing (SoCC), San Jose, CA, USA, Oct. 2012.</p>
+<p>[69] M. Schwarzkopf, A. Konwinski, M. Abd-El-Malek, and J. Wilkes. Omega: flexible, scalable schedulers for large compute clusters. In Proc. European Conf. on Computer Systems (EuroSys), Prague, Czech Republic, 2013.</p>
+<p>[70] B. Sharma, V. Chudnovsky, J. L. Hellerstein, R. Rifaat, and C. R. Das. Modeling and synthesizing task placement constraints in Google compute clusters. In Proc. ACM Symp. on Cloud Computing (SoCC), pages 3:1–3:14, Cascais, Portugal, Oct. 2011.</p>
+<p>[71] E. Shmueli and D. G. Feitelson. On simulation and design of parallel-systems schedulers: are we doing the right thing? IEEE Trans. on Parallel and Distributed Systems, 20(7):983–996, July 2009.</p>
+<p>[72] A. Singh, M. Korupolu, and D. Mohapatra. Server-storage virtualization: integration and load balancing in data centers. In Proc. Int’l Conf. for High Performance Computing, Networking, Storage and Analysis (SC), pages 53:1–53:12, Austin, TX, USA, 2008.</p>
+<p>[73] Apache Spark Project. <a href="http://spark.apache.org/">http://spark.apache.org/</a>, 2014.</p>
+<p>[74] A. Tumanov, J. Cipar, M. A. Kozuch, and G. R. Ganger. Alsched: algebraic scheduling of mixed workloads in heterogeneous clouds. In Proc. ACM Symp. on Cloud Computing (SoCC), San Jose, CA, USA, Oct. 2012.</p>
+<p>[75] P. Turner, B. Rao, and N. Rao. CPU bandwidth control for CFS. In Proc. Linux Symposium, pages 245–254, July 2010.</p>
+<p>[76] V. K. Vavilapalli, A. C. Murthy, C. Douglas, S. Agarwal, M. Konar, R. Evans, T. Graves, J. Lowe, H. Shah, S. Seth, B. Saha, C. Curino, O. O’Malley, S. Radia, B. Reed, and E. Baldeschwieler. Apache Hadoop YARN: Yet Another Resource Negotiator. In Proc. ACM Symp. on Cloud Computing (SoCC), Santa Clara, CA, USA, 2013.</p>
+<p>[77] VMware VCloud Suite. <a href="http://www.vmware.com/products/vcloud-suite/">http://www.vmware.com/products/vcloud-suite/</a>.</p>
+<p>[78] A. Verma, M. Korupolu, and J. Wilkes. Evaluating job packing in warehouse-scale computing. In IEEE Cluster, pages 48–56, Madrid, Spain, Sept. 2014.</p>
+<p>[79] W. Whitt. Open and closed models for networks of queues. AT&amp;T Bell Labs Technical Journal, 63(9), Nov. 1984.</p>
+<p>[80] J. Wilkes. More Google cluster data. <a href="http://googleresearch.blogspot.com/2011/11/">http://googleresearch.blogspot.com/2011/11/</a> more-google-cluster-data.html, Nov. 2011. </p>
+<p>[81] Y. Zhai, X. Zhang, S. Eranian, L. Tang, and J. Mars. HaPPy: Hyperthread-aware power profiling dynamically. In Proc. USENIX Annual Technical Conf. (USENIX ATC), pages 211–217, Philadelphia, PA, USA, June 2014. USENIX Association.</p>
+<p>[82] Q. Zhang, J. Hellerstein, and R. Boutaba. Characterizing task usage shapes in Google’s compute clusters. In Proc. Int’l Workshop on Large-Scale Distributed Systems and Middleware (LADIS), 2011.</p>
+<p>[83] X. Zhang, E. Tune, R. Hagmann, R. Jnagal, V. Gokhale, and J. Wilkes. CPI2: CPU performance isolation for shared compute clusters. In Proc. European Conf. on Computer Systems (EuroSys), Prague, Czech Republic, 2013. </p>
+<p>[84] Z. Zhang, C. Li, Y. Tao, R. Yang, H. Tang, and J. Xu. Fuxi: a fault-tolerant resource management and job scheduling system at internet scale. In Proc. Int’l Conf. on Very Large Data Bases (VLDB), pages 1393–1404. VLDB Endowment Inc., Sept. 2014.</p>
+<span id="OSC_h2_8"></span><h2 id="勘误-2015-04-23">勘误 2015-04-23</h2>
+<p>自从胶片版定稿后，我们发现了若干疏忽和歧义。</p>
+<span id="OSC_h3_9"></span><h3 id="用户视角">用户视角</h3>
+<p>SRE干的比SA(system administration)要多得多：他们是Google生产服务的负责工程师。他们设计和实现软件，包括自动化系统、管理应用、底层基础设施服务来保证Google这个量级的高可靠和高性能。</p>
+<span id="OSC_h3_10"></span><h3 id="鸣谢">鸣谢</h3>
+<p>我们不小心忽略了Brad Strand, Chris Colohan, Divyesh Shah, Eric Wilcox, and Pavanish Nirula。</p>
+<span id="OSC_h3_11"></span><h3 id="参考文献">参考文献</h3>
+<p>[1] Michael Litzkow, Miron Livny, and Matt Mutka. "Condor - A Hunter of Idle Workstations". In
+Proc. Int'l Conf. on Distributed Computing Systems (ICDCS) , pages 104-111, June 1988.</p>
+<p>[2] Rajesh Raman, Miron Livny, and Marvin Solomon. "Matchmaking: Distributed Resource
+Management for High Throughput Computing". In Proc. Int'l Symp. on High Performance
+Distributed Computing (HPDC) , Chicago, IL, USA, July 1998.</p>
+</div>
+      	        	      	
+
+      
+	  
+      
+	</div>
+	       <div style="margin:10px 0;">
+    	<script type="text/javascript" src="http://www.oschina.net/ads/blog"></script>
+      </div>
+      </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                            </div>
+	
+	
+</div>
+
+
+
+<div id="OSC_Screen" style="position: relative;page-break-after : right;">
+	
+
+
+
+	
+	<div id="OSC_Content">
+                    
+                                        
+
+<style>
+	.icon{width:20px;height:24px;vertical-align: middle;display:inline-block;font-size:14px;text-align:center;color:#FFF;font-weight: bold;}
+	.catalogs{padding:0px;margin:0px;position:relative;display:inline-block;}
+    .catalogs ul{padding:0px;margin:0px;position:absolute;left:-4px;top: -21px;clear:left;width:120px;height:14px;overflow:hidden;background:#FFF;z-index:1000;padding:5px;border:1px solid #FFF;}
+    .catalogs ul:hover{height:auto;background:#fff;border:1px solid #4466bb;}
+    .catalogs ul li a:hover{color:#A00;font-weight: bold;}
+	.BlogStat a:hover{background:#FFF;}
+	.BlogStat{font-size:12px;line-height:20px;}
+	.BlogStat .g{color:#40AA53}
+	.BlogTags{margin-top:8px;}
+		.BlogAbstracts{}
+</style>
+
+
+
+
+<div class="">
+	
+
+    	<div class="BlogEntity">
+      <div class="BlogTitle">
+        <h1><span class="icon" style="background:#44ac57;" title="原创博客">原</span>			<span class="icon" style="background:#fd9c47;" title="首页推荐过的博客">荐</span>												Borg和Kubernetes有什么不同？未来的云需要什么？</h1>
+        <div class="BlogStat">
+    		    		发表于5个月前(2016-01-07 09:33)&nbsp;&nbsp;
+    		阅读（<span class="g">1875</span>）&nbsp;|&nbsp;评论（<a href="#comments"><span class="g">5</span></a>）
+    					    	    <span class="admin">
+				<style>
+#TagsSwitcher{color:#A00;}
+#RecTags,#MyTags{margin:5px 0;}
+#RecTags a.tag{line-height:24px;}
+#favor_form p:first-child{margin:5px 0;}
+#favor_form{width:200px;}
+#favor_form p {color:#666;}
+#favor_form form{min-height: 85px;width:200px;}
+#favor_form form ._favor_input{display:block;margin:2px 0;width:199px;}
+#favor_form form ._favor_button{float:left;padding:2px 5px;}
+.favor_ok {text-align:center;font-size:10.5pt;width:199px;height:60px;margin-top:10px;}
+#TagsSwitcher{cursor:pointer;float:right;margin-top:10px;}
+#MyTags{display:none;width:199px;}
+#MyTags a.tag {float:left; background-color: #E0EAF1;border-bottom: 1px solid #3E6D8E;border-right: 1px solid #7F9FB6;color: #3E6D8E;font-size: 8pt;line-height: 16px;margin: 2px 2px 2px 0;padding: 2px 4px;text-decoration: none;white-space: nowrap;}
+#MyTags a.tag:hover{background-color: #3E6D8E;color: #FFF;}
+</style>
+<script type="text/javascript">
+var favor_add = "<a href='javascript:add_to_favor(598661,3)' id='favor_trigger' title='添加到收藏夹'>我要收藏</a>";
+var favor_del = "<a href='javascript:delete_favor(598661,3)' id='favor_trigger' style='color:#a00;'>取消收藏</a>";
+var favor_ok = "<p class='favor_ok'>已成功添加到收藏夹<br/><br/> <a href='http://my.oschina.net/u/1261413/favorites?type=3'>我的收藏夹</a> | <a href='javascript:close_favor()'>关闭</a></p>";
+function delete_favor(obi_id, obj_type){
+	$('#attention_it').html(favor_add);
+	$("#p_attention_count").load("/action/favorite/cancel?type="+obj_type+"&id="+obi_id, {user: '1261413'});
+}
+function add_to_favor(obj_id, obj_type){
+    var dlg_favor = "<div id='favor_form'><p>多个标签使用逗号 , 隔开，最多三个</p><form action='/action/favorite/add?user=1261413' width='200px' method='POST'>";
+	dlg_favor += "<input type='hidden' name='id' value='"+obj_id+"'/>";
+	dlg_favor += "<input type='hidden' name='type' value='"+obj_type+"'/>";
+	dlg_favor += "<input type='text' name='tags' size='25' class='_favor_input' id='_favor_tags' placeholder='可点击下面标签设置'/>";
+    dlg_favor += "<div id='RecTags'>推荐标签：  <a href='javascript:setTag(\"待读\")' class=\"tag\">待读</a> </div>";
+    dlg_favor += "<div><input type='submit' value='收藏' class='_favor_button'/><input type='button' value='取消' onclick='close_favor();' class='_favor_button'/><a id='TagsSwitcher' state='off'>选取标签↓</a></form><div class='clear'></div></div>";
+	dlg_favor += "<div id='MyTags' ></div></div>";
+    $('#favor_trigger').poshytip('destroy');
+    $('#favor_trigger').poshytip({
+    	className: 'tip-yellowsimple',
+    	content: dlg_favor,
+    	showOn: 'none',
+    	alignTo: 'target',	
+		alignX: 'inner-right',
+		alignY: 'bottom',
+		offsetX: 0,
+		offsetY: 5
+    });
+    $('#favor_trigger').poshytip('show');
+	$('#_favor_tags').focus();
+	$('#favor_form form').bind('form-pre-serialize', function(event,form,options,veto){
+    	var tags= $('#_favor_tags')
+		var tagValue= tags.val();
+		//处理tags前后包含的空格
+		var finalTags = new Array();
+		var tagIdx = 0;
+		var arr = tagValue.split(',');
+		for(var i=0;i<arr.length;i++){
+			var tag = arr[i];
+			tag = trim(tag);
+			if(tag.length>0){
+				finalTags[finalTags.length]=tag;
+			}
+		}
+		var d = "";
+		for(var idx=0;idx<finalTags.length;idx++){
+			d+=finalTags[idx];
+			if(idx<finalTags.length-1)
+				d+=",";
+		}
+		tags.val(d);
+	});
+
+	$('#favor_form form').ajaxForm({
+		success: function(html) {
+			$('#favor_trigger').html('取消收藏');
+			$('#favor_trigger').attr('href','javascript:delete_favor(598661,3)');
+			$('#p_attention_count').html(html);
+			$('#favor_form').html(favor_ok);
+			setTimeout("close_favor()",3000);
+		}
+	});
+	$("#TagsSwitcher").one("click",function(){
+		//加载标签数据
+		$("#MyTags").load('/action/ajax/get_my_tags?'+new Date().getTime());
+       	$("#MyTags").toggle();
+		$(this).html("收起标签↑");
+        $(this).attr("state",'on');
+        $(this).click(function(){
+        	$("#MyTags").toggle();
+        	var state = $(this).attr("state");
+        	if(state=='off'){
+        		$(this).html("收起标签↑");
+        		$(this).attr("state",'on');
+        	}else{
+        		$(this).html("选取标签↓");
+        		$(this).attr("state",'off');
+        	}
+        });
+	});
+
+}
+function close_favor(elem_id){
+    $('#favor_trigger').poshytip('destroy');
+}
+function setTag(tv){
+	var t = $("._favor_input");
+	var value = t.val();
+	var tags = value.replace(/，/ig,',').split(',');
+	var exist = false;
+	value = $.map(tags,function(v,i){
+		if($.trim(tv) == $.trim(v)){
+			exist = true;
+			return undefined;
+		}
+		return v;
+	}).join(',');
+	if(exist){
+		t.val(value);
+		return;
+	}
+	if(value!="")
+		t.val(value+","+tv);
+	else
+		t.val(tv)
+}
+function ltrim(str){
+    var whitespace = new String(" \t\n\r");
+    var s = new String(str);
+    if (whitespace.indexOf(s.charAt(0)) != -1){
+        var j=0, i = s.length;
+        while (j < i && whitespace.indexOf(s.charAt(j)) != -1){
+            j++;
+        }
+        s = s.substring(j, i);
+    }
+    return s;
+}
+
+function rtrim(str){
+    var whitespace = new String(" \t\n\r");
+    var s = new String(str);
+    if (whitespace.indexOf(s.charAt(s.length-1)) != -1){
+        var i = s.length - 1;
+        while (i >= 0 && whitespace.indexOf(s.charAt(i)) != -1){
+            i--;
+        }
+        s = s.substring(0, i+1);
+    }
+    return s;
+}
+ 
+function trim(str){
+    return rtrim(ltrim(str));
+}
+</script>
+<em id="p_attention_count">59</em>人收藏此文章,
+<span id="attention_it">
+	<script type="text/javascript">document.write(favor_add);</script><a href="javascript:add_to_favor(598661,3)" id="favor_trigger" title="添加到收藏夹">我要收藏</a>
+</span>
+<script type="text/javascript">
+	$(document).ready(function(){
+    	$.ajax({
+    		url:"/action/favorite/attentionUsersCount",
+    		type:"get",
+    		data:"id="+598661+"&type="+3,
+    		success:function(msg){
+				$("#p_attention_count").html(msg);
+    		}
+    	});
+	});
+</script>			</span>
+			    	</div>
+		
+      </div>
+	  	  <!--<p style="margin:0 0 10px 0;"><a style="color:#A00;font-weight:bold;" href="http://city.oschina.net/shanghai/event/2174260" target="_blank">上海源创会5月15日与你相约【玫瑰里】，赶快来约哦~！&gt;&gt;&gt;</a>&nbsp;&nbsp;<img src="http://my.oschina.net/img/hot3.png" align="absmiddle"></p>-->
+
+	  
+	  	  <a name="richText"></a>
+	          	  	        
+          <script>
+		  	$(function(){
+				$("#AnchorContentToggle").click(function(){
+					var text = $(this).html();
+					if(text=="目录[-]"){
+						$(this).html("目录[+]");
+						$(this).attr({"title":"展开"});
+					}else{
+						$(this).html("目录[-]");
+						$(this).attr({"title":"收起"});
+					}
+					$("#AnchorContent").toggle();
+				});
+			});
+		  </script>
+	  	  	  	          <div class="BlogContent"><p><span style="color: rgb(102, 102, 102); font-family: 'Helvetica Neue', STHeiti, 'Microsoft YaHei', Helvetica, Arial, sans-serif; font-size: 14px; line-height: 25.2px; background-color: rgb(255, 255, 255);">大家好，我是来自于华为PaaS部门的钟成，目前正在做相关的一些产品研发。我想分享的主题是从Borg到Kubernetes，其实Borg就是Kubernetes的前身。我今天主要会谈三个方面，第一个是Borg的介绍，第二是Kubernetes基于Borg做了哪些改变，以及它的发展方向，第三个话题想谈一下未来的云可能需要一个怎么样的产品或者是怎么样的形态。</span><br></p> 
+<span id="OSC_h4_1"></span>
+<h4>Borg是什么？它解决了什么问题？</h4> 
+<p><span style="color: rgb(102, 102, 102); font-family: 'Helvetica Neue', STHeiti, 'Microsoft YaHei', Helvetica, Arial, sans-serif; font-size: 14px; line-height: 25.2px; background-color: rgb(255, 255, 255);">我们先看第一个话题，就是Borg是什么？它解决了什么问题？</span><br><br><span style="color: rgb(102, 102, 102); font-family: 'Helvetica Neue', STHeiti, 'Microsoft YaHei', Helvetica, Arial, sans-serif; font-size: 14px; line-height: 25.2px; background-color: rgb(255, 255, 255);">我们看一下这张图，这张图来自于一部电影叫做《星际迷航》相信大家大部分人都看过。</span><span style="box-sizing: border-box; font-weight: 700; color: rgb(51, 51, 51); font-family: 'Helvetica Neue', STHeiti, 'Microsoft YaHei', Helvetica, Arial, sans-serif; font-size: 14px; line-height: 25.2px; background-color: rgb(255, 255, 255);">Borg是里面的一种外星人，反派，他做什么事情呢？他和其他的文明接触，把你这个文明抢占下来，然后它会和你同化，会把你进行改造，把你改造成一个半人半机器的怪物，你就变成他们这个文明当中的一部分，然后他在这个宇宙当中不断的扩张下去。</span><span style="color: rgb(102, 102, 102); font-family: 'Helvetica Neue', STHeiti, 'Microsoft YaHei', Helvetica, Arial, sans-serif; font-size: 14px; line-height: 25.2px; background-color: rgb(255, 255, 255);">我觉得这是一个非常酷的种族。而Borg就以这个名字来命名其大规模分布式的集成管理系统。他希望他们的系统也可以把不同的机器同化掉，变成他们自己的机器，然后运行他们自己的程序。</span><br></p> 
+<p><a href="http://dockerone.com/uploads/article/20151031/19731a994ede808c7b3b35657566ea3a.png" target="_blank" rel="nofollow"><a href="http://static.oschina.net/uploads/img/201601/07093346_oh3P.png" target="_blank"><img src="http://static.oschina.net/uploads/img/201601/07093346_oh3P.png" title="1F571EE3-83CC-4784-9516-D34763A76898.png" alt="1F571EE3-83CC-4784-9516-D34763A76898.png" style="cursor: pointer;"></a></a></p> 
+<p><br><span style="color: rgb(102, 102, 102); font-family: 'Helvetica Neue', STHeiti, 'Microsoft YaHei', Helvetica, Arial, sans-serif; font-size: 14px; line-height: 25.2px; background-color: rgb(255, 255, 255);">对谷歌来说，Borg是一个比较顶层的集成管理系统。在它上面跑了谷歌大部分的应用程序和框架包括Gmail、Google Docs、Web Search这样直接面对客户的一些应用程序。它同时也包括一些底层的框架，（MR），包括它的一些GFS这些分布式的存储系统。也就是说你可以认为所有的应用程序都需要通过它来管理底层的这些物理机。Borg在谷歌已经成功的应用的十多年。</span><br></p> 
+<p><a href="http://dockerone.com/uploads/article/20151031/bdafee63be9f2e11be87aae3ffe2972c.png" target="_blank" rel="nofollow"><a href="http://static.oschina.net/uploads/img/201601/07093346_8qq3.png" target="_blank"><img src="http://static.oschina.net/uploads/img/201601/07093346_8qq3.png" title="1852DE66-CC9B-4146-A584-A968A23D55BF.png" alt="1852DE66-CC9B-4146-A584-A968A23D55BF.png" style="cursor: pointer;"></a></a></p> 
+<p><br><br><span style="color: rgb(102, 102, 102); font-family: 'Helvetica Neue', STHeiti, 'Microsoft YaHei', Helvetica, Arial, sans-serif; font-size: 14px; line-height: 25.2px; background-color: rgb(255, 255, 255);">大家可以看一下Borg的整体的架构。它也是一个典型的分布式平台的架构，就是一个逻辑上的master，然后下面有很多的节点，每一个节点上有一些它的代理程序。这里就可以看一下，作为谷歌内部的一个工程师怎么样用这个系统呢？他们使用Borgcfg（命令行）或者Web UI提交需要跑的应用（Task） 到系统，Task可以是任何一种东西，比如说他是一个应用程序，或者是一个批处理任务，或者是一个（MR）的任务。他把这个任务通过Borgcfg提交到BorgMaster，然后BorgMaster会接受这个请求，把请求放到队列里面去，并由Scheduler来扫描这个队列，查看这个应用的资源需求，并在集群中寻找匹配的机器。你其实提交的这个任务，它需要多少的资源，你需要怎么样的机器，大概要跑多少时候，他会做一个匹配，就会看到底层有哪些机器是空闲的。然后就把这个任务发配到这个机器上面去，然后开始运行。</span><br></p> 
+<p><a href="http://dockerone.com/uploads/article/20151031/e7999c3098e7cd33f964fb96e0b86620.png" target="_blank" rel="nofollow"><a href="http://static.oschina.net/uploads/img/201601/07093347_BpWo.png" target="_blank"><img src="http://static.oschina.net/uploads/img/201601/07093347_BpWo.png" title="D21A1AA8-C8B3-407F-B1BF-62C86A3A96D3.png" alt="D21A1AA8-C8B3-407F-B1BF-62C86A3A96D3.png" style="cursor: pointer;"></a></a></p> 
+<p><br><span style="color: rgb(102, 102, 102); font-family: 'Helvetica Neue', STHeiti, 'Microsoft YaHei', Helvetica, Arial, sans-serif; font-size: 14px; line-height: 25.2px; background-color: rgb(255, 255, 255);">这个就是总体的一个Borg的框架。</span><span style="box-sizing: border-box; font-weight: 700; color: rgb(51, 51, 51); font-family: 'Helvetica Neue', STHeiti, 'Microsoft YaHei', Helvetica, Arial, sans-serif; font-size: 14px; line-height: 25.2px; background-color: rgb(255, 255, 255);">一个典型的启动时间，从用户提交应用到应用启动是25秒。其中80%的时间是每个节点上下载这个应用包的时间。</span><span style="color: rgb(102, 102, 102); font-family: 'Helvetica Neue', STHeiti, 'Microsoft YaHei', Helvetica, Arial, sans-serif; font-size: 14px; line-height: 25.2px; background-color: rgb(255, 255, 255);">大家可以看到这个时间是很快的，它的调度时间还不到5秒，其中20秒是耗在传输这一层上。</span><br></p> 
+<span id="OSC_h4_2"></span>
+<h4>关于BorgMaster的调度原理</h4> 
+<p><span style="color: rgb(102, 102, 102); font-family: 'Helvetica Neue', STHeiti, 'Microsoft YaHei', Helvetica, Arial, sans-serif; font-size: 14px; line-height: 25.2px; background-color: rgb(255, 255, 255);">我后面主要想探讨一下，我今天想说的一个重点就是关于BorgMaster，它这里有很多应用，它怎么样调动这个应用的优先级呢？或者说到底哪台机器应该跑什么应用呢？Borg的做法就是对单个Task做了一个资源上的估量，大家可以看到这里有好几条线，其中一个机器上面最外面的那条虚线就是用户提交的一个资源的一个配额，就是Task再怎么运行也不能超过它的限制，这是一个硬性的限制，如果说超过这个限制，就会限制它，不让它跑。这只是用户提交的数字，大家知道用户提交的数字很多时候是不准确的，你无法预估到底你的程序在你的系统上需要耗多少CPU，占多少内存。Borg是怎么去评估这个资源呢？他在Task启动300秒之后，就进行一个资源回收的工作。大家可以看到中间有一个黄色的区域，黄色的区域就是这个应用程序实际上所消耗的资源。然后它会从外面，慢慢把它推进去，推到绿区的地方，推到绿区的地方划一条线，这条线就是所谓的保留资源，就是Borg这个系统认为你这个应用是长期稳定运行的所需要的资源。</span><br></p> 
+<p><a href="http://dockerone.com/uploads/article/20151031/98e39855135bc791a6a6e70b5da29817.png" target="_blank" rel="nofollow"><a href="http://static.oschina.net/uploads/img/201601/07093347_niiW.png" target="_blank"><img src="http://static.oschina.net/uploads/img/201601/07093347_niiW.png" title="05435753-26E1-46C8-A301-FE7408121C03.png" alt="05435753-26E1-46C8-A301-FE7408121C03.png" style="cursor: pointer;"></a></a></p> 
+<p><br><span style="color: rgb(102, 102, 102); font-family: 'Helvetica Neue', STHeiti, 'Microsoft YaHei', Helvetica, Arial, sans-serif; font-size: 14px; line-height: 25.2px; background-color: rgb(255, 255, 255);">这里就有一个问题，为什么Borg要这么做呢？原因是为了把剩下的区域的资源给空出来，如果说我知道这个应用实际上就用了这么多的资源。然后我给它划了一定的安全线之后，剩下的这些资源我就可以调度出来，也就是说可以给到其它的应用程序用。</span><br><br><span style="color: rgb(102, 102, 102); font-family: 'Helvetica Neue', STHeiti, 'Microsoft YaHei', Helvetica, Arial, sans-serif; font-size: 14px; line-height: 25.2px; background-color: rgb(255, 255, 255);">绿色的这一块是黄色的块加上一些安全区组成的，每过几秒重新计算一遍应用程序耗费了多少资源。这实际上是一个动态的过程，它并不是说划走了之后就再也不能变了。绿色的方块是可以一直拓展到外面的虚线的范围之内。这就是对单个Task做的一个策略。然后通过他对系统上跑的应用做了一个区分。就是说，他先想了一下，到底有哪些应用，这些应用有什么样的特性。其中有一类应用就是所谓的生产型的应用，就是prod task，其特征就是永远都是不停止的，他是一个长进程，它永远是面向用户的，比如说Gmail或者是Web Search，它中间不可能断的，它的响应时间是几微秒到几百毫秒。然后这种任务就是说，你必须要优先保证它的运行，它的短期性能波动是比较敏感的。</span><br><br><span style="color: rgb(102, 102, 102); font-family: 'Helvetica Neue', STHeiti, 'Microsoft YaHei', Helvetica, Arial, sans-serif; font-size: 14px; line-height: 25.2px; background-color: rgb(255, 255, 255);">还有一类任务就是所谓的non-prod task，他是一个批处理任务，类似像Map Reduce，它不是直接面向用户的，对性能不是非常的敏感，跑完了就完了，下一个再跑就是下一个任务了，不是一个长进程。</span><br></p> 
+<p><a href="http://dockerone.com/uploads/article/20151031/8e09a4368a40e628e6ef51d87c8396fc.png" target="_blank" rel="nofollow"><a href="http://static.oschina.net/uploads/img/201601/07093348_VKiZ.png" target="_blank"><img src="http://static.oschina.net/uploads/img/201601/07093348_VKiZ.png" title="0211D18D-BBB1-4D0B-B9B3-04673464C980.png" alt="0211D18D-BBB1-4D0B-B9B3-04673464C980.png" style="cursor: pointer;"></a></a></p> 
+<p><br></p> 
+<span id="OSC_h4_3"></span>
+<h4>为什么要区分任务？</h4> 
+<p><span style="color: rgb(102, 102, 102); font-family: 'Helvetica Neue', STHeiti, 'Microsoft YaHei', Helvetica, Arial, sans-serif; font-size: 14px; line-height: 25.2px; background-color: rgb(255, 255, 255);">当prod task的资源任务消耗比较大的时候，比如说很多人突然都来上一个网站，这个网站的服务器内存CPU就会非常高。这个时候，在这台机器上应用资源不足的时候，他就会把Non-prod task杀掉，杀掉之后让它去其他的机器上去运行。但是在空闲的时候，就可以让任务继续回来。这样的话，我就可以充分利用这台机器上的所有时间点上的资源，可以把这些东西塞的比较满。最后谷歌的测试结果是，大概20%的工作负载可以跑在回收资源上。这个数据其实是非常大的。对谷歌有那么多台的机器，你可以省下20%的资源，对它来说就是非常非常多的钱。</span><br></p> 
+<span id="OSC_h4_4"></span>
+<h4>Borg的价值</h4> 
+<p><span style="color: rgb(102, 102, 102); font-family: 'Helvetica Neue', STHeiti, 'Microsoft YaHei', Helvetica, Arial, sans-serif; font-size: 14px; line-height: 25.2px; background-color: rgb(255, 255, 255);">我这里稍微总结一下，Borg这套系统给谷歌提供了什么样的价值。它主要是提供了三个方面。第一个是隐藏的资源管理和故障处理的细节，让用户可以专注于应用开发。用户不用操心底层的系统是怎么操作的，就算我挂了他也会帮我启起来。第二个是本身提供高可靠性和高可用性的操作，并支持应用程序做到高可靠高可用。第三个是在数以万计的机器上高资源利用率运行。</span><br><br><span style="color: rgb(102, 102, 102); font-family: 'Helvetica Neue', STHeiti, 'Microsoft YaHei', Helvetica, Arial, sans-serif; font-size: 14px; line-height: 25.2px; background-color: rgb(255, 255, 255);">对于Borg具体怎么做到这三个方面，google有一篇很长的论文</span><a href="http://dockone.io/article/763" rel="nofollow">《在Google使用Borg进行大规模集群的管理》</a><span style="color: rgb(102, 102, 102); font-family: 'Helvetica Neue', STHeiti, 'Microsoft YaHei', Helvetica, Arial, sans-serif; font-size: 14px; line-height: 25.2px; background-color: rgb(255, 255, 255);">，里面有很多细节，今天就不展开说了。</span><br></p> 
+<span id="OSC_h4_5"></span>
+<h4>Kubernetes架构</h4> 
+<p><span style="color: rgb(102, 102, 102); font-family: 'Helvetica Neue', STHeiti, 'Microsoft YaHei', Helvetica, Arial, sans-serif; font-size: 14px; line-height: 25.2px; background-color: rgb(255, 255, 255);">自从谷歌把Borg这个系统推出之后，对内部来说是非常成功，但是在外面的社区，其实大家都不知道这个东西到底是怎么做的，也不知道他内部是怎么实现的。后来做Borg的那批人他们就做了另外一个软件，这个软件就是Kubernetes，Kubernetes总体而言你可以认为是Borg的一个开源的版本，但是Kubernetes和Borg有一些不一样，我后面会大致的讲一下。这是Kubernetes的架构，大家其实可以看到，它的这个架构和Borg的架构基本上是类似的，包括用户怎么用的也是类似的。用户通过用kubectl这么一个命令行工具，把任务提交上来。</span><br></p> 
+<p><a href="http://dockerone.com/uploads/article/20151031/e4106352b7d6ca95cf8dcd69af544f57.png" target="_blank" rel="nofollow"><a href="http://static.oschina.net/uploads/img/201601/07093348_y5zo.png" target="_blank"><img src="http://static.oschina.net/uploads/img/201601/07093348_y5zo.png" title="1.png" alt="1.png" style="cursor: pointer;"></a></a></p> 
+<p><br></p> 
+<span id="OSC_h4_6"></span>
+<h4>Kubernetes与Borg的区别</h4> 
+<p><span style="color: rgb(102, 102, 102); font-family: 'Helvetica Neue', STHeiti, 'Microsoft YaHei', Helvetica, Arial, sans-serif; font-size: 14px; line-height: 25.2px; background-color: rgb(255, 255, 255);">Borg在谷歌已经运行了十年，而且机器的规模量非常大，他一个集群就是一万台，甚至更多。而Kubernetes是2014年才出来的，我个人认为这是针对亚马逊，亚马逊的公有云非常的成功，谷歌也想进入这个领域，他的方式就是把Kubernetes这个系统开源推出来，在业界产生一定的影响力，让大家都去用。这样的话，后面就可以和亚马逊竞争一下，这是我个人推测他们的一个想法。</span><br><br><span style="color: rgb(102, 102, 102); font-family: 'Helvetica Neue', STHeiti, 'Microsoft YaHei', Helvetica, Arial, sans-serif; font-size: 14px; line-height: 25.2px; background-color: rgb(255, 255, 255);">Borg底层用的是lxc的容器，而Kubernetes是用的Docker容器。Borg是用C++编写的，Kubernetes是用Go语言编写的。Borg在集群调度的性能上做了很多的优化，Kubernetes还没有做非常多的优化，目前他在这方面还是比较土的，后面还有很多工作需要做。Borg的单集群能够调度的机器有上万台，而按Kubernetes目前只能支持几百台，这是目前的数据。</span><br><br><span style="color: rgb(102, 102, 102); font-family: 'Helvetica Neue', STHeiti, 'Microsoft YaHei', Helvetica, Arial, sans-serif; font-size: 14px; line-height: 25.2px; background-color: rgb(255, 255, 255);">然后我们再看一下，对于这两个系统的用户来说它们有什么区别。Borg的用户其实就是谷歌的一批工程师，大家也知道谷歌工程师都是世界比较顶尖的工程师，他们在写这个程序的时候就考虑过程序会跑在云上，他知道这个程序是分布式的。他在写这个应用的时候，就会针对这个系统做非常多的优化，在设计的时候就知道我应该做一个分布式的系统。但是Kubernetes他想做的事情更多一些，就是除了运行这些分布式的系统之外，他还想就是说能够支持一些，他首先是支持Docker的这些容器，但是他还希望支持一些比较传统的，比较菜的，技术水平一般的人写的这些应用程序。他在这方面做了一些工作。一个是用了Docker容器，这样的话就支持很多东西了。还有内他还可以挂载外部的持久层，就是你可以把一些分布层面的系统挂在那个系统上面。我的容器就去读取外部的分布式的存储。这样的话，我这个容器就算是挂了，我这个数据也可以比较安全的保存。另外他就提供了一些监控还有一些日志的功能。但是这些功能是不是够呢，这还是有一定的疑问的。后期如果说我想用Kubernetes来跑一些传统的应用，那我肯定还会对这些应用和系统做一定程度的改造，但至少没有困难到无法完成。</span><br><br><span style="color: rgb(102, 102, 102); font-family: 'Helvetica Neue', STHeiti, 'Microsoft YaHei', Helvetica, Arial, sans-serif; font-size: 14px; line-height: 25.2px; background-color: rgb(255, 255, 255);">这个是它Kubernetes设计上的一些特色，Kubernetes的网络架构是每一个Pod都有一个单独的IP，这样的应用更加友好一些。写应用程序的人就不用考虑冲突这种情况。还有就是它分组的模式，就是我这些容器如何分组。Borg是一个比较专家的系统，他有230多个参数，但是Kubernetes是非常简单的大概就是三四个描述文件就完了。</span><br></p> 
+<span id="OSC_h4_7"></span>
+<h4>Borg和Kubernetes的形象化总结</h4> 
+<p><span style="color: rgb(102, 102, 102); font-family: 'Helvetica Neue', STHeiti, 'Microsoft YaHei', Helvetica, Arial, sans-serif; font-size: 14px; line-height: 25.2px; background-color: rgb(255, 255, 255);">这里就是我对Borg和Kubernetes的一个形象化的总结。Borg就是一个喷气式飞机的驾驶系统，非常的专业和高大上，他适用于谷歌这样的大公司，它有几百万的机器。Kubernetes是一个它的简化版，它是一辆设计优良的轿车，它适合中小型公司，用它来对自己的集群进行调度。</span><br><br><span style="color: rgb(102, 102, 102); font-family: 'Helvetica Neue', STHeiti, 'Microsoft YaHei', Helvetica, Arial, sans-serif; font-size: 14px; line-height: 25.2px; background-color: rgb(255, 255, 255);">未来Kubernetes这边也会做一些相应的工作，包括多租户支持，包括容器持久化、集群规模的提升、利用率和网络方面的等等。</span><br></p> 
+<p><a href="http://dockerone.com/uploads/article/20151031/cbda0d51a06dceb12feab55105686eb4.png" target="_blank" rel="nofollow"><a href="http://static.oschina.net/uploads/img/201601/07093349_1l4L.png" target="_blank"><img src="http://static.oschina.net/uploads/img/201601/07093349_1l4L.png" title="2.png" alt="2.png" style="cursor: pointer;"></a></a></p> 
+<p><br></p> 
+<span id="OSC_h4_8"></span>
+<h4>未来的云需要什么？</h4> 
+<p><span style="color: rgb(102, 102, 102); font-family: 'Helvetica Neue', STHeiti, 'Microsoft YaHei', Helvetica, Arial, sans-serif; font-size: 14px; line-height: 25.2px; background-color: rgb(255, 255, 255);">最后可以说是我个人的一些思考。我们未来的云到底需要什么样的东西。大家可以看到，自从计算机风靡以来，有很多的系统，很多的软件，一波又一波的起来，有一部分的系统或者说软件是比较成功的，可以长久存在下去，比如说像Java、或者是C，或者是像Windows这样，还有一些系统非常不幸，像Cobol或者是DOS或者是Minix这些系统，它们慢慢的被人所遗弃，慢慢被人所遗忘，最后变成废弃的停车场。</span><br><br><span style="color: rgb(102, 102, 102); font-family: 'Helvetica Neue', STHeiti, 'Microsoft YaHei', Helvetica, Arial, sans-serif; font-size: 14px; line-height: 25.2px; background-color: rgb(255, 255, 255);">我这里想考虑一下，如果说再过十年，我们现在在用的一些技术，像Kubernetes或者是Borg这样的技术，是会进入到左边这个行列还是右边这个行列呢？我个人是希望进入左边的行列，毕竟我们还是希望他可以成为一款经典的产品。至少对这些系统来说，我们会非常自豪，我们做了一款比较经典的产品，可以长久的被人们所使用下去。</span><br><br><span style="color: rgb(102, 102, 102); font-family: 'Helvetica Neue', STHeiti, 'Microsoft YaHei', Helvetica, Arial, sans-serif; font-size: 14px; line-height: 25.2px; background-color: rgb(255, 255, 255);">如果说想做到这一点，就得面对我们现在这个时代，整个计算机系统所面临的一个困境，或者说我们集群管理系统所面对的一个困境。这个困境是什么呢？就是这里所展示的Babel塔的困境。在以色列那个地方，这是一个圣经的故事，人们想造成一般座通天之塔，他们想挑战上帝的权威。上帝一看你们这批凡人，就觉得你们这批鸟人居然敢挑战我的权威，他就发明了各种语言，一起做巴别塔工作的人就各自使用不同的语言，他们就无法交流，最后这个塔就造不下去了。</span><br><br><span style="color: rgb(102, 102, 102); font-family: 'Helvetica Neue', STHeiti, 'Microsoft YaHei', Helvetica, Arial, sans-serif; font-size: 14px; line-height: 25.2px; background-color: rgb(255, 255, 255);">其实在计算机的世界也是如此，大家使用各自的语言，各自的框架，最后使我们合作起来非常的复杂。包括我们的集群管理系统也好，包括其他的系统也好，其实都是帮助我们跨越这个鸿沟，帮助我们大家可以比较好的进行合作。但是目前来说，还没有一个非常好的方案可以让大家非常好的进行合作，我觉得这个是我们做这个系统需要做的一个事情。我这里引一句老子的话，大家可以看一下。</span><br><br></p> 
+<blockquote>
+  三十幅共一毂，当其无，有车之用。 
+ <br>埏埴以为器，当其无，有器之用。 
+ <br>凿户牖以为室，当其无，有室之用。 
+ <br>故有之以为利，无之以为用。 
+</blockquote> 
+<p><span style="color: rgb(102, 102, 102); font-family: 'Helvetica Neue', STHeiti, 'Microsoft YaHei', Helvetica, Arial, sans-serif; font-size: 14px; line-height: 25.2px; background-color: rgb(255, 255, 255);">我在想，是什么因素决定了一个系统或者是一个软件，它是否可以长期生存下去呢？我觉得非常重要的一点，他要明确自己要做什么。其实就是前面讲的端水的端水，扫地的扫地，就是说你不但要明确自己这个软件要做什么，还得明确自己不要做什么。你什么东西是无以之为用，就是这个领域我是不进去的，我是不去做的。如果说你什么东西都做，最后就会比较弱，很容易就会颠覆，或者是被人取代。如果说你单单把一件事情做好，那你今后在这个领域，至少你是无可替代的，可以长期生存下去。</span><span style="box-sizing: border-box; font-weight: 700; color: rgb(51, 51, 51); font-family: 'Helvetica Neue', STHeiti, 'Microsoft YaHei', Helvetica, Arial, sans-serif; font-size: 14px; line-height: 25.2px; background-color: rgb(255, 255, 255);">我记得前一段时间有人问Linus，怎么看Docker容器。然后他说我才不关心这什么狗屁容器，我就关心我的内核，你不要来问我这个问题。</span><span style="color: rgb(102, 102, 102); font-family: 'Helvetica Neue', STHeiti, 'Microsoft YaHei', Helvetica, Arial, sans-serif; font-size: 14px; line-height: 25.2px; background-color: rgb(255, 255, 255);">我觉得他这个就是一个非常好的一个态度，他把他自己内核这一个模块做好，他把他系统这一块做好，那么对他而言，他这个工作就可以长期延续下去。</span><br><br><span style="color: rgb(102, 102, 102); font-family: 'Helvetica Neue', STHeiti, 'Microsoft YaHei', Helvetica, Arial, sans-serif; font-size: 14px; line-height: 25.2px; background-color: rgb(255, 255, 255);">那么对于我们来说，比较详细一点，就是说在我们软件开发当中碰到的情况是这样的。从我们的软件设计到开发到测试、生产都经过非常多，非常反复的过程。同时在大部分的集群系统当中，我们也非常难以调度它。那么我觉得对于我们来说，就是后面要解决几个方面的问题。我觉得这是我们一个大的方向。</span><br><br><span style="color: rgb(102, 102, 102); font-family: 'Helvetica Neue', STHeiti, 'Microsoft YaHei', Helvetica, Arial, sans-serif; font-size: 14px; line-height: 25.2px; background-color: rgb(255, 255, 255);">我们以后的产品是不是可以减少语言、程序、框架不同带来的复杂性，能不能把流程进行简化，把语言进行简化，把网络和服务依赖进行简化，这是我提的另一个问题。</span></p> 
+<p><br></p></div>
+      	        	      	
+
+      
+	  
+      <div class="BlogLinks">
+    	<ul>
+                <li class="prev"><a href="http://my.oschina.net/HardySimpson/blog/543457" title="上一篇：我是怎么阅读kubernetes源代码的？">« 上一篇</a></li>        <li class="next"><a href="http://my.oschina.net/HardySimpson/blog/609366" title="下一篇：未来的容器云技术栈会怎么样？在容器技术大会上的演讲">下一篇 »</a></li>    	</ul>
+      </div>
+	</div>
+	       
+      </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                            </div>
+	
+	
+</div>
+
+
+
+
+
+
+
+
+
+</body></html>
