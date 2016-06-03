@@ -283,8 +283,8 @@ Microsoft Word 程序直接提供两种格式的转换. 方法为: `文件菜单
 		}
 		try {
 		    if(null != modelMap){
-			//
-			Writer out = new BufferedWriter(new OutputStreamWriter(outputStream));
+			// Writter 必须指定编码
+			Writer out = new BufferedWriter(new OutputStreamWriter(outputStream, UTF_8));
 			//
 			Template temp = getTemplateByURI(templateURI);
 			//
