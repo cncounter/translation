@@ -1,12 +1,21 @@
+#
+
+
 The HTML specification introduces a `[crossorigin](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/img#attr-crossorigin)` attribute for images that, in combination with an appropriate [CORS](https://developer.mozilla.org/en-US/docs/Glossary/CORS) header, allows images defined by the [``](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/img) element loaded from foreign origins to be used in canvas as if they were being loaded from the current origin.
 
-See [CORS settings attributes](https://developer.mozilla.org/en/HTML/CORS_settings_attributes) for details on how the `crossorigin` attribute is used.
+如何使用 `crossorigin` 属性,请参考 [CORS settings attributes](https://developer.mozilla.org/en/HTML/CORS_settings_attributes).
 
-## What is a "tainted" canvas?
+## 什么是 "被污染的(tainted)" canvas?
 
-Although you can use images without CORS approval in your canvas, doing so **taints** the canvas. Once a canvas has been tainted, you can no longer pull data back out of the canvas. For example, you can no longer use the canvas `toBlob()`, `toDataURL()`, or `getImageData()` methods; doing so will throw a security error.
+
+不用CORS授权也可以在 canvas 中使用图像, 但这样做就会污染(**taints**)画布。 只要 canvas 被污染, 就不能再从画布上提取数据, 如果调用 `toBlob()`, `toDataURL()`, 和 `getImageData()` 方法, 就会抛出安全错误(security error).
+
+
 
 This protects users from having private data exposed by using images to pull information from remote web sites without permission.
+
+这保护了用户的隐私数据,避免未经允许就从远程web站点通过图像信息发生泄漏。
+
 
 ## Example: Storing an image from a foreign origin
 
@@ -48,14 +57,14 @@ if ( img.complete || img.complete === undefined ) {
 }
 ```
 
-## Browser compatibility
+## 浏览器兼容性
 
 
-## See Also
+## 另请参见
 
-*   [Using Cross-domain images in WebGL and Chrome 13](http://blog.chromium.org/2011/07/using-cross-domain-images-in-webgl-and.html)
+*   [Chrome:在WebGL中使用跨域图片](http://blog.chromium.org/2011/07/using-cross-domain-images-in-webgl-and.html)
 
-*   [HTML Specification - the `crossorigin` attribute](http://whatwg.org/html#attr-img-crossorigin)
+*   [HTML规范-`crossorigin`属性](http://whatwg.org/html#attr-img-crossorigin)
 
 
 
