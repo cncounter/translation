@@ -1,7 +1,7 @@
 # 跨域图片资源权限 - HTML | MDN
 
 
-HTML 规范文档为 images 引入了 `[crossorigin](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/img#attr-crossorigin)` 属性, 通过设置适当的头信息 [CORS](https://developer.mozilla.org/en-US/docs/Glossary/CORS) , 可以从其他站点加载 [`img`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/img) 图片, 并用在 canvas 中,就像从当前站点(current origin)直接下载的一样.
+HTML 规范文档为 images 引入了 [`crossorigin`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/img#attr-crossorigin) 属性, 通过设置适当的头信息 [CORS](https://developer.mozilla.org/en-US/docs/Glossary/CORS) , 可以从其他站点加载 [`img`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/img) 图片, 并用在 canvas 中,就像从当前站点(current origin)直接下载的一样.
 
 `crossorigin` 属性的使用细节, 请参考 [CORS settings attributes](https://developer.mozilla.org/en/HTML/CORS_settings_attributes).
 
@@ -48,8 +48,7 @@ HTML 规范文档为 images 引入了 `[crossorigin](https://developer.mozilla.o
 	    canvas.width = img.width;
 	    canvas.height = img.height;
 	    ctx.drawImage( img, 0, 0 );
-	    localStorage.setItem( "savedImageData", 
-		canvas.toDataURL("image/png") );
+	    localStorage.setItem( "savedImageData", canvas.toDataURL("image/png") );
 	}
 	img.src = src;
 	//  确保缓存的图片也触发 load 事件
@@ -116,11 +115,17 @@ HTML 规范文档为 images 引入了 `[crossorigin](https://developer.mozilla.o
 *   [HTML规范-`crossorigin`属性](http://whatwg.org/html#attr-img-crossorigin)
 
 
+## 感谢
+
+* 众成翻译: [http://zcfy.cc/article/486](http://zcfy.cc/article/486)
+
+
 翻译人员: [铁锚 http://blog.csdn.net/renfufei](http://blog.csdn.net/renfufei)
 
 
 翻译日期: 2016年3月29日
 
 原文日期: 2014年9月16日
+
 
 原文链接: [https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image](https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image)
