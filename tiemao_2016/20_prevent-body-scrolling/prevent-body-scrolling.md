@@ -13,8 +13,10 @@ So what's the best way to prevent the `<body>`  scrolling in the background? �
 那么怎样才算是比较好的处理方式?  监听 `scroll` 事件并且执行 `preventDefault` 和/或 `stopPropagation`, 但却没什么用。 最简单的方式是使用CSS:
 
 
-	body.noScroll { /* ...或者其他类名,如: body.dialogShowing */
+	/* ...或者其他类名,如: body.dialogShowing */
+	body.noScroll,html.noScroll { 
 		overflow: hidden;
+		height:100%;
 	}
 
 
