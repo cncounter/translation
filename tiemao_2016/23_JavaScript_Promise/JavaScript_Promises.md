@@ -1,10 +1,18 @@
 # 自己编写 JavaScript Promise API
 
 
+> 译者注: 到处是回调函数,代码非常臃肿难看, Promise 主要是拿来解决编程方式, 将某些代码封装于内部。
+
+> Promise 直译为“承诺”，但一般直接称为 Promise;
+
+> 代码的可读性非常重要,因为开发人员支出一般比计算机硬件的支出要大很多倍。
+
+
 While synchronous code is easier to follow and debug, async is generally better for performance and flexibility. Why "hold up the show" when you can trigger numerous requests at once and then handle them when each is ready?  Promises are becoming a big part of the JavaScript world, with many new APIs being implemented with the promise philosophy. Let's take a look at promises, the API, how it's used!
 
 
-虽然同步代码更容易跟踪和调试, 但异步具有更好的性能和灵活性. 如何在某个时刻发起大量的请求, 然后分别处理它们的结果?  Promises 现在已成为JavaScript中的重要组成部分, 很多新的API都以 promise 的方式来实现。下面介绍什么是 promise,相应的 API, 以及使用示例!
+虽然同步代码更容易跟踪和调试, 但异步方式却具有更好的性能与灵活性. 
+怎样在同一时刻发起多个请求, 然后分别处理响应结果?  Promise 现已成为 JavaScript 中非常重要的一个组成部分, 很多新的API都以 promise 的方式来实现。下面简要介绍 promise, 以及相应的 API 和使用示例!
 
 
 ## Promises in the Wild
@@ -14,133 +22,99 @@ While synchronous code is easier to follow and debug, async is generally better
 
 The XMLHttpRequest API is async but does _not_ use the Promises API.  There are a few native APIs that now use promises, however:
 
-XMLHttpRequest API是异步但_not_使用API的承诺。现在有一些本地api,使用承诺,然而:
+XMLHttpRequest 是异步API, 但不算 Promise 方式。当前使用 Promise 的原生 api 包括:
 
 
 *   [Battery API](https://davidwalsh.name/javascript-battery-api)
+*   [fetch API](https://davidwalsh.name/fetch) (用来替代 XHR)
+*   ServiceWorker API (参见后期文章!)
 
-*(电池API)(https://davidwalsh.name/javascript-battery-api)
-
-
-*   [fetch API](https://davidwalsh.name/fetch) (XHR's replacement)
-
-*(获取API)(https://davidwalsh.name/fetch)(XHR的替换)
-
-
-*   ServiceWorker API (post coming soon!)
-
-* ServiceWorker API(post很快!)
 
 
 Promises will only become more prevalent so it's important that all front-end developers get used to them.  It's also worth noting that Node.js is another platform for Promises (obviously, as Promise is a core language feature).
 
-承诺只会变得越来越流行,所以重要的是所有前端开发人员习惯它们。同样值得注意的是节点.js是另一个平台的承诺(显然,承诺是一个核心语言的特性)。
+Promise 会越来越流行,所以前端开发需要快速掌握它们。当然, Node.js 是另一个使用 Promise 的平台(显然, Promise 在Node中是一个核心特性)。
 
 
 _Testing promises is probably easier than you think because `setTimeout` can be used as your async "task"!_
 
-_Testing承诺可能是比你想象的更容易因为“setTimeout”可以作为你的异步“任务”! _
+测试 promises 可能比你想象的还要容易, 因为 `setTimeout` 可以用来当作异步“任务”! 
 
 
-## Basic Promise Usage
 
-## 基本承诺使用
+## Promise 基本用法
 
 
 The `new Promise()` constructor should only be used for legacy async tasks, like usage of `setTimeout` or `XMLHttpRequest`. A new Promise is created with the `new` keyword and the promise provides `resolve` and `reject` functions to the provided callback:
 
-“新承诺()构造函数应该只用于遗留异步任务,使用“setTimeout”或“XMLHttpRequest的.创建一个新的承诺“新”字,承诺提供“解决”和“拒绝”提供的回调函数:
+直接使用 `new Promise()` 构造函数的方式, 应该只用来处理遗留的异步任务编程, 例如 `setTimeout` 或者 `XMLHttpRequest`。 通过 `new` 关键字创建一个新的 Promise 对象, 该对象有 `resolve`(搞定!) 和 `reject`(失败!) 两个回调函数:
 
 
 	var p = new Promise(function(resolve, reject) {
+		// ... ... 
+		// 此处,可以执行某些异步任务,然后...
+		// 在回调中,或者任何地方执行 resolve/reject
 
-
-
-
-	// Do an async task async task and then...
-
-
-
-
-	if(/* good condition */) {
-	resolve('Success!');
-	}
-	else {
-	reject('Failure!');
-	}
+		if(/* good condition */) {
+			resolve('传入成果结果信息,如 data');
+		}
+		else {
+			reject('失败:原因...!');
+		}
 	});
 
-
-
-
-	p.then(function() { 
-	/* do something with the result */
-	}).catch(function() {
-	/* error :( */
-	})
-
+	p.then(function(data) { 
+		/* do something with the result */
+	}).catch(function(err) {
+		/* error :( */
+	});
 
 
 
 It's up to the developer to manually call `resolve` or `reject` within the body of the callback based on the result of their given task.  A realistic example would be converting XMLHttpRequest to a promise-based task:
 
-由开发人员手动调用“解决”或“拒绝”体内的回调根据给定任务的结果.一个现实的例子是将XMLHttpRequest转换为基于承诺的任务:
+一般是由开发人员根据异步任务执行的结果,来手动调用 `resolve` 或者 `reject`. 一个典型的例子是将 XMLHttpRequest 转换为基于Promise的任务:
 
 
-	// From Jake Archibald's Promises and Back:
+	// 本段示例代码来源于 Jake Archibald's Promises and Back:
 	// http://www.html5rocks.com/en/tutorials/es6/promises/#toc-promisifying-xmlhttprequest
 
-
-
-
 	function get(url) {
-	// Return a new promise.
-	return new Promise(function(resolve, reject) {
-	// Do the usual XHR stuff
-	var req = new XMLHttpRequest();
-	req.open('GET', url);
+	  // 返回一个 promise 对象.
+	  return new Promise(function(resolve, reject) {
+	    // 执行常规的 XHR 请求
+	    var req = new XMLHttpRequest();
+	    req.open('GET', url);
 
+	    req.onload = function() {
+	      // This is called even on 404 etc
+	      // so check the status
+	      if (req.status == 200) {
+		// Resolve the promise with the response text
+		resolve(req.response);
+	      }
+	      else {
+		// Otherwise reject with the status text
+		// which will hopefully be a meaningful error
+		reject(Error(req.statusText));
+	      }
+	    };
 
+	    // Handle network errors
+	    req.onerror = function() {
+	      reject(Error("网络出错"));
+	    };
 
-
-	req.onload = function() {
-	// This is called even on 404 etc
-	// so check the status
-	if (req.status == 200) {
-	// Resolve the promise with the response text
-	resolve(req.response);
-	}
-	else {
-	// Otherwise reject with the status text
-	// which will hopefully be a meaningful error
-	reject(Error(req.statusText));
-	}
+	    // Make the request
+	    req.send();
+	  });
 	};
 
-
-
-
-	// Handle network errors
-	req.onerror = function() {
-	reject(Error("Network Error"));
-	};
-
-
-
-
-	// Make the request
-	req.send();
-	});
-	}
-
-
-
-
-	// Use it!
+	// 使用!
 	get('story.json').then(function(response) {
-	console.log("Success!", response);
+	  console.log("Success!", response);
 	}, function(error) {
-	console.error("Failed!", error);
+	  console.error("Failed!", error);
 	});
 
 
@@ -148,51 +122,41 @@ It's up to the developer to manually call `resolve` or `reject` within the body 
 
 Sometimes you don't _need_ to complete an async tasks within the promise -- if it's _possible_ that an async action will be taken, however, returning a promise will be best so that you can always count on a promise coming out of a given function. In that case you can simply call `Promise.resolve()` or `Promise.reject()` without using the `new` keyword. For example:
 
-有时你不_need_内完成一个异步任务的承诺——如果是_possible_异步将采取行动,然而,返回一个承诺将是最好的,这样你可以一直依靠承诺的一个给定的函数。在这种情况下,您可以简单地称之为“Promise.resolve()”或“承诺.拒绝()“不使用“新”字。例如:
+有时候在 promise 方法体中不需要执行异步任务 —— 当然,在有可能会执行异步任务的情况下, 返回 promise 将是最好的方式, 这样只需要给定结果处理函数就行。在这种情况下, 不需要使用 new 关键字, 直接返回 `Promise.resolve()` 或者 `Promise.reject()`即可。例如:
 
 
 	var userCache = {};
 
-
-
-
 	function getUserDetail(username) {
-	// In both cases, cached or not, a promise will be returned
+	  // In both cases, cached or not, a promise will be returned
 
+	  if (userCache[username]) {
+		// Return a promise without the "new" keyword
+	    return Promise.resolve(userCache[username]);
+	  }
 
-
-
-	if (userCache[username]) {
-	// Return a promise without the "new" keyword
-	return Promise.resolve(userCache[username]);
-	}
-
-
-
-
-	// Use the fetch API to get the information
-	// fetch returns a promise
-	return fetch('users/' + username + '.json')
-	.then(function(result) {
-	userCache[username] = result;
-	return result;
-	})
-	.catch(function() {
-	throw new Error('Could not find user: ' + username);
-	});
-	}
+	  // Use the fetch API to get the information
+	  // fetch returns a promise
+	  return fetch('users/' + username + '.json')
+	    .then(function(result) {
+	      userCache[username] = result;
+	      return result;
+	    })
+	    .catch(function() {
+	      throw new Error('Could not find user: ' + username);
+	    });
+	};
 
 
 
 
 Since a promise is always returned, you can always use the `then` and `catch` methods on its return value!
 
-希望是2%的协定,you can always always使用‘‘‘‘catch和当时的方法及其对社会价值!
+因为总是会返回 promise, 所以只需要通过 `then` 和 `catch` 方法处理结果即可!
 
 
 ## then
 
-## 然后
 
 
 All promise instances get a `then` method which allows you to react to the promise.  The first `then` method callback receives the result given to it by the `resolve()` call:
