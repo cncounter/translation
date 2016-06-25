@@ -1,51 +1,36 @@
 # Promise API 简介
 
 
-> 译者注: 到处是回调函数,代码非常臃肿难看, Promise 主要是拿来解决编程方式, 将某些代码封装于内部。
+> 译者注: 到处是回调函数,代码非常臃肿难看, Promise 主要用来解决这种编程方式, 将某些代码封装于内部。
 
 > Promise 直译为“承诺”，但一般直接称为 Promise;
 
 > 代码的可读性非常重要,因为开发人员支出一般比计算机硬件的支出要大很多倍。
 
 
-While synchronous code is easier to follow and debug, async is generally better for performance and flexibility. Why "hold up the show" when you can trigger numerous requests at once and then handle them when each is ready?  Promises are becoming a big part of the JavaScript world, with many new APIs being implemented with the promise philosophy. Let's take a look at promises, the API, how it's used!
-
-
 虽然同步代码更容易跟踪和调试, 但异步方式却具有更好的性能与灵活性. 
 怎样在同一时刻发起多个请求, 然后分别处理响应结果?  Promise 现已成为 JavaScript 中非常重要的一个组成部分, 很多新的API都以 promise 的方式来实现。下面简要介绍 promise, 以及相应的 API 和使用示例!
 
 
-## Promises in the Wild
+## Promises 周边
 
-## 承诺在野外
-
-
-The XMLHttpRequest API is async but does _not_ use the Promises API.  There are a few native APIs that now use promises, however:
 
 XMLHttpRequest 是异步API, 但不算 Promise 方式。当前使用 Promise 的原生 api 包括:
 
 
 *   [Battery API](https://davidwalsh.name/javascript-battery-api)
-*   [fetch API](https://davidwalsh.name/fetch) (用来替代 XHR)
+*   [fetch API](http://blog.csdn.net/renfufei/article/details/51494396) (用来替代 XHR)
 *   ServiceWorker API (参见后期文章!)
 
-
-
-Promises will only become more prevalent so it's important that all front-end developers get used to them.  It's also worth noting that Node.js is another platform for Promises (obviously, as Promise is a core language feature).
 
 Promise 会越来越流行,所以前端开发需要快速掌握它们。当然, Node.js 是另一个使用 Promise 的平台(显然, Promise 在Node中是一个核心特性)。
 
 
-_Testing promises is probably easier than you think because `setTimeout` can be used as your async "task"!_
-
 测试 promises 可能比你想象的还要容易, 因为 `setTimeout` 可以用来当作异步“任务”! 
-
 
 
 ## Promise 基本用法
 
-
-The `new Promise()` constructor should only be used for legacy async tasks, like usage of `setTimeout` or `XMLHttpRequest`. A new Promise is created with the `new` keyword and the promise provides `resolve` and `reject` functions to the provided callback:
 
 直接使用 `new Promise()` 构造函数的方式, 应该只用来处理遗留的异步任务编程, 例如 `setTimeout` 或者 `XMLHttpRequest`。 通过 `new` 关键字创建一个新的 Promise 对象, 该对象有 `resolve`(搞定!) 和 `reject`(拒绝!) 两个回调函数:
 
@@ -70,8 +55,6 @@ The `new Promise()` constructor should only be used for legacy async tasks, like
 	});
 
 
-
-It's up to the developer to manually call `resolve` or `reject` within the body of the callback based on the result of their given task.  A realistic example would be converting XMLHttpRequest to a promise-based task:
 
 一般是由开发人员根据异步任务执行的结果,来手动调用 `resolve` 或者 `reject`. 一个典型的例子是将 XMLHttpRequest 转换为基于Promise的任务:
 
@@ -120,8 +103,6 @@ It's up to the developer to manually call `resolve` or `reject` within the body 
 
 
 
-Sometimes you don't _need_ to complete an async tasks within the promise -- if it's _possible_ that an async action will be taken, however, returning a promise will be best so that you can always count on a promise coming out of a given function. In that case you can simply call `Promise.resolve()` or `Promise.reject()` without using the `new` keyword. For example:
-
 有时候在 promise 方法体中不需要执行异步任务 —— 当然,在有可能会执行异步任务的情况下, 返回 promise 将是最好的方式, 这样只需要给定结果处理函数就行。在这种情况下, 不需要使用 new 关键字, 直接返回 `Promise.resolve()` 或者 `Promise.reject()`即可。例如:
 
 
@@ -150,16 +131,11 @@ Sometimes you don't _need_ to complete an async tasks within the promise -- if 
 
 
 
-Since a promise is always returned, you can always use the `then` and `catch` methods on its return value!
-
 因为总是会返回 promise, 所以只需要通过 `then` 和 `catch` 方法处理结果即可!
 
 
 ## then
 
-
-
-All promise instances get a `then` method which allows you to react to the promise.  The first `then` method callback receives the result given to it by the `resolve()` call:
 
 
 每个 promise 实例都有 `then` 方法, 用来处理执行结果。 第一个 `then` 方法回调的参数, 就是 `resolve()` 传入的那个值:
@@ -177,9 +153,6 @@ All promise instances get a `then` method which allows you to react to the prom
 	// 10
 
 
-
-
-The `then` callback is triggered when the promise is resolved.  You can also chain `then` method callbacks:
 
 `then` 回调由 promise 的 resolved 触发。你也可以使用链式的 then` 回调方法:
 
@@ -199,22 +172,14 @@ The `then` callback is triggered when the promise is resolved.  You can also 
 
 
 
-
-Each `then` receives the result of the previous `then`'s return value.
-
 每个 `then` 收到的结果都是之前那个 `then` 返回的值。
 
-
-If a promise has already resolved but `then` is called again, the callback immediately fires.  If the promise is rejected and you call `then` after rejection, the callback is never called.
 
 如果 promise 已经 resolved, 但之后才调用 `then` 方法, 则立即触发回调。如果promise被拒绝之后才调用 `then`, 则回调函数不会被触发。
 
 
 ## catch
 
-
-
-The `catch` callback is executed when the promise is rejected:
 
 当 promise 被拒绝时, `catch` 回调就会被执行:
 
@@ -231,9 +196,6 @@ The `catch` callback is executed when the promise is rejected:
 
 
 
-
-What you provide to the `reject` method is up to you.  A frequent pattern is sending an `Error` to the `catch`:
-
 传入 `reject` 方法的参数由你自己决定。一般来说是传入一个 `Error` 对象:
 
 
@@ -244,9 +206,6 @@ What you provide to the `reject` method is up to you.  A frequent pattern is sen
 
 ## `Promise.all`
 
-
-
-Think about JavaScript loaders:  there are times when you trigger multiple async interactions but only want to respond when all of them are completed -- that's where `Promise.all` comes in.  The `Promise.all` method takes an array of promises and fires one callback once they are all resolved:
 
 想想JavaScript加载器的情形: 有时候会触发多个异步交互, 但只在所有请求完成之后才会做出响应。—— 这种情况可以使用 `Promise.all` 来处理。`Promise.all` 方法接受一个 promise 数组, 在所有 promises 都搞定之后, 触发一个回调:
 
@@ -260,9 +219,6 @@ Think about JavaScript loaders:  there are times when you trigger multiple asy
 
 
 
-
-An perfect way of thinking about `Promise.all` is firing off multiple AJAX (via `fetch`) requests at one time:
-
 `Promise.all` 的最佳示例是通过`fetch`同时发起多个 AJAX请求时:
 
 
@@ -274,11 +230,7 @@ An perfect way of thinking about `Promise.all` is firing off multiple AJAX (via
 	});
 
 
-
-
-You could combine APIs like `fetch` and the Battery API since they both return promises:
-
-你也可以组合 `fetch` 和 Battery 之类的 API ,因为他们都返回 promises:
+你也可以组合使用 `fetch` 和 Battery 之类的 API ,因为他们都返回 promises:
 
 
 	Promise.all([fetch('/users.json'), navigator.getBattery()]).then(function(results) {
@@ -286,9 +238,6 @@ You could combine APIs like `fetch` and the Battery API since they both return p
 	});
 
 
-
-
-Dealing with rejection is, of course, hard.  If any promise is rejected the `catch` fires for the first rejection:
 
 当然, 处理拒绝的情况比较复杂。如果某个 promise 被拒绝, 则 `catch` 将会被第一个拒绝(rejection)所触发:
 
@@ -311,20 +260,12 @@ Dealing with rejection is, of course, hard.  If any promise is rejected the `cat
 	// Catch: Second!
 
 
-
-
-
-`Promise.all` will be super useful as more APIs move toward promises.
-
 随着越来越多的 API 支持 promise, `Promise.all` 将会变得超级有用。
 
 
 
 ## `Promise.race`
 
-
-
-`Promise.race` is an interesting function -- instead of waiting for all promises to be resolved or rejected, `Promise.race` triggers as soon as any promise in the array is resolved or rejected:
 
 `Promise.race` 是一个有趣的函数. 与 `Promise.all` 相反,  只要某个 priomise 被 resolved 或者 rejected, 就会触发 `Promise.race`:
 
@@ -348,24 +289,27 @@ Dealing with rejection is, of course, hard.  If any promise is rejected the `cat
 
 
 
-
-
-
-A use case could be triggering a request to a primary source and a secondary source (in case the primary or secondary are unavailable).
-
 一个案例是请求的资源有 主站资源和备用资源(以防某个不可用)。
 
-
-## Get Used to Promises
 
 ## 改变习惯, 使用 Promise
 
 
-Promises have been a hot topic for the past few years (or the last 10 years if you were a Dojo Toolkit user) and they've gone from a JavaScript framework pattern to a language staple.  It's probably wise to assume you'll be seeing most new JavaScript APIs being implemented with a promise-based pattern...
-
 在过去几年中 Promise 一直是个热门话题(如果你是 Dojo Toolkit 用户,那么就是已经有10年了), 已经从一个JavaScript框架变成了语言的一个主要成分. 很快你就会看到大多数新的 JavaScript api 都会基于 Promise 的方式来实现……
 
 
-...and that's a great thing!  Developers are able to avoid callback hell and async interactions can be passed around like any other variable.  Promises take some time getting used to be the tools are (natively) there and now is the time to learn them!
-
 ... 当然这是一件好事! 开发人员能够避开回调的地狱, 异步交互也可以像其他变量一样传递.  Promise 还需要一段时间来普及, 现在是时候去学习他们了!
+
+本文最初发布于: [http://zcfy.cc/article/351](http://zcfy.cc/article/351)
+
+
+
+翻译人员: [铁锚 http://blog.csdn.net/renfufei](http://blog.csdn.net/renfufei)
+
+
+翻译时间: 2016年6月25日
+
+原文时间: 2015年11月2日
+
+原文链接: [https://davidwalsh.name/promises](https://davidwalsh.name/promises)
+
