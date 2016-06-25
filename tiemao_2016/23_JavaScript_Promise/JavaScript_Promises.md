@@ -1,4 +1,4 @@
-# 自己编写 JavaScript Promise API
+# Promise API 简介
 
 
 > 译者注: 到处是回调函数,代码非常臃肿难看, Promise 主要是拿来解决编程方式, 将某些代码封装于内部。
@@ -248,14 +248,14 @@ What you provide to the `reject` method is up to you.  A frequent pattern is sen
 
 Think about JavaScript loaders:  there are times when you trigger multiple async interactions but only want to respond when all of them are completed -- that's where `Promise.all` comes in.  The `Promise.all` method takes an array of promises and fires one callback once they are all resolved:
 
-想想JavaScript加载器:有些时候你触发多个异步交互,但只是想回应当他们完成——这就是“的承诺。所有的都在.的承诺。所有的方法需要一个数组的承诺和触发一个回调一旦他们都解决了:
+想想JavaScript加载器的情形: 有时候会触发多个异步交互, 但只在所有请求完成之后才会做出响应。—— 这种情况可以使用 `Promise.all` 来处理。`Promise.all` 方法接受一个 promise 数组, 在所有 promises 都搞定之后, 触发一个回调:
 
 
 	Promise.all([promise1, promise2]).then(function(results) {
-	// Both promises resolved
+		// Both promises resolved
 	})
 	.catch(function(error) {
-	// One or more promises was rejected
+		// One or more promises was rejected
 	});
 
 
@@ -263,17 +263,14 @@ Think about JavaScript loaders:  there are times when you trigger multiple asy
 
 An perfect way of thinking about `Promise.all` is firing off multiple AJAX (via `fetch`) requests at one time:
 
-一个完美的思考方式”的承诺。所有的发射多个AJAX请求(通过“取回”)一次:
+`Promise.all` 的最佳示例是通过`fetch`同时发起多个 AJAX请求时:
 
 
 	var request1 = fetch('/users.json');
 	var request2 = fetch('/articles.json');
 
-
-
-
 	Promise.all([request1, request2]).then(function(results) {
-	// Both promises done!
+		// Both promises done!
 	});
 
 
@@ -281,11 +278,11 @@ An perfect way of thinking about `Promise.all` is firing off multiple AJAX (via
 
 You could combine APIs like `fetch` and the Battery API since they both return promises:
 
-你可以结合“取回”之类的API和电池API,因为他们都返回承诺:
+你也可以组合 `fetch` 和 Battery 之类的 API ,因为他们都返回 promises:
 
 
 	Promise.all([fetch('/users.json'), navigator.getBattery()]).then(function(results) {
-	// Both promises done!
+		// Both promises done!
 	});
 
 
@@ -293,25 +290,22 @@ You could combine APIs like `fetch` and the Battery API since they both return p
 
 Dealing with rejection is, of course, hard.  If any promise is rejected the `catch` fires for the first rejection:
 
-处理拒绝,当然,困难。如果任何承诺被拒绝的“捕获”火灾首先拒绝:
+当然, 处理拒绝的情况比较复杂。如果某个 promise 被拒绝, 则 `catch` 将会被第一个拒绝(rejection)所触发:
 
 
 	var req1 = new Promise(function(resolve, reject) { 
-	// A mock async action using setTimeout
-	setTimeout(function() { resolve('First!'); }, 4000);
+		// 通过 setTimeout 模拟异步任务
+		setTimeout(function() { resolve('First!'); }, 4000);
 	});
 	var req2 = new Promise(function(resolve, reject) { 
-	// A mock async action using setTimeout
-	setTimeout(function() { reject('Second!'); }, 3000);
+		// 通过 setTimeout 模拟异步任务
+		setTimeout(function() { reject('Second!'); }, 3000);
 	});
 	Promise.all([req1, req2]).then(function(results) {
-	console.log('Then: ', one);
+		console.log('Then: ', one);
 	}).catch(function(err) {
-	console.log('Catch: ', err);
+		console.log('Catch: ', err);
 	});
-
-
-
 
 	// From the console:
 	// Catch: Second!
@@ -319,9 +313,11 @@ Dealing with rejection is, of course, hard.  If any promise is rejected the `cat
 
 
 
+
 `Promise.all` will be super useful as more APIs move toward promises.
 
-”的承诺。所有的将超级有用的api朝着承诺。
+随着越来越多的 API 支持 promise, `Promise.all` 将会变得超级有用。
+
 
 
 ## `Promise.race`
@@ -330,25 +326,22 @@ Dealing with rejection is, of course, hard.  If any promise is rejected the `cat
 
 `Promise.race` is an interesting function -- instead of waiting for all promises to be resolved or rejected, `Promise.race` triggers as soon as any promise in the array is resolved or rejected:
 
-”的承诺。竞赛”是一个有趣的功能,而不是等待所有承诺或拒绝解决,”的承诺。种族的触发器就数组中的任何承诺或拒绝解决:
+`Promise.race` 是一个有趣的函数. 与 `Promise.all` 相反,  只要某个 priomise 被 resolved 或者 rejected, 就会触发 `Promise.race`:
 
 
 	var req1 = new Promise(function(resolve, reject) { 
-	// A mock async action using setTimeout
-	setTimeout(function() { resolve('First!'); }, 8000);
+		// 通过 setTimeout 模拟异步任务
+		setTimeout(function() { resolve('First!'); }, 8000);
 	});
 	var req2 = new Promise(function(resolve, reject) { 
-	// A mock async action using setTimeout
-	setTimeout(function() { resolve('Second!'); }, 3000);
+		// 通过 setTimeout 模拟异步任务
+		setTimeout(function() { resolve('Second!'); }, 3000);
 	});
 	Promise.race([req1, req2]).then(function(one) {
-	console.log('Then: ', one);
+		console.log('Then: ', one);
 	}).catch(function(one, two) {
-	console.log('Catch: ', one);
+		console.log('Catch: ', one);
 	});
-
-
-
 
 	// From the console:
 	// Then: Second!
@@ -356,21 +349,23 @@ Dealing with rejection is, of course, hard.  If any promise is rejected the `cat
 
 
 
+
+
 A use case could be triggering a request to a primary source and a secondary source (in case the primary or secondary are unavailable).
 
-一个用例可能会触发一个请求主要来源和第二手来源(以防主要或次要不可用)。
+一个案例是请求的资源有 主站资源和备用资源(以防某个不可用)。
 
 
 ## Get Used to Promises
 
-## 习惯了承诺
+## 改变习惯, 使用 Promise
 
 
 Promises have been a hot topic for the past few years (or the last 10 years if you were a Dojo Toolkit user) and they've gone from a JavaScript framework pattern to a language staple.  It's probably wise to assume you'll be seeing most new JavaScript APIs being implemented with a promise-based pattern...
 
-承诺一直是一个热门的话题在过去几年中(或过去十年如果你是一个Dojo工具箱用户),他们已经从一个JavaScript框架模式主要语言.可能是明智的认为你会看到大多数新的JavaScript api实现的基于承诺的模式……
+在过去几年中 Promise 一直是个热门话题(如果你是 Dojo Toolkit 用户,那么就是已经有10年了), 已经从一个JavaScript框架变成了语言的一个主要成分. 很快你就会看到大多数新的 JavaScript api 都会基于 Promise 的方式来实现……
 
 
 ...and that's a great thing!  Developers are able to avoid callback hell and async interactions can be passed around like any other variable.  Promises take some time getting used to be the tools are (natively) there and now is the time to learn them!
 
-…这是一个伟大的事情!开发人员能够避免回调地狱和异步交互可以传递和其他变量.承诺需要一段时间适应的工具是(本地),现在是时间去学习他们!
+... 当然这是一件好事! 开发人员能够避开回调的地狱, 异步交互也可以像其他变量一样传递.  Promise 还需要一段时间来普及, 现在是时候去学习他们了!
