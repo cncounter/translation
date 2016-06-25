@@ -104,3 +104,6 @@ To that end, Schlueter advises reading books on leadership, communication, and b
 
 "That stuff is more complicated than it seems and is super important," he says.
 
+
+原文链接: http://www.javaworld.com/article/3088148/careers/dont-just-code-career-advice-from-the-programming-masters.html
+
