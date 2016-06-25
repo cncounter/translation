@@ -47,7 +47,7 @@ _Testing promises is probably easier than you think because `setTimeout` can be 
 
 The `new Promise()` constructor should only be used for legacy async tasks, like usage of `setTimeout` or `XMLHttpRequest`. A new Promise is created with the `new` keyword and the promise provides `resolve` and `reject` functions to the provided callback:
 
-直接使用 `new Promise()` 构造函数的方式, 应该只用来处理遗留的异步任务编程, 例如 `setTimeout` 或者 `XMLHttpRequest`。 通过 `new` 关键字创建一个新的 Promise 对象, 该对象有 `resolve`(搞定!) 和 `reject`(失败!) 两个回调函数:
+直接使用 `new Promise()` 构造函数的方式, 应该只用来处理遗留的异步任务编程, 例如 `setTimeout` 或者 `XMLHttpRequest`。 通过 `new` 关键字创建一个新的 Promise 对象, 该对象有 `resolve`(搞定!) 和 `reject`(拒绝!) 两个回调函数:
 
 
 	var p = new Promise(function(resolve, reject) {
@@ -161,21 +161,19 @@ Since a promise is always returned, you can always use the `then` and `catch` me
 
 All promise instances get a `then` method which allows you to react to the promise.  The first `then` method callback receives the result given to it by the `resolve()` call:
 
-所有承诺实例得到一个'然后'方法允许您反应的承诺。第一个“然后”方法的回调接收结果给它的“解决()的电话:
+
+每个 promise 实例都有 `then` 方法, 用来处理执行结果。 第一个 `then` 方法回调的参数, 就是 `resolve()` 传入的那个值:
 
 
 	new Promise(function(resolve, reject) {
-	// A mock async action using setTimeout
-	setTimeout(function() { resolve(10); }, 3000);
+		// 通过 setTimeout 模拟异步任务
+		setTimeout(function() { resolve(10); }, 3000);
 	})
 	.then(function(result) {
-	console.log(result);
+		console.log(result);
 	});
 
-
-
-
-	// From the console:
+	// console 输出的结果:
 	// 10
 
 
@@ -183,21 +181,18 @@ All promise instances get a `then` method which allows you to react to the prom
 
 The `then` callback is triggered when the promise is resolved.  You can also chain `then` method callbacks:
 
-“然后”承诺解决时触发回调。你也可以链“然后”回调方法:
+`then` 回调由 promise 的 resolved 触发。你也可以使用链式的 then` 回调方法:
 
 
 	new Promise(function(resolve, reject) { 
-	// A mock async action using setTimeout
-	setTimeout(function() { resolve(10); }, 3000);
+		// 通过 setTimeout 模拟异步任务
+		setTimeout(function() { resolve(10); }, 3000);
 	})
 	.then(function(num) { console.log('first then: ', num); return num * 2; })
 	.then(function(num) { console.log('second then: ', num); return num * 2; })
 	.then(function(num) { console.log('last then: ', num);});
 
-
-
-
-	// From the console:
+	// console 输出的结果:
 	// first then:  10
 	// second then:  20
 	// last then:  40
@@ -207,35 +202,31 @@ The `then` callback is triggered when the promise is resolved.  You can also 
 
 Each `then` receives the result of the previous `then`'s return value.
 
-每个“然后”收到的结果之前的那么“年代返回值。
+每个 `then` 收到的结果都是之前那个 `then` 返回的值。
 
 
 If a promise has already resolved but `then` is called again, the callback immediately fires.  If the promise is rejected and you call `then` after rejection, the callback is never called.
 
-如果承诺已解决但又“然后”叫,立即回调火灾。如果承诺是拒绝和你打电话'然后'拒绝后,回调是从来不叫。
+如果 promise 已经 resolved, 但之后才调用 `then` 方法, 则立即触发回调。如果promise被拒绝之后才调用 `then`, 则回调函数不会被触发。
 
 
 ## catch
 
-## 抓
 
 
 The `catch` callback is executed when the promise is rejected:
 
-“抓住”回调执行拒绝承诺时:
+当 promise 被拒绝时, `catch` 回调就会被执行:
 
 
 	new Promise(function(resolve, reject) {
-	// A mock async action using setTimeout
-	setTimeout(function() { reject('Done!'); }, 3000);
+		// 通过 setTimeout 模拟异步任务
+		setTimeout(function() { reject('Done!'); }, 3000);
 	})
 	.then(function(e) { console.log('done', e); })
 	.catch(function(e) { console.log('catch: ', e); });
 
-
-
-
-	// From the console:
+	// console 输出的结果:
 	// 'catch: Done!'
 
 
@@ -243,7 +234,7 @@ The `catch` callback is executed when the promise is rejected:
 
 What you provide to the `reject` method is up to you.  A frequent pattern is sending an `Error` to the `catch`:
 
-你提供的“拒绝”方法。频繁模式是发送一个“错误”“抓”:
+传入 `reject` 方法的参数由你自己决定。一般来说是传入一个 `Error` 对象:
 
 
 	reject(Error('Data could not be found'));
@@ -253,7 +244,6 @@ What you provide to the `reject` method is up to you.  A frequent pattern is sen
 
 ## `Promise.all`
 
-## “Promise.all”
 
 
 Think about JavaScript loaders:  there are times when you trigger multiple async interactions but only want to respond when all of them are completed -- that's where `Promise.all` comes in.  The `Promise.all` method takes an array of promises and fires one callback once they are all resolved:
@@ -336,7 +326,6 @@ Dealing with rejection is, of course, hard.  If any promise is rejected the `cat
 
 ## `Promise.race`
 
-## “Promise.race”
 
 
 `Promise.race` is an interesting function -- instead of waiting for all promises to be resolved or rejected, `Promise.race` triggers as soon as any promise in the array is resolved or rejected:
