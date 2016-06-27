@@ -69,25 +69,26 @@ Listing 1 shows a Spring data caching example.
 
 #### Listing 1\. Enabling caching in Spring-based applications
 
-```
- @Cacheable(value="User_CACHE_REPOSITORY", key = "#id")
-public User get(Long id) {
-  return em.find(User.class, id);
-}
-@Caching(put = {@CachePut(value="USER_CACHE_REPOSITORY", key = "#user.getId()")})  
-public User update(User user) {
-    em.merge(user);
-    return user;  
-}
-@Caching(evict = {@CacheEvict(value="USER_CACHE_REPOSITORY", key = "#user.getId()")})  
-public void delete(User user) {
-    em.remove(user);
-}
-@Caching(evict = {@CacheEvict(value="USER_CACHE_REPOSITORY", key = "#user.getId()")})  
-public void evictCache(User user) {
-} 
 
-```
+	 @Cacheable(value="User_CACHE_REPOSITORY", key = "#id")
+	public User get(Long id) {
+	  return em.find(User.class, id);
+	}
+	@Caching(put = {@CachePut(value="USER_CACHE_REPOSITORY", key = "#user.getId()")})  
+	public User update(User user) {
+	    em.merge(user);
+	    return user;  
+	}
+	@Caching(evict = {@CacheEvict(value="USER_CACHE_REPOSITORY", key = "#user.getId()")})  
+	public void delete(User user) {
+	    em.remove(user);
+	}
+	@Caching(evict = {@CacheEvict(value="USER_CACHE_REPOSITORY", key = "#user.getId()")})  
+	public void evictCache(User user) {
+	} 
+
+
+
 
 Here the read operation is surrounded with Spring's `@Cacheable` annotation, which is implemented as an AOP advisor under the hood. A time-to-live setting in Spring also specifies how long these objects will remain in the cache. When the `get()` method is invoked, Spring tries to fetch and return the object from the remote cache first. If the object isn't found, Spring will execute the body of the method and place the database result in the remote cache before returning it.
 
@@ -103,17 +104,16 @@ Upon receiving `OptimisticLockingFailureException` or `CurrentModificationExcept
 
 #### Listing 2\. Resolving stale objects in the cache
 
-```
- try{
-    User user = userDao.get(id);    // user fetched in cache server
-    userDao.update(user, oldname, newname);      
-}catch(ConcurrentModificationException ex) {   // cached user object may be stale
-    userDao.evictCache(user);
-    user =  userDao.get(id);     // refresh user object
-    userDao.update(user, oldname, newname);    // retry the same operation. Note it may still throw legitimate ConcurrentModificationException.
-} 
 
-```
+	 try{
+	    User user = userDao.get(id);    // user fetched in cache server
+	    userDao.update(user, oldname, newname);      
+	}catch(ConcurrentModificationException ex) {   // cached user object may be stale
+	    userDao.evictCache(user);
+	    user =  userDao.get(id);     // refresh user object
+	    userDao.update(user, oldname, newname);    // retry the same operation. Note it may still throw legitimate ConcurrentModificationException.
+	} 
+
 
 
 
@@ -133,12 +133,11 @@ This is a relatively simple use case to start with: an incremental counter that 
 
 #### Listing 3\. Globally unique increment counter
 
-```
- RedisAtomicLong counter = 
-  new RedisAtomicLong("UNIQUE_COUNTER_NAME", redisTemplate.getConnectionFactory()); 
-Long myCounter = counter.incrementAndGet();    // return the incremented value 
 
-```
+	 RedisAtomicLong counter = 
+	  new RedisAtomicLong("UNIQUE_COUNTER_NAME", redisTemplate.getConnectionFactory()); 
+	Long myCounter = counter.incrementAndGet();    // return the incremented value 
+
 
 Watch out for integer overflow and remember that operations on these two classes are relatively expensive.
 
@@ -330,7 +329,7 @@ Conclusion
 With this article I've hoped to introduce other Java enterprise developers to the power of Redis, particularly when used as a remote data cache and for volatile data. I've introduced six effective uses cases for Redis, shared a few performance optimizing techniques, and explained how my team at Glu Mobile worked around getting junk data as a result of mis-configured transactions in Spring Data Redis. I hope that this article has piqued your curiosity about Redis NoSQL and offered some pathways for exploring it in your own Java EE systems.
 
 
-原文链接： http://www.javaworld.com/article/3062899/big-data/lightning-fast-nosql-with-spring-data-redis.html?page=2
+原文链接： [http://www.javaworld.com/article/3062899/big-data/lightning-fast-nosql-with-spring-data-redis.html?page=2](http://www.javaworld.com/article/3062899/big-data/lightning-fast-nosql-with-spring-data-redis.html?page=2)
 
 
 
