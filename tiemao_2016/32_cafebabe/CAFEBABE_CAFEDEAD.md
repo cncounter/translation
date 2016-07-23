@@ -2,17 +2,17 @@
 
 Why is the first four bytes of Java class file format is CAFEBABE? Who named it?
 
-为什么第一个Java类文件格式的四个字节是CAFEBABE吗?将其命名为谁?
+为什么Java的class文件的前四个字节是CAFEBABE? 是谁定义的?
 
 
 James Gosling, the father of Java programming language, once explained it as follows:
 
-詹姆斯•高斯林的父亲Java编程语言,一旦解释如下:
+Java编程语言之父,詹姆斯•高斯林(James Gosling),曾这样回答:
 
 
 As far as I know, I'm the guilty party on this one. I was totally unaware of the NeXT connection. The small number of interesting HEX words is probably the source of the match. As for the derivation of the use of CAFEBABE in Java, it's somewhat circuitous:
 
-据我所知,我是有罪的一方。我完全不知道下一个连接。小许多有趣的十六进制字可能是匹配的来源.至于在Java中使用CAFEBABE的推导过程,有些曲折:
+关于这一点,我很抱歉。我以前并不知道有 NeXT connection。这些有趣的十六进制数(HEX words)可能是匹配的来源. 至于在Java中使用CAFEBABE作为魔数的过程, 说起来有些曲折:
 
 
 We used to go to lunch at a place called St Michael's Alley. According to local legend, in the deep dark past, the Grateful Dead used to perform there before they made it big. It was a pretty funky place that was definitely a Grateful Dead Kinda Place. When Jerry died, they even put up a little Buddhist-esque shrine. When we used to go there, we referred to the place as Cafe Dead.
@@ -28,7 +28,7 @@ Somewhere along the line it was noticed that this was a HEX number. I was re-vam
 At that time, it didn't seem terribly important or destined to go anywhere but the trash-can of history. So CAFEBABE became the class file format, and CAFEDEAD was the persistent object format. But the persistent object facility went away, and along with it went the use of CAFEDEAD - it was eventually replaced by RMI.
 
 
-当时,并没有显得特别重要或注定要去任何地方,但历史的垃圾桶。所以CAFEBABE成为类文件格式,CAFEDEAD持久对象的格式.但是持久对象设施走了,连同它的使用CAFEDEAD——这是最终取代了RMI。
+当时,这并没有什么特别的, 或许注定要消失在历史的垃圾堆里。所以 CAFEBABE 成为 class 文件格式, CAFEDEAD 成为持久对象的格式. 但是持久对象(persistent object)技术消失了, 就如同它的魔数 CAFEDEAD 一样 —— 由RMI技术取代。
 
 
 
