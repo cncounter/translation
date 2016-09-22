@@ -122,7 +122,7 @@ JDK1.7 大致是这个样子:
 
 ### 2.2 将 JAVA_HOME 加入环境变量:
 
-	export JAVA_HOME=/usr/lib/jvm/java-1.7.0-openjdk.x86_64
+	sudo export JAVA_HOME=/usr/lib/jvm/java-1.7.0-openjdk.x86_64
 
 当然, export 只是临时的。下次重启后就没了。
 
@@ -132,8 +132,8 @@ JDK1.7 大致是这个样子:
 
 	jhometip='# add JAVA_HOME'
 	jhomescript='export JAVA_HOME=/usr/lib/jvm/java-1.7.0-openjdk.x86_64'
-	echo $jhometip >> /etc/rc.d/rc.local
-	echo $jhomescript >> /etc/rc.d/rc.local
+	sudo echo $jhometip >> /etc/rc.d/rc.local
+	sudo echo $jhomescript >> /etc/rc.d/rc.local
 
 这样一般就设置好了。
 
@@ -185,9 +185,10 @@ JDK1.8 大致是这个样子:
 	drwxr-xr-x. 3 root root 4096 Sep 21 23:08 lib
 	drwxr-xr-x. 2 root root 4096 Sep 21 23:08 tapset
 
-将 JAVA_HOME 加入环境变量:
 
-	export JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.102-1.b14.el7_2.x86_64
+### 3.2  将 JAVA_HOME 加入环境变量:
+
+	sudo export JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.102-1.b14.el7_2.x86_64
 
 
 当然, export 只是临时的。下次重启后就没了。
@@ -198,8 +199,8 @@ JDK1.8 大致是这个样子:
 
 	jhometip='# add JAVA_HOME'
 	jhomescript='export JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.102-1.b14.el7_2.x86_64'
-	echo $jhometip >> /etc/rc.d/rc.local
-	echo $jhomescript >> /etc/rc.d/rc.local
+	sudo echo $jhometip >> /etc/rc.d/rc.local
+	sudo echo $jhomescript >> /etc/rc.d/rc.local
 
 这样一般就设置好了。
 
