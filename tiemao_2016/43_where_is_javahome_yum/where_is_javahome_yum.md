@@ -122,7 +122,7 @@ JDK1.7 大致是这个样子:
 
 ### 2.2 将 JAVA_HOME 加入环境变量:
 
-	sudo export JAVA_HOME=/usr/lib/jvm/java-1.7.0-openjdk.x86_64
+	export JAVA_HOME=/usr/lib/jvm/java-1.7.0-openjdk.x86_64
 
 当然, export 只是临时的。下次重启后就没了。
 
@@ -188,7 +188,7 @@ JDK1.8 大致是这个样子:
 
 ### 3.2  将 JAVA_HOME 加入环境变量:
 
-	sudo export JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.102-1.b14.el7_2.x86_64
+	export JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.102-1.b14.el7_2.x86_64
 
 
 当然, export 只是临时的。下次重启后就没了。
