@@ -14,18 +14,18 @@
 * 在Windows上:
 
 
-        ```
+    
         java -Xdebug -Xrunjdwp:transport=dt_shmem,address=debug,server=y,suspend=y Test
 
-        ```
+    
 
 * 在Oracle Solaris 和/或 Linux操作系统上:
 
 
-        ```
+    
         java -Xdebug -Xrunjdwp:transport=dt_socket,address=8888,server=y,suspend=y Test
 
-        ```
+    
 
 通过这些启动参数, `Test` 类将运行在调试模式下, 并等待调试器连接到JVM的调试地址: 在Windows上是 `debug`, 在Oracle Solaris 或 Linux操作系统上是 `8888`端口 。
 
@@ -36,18 +36,18 @@
 * 在Windows上:
 
 
-        ```
+    
         jdb -attach 'debug'
 
-        ```
+    
 
 * 在Oracle Solaris和Linux操作系统上:
 
 
-        ```
+    
         jdb -attach 8888
 
-        ```
+    
 
 当 jdb初始化并连接到 `Test` 之后, 就可以进行 Java代码级(Java-level)的调试。
 
@@ -55,10 +55,10 @@
 ### 4. 设置断点,并运行应用程序。例如, 在 `Test` 的 `main` 方法开始位置设置断点, 可以执行以下命令:
 
 
-    ```
+
     stop in Test.main run
 
-    ```
+
 
 当 `jdb` 工具执行到断点时, 就可以探查程序的当前上下文,以判断程序是否按预期正常运行。
 
@@ -83,12 +83,12 @@
 在 Linux 下启动Tomcat的脚本中,可以使用:
 
 
-    ```
+
 	export JAVA_OPTS="-Xms1024m -Xmx1024m
 	-verbose:gc -XX:+PrintGCDateStamps -XX:+PrintGCDetails 
 	-Xloggc:$CATALINA_BASE/logs/gc.log -server
 	-Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,suspend=n,server=y,address=12346"
-    ```
+
 
 相关参数的含义可以参考: [http://calvinliu.iteye.com/blog/876009](http://calvinliu.iteye.com/blog/876009)
 
