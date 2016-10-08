@@ -1,4 +1,4 @@
-# JDWP 简介
+# 使用 JDWP 进行远程调试
 
 对于调试Java程序来说,Java Debug Wire Protocol (JDWP, Java调试线协议)是不可多得的好东西。
 
@@ -92,7 +92,7 @@
 
 相关参数的含义可以参考: [http://calvinliu.iteye.com/blog/876009](http://calvinliu.iteye.com/blog/876009)
 
-关于 Idea 如何连接，请参考: [http://www.cnphp6.com/archives/33956](http://www.cnphp6.com/archives/33956)
+关于 Idea 如何进行远程调试，请参考: [http://www.cnphp6.com/archives/33956](http://www.cnphp6.com/archives/33956)
 
 
 原文链接: [https://docs.oracle.com/javase/8/docs/technotes/guides/troubleshoot/introclientissues005.html](https://docs.oracle.com/javase/8/docs/technotes/guides/troubleshoot/introclientissues005.html)
