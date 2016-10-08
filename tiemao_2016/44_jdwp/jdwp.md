@@ -1,133 +1,105 @@
-# JDWP
+# JDWP 简介
 
 The Java Debug Wire Protocol (JDWP) is very useful for debugging applications as well as applets.
 
-Java调试线协议(JDWP)是非常有用的对于调试应用程序以及applet。
+对于调试Java程序来说,Java Debug Wire Protocol (JDWP, Java调试线协议)是不可多得的好东西。
 
 
 ## To debug an application using JDWP:
 
-## 调试一个应用程序使用JDWP:
+## 使用JDWP调试应用程序的步骤如下:
 
 
 ### 1.  Open the command line and set the `PATH` environment variable to jdk/bin where jdk is the installation directory of the JDK.
 
-### 1。打开命令行,将“路径”环境变量设置为jdk / bin jdk的jdk的安装目录。
+### 1. 打开命令行,并将 jdk 安装路径下的 bin 目录添加到 `PATH` 环境变量。
 
 
 ### 2.  Use the following command to run the application (called `Test` in this example) which you want to debug:
 
-### 2。使用以下命令运行该应用程序(称为“测试”在这个例子中)您想要调试:
+### 2. 通过以下命令来启动想要调试的程序(本例中假设为`Test`): 
 
 
 *   On Windows:
 
-*在Windows上:
+* 在Windows上:
 
 
         ```
         java -Xdebug -Xrunjdwp:transport=dt_shmem,address=debug,server=y,suspend=y Test
 
-
-
-
         ```
-
-
 
 
 *   On Oracle Solaris and Linux operating systems:
 
-*在Oracle Solaris和Linux操作系统:
+* 在Oracle Solaris 和/或 Linux操作系统上:
 
 
         ```
         java -Xdebug -Xrunjdwp:transport=dt_socket,address=8888,server=y,suspend=y Test
 
-
-
-
         ```
-
-
-
 
 The `Test` class will start in the debugging mode and wait for a debugger to attach to it at address `debug` (on Windows) or `8888` (on Oracle Solaris and Linux operating systems).
 
-测试的类将开始在调试模式下,等待调试器附加到它在解决“调试”(在Windows上)或“8888”(在Oracle Solaris和Linux操作系统)。
+通过这些启动参数, `Test` 类将运行在调试模式下, 并等待调试器连接到JVM的调试地址: 在Windows上是 `debug`, 在Oracle Solaris 或 Linux操作系统上是 `8888`端口 。
 
 
 ### 3.  Open another command line and use the following command to run `jdb` and attach it to the running debug server:
 
-### 3所示。打开另一个命令行并使用以下命令运行“jdb”并将它附加到运行调试服务器:
+### 3. 新开一个命令行窗口, 并使用以下命令来启动 “jdb” 并将它连接到正在运行的调试服务器:
 
 
 *   On Windows:
 
-*在Windows上:
+* 在Windows上:
 
 
         ```
         jdb -attach 'debug'
 
-
-
-
         ```
-
-
-
 
 *   On Oracle Solaris and Linux operating systems:
 
-*在Oracle Solaris和Linux操作系统:
+* 在Oracle Solaris和Linux操作系统上:
 
 
         ```
         jdb -attach 8888
 
-
-
-
         ```
-
-
-
 
 After `jdb` initializes and attaches to `Test`, you can perform Java-level debugging.
 
-jdb初始化和高度后测试,您可以执行java级别调试。
+当 jdb初始化并连接到 `Test` 之后, 就可以进行 Java代码级(Java-level)的调试。
 
 
 ### 4.  Set your breakpoints and run the application. For example, to set the breakpoint at the beginning of the `main` method in `Test`, run the following command:
 
-### 4所示。设置断点并运行应用程序。例如,设置断点的“主要”在“测试”的方法,运行以下命令:
+### 4. 设置断点,并运行应用程序。例如, 在 `Test` 的 `main` 方法开始位置设置断点, 可以执行以下命令:
 
 
     ```
     stop in Test.main run
 
-
-
-
     ```
-
-
 
 
 When the `jdb` utility hits the breakpoint, you will be able to inspect the environment in which the application is running and see if it is functioning as expected.
 
-多彬的效用命中断点时,你将能够检查应用程序运行的环境和程序是否正常运行。
+当 `jdb` 工具执行到断点时, 就可以探查程序的当前上下文,以判断程序是否按预期正常运行。
 
 
 ### 5.  (Optional) To perform native-level debugging along with Java-level debugging, use native debuggers to attach to the Java process running with JDWP.
 
-### 5。(可选)来执行native-level调试Java级别调试,使用本机调试器与JDWP附着在Java进程运行。
+### 5。(可选) 要进行 native-level 的调试, 请在运行JDWP的Java进程上附加 native debuggers 。
 
 
 On Oracle Solaris, you can use the `dbx` utility and on Linux you can use the `gdb` utility.
 
-据Oracle,你可以使用Solaris ! ! ! ! dbx Linux和公用事业gdb ! !你到了使用公用事业。
+在 Oracle Solaris上, 可以使用 `dbx` 工具, 在 Linux 上, 可以使用 `gdb` 工具。
 
 
 In Windows, you can use Visual Studio for native-level debugging as follows:
@@ -141,13 +113,13 @@ In Windows, you can use Visual Studio for native-level debugging as follows:
 5.  Type `cont` in the `jdb` window. The process will hit the breakpoint in Visual Studio.
 
 
-在Windows中,您可以使用Visual Studio native-level调试如下:
+在Windows上, 则可以使用 Visual Studio, 进行 native-level 调试的步骤如下:
 
-1. 打开Visual Studio。
-2. 在* * * *调试菜单,选择* * * *附加到进程。选择Java进程与JDWP运行。
-3. 关于项目* * * * * *情况,精选的菜单,* *和开放the * * * * tab调试版本.* * * *级下拉列表,选择* * * *额外的DLL和添加您想要调试的原生DLL(例如,Test.dll)。
-4. 打开源文件(一个或多个)的测试。dll和设置断点。
-5. 类型“租”“jdb”窗口。这个过程将断点在Visual Studio。
+1. 打开 Visual Studio。
+2. 点击 **Debug** 菜单, 选择 **Attach to Process**。然后选择运行JDWP的Java进程。
+3. 点击 **Project** 菜单, 选择 **Settings** 项,然后打开 **Debug** 标签(tab). 在 **Category** 下拉列表中, 选择 **Additional DLLs**, 并添加您想要调试的 native DLL (例如, Test.dll)。
+4. 打开 Test.dll 的源文件(一个或多个),并设置断点。
+5. 在 `jdb` 窗口输入 `cont`, 则进程将在 Visual Studio 中设置的断点处暂停。
 
 
 
