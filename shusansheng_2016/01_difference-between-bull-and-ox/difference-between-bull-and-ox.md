@@ -5,7 +5,7 @@
 
 ![bull](./bull.jpg) 
 
-** Bull vs Ox**
+**Bull vs Ox**
 
 
 
