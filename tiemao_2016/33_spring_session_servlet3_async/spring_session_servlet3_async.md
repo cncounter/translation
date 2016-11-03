@@ -6,7 +6,7 @@
 
 关于 Spring-session的介绍，请参考:  [通过Spring Session实现新一代的Session管理](http://www.infoq.com/cn/articles/Next-Generation-Session-Management-with-Spring-Session)
 
-
+[Spring-session示例](https://github.com/cncounter/translation/blob/master/tiemao_2016/31_spring_session/spring-session.md)
 
 
 
@@ -83,10 +83,6 @@
         <property name="valueSerializer">
             <bean class="org.springframework.data.redis.serializer.JdkSerializationRedisSerializer"/>
         </property>
-    </bean>
-    <!--spring cache的redis封装-->
-    <bean id="redisManager" class="com.ybs.exam.cache.RedisManagerImpl">
-        <property name="redisTemplate" ref="redisTemplate"/>
     </bean>
     <!--spring session 的redis配置-->
     <bean class="org.springframework.session.data.redis.config.annotation.web.http.RedisHttpSessionConfiguration"/>
