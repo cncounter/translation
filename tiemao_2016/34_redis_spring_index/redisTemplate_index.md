@@ -91,10 +91,6 @@ public void setDatabase(int index) {
             <bean class="org.springframework.data.redis.serializer.JdkSerializationRedisSerializer"/>
         </property>
     </bean>
-    <!--spring cache的redis封装-->
-    <bean id="redisManager" class="com.ybs.exam.cache.RedisManagerImpl">
-        <property name="redisTemplate" ref="redisTemplate"/>
-    </bean>
     <!--spring session 的redis配置-->
     <bean class="org.springframework.session.data.redis.config.annotation.web.http.RedisHttpSessionConfiguration"/>
 
