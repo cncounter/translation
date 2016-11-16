@@ -2,10 +2,17 @@
 
 ## 1. 安装JDK
 
+	sudo yum install -y java-1.8.0-openjdk*
+
 ## 2. 配置环境变量与 JAVA_HOME
 
+	export JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.102-1.b14.el7_2.x86_64
 
-1~2步骤 参见: [查找YUM 安装的 JAVA_HOME:](http://blog.csdn.net/renfufei/article/details/52621034)
+请将此 export 内容加入 `/etc/rc.d/rc.local` 或者其他启动文件。
+
+如果版本号不一致,则需要自己查找 `JAVA_HOME`
+
+关于如何查找 `JAVA_HOME`, 详情参见: [查找YUM 安装的 `JAVA_HOME`:](http://blog.csdn.net/renfufei/article/details/52621034)
 
 
 ## 3. 配置 jstatd.all.policy
@@ -46,6 +53,3 @@ CPU图形没有显示 ,原因是 jstatd 不支持监控CPU。
 - Java VisualVM远程监控JVM: [https://yq.aliyun.com/articles/38757](https://yq.aliyun.com/articles/38757)
 
 - 查找YUM 安装的 JAVA_HOME: [http://blog.csdn.net/renfufei/article/details/52621034](http://blog.csdn.net/renfufei/article/details/52621034)
-
-- 
-
