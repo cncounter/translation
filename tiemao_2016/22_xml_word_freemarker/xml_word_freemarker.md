@@ -61,6 +61,11 @@ Microsoft Word 程序直接提供两种格式的转换. 方法为: `文件菜单
 
 ![](01_word_document.png)
 
+抽取后,自己使用FreeMarker修改其中的内容,比如if,循环(list)等:
+
+
+![](03_xml_template.png)
+
 
 ### 处理步骤:
 
@@ -535,3 +540,10 @@ Microsoft Word 程序直接提供两种格式的转换. 方法为: `文件菜单
 
 
 测试通过...
+
+本文档GITHub地址: [https://github.com/cncounter/translation/blob/master/tiemao_2016/22_xml_word_freemarker/xml_word_freemarker.md](https://github.com/cncounter/translation/blob/master/tiemao_2016/22_xml_word_freemarker/xml_word_freemarker.md)
+
+日期: 2016年06月03日
+
+作者: [铁锚: http://blog.csdn.net/renfufei](http://blog.csdn.net/renfufei)
+
