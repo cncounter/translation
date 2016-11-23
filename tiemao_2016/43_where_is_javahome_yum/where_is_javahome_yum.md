@@ -204,6 +204,40 @@ JDK1.8 大致是这个样子:
 
 这样一般就设置好了。
 
+### 附加
+
+查看 jvm 目录:
+
+	ll /usr/lib/jvm
+
+则可以看到很多软连接:
+
+	java -> /etc/alternatives/java_sdk
+	java-1.8.0 -> /etc/alternatives/java_sdk_1.8.0
+	java-1.8.0-openjdk -> /etc/alternatives/java_sdk_1.8.0_openjdk
+	java-1.8.0-openjdk-1.8.0.111-1.b15.el7_2.x86_64
+	java-1.8.0-openjdk-1.8.0.111-1.b15.el7_2.x86_64-debug
+	java-openjdk -> /etc/alternatives/java_sdk_openjdk
+	jre -> /etc/alternatives/jre
+	jre-1.8.0 -> /etc/alternatives/jre_1.8.0
+
+类似这样的,不管 jre 开头的部分,可以看到 `/etc/alternatives/java_sdk_1.8.0` 这样的目录;
+
+执行 : 
+
+	ll /etc/alternatives/java_sdk_1.8.0
+	ll /etc/alternatives/java_sdk
+
+然后发现, 这一堆链接都是指向上面的 JAVA_HOME 路径：
+
+	/etc/alternatives/java_sdk_1.8.0 -> 
+		/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.111-1.b15.el7_2.x86_64
+
+所以,可以使用其中之一作为 `JAVA_HOME` 环境变量的值。
+
+说明: 既然安装了,基本上服务器上就不会频繁变更.  如果有变更,则查找并修正即可。
+
+
 
 作者: [铁锚 http://blog.csdn.net/renfufei](http://blog.csdn.net/renfufei)
 
