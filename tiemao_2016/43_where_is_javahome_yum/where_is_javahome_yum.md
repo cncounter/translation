@@ -186,25 +186,7 @@ JDK1.8 大致是这个样子:
 	drwxr-xr-x. 2 root root 4096 Sep 21 23:08 tapset
 
 
-### 3.2  将 JAVA_HOME 加入环境变量:
-
-	export JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.102-1.b14.el7_2.x86_64
-
-
-当然, export 只是临时的。下次重启后就没了。
-
-可以添加到rc文件,比如 `/etc/rc.d/rc.local` 之中。
-
-当然,可以使用 vim 编辑, 或者是 `echo >> ` 命令
-
-	jhometip='# add JAVA_HOME'
-	jhomescript='export JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.102-1.b14.el7_2.x86_64'
-	sudo echo $jhometip >> /etc/rc.d/rc.local
-	sudo echo $jhomescript >> /etc/rc.d/rc.local
-
-这样一般就设置好了。
-
-### 附加
+### 3.2  查看软连接:
 
 查看 jvm 目录:
 
@@ -236,6 +218,25 @@ JDK1.8 大致是这个样子:
 所以,可以使用其中之一作为 `JAVA_HOME` 环境变量的值。
 
 说明: 既然安装了,基本上服务器上就不会频繁变更.  如果有变更,则查找并修正即可。
+
+
+### 3.3  将 JAVA_HOME 加入环境变量:
+
+	export JAVA_HOME=/etc/alternatives/java_sdk_1.8.0
+
+
+当然, export 只是临时的。下次重启后就没了。
+
+可以添加到rc文件,比如 `/etc/rc.d/rc.local` 之中。
+
+当然,可以使用 vim 编辑, 或者是 `echo >> ` 命令
+
+	jhometip='# add JAVA_HOME'
+	jhomescript='export JAVA_HOME=/etc/alternatives/java_sdk_1.8.0'
+	sudo echo $jhometip >> /etc/rc.d/rc.local
+	sudo echo $jhomescript >> /etc/rc.d/rc.local
+
+这样一般就设置好了。
 
 
 
