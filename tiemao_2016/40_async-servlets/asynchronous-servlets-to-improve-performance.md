@@ -1,30 +1,30 @@
 #How to use Asynchronous Servlets to improve performance
 
-#如何使用异步servlet来提高性能
+#使用异步servlet提升性能
 
-ince we have post this article we have received a lot of feedback about it. Based on this feedback we have updated the examples to make them easier to understand and, hopefully, clarify any doubts in their correctness.
+Since we have post this article we have received a lot of feedback about it. Based on this feedback we have updated the examples to make them easier to understand and, hopefully, clarify any doubts in their correctness.
 
-因斯我们发布这篇文章我们已经收到很多反馈.基于这个反馈我们更新了例子来让他们更容易理解,希望澄清任何怀疑其正确性。
+在发表这篇文章之后, 我们收到了很多反馈。基于这些反馈,我们更新了相关的示例,让读者更容易理解和掌握, 如果有误,希望能帮助我们改进。
 
 
 This post is going to describe a performance optimization technique applicable to a common problem related to modern webapps. Applications nowadays are no longer just passively waiting for browsers to initiate requests, they want to start  communication themselves. A typical example would involve chat applications, auction houses etc – the common denominator being the fact that most of the time the connections with the browser are idle and wait for a certain event being triggered.
 
-这篇文章将描述一个性能优化技术适用于现代webapps相关的一个常见问题.应用程序现在不再只是被动地等待浏览器发起请求,他们想开始沟通.一个典型的例子包括聊天应用程序,拍卖行等——的公分母,大部分时间与浏览器的连接处于空闲状态,等待某个事件被触发。
+本文基于现代 webapp 常碰到的一个问题，介绍对应的性能优化技术。现在的WEB程序不再只是被动地等待浏览器发起请求, 他们相互之间也会进行通信. 典型的例子包括聊天应用,拍卖行等 —— 后台程序大部分时间与浏览器的连接处于空闲状态, 并等待某个事件被触发。
 
 
 This type of applications has developed a problem class of their own, especially when facing heavy load. The symptoms include starving threads, suffering user interaction, staleness issues etc.
 
-这种类型的应用程序已经开发了一个类的问题,尤其是当面临沉重的负担。症状包括饥饿的线程,用户交互、腐败问题等。
+这种类型的应用引发了一些新的问题,尤其是在负载较高的时候。症状包括饥饿线程, 影响用户交互、请求过期等问题。
 
 
 Based on recent experience with this type of apps under load, I thought it would be a good time to demonstrate a simple solution. After Servlet API 3.0 implementations became mainstream, the solution has become truly simple, standardized and elegant.
 
-基于最近的经验,这种类型的应用程序负载下,我认为这是一个很好的时间来演示一个简单的解决方案。Servlet API后3.0实现成为主流,解决方案已经成为真正的简单、标准化和优雅。
+基于最近的经验, 这种类型的应用在负载下, 下面介绍一种简单的解决方案。在 Servlet 3.0成为主流以后, 这成为了真正简单、标准化和优雅的解决方案。
 
 
 But before we jump into demonstrating the solution, we should understand the problem in greater detail. What could be easier for our readers than to explain the problem with the help of some source code:
 
-但是在我们跳进展示解决方案之前,我们应该了解更详细的问题.还有什么比解释更容易为我们的读者的问题的帮助一些源代码:
+在展示具体解决方案之前,我们先了解这到底出现了什么问题. 还有什么能比源代码更容易解释问题呢:
 
 
 	@WebServlet(urlPatterns = "/BlockingServlet")
@@ -48,7 +48,7 @@ But before we jump into demonstrating the solution, we should understand the pro
 
 The servlet above is an example of how an application described above could look like:
 
-servlet以上描述的一个例子是一个应用程序可能看起来像:
+上面的 servlet 所代表的情景可能是这样的:
 
 
 - Every 2 seconds some event happens. E.g. stock quote arrives, chat is updated and so on.
@@ -56,15 +56,17 @@ servlet以上描述的一个例子是一个应用程序可能看起来像:
 - The thread is blocked until the next event arrives
 - Upon receiving the event, the response is compiled and sent back to the client
 
-- 后者some洽购。2境内的活动中提出的问题例如,某些了库存有最新和na猫is。
-- 终端用户请求到达时,宣布对监视某些事件
-- 线程被阻塞,直到下一个事件的到来
-- 在接收事件时,反应是编译和发送回客户端
+<br/>
+
+- 每2秒会有一些事件发生, 如, 股票报价信息更新, 或者有新的聊天信息等。
+- 然后终端用户发送请求, 表示对某些事件进行监视等。
+- 线程此时被阻塞, 直到下一个事件到达。
+- 接收到事件以后, 响应信息被序列化并发送给客户端
 
 
 Let me explain this waiting aspect. We have some external event that happens every 2 seconds. When new request from end-user arrives, it has to wait some time between 0 and 2000ms until next event. In order to keep it simple, we have emulated this waiting part with a call to Thread.sleep() for random number of ms between 0 and 2000. So every request waits on average for 1 second.
 
-让我来解释一下这等方面。我们有一些外部事件发生的每2秒。从最终用户到新请求时,它必须等待一段时间在0和2000毫秒之间,直到下一个事件.为了保持简单,我们模仿这个部分通过调用thread . sleep()等待随机数的女士在0到2000之间。因此,每个请求的平均等待1秒。
+让我来解释一下这种等待场景。我们有一些外部事件每2秒触发一次。当新的用户请求到达时, 它必须等待一段时间, 在0和2000毫秒之间,直到下一个事件到达.为了保持简单,我们模仿这个部分通过调用thread . sleep()等待随机数的女士在0到2000之间。因此,每个请求的平均等待1秒。
 
 Now – you might think this is a perfectly normal servlet. In many cases, you would be completely correct – there is nothing wrong with the code until the application faces significant load.
 
@@ -80,25 +82,25 @@ In order to simulate this load I created a fairly simple test with some help fro
 - Maximum response time: 11,368 ms
 - Throughput: 195 requests/second
 
-- 平均响应时间:9492 ms
-- 最小响应时间:205 ms
-- 最大响应时间:11368 ms
-- 吞吐量:195 /秒的请求
+- 平均响应时间: 9,492 ms
+- 最小响应时间: 205 ms
+- 最大响应时间: 11,368 ms
+- 吞吐量: 195 个请求/秒
 
 
 The default Tomcat configuration has got 200 worker threads which, coupled with the fact that the simulated work is replaced with the sleep cycle of average duration of 1000ms, explains nicely the throughput number – in each second the 200 threads should be able to complete 200 sleep cycles, 1 second on average each. Adding context switch costs on top of this, the achieved throughput of 195 requests/second is pretty close to our expectations.
 
-默认的Tomcat配置有200工作线程,再加上模拟工作这一事实被替换为1000 ms的睡眠周期的平均持续时间,很好地解释了吞吐量-在每秒钟200线程数量应该能够完成200的睡眠周期,平均1秒.除此之外,增加了上下文切换成本实现吞吐量195个请求/秒很接近我们的预期。
+Tomcat 默认的配置是 200个 worker 线程, 再加上模拟的工作量,平均 1000 ms 的睡眠时间, 很好地解释了吞吐量 - 每秒钟 200 个线程数量应该能够完成200次睡眠周期, 平均1秒钟. 除此之外,有一些上下文切换的成本, 所以吞吐量是 195个请求/秒 非常接近我们的预期。
 
 
 The throughput itself would not look too bad for 99.9% of the applications out there. However, looking at the maximum and especially average response times the problem starts to look more serious. Getting the worst case response in 11 seconds instead of the expected 2 seconds is a sure way to annoy your users.
 
-吞吐量本身看上去不会太坏为99.9%的应用程序。然而,看着最大,尤其是平均响应时间问题开始看起来更严重.在11秒内得到最坏的情况下反应而不是预期的2秒是一个可靠的方式来骚扰你的用户。
+对 99.9%的应用程序来说, 这个吞吐量本身看上去也不会糟糕。但是,看看最大响应时间, 特别是平均响应时间， 你就会发现问题其实很严重了. 最坏情况下居然需要11秒才能得到响应, 而不是预期的2秒,这对用户来说肯定特别的不友好。
 
 
 Let us now take a look at an alternative implementation, taking advantage of the Servlet API 3.0 asynchronous support:
 
-现在让我们看一下另一种实现,利用Servlet API 3.0异步支持:
+现在我们看另一种实现, 利用了 Servlet 3.0 的异步支持:
 
 	@WebServlet(asyncSupported = true, value = "/AsyncServlet")
 	public class AsyncServlet extends HttpServlet {
@@ -133,39 +135,38 @@ Let us now take a look at an alternative implementation, taking advantage of the
 
 This bit of code is a little more complex, so maybe before we start digging into solution details, I can outline that this solution performed ~5x better latency- and ~5x better throughput-wise. Equipped with the knowledge of such results, you should be more motivated to understand what is actually going on in the second example.
 
-这一点代码更复杂,所以在我们开始挖掘解决方案细节之前,我可以轮廓,这个解决方案执行~ 5 x更好的延迟和~ 5 x throughput-wise更好.配备的知识这样的结果,你应该更加主动地理解实际上是第二个例子。
+上面的代码稍微复杂了一点点, 所以在深入介绍解决方案的细节前, 我可以描述个大概, 这个解决方案的表现是 延迟只有原来的1/5; 而吞吐量也得到了 5x 的提升. 对于这样的结果, 你应该更加主动地去理解第二个例子。
 
 The servlet’s doGet itself looks truly simple. Two facts are worth outlining though, the first of which declares the servlet to support asynchronous method invocations:
 
-servlet的doGet本身看起来真的简单。两个事实价值概述,第一个宣布servlet支持异步方法调用:
+servlet 的 doGet 方法看起来很简单。有两个地方值得提一下:
+
+一是声明 servlet 支持异步方法调用:
 
 	@WebServlet(asyncSupported = true, value = "/AsyncServlet")
 
 
-
-
 The second important aspect is hidden in the following method
 
-第二个重要的方面是隐藏在下面的方法
+
+二是在下面的方法中所隐藏的细节:
 
 	  public static void addToWaitingList(AsyncContext c) {
 	    queue.add(c);
 	  }
 
 
-
-
 in which the whole request processing consists only of storing an instance AsyncContext into some queue. This AsyncContext holds the request and response that were provided by the container and we can use later to answer the user request. Thus incoming requests are waiting for the notification – this could be an updated bid on the monitored auction or the next message in the group chat. The important aspect here is that servlet container’s threads have finished with doGet for the time being and are free to accept another requests.
 
-在整个请求处理由只有AsyncContext实例存储到一些队列.这AsyncContext持有的请求和响应容器提供的,我们可以使用后回答用户请求.因此传入的请求正在等待通知——这可能是一个更新的报价组中的监控拍卖或者下一条消息聊天.这里的重要方面是,servlet容器的线程完成doGet暂时和免费接受另一个请求。
+整个请求的处理,就只是将 AsyncContext 实例添加到一个队列中. AsyncContext 持有容器提供的 request 和 response 对象, 我们可以通过他们来响应用户的请求. 因此传入的请求在等待通知 —— 可能是需要监视的拍卖组中的一个报价更新事件, 或者是下一条聊天信息. 这里面需要注意的是, 将 AsyncContext 加入队列之后, servlet 容器的线程就完成了 doGet 操作, 然后释放出来, 可以接受另一个请求。
 
 Now, the notification arrives every 2 seconds and we have implemented this as a scheduled event, that calls the newEvent method every 2 seconds. When it arrives all the waiting tasks in the queue are processed by a single worker thread responsible for compiling and sending the responses. Instead of blocking hundreds of threads to wait behind the external notification, we achieved this in a lot simpler and cleaner way – batching the interest groups together and processing the requests in a single thread.
 
-现在,通知到每2秒,我们实现了这个预定事件,调用newEvent方法每2秒.当它到达队列中的所有等待的任务由一个工作线程负责处理编译和发送响应.而不是阻塞数以百计的线程等待外部的通知,我们实现这个在很多简单的清洁方法,批处理利益集团在一起并在一个线程处理的请求。
+现在, 每2秒收到一次通知, 我们已经通过调度事件实现了, 每2秒调用一次 newEvent 方法. 当事件到达时,队列中的所有等待任务都由同一个 worker 线程来负责处理编译和发送响应. 而不是阻塞数以百计的线程来等待外部的通知, 我们通过更简单和优雅的方法实现了这点, 将感兴趣的组集中存放在一起, 由单个线程来处理这些请求。
 
 And the results speak for themselves – the very same test on the very same Tomcat 8.0.30 with default configuration resulted in the following:
 
-结果不言自明,同一测试在同一Tomcat 8.0.30默认配置了以下:
+结果不言自明, 在同一台 Tomcat 8.0.30 服务器的默认配置了下, 相同的测试跑出了以下成绩:
 
 
 - Average response time: 1,875 ms
@@ -173,16 +174,16 @@ And the results speak for themselves – the very same test on the very same Tom
 - Maximum response time: 2,326 ms
 - Throughput: 939 requests/second
 
-- 平均响应时间:1875 ms
-- 最小响应时间:356 ms
-- 最大响应时间:2326 ms
-- 吞吐量:939 /秒的请求
+- 平均响应时间: 1,875 ms
+- 最小响应时间: 356 ms
+- 最大响应时间: 2,326 ms
+- 吞吐量: 939 个请求/秒
 
 
 
 The specific case here is small and synthetic, but similar improvements are achievable in the real-world applications.
 
-具体情况是小和合成,但类似的改进实现在现实世界的应用。
+虽然这个示例是手工构造的, 但类似的性能提升在现实世界中却是能实现的。
 
 Now, before you run to rewrite all your servlets to the asynchronous servlets – hold your horses for a minute. The solution works perfectly on a subset of usage cases, such as group chat notifications and auction house price alerts. You will most likely not benefit in the cases where the requests are waiting behind unique database queries being completed. So, as always, I must reiterate my favorite performance-related recommendation – measure everything. Do not guess anything.
 
