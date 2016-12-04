@@ -1,30 +1,30 @@
 #How to use Asynchronous Servlets to improve performance
 
-#使用异步servlet提升性能
+# 使用异步servlet提升性能
 
 Since we have post this article we have received a lot of feedback about it. Based on this feedback we have updated the examples to make them easier to understand and, hopefully, clarify any doubts in their correctness.
 
-在发表这篇文章之后, 我们收到了很多反馈。基于这些反馈,我们更新了相关的示例,让读者更容易理解和掌握, 如果有误,希望能帮助我们改进。
+本文发布之后, 收到了很多的反馈。基于这些反馈,我们更新了文中的示例,使读者更容易理解和掌握, 如果您发现错误和遗漏,希望能给我们提交反馈,帮助我们改进。
 
 
 This post is going to describe a performance optimization technique applicable to a common problem related to modern webapps. Applications nowadays are no longer just passively waiting for browsers to initiate requests, they want to start  communication themselves. A typical example would involve chat applications, auction houses etc – the common denominator being the fact that most of the time the connections with the browser are idle and wait for a certain event being triggered.
 
-本文基于现代 webapp 常碰到的一个问题，介绍对应的性能优化技术。现在的WEB程序不再只是被动地等待浏览器发起请求, 他们相互之间也会进行通信. 典型的例子包括聊天应用,拍卖行等 —— 后台程序大部分时间与浏览器的连接处于空闲状态, 并等待某个事件被触发。
+本文针对当今 webapp 中一种常碰到的问题，介绍相应的性能优化解决方案。如今的WEB程序不再只是被动地等待浏览器的请求, 他们之间也会互相进行通信。 典型的场景包括 在线聊天, 实时拍卖等 —— 后台程序大部分时间与浏览器的连接处于空闲状态, 并等待某个事件被触发。
 
 
 This type of applications has developed a problem class of their own, especially when facing heavy load. The symptoms include starving threads, suffering user interaction, staleness issues etc.
 
-这种类型的应用引发了一些新的问题,尤其是在负载较高的时候。症状包括饥饿线程, 影响用户交互、请求过期等问题。
+这些应用引发了一类新的问题,特别是在负载较高的情况下。引发的状况包括线程饥饿, 影响用户体验、请求超时等问题。
 
 
 Based on recent experience with this type of apps under load, I thought it would be a good time to demonstrate a simple solution. After Servlet API 3.0 implementations became mainstream, the solution has become truly simple, standardized and elegant.
 
-基于最近的经验, 这种类型的应用在负载下, 下面介绍一种简单的解决方案。在 Servlet 3.0成为主流以后, 这成为了真正简单、标准化和优雅的解决方案。
+基于这种类型的应用在高负载下的实践, 我会介绍一种简单的解决方案。在 Servlet 3.0成为主流以后, 这是一种真正简单、标准化并且十分优雅的解决方案。
 
 
 But before we jump into demonstrating the solution, we should understand the problem in greater detail. What could be easier for our readers than to explain the problem with the help of some source code:
 
-在展示具体解决方案之前,我们先了解这到底出现了什么问题. 还有什么能比源代码更容易解释问题呢:
+在演示具体的解决方案前,我们先了解到底发生了什么问题。请看代码:
 
 
 	@WebServlet(urlPatterns = "/BlockingServlet")
@@ -48,7 +48,7 @@ But before we jump into demonstrating the solution, we should understand the pro
 
 The servlet above is an example of how an application described above could look like:
 
-上面的 servlet 所代表的情景可能是这样的:
+此 servlet 所代表的情景如下:
 
 
 - Every 2 seconds some event happens. E.g. stock quote arrives, chat is updated and so on.
@@ -58,10 +58,15 @@ The servlet above is an example of how an application described above could look
 
 <br/>
 
-- 每2秒会有一些事件发生, 如, 股票报价信息更新, 或者有新的聊天信息等。
-- 然后终端用户发送请求, 表示对某些事件进行监视等。
-- 线程此时被阻塞, 直到下一个事件到达。
-- 接收到事件以后, 响应信息被序列化并发送给客户端
+- 每2秒会有某些事件发生, 例如, 报价信息更新, 聊天信息抵达等。
+- 终端用户请求对某些特定事件进行监听。
+- 线程暂时被阻塞, 直到收到下一次事件。
+- 接收到事件时, 响应信息被处理并发送给客户端
+
+
+###############################
+####校对到此处
+###############################
 
 
 Let me explain this waiting aspect. We have some external event that happens every 2 seconds. When new request from end-user arrives, it has to wait some time between 0 and 2000ms until next event. In order to keep it simple, we have emulated this waiting part with a call to Thread.sleep() for random number of ms between 0 and 2000. So every request waits on average for 1 second.
