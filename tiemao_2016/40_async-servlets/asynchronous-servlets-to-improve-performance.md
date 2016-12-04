@@ -61,7 +61,7 @@ The servlet above is an example of how an application described above could look
 - 每2秒会有某些事件发生, 例如, 报价信息更新, 聊天信息抵达等。
 - 终端用户请求对某些特定事件进行监听。
 - 线程暂时被阻塞, 直到收到下一次事件。
-- 接收到事件时, 响应信息被处理并发送给客户端
+- 接收到事件时, 处理响应信息并发送给客户端
 
 
 ###############################
@@ -71,7 +71,7 @@ The servlet above is an example of how an application described above could look
 
 Let me explain this waiting aspect. We have some external event that happens every 2 seconds. When new request from end-user arrives, it has to wait some time between 0 and 2000ms until next event. In order to keep it simple, we have emulated this waiting part with a call to Thread.sleep() for random number of ms between 0 and 2000. So every request waits on average for 1 second.
 
-让我来解释一下这种等待场景。我们有一些外部事件每2秒触发一次。当新的用户请求到达时, 它必须等待一段时间, 在0和2000毫秒之间,直到下一个事件到达.为了保持简单,我们模仿这个部分通过调用thread . sleep()等待随机数的女士在0到2000之间。因此,每个请求的平均等待1秒。
+下面解释一下这个等待场景。 某些外部事件每2秒触发一次。当用户的请求到达时, 它必须等待 0 到 2000 毫秒之间的,直到下一个事件到达.为了保持简单,我们模仿这个部分通过调用thread . sleep()等待随机数的女士在0到2000之间。因此,每个请求的平均等待1秒。
 
 Now – you might think this is a perfectly normal servlet. In many cases, you would be completely correct – there is nothing wrong with the code until the application faces significant load.
 
