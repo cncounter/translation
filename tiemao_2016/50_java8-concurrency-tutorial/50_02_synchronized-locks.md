@@ -4,9 +4,11 @@ April 30, 2015
 
 Welcome to the second part of my Java 8 Concurrency Tutorial out of a series of guides teaching multi-threaded programming in Java 8 with easily understood code examples. In the next 15 min you learn how to synchronize access to mutable shared variables via the synchronized keyword, locks and semaphores.
 
-*   Part 1: [Threads and Executors](/posts/2015/04/07/java8-concurrency-tutorial-thread-executor-examples/)
-*   Part 2: Synchronization and Locks
-*   Part 3: [Atomic Variables and ConcurrentMap](/posts/2015/05/22/java8-concurrency-tutorial-atomic-concurrent-map-examples/)
+
+*   Part 1: [Threads and Executors](50_01_thread-executor.md)
+*   Part 2: [Synchronization and Locks](50_02_synchronized-locks.md)
+*   Part 3: [Atomic Variables and ConcurrentMap](50_03_atomic-concurrent-map.md)
+
 
 The majority of concepts shown in this article also work in older versions of Java. However the code samples focus on Java 8 and make heavy use of lambda expressions and  new concurrency features. If you're not yet familiar with lambdas I recommend reading my [Java 8 Tutorial](/posts/2014/03/16/java-8-tutorial/) first.
 
