@@ -19,7 +19,7 @@ This type of applications has developed a problem class of their own, especially
 
 Based on recent experience with this type of apps under load, I thought it would be a good time to demonstrate a simple solution. After Servlet API 3.0 implementations became mainstream, the solution has become truly simple, standardized and elegant.
 
-基于这种类型的应用在高负载下的实践, 我会介绍一种简单的解决方案。在 Servlet 3.0成为主流以后, 这是一种真正简单、标准化并且十分优雅的解决方案。
+基于这类应用在高负载下的实践, 我会介绍一种简单的解决方案。在 Servlet 3.0成为主流以后, 这是一种真正简单、标准化并且十分优雅的解决方案。
 
 
 But before we jump into demonstrating the solution, we should understand the problem in greater detail. What could be easier for our readers than to explain the problem with the help of some source code:
@@ -64,28 +64,28 @@ The servlet above is an example of how an application described above could look
 - 接收到事件时, 处理响应信息并发送给客户端
 
 
-###############################
-####校对到此处
-###############################
-
 
 Let me explain this waiting aspect. We have some external event that happens every 2 seconds. When new request from end-user arrives, it has to wait some time between 0 and 2000ms until next event. In order to keep it simple, we have emulated this waiting part with a call to Thread.sleep() for random number of ms between 0 and 2000. So every request waits on average for 1 second.
 
-下面解释一下这个等待场景。 某些外部事件每2秒触发一次。当用户的请求到达时, 它必须等待 0 到 2000 毫秒之间的,直到下一个事件到达.为了保持简单,我们模仿这个部分通过调用thread . sleep()等待随机数的女士在0到2000之间。因此,每个请求的平均等待1秒。
+下面解释一下这个等待场景。 我们的系统, 每2秒触发一次外部事件。当收到用户请求时, 需要等待一段时间，大约是 0 到 2000 毫秒之间, 直到下一次事件发生. 为了演示的需要, 此处通过调用 `Thread.sleep()` 来模拟随机的等待时间。平均每个请求等待1秒左右。
 
 Now – you might think this is a perfectly normal servlet. In many cases, you would be completely correct – there is nothing wrong with the code until the application faces significant load.
 
-现在,你可能会认为这是一个完全正常的servlet。在很多情况下,你会完全正确——与代码没有错,直到应用程序面临重大的负担。
+现在,你可能会觉得这是一个十分普通的servlet。在多数情况下,确实是这样 —— 代码并没有错误, 但如果系统面临大量的并发负载时就会力不从心了。
 
 In order to simulate this load I created a fairly simple test with some help from JMeter, where I launched 2,000 threads, each running through 10 iterations of bombarding the application with requests to the /BlockedServlet. Running the test with the deployed servlet on an out-of-the-box Tomcat 8.0.30 I got the following results:
 
-为了模拟这种负载我创建了一个相当简单的测试在JMeter的帮助下,我推出了2000个线程,每个贯穿10迭代的轰击应用程序请求/ BlockedServlet。运行测试与部署servlet开箱即用的Tomcat 8.0.30我得到以下结果:
+为了模拟这种负载,我用 JMeter 创建了一个简单的测试, 启动 2000 个线程, 每个线程执行 10 次请求来进行系统压力测试。 
+
+请求的URI为 `/BlockedServlet`,  部署在 Tomcat 8.0.30 默认配置下, 测试结果如下:
 
 
 - Average response time: 9,492 ms
 - Minimum response time: 205 ms
 - Maximum response time: 11,368 ms
 - Throughput: 195 requests/second
+
+<br/>
 
 - 平均响应时间: 9,492 ms
 - 最小响应时间: 205 ms
@@ -95,17 +95,17 @@ In order to simulate this load I created a fairly simple test with some help fro
 
 The default Tomcat configuration has got 200 worker threads which, coupled with the fact that the simulated work is replaced with the sleep cycle of average duration of 1000ms, explains nicely the throughput number – in each second the 200 threads should be able to complete 200 sleep cycles, 1 second on average each. Adding context switch costs on top of this, the achieved throughput of 195 requests/second is pretty close to our expectations.
 
-Tomcat 默认的配置是 200个 worker 线程, 再加上模拟的工作量,平均 1000 ms 的睡眠时间, 很好地解释了吞吐量 - 每秒钟 200 个线程数量应该能够完成200次睡眠周期, 平均1秒钟. 除此之外,有一些上下文切换的成本, 所以吞吐量是 195个请求/秒 非常接近我们的预期。
+Tomcat 默认配置的是 200个 worker 线程, 再加上模拟的工作量(平均线程休眠 1000 ms ), 很好地解释了吞吐量数据 -  200 个线程每秒应该能够完成200次执行周期, 平均1秒钟左右. 但有一些上下文切换的成本, 所以吞吐量为 195个请求/秒, 很符合我们的预期。
 
 
 The throughput itself would not look too bad for 99.9% of the applications out there. However, looking at the maximum and especially average response times the problem starts to look more serious. Getting the worst case response in 11 seconds instead of the expected 2 seconds is a sure way to annoy your users.
 
-对 99.9%的应用程序来说, 这个吞吐量本身看上去也不会糟糕。但是,看看最大响应时间, 特别是平均响应时间， 你就会发现问题其实很严重了. 最坏情况下居然需要11秒才能得到响应, 而不是预期的2秒,这对用户来说肯定特别的不友好。
+对 99.9% 的应用来说, 这个吞吐量数据看上去也很正常。但看看最大响应时间, 以及平均响应时间， 就会发现问题实在是太严重了。  在最坏情况下客户端居然需要11秒才能得到响应, 而预期是2秒,这对用户来说一点都不友好。
 
 
 Let us now take a look at an alternative implementation, taking advantage of the Servlet API 3.0 asynchronous support:
 
-现在我们看另一种实现, 利用了 Servlet 3.0 的异步支持:
+下面我们看另一种实现, 使用了 Servlet 3.0 的异步特性:
 
 	@WebServlet(asyncSupported = true, value = "/AsyncServlet")
 	public class AsyncServlet extends HttpServlet {
@@ -136,6 +136,11 @@ Let us now take a look at an alternative implementation, taking advantage of the
 	  }
 	}
 
+
+
+###############################
+####校对到此处
+###############################
 
 
 This bit of code is a little more complex, so maybe before we start digging into solution details, I can outline that this solution performed ~5x better latency- and ~5x better throughput-wise. Equipped with the knowledge of such results, you should be more motivated to understand what is actually going on in the second example.
