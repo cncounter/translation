@@ -10,7 +10,7 @@ Welcome to the first part of my Java 8 Concurrency tutorial. This guide teaches 
 *   Part 3: [Atomic Variables and ConcurrentMap](50_03_atomic-concurrent-map.md)
 
 
-The [Concurrency API](https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/package-summary.html) was first introduced with the release of Java 5 and then progressively enhanced with every new Java release. The majority of concepts shown in this article also work in older versions of Java. However my code samples focus on Java 8 and make heavy use of lambda expressions and other new features. If you're not yet familiar with lambdas I recommend reading my [Java 8 Tutorial](/posts/2014/03/16/java-8-tutorial/) first.
+The [Concurrency API](https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/package-summary.html) was first introduced with the release of Java 5 and then progressively enhanced with every new Java release. The majority of concepts shown in this article also work in older versions of Java. However my code samples focus on Java 8 and make heavy use of lambda expressions and other new features. If you're not yet familiar with lambdas I recommend reading my [Java 8 Tutorial](http://winterbe.com/posts/2014/03/16/java-8-tutorial/) first.
 
 ### Threads and Runnables
 
@@ -200,7 +200,7 @@ Executors support batch submitting of multiple callables at once via `invokeAll(
         })
         .forEach(System.out::println);
 
-In this example we utilize Java 8 functional streams in order to process all futures returned by the invocation of `invokeAll`. We first map each future to its return value and then print each value to the console. If you're not yet familiar with streams read my [Java 8 Stream Tutorial](/posts/2014/07/31/java8-stream-tutorial-examples/).
+In this example we utilize Java 8 functional streams in order to process all futures returned by the invocation of `invokeAll`. We first map each future to its return value and then print each value to the console. If you're not yet familiar with streams read my [Java 8 Stream Tutorial](http://winterbe.com/posts/2014/07/31/java8-stream-tutorial-examples/).
 
 #### InvokeAny
 
@@ -301,20 +301,20 @@ Benjamin is Software Engineer, Full Stack Developer at [Pondus](http://pondus.de
 ### Read More
 
 *   [Recent](#)
-*   [All Posts](/blog/)
-*   [Java](/java/)
-*   [JavaScript](/javascript/)
-*   [Tutorials](/tutorials/)
+*   [All Posts](http://winterbe.com/blog/)
+*   [Java](http://winterbe.com/java/)
+*   [JavaScript](http://winterbe.com/javascript/)
+*   [Tutorials](http://winterbe.com/tutorials/)
 
 *   [Recent](#)
-*   [All Posts](/blog/)
-*   [Java](/java/)
-*   [Tutorials](/tutorials/)
+*   [All Posts](http://winterbe.com/blog/)
+*   [Java](http://winterbe.com/java/)
+*   [Tutorials](http://winterbe.com/tutorials/)
 
-*   [# Integrating React.js into Existing jQuery Web Applications](/posts/2015/08/24/integrate-reactjs-into-jquery-webapps/)
-*   [# Java 8 Concurrency Tutorial: Atomic Variables and ConcurrentMap](/posts/2015/05/22/java8-concurrency-tutorial-atomic-concurrent-map-examples/)
-*   [# Java 8 Concurrency Tutorial: Synchronization and Locks](/posts/2015/04/30/java8-concurrency-tutorial-synchronized-locks-examples/)
-*   [# Java 8 API by Example: Strings, Numbers, Math and Files](/posts/2015/03/25/java8-examples-string-number-math-files/)
+*   [# Integrating React.js into Existing jQuery Web Applications](http://winterbe.com/posts/2015/08/24/integrate-reactjs-into-jquery-webapps/)
+*   [# Java 8 Concurrency Tutorial: Atomic Variables and ConcurrentMap](http://winterbe.com/posts/2015/05/22/java8-concurrency-tutorial-atomic-concurrent-map-examples/)
+*   [# Java 8 Concurrency Tutorial: Synchronization and Locks](http://winterbe.com/posts/2015/04/30/java8-concurrency-tutorial-synchronized-locks-examples/)
+*   [# Java 8 API by Example: Strings, Numbers, Math and Files](http://winterbe.com/posts/2015/03/25/java8-examples-string-number-math-files/)
 
 
 

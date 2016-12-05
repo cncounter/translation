@@ -10,7 +10,7 @@ Welcome to the second part of my Java 8 Concurrency Tutorial out of a series of 
 *   Part 3: [Atomic Variables and ConcurrentMap](50_03_atomic-concurrent-map.md)
 
 
-The majority of concepts shown in this article also work in older versions of Java. However the code samples focus on Java 8 and make heavy use of lambda expressions and  new concurrency features. If you're not yet familiar with lambdas I recommend reading my [Java 8 Tutorial](/posts/2014/03/16/java-8-tutorial/) first.
+The majority of concepts shown in this article also work in older versions of Java. However the code samples focus on Java 8 and make heavy use of lambda expressions and  new concurrency features. If you're not yet familiar with lambdas I recommend reading my [Java 8 Tutorial](http://winterbe.com/posts/2014/03/16/java-8-tutorial/) first.
 
 For simplicity the code samples of this tutorial make use of the two helper methods `sleep(seconds)` and `stop(executor)` as defined [here](https://github.com/winterbe/java8-tutorial/blob/master/src/com/winterbe/java8/samples/concurrent/ConcurrentUtils.java).
 
@@ -346,20 +346,20 @@ Benjamin is Software Engineer, Full Stack Developer at [Pondus](http://pondus.de
 ### Read More
 
 *   [Recent](#)
-*   [All Posts](/blog/)
-*   [Java](/java/)
-*   [JavaScript](/javascript/)
-*   [Tutorials](/tutorials/)
+*   [All Posts](http://winterbe.com/blog/)
+*   [Java](http://winterbe.com/java/)
+*   [JavaScript](http://winterbe.com/javascript/)
+*   [Tutorials](http://winterbe.com/tutorials/)
 
 *   [Recent](#)
-*   [All Posts](/blog/)
-*   [Java](/java/)
-*   [Tutorials](/tutorials/)
+*   [All Posts](http://winterbe.com/blog/)
+*   [Java](http://winterbe.com/java/)
+*   [Tutorials](http://winterbe.com/tutorials/)
 
-*   [# Integrating React.js into Existing jQuery Web Applications](/posts/2015/08/24/integrate-reactjs-into-jquery-webapps/)
-*   [# Java 8 Concurrency Tutorial: Atomic Variables and ConcurrentMap](/posts/2015/05/22/java8-concurrency-tutorial-atomic-concurrent-map-examples/)
-*   [# Java 8 Concurrency Tutorial: Threads and Executors](/posts/2015/04/07/java8-concurrency-tutorial-thread-executor-examples/)
-*   [# Java 8 API by Example: Strings, Numbers, Math and Files](/posts/2015/03/25/java8-examples-string-number-math-files/)
+*   [# Integrating React.js into Existing jQuery Web Applications](http://winterbe.com/posts/2015/08/24/integrate-reactjs-into-jquery-webapps/)
+*   [# Java 8 Concurrency Tutorial: Atomic Variables and ConcurrentMap](http://winterbe.com/posts/2015/05/22/java8-concurrency-tutorial-atomic-concurrent-map-examples/)
+*   [# Java 8 Concurrency Tutorial: Threads and Executors](http://winterbe.com/posts/2015/04/07/java8-concurrency-tutorial-thread-executor-examples/)
+*   [# Java 8 API by Example: Strings, Numbers, Math and Files](http://winterbe.com/posts/2015/03/25/java8-examples-string-number-math-files/)
 
 
 

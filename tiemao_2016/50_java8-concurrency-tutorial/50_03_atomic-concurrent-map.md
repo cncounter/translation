@@ -14,7 +14,7 @@ For simplicity the code samples of this tutorial make use of the two helper meth
 
 ### AtomicInteger
 
-The package `java.concurrent.atomic` contains many useful classes to perform atomic operations. An operation is atomic when you can safely perform the operation in parallel on multiple threads without using the `synchronized` keyword or locks as shown in my [previous tutorial](/posts/2015/04/30/java8-concurrency-tutorial-synchronized-locks-examples/).
+The package `java.concurrent.atomic` contains many useful classes to perform atomic operations. An operation is atomic when you can safely perform the operation in parallel on multiple threads without using the `synchronized` keyword or locks as shown in my [previous tutorial](http://winterbe.com/posts/2015/04/30/java8-concurrency-tutorial-synchronized-locks-examples/).
 
 Internally, the atomic classes make heavy use of [compare-and-swap](http://en.wikipedia.org/wiki/Compare-and-swap) (CAS), an atomic instruction directly supported by most modern CPUs. Those instructions usually are much faster than synchronizing via locks. So my advice is to prefer atomic classes over locks in case you just have to change a single mutable variable concurrently.
 
@@ -263,20 +263,20 @@ Benjamin is Software Engineer, Full Stack Developer at [Pondus](http://pondus.de
 ### Read More
 
 *   [Recent](#)
-*   [All Posts](/blog/)
-*   [Java](/java/)
-*   [JavaScript](/javascript/)
-*   [Tutorials](/tutorials/)
+*   [All Posts](http://winterbe.com/blog/)
+*   [Java](http://winterbe.com/java/)
+*   [JavaScript](http://winterbe.com/javascript/)
+*   [Tutorials](http://winterbe.com/tutorials/)
 
 *   [Recent](#)
-*   [All Posts](/blog/)
-*   [Java](/java/)
-*   [Tutorials](/tutorials/)
+*   [All Posts](http://winterbe.com/blog/)
+*   [Java](http://winterbe.com/java/)
+*   [Tutorials](http://winterbe.com/tutorials/)
 
-*   [# Integrating React.js into Existing jQuery Web Applications](/posts/2015/08/24/integrate-reactjs-into-jquery-webapps/)
-*   [# Java 8 Concurrency Tutorial: Synchronization and Locks](/posts/2015/04/30/java8-concurrency-tutorial-synchronized-locks-examples/)
-*   [# Java 8 Concurrency Tutorial: Threads and Executors](/posts/2015/04/07/java8-concurrency-tutorial-thread-executor-examples/)
-*   [# Java 8 API by Example: Strings, Numbers, Math and Files](/posts/2015/03/25/java8-examples-string-number-math-files/)
+*   [# Integrating React.js into Existing jQuery Web Applications](http://winterbe.com/posts/2015/08/24/integrate-reactjs-into-jquery-webapps/)
+*   [# Java 8 Concurrency Tutorial: Synchronization and Locks](http://winterbe.com/posts/2015/04/30/java8-concurrency-tutorial-synchronized-locks-examples/)
+*   [# Java 8 Concurrency Tutorial: Threads and Executors](http://winterbe.com/posts/2015/04/07/java8-concurrency-tutorial-thread-executor-examples/)
+*   [# Java 8 API by Example: Strings, Numbers, Math and Files](http://winterbe.com/posts/2015/03/25/java8-examples-string-number-math-files/)
 
 原文链接: [http://winterbe.com/posts/2015/05/22/java8-concurrency-tutorial-atomic-concurrent-map-examples/](http://winterbe.com/posts/2015/05/22/java8-concurrency-tutorial-atomic-concurrent-map-examples/)
 
