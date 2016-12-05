@@ -30,6 +30,30 @@ Java supports [Threads](https://docs.oracle.com/javase/8/docs/api/java/lang/Thre
 
     System.out.println("Done!");
 
+
+不使用 lambda 的代码如下所示:
+
+    public static void main(String[] args) {
+        testRunnable();
+    }
+    public static void testRunnable() {
+        //
+        Runnable task =  new Runnable(){
+            public void run() {
+                String name = Thread.currentThread().getName();
+                System.out.println("Hello " + name);
+            }
+        };
+        // 在当前线程,当中普通方法调用
+        task.run();
+        // 创建线程,以前面创建的 task 作为初始任务
+        Thread thread = new Thread(task);
+        // 启动线程; 注意,调用的是 start(); 而不是 run() 方法
+        thread.start();
+        //
+        System.out.println("Done!");
+    }
+
 Since `Runnable` is a functional interface we can utilize Java 8 lambda expressions to print the current threads name to the console. First we execute the runnable directly on the main thread before starting a new thread.
 
 The result on the console might look like this:
@@ -63,6 +87,34 @@ Threads can be put to sleep for a certain duration. This is quite handy to simul
     Thread thread = new Thread(runnable);
     thread.start();
 
+
+不使用 lambda 的代码如下所示:
+
+    public static void main(String[] args) {
+        testRunnableSleep();
+    }
+    public static void testRunnableSleep() {
+        //
+        Runnable runnable =  new Runnable(){
+            public void run() {
+                String name = Thread.currentThread().getName();
+                System.out.println("线程准备 sleep :" + name);
+                try {
+                    TimeUnit.SECONDS.sleep(1);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                System.out.println("线程 sleep 结束:" + name);
+            }
+        };
+        // 创建线程,以前面创建的 runnable 作为初始任务
+        Thread thread = new Thread(runnable);
+        // 启动线程; 注意,调用的是 start(); 而不是 run() 方法
+        thread.start();
+    }
+
+
+
 When you run the above code you'll notice the one second delay between the first and the second print statement. `TimeUnit` is a useful enum for working with units of time. Alternatively you can achieve the same by calling `Thread.sleep(1000)`.
 
 Working with the `Thread` class can be very tedious and error-prone. Due to that reason the **Concurrency API** has been introduced back in 2004 with the release of Java 5. The API is located in package `java.util.concurrent` and contains many useful classes for handling concurrent programming. Since that time the Concurrency API has been enhanced with every new Java release and even Java 8 provides new classes and methods for dealing with concurrency.
@@ -82,6 +134,27 @@ This is how the first thread-example looks like using executors:
     });
 
     // => Hello pool-1-thread-1
+
+
+不使用 lambda 的代码如下所示:
+
+    public static void main(String[] args) {
+        testSingle();
+    }
+    public static void testSingle() {
+        // 创建单线程的线程池
+        ExecutorService executorS = Executors.newSingleThreadExecutor();
+        // 提交任务; 此处使用匿名内部类
+        executorS.submit(new Runnable(){
+            public void run() {
+                String threadName = Thread.currentThread().getName();
+                System.out.println("threadName:" + threadName);
+            }
+        });
+    }
+    // 输出内容如 threadName: pool-1-thread-1
+
+
 
 The class `Executors` provides convenient factory methods for creating different kinds of executor services. In this sample we use an executor with a thread pool of size one.
 
