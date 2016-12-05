@@ -251,15 +251,11 @@ I hope you've enjoyed reading the third part of my tutorial series about Java 8 
 
 If you want to support my work, please share this tutorial with your friends. You should also [follow me on Twitter](https://twitter.com/winterbe_) as I constantly tweet about Java and programming related stuff.
 
-*   Part 1: [Threads and Executors](/posts/2015/04/07/java8-concurrency-tutorial-thread-executor-examples/)
-*   Part 2: [Synchronization and Locks](/posts/2015/04/30/java8-concurrency-tutorial-synchronized-locks-examples/)
-*   Part 3: Atomic Variables and ConcurrentMap
 
-<iframe allowtransparency="true" scrolling="no" frameborder="0" src="https://buttons.github.io/buttons.html#href=https%3A%2F%2Fgithub.com%2Fwinterbe&amp;text=Follow%20%40winterbe&amp;data-count-api=&amp;data-count-href=&amp;data-count-aria-label=&amp;data-style=mega&amp;data-icon=&amp;aria-label=Follow%20%40winterbe%20on%20GitHub" style="width: 140px; height: 28px; border: none;"></iframe>
+*   Part 1: [Threads and Executors](50_01_thread-executor.md)
+*   Part 2: [Synchronization and Locks](50_02_synchronized-locks.md)
+*   Part 3: [Atomic Variables and ConcurrentMap](50_03_atomic-concurrent-map.md)
 
-    <iframe id="twitter-widget-0" scrolling="no" frameborder="0" allowtransparency="true" class="twitter-follow-button twitter-follow-button-rendered" title="Twitter Follow Button" src="http://platform.twitter.com/widgets/follow_button.f7908d4abf5ce27173c69bdbb93aedb6.en.html#dnt=true&amp;id=twitter-widget-0&amp;lang=en&amp;screen_name=winterbe_&amp;show_count=false&amp;show_screen_name=true&amp;size=l&amp;time=1480917821083" style="position: static; visibility: visible; width: 150px; height: 28px;" data-screen-name="winterbe_"></iframe>
-
-    <iframe id="twitter-widget-1" scrolling="no" frameborder="0" allowtransparency="true" class="twitter-share-button twitter-share-button-rendered twitter-tweet-button" title="Twitter Tweet Button" src="http://platform.twitter.com/widgets/tweet_button.f7908d4abf5ce27173c69bdbb93aedb6.en.html#dnt=true&amp;id=twitter-widget-1&amp;lang=en&amp;original_referer=http%3A%2F%2Fwinterbe.com%2Fposts%2F2015%2F05%2F22%2Fjava8-concurrency-tutorial-atomic-concurrent-map-examples%2F&amp;size=l&amp;text=Java%208%20Concurrency%20Tutorial%3A%20Atomic%20Variables%20and%20ConcurrentMap%20-%20Benjamin%20Winterberg&amp;time=1480917821085&amp;type=share&amp;url=http%3A%2F%2Fwinterbe.com%2Fposts%2F2015%2F05%2F22%2Fjava8-concurrency-tutorial-atomic-concurrent-map-examples%2F&amp;via=winterbe_" style="position: static; visibility: visible; width: 75px; height: 28px;"></iframe>
 
 Benjamin is Software Engineer, Full Stack Developer at [Pondus](http://pondus.de/en/homepage/), an excited runner and table foosball player.
     Get in touch on [Twitter](https://twitter.com/winterbe_), [Google+](https://plus.google.com/105973259367211176218/posts) and [GitHub](https://github.com/winterbe).

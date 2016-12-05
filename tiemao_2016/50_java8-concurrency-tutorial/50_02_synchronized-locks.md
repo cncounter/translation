@@ -329,9 +329,10 @@ This was the second part out of a series of concurrency tutorials. More parts wi
 
 I hope you've enjoyed this article. If you have any further questions send me your feedback in the comments below. You should also [follow me on Twitter](https://twitter.com/winterbe_) for more dev-related stuff!
 
-*   Part 1: [Threads and Executors](/posts/2015/04/07/java8-concurrency-tutorial-thread-executor-examples/)
-*   Part 2: Synchronization and Locks
-*   Part 3: [Atomic Variables and ConcurrentMap](/posts/2015/05/22/java8-concurrency-tutorial-atomic-concurrent-map-examples/)
+*   Part 1: [Threads and Executors](50_01_thread-executor.md)
+*   Part 2: [Synchronization and Locks](50_02_synchronized-locks.md)
+*   Part 3: [Atomic Variables and ConcurrentMap](50_03_atomic-concurrent-map.md)
+
 
 [Follow @winterbe](https://github.com/winterbe)
 
