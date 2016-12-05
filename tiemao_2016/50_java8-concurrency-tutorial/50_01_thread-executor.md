@@ -331,5 +331,5 @@ I hope you've enjoyed this article. If you have any further questions send me yo
 
 
 
-原文链接: http://winterbe.com/posts/2015/04/07/java8-concurrency-tutorial-thread-executor-examples/
+原文链接: [http://winterbe.com/posts/2015/04/07/java8-concurrency-tutorial-thread-executor-examples/](http://winterbe.com/posts/2015/04/07/java8-concurrency-tutorial-thread-executor-examples/)
 
