@@ -145,13 +145,13 @@ Let us now take a look at an alternative implementation, taking advantage of the
 
 This bit of code is a little more complex, so maybe before we start digging into solution details, I can outline that this solution performed ~5x better latency- and ~5x better throughput-wise. Equipped with the knowledge of such results, you should be more motivated to understand what is actually going on in the second example.
 
-上面的代码稍微复杂了一点点, 所以在深入介绍解决方案的细节前, 我可以描述个大概, 这个解决方案的表现是 延迟只有原来的1/5; 而吞吐量也得到了 5x 的提升. 对于这样的结果, 你应该更加主动地去理解第二个例子。
+上面的代码稍微有一点复杂, 所以我先透露一下此方案的性能表现: 响应延迟(latency)只有原来的1/5; 而吞吐量(throughput-wise)也提升了 5 倍。 看到这样的结果, 你肯定想深入了解第二种方案了吧。
 
 The servlet’s doGet itself looks truly simple. Two facts are worth outlining though, the first of which declares the servlet to support asynchronous method invocations:
 
-servlet 的 doGet 方法看起来很简单。有两个地方值得提一下:
+servlet 的 `doGet` 方法看起来很简单。有两个地方值得提一下:
 
-一是声明 servlet 支持异步方法调用:
+一是声明 servlet,以及支持异步方法调用:
 
 	@WebServlet(asyncSupported = true, value = "/AsyncServlet")
 
@@ -159,7 +159,7 @@ servlet 的 doGet 方法看起来很简单。有两个地方值得提一下:
 The second important aspect is hidden in the following method
 
 
-二是在下面的方法中所隐藏的细节:
+二是方法 `addToWaitingList` 中的细节:
 
 	  public static void addToWaitingList(AsyncContext c) {
 	    queue.add(c);
@@ -168,21 +168,23 @@ The second important aspect is hidden in the following method
 
 in which the whole request processing consists only of storing an instance AsyncContext into some queue. This AsyncContext holds the request and response that were provided by the container and we can use later to answer the user request. Thus incoming requests are waiting for the notification – this could be an updated bid on the monitored auction or the next message in the group chat. The important aspect here is that servlet container’s threads have finished with doGet for the time being and are free to accept another requests.
 
-整个请求的处理,就只是将 AsyncContext 实例添加到一个队列中. AsyncContext 持有容器提供的 request 和 response 对象, 我们可以通过他们来响应用户的请求. 因此传入的请求在等待通知 —— 可能是需要监视的拍卖组中的一个报价更新事件, 或者是下一条聊天信息. 这里面需要注意的是, 将 AsyncContext 加入队列之后, servlet 容器的线程就完成了 doGet 操作, 然后释放出来, 可以接受另一个请求。
+在其中, 整个请求的处理只有一行代码,将 AsyncContext 实例加入队列中。 AsyncContext 里含有容器提供的 request 和 response 对象, 我们可以通过他们来响应用户请求. 因此传入的请求在等待通知 —— 可能是监视的拍卖组中的报价更新事件, 或者是下一条群聊消息。这里需要注意的是, 将 AsyncContext 加入队列以后, servlet 容器的线程就完成了 ·doGet· 操作, 然后释放出来, 可以去接受另一个新请求了。
 
 Now, the notification arrives every 2 seconds and we have implemented this as a scheduled event, that calls the newEvent method every 2 seconds. When it arrives all the waiting tasks in the queue are processed by a single worker thread responsible for compiling and sending the responses. Instead of blocking hundreds of threads to wait behind the external notification, we achieved this in a lot simpler and cleaner way – batching the interest groups together and processing the requests in a single thread.
 
-现在, 每2秒收到一次通知, 我们已经通过调度事件实现了, 每2秒调用一次 newEvent 方法. 当事件到达时,队列中的所有等待任务都由同一个 worker 线程来负责处理编译和发送响应. 而不是阻塞数以百计的线程来等待外部的通知, 我们通过更简单和优雅的方法实现了这点, 将感兴趣的组集中存放在一起, 由单个线程来处理这些请求。
+现在, 系统通知每2秒到达一次, 当然这部分我们通过 `static` 块中的调度事件实现了, 每2秒会执行一次 newEvent 方法. 当通知到来时, 队列中所有在等待的请求都由同一个 worker 线程负责处理并发送响应消息。 这次的代码, 没有阻塞几百个线程来等待外部事件通知, 而是用更简洁明了的方法来实现了, 把感兴趣的请求放在一个group中, 由单个线程进行批量处理。
 
 And the results speak for themselves – the very same test on the very same Tomcat 8.0.30 with default configuration resulted in the following:
 
-结果不言自明, 在同一台 Tomcat 8.0.30 服务器的默认配置了下, 相同的测试跑出了以下成绩:
+结果不用说, 在同样的配置下, Tomcat 8.0.30 服务器跑出了以下测试结果:
 
 
 - Average response time: 1,875 ms
 - Minimum response time: 356 ms
 - Maximum response time: 2,326 ms
 - Throughput: 939 requests/second
+
+<br/>
 
 - 平均响应时间: 1,875 ms
 - 最小响应时间: 356 ms
@@ -193,22 +195,21 @@ And the results speak for themselves – the very same test on the very same Tom
 
 The specific case here is small and synthetic, but similar improvements are achievable in the real-world applications.
 
-虽然这个示例是手工构造的, 但类似的性能提升在现实世界中却是能实现的。
+虽然示例是手工构造的, 但类似的性能提升在现实世界中却是很普遍的。
 
 Now, before you run to rewrite all your servlets to the asynchronous servlets – hold your horses for a minute. The solution works perfectly on a subset of usage cases, such as group chat notifications and auction house price alerts. You will most likely not benefit in the cases where the requests are waiting behind unique database queries being completed. So, as always, I must reiterate my favorite performance-related recommendation – measure everything. Do not guess anything.
 
-现在,在你运行重写所有的servlet异步servlet -一分钟你要沉住气.解决方案能工作的一个子集上的使用情况下,如群组聊天通知和拍卖行价格警报.很可能没有好处的情况下,请求等待背后独特的数据库查询完成.所以,像往常一样,我必须重申我最喜欢绩效建议——衡量一切。不要想任何事情。
+现在, 请不要急着去将所有的 servlet 重构为异步servlet。 因为这种方案, 只在满足某些特征的任务才会得到大量性能提升, 比如聊天室, 或者拍卖价格提醒之类的。 而对于需要请求底层数据库之类的操作, 很可能没有性能提升。 所以,就像以前一样, 我必须重申, 我最喜欢的性能优化忠告 —— 请权衡考虑整件事情，不要把猜测当作理所当然。
 
 But on the occasions when the problem does fit the solution shape, I can only praise it. Besides the now-obvious improvements on throughput and latency, we have elegantly avoided possible thread starvation issues under heavy load.
 
-但在场合问题是否符合方案的形状时,我只能赞美它.除了now-obvious改进吞吐量和延迟,我们优雅负载较重的情况下,避免可能的线程饥饿问题。
+但如果确实符合此方案适应的情景, 那我就恭喜你啦！ 不仅能明显改进吞吐量和延迟, 还能在大量的并发压力下表现出色, 避免可能的线程饥饿问题。
 
 
 Another important aspect – the approach to asynchronous request processing is finally standardized. Independent of your favorite Servlet API 3.0 – compliant application server such as Tomcat 7+, JBoss 6 or Jetty 8+ – you can be sure the approach works. No more wrestling with different Comet implementations or platform-dependent solutions, such as the Weblogic FutureResponseServlet.
 
 
-另一个重要方面——异步请求处理方法终于标准化。独立于你最喜欢的Servlet API 3.0 -兼容的应用服务器,比如Tomcat 7 +,JBoss或Jetty 6 8 +——你可以确定作品的方法.不再摔跤与不同的Comet实现或与平台相关的解决方案,比如Weblogic FutureResponseServlet。
-
+另一个重要信息是 —— 异步请求的处理终于标准化了。兼容 Servlet 3.0 的应用服务器 —— 比如 Tomcat 7+, JBoss 6 或者 Jetty 8+ —— 都支持这种方案. 再也不用陷进那些耦合具体平台的解决方案里, 例如 Weblogic `FutureResponseServlet`。
 
 
 
