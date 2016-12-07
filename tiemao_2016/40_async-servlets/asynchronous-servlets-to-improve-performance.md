@@ -138,11 +138,6 @@ Let us now take a look at an alternative implementation, taking advantage of the
 
 
 
-###############################
-####校对到此处
-###############################
-
-
 This bit of code is a little more complex, so maybe before we start digging into solution details, I can outline that this solution performed ~5x better latency- and ~5x better throughput-wise. Equipped with the knowledge of such results, you should be more motivated to understand what is actually going on in the second example.
 
 上面的代码稍微有一点复杂, 所以我先透露一下此方案的性能表现: 响应延迟(latency)只有原来的1/5; 而吞吐量(throughput-wise)也提升了 5 倍。 看到这样的结果, 你肯定想深入了解第二种方案了吧。
@@ -199,7 +194,7 @@ The specific case here is small and synthetic, but similar improvements are achi
 
 Now, before you run to rewrite all your servlets to the asynchronous servlets – hold your horses for a minute. The solution works perfectly on a subset of usage cases, such as group chat notifications and auction house price alerts. You will most likely not benefit in the cases where the requests are waiting behind unique database queries being completed. So, as always, I must reiterate my favorite performance-related recommendation – measure everything. Do not guess anything.
 
-现在, 请不要急着去将所有的 servlet 重构为异步servlet。 因为这种方案, 只在满足某些特征的任务才会得到大量性能提升, 比如聊天室, 或者拍卖价格提醒之类的。 而对于需要请求底层数据库之类的操作, 很可能没有性能提升。 所以,就像以前一样, 我必须重申, 我最喜欢的性能优化忠告 —— 请权衡考虑整件事情，不要把猜测当作理所当然。
+现在, 请不要急着去将所有的 servlet 重构为异步servlet。 因为这种方案, 只在满足某些特征的任务才会得到大量性能提升, 比如聊天室, 或者拍卖价格提醒之类的。 而对于需要请求底层数据库之类的操作, 很可能没有性能提升。 所以,就像以前一样, 我必须重申, 我最喜欢的性能优化忠告 —— 请权衡考虑整件事情，不要想当然。
 
 But on the occasions when the problem does fit the solution shape, I can only praise it. Besides the now-obvious improvements on throughput and latency, we have elegantly avoided possible thread starvation issues under heavy load.
 
