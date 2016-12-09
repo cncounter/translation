@@ -4,6 +4,8 @@
 演示地址: [http://www.cncounter.com/test/notMultiClick/notMultiClick.html](http://www.cncounter.com/test/notMultiClick/notMultiClick.html)
 
 
+项目源码: [https://github.com/cncounter/translation/tree/master/tiemao_2016/52_notMultiClick](https://github.com/cncounter/translation/tree/master/tiemao_2016/52_notMultiClick)
+
 
 实现代码:
 
