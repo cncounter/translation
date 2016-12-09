@@ -1,0 +1,19 @@
+<html>
+<head>
+	<script src="http://libs.baidu.com/jquery/1.9.1/jquery.min.js"></script>
+	<script type="text/javascript" src="notMultiClick.js"></script>
+	<script type="text/javascript">
+	$(function(){
+		notMultiClick($("#btn1"), function(){
+			var log = "<br/>" + "<span>" + "clicked at:" + new Date() + "</span>";
+			var currLog = $("#logs").html() || "";
+			$("#logs").html(currLog + log);
+		});
+	});
+	</script>
+</head>
+<body>
+	<button id="btn1">测试重复点击</button><br />
+	<div id="logs"></div>
+</body>
+</html>
