@@ -1,21 +1,21 @@
 # Eliminating Noisy Neighbors in the Public Cloud
 
-# 在公共云中避免坏邻居效应
+# 避开公有云之中的坏邻居效应
 
 
 An IaaS provider is using all-SSD arrays and storage QoS to ensure that some tenants can’t disrupt performance of others by overconsuming resources.
 
-IaaS提供商使用all-SSD数组和存储QoS保证一些租户不能干扰其他人通过过度消费资源的性能。
+IaaS 厂商(虚机服务提供商)使用纯SSD磁盘组(all-SSD arrays),以及存储 QoS 来确保不会因为某些恶意用户的过度消费,而影响其他客户的服务性能。
 
 
 One problem with multitenant public cloud environments is the "noisy neighbor" phenomenon, when one or more customers monopolize available resources and thus significantly degrade the performance of other customers' systems.
 
-多租户的公共云环境的一个问题是“吵闹的邻居”现象,当一个或多个客户垄断可用资源,从而显著降低其他客户的系统的性能。
+在多租户的公有云环境中,会存在一种严重的问题, 称为 "坏邻居效应"(noisy neighbor phenomenon), 当一个或多个客户过度使用了某种公共资源时, 就会明显损害到其他客户的系统性能。
 
 
 One way to address this problem is via storage-based quality of service that provides defined service levels to all tenants. An infrastructure-as-a-service provider, CloudSigma, is using all-SSD arrays from SolidFire to create an architecture to eliminate noisy neighbors.
 
-之一是通过互联网is to address,市民服务质量storage-based主张所有各级服务办法.CloudSigma iaas提供商,使用从SolidFire all-SSD数组创建一个架构消除吵闹的邻居。
+解决这个问题的一个方法是通过基于存储的服务质量,为所有租户提供服务级别定义。An infrastructure-as-a-service provider, CloudSigma, 利用SolidFire all-SSD数组创建一个架构消除嘈杂的邻居。
 
 
 CloudSigma has decided to replace all of its Tier 1 primary storage hard disk arrays with SolidFire all-SSD arrays. In addition to this significant move, the company also offers solid-state drive storage at the same price as hard disk for the same capacity. How can CloudSigma do this when flash memory is more expensive on a per-unit basis than hard disk?
