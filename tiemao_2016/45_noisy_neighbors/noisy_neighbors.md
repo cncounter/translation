@@ -15,12 +15,12 @@ One problem with multitenant public cloud environments is the "noisy neighbor" p
 
 One way to address this problem is via storage-based quality of service that provides defined service levels to all tenants. An infrastructure-as-a-service provider, CloudSigma, is using all-SSD arrays from SolidFire to create an architecture to eliminate noisy neighbors.
 
-解决这个问题的一个方法是通过基于存储的服务质量,为所有租户提供服务级别定义。An infrastructure-as-a-service provider, CloudSigma, 利用SolidFire all-SSD数组创建一个架构消除嘈杂的邻居。
+有一种解决方案,是通过基于存储的服务质量,为所有租户提供服务等级协议。IaaS厂商 CloudSigma, 使用 SolidFire 的纯固态硬盘组创建了一个能消除坏邻居效应的架构。
 
 
 CloudSigma has decided to replace all of its Tier 1 primary storage hard disk arrays with SolidFire all-SSD arrays. In addition to this significant move, the company also offers solid-state drive storage at the same price as hard disk for the same capacity. How can CloudSigma do this when flash memory is more expensive on a per-unit basis than hard disk?
 
-CloudSigma决定替换所有的一级主要存储硬盘阵列SolidFire all-SSD数组.除了这一重大举措,公司还提供固态硬盘驱动器存储以同样的价格同样的能力.CloudSigma怎么能这样当闪存更昂贵比硬盘在单位的基础上吗?
+CloudSigma 决定用SolidFire的全SSD磁盘组来替代所有的一级主存储阵列. 此外, 该公司还提供和普通硬盘同容量同价格的固态硬盘. CloudSigma 为什么能用比硬盘昂贵得多的闪存来提供服务呢?
 
 
 An all-flash array can have better economics than an all-disk storage array in private data centers when taking into account the total system, including servers, storage and software (especially software licensing costs), as attested to by IBM based on a Wikibon study. IaaS does not have all the software licensing cost advantage, but CloudSigma overcomes the loss leader costs of storage by selling more compute cycles.
@@ -100,7 +100,7 @@ SolidFire消除了noisy-neighbor QoS问题,和CloudSigma证明了这种方法的
 
 We all knew that flash's time was coming; what should be apparent to all is that time is now.
 
-我们都知道闪电的时候来了,应该是明显的是,时间就是现在。
+我们都知道,闪存大放光彩的时代到来了,当然,现在就是。
 
 
 Neither CloudSigma nor SolidFire is a client of David Hill and the Mesabi Group.
