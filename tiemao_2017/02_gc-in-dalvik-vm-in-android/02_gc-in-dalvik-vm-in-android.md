@@ -83,4 +83,9 @@ The mark-and-sweep algorithm **consists of two phases**: In the first phase, it 
 (c)显示了对象后_sweep_阶段已经完成。只活对象留在记忆和标记字段都设置为false。
 
 
+当然,到 Android5.0 以后, ART GC 的优化改进了Dalvik 虚拟机很多的性能瓶颈; 详情请参考: [Android 5.0 ART GC 对比 Android 4.x Dalvik GC](http://blog.csdn.net/hello2mao/article/details/42361755)
+
+
 原文链接: [https://medium.com/@nitinkumargove/how-garbage-collection-works-in-dalvik-vm-in-android-bf781ab48531](https://medium.com/@nitinkumargove/how-garbage-collection-works-in-dalvik-vm-in-android-bf781ab48531)
+
+
