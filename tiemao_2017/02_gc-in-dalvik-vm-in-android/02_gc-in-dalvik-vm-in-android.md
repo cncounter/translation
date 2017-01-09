@@ -83,3 +83,4 @@ The mark-and-sweep algorithm **consists of two phases**: In the first phase, it 
 (c)显示了对象后_sweep_阶段已经完成。只活对象留在记忆和标记字段都设置为false。
 
 
+原文链接: [https://medium.com/@nitinkumargove/how-garbage-collection-works-in-dalvik-vm-in-android-bf781ab48531](https://medium.com/@nitinkumargove/how-garbage-collection-works-in-dalvik-vm-in-android-bf781ab48531)
