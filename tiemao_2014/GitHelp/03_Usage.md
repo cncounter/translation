@@ -221,11 +221,13 @@ Win+R 快捷键打开运行对话框,输入 `cmd` 回车, 在 cmd 中(其实在 
 
 ![](413_pull_dialog.png)
 
-如果拉取有BUG，则可以勾选上变基(不报错就别勾选了!!!), 确定,进入 拉取进度界面:
+【如果拉取有BUG,请不要使用 rebase, 下载[最新的 TortoiseGit](http://download.csdn.net/detail/renfufei/9738152) 即可】, 进入 拉取进度界面:
 
 ![](414_pulled.png)
 
-然后执行变基:
+<del>然后执行变基:</del>
+
+【如果拉取有BUG,请不要使用 rebase, 下载[最新的 TortoiseGit](http://download.csdn.net/detail/renfufei/9738152) 即可】
 
 ![](414_c_base.png)
 

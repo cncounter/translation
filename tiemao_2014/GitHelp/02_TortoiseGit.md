@@ -5,15 +5,15 @@ TortoiseGit 简称 tgit, 中文名海龟Git. 海龟Git只支持神器 Windows �
 
 **注意:** XP系统已经不支持最新的安装包,请尽量使用 Win7 或更高版本的操作系统. 
 
-官方说明是: Users of Windows XP and Server 2003, please update [TortoiseGitProc.exe](http://download.tortoisegit.org/tgit/1.8.12.0/TortoiseGit-1.8.12.0-WindowsXP-fix.zip) after after installing 1.8.12.0. 即: 如果在 XP 或者 2003 上安装完1.8.12.0 版本的 tgit 后,需要安装这个修正包.(但本人在xp里面根本装不了,更不用说安装后了)
+官方说明是: Windows XP 只兼容 1.8.16.0 及之前的版本:  (last version which is compatible with Windows XP is [1.8.16.0](https://download.tortoisegit.org/tgit/1.8.16.0/);
 
 ## 下载
 
-**0.** TortoiseGit-1.8中文版与Git安装包:  [http://download.csdn.net/download/renfufei/8204699](http://download.csdn.net/download/renfufei/8204699)
+**0.** TortoiseGit-2.3中文版与Git安装包:  [http://download.csdn.net/detail/renfufei/9738152](http://download.csdn.net/detail/renfufei/9738152)
 
 1. TortoiseGit下载页面: [http://download.tortoisegit.org/tgit/](http://download.tortoisegit.org/tgit/)
 
-**2.**打开下载页面后, 找到对应的 Latest stable release (最新稳定版) 目录,如当前为 [1.8.12.0版本](http://download.tortoisegit.org/tgit/1.8.12.0/) , 点击进入对应的页面. 
+**2.**打开下载页面后, 找到对应的 Latest stable release (最新稳定版) 目录,如当前为 [2.3.0.0版本](https://download.tortoisegit.org/tgit/2.3.0.0/) , 点击进入对应的页面. 
 
 ![](201_StableGit.png)
 
@@ -23,13 +23,13 @@ TortoiseGit 简称 tgit, 中文名海龟Git. 海龟Git只支持神器 Windows �
 
 比如, 32位系统(带32bit,或者 x86, i586等标识).
 
-- 32位程序安装包下载地址: [http://download.tortoisegit.org/tgit/1.8.12.0/TortoiseGit-1.8.12.0-32bit.msi](http://download.tortoisegit.org/tgit/1.8.12.0/TortoiseGit-1.8.12.0-32bit.msi)
-- 32位中文语言包下载地址: [http://download.tortoisegit.org/tgit/1.8.12.0/TortoiseGit-LanguagePack-1.8.12.0-32bit-zh_CN.msi](http://download.tortoisegit.org/tgit/1.8.12.0/TortoiseGit-LanguagePack-1.8.12.0-32bit-zh_CN.msi)
+- 32位程序安装包下载地址: [https://download.tortoisegit.org/tgit/2.3.0.0/TortoiseGit-2.3.0.0-32bit.msi](https://download.tortoisegit.org/tgit/2.3.0.0/TortoiseGit-2.3.0.0-32bit.msi)
+- 32位中文语言包下载地址: [https://download.tortoisegit.org/tgit/2.3.0.0/TortoiseGit-LanguagePack-2.3.0.0-32bit-zh_CN.msi](https://download.tortoisegit.org/tgit/2.3.0.0/TortoiseGit-LanguagePack-2.3.0.0-32bit-zh_CN.msi)
 
 同样, 64位系统(带64bit,或者 x86_64, x64等标识).
 
-- 64位程序安装包下载地址: [http://download.tortoisegit.org/tgit/1.8.12.0/TortoiseGit-1.8.12.0-64bit.msi](http://download.tortoisegit.org/tgit/1.8.12.0/TortoiseGit-1.8.12.0-64bit.msi)
-- 64位中文语言包下载地址: [http://download.tortoisegit.org/tgit/1.8.12.0/TortoiseGit-1.8.12.0-64bit.msi](http://download.tortoisegit.org/tgit/1.8.12.0/TortoiseGit-1.8.12.0-64bit.msi)
+- 64位程序安装包下载地址: [https://download.tortoisegit.org/tgit/2.3.0.0/TortoiseGit-2.3.0.0-64bit.msi](https://download.tortoisegit.org/tgit/2.3.0.0/TortoiseGit-2.3.0.0-64bit.msi)
+- 64位中文语言包下载地址: [https://download.tortoisegit.org/tgit/2.3.0.0/TortoiseGit-LanguagePack-2.3.0.0-64bit-zh_CN.msi](https://download.tortoisegit.org/tgit/2.3.0.0/TortoiseGit-LanguagePack-2.3.0.0-64bit-zh_CN.msi)
 
 版本下载页面如下所示:
 
@@ -41,7 +41,7 @@ TortoiseGit 简称 tgit, 中文名海龟Git. 海龟Git只支持神器 Windows �
 
 **4.** 我们需要先安装程序包,然后安装语言包(LanguagePack). 因为TortoiseGit 只是一个程序壳,必须依赖一个 Git Core,也就是上一节我们安装的 Git. 所以安装前请确定已完成[上一节的操作](01_GitInstall.md). 下面以64位版本为演示(64,32位除文件名不一样,其他的操作都一致)
 
-**5.** 双击安装程序 `TortoiseGit-1.8.12.0-64bit.msi`. 弹出安装向导界面:
+**5.** 双击安装程序 `TortoiseGit-2.3.0.0-64bit.msi`. 弹出安装向导界面:
 
 ![](203_tgitWizard.png)
 
@@ -69,7 +69,7 @@ TortoiseGit 简称 tgit, 中文名海龟Git. 海龟Git只支持神器 Windows �
 
 **10.** 安装语言包
 
-双击打开 `TortoiseGit-LanguagePack-1.8.12.0-64bit-zh_CN.msi` ,则弹出语言包安装向导:
+双击打开 `TortoiseGit-LanguagePack-2.3.0.0-64bit-zh_CN.msi` ,则弹出语言包安装向导:
 
 ![](208_LanguageWizard.png)
 

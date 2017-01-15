@@ -18,7 +18,7 @@ Windows下Git使用入门
 
 ##2. 相关网站:###
 
-TortoiseGit-1.8中文版与Git安装包: [http://download.csdn.net/download/renfufei/8204699](http://download.csdn.net/download/renfufei/8204699)
+TortoiseGit-2.3中文版与Git安装包: [http://download.csdn.net/detail/renfufei/9738152](http://download.csdn.net/detail/renfufei/9738152)
 
 Git的下载页面: [http://git-scm.com/download/](http://git-scm.com/download/)
 

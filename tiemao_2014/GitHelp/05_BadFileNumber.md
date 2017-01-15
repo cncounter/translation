@@ -1,6 +1,10 @@
 解决 TortoiseGit 诡异的 Bad file number 问题
 ==
 
+此问题，请不要使用 rebase, 下载最新的 TortoiseGit 即可；
+
+TortoiseGit-2.3中文版与Git安装包_手册: [http://download.csdn.net/detail/renfufei/9738152](http://download.csdn.net/detail/renfufei/9738152)
+
 ##问题描述
 
 昨天,以及今天(2014-11-29),使用 TortoiseGit 时碰到了一个诡异的问题. 卸载，清理注册表,重装，重启，各种折腾以后,还是不能解决. 但是23.45分一过,突然灵光一闪,解决了.
@@ -132,7 +136,7 @@
 
 具体的软件，你可以到这里下载:
 
-[http://download.csdn.net/download/renfufei/8204699](http://download.csdn.net/download/renfufei/8204699)
+[http://download.csdn.net/detail/renfufei/9738152](http://download.csdn.net/detail/renfufei/9738152)
 
 ##相关文章
 

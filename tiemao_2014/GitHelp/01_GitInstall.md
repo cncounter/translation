@@ -2,12 +2,12 @@ Git安装与配置
 ==
 
 ## 下载Git安装包
-0.TortoiseGit-1.8中文版与Git安装包: [http://download.csdn.net/download/renfufei/8204699](http://download.csdn.net/download/renfufei/8204699)
+0.TortoiseGit-2.3中文版与Git安装包: [http://download.csdn.net/detail/renfufei/9738152](http://download.csdn.net/detail/renfufei/9738152)
 
 1. 首先打开 Git 的官方网站: [http://git-scm.com/](http://git-scm.com/)
 2. 然后找到下载页面: [http://git-scm.com/downloads](http://git-scm.com/downloads)
 3. 找到Windows版本的下载页面: [http://git-scm.com/download/win](http://git-scm.com/download/win)
-4. 因为准备使用TortoiseGit做图形客户端,所以就不选择Git GUI 版本. 打开Windows的下载页面后,应该会自动弹出下载框，选择保存即可. 如果没有弹出,可以右键点击页面中的 [click here to download manually.](https://github.com/msysgit/msysgit/releases/download/Git-1.9.4-preview20140929/Git-1.9.4-preview20140929.exe),选择另存为即可.
+4. 因为准备使用TortoiseGit做图形客户端,所以就不选择Git GUI 版本. 打开Windows的下载页面后,应该会自动弹出下载框，选择保存即可. 如果没有弹出,可以右键点击页面中的 [click here to download manually.](https://github.com/git-for-windows/git/releases/download/v2.11.0.windows.3/Git-2.11.0.3-64-bit.exe), 选择另存为即可,如果资源下载很慢,可以使用迅雷。
 5. 建议将下载好的软件安装包统一分类放到某个目录,如: `E:\SOFT_N\Tools_ALL\Git_ALL`, 方便以后查找使用.
 6. 文件通过浏览器下载完成后,需要修改文件的锁定属性,特别是 **.zip** 文件和 **.chm** 文件(否则打开chm会显示404). 右键点击下载的文件,选择属性,然后点击"解除锁定"按钮,确定即可. 如下图所示:
 
