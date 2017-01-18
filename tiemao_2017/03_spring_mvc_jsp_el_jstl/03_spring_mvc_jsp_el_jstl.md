@@ -1,6 +1,6 @@
 # ModelAndView’s model value is not displayed in JSP via EL
 
-# 解决SpringMVC中JSP的EL不显示的情况
+# SpringMVC中JSP页面不显示EL表达式的罪魁祸首
 
 ## Problem
 
@@ -9,7 +9,7 @@
 
 In Spring MVC development, developer try to set a value into a model, and display the value in JSP via EL, e.g **${msg}**, but it just outputs the result as it is – **${msg}**, not the “value” stored in the model. The EL is just not working in JSP, why?
 
-在Spring MVC开发中, 开发人员可能会设置某个值到 model 中, 并通过EL标签在JSP显示, 例如: `${msg}`, 但并不起作用, 页面的输出结果还是原样子: **${msg}**, 并没有解析为对应的 “value”。也就是JSP中 EL 不起作用了,为什么呢?
+在Spring MVC开发中, 开发人员可能会设置某个值到 model 中, 并通过EL表达式在JSP显示, 例如: `${msg}`, 但并没有解析为对应的 “value”, 输出结果还是老样子: **${msg}**。也就是说JSP中 的 EL 不起作用了,为什么呢?
 
 
 **Spring’s Controller**
@@ -50,8 +50,6 @@ In Spring MVC development, developer try to set a value into a model, and displa
 	</html>
 
 
-
-
 ## Solution
 
 ## 解决方案
@@ -62,8 +60,7 @@ This is the common asked question in the most Spring MVC hello world example. Ac
 在 Spring MVC 的入门项目中, 这是最常见的问题。实际上这是因为使用了 JSP 1.2 规范引起的。
 
 
-## 1. JSP 1.2
-
+## 1. JSP 1.2 标准
 
 
 If you are using the **old JSP 1.2 descriptor, defined by DTD** ,for example
@@ -85,7 +82,7 @@ If you are using the **old JSP 1.2 descriptor, defined by DTD** ,for example
 
 The EL is disabled or ignored by default, you have to enable it manually, so that it will outputs the value store in the “msg” model.
 
-这种情况下, EL标签默认是禁用或者忽略的, 你必须手动启用, 这样才会输出存储在 model 中的值。示例如下:
+这种情况下, EL表达式默认是禁用或者忽略的, 你必须手动启用, 这样才会输出存储在 model 中的值。示例如下:
 
 
 	<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -102,7 +99,7 @@ The EL is disabled or ignored by default, you have to enable it manually, so tha
 
 
 
-## 2. JSP 2.0
+## 2. JSP 2.0 标准
 
 
 If you are using the **standard JSP 2.0 descriptor, defined by w3c schema** ,for example
@@ -121,10 +118,21 @@ If you are using the **standard JSP 2.0 descriptor, defined by w3c schema** ,for
 	//...
 	</web-app>
 
+或者是更新的 Servlet 3.1 规范(没有 DTD 定义):
+
+> **web.xml**
+
+	<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
+		 version="3.1">
+	//...
+	</web-app>
+
 
 The EL is enabled by default, and you should see the value stored in the “msg” model, which is “hello world”.
 
-则EL是默认启用的, 可以直接看到存储在model中 “msg”的值 ,即“hello world”。
+则EL是默认启用的, 可以通过EL解析到存储在model中 “msg”的值 ,即“hello world”。
 
 
 ## 参考
