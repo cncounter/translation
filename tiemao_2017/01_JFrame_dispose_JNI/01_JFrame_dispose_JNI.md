@@ -72,24 +72,24 @@ I am not sure if any native code is creating a global reference to the JFrame, b
 ## 局部引用和全局引用简介
 
 
-So far, we have used data types such as jobject, jclass, and jstring to denote references to Java objects. The JNI creates references for all object arguments passed in to native methods, as well as all objects returned from JNI functions.
+The JNI creates references for all object arguments passed in to native methods, as well as all objects returned from JNI functions.
 
-到目前为止,我们已经使用数据类型,如jobject jclass,jstring表示对Java对象的引用.JNI创建引用的所有对象的参数传递给本地方法,以及所有从JNI函数返回对象。
+JNI为所有传递给 native 方法的对象型参数创建引用, 也为所有从JNI函数返回的对象创建引用。
 
 
 These references will keep the Java objects from being garbage collected. To make sure that Java objects can eventually be freed, the JNI by default creates local references. Local references become invalid when the execution returns from the native method in which the local reference is created. Therefore, a native method must not store away a local reference and expect to reuse it in subsequent invocations.
 
-这些引用将Java对象被垃圾收集。确保Java对象可以最终被释放,JNI默认创建本地引用.本地引用成为无效的本机方法的执行返回创建的本地引用.因此,本机方法不得储存地方引用,并期待在后续调用重用它。
+这些引用会阻止Java对象被GC清理。要确保Java对象最终被释放, JNI默认创建的是局部引用(local references). 当本机方法返回时, 其创建的局部引用就会失效. 因此, native 方法不应该将局部引用存到其他地方, 并期待在后续的调用中重用它。
 
 
 For example, the following program (a variation of the native method in FieldAccess.c) mistakenly caches the Java class for the field ID so that it does not have to repeatedly search for the field ID based on the field name and signature:
 
-例如,以下程序(FieldAccess本机方法的一种变体.c)错误地缓存的Java类字段ID,不必反复搜索字段ID基于字段名称和签名:
+例如,以下程序(`FieldAccess.c` 中的一种变体native方法) 错误地将Java类的ID字段缓存起来, 期待不必每次都用字段名称和签名去搜索ID字段,:
 
 
-	/* This code is illegal */
+	/* !!! 本段代码有问题 */
 	static jclass cls = 0;
-	static jfieldID fld;
+	static jfieldID fid;
 
 	JNIEXPORT void JNICALL
 	Java_FieldAccess_accessFields(JNIEnv *env, jobject obj)
@@ -108,15 +108,18 @@ For example, the following program (a variation of the native method in FieldAcc
 
 
 This program is illegal because the local reference returned from GetObjectClass is only valid before the native method returns. When Java_FieldAccess_accessField is entered the second time, an invalid local reference will be used. This leads to wrong results or to a VM crash.
+
+这个程序是非法的,因为从 `GetObjectClass` 返回的局部引用只在 native 方法返回之前才有效。第二次进入 `Java_FieldAccess_accessField` 时, 将会用到一个无效的局部引用。 这将导致错误的结果甚至引起 JVM 崩溃。
+
+
 To overcome this problem, you need to create a global reference. This global reference will remain valid until it is explicitly freed:
 
-这一方案的相同,强奸的地方GetObjectClass参考,以便增进对哥伦比亚土著人在英国astm d1078 - 05.当Java_FieldAccess_accessField is the second绞刑,每年将由当地references无效。这一结果作这种权利leads to a VM坠毁。
-为了克服这个问题,您需要创建一个全球参考。这个全局引用将仍然有效,直到显式释放:
+要解决这种问题, 需要创建一个全局引用(global reference)。全局引用将一直有效,直到显式释放:
 
 
 	/* This code is OK */
 	static jclass cls = 0;
-	static jfieldID fld;
+	static jfieldID fid;
 
 	JNIEXPORT void JNICALL
 	Java_FieldAccess_accessFields(JNIEnv *env, jobject obj)
@@ -139,17 +142,17 @@ To overcome this problem, you need to create a global reference. This global ref
 
 A global reference keeps the Java class from begin unloaded, and therefore also ensures that the field ID remains valid, as discussed in Accessing Java Fields. The native code must call DeleteGlobalRefs when it no longer needs access to the global reference; otherwise, the corresponding Java object (e.g., the Java class referenced to by cls above) will never be unloaded.
 
-一全局引用Java类从开始卸货,因此也确保了字段ID仍然有效,作为讨论访问Java字段.本机代码必须调用deleteglobalref当它不再需要访问全球引用;否则,对应的Java对象(如.上面引用的Java类,由cls)永远不会被卸载。
+全局引用一直存在,直到Java类被卸载, 因此也确保了在需要时Java的ID字段一直有效. native 代码不需要某个全局引用时必须调用 `DeleteGlobalRefs` ; 否则,对应的Java对象(如上面由cls引用的Java类)永远都不会被卸载。
 
 
 In most cases, the native programmer should rely on the VM to free all local references after the native method returns. In certain situations, however, the native code may need to call the DeleteLocalRef function to explicitly delete a local reference. These situations are:
 
-在大多数情况下,本机程序员应该依靠VM免费的本机方法返回后所有的本地引用.在某些情况下,然而,本机代码可能需要调用DeleteLocalRef函数显式地删除本地引用。这些情况是:
+在大多数情况下, native 程序员应该依靠VM来释放所有的局部引用. 在某些特定情况下,native 代码可能需要调用 `DeleteLocalRef` 函数来显式地删除局部引用。这些情况包括:
 
 
 You may know that you are holding the only reference to a large Java object, and you do not want to wait until the current native method returns before the Java object can be reclaimed by the garbage collector. For example, in the following program segment, the garbage collector may be able to free the Java object referred to by lref when it is running inside lengthyComputation:
 
-你可能知道你的唯一参考Java对象,你不想等待,直到当前的本地方法返回之前的Java对象可以被垃圾回收器回收.例如,在下面的程序段,垃圾收集器可以免费的Java对象引用lref lengthyComputation内部运行时:
+你引用了某个庞大的Java对象, 不想等当前 native 方法返回时Java对象才被GC回收. 例如,在下面的程序中, GC 可以释放`lref`所引用的Java对象, 此时 lengthyComputation 方法还在执行中:
 
 
 	  lref = ...            /* a large Java object */
@@ -166,7 +169,7 @@ You may know that you are holding the only reference to a large Java object, and
 
 You may need to create a large number of local references in a single native method invocation. This may result in an overflow of the internal JNI local reference table. It is a good idea to delete those local references that will not be needed. For example, in the following program segment, the native code iterates through a potentially large array arr consisting of java strings. After each iteration, the local reference to the string element can be freed:
 
-您可能需要创建大量的本地引用一个本地方法调用。这可能会导致一个溢出的内部JNI本地参考表.这是一个好主意删除那些不需要的本地引用.例如,在下面的程序段,本机代码遍历一个潜在的大阵arr java字符串组成.每一次迭代后,本地引用字符串元素可以释放:
+您可能需要在 native 方法调用中创建大量的局部引用。这可能会导致 JNI local reference table 溢出. 此时删除那些不需要的局部引用是挺好的. 例如,在下面的程序中, native 代码遍历一个由 java字符串组成的大数组. 每次迭代之后,都可以释放字符串元素的局部引用:
 
 
 	  for(i = 0; i < len; i++) {
