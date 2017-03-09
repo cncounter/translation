@@ -1,9 +1,6 @@
 # 10 Useful Sar (Sysstat) Examples for UNIX / Linux Performance Monitoring
 
-by Ramesh Natarajan
-						<meta itemprop="datePublished" content="2011-03-29">
-						<meta itemprop="dateModified" content="2011-03-28">
-						on March 29, 2011
+by Ramesh Natarajan  on March 29, 2011
 
 ![](http://static.thegeekstuff.com/wp-content/uploads/2011/12/sar-tutorial-300x176.png "Linux Sar Examples")Using sar you can monitor performance of various Linux subsystems (CPU, Memory, I/O..) in real time.
 
