@@ -1,19 +1,17 @@
 # 10 Useful Sar (Sysstat) Examples for UNIX / Linux Performance Monitoring
 
-# Linux中10个 Sar(Sysstat) 性能监控示例
+# Linux性能监控: sar 示例
 
 
-by Ramesh Natarajan  on March 29, 2011
 
-2011年,拉梅什Natarajan 3月29日
-
-
-![](http://static.thegeekstuff.com/wp-content/uploads/2011/12/sar-tutorial-300x176.png "Linux Sar Examples")
 
 Using sar you can monitor performance of various Linux subsystems (CPU, Memory, I/O..) in real time.
 
 Linux使用sar可以监视性能的各种子系统(CPU、内存、I / O . .)。
 
+
+
+![Linux Sar Examples](http://static.thegeekstuff.com/wp-content/uploads/2011/12/sar-tutorial-300x176.png)
 
 
 Using sar, you can also collect all performance data on an on-going basis, store them, and do historical analysis to identify bottlenecks.
@@ -42,6 +40,8 @@ This article explains how to install and configure sysstat package (which contai
 9.  Network statistics
 10.  Report sar data from a specific time
 
+<br/>
+
 1. 针对社区集体使用
 2. 单个CPU统计数据
 3. 内存使用和可用
@@ -62,7 +62,7 @@ This is the only guide you’ll need for sar utility. So, bookmark this for your
 
 ## I. Install and Configure Sysstat
 
-## 安装和配置Sysstat
+## I. 安装和配置Sysstat
 
 
 ### Install Sysstat Package
@@ -75,17 +75,16 @@ First, make sure the latest version of sar is available on your system. Install 
 首先,确保sar系统上可用的最新版本。安装使用任何下列方法取决于您的发行版之一。
 
 
-<pre>sudo apt-get install sysstat
-(or)
-yum install sysstat
-(or)
-rpm -ivh sysstat-10.0.0-1.i586.rpm</pre>
+	sudo apt-get install sysstat
 
-apt-get sudo > < pre sysstat特别是
-(但是)
-sysstat等措施,特别是
-(但是)
--ivh rpm sysstat-10.0.0-1.i586.rpm < / pre >
+(or)
+
+	yum install sysstat
+
+(or)
+
+	rpm -ivh sysstat-10.0.0-1.i586.rpm
+
 
 
 ### Install Sysstat from Source
@@ -103,49 +102,15 @@ You can also use wget to download the
 您还可以使用wget下载
 
 
-    <center>
 
+	wget http://pagesperso-orange.fr/sebastien.godard/sysstat-10.0.0.tar.bz2
 
+	tar xvfj sysstat-10.0.0.tar.bz2
 
+	cd sysstat-10.0.0
 
-<!-- AD BLOCK -->
+	./configure --enable-install-cron
 
-
-
-
-<!-- TGS Inside Content -->
-
-
-
-
-        <!-- END AD BLOCK -->
-
-
-
-
-    </center>
-
-
-
-
-<pre>wget http://pagesperso-orange.fr/sebastien.godard/sysstat-10.0.0.tar.bz2
-
-
-
-
-tar xvfj sysstat-10.0.0.tar.bz2
-
-sysstat-10.0.0.tar.bz2 xvfj抗病毒疗法
-
-
-cd sysstat-10.0.0
-
-sysstat-10.0.0 cd
-
-
-./configure --enable-install-cron</pre>
-
-。/ enable-install-cron < / pre -起见>
 
 
 **Note:** Make sure to pass the option –enable-install-cron. This does the following automatically for you. If you don’t configure sysstat with this option, you have to do this ugly job yourself manually.
@@ -157,6 +122,8 @@ sysstat-10.0.0 cd
 *   Creates appropriate links from /etc/rc.d/rc*.d/ directories to /etc/rc.d/init.d/sysstat to start the sysstat automatically during Linux boot process.
 *   For example, /etc/rc.d/rc3.d/S01sysstat is linked automatically to /etc/rc.d/init.d/sysstat
 
+<br/>
+
 *创建/etc/rc.d/init.d/sysstat
 *从/etc/rc.d/rc*.创建适当的链接/etc/rc.d/init. d /目录d / sysstat sysstat Linux引导过程中自动开始。
 例如,* /etc/rc.d/rc3.d / S01sysstat自动/etc/rc.d/init.d/sysstat有关
@@ -167,14 +134,9 @@ After the ./configure, install it as shown below.
 会晤。起见,特别是it as / missiriya行业。
 
 
-<pre>make
+	make
 
-
-
-
-make install</pre>
-
-使安装< / pre >
+	make install
 
 
 **Note:** This will install sar and other systat utilities under /usr/local/bin
@@ -187,13 +149,11 @@ Once installed, verify the sar version using “sar -V”. Version 10 is the cur
 一旦安装完毕,验证特区使用“sar - v”版本。sysstat的版本10是当前稳定版本。
 
 
-<pre>$ sar -V
-sysstat version 10.0.0
-(C) Sebastien Godard (sysstat  orange.fr)</pre>
+	$ sar -V
 
-< pre >美元至(v里亚尔
-sysstat 10.0.0版
-(C)sysstat(orange.fr杜鲁福Sebastien)< / pre >
+> sysstat version 10.0.0
+>
+> (C) Sebastien Godard (sysstat  orange.fr)
 
 
 Finally, make sure sar works. For example, the following gives the system CPU statistics 3 times (with 1 second interval).
@@ -201,24 +161,17 @@ Finally, make sure sar works. For example, the following gives the system CPU st
 最后,确保sar工作原理。例如,下面给出了系统CPU统计3次(1秒间隔)。
 
 
-<pre>$ sar 1 3
-Linux 2.6.18-194.el5PAE (dev-db)        03/26/2011      _i686_  (8 CPU)
+> $ sar 1 3
 
-< >前sar 1 3美元
-Linux 2.6.18-194。el5PAE(dev-db)03/26/2011 _i686_(8 CPU)
+<br/>
 
+	Linux 2.6.18-194.el5PAE (dev-db)        03/26/2011      _i686_  (8 CPU)
 
-01:27:32 PM       CPU     %user     %nice   %system   %iowait    %steal     %idle
-01:27:33 PM       all      0.00      0.00      0.00      0.00      0.00    100.00
-01:27:34 PM       all      0.25      0.00      0.25      0.00      0.00     99.50
-01:27:35 PM       all      0.75      0.00      0.25      0.00      0.00     99.00
-Average:          all      0.33      0.00      0.17      0.00      0.00     99.50</pre>
-
-下午01:27:32 iowait CPU系统%好% %用户% %偷%闲置
-01:27:33 PM 0.00 0.00 0.00 0.00 0.00 - 0.00
-01:27:34 PM 0.25 0.00 0.25 0.00 0.00 - 0.25
-01:27:35 PM 0.75 0.00 0.25 0.00 0.00 - 0.25
-平均:0.33 0.00 0.17 0.00 0.00 99.50 < / pre >
+	01:27:32 PM       CPU     %user     %nice   %system   %iowait    %steal     %idle
+	01:27:33 PM       all      0.00      0.00      0.00      0.00      0.00    100.00
+	01:27:34 PM       all      0.25      0.00      0.25      0.00      0.00     99.50
+	01:27:35 PM       all      0.75      0.00      0.25      0.00      0.00     99.00
+	Average:          all      0.33      0.00      0.17      0.00      0.00     99.50
 
 
 ### Utilities part of Sysstat
@@ -269,13 +222,10 @@ Create sysstat file under /etc/cron.d directory that will collect the historical
 sysstat file之下的Create / etc / cron。d目录,将所有形式the历史sar数据。
 
 
-<pre># vi /etc/cron.d/sysstat
-*/10 * * * * root /usr/local/lib/sa/sa1 1 1
-53 23 * * * root /usr/local/lib/sa/sa2 -A</pre>
+>	# vi /etc/cron.d/sysstat
 
-< pre > # vi / cron.d / sysstat等/
-* / 10 * * * * root / usr /地方/ lib / sa / 1 1 sa1
-53 23 * * * root / usr /地方/ lib / sa /发动机(< / pre >
+	*/10 * * * * root /usr/local/lib/sa/sa1 1 1
+	53 23 * * * root /usr/local/lib/sa/sa2 -A
 
 
 If you’ve installed sysstat from source, the default location of sa1 and sa2 is /usr/local/lib/sa. If you’ve installed using your distribution update method (for example: yum, up2date, or apt-get), this might be /usr/lib/sa/sa1 and /usr/lib/sa/sa2.
@@ -324,7 +274,7 @@ If you’ve installed sysstat from source, the default location of sa1 and sa2 i
 
 ## II. 10 Practical Sar Usage Examples
 
-## 二世。10实际Sar用法示例
+## II. 10实际Sar用法示例
 
 
 There are two ways to invoke sar.
@@ -350,11 +300,8 @@ All the sar command will have the following as the 1st line in its output.
 所有的sar命令将有以下输出的第一行。
 
 
-<pre>$ sar -u
-Linux 2.6.18-194.el5PAE (dev-db)        03/26/2011      _i686_  (8 CPU)</pre>
-
-< >前sar - u
-Linux 2.6.18-194。el5PAE(dev-db)03/26/2011 _i686_(8 CPU)< / pre >
+	$ sar -u
+	Linux 2.6.18-194.el5PAE (dev-db)        03/26/2011      _i686_  (8 CPU)
 
 
 *   Linux 2.6.18-194.el5PAE – Linux kernel version of the system.
@@ -379,25 +326,17 @@ This gives the cumulative real-time CPU usage of all CPUs. “1 3” reports for
 
 这给所有CPU的累积实时CPU使用率。“1 3”报告每1秒共3次。最有可能你会关注最后一场“%闲置”查看cpu负载。
 
-
-<pre>$ sar -u 1 3
-Linux 2.6.18-194.el5PAE (dev-db)        03/26/2011      _i686_  (8 CPU)
-
-< >前sar - u 1 3美元
-Linux 2.6.18-194。el5PAE(dev-db)03/26/2011 _i686_(8 CPU)
+> $ sar -u 1 3
 
 
-01:27:32 PM       CPU     %user     %nice   %system   %iowait    %steal     %idle
-01:27:33 PM       all      0.00      0.00      0.00      0.00      0.00    100.00
-01:27:34 PM       all      0.25      0.00      0.25      0.00      0.00     99.50
-01:27:35 PM       all      0.75      0.00      0.25      0.00      0.00     99.00
-Average:          all      0.33      0.00      0.17      0.00      0.00     99.50</pre>
 
-下午01:27:32 iowait CPU系统%好% %用户% %偷%闲置
-01:27:33 PM 0.00 0.00 0.00 0.00 0.00 - 0.00
-01:27:34 PM 0.25 0.00 0.25 0.00 0.00 - 0.25
-01:27:35 PM 0.75 0.00 0.25 0.00 0.00 - 0.25
-平均:0.33 0.00 0.17 0.00 0.00 99.50 < / pre >
+	Linux 2.6.18-194.el5PAE (dev-db)        03/26/2011      _i686_  (8 CPU)
+
+	01:27:32 PM       CPU     %user     %nice   %system   %iowait    %steal     %idle
+	01:27:33 PM       all      0.00      0.00      0.00      0.00      0.00    100.00
+	01:27:34 PM       all      0.25      0.00      0.25      0.00      0.00     99.50
+	01:27:35 PM       all      0.75      0.00      0.25      0.00      0.00     99.00
+	Average:          all      0.33      0.00      0.17      0.00      0.00     99.50
 
 
 Following are few variations:
@@ -410,6 +349,9 @@ Following are few variations:
 *   **sar -u ALL** Same as “sar -u” but displays additional fields.
 *   **sar -u ALL 1 3** Same as “sar -u 1 3” but displays additional fields.
 *   **sar -u -f /var/log/sa/sa10** Displays CPU usage for the 10day of the month from the sa10 file.
+
+
+<br/>
 
 * * * sar - u * *显示CPU使用率为当前天收集到这一点。
 * * * * * sar - u 1 - 3显示实时CPU使用率每1秒3次。
@@ -438,45 +380,31 @@ In the following example under “CPU” column 0, 1, 2, and 3 indicates the cor
 下面的例子在“CPU”专栏0,1,2,3表示对应的CPU核心数据。
 
 
-<pre>$ sar -P ALL 1 1
-Linux 2.6.18-194.el5PAE (dev-db)        03/26/2011      _i686_  (8 CPU)
-
-< >前sar - p 1美元1
-Linux 2.6.18-194。el5PAE(dev-db)03/26/2011 _i686_(8 CPU)
+> $ sar -P ALL 1 1
 
 
-01:34:12 PM       CPU     %user     %nice   %system   %iowait    %steal     %idle
-01:34:13 PM       all     11.69      0.00      4.71      0.69      0.00     82.90
-01:34:13 PM         0     35.00      0.00      6.00      0.00      0.00     59.00
-01:34:13 PM         1     22.00      0.00      5.00      0.00      0.00     73.00
-01:34:13 PM         2      3.00      0.00      1.00      0.00      0.00     96.00
-01:34:13 PM         3      0.00      0.00      0.00      0.00      0.00    100.00</pre>
+	Linux 2.6.18-194.el5PAE (dev-db)        03/26/2011      _i686_  (8 CPU)
 
-下午01:34:12 iowait CPU系统%好% %用户% %偷%闲置
-01:34:13 PM 11.69 0.00 4.71 0.69 0.00 - 4.71
-01:34:13点0 35.00 0.00 6.00 0.00 0.00 - 6.00
-01:34:13点1 22.00 0.00 5.00 0.00 0.00 - 5.00
-01:34:13点2 3.00 0.00 1.00 0.00 0.00 - 1.00
-01:34:13点3 0.00 0.00 0.00 0.00 0.00 100.00 < / pre >
+	01:34:12 PM       CPU     %user     %nice   %system   %iowait    %steal     %idle
+	01:34:13 PM       all     11.69      0.00      4.71      0.69      0.00     82.90
+	01:34:13 PM         0     35.00      0.00      6.00      0.00      0.00     59.00
+	01:34:13 PM         1     22.00      0.00      5.00      0.00      0.00     73.00
+	01:34:13 PM         2      3.00      0.00      1.00      0.00      0.00     96.00
+	01:34:13 PM         3      0.00      0.00      0.00      0.00      0.00    100.00
+
 
 
 “-P 1” indicates that it should displays statistics only for the 2nd Core. (Note that Core number starts from 0).
 
 “1 - p”表明它应该只对第二核心显示统计数据。(注意,核心数量从0)。
 
+> $ sar -P 1 1 1
 
-<pre>$ sar -P 1 1 1
-Linux 2.6.18-194.el5PAE (dev-db)        03/26/2011      _i686_  (8 CPU)
+	Linux 2.6.18-194.el5PAE (dev-db)        03/26/2011      _i686_  (8 CPU)
 
-< >前sar - p 1 1 1美元
-Linux 2.6.18-194。el5PAE(dev-db)03/26/2011 _i686_(8 CPU)
+	01:36:25 PM       CPU     %user     %nice   %system   %iowait    %steal     %idle
+	01:36:26 PM         1      8.08      0.00      2.02      1.01      0.00     88.89
 
-
-01:36:25 PM       CPU     %user     %nice   %system   %iowait    %steal     %idle
-01:36:26 PM         1      8.08      0.00      2.02      1.01      0.00     88.89</pre>
-
-下午01:36:25 iowait CPU系统%好% %用户% %偷%闲置
-01:36:26点1 8.08 0.00 2.02 1.01 0.00 88.89 < / pre >
 
 
 Following are few variations:
@@ -489,6 +417,8 @@ Following are few variations:
 *   **sar -P 1** Displays CPU usage for core number 1 for the current day.
 *   **sar -P 1 1 3** Displays real time CPU usage for core number 1, every 1 second for 3 times.
 *   **sar -P ALL -f /var/log/sa/sa10** Displays CPU usage broken down by all cores for the 10day day of the month from sa10 file.
+
+<br/>
 
 * * * sar - p * *显示CPU使用率分解的所有核心为当前的一天。
 * * *所有1 3 * *显示实时sar - p所有核心CPU使用率每1秒3 *(由所有核分解)。
@@ -506,25 +436,19 @@ This reports the memory statistics. “1 3” reports for every 1 seconds a tota
 
 这报告内存统计信息。“1 3”报告每1秒共3次。最有可能你会关注“kbmemfree”和“kbmemused”自由和用去的内存。
 
-
-<pre>$ sar -r 1 3
-Linux 2.6.18-194.el5PAE (dev-db)        03/26/2011      _i686_  (8 CPU)
-
-< >前sar - r 1 3美元
-Linux 2.6.18-194。el5PAE(dev-db)03/26/2011 _i686_(8 CPU)
+> $ sar -r 1 3
 
 
-07:28:06 AM kbmemfree kbmemused  %memused kbbuffers  kbcached  kbcommit   %commit  kbactive   kbinact
-07:28:07 AM   6209248   2097432     25.25    189024   1796544    141372      0.85   1921060     88204
-07:28:08 AM   6209248   2097432     25.25    189024   1796544    141372      0.85   1921060     88204
-07:28:09 AM   6209248   2097432     25.25    189024   1796544    141372      0.85   1921060     88204
-Average:      6209248   2097432     25.25    189024   1796544    141372      0.85   1921060     88204</pre>
 
-上午07:28:06 kbmemfree kbmemused % memused kbbuffers kbcached kbcommit %提交kbactive kbinact
-07:28:07是189024 25.25 189024 25.25 189024 1796544 141372 141372 88204
-07:28:08是189024 25.25 189024 25.25 189024 1796544 141372 141372 88204
-07:28:09是189024 25.25 189024 25.25 189024 1796544 141372 141372 88204
-平均:6209248 189024 189024 1796544 189024 0.85 141372 25.25 141372 < / pre >
+	Linux 2.6.18-194.el5PAE (dev-db)        03/26/2011      _i686_  (8 CPU)
+
+	07:28:06 AM kbmemfree kbmemused  %memused kbbuffers  kbcached  kbcommit   %commit  kbactive   kbinact
+	07:28:07 AM   6209248   2097432     25.25    189024   1796544    141372      0.85   1921060     88204
+	07:28:08 AM   6209248   2097432     25.25    189024   1796544    141372      0.85   1921060     88204
+	07:28:09 AM   6209248   2097432     25.25    189024   1796544    141372      0.85   1921060     88204
+	Average:      6209248   2097432     25.25    189024   1796544    141372      0.85   1921060     88204
+
+
 
 
 Following are few variations:
@@ -536,9 +460,6 @@ Following are few variations:
 *   sar -r 1 3
 *   sar -r -f /var/log/sa/sa10
 
-* -r里亚尔
-* -r里亚尔(2000年3月1日
-* f / var / -r里亚尔sa10 log / sa /
 
 
 ### 4. Swap Space Used (sar -S)
@@ -551,24 +472,17 @@ This reports the swap statistics. “1 3” reports for every 1 seconds a total 
 This in the reports互换统计》。“1”3每个reports共计3增收1时报》。如果“swpused % kbswpused”和“正式”制度,那么你0 swapping not。
 
 
-<pre>$ sar -S 1 3
-Linux 2.6.18-194.el5PAE (dev-db)        03/26/2011      _i686_  (8 CPU)
+> $ sar -S 1 3
 
-< >前sar s 1 3美元
-Linux 2.6.18-194。el5PAE(dev-db)03/26/2011 _i686_(8 CPU)
+	Linux 2.6.18-194.el5PAE (dev-db)        03/26/2011      _i686_  (8 CPU)
+
+	07:31:06 AM kbswpfree kbswpused  %swpused  kbswpcad   %swpcad
+	07:31:07 AM   8385920         0      0.00         0      0.00
+	07:31:08 AM   8385920         0      0.00         0      0.00
+	07:31:09 AM   8385920         0      0.00         0      0.00
+	Average:      8385920         0      0.00         0      0.00
 
 
-07:31:06 AM kbswpfree kbswpused  %swpused  kbswpcad   %swpcad
-07:31:07 AM   8385920         0      0.00         0      0.00
-07:31:08 AM   8385920         0      0.00         0      0.00
-07:31:09 AM   8385920         0      0.00         0      0.00
-Average:      8385920         0      0.00         0      0.00</pre>
-
-上午07:31:06 kbswpfree kbswpused % swpused kbswpcad % swpcad
-07:31:07 8385920 0 0 0.00 0.00
-07:31:08 8385920 0 0 0.00 0.00
-07:31:09 8385920 0 0 0.00 0.00
-平均:8385920 0 0 0.00 0.00 < / pre >
 
 
 Following are few variations:
@@ -580,9 +494,6 @@ Following are few variations:
 *   sar -S 1 3
 *   sar -S -f /var/log/sa/sa10
 
-* -S里亚尔
-* -S里亚尔(2000年3月1日
-* f / var / -S里亚尔sa10 log / sa /
 
 
 **Notes:**
@@ -621,29 +532,28 @@ Following fields are displays in the example below.
 *   wtps – Write transactions per second
 *   bread/s – Bytes read per second
 *   bwrtn/s – Bytes written per second
-<pre>$ sar -b 1 3
-Linux 2.6.18-194.el5PAE (dev-db)        03/26/2011      _i686_  (8 CPU)
+
+
 
 * tps -每秒事务数(这包括读和写)
 * rtp -每秒读事务
 * wtp -写事务/秒
 *面包/ s -字节每秒读取
 * bwrtn / s -每秒字节写
-< >前sar - b 1 3美元
-Linux 2.6.18-194。el5PAE(dev-db)03/26/2011 _i686_(8 CPU)
 
 
-01:56:28 PM       tps      rtps      wtps   bread/s   bwrtn/s
-01:56:29 PM    346.00    264.00     82.00   2208.00    768.00
-01:56:30 PM    100.00     36.00     64.00    304.00    816.00
-01:56:31 PM    282.83     32.32    250.51    258.59   2537.37
-Average:       242.81    111.04    131.77    925.75   1369.90</pre>
+> $ sar -b 1 3
 
-01:56:28 PM rtps tsp wtps古钱币/ s bwrtn /秒
-01:56:29 264.00 82.00 2208.00 768.00 346.00 PM
-01:56:30 36.00 64.00 304.00 816.00 100.00 PM
-01:56:31 PM 282.83 32.32 250.51 258.59 32.32
-平均:242.81 111.04 131.77 925.75 111.04 < / pre >
+
+Linux 2.6.18-194.el5PAE (dev-db)        03/26/2011      _i686_  (8 CPU)
+
+
+	01:56:28 PM       tps      rtps      wtps   bread/s   bwrtn/s
+	01:56:29 PM    346.00    264.00     82.00   2208.00    768.00
+	01:56:30 PM    100.00     36.00     64.00    304.00    816.00
+	01:56:31 PM    282.83     32.32    250.51    258.59   2537.37
+	Average:       242.81    111.04    131.77    925.75   1369.90
+
 
 
 Following are few variations:
@@ -673,32 +583,21 @@ To identify the activities by the individual block devices (i.e a specific mount
 识别个体块设备(我的活动。e特定的挂载点,或LUN,或分区),使用“sar - d”
 
 
-<pre>$ sar -d 1 1
-Linux 2.6.18-194.el5PAE (dev-db)        03/26/2011      _i686_  (8 CPU)
-
-< >前sar - d 1美元
-Linux 2.6.18-194。el5PAE(dev-db)03/26/2011 _i686_(8 CPU)
+> $ sar -d 1 1
 
 
-01:59:45 PM       DEV       tps  rd_sec/s  wr_sec/s  avgrq-sz  avgqu-sz     await     svctm     %util
-01:59:46 PM    dev8-0      1.01      0.00      0.00      0.00      0.00      4.00      1.00      0.10
-01:59:46 PM    dev8-1      1.01      0.00      0.00      0.00      0.00      4.00      1.00      0.10
-01:59:46 PM dev120-64      3.03     64.65      0.00     21.33      0.03      9.33      5.33      1.62
-01:59:46 PM dev120-65      3.03     64.65      0.00     21.33      0.03      9.33      5.33      1.62
-01:59:46 PM  dev120-0      8.08      0.00    105.05     13.00      0.00      0.38      0.38      0.30
-01:59:46 PM  dev120-1      8.08      0.00    105.05     13.00      0.00      0.38      0.38      0.30
-01:59:46 PM dev120-96      1.01      8.08      0.00      8.00      0.01      9.00      9.00      0.91
-01:59:46 PM dev120-97      1.01      8.08      0.00      8.00      0.01      9.00      9.00      0.91</pre>
+	Linux 2.6.18-194.el5PAE (dev-db)        03/26/2011      _i686_  (8 CPU)
 
-下午01:59:45 DEV tps rd_sec / s wr_sec / s avgrq-sz avgqu-sz等待svctm %跑龙套
-下午01:59:46 dev8-0 1.01 0.00 0.00 0.00 0.00 4.00 1.00 0.10
-下午01:59:46 dev8-1 1.01 0.00 0.00 0.00 0.00 4.00 1.00 0.10
-下午01:59:46 dev120 - 64 3.03 64.65 0.00 21.33 64.65 9.33 5.33 1.62
-下午01:59:46 dev120 - 65 3.03 64.65 0.00 21.33 64.65 9.33 5.33 1.62
-下午01:59:46 dev120-0 8.08 0.00 105.05 13.00 0.00 0.38 0.38 0.30
-下午01:59:46 dev120-1 8.08 0.00 105.05 13.00 0.00 0.38 0.38 0.30
-下午01:59:46 dev120 - 96 1.01 8.08 0.00 8.00 8.08 9.00 9.00 0.91
-下午01:59:46 dev120 - 97 1.01 8.08 0.00 8.00 8.08 9.00 9.00 0.91 < / pre >
+	01:59:45 PM       DEV       tps  rd_sec/s  wr_sec/s  avgrq-sz  avgqu-sz     await     svctm     %util
+	01:59:46 PM    dev8-0      1.01      0.00      0.00      0.00      0.00      4.00      1.00      0.10
+	01:59:46 PM    dev8-1      1.01      0.00      0.00      0.00      0.00      4.00      1.00      0.10
+	01:59:46 PM dev120-64      3.03     64.65      0.00     21.33      0.03      9.33      5.33      1.62
+	01:59:46 PM dev120-65      3.03     64.65      0.00     21.33      0.03      9.33      5.33      1.62
+	01:59:46 PM  dev120-0      8.08      0.00    105.05     13.00      0.00      0.38      0.38      0.30
+	01:59:46 PM  dev120-1      8.08      0.00    105.05     13.00      0.00      0.38      0.38      0.30
+	01:59:46 PM dev120-96      1.01      8.08      0.00      8.00      0.01      9.00      9.00      0.91
+	01:59:46 PM dev120-97      1.01      8.08      0.00      8.00      0.01      9.00      9.00      0.91
+
 
 
 In the above example “DEV” indicates the specific block device.
@@ -716,32 +615,24 @@ The device name (DEV column) can display the actual device name (for example: sd
 设备名称(DEV列)可以显示实际的设备名称(例如:sda sda1,sdb1等),如果您使用- p选项(漂亮的打印),如下所示。
 
 
-<pre>$ sar -p -d 1 1
-Linux 2.6.18-194.el5PAE (dev-db)        03/26/2011      _i686_  (8 CPU)
-
-< >前sar - p - d 1美元
-Linux 2.6.18-194。el5PAE(dev-db)03/26/2011 _i686_(8 CPU)
+> $ sar -p -d 1 1
 
 
-01:59:45 PM       DEV       tps  rd_sec/s  wr_sec/s  avgrq-sz  avgqu-sz     await     svctm     %util
-01:59:46 PM       sda      1.01      0.00      0.00      0.00      0.00      4.00      1.00      0.10
-01:59:46 PM      sda1      1.01      0.00      0.00      0.00      0.00      4.00      1.00      0.10
-01:59:46 PM      sdb1      3.03     64.65      0.00     21.33      0.03      9.33      5.33      1.62
-01:59:46 PM      sdc1      3.03     64.65      0.00     21.33      0.03      9.33      5.33      1.62
-01:59:46 PM      sde1      8.08      0.00    105.05     13.00      0.00      0.38      0.38      0.30
-01:59:46 PM      sdf1      8.08      0.00    105.05     13.00      0.00      0.38      0.38      0.30
-01:59:46 PM      sda2      1.01      8.08      0.00      8.00      0.01      9.00      9.00      0.91
-01:59:46 PM      sdb2      1.01      8.08      0.00      8.00      0.01      9.00      9.00      0.91</pre>
+	Linux 2.6.18-194.el5PAE (dev-db)        03/26/2011      _i686_  (8 CPU)
 
-下午01:59:45 DEV tps rd_sec / s wr_sec / s avgrq-sz avgqu-sz等待svctm %跑龙套
-下午01:59:46 sda 1.01 0.00 0.00 0.00 0.00 4.00 1.00 0.10
-01:59:46 1.01 sda1 PM 0.00 0.00 0.00 0.00 4.00 0.10 1.00
-下午01:59:46 sdb1 3.03 64.65 0.00 21.33 64.65 9.33 5.33 1.62
-下午01:59:46 sdc1 3.03 64.65 0.00 21.33 64.65 9.33 5.33 1.62
-01:59:46 0.00 sde1 PM 8.08 105.05 13.00 0.00 0.38 0.38 0.30
-01:59:46 0.00 sdf1 PM 8.08 105.05 13.00 0.00 0.38 0.38 0.30
-01:59:46 1.01 sda2 PM 8.08 0.00 8.00 9.00 0.91 9.00 0.01
-下午01:59:46 sdb2 1.01 8.08 0.00 8.00 8.08 9.00 9.00 0.91 < / pre >
+	01:59:45 PM       DEV       tps  rd_sec/s  wr_sec/s  avgrq-sz  avgqu-sz     await     svctm     %util
+	01:59:46 PM       sda      1.01      0.00      0.00      0.00      0.00      4.00      1.00      0.10
+	01:59:46 PM      sda1      1.01      0.00      0.00      0.00      0.00      4.00      1.00      0.10
+	01:59:46 PM      sdb1      3.03     64.65      0.00     21.33      0.03      9.33      5.33      1.62
+	01:59:46 PM      sdc1      3.03     64.65      0.00     21.33      0.03      9.33      5.33      1.62
+	01:59:46 PM      sde1      8.08      0.00    105.05     13.00      0.00      0.38      0.38      0.30
+	01:59:46 PM      sdf1      8.08      0.00    105.05     13.00      0.00      0.38      0.38      0.30
+	01:59:46 PM      sda2      1.01      8.08      0.00      8.00      0.01      9.00      9.00      0.91
+	01:59:46 PM      sdb2      1.01      8.08      0.00      8.00      0.01      9.00      9.00      0.91
+
+
+
+
 
 
 Following are few variations:
@@ -754,10 +645,6 @@ Following are few variations:
 *   sar -d -f /var/log/sa/sa10
 *   sar -p -d
 
-* d里亚尔
-* 2000年3月1日的整个服役期里亚尔
-* f / d / 860 /沙特阿拉伯里亚尔的sa10 log / sa /
-* -p里亚尔d
 
 
 ### 7. Display context switch per second (sar -w)
@@ -770,22 +657,17 @@ This reports the total number of processes created per second, and total number 
 这个报告的进程总数创建每秒,每秒和总数量的上下文切换。“1 3”报告每1秒共3次。
 
 
-<pre>$ sar -w 1 3
-Linux 2.6.18-194.el5PAE (dev-db)        03/26/2011      _i686_  (8 CPU)
-
-< >前sar - w 1 3美元
-Linux 2.6.18-194。el5PAE(dev-db)03/26/2011 _i686_(8 CPU)
+> $ sar -w 1 3
 
 
-08:32:24 AM    proc/s   cswch/s
-08:32:25 AM      3.00     53.00
-08:32:26 AM      4.00     61.39
-08:32:27 AM      2.00     57.00</pre>
 
-08:32:24 proc / s cswch / s
-08:32:25是3.00 - 53.00
-08:32:26是4.00 - 61.39
-08:32:27上午2.00 - 57.00 < / pre >
+
+	Linux 2.6.18-194.el5PAE (dev-db)        03/26/2011      _i686_  (8 CPU)
+
+	08:32:24 AM    proc/s   cswch/s
+	08:32:25 AM      3.00     53.00
+	08:32:26 AM      4.00     61.39
+	08:32:27 AM      2.00     57.00
 
 
 Following are few variations:
@@ -797,9 +679,6 @@ Following are few variations:
 *   sar -w 1 3
 *   sar -w -f /var/log/sa/sa10
 
-* -w里亚尔
-* -w里亚尔(2000年3月1日
-* f / var / -w里亚尔sa10 log / sa /
 
 
 ### 8. Reports run queue and load average (sar -q)
@@ -812,24 +691,16 @@ This reports the run queue size and load average of last 1 minute, 5 minutes, an
 这报告运行队列大小和平均负载的最后1分钟,5分钟,15分钟。“1 3”报告每1秒共3次。
 
 
-<pre>$ sar -q 1 3
-Linux 2.6.18-194.el5PAE (dev-db)        03/26/2011      _i686_  (8 CPU)
-
-< >前sar - q 1 3美元
-Linux 2.6.18-194。el5PAE(dev-db)03/26/2011 _i686_(8 CPU)
+> $ sar -q 1 3
 
 
-06:28:53 AM   runq-sz  plist-sz   ldavg-1   ldavg-5  ldavg-15   blocked
-06:28:54 AM         0       230      2.00      3.00      5.00         0
-06:28:55 AM         2       210      2.01      3.15      5.15         0
-06:28:56 AM         2       230      2.12      3.12      5.12         0
-Average:            3       230      3.12      3.12      5.12         0</pre>
+	Linux 2.6.18-194.el5PAE (dev-db)        03/26/2011      _i686_  (8 CPU)
 
-上午06:28:53 runq-sz plist-sz ldavg-1 ldavg-5 ldavg-15屏蔽
-06:28:54 0 2.00 3.00 5.00 230 0
-06:28:55 2 210 2.01 3.15 5.15 0
-06:28:56 2 230 2.12 3.12 5.12 0
-平均:3 230 3.12 3.12 5.12 0 < / pre >
+	06:28:53 AM   runq-sz  plist-sz   ldavg-1   ldavg-5  ldavg-15   blocked
+	06:28:54 AM         0       230      2.00      3.00      5.00         0
+	06:28:55 AM         2       210      2.01      3.15      5.15         0
+	06:28:56 AM         2       230      2.12      3.12      5.12         0
+	Average:            3       230      3.12      3.12      5.12         0
 
 
 **Note:** The “blocked” column displays the number of tasks that are currently blocked and waiting for I/O operation to complete.
@@ -846,9 +717,6 @@ Following are few variations:
 *   sar -q 1 3
 *   sar -q -f /var/log/sa/sa10
 
-* -q里亚尔
-* -q里亚尔(2000年3月1日
-* f / var / -q里亚尔sa10 log / sa /
 
 
 ### 9. Report network statistics (sar -n)
@@ -861,7 +729,7 @@ This reports various network statistics. For example: number of packets received
 这个报告了各种网络统计信息。例如:收到的数据包数量通过网卡(传播),统计包失败等。.“1 3”报告每1秒共3次。
 
 
-<pre>sar -n KEYWORD</pre>
+	sar -n KEYWORD
 
 
 
@@ -885,8 +753,8 @@ KEYWORD can be one of the following:
 *   UDP – Displays UDPv4 network traffic
 *   SOCK6, IP6, EIP6, ICMP6, UDP6 are for IPv6
 *   ALL – This displays all of the above information. The output will be very long.
-<pre>$ sar -n DEV 1 1
-Linux 2.6.18-194.el5PAE (dev-db)        03/26/2011      _i686_  (8 CPU)
+
+
 
 * DEV -显示网络设备的重要统计eth0,eth1,等等,
 * EDEV——显示网络设备故障统计数据
@@ -902,19 +770,19 @@ Linux 2.6.18-194.el5PAE (dev-db)        03/26/2011      _i686_  (8 CPU)
 * UDP -显示UDPv4网络流量
 * SOCK6、IP6 EIP6、ICMP6 UDP6 IPv6
 *以上,这将显示所有的信息。的输出将会非常长。
-< >前sar - n DEV 1美元
-Linux 2.6.18-194。el5PAE(dev-db)03/26/2011 _i686_(8 CPU)
 
 
-01:11:13 PM     IFACE   rxpck/s   txpck/s   rxbyt/s   txbyt/s   rxcmp/s   txcmp/s  rxmcst/s
-01:11:14 PM        lo      0.00      0.00      0.00      0.00      0.00      0.00      0.00
-01:11:14 PM      eth0    342.57    342.57  93923.76 141773.27      0.00      0.00      0.00
-01:11:14 PM      eth1      0.00      0.00      0.00      0.00      0.00      0.00      0.00</pre>
 
-01:11:13 IFACE PM rxpck / s txpck / s rxbyt / s txbyt / s rxcmp / s txcmp / s rxmcst /秒
-01:11:14 0.00 0.00 lo PM 0.00 0.00 0.00 0.00 0.00
-下午01:11:14 eth0 342.57 342.57 93923.76 141773.27 0.00 93923.76 - 141773.27
-01:11:14 eth1下午0.00 0.00 0.00 0.00 0.00 0.00 0.00 < / pre >
+
+> $ sar -n DEV 1 1
+
+
+	Linux 2.6.18-194.el5PAE (dev-db)        03/26/2011      _i686_  (8 CPU)
+
+	01:11:13 PM     IFACE   rxpck/s   txpck/s   rxbyt/s   txbyt/s   rxcmp/s   txcmp/s  rxmcst/s
+	01:11:14 PM        lo      0.00      0.00      0.00      0.00      0.00      0.00      0.00
+	01:11:14 PM      eth0    342.57    342.57  93923.76 141773.27      0.00      0.00      0.00
+	01:11:14 PM      eth1      0.00      0.00      0.00      0.00      0.00      0.00      0.00
 
 
 ### 10. Report Sar Data Using Start Time (sar -s)
@@ -942,26 +810,17 @@ For example, to report the load average on 26th of this month starting from 10 a
 例如,报告在本月26日平均负载从10开始。早上m,将q和- s选项如下所示。
 
 
-<pre>$ sar -q -f /var/log/sa/sa23 -s 10:00:01
-Linux 2.6.18-194.el5PAE (dev-db)        03/26/2011      _i686_  (8 CPU)
-
-< pre - e / -q里亚尔>雷亚尔/ sa / 860 / -s log 10:00:01 sa23 /
-2.6.18-194 Linux。el5PAE dev-db 03/26/2011)(_i686_(8)
+> $ sar -q -f /var/log/sa/sa23 -s 10:00:01
 
 
-10:00:01 AM   runq-sz  plist-sz   ldavg-1   ldavg-5  ldavg-15   blocked
-10:10:01 AM         0       127      2.00      3.00      5.00         0
-10:20:01 AM         0       127      2.00      3.00      5.00         0
-...
-11:20:01 AM         0       127      5.00      3.00      3.00         0
-12:00:01 PM         0       127      4.00      2.00      1.00         0</pre>
+	Linux 2.6.18-194.el5PAE (dev-db)        03/26/2011      _i686_  (8 CPU)
 
-上午10:00:01 runq-sz plist-sz ldavg-1 ldavg-5 ldavg-15屏蔽
-10:10:01 0 2.00 3.00 5.00 127 0
-10:20:01 0 2.00 3.00 5.00 127 0
-…
-11:20:01 0 5.00 3.00 3.00 127 0
-12:00:01 PM 4.00 127 0 2.00 1.00 0 < / pre >
+	10:00:01 AM   runq-sz  plist-sz   ldavg-1   ldavg-5  ldavg-15   blocked
+	10:10:01 AM         0       127      2.00      3.00      5.00         0
+	10:20:01 AM         0       127      2.00      3.00      5.00         0
+	...
+	11:20:01 AM         0       127      5.00      3.00      3.00         0
+	12:00:01 PM         0       127      4.00      2.00      1.00         0
 
 
 There is no option to limit the end-time. You just have to get creative and use head command as shown below.
@@ -974,30 +833,19 @@ For example, starting from 10 a.m, if you want to see 7 entries, you have to pip
 例如,从10开始。米,如果你想看7项,你要管上面的输出“头- n 10”。
 
 
-<pre>$ sar -q -f /var/log/sa/sa23 -s 10:00:01 | head -n 10
-Linux 2.6.18-194.el5PAE (dev-db)        03/26/2011      _i686_  (8 CPU)
-
-< pre - e / -q里亚尔>雷亚尔/ sa / 860 / -s log sa23 / 10:00:01 | head - n - 10
-2.6.18-194 Linux。el5PAE dev-db 03/26/2011)(_i686_(8)
+> $ sar -q -f /var/log/sa/sa23 -s 10:00:01 | head -n 10
 
 
-10:00:01 AM   runq-sz  plist-sz   ldavg-1   ldavg-5  ldavg-15   blocked
-10:10:01 AM         0       127      2.00      3.00      5.00         0
-10:20:01 AM         0       127      2.00      3.00      5.00         0
-10:30:01 AM         0       127      3.00      5.00      2.00         0
-10:40:01 AM         0       127      4.00      2.00      1.00         2
-10:50:01 AM         0       127      3.00      5.00      5.00         0
-11:00:01 AM         0       127      2.00      1.00      6.00         0
-11:10:01 AM         0       127      1.00      3.00      7.00         2</pre>
+	Linux 2.6.18-194.el5PAE (dev-db)        03/26/2011      _i686_  (8 CPU)
 
-上午10:00:01 runq-sz plist-sz ldavg-1 ldavg-5 ldavg-15屏蔽
-10:10:01 0 2.00 3.00 5.00 127 0
-10:20:01 0 2.00 3.00 5.00 127 0
-10:30:01 0 3.00 5.00 2.00 127 0
-10:40:01 0 4.00 2.00 1.00 127 2
-10:50:01 0 3.00 5.00 5.00 127 0
-11:00:01 0 2.00 1.00 6.00 127 0
-11:10:01 127 0 1.00 3.00 7.00 2 < / pre >
+	10:00:01 AM   runq-sz  plist-sz   ldavg-1   ldavg-5  ldavg-15   blocked
+	10:10:01 AM         0       127      2.00      3.00      5.00         0
+	10:20:01 AM         0       127      2.00      3.00      5.00         0
+	10:30:01 AM         0       127      3.00      5.00      2.00         0
+	10:40:01 AM         0       127      4.00      2.00      1.00         2
+	10:50:01 AM         0       127      3.00      5.00      5.00         0
+	11:00:01 AM         0       127      2.00      1.00      6.00         0
+	11:10:01 AM         0       127      1.00      3.00      7.00         2
 
 
 There is lot more to cover in Linux performance monitoring and tuning. We are only getting started. More articles to come in the performance series.
@@ -1016,4 +864,11 @@ Linux性能监控和调优系列之前的文章:
 *(Linux性能监控和调优介绍)(http://www.thegeekstuff.com/2011/03/linux-performance-monitoring-intro/)
 *(15实际Linux命令大)(http://www.thegeekstuff.com/2010/01/15-practical-unix-linux-top-command-examples/)
 
+
+
+
+原文链接: [http://www.thegeekstuff.com/2011/03/sar-examples/](http://www.thegeekstuff.com/2011/03/sar-examples/)
+
+
+原文日期: 2011年3月29日 by Ramesh Natarajan
 
