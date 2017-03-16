@@ -48,7 +48,7 @@ This section provides several recommendations on how to make your web applicatio
 ## 一般
 
 
-Before we continue to specific tips and tricks, the general advice is that if Tomcat hangs or is not responsive, you have to perform diagnostics. That is to **take several thread dumps** to see what Tomcat is really doing. See [Troubleshooting and Diagnostics](/tomcat/FAQ/Troubleshooting_and_Diagnostics) page for details. 
+Before we continue to specific tips and tricks, the general advice is that if Tomcat hangs or is not responsive, you have to perform diagnostics. That is to **take several thread dumps** to see what Tomcat is really doing. See [Troubleshooting and Diagnostics](https://wiki.apache.org/tomcat/FAQ/Troubleshooting_and_Diagnostics) page for details. 
 
 之前我们继续特定的技巧和窍门,一般建议是如果Tomcat挂起或不响应,你必须执行诊断.是* *需要几个线程转储* *看到Tomcat是做什么。看到(故障排除和诊断)(/ tomcat /常见问题/ Troubleshooting_and_Diagnostics)详情页面。
 
@@ -58,7 +58,7 @@ Before we continue to specific tips and tricks, the general advice is that if To
 ## JAR扫描
 
 
-The [Servlet 3.0 specification](/tomcat/Specifications) (chapter 8) introduced support for several "plugability features". Those exist to simplify a structure of a web application and to simplify plugging of additional frameworks. Unfortunately, these features require scanning of JAR and class files, which may take noticeable time. Conformance to the specification requires that the scanning were performed by default, but you can configure your own web application in several ways to avoid it (see below). It is also possible to configure which JARs Tomcat should skip. 
+The [Servlet 3.0 specification](https://wiki.apache.org/tomcat/Specifications) (chapter 8) introduced support for several "plugability features". Those exist to simplify a structure of a web application and to simplify plugging of additional frameworks. Unfortunately, these features require scanning of JAR and class files, which may take noticeable time. Conformance to the specification requires that the scanning were performed by default, but you can configure your own web application in several ways to avoid it (see below). It is also possible to configure which JARs Tomcat should skip. 
 
 [Servlet 3.0规范](/ tomcat /规格)(第八章)介绍了支持几个“更换功能”.那些存在简化web应用程序的结构和简化插入额外的框架.不幸的是,这些特性需要扫描的JAR和类文件,这可能需要明显的时间.符合规范要求的扫描进行默认情况下,但是你可以配置自己的web应用程序在几个方面来避免它(见下文).也可以配置哪些jar Tomcat应该跳过。
 
@@ -101,7 +101,7 @@ Among the scans the annotation scanning is the slowest. That is because each cla
 在扫描注释扫描是最慢的。这是因为每一个类文件(忽略的jar除外)必须读取和解析寻找注释。
 
 
-An example of a container-provided SCI that triggers annotation scanning is the [WebSocket](/tomcat/WebSocket) API implementation which is included with standard distribution in all versions of Tomcat 8 and with Tomcat 7 starting with 7.0.47. An SCI class declared there triggers scanning for [WebSocket](/tomcat/WebSocket) endpoints (the classes annotated with `@ServerEndpoint` or implementing `ServerApplicationConfig` interface or extending the abstract `Endpoint` class). If you do not need support for [WebSockets](/tomcat/WebSockets), you may remove the [WebSocket](/tomcat/WebSocket) API and [WebSocket](/tomcat/WebSocket) implementation JARs from Tomcat (`websocket-api.jar` and `tomcat7-websocket.jar` or `tomcat-websocket.jar`). 
+An example of a container-provided SCI that triggers annotation scanning is the [WebSocket](https://wiki.apache.org/tomcat/WebSocket) API implementation which is included with standard distribution in all versions of Tomcat 8 and with Tomcat 7 starting with 7.0.47. An SCI class declared there triggers scanning for [WebSocket](https://wiki.apache.org/tomcat/WebSocket) endpoints (the classes annotated with `@ServerEndpoint` or implementing `ServerApplicationConfig` interface or extending the abstract `Endpoint` class). If you do not need support for [WebSockets](https://wiki.apache.org/tomcat/WebSockets), you may remove the [WebSocket](https://wiki.apache.org/tomcat/WebSocket) API and [WebSocket](https://wiki.apache.org/tomcat/WebSocket) implementation JARs from Tomcat (`websocket-api.jar` and `tomcat7-websocket.jar` or `tomcat-websocket.jar`). 
 
 容器提供的一个例子SCI,触发注释扫描(WebSocket)(/ tomcat / WebSocket)API实现标准发行版附带的所有版本的 Tomcat 8和Tomcat 7 7.0.47入手.SCI类声明有触发扫描(WebSocket)(/ tomcat / WebSocket)端点(与“@ServerEndpoint”或注释的类实现接口或ServerApplicationConfig 扩展的抽象“端点”类).如果你不需要支持(尚)(/ tomcat / WebSockets),你可以删除(WebSocket)(/ tomcat / WebSocket)API和[WebSocket](/ tomcat / WebSocket)实现从tomcat(“websocket-api jar。jar”和“tomcat7-websocket。jar”或“tomcat-websocket.jar”)。
 
@@ -247,12 +247,12 @@ There is a way to configure JRE to use a non-blocking entropy source by setting 
 有一种方法可以配置JRE以使用一个非阻塞的熵源通过设置系统属性:“-Djava.security.egd =文件:/ dev / / urandom’。
 
 
-Note the "`/./`" characters in the value. They are needed to work around known [Oracle JRE bug #6202721](http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6202721). See also [JDK Enhancement Proposal 123](http://openjdk.java.net/jeps/123). It is known that implementation of [SecureRandom](/tomcat/SecureRandom) was improved in Java 8 onwards. 
+Note the "`/./`" characters in the value. They are needed to work around known [Oracle JRE bug #6202721](http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6202721). See also [JDK Enhancement Proposal 123](http://openjdk.java.net/jeps/123). It is known that implementation of [SecureRandom](https://wiki.apache.org/tomcat/SecureRandom) was improved in Java 8 onwards. 
 
 注意“/。/”字符值。他们需要解决已知(Oracle JRE错误# 6202721)(http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6202721).参见[JDK增强提案123](http://openjdk.java.net/jeps/123)。众所周知,实现[SecureRandom](/ tomcat / SecureRandom)是改善Java 8起。
 
 
-Also note that replacing the blocking entropy source (/dev/random) with a non-blocking one actually reduces security because you are getting less-random data. If you have a problem generating entropy on your server (which is common), consider looking into entropy-generating hardware products such as "[EntropyKey](/tomcat/EntropyKey)". 
+Also note that replacing the blocking entropy source (/dev/random) with a non-blocking one actually reduces security because you are getting less-random data. If you have a problem generating entropy on your server (which is common), consider looking into entropy-generating hardware products such as "[EntropyKey](https://wiki.apache.org/tomcat/EntropyKey)". 
 
 还要注意,更换阻塞熵源(/ dev /随机)与非阻塞一个实际上会降低安全性,因为你得到了随机数据.如果你有一个问题在服务器上生成熵(这是很常见的),考虑调查entropy-generating硬件产品,如“EntropyKey(/ tomcat / EntropyKey)”。
 
