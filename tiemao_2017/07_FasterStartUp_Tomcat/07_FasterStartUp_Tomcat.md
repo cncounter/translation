@@ -1,61 +1,29 @@
 # How do I make Tomcat startup faster?
 
-# 我如何使Tomcat启动更快?
+#  Tomcat 启动速度优化
 
 
-Contents
-
-内容
-
-
-1.  [How do I make Tomcat startup faster?](#How_do_I_make_Tomcat_startup_faster.3F)
-
-1. (我怎么使Tomcat启动更快?)(# How_do_I_make_Tomcat_startup_faster.3F)
-
-
-
-        1.  [General](#General)
-    2.  [JAR scanning](#JAR_scanning)
-
-
-
-
-                1.  [Configure your web application](#Configure_your_web_application)
-        2.  [Remove unnecessary JARs](#Remove_unnecessary_JARs)
-        3.  [Exclude JARs from scanning](#Exclude_JARs_from_scanning)
-        4.  [Disable WebSocket support](#Disable_WebSocket_support)
-    3.  [Entropy Source](#Entropy_Source)
-    4.  [Starting several web applications in parallel](#Starting_several_web_applications_in_parallel)
-    5.  [Other](#Other)
-
-
-
-
-                1.  [Memory](#Memory)
-        2.  [Config](#Config)
-        3.  [Web application](#Web_application)
-
-
+关于 Tomcat 的 HowTo 系列,请参考: [https://wiki.apache.org/tomcat/HowTo](https://wiki.apache.org/tomcat/HowTo)
 
 
 This section provides several recommendations on how to make your web application and Apache Tomcat as a whole to start up faster. 
 
-本节提供了一些建议关于如何使您的web应用程序作为一个整体和Apache Tomcat启动速度更快。
+本文提供一些建议, 简单介绍如何让 Tomcat 和 web应用更快启动。
 
 
 ## General
 
-## 一般
+## 一般建议
 
 
 Before we continue to specific tips and tricks, the general advice is that if Tomcat hangs or is not responsive, you have to perform diagnostics. That is to **take several thread dumps** to see what Tomcat is really doing. See [Troubleshooting and Diagnostics](https://wiki.apache.org/tomcat/FAQ/Troubleshooting_and_Diagnostics) page for details. 
 
-之前我们继续特定的技巧和窍门,一般建议是如果Tomcat挂起或不响应,你必须执行诊断.是* *需要几个线程转储* *看到Tomcat是做什么。看到(故障排除和诊断)(/ tomcat /常见问题/ Troubleshooting_and_Diagnostics)详情页面。
+在介绍特定的技巧和窍门之前, 如果碰到 Tomcat挂起或者不响应, 必须先执行诊断.  例如, 执行 **线程转储**, 看看Tomcat到底在干什么。详情请参考 [Troubleshooting and Diagnostics](https://wiki.apache.org/tomcat/FAQ/Troubleshooting_and_Diagnostics)。
 
 
 ## JAR scanning
 
-## JAR扫描
+## JAR 包扫描
 
 
 The [Servlet 3.0 specification](https://wiki.apache.org/tomcat/Specifications) (chapter 8) introduced support for several "plugability features". Those exist to simplify a structure of a web application and to simplify plugging of additional frameworks. Unfortunately, these features require scanning of JAR and class files, which may take noticeable time. Conformance to the specification requires that the scanning were performed by default, but you can configure your own web application in several ways to avoid it (see below). It is also possible to configure which JARs Tomcat should skip. 
@@ -228,23 +196,24 @@ References: [Bug 55855](https://bz.apache.org/bugzilla/show_bug.cgi?id=55855), [
 
 ## Entropy Source
 
-## 熵源
+## 随机数熵源(Entropy Source)
 
 
 Tomcat 7+ heavily relies on SecureRandom class to provide random values for its session ids and in other places. Depending on your JRE it can cause delays during startup if entropy source that is used to initialize SecureRandom is short of entropy. You will see warning in the logs when this happens, e.g.: 
 
-Tomcat 7 +严重依赖SecureRandom类为其提供随机值会话id和在其他地方.根据您的JRE可以导致延迟启动期间如果熵源,用于初始化SecureRandom短暂的熵。您将看到警告日志中,当这一切发生的时候,例如:
+Tomcat 7 及之后的版本, 严重依赖 SecureRandom 类, 用于提供随机值, 如 session id 以及其他方面.如果JVM使用了阻塞式的随机数熵源, 并且熵源中的数据量不足, 就会导致启动期间卡顿或阻塞。阻塞时间较长时,将会看到一条警告日志,例如:
 
 
     <DATE> org.apache.catalina.util.SessionIdGenerator createSecureRandom
     INFO: Creation of SecureRandom instance for session ID generation using [SHA1PRNG] took [5172] milliseconds.
 
+> 这只是卡顿了 `5` 秒左右, 现实情况中,可打上百秒, 视情况而定【MAVEN的某些插件也可能需要读取此随机源】。
 
 
 
 There is a way to configure JRE to use a non-blocking entropy source by setting the following system property: `-Djava.security.egd=file:/dev/./urandom` 
 
-有一种方法可以配置JRE以使用一个非阻塞的熵源通过设置系统属性:“-Djava.security.egd =文件:/ dev / / urandom’。
+可以设置系统属性, 让JVM使用非阻塞式的随机源: `-Djava.security.egd=file:/dev/./urandom` 
 
 
 Note the "`/./`" characters in the value. They are needed to work around known [Oracle JRE bug #6202721](http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6202721). See also [JDK Enhancement Proposal 123](http://openjdk.java.net/jeps/123). It is known that implementation of [SecureRandom](https://wiki.apache.org/tomcat/SecureRandom) was improved in Java 8 onwards. 
