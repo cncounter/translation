@@ -585,4 +585,5 @@ The **Semaphore Valve** supports the following configuration attributes:
 原文链接: [https://tomcat.apache.org/tomcat-8.0-doc/config/valve.html](https://tomcat.apache.org/tomcat-8.0-doc/config/valve.html)
 
 
+参考: Tomcat教程[https://www.oxxus.net/tutorials/tomcat/tomcat-valve](https://www.oxxus.net/tutorials/tomcat/tomcat-valve)
 
