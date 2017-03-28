@@ -1,6 +1,6 @@
 # Google gives everyone machine learning superpowers with TensorFlow 1.0
 
-# Google的超级帝国 -- TensorFlow 1.0
+# Google人工智能超级帝国 -- TensorFlow 1.0
 
 
  ![TensorFlow Dev Summit 2017 logo](https://www.extremetech.com/wp-content/uploads/2017/02/TensorFlow-Dev-Summit-2017-logo-640x353.jpg)
