@@ -2,16 +2,62 @@
 
 ### Table of Contents
 
-- [Introduction](https://tomcat.apache.org/tomcat-8.0-doc/config/valve.html#Introduction)
-- [Access Logging](https://tomcat.apache.org/tomcat-8.0-doc/config/valve.html#Access_Logging)[Access Log Valve](https://tomcat.apache.org/tomcat-8.0-doc/config/valve.html#Access_Log_Valve)[Introduction](https://tomcat.apache.org/tomcat-8.0-doc/config/valve.html#Access_Log_Valve/Introduction)[Attributes](https://tomcat.apache.org/tomcat-8.0-doc/config/valve.html#Access_Log_Valve/Attributes)[Extended Access Log Valve](https://tomcat.apache.org/tomcat-8.0-doc/config/valve.html#Extended_Access_Log_Valve)[Introduction](https://tomcat.apache.org/tomcat-8.0-doc/config/valve.html#Extended_Access_Log_Valve/Introduction)[Attributes](https://tomcat.apache.org/tomcat-8.0-doc/config/valve.html#Extended_Access_Log_Valve/Attributes)
-- [Access Control](https://tomcat.apache.org/tomcat-8.0-doc/config/valve.html#Access_Control)[Remote Address Filter](https://tomcat.apache.org/tomcat-8.0-doc/config/valve.html#Remote_Address_Filter)[Introduction](https://tomcat.apache.org/tomcat-8.0-doc/config/valve.html#Remote_Address_Filter/Introduction)[Attributes](https://tomcat.apache.org/tomcat-8.0-doc/config/valve.html#Remote_Address_Filter/Attributes)[Example 1](https://tomcat.apache.org/tomcat-8.0-doc/config/valve.html#Remote_Address_Valve/Example_localhost)[Example 2](https://tomcat.apache.org/tomcat-8.0-doc/config/valve.html#Remote_Address_Valve/Example_localhost_port)[Example 3](https://tomcat.apache.org/tomcat-8.0-doc/config/valve.html#Remote_Address_Valve/Example_port_auth)[Remote Host Filter](https://tomcat.apache.org/tomcat-8.0-doc/config/valve.html#Remote_Host_Filter)[Introduction](https://tomcat.apache.org/tomcat-8.0-doc/config/valve.html#Remote_Host_Filter/Introduction)[Attributes](https://tomcat.apache.org/tomcat-8.0-doc/config/valve.html#Remote_Host_Filter/Attributes)
-- [Proxies Support](https://tomcat.apache.org/tomcat-8.0-doc/config/valve.html#Proxies_Support)[Remote IP Valve](https://tomcat.apache.org/tomcat-8.0-doc/config/valve.html#Remote_IP_Valve)[Introduction](https://tomcat.apache.org/tomcat-8.0-doc/config/valve.html#Remote_IP_Valve/Introduction)[Attributes](https://tomcat.apache.org/tomcat-8.0-doc/config/valve.html#Remote_IP_Valve/Attributes)[SSL Valve](https://tomcat.apache.org/tomcat-8.0-doc/config/valve.html#SSL_Valve)[Introduction](https://tomcat.apache.org/tomcat-8.0-doc/config/valve.html#SSL_Valve/Introduction)[Attributes](https://tomcat.apache.org/tomcat-8.0-doc/config/valve.html#SSL_Valve/Attributes)
-- [Single Sign On Valve](https://tomcat.apache.org/tomcat-8.0-doc/config/valve.html#Single_Sign_On_Valve)[Introduction](https://tomcat.apache.org/tomcat-8.0-doc/config/valve.html#Single_Sign_On_Valve/Introduction)[Attributes](https://tomcat.apache.org/tomcat-8.0-doc/config/valve.html#Single_Sign_On_Valve/Attributes)
-- [Authentication](https://tomcat.apache.org/tomcat-8.0-doc/config/valve.html#Authentication)[Basic Authenticator Valve](https://tomcat.apache.org/tomcat-8.0-doc/config/valve.html#Basic_Authenticator_Valve)[Introduction](https://tomcat.apache.org/tomcat-8.0-doc/config/valve.html#Basic_Authenticator_Valve/Introduction)[Attributes](https://tomcat.apache.org/tomcat-8.0-doc/config/valve.html#Basic_Authenticator_Valve/Attributes)[Digest Authenticator Valve](https://tomcat.apache.org/tomcat-8.0-doc/config/valve.html#Digest_Authenticator_Valve)[Introduction](https://tomcat.apache.org/tomcat-8.0-doc/config/valve.html#Digest_Authenticator_Valve/Introduction)[Attributes](https://tomcat.apache.org/tomcat-8.0-doc/config/valve.html#Digest_Authenticator_Valve/Attributes)[Form Authenticator Valve](https://tomcat.apache.org/tomcat-8.0-doc/config/valve.html#Form_Authenticator_Valve)[Introduction](https://tomcat.apache.org/tomcat-8.0-doc/config/valve.html#Form_Authenticator_Valve/Introduction)[Attributes](https://tomcat.apache.org/tomcat-8.0-doc/config/valve.html#Form_Authenticator_Valve/Attributes)[SSL Authenticator Valve](https://tomcat.apache.org/tomcat-8.0-doc/config/valve.html#SSL_Authenticator_Valve)[Introduction](https://tomcat.apache.org/tomcat-8.0-doc/config/valve.html#SSL_Authenticator_Valve/Introduction)[Attributes](https://tomcat.apache.org/tomcat-8.0-doc/config/valve.html#SSL_Authenticator_Valve/Attributes)[SPNEGO Valve](https://tomcat.apache.org/tomcat-8.0-doc/config/valve.html#SPNEGO_Valve)[Introduction](https://tomcat.apache.org/tomcat-8.0-doc/config/valve.html#SPNEGO_Valve/Introduction)[Attributes](https://tomcat.apache.org/tomcat-8.0-doc/config/valve.html#SPNEGO_Valve/Attributes)
-- [Error Report Valve](https://tomcat.apache.org/tomcat-8.0-doc/config/valve.html#Error_Report_Valve)[Introduction](https://tomcat.apache.org/tomcat-8.0-doc/config/valve.html#Error_Report_Valve/Introduction)[Attributes](https://tomcat.apache.org/tomcat-8.0-doc/config/valve.html#Error_Report_Valve/Attributes)
-- [Crawler Session Manager Valve](https://tomcat.apache.org/tomcat-8.0-doc/config/valve.html#Crawler_Session_Manager_Valve)[Introduction](https://tomcat.apache.org/tomcat-8.0-doc/config/valve.html#Crawler_Session_Manager_Valve/Introduction)[Attributes](https://tomcat.apache.org/tomcat-8.0-doc/config/valve.html#Crawler_Session_Manager_Valve/Attributes)
-- [Stuck Thread Detection Valve](https://tomcat.apache.org/tomcat-8.0-doc/config/valve.html#Stuck_Thread_Detection_Valve)[Introduction](https://tomcat.apache.org/tomcat-8.0-doc/config/valve.html#Stuck_Thread_Detection_Valve/Introduction)[Attributes](https://tomcat.apache.org/tomcat-8.0-doc/config/valve.html#Stuck_Thread_Detection_Valve/Attributes)
-- [Semaphore Valve](https://tomcat.apache.org/tomcat-8.0-doc/config/valve.html#Semaphore_Valve)[Introduction](https://tomcat.apache.org/tomcat-8.0-doc/config/valve.html#Semaphore_Valve/Introduction)[Attributes](https://tomcat.apache.org/tomcat-8.0-doc/config/valve.html#Semaphore_Valve/Attributes)
+- [Introduction](#Introduction)
+- [Access Logging](#Access_Logging)
+    * [Access Log Valve](#Access_Log_Valve)
+    * [Introduction](#Access_Log_Valve/Introduction)
+    * [Attributes](#Access_Log_Valve/Attributes)
+    * [Extended Access Log Valve](#Extended_Access_Log_Valve)
+    * [Introduction](#Extended_Access_Log_Valve/Introduction)
+    * [Attributes](#Extended_Access_Log_Valve/Attributes)
+- [Access Control](#Access_Control)
+    * [Remote Address Filter](#Remote_Address_Filter)
+    * [Introduction](#Remote_Address_Filter/Introduction)
+    * [Attributes](#Remote_Address_Filter/Attributes)
+    * [Example 1](#Remote_Address_Valve/Example_localhost)
+    * [Example 2](#Remote_Address_Valve/Example_localhost_port)
+    * [Example 3](#Remote_Address_Valve/Example_port_auth)
+    * [Remote Host Filter](#Remote_Host_Filter)
+    * [Introduction](#Remote_Host_Filter/Introduction)
+    * [Attributes](#Remote_Host_Filter/Attributes)
+- [Proxies Support](#Proxies_Support)
+    * [Remote IP Valve](#Remote_IP_Valve)
+    * [Introduction](#Remote_IP_Valve/Introduction)
+    * [Attributes](#Remote_IP_Valve/Attributes)
+    * [SSL Valve](#SSL_Valve)
+    * [Introduction](#SSL_Valve/Introduction)
+    * [Attributes](#SSL_Valve/Attributes)
+- [Single Sign On Valve](#Single_Sign_On_Valve)
+    * [Introduction](#Single_Sign_On_Valve/Introduction)
+    * [Attributes](#Single_Sign_On_Valve/Attributes)
+- [Authentication](#Authentication)
+    * [Basic Authenticator Valve](#Basic_Authenticator_Valve)
+    * [Introduction](#Basic_Authenticator_Valve/Introduction)
+    * [Attributes](#Basic_Authenticator_Valve/Attributes)
+    * [Digest Authenticator Valve](#Digest_Authenticator_Valve)
+    * [Introduction](#Digest_Authenticator_Valve/Introduction)
+    * [Attributes](#Digest_Authenticator_Valve/Attributes)
+    * [Form Authenticator Valve](#Form_Authenticator_Valve)
+    * [Introduction](#Form_Authenticator_Valve/Introduction)
+    * [Attributes](#Form_Authenticator_Valve/Attributes)
+    * [SSL Authenticator Valve](#SSL_Authenticator_Valve)
+    * [Introduction](#SSL_Authenticator_Valve/Introduction)
+    * [Attributes](#SSL_Authenticator_Valve/Attributes)
+    * [SPNEGO Valve](#SPNEGO_Valve)
+    * [Introduction](#SPNEGO_Valve/Introduction)
+    * [Attributes](#SPNEGO_Valve/Attributes)
+- [Error Report Valve](#Error_Report_Valve)
+    * [Introduction](#Error_Report_Valve/Introduction)
+    * [Attributes](#Error_Report_Valve/Attributes)
+- [Crawler Session Manager Valve](#Crawler_Session_Manager_Valve)
+    * [Introduction](#Crawler_Session_Manager_Valve/Introduction)
+    * [Attributes](#Crawler_Session_Manager_Valve/Attributes)
+- [Stuck Thread Detection Valve](#Stuck_Thread_Detection_Valve)
+    * [Introduction](#Stuck_Thread_Detection_Valve/Introduction)
+    * [Attributes](#Stuck_Thread_Detection_Valve/Attributes)
+- [Semaphore Valve](#Semaphore_Valve)
+    * [Introduction](#Semaphore_Valve/Introduction)
+    * [Attributes](#Semaphore_Valve/Attributes)
 
 ### Introduction
 
@@ -116,17 +162,17 @@ The shorthand pattern `pattern="common"` corresponds to the Common Log Format de
 
 The shorthand pattern `pattern="combined"` appends the values of the `Referer` and `User-Agent` headers, each in double quotes, to the `common` pattern.
 
-When Tomcat is operating behind a reverse proxy, the client information logged by the Access Log Valve may represent the reverse proxy, the browser or some combination of the two depending on the configuration of Tomcat and the reverse proxy. For Tomcat configuration options see [Proxies Support](https://tomcat.apache.org/tomcat-8.0-doc/config/valve.html#Proxies_Support) and the [Proxy How-To](https://tomcat.apache.org/tomcat-8.0-doc/proxy-howto.html). For reverse proxies that use mod_jk, see the [generic proxy](http://tomcat.apache.org/connectors-doc/generic_howto/proxy.html) documentation. For other reverse proxies, consult their documentation.
+When Tomcat is operating behind a reverse proxy, the client information logged by the Access Log Valve may represent the reverse proxy, the browser or some combination of the two depending on the configuration of Tomcat and the reverse proxy. For Tomcat configuration options see [Proxies Support](#Proxies_Support) and the [Proxy How-To](https://tomcat.apache.org/tomcat-8.0-doc/proxy-howto.html). For reverse proxies that use mod_jk, see the [generic proxy](http://tomcat.apache.org/connectors-doc/generic_howto/proxy.html) documentation. For other reverse proxies, consult their documentation.
 
 #### Extended Access Log Valve
 
 #### Introduction
 
-The **Extended Access Log Valve** extends the [Access Log Valve](https://tomcat.apache.org/tomcat-8.0-doc/config/valve.html#Access_Log_Valve) class, and so uses the same self-contained logging logic. This means it implements many of the same file handling attributes. The main difference to the standard `AccessLogValve` is that `ExtendedAccessLogValve` creates log files which conform to the Working Draft for the [Extended Log File Format](http://www.w3.org/TR/WD-logfile.html) defined by the W3C.
+The **Extended Access Log Valve** extends the [Access Log Valve](#Access_Log_Valve) class, and so uses the same self-contained logging logic. This means it implements many of the same file handling attributes. The main difference to the standard `AccessLogValve` is that `ExtendedAccessLogValve` creates log files which conform to the Working Draft for the [Extended Log File Format](http://www.w3.org/TR/WD-logfile.html) defined by the W3C.
 
 #### Attributes
 
-The **Extended Access Log Valve** supports all configuration attributes of the standard [Access Log Valve.](https://tomcat.apache.org/tomcat-8.0-doc/config/valve.html#Access_Log_Valve) Only the values used for `className` and `pattern` differ.
+The **Extended Access Log Valve** supports all configuration attributes of the standard [Access Log Valve.](#Access_Log_Valve) Only the values used for `className` and `pattern` differ.
 
 | Attribute     | Description                              |
 | ------------- | ---------------------------------------- |
@@ -193,7 +239,7 @@ The behavior when a request is refused can be changed to not deny but instead se
 
 **Note:** There is a caveat when using this valve with IPv6 addresses. Format of the IP address that this valve is processing depends on the API that was used to obtain it. If the address was obtained from Java socket using Inet6Address class, its format will be `x:x:x:x:x:x:x:x`. That is, the IP address for localhost will be `0:0:0:0:0:0:0:1` instead of the more widely used `::1`. Consult your access logs for the actual value.
 
-See also: [Remote Host Filter](https://tomcat.apache.org/tomcat-8.0-doc/config/valve.html#Remote_Host_Filter), [Remote IP Valve](https://tomcat.apache.org/tomcat-8.0-doc/config/valve.html#Remote_IP_Valve).
+See also: [Remote Host Filter](#Remote_Host_Filter), [Remote IP Valve](#Remote_IP_Valve).
 
 #### Attributes
 
@@ -257,7 +303,7 @@ The behavior when a request is refused can be changed to not deny but instead se
 
 **Note:** This filter processes the value returned by method `ServletRequest.getRemoteHost()`. To allow the method to return proper host names, you have to enable "DNS lookups" feature on a **Connector**.
 
-See also: [Remote Address Filter](https://tomcat.apache.org/tomcat-8.0-doc/config/valve.html#Remote_Address_Filter), [HTTP Connector](https://tomcat.apache.org/tomcat-8.0-doc/config/http.html) configuration.
+See also: [Remote Address Filter](#Remote_Address_Filter), [HTTP Connector](https://tomcat.apache.org/tomcat-8.0-doc/config/http.html) configuration.
 
 #### Attributes
 
