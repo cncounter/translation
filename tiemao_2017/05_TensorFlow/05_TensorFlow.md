@@ -1,18 +1,9 @@
 # Google gives everyone machine learning superpowers with TensorFlow 1.0
 
-# 谷歌给每个人都与TensorFlow 1.0机器学习超级大国
-
-
-*   By [David Cardinal](https://www.extremetech.com/author/dcardinal "Posts by David Cardinal") on February 17, 2017 at 10:30 am
-*   [Comment](https://www.extremetech.com/extreme/244573-google-gives-everyone-machine-learning-superpowers-tensorflow-1-0#disqus_thread)
-
-*(David红衣主教)(https://www.extremetech.com/author/dcardinal“大卫红衣主教职位”)2月17日,2017上午10:30
-*(评论)(https://www.extremetech.com/extreme/244573-google-gives-everyone-machine-learning-superpowers-tensorflow-1-0 disqus_thread)
+# Google的超级帝国 -- TensorFlow 1.0
 
 
  ![TensorFlow Dev Summit 2017 logo](https://www.extremetech.com/wp-content/uploads/2017/02/TensorFlow-Dev-Summit-2017-logo-640x353.jpg)
-
-!2017标志][TensorFlow Dev峰会(https://www.extremetech.com/wp - content/uploads/2017/02/tensorflow - Dev -峰会- 2017 -商标- 640 - x353.jpg)
 
 
 It wasn’t that long ago that building and training neural networks was strictly for seasoned computer scientists and grad students. That began to change with the release of a number of open-source [machine learning](https://www.extremetech.com/tag/machine-learning) frameworks like Theano, Spark ML, Microsoft’s CNTK, and Google’s TensorFlow. Among them, TensorFlow stands out for its powerful, yet accessible, functionality, coupled with the stunning growth of its user base. With this week’s release of TensorFlow 1.0, Google has pushed the frontiers of machine learning further in a number of directions.
@@ -85,3 +76,6 @@ Now read: [Artificial neural networks are changing the world. What are they?](ht
 现在读:[人工神经网络是改变世界。他们是什么?)(https://www.extremetech.com/extreme/215170-artificial-neural-networks-are-changing-the-world-what-are-they)
 
 
+
+
+*   By [David Cardinal](https://www.extremetech.com/author/dcardinal "Posts by David Cardinal") on February 17, 2017 at 10:30 am
