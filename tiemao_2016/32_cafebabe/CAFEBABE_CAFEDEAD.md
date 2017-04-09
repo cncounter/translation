@@ -1,4 +1,4 @@
-# CAFEBABE的由来
+# class文件魔数CAFEBABE的由来
 
 Why is the first four bytes of Java class file format is CAFEBABE? Who named it?
 

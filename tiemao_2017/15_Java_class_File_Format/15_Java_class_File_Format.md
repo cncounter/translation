@@ -41,6 +41,10 @@ Reference to an ASCII character in this chapter should be interpreted to mean th
 
 A `class` file consists of a single `ClassFile` structure:
 
+
+`class` 文件由单个  `ClassFile` 结构体(structure)组成:
+
+
 ```
 ClassFile {
     u4             magic;
@@ -65,13 +69,24 @@ ClassFile {
 
 The items in the `ClassFile` structure are as follows:
 
+`ClassFile` 结构体包括以下这些项:
+
 - magic
 
   The `magic` item supplies the magic number identifying the `class` file format; it has the value `0xCAFEBABE`.
 
+  
+  魔数(`magic`) 用于标识 `class` 文件格式; 值固定为 `0xCAFEBABE`, 可以看看: [class文件魔数CAFEBABE的由来](http://blog.csdn.net/renfufei/article/details/69938592).
+
+
 - minor_version, major_version
 
   The values of the `minor_version` and `major_version` items are the minor and major version numbers of this `class` file. Together, a major and a minor version number determine the version of the `class` file format. If a `class` file has major version number M and minor version number m, we denote the version of its `class` file format as M.m. Thus, `class` file format versions may be ordered lexicographically, for example, 1.5 < 2.0 < 2.1.A Java Virtual Machine implementation can support a `class` file format of version v if and only if v lies in some contiguous range Mi.0 ≤ v ≤ Mj.m. The release level of the Java SE platform to which a Java Virtual Machine implementation conforms is responsible for determining the range.Oracle's Java Virtual Machine implementation in JDK release 1.0.2 supports `class` file format versions 45.0 through 45.3 inclusive. JDK releases 1.1.* support `class` file format versions in the range 45.0 through 45.65535 inclusive. For k ≥ 2, JDK release 1.k supports `class` file format versions in the range 45.0 through 44+k.0 inclusive.
+
+  `major_version` 是 `class` 文件的大版本号, `minor_version` 是小版本号。大版本和小版本号一起确定了 `class` 文件的格式版本。如果大版本号是 M, 小版本号是 m, 根据版本格式规则， `class` 文件的格式版本就是 M.m 。
+  
+  可能会下令字母顺序进行的,例如,1.5 < 2.0 < 2.1。可以支持Java虚拟机实现的类文件格式版本v当且仅当谎言在一些连续的范围Mi.0 v≤≤Mj.m。Java SE平台的版本的Java虚拟机实现符合负责确定范围。甲骨文Java虚拟机实现在JDK版本1.0.2支持类的文件格式版本45.0到45.0包容性。JDK 1.1版本。*支持类的文件格式版本在45.0到45.65535范围包容性。对于k≥2,JDK版本1。k支持类的文件格式通过44 +版本在45.0 k。0包容性。
+
 
 - constant_pool_count
 
