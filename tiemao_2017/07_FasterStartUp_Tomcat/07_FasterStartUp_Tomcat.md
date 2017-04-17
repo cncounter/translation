@@ -8,7 +8,7 @@
 
 This section provides several recommendations on how to make your web application and Apache Tomcat as a whole to start up faster. 
 
-本文提供一些建议, 简单介绍如何让 Tomcat 和 web应用更快启动。
+本文提供一些建议, 简单介绍如何让 Tomcat 和 web应用能够更快启动。
 
 
 ## General
@@ -18,7 +18,7 @@ This section provides several recommendations on how to make your web applicatio
 
 Before we continue to specific tips and tricks, the general advice is that if Tomcat hangs or is not responsive, you have to perform diagnostics. That is to **take several thread dumps** to see what Tomcat is really doing. See [Troubleshooting and Diagnostics](https://wiki.apache.org/tomcat/FAQ/Troubleshooting_and_Diagnostics) page for details. 
 
-在介绍特定的技巧和窍门之前, 如果碰到 Tomcat挂起或者不响应, 必须先执行诊断.  例如, 执行 **线程转储**, 看看Tomcat到底在干什么。详情请参考 [Troubleshooting and Diagnostics](https://wiki.apache.org/tomcat/FAQ/Troubleshooting_and_Diagnostics)。
+首先提示: 如果碰到 Tomcat hang 住或者请求不响应, 必须先进行诊断, 而不要急着去优化。  例如, 执行 **线程转储**, 看看Tomcat到底出了什么问题。详情请参考Tomcat的wiki页面: [问题检测与诊断](https://wiki.apache.org/tomcat/FAQ/Troubleshooting_and_Diagnostics) 。
 
 
 ## JAR scanning
@@ -28,17 +28,15 @@ Before we continue to specific tips and tricks, the general advice is that if To
 
 The [Servlet 3.0 specification](https://wiki.apache.org/tomcat/Specifications) (chapter 8) introduced support for several "plugability features". Those exist to simplify a structure of a web application and to simplify plugging of additional frameworks. Unfortunately, these features require scanning of JAR and class files, which may take noticeable time. Conformance to the specification requires that the scanning were performed by default, but you can configure your own web application in several ways to avoid it (see below). It is also possible to configure which JARs Tomcat should skip. 
 
-[Servlet 3.0规范](/ tomcat /规格)(第八章)介绍了支持几个“更换功能”.那些存在简化web应用程序的结构和简化插入额外的框架.不幸的是,这些特性需要扫描的JAR和类文件,这可能需要明显的时间.符合规范要求的扫描进行默认情况下,但是你可以配置自己的web应用程序在几个方面来避免它(见下文).也可以配置哪些jar Tomcat应该跳过。
+在[Servlet 3.0规范](https://wiki.apache.org/tomcat/Specifications) 的第8章, 引入了插件功能。 目的是精简web应用结构,并简化附加框架插件。杯具的是, 这种特性需要扫描所有的JAR包和类文件,这可能需要较长时间。规范要求, 默认情况下进行扫描; 但用户可以通过配置来禁用此功能(见下文). 也可以指定跳过哪些 jar 包的扫描。
 
 
 For further talk, the features that require scanning are: 
 
-为进一步交谈,需要扫描的特性是:
-
 
 Introduced by Servlet 3.0: 
 
-介绍了通过Servlet 3.0:
+下面是需要扫描 jar 包的功能,由 Servlet 3.0 引入:
 
 
 *   SCI (`javax.servlet.ServletContainerInitializer`)
@@ -47,58 +45,60 @@ Introduced by Servlet 3.0:
 *   Annotations that define components of a web application (`@WebServlet` etc.)
 *   Annotations that define components for 3-rd party libraries initialized by an SCI (arbitrary annotations that are defined in `@HandlesTypes` annotation on a SCI class)
 
-* SCI(“javax.servlet.ServletContainerInitializer”)
-* Web片段(meta - inf / web-fragment.xml)
-*一个web应用程序打包在jar文件资源(meta - inf /资源/ *)
-*注释定义web应用程序的组件(“@WebServlet”等等)。
-*注释为第三方库定义组件初始化的SCI(任意定义的注释“@HandlesTypes”注释在SCI类)
+<hr/>
+
+*   SCI (`javax.servlet.ServletContainerInitializer`)
+*   Web fragments (`META-INF/web-fragment.xml`)
+*   打包在jar文件中的WEB应用程序资源(`META-INF/resources/*`)
+*   定义web应用组件的注解 (例如 `@WebServlet` 等注解.)
+*   第三方库中定义组件的注解, 这些第三方库由 SCI 初始化, (由 `@HandlesTypes` 注解的 annotations)
 
 
 Older features, introduced by earlier specifications: 
 
-年长的特性,引入了早些时候规格:
+由更早的规范所引入的一些特性:
 
 
 *   TLD scanning, (Discovery of tag libraries. Scans for Tag Library Descriptor files, `META-INF/**/*.tld`).
 
-* TLD扫描,(发现标记库。标记库描述符文件扫描,meta - inf / * * / * . tld)。
+*   TLD扫描,(标签库/tag libraries 的查找。标签库描述文件的扫描, `META-INF/**/*.tld`).
 
 
 Among the scans the annotation scanning is the slowest. That is because each class file (except ones in ignored JARs) has to be read and parsed looking for annotations in it. 
 
-在扫描注释扫描是最慢的。这是因为每一个类文件(忽略的jar除外)必须读取和解析寻找注释。
+annotation 的扫描是最慢的。因为必须读取每个类文件, 并解析和查找注解(除非在忽略的jar文件中)。
 
 
 An example of a container-provided SCI that triggers annotation scanning is the [WebSocket](https://wiki.apache.org/tomcat/WebSocket) API implementation which is included with standard distribution in all versions of Tomcat 8 and with Tomcat 7 starting with 7.0.47. An SCI class declared there triggers scanning for [WebSocket](https://wiki.apache.org/tomcat/WebSocket) endpoints (the classes annotated with `@ServerEndpoint` or implementing `ServerApplicationConfig` interface or extending the abstract `Endpoint` class). If you do not need support for [WebSockets](https://wiki.apache.org/tomcat/WebSockets), you may remove the [WebSocket](https://wiki.apache.org/tomcat/WebSocket) API and [WebSocket](https://wiki.apache.org/tomcat/WebSocket) implementation JARs from Tomcat (`websocket-api.jar` and `tomcat7-websocket.jar` or `tomcat-websocket.jar`). 
 
-容器提供的一个例子SCI,触发注释扫描(WebSocket)(/ tomcat / WebSocket)API实现标准发行版附带的所有版本的 Tomcat 8和Tomcat 7 7.0.47入手.SCI类声明有触发扫描(WebSocket)(/ tomcat / WebSocket)端点(与“@ServerEndpoint”或注释的类实现接口或ServerApplicationConfig 扩展的抽象“端点”类).如果你不需要支持(尚)(/ tomcat / WebSockets),你可以删除(WebSocket)(/ tomcat / WebSocket)API和[WebSocket](/ tomcat / WebSocket)实现从tomcat(“websocket-api jar。jar”和“tomcat7-websocket。jar”或“tomcat-websocket.jar”)。
+Tomcat 7.0.47 之后的版本,以及 Tomcat 8, 会触发扫描 [WebSocket](https://wiki.apache.org/tomcat/WebSocket) 注解的API实现. 包括 `@ServerEndpoint` 注解的类, 或者实现 `ServerApplicationConfig` 接口的类, 或者是集成了 abstract `Endpoint` 类。.如果你不需要支持 [WebSockets](https://wiki.apache.org/tomcat/WebSockets), 则可以删除Tomcal下, WebSocket 相关的 jar 包 (`websocket-api.jar` and `tomcat7-websocket.jar` or `tomcat-websocket.jar`)。
 
 
 _A note on TLD scanning_: In Tomcat 7 and earlier the TLD scanning happens twice, 
 
-TLD scanning_ _A注意:早些时候在Tomcat 7和TLD扫描发生两次,
+注意: 在Tomcat 7以及更早的版本中, 会进行两次TLD扫描,
 
 
 *   first, at startup time, to discover listeners declared in tld files (done by `TldConfig` class),
 *   second, by JSP engine when generating java code for a JSP page (done by `TldLocationsCache`).
 
-*第一,在启动时,发现听众宣布在tld文件(由“TldConfig”类),
-*第二,由JSP引擎当为JSP页面生成java代码(由“TldLocationsCache”)。
+*   第一次,在启动时,查找 tld 文件这的 listeners(由`TldConfig`类完成),
+*   第二次, 由JSP引擎为JSP页面生成java代码时执行(参考 `TldLocationsCache` 类)。
 
 
 The second scanning is more noticeable, because it prints a diagnostic message about scanned JARs that contained no TLDs. In Tomcat 8 the TLD scanning happens only once at startup time (in `JasperInitializer`). 
 
-第二个扫描比较明显,因为它打印一个诊断信息扫描jar包含没有tld.在Tomcat 8 TLD在启动时扫描只发生一次(在“JasperInitializer”)。
+第二次扫描比较明显,因为它会打印一些诊断信息,关于不包含 TLDs 的 JAR 包扫描信息. 在 Tomcat 8 启动时, 只扫描一次TLD, (在 `JasperInitializer` 类中)。
 
 
 ### Configure your web application
 
-### 配置您的web应用程序
+### 配置web应用
 
 
 See chapter in [Tomcat 7 migration guide](http://tomcat.apache.org/migration-7.html#Annotation_scanning). 
 
-见宏伟Tomcat[7](移徙http://tomcat.apache.org/migration-7.html # Annotation_scanning指南)。
+参见: [Tomcat 7 migration guide](http://tomcat.apache.org/migration-7.html#Annotation_scanning).
 
 
 There are two options that can be specified in your `WEB-INF/web.xml` file: 
@@ -136,7 +136,7 @@ Scanning for web application resources and TLD scanning are not affected by thes
 
 ### Remove unnecessary JARs
 
-### 删除不必要的罐子
+### 删除不必要的JARs
 
 
 Remove any JAR files you do not need. When searching for classes every JAR file needs to be examined to find the needed class. If the jar file is not there - there is nothing to search. 
