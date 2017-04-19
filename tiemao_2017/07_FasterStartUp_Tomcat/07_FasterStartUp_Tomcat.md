@@ -109,24 +109,26 @@ There are two options that can be specified in your `WEB-INF/web.xml` file:
 1.  Set `metadata-complete="true"` attribute on the `&lt;web-app&gt;` element.
 2.  Add an empty `&lt;absolute-ordering /&gt;` element.
 
-1. 设置“metadata-complete = " true "属性“& lt;web-app&gt;”元素。
-2. 添加一个空的& lt;absolute-ordering /祝辞的元素。
+<br/>
+
+1. 设置 `&lt;web-app&gt;` 元素的属性 `metadata-complete="true"`。
+2. 在其中添加一个空元素 `&lt;absolute-ordering /&gt;`。
 
 
 
 Setting `metadata-complete="true"` disables scanning your web application and its libraries for classes that use annotations to define components of a web application (Servlets etc.). The `metadata-complete` option is not enough to disable all of annotation scanning. If there is a SCI with a `@HandlesTypes` annotation, Tomcat has to scan your application for classes that use annotations or interfaces specified in that annotation. 
 
-设置“metadata-complete = " true "的禁用扫描您的web应用程序和它的库类,使用注解来定义组件的web应用程序(servlet等)。.“metadata-complete”选项禁用所有注释扫描是不够的.如果有一个科学的@HandlesTypes注释,Tomcat必须扫描应用程序使用注释的类或接口中指定注释。
+设置 `metadata-complete="true"` 可以禁用对web应用和库类的扫描, 主要是注解的扫描(例如 servlet)。 `metadata-complete`  选项并不能禁用所有的注解扫描. 比如存在 `@HandlesTypes` 注解的SCI, 则 Tomcat 必须扫描整个应用,以确定使用对应注解的类和接口。
 
 
 The `&lt;absolute-ordering&gt;` element specifies which web fragment JARs (according to the names in their `WEB-INF/web-fragment.xml` files) have to be scanned for SCIs, fragments and annotations. An empty `&lt;absolute-ordering/&gt;` element configures that none are to be scanned. 
 
-“& lt;absolute-ordering&gt”元素指定哪个web片段jar(根据名字' - inf / web-fragment。xml的文件)必须扫描者,碎片和注释.空”& lt;absolute-ordering /比,“元素配置没有扫描。
+`&lt;absolute-ordering&gt;` 元素中直接指定了需要扫描哪些 JAR 包,其中包含 web fragment(在 `WEB-INF/web-fragment.xml` 文件指定), 包括 SCIs, fragments and annotations. 空元素 `&lt;absolute-ordering/&gt;` 则是不需要扫描。
 
 
 In Tomcat 7 the `absolute-ordering` option affects discovery both of SCIs provided by web application and ones provided by the container (i.e. by the libraries in `$CATALINA_HOME/lib`). In Tomcat 8 the option affects the web application ones only, while the container-provided SCIs are always discovered, regardless of `absolute-ordering`. In such case the `absolute-ordering` option alone does not prevent scanning for annotations, but the list of JARs to be scanned will be empty, and thus the scanning will complete quickly. The classes in `WEB-INF/classes` are always scanned regardless of `absolute-ordering`. 
 
-Tomcat 7 ' absolute-ordering '选项影响发现的损伤者提供的web应用程序容器提供的和1(即由图书馆CATALINA_HOME美元/ lib).在Tomcat 8选择影响web应用程序的,而容器提供者总是发现,无论“absolute-ordering”.在这种情况下,“absolute-ordering”选项并不能阻止扫描注释,但罐子被扫描的列表是空的,因此扫描将会很快完成.类的web - inf / classes总是扫描无论“absolute-ordering”。
+在 Tomcat 7 中, `absolute-ordering` 选项同时影响应用程序的SCIs 和容器提供的SCIs(即 `$CATALINA_HOME/lib` 中定义的)。.在Tomcat 8中,该选择只影响web应用程序, 而容器提供的SCI则总是会被扫描, 无论是否指定 `absolute-ordering`. 在这种情况下, `absolute-ordering` 选项也不能阻止注解扫描, 但扫描的 JAR 包列表是空的, 因此扫描将会很快完成. 不管指定不指定 `absolute-ordering`, `WEB-INF/classes` 目录总是会被扫描。
 
 
 Scanning for web application resources and TLD scanning are not affected by these options. 
