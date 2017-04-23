@@ -103,17 +103,21 @@ See chapter in [Tomcat 7 migration guide](http://tomcat.apache.org/migration-7.h
 
 There are two options that can be specified in your `WEB-INF/web.xml` file: 
 
-有两个选项,可以在你指定的web - inf /。xml的文件:
+可以在 `WEB-INF/web.xml` 文件中指定两个选项:
 
 
-1.  Set `metadata-complete="true"` attribute on the `&lt;web-app&gt;` element.
-2.  Add an empty `&lt;absolute-ordering /&gt;` element.
+1.  Set `metadata-complete="true"` attribute on the `<web-app>` element.
+2.  Add an empty `<absolute-ordering />` element.
 
 <br/>
 
-1. 设置 `&lt;web-app&gt;` 元素的属性 `metadata-complete="true"`。
-2. 在其中添加一个空元素 `&lt;absolute-ordering /&gt;`。
+1. 设置 `<web-app>` 元素的属性 `metadata-complete="true"`。
+2. 在其中添加一个空元素 `<absolute-ordering />`。
+7  re4opppppppppppppppppppppppppoooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo   
+ o
 
+  
+  1
 
 
 Setting `metadata-complete="true"` disables scanning your web application and its libraries for classes that use annotations to define components of a web application (Servlets etc.). The `metadata-complete` option is not enough to disable all of annotation scanning. If there is a SCI with a `@HandlesTypes` annotation, Tomcat has to scan your application for classes that use annotations or interfaces specified in that annotation. 
@@ -121,69 +125,66 @@ Setting `metadata-complete="true"` disables scanning your web application and it
 设置 `metadata-complete="true"` 可以禁用对web应用和库类的扫描, 主要是注解的扫描(例如 servlet)。 `metadata-complete`  选项并不能禁用所有的注解扫描. 比如存在 `@HandlesTypes` 注解的SCI, 则 Tomcat 必须扫描整个应用,以确定使用对应注解的类和接口。
 
 
-The `&lt;absolute-ordering&gt;` element specifies which web fragment JARs (according to the names in their `WEB-INF/web-fragment.xml` files) have to be scanned for SCIs, fragments and annotations. An empty `&lt;absolute-ordering/&gt;` element configures that none are to be scanned. 
 
-`&lt;absolute-ordering&gt;` 元素中直接指定了需要扫描哪些 JAR 包,其中包含 web fragment(在 `WEB-INF/web-fragment.xml` 文件指定), 包括 SCIs, fragments and annotations. 空元素 `&lt;absolute-ordering/&gt;` 则是不需要扫描。
+
+The `<absolute-ordering>` element specifies which web fragment JARs (according to the names in their `WEB-INF/web-fragment.xml` files) have to be scanned for SCIs, fragments and annotations. An empty `<absolute-ordering/>` element configures that none are to be scanned. 
+
+`<absolute-ordering>` 元素中直接指定了需要扫描哪些 JAR 包,其中包含 web fragment(在 `WEB-INF/web-fragment.xml` 文件指定), 包括 SCIs, fragments and annotations. 空元素 `<absolute-ordering/>` 则表示不需要扫描。
 
 
 In Tomcat 7 the `absolute-ordering` option affects discovery both of SCIs provided by web application and ones provided by the container (i.e. by the libraries in `$CATALINA_HOME/lib`). In Tomcat 8 the option affects the web application ones only, while the container-provided SCIs are always discovered, regardless of `absolute-ordering`. In such case the `absolute-ordering` option alone does not prevent scanning for annotations, but the list of JARs to be scanned will be empty, and thus the scanning will complete quickly. The classes in `WEB-INF/classes` are always scanned regardless of `absolute-ordering`. 
 
 在 Tomcat 7 中, `absolute-ordering` 选项同时影响应用程序的SCIs 和容器提供的SCIs(即 `$CATALINA_HOME/lib` 中定义的)。.在Tomcat 8中,该选择只影响web应用程序, 而容器提供的SCI则总是会被扫描, 无论是否指定 `absolute-ordering`. 在这种情况下, `absolute-ordering` 选项也不能阻止注解扫描, 但扫描的 JAR 包列表是空的, 因此扫描将会很快完成. 不管指定不指定 `absolute-ordering`, `WEB-INF/classes` 目录总是会被扫描。
 
-
 Scanning for web application resources and TLD scanning are not affected by these options. 
 
-扫描为web应用程序资源和TLD扫描不受这些选项的影响。
+这些选项并不会影响对web应用程序资源和TLD的扫描。
 
 
 ### Remove unnecessary JARs
 
-### 删除不必要的JARs
+### 删除不必要的JAR包
 
 
 Remove any JAR files you do not need. When searching for classes every JAR file needs to be examined to find the needed class. If the jar file is not there - there is nothing to search. 
 
-你不需要删除任何JAR文件。搜索类时需要检查每个JAR文件找到所需的类。如果jar文件是不存在的,没有搜索。
+删除所有不必要的JAR包文件。JVM查找 class 时, 需要扫描每一个JAR文件,以找到所需的类。如果某个 jar 文件不存在, 自然就不需要去搜索他。
 
 
-_Note_ that a web application should never have its own copy of Servlet API or Tomcat classes. All those are provided by the container (Tomcat) and should never be present in the web application. If you are using Apache Maven, such dependencies should be configured with `&lt;scope&gt;provided&lt;/scope&gt;`. See also a [stackoverflow page](http://stackoverflow.com/questions/1031695/how-to-exclude-jars-generated-by-maven-war-plugin). 
+_Note_ that a web application should never have its own copy of Servlet API or Tomcat classes. All those are provided by the container (Tomcat) and should never be present in the web application. If you are using Apache Maven, such dependencies should be configured with `<scope>provided</scope>`. See also a [stackoverflow page](http://stackoverflow.com/questions/1031695/how-to-exclude-jars-generated-by-maven-war-plugin). 
 
-_Note_ web应用程序不应该有自己的Tomcat Servlet API或类的副本。所有这些都由容器提供(Tomcat)和不应该出现在web应用程序中.如果您正在使用Apache Maven,这些依赖关系应该配置了“& lt;scope&gt provided&lt;/ scope&gt;”。参见[stackoverflow页面](http://stackoverflow.com/questions/1031695/how-to-exclude-jars-generated-by-maven-war-plugin)。
+**Note:** web应用程序不应该在类库这包含 Servlet API 和 Tomcat 相关的类。这些由容器(Tomcat)提供的东西都不应该出现在web应用程序中. 如果使用 Maven, 这些依赖应该配置为 `<scope>provided</scope>`。请参考 [stackoverflow页面](http://stackoverflow.com/questions/1031695/how-to-exclude-jars-generated-by-maven-war-plugin)。
 
 
 ### Exclude JARs from scanning
 
-### 罐排除在扫描
+### 排除 JAR 包扫描
 
 
 In Tomcat 7 JAR files can be excluded from scanning by listing their names or name patterns in a [system property](http://tomcat.apache.org/tomcat-7.0-doc/config/systemprops.html#JAR_Scanning). Those are usually configured in the `conf/catalina.properties` file. 
 
-在Tomcat 7 JAR文件可以被排除在扫描通过列出他们的名字或名称模式(系统属性)(http://tomcat.apache.org/tomcat - 7.0 - doc/config/systemprops.html # JAR_Scanning).configured in the身上are教育法,到了conf / catalina。化学特性施用的牵头机构。
+在 Tomcat 7 中,可以排除某些 JAR 文件的扫描, 通过 [system property](http://tomcat.apache.org/tomcat-7.0-doc/config/systemprops.html#JAR_Scanning) , 根据名称或者正则表达式 来进行排除. 通常配置在 `conf/catalina.properties` 文件中。
 
 
-In Tomcat 8 there are several options available. You can use a [system property](http://tomcat.apache.org/tomcat-8.0-doc/config/systemprops.html#JAR_Scanning) or configure a `&lt;JarScanFilter&gt;` [element](http://tomcat.apache.org/tomcat-8.0-doc/config/jar-scan-filter.html) in the [context file](http://tomcat.apache.org/tomcat-8.0-doc/config/context.html) of your web application. 
+In Tomcat 8 there are several options available. You can use a [system property](http://tomcat.apache.org/tomcat-8.0-doc/config/systemprops.html#JAR_Scanning) or configure a `<JarScanFilter>` [element](http://tomcat.apache.org/tomcat-8.0-doc/config/jar-scan-filter.html) in the [context file](http://tomcat.apache.org/tomcat-8.0-doc/config/context.html) of your web application. 
 
-在Tomcat there are也可选择8。你可以使用property][system(http://tomcat.apache.org/tomcat-8.0-doc/config/systemprops.html # JAR_Scanning)或设置为“&lt;JarScanFilter&gt;“[](部件)在http://tomcat.apache.org/tomcat-8.0-doc/config/jar-scan-filter.html[2003](http://tomcat.apache.org/tomcat-8 file.0-doc / config / context.html)的web应用程序。
+在 Tomcat 8 中也有多个可选项。可以使用 [system property](http://tomcat.apache.org/tomcat-8.0-doc/config/systemprops.html#JAR_Scanning), 或者在web应用程序的 [context 文件](http://tomcat.apache.org/tomcat-8.0-doc/config/context.html) 中指定 [`<JarScanFilter>` 元素](http://tomcat.apache.org/tomcat-8.0-doc/config/jar-scan-filter.html) 。
 
 
 ### Disable WebSocket support
 
-### 禁用WebSocket支持
+### 禁用WebSocket
 
 
 There exists an attribute on `Context` element, `containerSciFilter`. It can be used to disable container-provided features that are plugged into Tomcat via SCI API: WebSocket support (in Tomcat 7 and later), JSP support (in Tomcat 8 and later). 
 
-存在在上下文的一个属性元素,“containerSciFilter”.它可以用来插入Tomcat容器提供禁用特性通过SCI API:WebSocket支持(在Tomcat 7后来),JSP支持(在Tomcat中8,后来)。
+在 `Context` 元素中, 有一个 `containerSciFilter` 属性.  可以用来过滤 Tomcat容器提供的插件功能: 如 WebSocket支持(Tomcat 7 之后的版本), JSP支持(Tomcat 8 之后的版本)。
 
 
 The class names to filter can be detected by looking into `META-INF/services/javax.servlet.ServletContainerInitializer` files in Tomcat JARs. For WebSocket support the name is `org.apache.tomcat.websocket.server.WsSci`, for JSP support the name is `org.apache.jasper.servlet.JasperInitializer`. 
 
-类名称过滤可以被研究的meta - inf /服务/ javax.servlet。在Tomcat jar ServletContainerInitializer”文件。WebSocket支持它的名字是“org.apache.tomcat.websocket.server。WsSci”,JSP支持名字是“org.apache.jasper.servlet.JasperInitializer”。
+可以在 JAR 文件的 `META-INF/services/javax.servlet.ServletContainerInitializer` 中配置需要过滤的类名。 WebSocket 相关的是 `org.apache.tomcat.websocket.server.WsSci`, JSP相关的是 `org.apache.jasper.servlet.JasperInitializer`. 
 
-
-_TODO: Configuration example_ 
-
-_TODO:配置example_
 
 
 _TODO: How much faster does it make it? In short: Delays due to annotation scanning caused by WebSocket have been already mentioned in another paragraphs on this page. This is an alternative to removing websocket JARs from Tomcat installation._ 
@@ -193,7 +194,7 @@ _TODO:快多少呢?简而言之:延迟由于注释扫描引起的WebSocket已经
 
 References: [Bug 55855](https://bz.apache.org/bugzilla/show_bug.cgi?id=55855), [Tomcat 8 Context documentation](http://tomcat.apache.org/tomcat-8.0-doc/config/context.html) 
 
-引用:错误55855(https://bz.apache.org/bugzilla/show_bug.cgi?id=55855),(Tomcat 8上下文文档)(http://tomcat.apache.org/tomcat - 8.0 - doc/config/context.html)
+参考: [Bug 55855](https://bz.apache.org/bugzilla/show_bug.cgi?id=55855), [Tomcat 8 Context documentation](http://tomcat.apache.org/tomcat-8.0-doc/config/context.html) 
 
 
 ## Entropy Source
@@ -203,39 +204,39 @@ References: [Bug 55855](https://bz.apache.org/bugzilla/show_bug.cgi?id=55855), [
 
 Tomcat 7+ heavily relies on SecureRandom class to provide random values for its session ids and in other places. Depending on your JRE it can cause delays during startup if entropy source that is used to initialize SecureRandom is short of entropy. You will see warning in the logs when this happens, e.g.: 
 
-Tomcat 7 及之后的版本, 严重依赖 SecureRandom 类, 用于提供随机值, 如 session id 以及其他方面.如果JVM使用了阻塞式的随机数熵源, 并且熵源中的数据量不足, 就会导致启动期间卡顿或阻塞。阻塞时间较长时,将会看到一条警告日志,例如:
+Tomcat 7 及之后的版本, 严重依赖 SecureRandom 类, 用以提供随机值, 如 session id 以及其他地方. 如果JVM使用了阻塞式的随机数熵源, 并且熵源中的数据量不足, 就会导致启动期间卡顿或阻塞。阻塞时间较长时,将会看到一条警告日志,例如:
 
 
     <DATE> org.apache.catalina.util.SessionIdGenerator createSecureRandom
     INFO: Creation of SecureRandom instance for session ID generation using [SHA1PRNG] took [5172] milliseconds.
 
-> 这只是卡顿了 `5` 秒左右, 现实情况中,可打上百秒, 视情况而定【MAVEN的某些插件也可能需要读取此随机源】。
+> 这只是卡顿了 `5` 秒左右, 现实情况中,可达上百秒, 视情况而定【MAVEN的某些插件也可能需要读取此随机源】。
 
 
 
 There is a way to configure JRE to use a non-blocking entropy source by setting the following system property: `-Djava.security.egd=file:/dev/./urandom` 
 
-可以设置系统属性, 让JVM使用非阻塞式的随机源: `-Djava.security.egd=file:/dev/./urandom` 
+可以通过系统属性, 让JVM使用非阻塞式的随机源: `-Djava.security.egd=file:/dev/./urandom` 
 
 
 Note the "`/./`" characters in the value. They are needed to work around known [Oracle JRE bug #6202721](http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6202721). See also [JDK Enhancement Proposal 123](http://openjdk.java.net/jeps/123). It is known that implementation of [SecureRandom](https://wiki.apache.org/tomcat/SecureRandom) was improved in Java 8 onwards. 
 
-注意“/。/”字符值。他们需要解决已知(Oracle JRE错误# 6202721)(http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6202721).参见[JDK增强提案123](http://openjdk.java.net/jeps/123)。众所周知,实现[SecureRandom](/ tomcat / SecureRandom)是改善Java 8起。
+注意这里是 `/dev/./urandom` 。多配了一个 `./` 的原因是一个 [Oracle JRE bug #6202721](http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6202721). 参见 [JDK Enhancement Proposal 123](http://openjdk.java.net/jeps/123)。 在 Java 8 中 [SecureRandom](https://wiki.apache.org/tomcat/SecureRandom) 的实现才修正了这个BUG。
 
 
 Also note that replacing the blocking entropy source (/dev/random) with a non-blocking one actually reduces security because you are getting less-random data. If you have a problem generating entropy on your server (which is common), consider looking into entropy-generating hardware products such as "[EntropyKey](https://wiki.apache.org/tomcat/EntropyKey)". 
 
-还要注意,更换阻塞熵源(/ dev /随机)与非阻塞一个实际上会降低安全性,因为你得到了随机数据.如果你有一个问题在服务器上生成熵(这是很常见的),考虑调查entropy-generating硬件产品,如“EntropyKey(/ tomcat / EntropyKey)”。
+还要注意, 阻塞式的熵源(`/dev/random`) 安全性较高, 非阻塞式的熵源(`/dev/./urandom`) 安全性会低一些, 因为你要求非常高的随机数安全性. 请考虑使用硬件方式的熵源, 如 "[EntropyKey](https://wiki.apache.org/tomcat/EntropyKey)"。
 
 
 ## Starting several web applications in parallel
 
-## 开始几个并行web应用程序
+## 并行启动多个web应用程序
 
 
 With Tomcat 7.0.23+ you can configure it to start several web applications in parallel. This is disabled by default but can be enabled by setting the `startStopThreads` attribute of a **Host** to a value greater than one. 
 
-Tomcat 7.0.23 +您可以配置它开始几个并行web应用程序.启用该默认情况下是禁用的,但可以通过设置“startStopThreads”* *主* *的属性值大于1。
+从 Tomcat 7.0.23+ 开始, 可以并行启动多个web应用程序. 默认情况下是禁用的, 但可以设置 **Host** 元素的 `startStopThreads` 属性值, 大于1即可。
 
 
 ## Other
@@ -250,7 +251,7 @@ Tomcat 7.0.23 +您可以配置它开始几个并行web应用程序.启用该默�
 
 Tweak memory parameters - Google is your friend. 
 
-调整内存参数——Google是你的朋友。
+调整内存参数 —— 请使用 Google 搜索。
 
 
 ### Config
@@ -260,17 +261,21 @@ Tweak memory parameters - Google is your friend.
 
 Trim the config files as much as possible. XML parsing is not cheap. The less there is to parse - the faster things will go. 
 
-尽可能多的配置文件。XML解析是不便宜。有解析越少,事情会越快。
+尽可能地减少配置文件。XML解析的代价并不低。需要解析的东西越少, 自然就会越快。
 
 
 ### Web application
 
-### Web应用程序
+### Web 应用程序
 
 
-1.  Remove any web applications that you do not need. (So remove the all the web applications installed with tomcat)2.  Make sure your code is not doing slow things. (Use a profiler)
+1.  Remove any web applications that you do not need. (So remove the all the web applications installed with tomcat)
+2.  Make sure your code is not doing slow things. (Use a profiler)
 
-1. 删除你不需要的任何web应用程序。(所以移除所有的web应用程序安装tomcat)2。确保您的代码是不做缓慢的事情。(使用一个分析器)
+<br/>
+
+1. 删除所有不需要的 web应用程序。(所以在安装 tomcat 之后, 删除 webapps 目录下所有的应用程序)
+2. 确保程序代码的效率。(可以使用 profiler)
 
 
 
