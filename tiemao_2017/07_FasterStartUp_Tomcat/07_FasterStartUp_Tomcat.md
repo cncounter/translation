@@ -263,6 +263,20 @@ Tweak memory parameters - Google is your friend.
 
 调优内存参数 —— 请使用 Google 搜索。
 
+我们使用的配置参数为:
+
+```
+export JAVA_OPTS="-Xms4g -Xmx4g -Xmn3g -Xss1024k -verbose:gc -XX:+PrintGCDateStamps -XX:+PrintGCDetails -Xloggc:$CATALINA_BASE/logs/gc.log -server -Djava.security.egd=file:/dev/./urandom"
+```
+
+将初始堆内存和最大内存设置为相等的值: `-Xms4g -Xmx4g`。 在专用服务器上一般都是这样设置。
+
+其中堆内存较小,请根据具体情况配置。 `-Xmn3g` 指定了年轻代占用一半以上的内存。 如果堆内存更大, 在一半的WEB程序中,可以将 `-Xmn` 的值调整到70%以上。 当然,也得看具体情况。
+
+关于 JVM 的 GC 性能优化, 请参考: [http://blog.csdn.net/column/details/14851.html](http://blog.csdn.net/column/details/14851.html)
+
+
+
 
 ### Config
 
