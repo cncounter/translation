@@ -1,6 +1,6 @@
 # NFS server and client installation on CentOS 7
 
-# CentOS 7 安装 NFS 服务端和客户端
+# CentOS 7 配置 NFS 服务端和客户端
 
 
 This guide explains how to configure NFS server in CentOS 7.0 Network File System (NFS) is a popular distributed filesystem protocol that enables users to mount remote directories on their server. The system lets you leverage storage space in a different location and write onto the same space from multiple servers in an effortless manner. It, thus, works fairly well for directories that users need to access frequently. This tutorial explains the process of mounting NFS share on an CentOS 7.0 server in an simple and easy-to-follow steps.
@@ -49,7 +49,6 @@ Now the configuration part will include as:
     mkdir -p /usr/local/download
 
 
-
 Change the permissions of the folder as follows:
 
 
@@ -70,7 +69,7 @@ We have used `/usr/local/download` as, if we uses any other drive such as any `/
 
 Next we need to start the services and add them to the boot menu. 
 
-接下来, 添加相应的服务并启动。
+接着添加启动项, 并启动服务。
 
 
     systemctl enable rpcbind
@@ -100,13 +99,18 @@ Now we will share the NFS directory over the network a follows:
 
 输入以下内容, 共享NFS目录:
 
+
     /usr/local/download    10.172.104.25(rw,sync,no_root_squash,no_all_squash)
 
 
 Note 10.172.104.25 is the IP of client machine, if you wish that any other client should access it you need to add the it IP wise other wise you can add "***"** instead of IP for all IP access.
 
 
-注意这里限定了哪些客户端IP可以挂载此NFS, `10.172.104.25` 的意思是只有这一个IP 能访问. 如果希望通过网段的方式进行授权、 则可以使用下面这些形式:
+注意这里限定了哪些客户端IP可以挂载此NFS, `10.172.104.25` 的意思是只有这一个IP 能访问. 
+
+如果需要共享多个目录,则可以在此处配置多条记录。
+
+如果希望通过网段的方式进行授权、 则可以使用下面这些形式:
 
 
 	10.172.104.0/24
@@ -156,7 +160,8 @@ Now we are ready with the NFS server part.
 
 In my case I have the client as CentOS 7.0 desktop. Other CentOS versions will also work for the same. Install the packages as follows:
 
-就我而言我有CentOS 7.0桌面客户端。其他CentOS版本也将同样的工作。安装包如下:
+
+首先安装 nfs-utils 包:
 
 
     yum install nfs-utils
@@ -166,16 +171,14 @@ In my case I have the client as CentOS 7.0 desktop. Other CentOS versions will a
 
 Now create the NFS directory mount point as follows:
 
-现在创建NFS挂载点的目录如下:
+然后创建NFS挂载点:
 
+    mkdir -p /usr/local/download
 
-    mkdir -p /mnt/nfs/home
-
-    mkdir -p /mnt/nfs/usr/local/download
 
 Start the services and add them to boot menu.
 
-启动服务并将它们添加到启动菜单。
+接着添加启动项, 并启动服务。
 
 
     systemctl enable rpcbind
@@ -194,32 +197,21 @@ Start the services and add them to boot menu.
 
     systemctl start nfs-idmap
 
+
 Next we will mount the NFS shared content in the client machine as shown below:
 
-接下来,我们将在客户端机器挂载NFS共享内容如下所示:
+接下来, 在客户端机器挂载NFS目录:
 
 
-mount -t nfs 10.172.115.120:/home /mnt/nfs/home/
-
-挂载nfs - t 10.172.115.120:/ home / mnt / nfs / home /
+	mount -t nfs 10.172.115.120:/usr/local/download /usr/local/download
 
 
-It will mount /homeof NFS server. Next we will /usr/local/download mount as follows:
-
-它将挂载/赛场NFS服务器。接下来我们将/usr/local/download安装如下:
-
-
-    mount -t nfs 10.172.115.120:/usr/local/download /mnt/nfs/usr/local/download/
-
-
+意思是将 10.172.115.120 上的 /usr/local/download 节点挂载到本机的 /usr/local/download 目录。
 
 
 Now we are connected with the NFS share, we will crosscheck it as follows:
 
-现在我们与NFS共享,我们将反复核对如下:
-
-
-    df -kh
+如果不报错, 那就挂载好了 NFS 文件系统, 下面进行校验:
 
 
 
@@ -242,76 +234,65 @@ Now we are connected with the NFS share, we will crosscheck it as follows:
 
     /dev/sda1                     497M  126M  372M  26% /boot
 
-    10.172.115.120:/usr/local/download   39G  980M   38G   3% /mnt/nfs/usr/local/download
+    10.172.115.120:/usr/local/download   39G  980M   38G   3% /usr/local/download
 
     10.172.115.120:/home           19G   33M   19G   1% /mnt/nfs/home
 
 
 So we are connected with NFS share.
 
-所以我们与NFS共享。
+证明 NFS 系统挂载成功。
 
 
 Now we will check the read/write permissions in the shared path. At client enter the command:
 
-现在我们将检查共享路径的读/写权限。在客户端输入命令:
+然后测试一下 读/写权限。在客户端输入:
 
 
-    touch /mnt/nfs/usr/local/download/test_nfs
-
+    touch /usr/local/download/test_nfs
 
 
 
 So successfull NFS-share done.
 
-所以成功nfs共享。
+OK,去服务端检查一下吧!
 
 
 ### 4 Permanent NFS mounting
 
-### 4永久NFS挂载
+### 4. 永久NFS挂载
 
 
 We need to mount the NFS share at client end permanent that it must be mounted even after reboot. So we need to add the NFS-share in `/etc/fstab` file of client machine as follows:
 
-我们需要在客户端永久挂载NFS共享,必须安装后重新启动。所以我们需要添加nfs共享的客户机机器的/ etc / fstab文件如下:
+
+如果需要在客户端永久挂载 NFS 文件系统, 则必须在重启之后依然自动挂载。 所以添加将 NFS 挂载信息添加到客户机的 `/etc/fstab`:
 
 
     nano /etc/fstab
 
 
-
-
 Add the entries like this:
 
-添加条目如下:
+添加一个条目:
 
 
-    [...]
-
-
-
-
-    10.172.115.120:/home    /mnt/nfs/home   nfs defaults 0 0
-    10.172.115.120:/usr/local/download    /mnt/nfs/usr/local/download   nfs defaults 0 0
-
-
+    10.172.115.120:/usr/local/download    /usr/local/download   nfs defaults 0 0
 
 
 Note 10.172.115.120 is the server NFS-share  IP address, it will vary in your case.
 
-注意10.172.115.120服务器nfs共享IP地址时,它在你的情况下会有所不同。
+其中 10.172.115.120 是NFS服务器的IP地址, 请根据实际情况修改。
 
 
 This will make the permanent mount of the NFS-share. Now you can reboot the machine and mount points will be permanent even after the reboot.
 
-这将使永久挂载nfs共享的。现在你可以重新启动机器和挂载点永久即使在重新启动。
+现在, 即使系统重新启动, 依然会自动挂载 NFS 系统。
 
 
 Cheers now we have a successfully configured NFS-server over CentOS 7.0 :)
 
-欢呼声现在我们有一个成功配置nfs服务器在CentOS 7.0:)
-
+OK, 大功告成 :)
 
 
 
