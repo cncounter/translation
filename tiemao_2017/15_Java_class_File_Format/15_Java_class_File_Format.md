@@ -92,6 +92,11 @@ The items in the `ClassFile` structure are as follows:
 
   The value of the `constant_pool_count` item is equal to the number of entries in the `constant_pool` table plus one. A `constant_pool` index is considered valid if it is greater than zero and less than `constant_pool_count`, with the exception for constants of type `long` and `double` noted in [§4.4.5](https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html#jvms-4.4.5).
 
+
+  `constant_pool_count` 条目的值等于 `constant_pool`表的数量 +1。一个大于 0 且小于`constant_pool_count` 的 `constant_pool` 索引, 被认为是有效的, 除了 `long`和`double`常量类型, 参考 [§4.4.5](https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html#jvms-4.4.5)。
+
+
+
 - constant_pool[]
 
   The `constant_pool` is a table of structures ([§4.4](https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html#jvms-4.4)) representing various string constants, class and interface names, field names, and other constants that are referred to within the `ClassFile` structure and its substructures. The format of each `constant_pool` table entry is indicated by its first "tag" byte.The `constant_pool` table is indexed from 1 to `constant_pool_count` - 1.
