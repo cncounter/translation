@@ -78,7 +78,7 @@ Redis 支持以下这些策略(当前版本,Redis 3.0):
 
 The policies **volatile-lru**, **volatile-random** and **volatile-ttl** behave like **noeviction** if there are no keys to evict matching the prerequisites.
 
-政策* * volatile-lru * *,* * volatile-random * *和* * volatile-ttl * *像* * noeviction * *如果没有关键先决条件匹配的驱逐。
+如果没有 key 匹配先决条件(prerequisites), 那么 **volatile-lru**, **volatile-random** 和 **volatile-ttl** 策略的行为和 **noeviction** 是很相似的。
 
 
 To pick the right eviction policy is important depending on the access pattern of your application, however you can reconfigure the policy at runtime while the application is running, and monitor the number of cache misses and hits using the Redis [INFO](https://redis.io/commands/info) output in order to tune your setup.
@@ -88,7 +88,7 @@ To pick the right eviction policy is important depending on the access pattern o
 
 In general as a rule of thumb:
 
-一般的经验法则:
+一般经验法则:
 
 
 - Use the **allkeys-lru** policy when you expect a power-law distribution in the popularity of your requests, that is, you expect that a subset of elements will be accessed far more often than the rest. **This is a good pick if you are unsure**.
@@ -97,30 +97,30 @@ In general as a rule of thumb:
 
 <br/>
 
-- 使用* * allkeys-lru * *政策当你期望一个幂律分布在你的请求的流行,也就是说,您期望的一个子集的元素将会比其他人更经常访问.* *这是一个很好的选择,如果你不确定* *。
-- 使用* * allkeys-random * *如果你有一个不断循环访问扫描所有的键,或者当你期望分布均匀(所有元素可能访问相同的概率)。
-- 使用* * volatile-ttl * *如果你想成为能够提供提示Redis,什么是好的候选人到期时通过使用不同的TTL值创建缓存对象。
+- 使用 **allkeys-lru** 策略当你期望一个幂律分布在你的请求的流行,也就是说,您期望的一个子集的元素将会比其他人更经常访问.* *这是一个很好的选择,如果你不确定* *。
+- 使用 **allkeys-random** 如果你有一个不断循环访问扫描所有的键,或者当你期望分布均匀(所有元素可能访问相同的概率)。
+- 使用 **volatile-ttl** 如果你想成为能够提供提示Redis,什么是好的候选人到期时通过使用不同的TTL值创建缓存对象。
 
 
 
 The **volatile-lru** and **volatile-random** policies are mainly useful when you want to use a single instance for both caching and to have a set of persistent keys. However it is usually a better idea to run two Redis instances to solve such a problem.
 
-* * volatile-lru * *和* * volatile-random * *政策主要是有用的,当你想要使用一个单独的实例缓存和一系列持续的钥匙.然而,通常是一个更好的主意来运行两个Redis实例来解决这样的问题。
+* * volatile-lru * *和* * volatile-random * *策略主要是有用的,当你想要使用一个单独的实例缓存和一系列持续的钥匙.然而,通常是一个更好的主意来运行两个Redis实例来解决这样的问题。
 
 
 It is also worth to note that setting an expire to a key costs memory, so using a policy like **allkeys-lru** is more memory efficient since there is no need to set an expire for the key to be evicted under memory pressure.
 
-适足值得注意,to了key和到期费用记忆,所以使用政策像* * allkeys-lru * *更多的内存效率由于没有需要设置一个到期被驱逐在内存压力的关键。
+适足值得注意,to了key和到期费用记忆,所以使用策略像* * allkeys-lru * *更多的内存效率由于没有需要设置一个到期被驱逐在内存压力的关键。
 
 
 ## How the eviction process works
 
-## 拆迁过程中是如何运作的吗
+## 驱逐的运作过程
 
 
 It is important to understand that the eviction process works like this:
 
-重要的是要理解,驱逐过程是这样的:
+驱逐过程可以这样理解:
 
 
 - A client runs a new command, resulting in more data added.
@@ -129,20 +129,20 @@ It is important to understand that the eviction process works like this:
 
 <br/>
 
-- 客户端运行一个新命令,导致更多的数据补充道。
-- Redis,检查内存使用量,如果大于“maxmemory”限制,它就清除键根据政策。
-- 执行一个新命令,等等。
+- 客户端执行一个命令, 导致 Redis 中的数据增加,占用更多内存。
+- Redis 检查内存使用量, 如果超过 `maxmemory` 限制, 就会根据策略清除一些 key。
+- 执行下一个命令, 以此类推。
 
 
 
 So we continuously cross the boundaries of the memory limit, by going over it, and then by evicting keys to return back under the limits.
 
-所以我们不断跨越边界的内存限制,通过复习,然后通过驱逐键返回以下限制。
+所以这个过程中, 内存使用量会不断达到最大值, 然后超过这个值, 然后通过驱逐部分 key, 使用量又降到最大值以下。
 
 
 If a command results in a lot of memory being used (like a big set intersection stored into a new key) for some time the memory limit can be surpassed by a noticeable amount.
 
-如果一个命令导致使用大量内存(像一个大组交叉存储到一个新的键)在一段时间内的内存限制可以被明显超过金额。
+如果一个命令导致大量内存占用(比如使用 key 存储一个超大的 set), 在某段时间内可能会明显远远超过 maxmemory 的限制。
 
 
 ## Approximated LRU algorithm
