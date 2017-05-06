@@ -43,17 +43,34 @@ Object类中只有这么一个 static 方法,其余的都是实例方法, 也就
 
 ## hashCode()
 
-返回代表此对象的hash code(散列码)值. 返回值类型为 `int`. 
+返回此对象的 hash code (散列码). 返回值类型为 `int`. 
+
+- Returns a hash code value for the object. This method is
+supported for the benefit of hash tables such as those provided by
+{@link java.util.HashMap}.
 
 默认实现是native方法,代码如下:
 
     public native int hashCode();
 
-当然,你也可以在自己的类中覆写(Override)此方法. hashCode()方法是为了支持哈希表(hash tables)而提供的,比如 `java.util.HashMap`.
+当然,你也可以在自己的类中覆写此方法. hashCode()方法是为了支持哈希表(hash tables)而提供的,比如 `java.util.HashMap`.
 
-`hashCode`方法的通用约定如下:
+对 `hashCode` 方法的实现, 一般约定如下:
 
--
+The general contract of {@code hashCode} is:
+
+- 对同一个对象, 多次调用 `hashCode` 方法, 其返回值应该一致。 所以 hash code 的计算, 不应该依赖于运行过程中会变化的那些字段。 特别是在 equals 方法中使用到的那些会变化的字段。对于多个 JVM 实例中逻辑上相等的对象, hashCode 方法的返回值允许不一致。
+
+- 如果 `equals()` 方法判定两个对象相等,那么这两个对象的 `hashCode()` 方法必须返回相同的哈希码.
+
+- 两个不相等的对象, 可以返回相同 hash code 值, 即 hash 值允许冲突,甚至一个类的所有对象 hash code 全部一模一样都是允许的, 如 `return 1;`。
+
+为了实用, `Object` 类的 `hashCode` 方法, 为不同的对象返回不同的整数 hash code。一般JVM是将对象的内部地址(internal
+address) 转换为整数, 但Java语言规范并没有强制要求这样实现。
+
+详细讨论参见: [stackoverflow 页面](http://stackoverflow.com/questions/3796699/will-hashcode-return-a-different-int-due-to-compaction-of-tenure-space)
+
+从中可以看到, `Object` 类的native方法 `hashCode()`中, 使用了一个状态位来标记是否缓存了 hash code 值。
 
 
 
@@ -68,6 +85,47 @@ Object类中只有这么一个 static 方法,其余的都是实例方法, 也就
     }
 
 也就是判断是不是同样的内存地址. 如果没有重写 equals方法,则只有 this 等于 this.(原因是同一个对象可能会有多个引用指向它).
+
+
+Indicates whether some other object is "equal to" this one.
+
+The {@code equals} method implements an equivalence relation
+on non-null object references:
+
+
+- It is <i>reflexive</i>: for any non-null reference value
+    {@code x}, {@code x.equals(x)} should return
+    {@code true}.
+- It is <i>symmetric</i>: for any non-null reference values
+    {@code x} and {@code y}, {@code x.equals(y)}
+    should return {@code true} if and only if
+    {@code y.equals(x)} returns {@code true}.
+- It is <i>transitive</i>: for any non-null reference values
+    {@code x}, {@code y}, and {@code z}, if
+    {@code x.equals(y)} returns {@code true} and
+    {@code y.equals(z)} returns {@code true}, then
+    {@code x.equals(z)} should return {@code true}.
+- It is <i>consistent</i>: for any non-null reference values
+    {@code x} and {@code y}, multiple invocations of
+    {@code x.equals(y)} consistently return {@code true}
+    or consistently return {@code false}, provided no
+    information used in {@code equals} comparisons on the
+    objects is modified.
+- For any non-null reference value {@code x},
+    {@code x.equals(null)} should return {@code false}.
+
+The {@code equals} method for class {@code Object} implements
+the most discriminating possible equivalence relation on objects;
+that is, for any non-null reference values {@code x} and
+{@code y}, this method returns {@code true} if and only
+if {@code x} and {@code y} refer to the same object
+({@code x == y} has the value {@code true}).
+
+Note that it is generally necessary to override the {@code hashCode}
+method whenever this method is overridden, so as to maintain the
+general contract for the {@code hashCode} method, which states
+that equal objects must have equal hash codes.
+
 
 ## clone()
 
