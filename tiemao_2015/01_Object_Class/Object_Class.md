@@ -68,7 +68,7 @@ The general contract of {@code hashCode} is:
 为了实用, `Object` 类的 `hashCode` 方法, 为不同的对象返回不同的整数 hash code。一般JVM是将对象的内部地址(internal
 address) 转换为整数, 但Java语言规范并没有强制要求这样实现。
 
-详细讨论参见: [stackoverflow 页面](http://stackoverflow.com/questions/3796699/will-hashcode-return-a-different-int-due-to-compaction-of-tenure-space)
+详细讨论参见: [http://stackoverflow.com/a/3796963](http://stackoverflow.com/a/3796963)
 
 从中可以看到, `Object` 类的native方法 `hashCode()`中, 使用了一个状态位来标记是否缓存了 hash code 值。
 
