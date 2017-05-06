@@ -1,31 +1,31 @@
 # Using Redis as an LRU cache
 
-# Redis配置LRU缓存
+# 配置Redis作为LRU缓存
 
 
 When Redis is used as a cache, sometimes it is handy to let it automatically evict old data as you add new one. This behavior is very well known in the community of developers, since it is the default behavior of the popular*memcached* system.
 
-Redis,用作缓存时,有时它可以非常方便地让它自动驱逐旧数据当您添加新的.这种行为是非常有名的在社区的开发人员,因为它是流行* memcached *系统的默认行为。
+将 Redis 用作缓存时, 如果存储空间用满, 会自动将旧数据驱逐。 开发者都很熟悉 *memcached* 默认就是这种形式。
 
 
 LRU is actually only one of the supported eviction methods. This page covers the more general topic of the Redis `maxmemory` directive that is used in order to limit the memory usage to a fixed amount, and it also covers in depth the LRU algorithm used by Redis, that is actually an approximation of the exact LRU.
 
-LRU实际上是只有一个支持的回收方法.这个页面覆盖了Redis的更一般的主题“maxmemory”指令,以限制内存使用一个固定的金额,深度,也涵盖了Redis的LRU算法,这实际上是一个近似的确切的LRU。
+实际上Redis只支持 LRU 这一种回收算法. 本文详细介绍限制最大内存使用量的 `maxmemory`  指令, 同时深入讲解 Redis 使用的LRU算法, 本质上算是一个近似的 LRU 算法。
 
 
 ## Maxmemory configuration directive
 
-## Maxmemory配置指令
+## maxmemory 指令
 
 
 The `maxmemory` configuration directive is used in order to configure Redis to use a specified amount of memory for the data set. It is possible to set the configuration directive using the `redis.conf` file, or later using the [CONFIG SET](https://redis.io/commands/config-set) command at runtime.
 
-maxmemory的配置指令的使用是为了配置Redis,以使用指定的内存数量的数据集。可以设置配置指令使用的Redis.conf”文件,或晚使用(配置设置)(https://redis.io/commands/config-set)命令在运行时。
+`maxmemory` 指令用于指定 Redis 的最大内存使用量。既可以在 `redis.conf` 文件中设置, 也可以在运行过程中通过 [CONFIG SET](https://redis.io/commands/config-set) 命令修改。
 
 
 For example in order to configure a memory limit of 100 megabytes, the following directive can be used inside the `redis.conf` file.
 
-例如为了配置100字节的内存限制,可以使用下面的指令在Redis。conf文件”。
+例如, 设置 100MB 的内存限制, 可以在 `redis.conf` 文件中这样配置：
 
 
 ```
@@ -35,27 +35,27 @@ maxmemory 100mb
 
 Setting `maxmemory` to zero results into no memory limits. This is the default behavior for 64 bit systems, while 32 bit systems use an implicit memory limit of 3GB.
 
-“maxmemory”设置为零的结果没有内存限制。这是默认行为对于64位的系统,而32位系统使用一个内隐记忆3 gb的限制。
+将 `maxmemory`  设置为 0 则表示没有内存限制。对于64位系统来说默认是没有限制, 而32位系统则会有一个隐含的限制: 最多 3GB 内存。
 
 
 When the specified amount of memory is reached, it is possible to select among different behaviors, called **policies**. Redis can just return errors for commands that could result in more memory being used, or it can evict some old data in order to return back to the specified limit every time new data is added.
 
-当达到指定的数量的内存时,可以选择在不同的行为,叫* * * *的政策.Redis可以返回错误的命令,可能导致使用更多的内存,或者它可以驱逐一些旧数据以返回指定的限制每次添加新数据。
+可以配置不同的策略, 称为 **policies**。 在达到最大内存使用量时, 如果需要更多的内存来存储新数据, 根据策略, Redis可以直接返回错误信息, 或者驱逐部分旧数据。
 
 
 ## Eviction policies
 
-## 拆迁政策
+## 驱逐策略
 
 
 The exact behavior Redis follows when the `maxmemory` limit is reached is configured using the `maxmemory-policy`configuration directive.
 
-具体的行为达到Redis,遵循“maxmemory”时限制配置使用' maxmemory-policy 'configuration指令。
+当达到最大内存限制时(`maxmemory`), Redis 根据 `maxmemory-policy` 配置决定具体的行为。
 
 
 The following policies are available:
 
-以下政策:
+Redis 支持以下这些策略(当前版本,Redis 3.0):
 
 
 - **noeviction**: return errors when the memory limit was reached and the client is trying to execute commands that could result in more memory to be used (most write commands, but [DEL](https://redis.io/commands/del) and a few more exceptions).
@@ -67,12 +67,12 @@ The following policies are available:
 
 <br/>
 
-- * * noeviction * *:返回错误内存限制时达到和客户端试图执行命令,可能导致更多的内存(大多数写命令,但使用(DEL)(https://redis.io /命令/ del)和更多的例外)。
-- * * allkeys-lru * *:试图驱逐键删除最近使用(LRU)钥匙第一越少,为了使新数据添加空间。
-- * * volatile-lru * *:试图驱逐键删除最近使用(LRU)钥匙第一越少,但只有在键有一个* *设置* *到期,为了使新数据添加空间。
-- * * allkeys-random * *:驱逐随机密钥为了使新数据添加空间。
-- * * volatile-random * *:驱逐随机密钥为了使空间添加新数据,但只有驱逐键* *设置* *到期。
-- * * volatile-ttl * *:为了使空间为新数据,驱逐只有钥匙一个* * * *,到期并试图驱逐键与较短的生存时间(TTL)。
+- **noeviction**: 不驱逐策略, 在达到内存限制时, 如果需要更多内存, 直接返回错误响应信息。 大多数写命令会导致需要更多的内存(但极少数会例外, 如  [DEL](https://redis.io/commands/del) 等)。
+- **allkeys-lru**: 试图驱逐键删除最近使用(LRU)钥匙第一越少,为了使新数据添加空间。
+- **volatile-lru**: 试图驱逐键删除最近使用(LRU)钥匙第一越少,但只有在键有一个* *设置* *到期,为了使新数据添加空间。
+- **allkeys-random**:驱逐随机密钥为了使新数据添加空间。
+- **volatile-random**:驱逐随机密钥为了使空间添加新数据,但只有驱逐键* *设置* *到期。
+- **volatile-ttl**:为了使空间为新数据,驱逐只有钥匙一个* * * *,到期并试图驱逐键与较短的生存时间(TTL)。
 
 
 
