@@ -175,7 +175,7 @@ The reason why Redis does not use a true LRU implementation is because it costs 
 Redis,不使用的原因是因为它真正的LRU实现成本更多的内存。然而,使用Redis,近似为应用程序实际上是等价的.下面是一个图形比较LRU的近似Redis,而真正的LRU使用。
 
 
-![LRU comparison](http://redis.io/images/redisdoc/lru_comparison.png)
+![LRU comparison](lru_comparison.png)
 
 
 The test to generate the above graphs filled a Redis server with a given number of keys. The keys were accessed from the first to the last, so that the first keys are the best candidates for eviction using an LRU algorithm. Later more 50% of keys are added, in order to force half of the old keys to be evicted.
@@ -194,15 +194,15 @@ You can see three kind of dots in the graphs, forming three distinct bands.
 
 <br/>
 
-- 浅灰色带是被驱逐的对象。
-- 灰色的乐队是对象没有驱逐。
-- 绿色的乐队是被添加的对象。
+- 浅灰色的部分表示被驱逐的对象。
+- 灰色的部分表示未被驱逐对象。
+- 绿色的部分表示后添加的对象。
 
 
 
 In a theoretical LRU implementation we expect that, among the old keys, the first half will be expired. The Redis LRU algorithm will instead only *probabilistically* expire the older keys.
 
-在理论LRU实现我们期望,在旧的钥匙,上半年将过期。Redis,LRU算法将只*概率*到期年长的钥匙。
+在理论LRU的实现中, 如同我们期待的一样, 在旧的key中, 前半部分被释放了。而 Redis 的 LRU 算法只是较大概率地(*probabilistically*)将时间较长的 key 给释放了。
 
 
 As you can see Redis 3.0 does a better job with 5 samples compared to Redis 2.8, however most objects that are among the latest accessed are still retained by Redis 2.8. Using a sample size of 10 in Redis 3.0 the approximation is very close to the theoretical performance of Redis 3.0.
@@ -227,7 +227,7 @@ However you can raise the sample size to 10 at the cost of some additional CPU u
 
 To experiment in production with different values for the sample size by using the `CONFIG SET maxmemory-samples <count>` command, is very simple.
 
-试验在生产不同的样本大小的值通过使用的配置设置maxmemory-samples <统计>的命令,很简单。
+在产品中实验不同的 sample size 是很简单的, 使用命令 `CONFIG SET maxmemory-samples <count>` 即可。
 
 
 原文链接: <https://redis.io/topics/lru-cache>
