@@ -35,7 +35,7 @@ maxmemory 100mb
 
 Setting `maxmemory` to zero results into no memory limits. This is the default behavior for 64 bit systems, while 32 bit systems use an implicit memory limit of 3GB.
 
-将 `maxmemory`  设置为 0 则表示没有内存限制。对于64位系统来说默认是没有限制, 而32位系统则会有一个隐含的限制: 最多 3GB 内存。
+将 `maxmemory`  设置为 0 则表示没有内存限制。对于64位系统来说默认是没有限制, 而32位系统则有一个隐性限制: 最多 3GB 内存。
 
 
 When the specified amount of memory is reached, it is possible to select among different behaviors, called **policies**. Redis can just return errors for commands that could result in more memory being used, or it can evict some old data in order to return back to the specified limit every time new data is added.
@@ -55,7 +55,7 @@ The exact behavior Redis follows when the `maxmemory` limit is reached is config
 
 The following policies are available:
 
-Redis 支持以下这些策略(当前版本,Redis 3.0):
+当前版本,Redis 3.0 支持的策略包括:
 
 
 - **noeviction**: return errors when the memory limit was reached and the client is trying to execute commands that could result in more memory to be used (most write commands, but [DEL](https://redis.io/commands/del) and a few more exceptions).
@@ -78,17 +78,17 @@ Redis 支持以下这些策略(当前版本,Redis 3.0):
 
 The policies **volatile-lru**, **volatile-random** and **volatile-ttl** behave like **noeviction** if there are no keys to evict matching the prerequisites.
 
-如果没有 key 匹配先决条件(prerequisites), 那么 **volatile-lru**, **volatile-random** 和 **volatile-ttl** 策略的行为和 **noeviction** 是很相似的。
+如果先决条件(prerequisites)没有 key 匹配, 那么 **volatile-lru**, **volatile-random** 和 **volatile-ttl** 策略和 **noeviction** 的行为基本上是一样的。
 
 
 To pick the right eviction policy is important depending on the access pattern of your application, however you can reconfigure the policy at runtime while the application is running, and monitor the number of cache misses and hits using the Redis [INFO](https://redis.io/commands/info) output in order to tune your setup.
 
-重要的是根据应用程序的访问模式, 选择正确的驱逐策略, 在运行过程中也可以动态设置驱逐策, 可以使用 Redis 命令 [INFO](https://redis.io/commands/info) 来监控缓存 miss 和命中相关的, 以进行调优。
+重要的是根据应用的访问模式, 选择适当的驱逐策略。 当然, 在运行过程中也可以动态设置驱逐策略, 并使用Redis命令 [INFO](https://redis.io/commands/info) 来监控缓存 miss 和命中率, 以进行调优。
 
 
 In general as a rule of thumb:
 
-一般经验法则:
+一般来说:
 
 
 - Use the **allkeys-lru** policy when you expect a power-law distribution in the popularity of your requests, that is, you expect that a subset of elements will be accessed far more often than the rest. **This is a good pick if you are unsure**.
@@ -97,9 +97,9 @@ In general as a rule of thumb:
 
 <br/>
 
-- 使用 **allkeys-lru** 策略当你期望一个幂律分布在你的请求的流行,也就是说,您期望的一个子集的元素将会比其他人更经常访问.* *这是一个很好的选择,如果你不确定* *。
-- 使用 **allkeys-random** 如果你有一个不断循环访问扫描所有的键,或者当你期望分布均匀(所有元素可能访问相同的概率)。
-- 使用 **volatile-ttl** 如果你想成为能够提供提示Redis,什么是好的候选人到期时通过使用不同的TTL值创建缓存对象。
+- 如果请求的的数据分为热点与非热点,使用 **allkeys-lru** 策略, 也就是说, 有一部分key会经常被读写. 如果不确定具体的业务情景,那么这是一个很好的选择。
+- 如果不断地循环访问所有的key, 或者各个key的访问频率分布比较均匀, 那么使用 **allkeys-random**, (即所有元素被访问的概率相同)。
+- 如果想提示Redis, 通过 TTL 来判断什么key合适删除, 使用 **volatile-ttl**。
 
 
 
@@ -211,22 +211,23 @@ As you can see Redis 3.0 does a better job with 5 samples compared to Redis 2.8,
 
 Note that LRU is just a model to predict how likely a given key will be accessed in the future. Moreover, if your data access pattern closely resembles the power law, most of the accesses will be in the set of keys that the LRU approximated algorithm will be able to handle well.
 
-注意,LRU只是一个模型预测可能将来会访问一个给定的键.此外,如果您的数据访问模式相似的权力法律,大部分的访问将在LRU的键集近似算法能够处理好。
+注意,LRU只是一个用来预测将来可能会访问某个给定key的概率模型. 此外,如果数据访问的情况符合幂次模式, 那么LRU对于大部分的访问都会表现良好。
 
 
 In simulations we found that using a power law access pattern, the difference between true LRU and Redis approximation were minimal or non-existent.
 
-在模拟中,我们发现使用幂律访问模式,真正的LRU的区别和Redis,近似最小或根本不存在。
+在模拟中, 我们发现, 如果使用幂律访问模式, 真正的LRU 和Redis的结果差别很小, 甚至看不出来。
 
 
 However you can raise the sample size to 10 at the cost of some additional CPU usage in order to closely approximate true LRU, and check if this makes a difference in your cache misses rate.
 
-不过你可以提高样本大小10为代价的一些额外的CPU使用率为了密切近似真实的LRU,并检查如果这使得你的缓存错过率上的差异。
+当然你也可以提高样本数量为10, 以额外消耗一些CPU为代价, 使得结果更接近于真实的LRU, 并通过 cache miss 统计来判断差异。
 
 
 To experiment in production with different values for the sample size by using the `CONFIG SET maxmemory-samples <count>` command, is very simple.
 
-在产品中实验不同的 sample size 是很简单的, 使用命令 `CONFIG SET maxmemory-samples <count>` 即可。
+设置样本大小很容易, 使用命令 `CONFIG SET maxmemory-samples <count>` 即可。
 
 
 原文链接: <https://redis.io/topics/lru-cache>
+
