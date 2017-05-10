@@ -278,3 +278,11 @@ The third example fails to find a match because the quantifier is possessive. In
 
 
 
+相关链接: 
+
+[Pattern-API文档](https://docs.oracle.com/javase/8/docs/api/java/util/regex/Pattern.html)
+
+[regex教程目录](https://docs.oracle.com/javase/tutorial/essential/regex/index.html)
+
+
+
