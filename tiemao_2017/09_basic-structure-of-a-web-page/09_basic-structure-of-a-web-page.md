@@ -1,10 +1,18 @@
 # Basic Structure of a Web Page
 
+# Web页面的基本结构
 
 
 While this reference aims to provide a thorough breakdown of the various HTML elements and their respective attributes, you also need to understand how these items fit into the bigger picture. A web page is structured as follows.
 
+
+本文简要介绍各种HTML元素及其各自的属性，但读者还需要与一个概念, 整个HTML都是由这些基本元素构建而成的。web页面的结构如下。
+
+
+
 ## The Doctype
+
+## Doctype 声明
 
 The first item to appear in the source code of a web page is the [doctype](https://www.sitepoint.com/web-foundations/basic-structure-of-a-web-page/doctypes) declaration. This provides the web browser (or other user agent) with information about the type of markup language in which the page is written, which may or may not affect the way the browser renders the content. It may look a little scary at first glance, but the good news is that most WYSIWYG web editors will create the doctype for you automatically after you’ve selected from a dialog the type of document you’re creating. If you aren’t using a WYSIWYG web editing package, you can refer to the [list of doctypes contained in this reference](https://www.sitepoint.com/web-foundations/basic-structure-of-a-web-page/doctypes) and copy the one you want to use.
 
@@ -18,16 +26,21 @@ In the example above, the doctype relates to HTML 4.01 Strict. In this reference
 
 ## The Document Tree
 
+## 文档树
+
 A web page could be considered as a document tree that can contain any number of branches.There are rules as to what items each branch can contain (and these are detailed in each element’s reference in the “Contains” and “Contained by”sections). To understand the concept of a document tree, it’s useful to consider a simple web page with typical content features alongside its tree view, as shown in [Figure 1](https://www.sitepoint.com/web-foundations/basic-structure-of-a-web-page/#page-structure__fig-doc-tree).
 
-Figure 1. The document tree of a simple web page
+
 ![Document Tree](https://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2014/04/1397707822DocTree-300x149.png)
+
+Figure 1. The document tree of a simple web page
 
 If we look at this comparison, we can see that the`html` element in fact contains two elements:`head` and `body`.`head` has two subbranches—a `meta`element and a `title`. The `body`element contains a number of headings, paragraphs, and a`block quote`.
 
 Note that there’s some symmetry in the way the tags are opened and closed. For example, the paragraph that reads, “It has lots of lovely content …” contains three text nodes, the second of which is wrapped in an `em` element (for emphasis). The paragraph is closed after the content has ended, and before the next element in the tree begins (in this case, it’s a`blockquote`); placing the closing `</p>`after the `blockquote` would break the tree’s structure.
 
-## `html`
+## `html` 元素
+
 
 Immediately after the doctype comes the [`html`]()element—this is the root element of the document tree and everything that follows is a descendant of that root element.
 
@@ -45,7 +58,7 @@ Here’s an example of an XHTML transitional page:
 
 The`html` element breaks the document into two mainsections: the [`head`]() and the [`body`]().
 
-## `head`
+## `head` 元素
 
 The `head` element contains metadata—information that describes the document itself, or associates it with related resources, such as scripts and style sheets.
 
@@ -83,7 +96,7 @@ In addition to the`title` element, the `head` may also contain:
 
 All of these elements are optional and can appear in any order within the `head`. Note that none of the elements listed here actually appear on the rendered page, but they are used to affect the content on the page, all of which is defined inside the`body` element.
 
-## `body`
+## `body` 元素
 
 This is where the bulk of the page is contained. Everything that you can see in the browser window (or viewport) is contained inside this element, including paragraphs, lists, links, images, tables, and more. The [`body`]() element has some unique attributes of its own, all of which are now deprecated, but aside from that, there’s little to say about this element. How the page looks will depend entirely upon the content that you decide to fill it with; refer to the alphabetical listing of all HTML elements to ascertain what these contents might be.
 
