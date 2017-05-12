@@ -1,9 +1,15 @@
 # Java 正则表达式: 量词
 
 
-Quantifiers
+### Quantifiers
+
+### 量词(Quantifiers)
 
 Quantifiers allow you to specify the number of occurrences to match against. For convenience, the three sections of the Pattern API specification describing greedy, reluctant, and possessive quantifiers are presented below. At first glance it may appear that the quantifiers X?, X?? and X?+ do exactly the same thing, since they all promise to match "X, once or not at all". There are subtle implementation differences which will be explained near the end of this section.
+
+
+量词(Quantifiers)可以用来指定要匹配的次数。为了方便起见，下面分别介绍 Pattern API 规范中的 greedy(贪婪), reluctant(懒惰), 和 possessive(占有) 量词。表面上看起来这些量词, 如 `X?`, `X??` 和 `X?+` 都差不多, 因为都是匹配 "X, 一次或者不出现"。本文稍后会解释他们在实现上的细微差别。
+
 
 
 <table>
