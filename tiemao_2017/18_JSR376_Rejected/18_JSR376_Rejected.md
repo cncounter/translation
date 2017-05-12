@@ -9,11 +9,13 @@
 
 当然, 如果对JSR-376的详细信息感兴趣,请点击: [https://jcp.org/en/jsr/detail?id=376](https://jcp.org/en/jsr/detail?id=376)
 
-下面是两个名词的简单说明:
+下面是几个缩略词的简单说明:
 
 - JSR: Java Specification Requests, 直译为 Java规范请求,如 JVM规范,Java语言规范等等。每个规范,都类似于流程审批,由 JCP 专家委员会负责审核。
 
 - JCP: Java Community Process, 直译为 Java 社区进程。
+
+- EG: Expert Group, 专家组
 
 接下来我们看看详细的投票记录, 挺有意思的, 如果不感兴趣, 直接跳过即可。
 
@@ -25,32 +27,39 @@
 ------------------------------------------------------------------------------
 第四天, 星期五, 2017-04-28日, IBM 投了反对票(No), 反对的理由是:
 IBM's vote reflects our position that the JSR is not ready at this time to move beyond the Public Review stage and proceed to Proposed Final Draft.  The JSR 376 Expert Group and the public have raised a number of reasonable issues and concerns with the current public review draft of the specification that warrant further discussion and resolution.  We advocate work continuing amongst all members of the Expert Group to address the issues documented on the mailing lists.  IBM would like to see closer consensus amongst the entire Expert Group before this specification proceeds to the next step.
+
+IBM认为, 此 JSR 目前还存在一些问题, 不能通过公共审查阶段(Public Review), 当然也还不适合进入最终草案(Proposed Final Draft)。 JSR 376专家组和公众们对目前公布的规范草案密切关注,并提出了一些合理的问题, 需要进一步讨论和解决。 我们主张: 专家组的所有成员继续开展工作，以解决邮件列表中提到的问题。 在本规范进行到下一步之前, IBM希望整个专家组中达成更紧密的共识。
 ------------------------------------------------------------------------------
 第二天, 星期三, 2017-04-26日, Intel 投了赞成票(Yes).
 ------------------------------------------------------------------------------
 第二天, 星期三, 2017-04-26日, NXP Semiconductors 投了赞成票(Yes).
 ------------------------------------------------------------------------------
-最后一天, 星期一, 2017-05-08, Keil, Werner 投了反对票(No), 反对的理由是:
+最后一天, 星期一, 2017-05-08日, Keil, Werner 投了反对票(No), 反对的理由是:
 I understand IBM's and others reason for their "No" vote and heard many similar concerns by e.g. the OSGi community or contributors behind major build systems like Maven, Gradle or Ant. Most of their concerns are still unanswered by the EG or Spec Leads, which at this point I does not make this JSR seem ready yet.
+
+我理解IBM和其他人反对的理由, 并听到许多类似的说法。 OSGi社区, 以及主要构建工具（如Maven，Gradle 和 Ant）的贡献者们, 大部分都还没有得到 EG 或 Spec Leads 的回答，基于这一点，我认为这个 JSR 还未准备充分。
 ------------------------------------------------------------------------------
-On 2017-05-03 Hazelcast 投了反对票(No), 反对的理由是:
+2017-05-03日, 星期三, Hazelcast 投了反对票(No), 反对的理由是:
 From our point of view the lack of consensus inside the EG is a dangerous sign, that either not all issues are clarified the way they have to or that certain issues were marked solved from a single point of view. Overall, we acknowledge, that the state made big progress over the last months and a lot of issues were addressed with the community but it seems that the state for a public review ballot is not yet right. 
 In addition, problems with popular build tools don't seem like a good starter. Our understanding of the EC is, that part of the work is to prevent the Java ecosystem from harm and in the current state the JSR376 cannot be seen as ready for that matter.
+
+以我们的观点来看，EG内部缺乏共识是一个危险的迹象，既不是所有的问题都被澄清, 或者从单一的角度来看，某些问题也尚未得到明确的解决。 总的来说，我们承认，过去几个月来，还是取得了很大的进步，社区中也解决了很多问题，但现在进行公开审查投票似乎还太早了一点。
+此外，流行的构建工具中存在的问题看起来也不太完美。 我们专家组的意见是，决不能破坏 Java的整个生态，目前来看，JSR376 不能算是准备就绪的状态。
 ------------------------------------------------------------------------------
-On 2017-05-03 Red Hat 投了反对票(No), 反对的理由是:
+2017-05-03日, 星期三, Red Hat 投了反对票(No), 反对的理由是:
 Red Hat is voting NO on this JSR. The Red Hat middleware team, other members of the EC and Java community members, have mentioned publicly and in more detail our concerns (here
 https://developer.jboss.org/blogs/scott.stark/2017/04/14/critical-deficiencies-in-jigsawjsr-376-java-platform-module-system-ec-member-concerns and here
 https://developer.jboss.org/servlet/JiveServlet/download/38-155022/JSR376.pdf). We have also discussed with our own OpenJDK team, which made good counter arguments to several of the concerns, but in the end we believe a NO vote is the correct course of action. In previous votes and comments on the EG list we have articulated the view that from a middleware/SE developer perspective we believe that Jigsaw does not fulfil its original goals of being a module system which can be used by the likes of Java EE. We understand that after inception the original goals of the EG were initially changed to try to focus it on a module system to be used solely to modularise the JVM and that caused some architecture and implementation approaches which made it difficult for it to be a module system to be used by SE and EE developers. Unfortunately during the lifetime of the EG the goal appeared to switch back to trying to make it a module system for Java developers but previous implementation decisions appear not to have been revisited or could not be changed and as a result the expectations around Jigsaw have not been met by the implementation. Therefore, we are worried about the impact of the current implementation on the wider Java community, particularly existing projects and products including, but also beyond, Java EE. We have raised several issues within the EG list to try to rectify a few of these things in what we believe would have been a minimally invasive manner but they have been rejected. Furthermore, we believe that there has been insufficient consensus in the EG for a series of changes so dramatic to the JVM and which could have an equally dramatic impact on the Java communities, as well as a lack of openness on receiving and discussing community input. We believe that a more considered evaluation of all input and consensus gathering should not take too much time and would result in something which would be better received by the entire Java ecosystem.
 ------------------------------------------------------------------------------
-On 2017-05-05 Goldman Sachs & Co. 投了赞成票(Yes).
+2017-05-05日, 星期五, Goldman Sachs & Co. 投了赞成票(Yes).
 ------------------------------------------------------------------------------
-On 2017-05-07 Software AG 投了反对票(No), 反对的理由是:
+2017-05-07日, 星期天, Software AG 投了反对票(No), 反对的理由是:
 Software AG is concerned about the lack of a healthy consensus among the members of the Expert Group. Although we understand that a perfect consensus and zero outstanding issues may be unachievable, we believe that a healthier consensus is possible.We also believe that such a consensus would result in a healthier Java ecosystem and a smoother industry transition to a modular Java world.
 Assuming the ‘No’ vote carries, we hope the specification lead would take advantage of the 30 days afforded under the JCP process to attempt to form a healthier consensus within the EG.  We would appreciate specific attention being paid to the migration path for existing software in a modular world and on the co-existence of the specification with existing established Java practices and build systems (#ModuleNameInManifest, #CyclicDependences, #AutomaticModuleNames, #AvoidConcealedPackageConflicts, #MultiModuleJARs)
 
 We look forward to being able to vote ‘Yes’ on a draft that has stronger backing from its EG in a future ballot.
 ------------------------------------------------------------------------------
-On 2017-05-07 Azul Systems, 公司 投了赞成票(Yes).
+2017-05-07日, 星期天, Azul Systems, 公司 投了赞成票(Yes).
 ------------------------------------------------------------------------------
 最后一天, 星期一, 2017-05-08, MicroDoc 投了赞成票(Yes).
 ------------------------------------------------------------------------------
