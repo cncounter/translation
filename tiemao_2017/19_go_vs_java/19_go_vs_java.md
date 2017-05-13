@@ -204,3 +204,6 @@ And simply because Google started Go to bring some simplicity to coding for thei
 *   [9 lies programmers tell themselves](http://www.infoworld.com/article/3184495/application-development/9-lies-programmers-tell-themselves.html#tk.ifwrs)
 *   [Career hacks: Professional do’s and don’ts for developers](http://www.infoworld.com/resources/113525/application-development/career-hacks-professional-dos-and-donts-for-deve#tk.ifwrs)
 
+
+原文链接: [http://www.javaworld.com/article/3195803/application-development/java-vs-googles-go-an-epic-battle-for-developer-mind-share.html](http://www.javaworld.com/article/3195803/application-development/java-vs-googles-go-an-epic-battle-for-developer-mind-share.html)
+
