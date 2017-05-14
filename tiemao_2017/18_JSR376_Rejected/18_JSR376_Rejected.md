@@ -20,7 +20,7 @@
 
 - JSR: Java Specification Requests, 直译为 Java规范请求,如 JVM规范,Java语言规范等等。每个规范,都类似于流程审批,由 JCP 专家委员会负责审核。
 
-- JCP: Java Community Process, 直译为 Java 社区进程。
+- JCP: Java Community Process, JCP组织, 直译为 Java 社区进程。
 
 - EG: Expert Group, 专家组
 
@@ -68,10 +68,17 @@ Red Hat middleware team 的EC成员, 以及Java社区都期待更多的细节, �
 2017-05-05日, 星期五, Goldman Sachs & Co. 投了赞成票(Yes).
 ------------------------------------------------------------------------------
 2017-05-07日, 星期天, Software AG 投了反对票(No), 反对的理由是:
+
 Software AG is concerned about the lack of a healthy consensus among the members of the Expert Group. Although we understand that a perfect consensus and zero outstanding issues may be unachievable, we believe that a healthier consensus is possible.We also believe that such a consensus would result in a healthier Java ecosystem and a smoother industry transition to a modular Java world.
 Assuming the ‘No’ vote carries, we hope the specification lead would take advantage of the 30 days afforded under the JCP process to attempt to form a healthier consensus within the EG.  We would appreciate specific attention being paid to the migration path for existing software in a modular world and on the co-existence of the specification with existing established Java practices and build systems (#ModuleNameInManifest, #CyclicDependences, #AutomaticModuleNames, #AvoidConcealedPackageConflicts, #MultiModuleJARs)
 
 We look forward to being able to vote ‘Yes’ on a draft that has stronger backing from its EG in a future ballot.
+
+Software AG担心专家组成员之间缺乏必要的共识。虽然我们也理解, 要达到完美的共识,和一点问题都没有是不可能的，但更健康的共识是可能的。我们也相信，这样的共识会让Java生态更加健康,让整个行业向模块化转型更加顺畅。
+
+如果明天此提案没有通过，我们希望规范的lead可以利用 JCP流程提供的30天缓冲时间，在专家组内形成更和谐的共识。我们特别关注现有软件到模块化的迁移途径，以及规范同现有模式和构建系统的共存（#ModuleNameInManifest，#CyclicDependences，#AutomaticModuleNames，#AvoidConcealedPackageConflicts，#MultiModuleJARs ）
+
+我们期待能够对未来的草案投赞成票(‘Yes’)。
 ------------------------------------------------------------------------------
 2017-05-07日, 星期天, Azul Systems, 公司 投了赞成票(Yes).
 ------------------------------------------------------------------------------
@@ -81,8 +88,11 @@ We look forward to being able to vote ‘Yes’ on a draft that has stronger bac
 ------------------------------------------------------------------------------
 最后一天, 星期一, 2017-05-08, Credit Suisse 投了反对票(No), 反对的理由是:
 Credit Suisse represents customers of the Java technology in the EC. With JSR 376, two main concerns exists (i.e., automatic modules, reflection) that potentially conflict with an easy adoption of this JSR. Our understanding is that solutions have been proposed in the EG and it seems to be beneficial to give the EG some more time to get consensus on these important topics.
+
+Credit Suisse 代表了执行委员会中的Java技术客户。 现在的JSR 376，存在两个主要问题（即 automatic modules, 以及 reflection），这可能与易用性有冲突。 我们的理解是，专家组中已经提出了解决方案，很有必要的给专家组更多的时间来达成共识。
 ------------------------------------------------------------------------------
 最后一天, 星期一, 2017-05-08, SAP SE 投了反对票(No), 反对的理由是:
+
 We absolutely recognize the tremendous achievements and the great work that has been carried out until now - by the expert group members as well as (and especially) by the spec lead himself. While the JPMS is in pretty good shape for the modularisation of the Java platform itself, we think that there are still some rough edges for libraries and frameworks outside the Java platform which should be addressed and agreed upon before the final approval of the specification.
 
 We acknowledge the open development of the JPMS in the context of the "Project Jigsaw" within the OpenJDK. But we are at the same time concerned about the growing tension between the OpenJDK JEP and the JCP JSR processes. During the development and up to now it has not always been clear what in the development of the JPMS/Jigsaw is considered an implementation detail and what will be part of the standard specification. Features like the binary format of modules and runtime images, the jlink tool and new class attributes like hashes and versions are examples for non-standardised implementation details.
@@ -90,28 +100,62 @@ We acknowledge the open development of the JPMS in the context of the "Project J
 What we are especially concerned about however, is the lack of direct communication within the expert group. Assuming this JSR won't be approved with the required two-thirds majority, we would expect the expert group and spec lead to use the additional 30 days for regular meetings in order to sort out the remaining issues and come up with a new, more sustainable and forward looking proposal. While we're aware that it won't be possible to remedy all concerns, we think that the last days have clearly demonstrated that good compromises are still possible (e.g. the "automatic modules issue") and we're confident that the additional time could be used to submit a better specification for the reconsideration vote.
 
 Finally, we adjure all members and the spec lead to come back to the table and communicate directly to each other instead of blaming each other through blogs and open letters!
+
+我们绝对认可到现在为止，由专家组成员以及（特别是）规格领导本人所取得的巨大成就和伟大的工作。虽然JPMS对于Java平台本身的模块化来说非常好，但我们认为Java平台之外的库和框架仍然存在一些粗略的界限，在规范的最终批准之前应该加以解决和商定。
+
+我们承认在OpenJDK中的“项目拼图”的背景下，JPMS的开放发展。但是我们同时关注OpenJDK JEP和JCP JSR流程之间日益紧张的关系。在开发过程中，到目前为止，尚未明确将JPMS /拼图的开发视为实施细节，标准规范将是哪些内容。诸如模块和运行时映像的二进制格式的功能，jlink工具和诸如散列和版本的新类属性都是非标准化实现细节的示例。
+
+然而，我们特别关心的是专家组内缺乏直接沟通。假设这个JSR将不会被批准为所需的三分之二多数，我们期望专家组和规范会导致额外的30天的定期会议，以便整理剩余的问题，并提出一个新的，更多的可持续和前瞻性的建议。虽然我们意识到无法补救所有问题，但我们认为最后几天已经清楚地表明，仍然有可能做出妥协的妥协（例如“自动模块问题”），我们相信额外的时间可以用来提交更新的重新考虑表决规范。
+
+最后，我们协调所有成员和规范的导向，回到桌面，直接相互通信，而不是通过博客和公开信函相互指责！
+
 ------------------------------------------------------------------------------
 最后一天, 星期一, 2017-05-08, London Java Community 投了反对票(No), 反对的理由是:
+
 We echo SAP's comments in that we absolutely recognize the tremendous achievements and the great work that has been carried out until now by the EG members as well as (and especially) by the Spec Lead himself.
 
 The LJC is voting "No" on the spec *as it was submitted* at the start of the voting period.  During the 14 day voting period, great progress was made by the Spec Lead and the EG to reach consensus on some very difficult issues such as #AutomaticModuleNames.  However, there are still on going conversations on some of those issues and there simply has not been enough time spent by the ecosystem to discuss some of the new designs in enough depth or enough time spent implementing and testing prototypes based on the latest spec, e.g. The Eclipse ejc compiler or the latest Automatic Module Naming design in Maven.
 
 If required, we very much look forward to being able to vote ‘YES’ in <= 30 days on a version that has had that little bit of extra time for the EG (and the ecosystem) to discuss / implement / test some of these difficult spec items. Certainly the last 14 days have shown that consensus can be reached even when viewpoints have started in opposing corners, and we think another short time period to really bed in the last sticking points is needed.
+
+我们回应SAP的意见，因为我们绝对认可EG成员迄今为止以及（特别是）由Lead Lead自己所做的巨大成就和伟大的工作。
+
+在投票开始时，LJC就投标“否”表示*。在14天的投票期间，规格领导和技术委员会在一些非常困难的问题上达成了共识，如#AutomaticModuleNames。然而，仍然有一些这些问题的谈话，生态系统还没有足够的时间来讨论一些新的设计，足够深度或足够的时间基于最新的规范，例如实施和测试原型。 Eclipse ejc编译器或Maven中最新的自动模块命名设计。
+
+如果需要，我们非常期待能够在<= 30天内在一个版本上投票“是”，该版本为EG（和生态系统）提供了一些额外的时间来讨论/实施/测试这些困难的规格项目。过去14天当然表明即使在反对角度出现观点的时候也可以达成共识，我们认为在最后一个关键点上还需要很短的时间才能真正解决问题。
+
 ------------------------------------------------------------------------------
 最后一天, 星期一, 2017-05-08, V2COM 投了赞成票(Yes), 并说明了原因:
+
 V2COM shares other EC members' concerns, but we believe that all major concerns can be addressed between this ballot and the next ballot. 
+
+V2COM与其他EC成员的关切共享，但我们认为，在这次投票和下一次投票之间可以解决所有主要的问题。
+
 ------------------------------------------------------------------------------
 最后一天, 星期一, 2017-05-08, Grimstad, Ivar 投了反对票(No), 反对的理由是:
 I am voting "No" on the specification as it was submitted at the start of the voting period.  The discussion during the 14 day voting period has been very good, and I applaud the progress being made by the Spec Lead and EG in this period. Especially the latest Automatic Module Naming proposal.
 
 With continued discussion and these changes incorporated in spec, I look forward to vote "Yes" in a potential reconsideration ballot.
+
+在表决开始时提交的规格表决中，我投了“不”。 14天投票期间的讨论情况非常好，我赞扬规格和EG在此期间取得的进展。 特别是最新的自动模块命名方案。
+
+在继续讨论并将这些变更纳入规范中，我期待着在可能的重新考虑投票中投票“是”。
+
 ------------------------------------------------------------------------------
 最后一天, 星期一, 2017-05-08, Twitter 公司投了反对票(No), 反对的理由是:
+
 We see the introduction of the Java Platform Module System (JPMS) in Java 9 as a desirable and worthwhile addition to the Java platform. We also appreciate the enormous and difficult task it has been to retrofit a mature and widely-used language like Java with a module system 20 years later. And we are thankful to the JSR lead, the Expert Group (EG), and everyone involved for their dedication and all the hard work it has taken to make it a reality.
 
 Our main concern is that it is likely that this JSR will prove disruptive to Java developers, while ultimately not providing the benefits that would be expected of such a system. We are worried that this will delay wide-scale adoption of this important technology. We hope that if the JPMS accomplishes some of its original goals more comprehensively (in particular, collisions in non-exported package names are arguably incompatible with the "non-interference" and "strong encapsulation" goals) it can address real pain points that Java developers have today (e.g., dealing with multiple copies of the same package by hiding them as non-exported packages). This would encourage more developers to rapidly adopt modular development.
 
 Finally, we think broader consensus among the JSR lead and the EG members is necessary for such an important JSR.
+
+我们看到Java 9中Java平台模块系统（JPMS）的引入是对Java平台的理想和有价值的补充。我们还感谢在20年后，将成熟和广泛使用的语言（如Java）与模块系统相结合的巨大而艰巨的任务。我们感谢JSR的领导，专家组（EG）和所有参与者的奉献精神以及为实现这一目标所做的一切努力。
+
+我们的主要关切是，这个JSR很可能会对Java开发人员造成破坏，而最终不能提供这样一个系统所期待的好处。我们担心这将延迟这一重大技术的大规模采用。我们希望如果JPMS更全面地完成了一些原来的目标（特别是非导出包名称中的冲突可以说是与“不干涉”和“强封装”）的目标不相容），它可以解决真正的痛点，即Java开发人员今天（例如，通过将它们隐藏为未导出的包来处理同一个包的多个副本）。这将鼓励更多开发商快速采用模块化开发。
+
+最后，我们认为JSR领导和EG成员之间更广泛的共识对于这样一个重要的JSR是必要的。
+
 ------------------------------------------------------------------------------
 最后一天, 星期一, 2017-05-08, SouJava 投了赞成票(Yes), 并说明了原因:
 SouJava votes YES for the Java Platform Module System specification. 
@@ -124,18 +168,34 @@ We agree with the London Java Community and others that the specification AS WAS
 
 But if the specification does not support independent implementations, it's a bigger problem. Independent implementations are the primary objective of the JCP, and we do not intend to keep the yes vote if the situation persists. 
 
+SouJava对Java平台模块系统规范投票为YES。
+
+正如其他人所说，我们认为，这个团队在这个努力中取得了巨大的成就，许多人相信永远都不会成功。但是，已经准备好进行公开审查的EG未经同意的规范的不安情绪导致SouJava内的讨论不经表决。
+
+在过去几个星期，规格牵头的运动改变了大众的情绪，我们感谢解决问题的努力。
+
+我们同意伦敦Java社区和其他人的意见，提交公开审查的规范是缺乏的。我们明白规格要点应该着重于稍后会有所改进的初始版本，我们甚至愿意接受一些妥协的工具问题。
+
+但是如果规范不支持独立的实现，那就是一个更大的问题。独立实施是JCP的主要目标，如果情况仍然存在，我们不打算保留是的投票。
+
 ------------------------------------------------------------------------------
 最后一天, 星期一, 2017-05-08, Fujitsu Limited 投了赞成票(Yes), 并说明了原因:
 There are a lot of concerns, but we hope EG members will resolve them by the next ballot.
+
+有很多问题，但我们希望会员可以在下一轮的选票中解决。
+
 ------------------------------------------------------------------------------
 最后一天, 星期一, 2017-05-08, Eclipse Foundation, Inc 投了反对票(No), 反对的理由是:
 Like LJC, the Eclipse Foundation is voting "No" on the spec *as it was submitted* at the start of the voting period. The Eclipse Foundations looks forward to a revised specification which will enable independent implementations. The recent conversations have been very positive, and we feel that the expert group is moving into the right direction. However, the draft spec that are have been asked to vote on do contain a number of serious deficiencies, as documented by the recent conversations on the various mailing lists. We feel that the spec will be significantly improved by an opportunity to complete those conversations and include them in a revised draft.
 
-
+像LJC一样，Eclipse基金会在投票开始时就提交了*表示“否”。 Eclipse Foundations希望能够实现独立实现的修订规范。 最近的对话非常积极，我们觉得专家组正在朝着正确的方向前进。 然而，已经被要求投票的规范草案包含了一些严重的缺陷，最近几个邮件列表上的谈话记录在案。 我们认为，通过完成这些对话并将其纳入修订草案的机会，规格将大大改善。
 
 ------------------------------------------------------------------------------
 最后一天, 星期一, 2017-05-08, Hewlett Packard Enterprise 投了反对票(No), 反对的理由是:
 While recognizing progress made by expert group and lead, Hewlett Packard enterprise prefers to allow expert group to address inputs, resolve open issues and come up with updated draft.  
+
+惠普公司在认识到专家组和负责人取得的进展的同时，倾向于允许专家组解决投入问题，解决公开问题，并提出更新草案。
+
 ------------------------------------------------------------------------------
 最后一天, 星期一, 2017-05-08, Tomitribe 投了反对票(No), 反对的理由是:
 Tomitribe’s no vote is tempered with a concern the specification does in fact make it through the JCP process successfully.  The risk of passing this JSR through to the next stage is that should it fail the Final Approval Ballot, the spec lead and EG have only 30 days to resolve all issues or the specification fails permanently per JCP rules.
@@ -145,6 +205,14 @@ We echo sentiments of other voters in applauding the progress in the last 14 day
 We see positives in opting for a 30 fixed window for feedback to and from the EC as it keeps pressure which is critical for momentum.  JSR-299 (CDI 1.0) went 9 months between its Public Review Ballot and Final Approval Ballot, delaying Java EE 5 significantly.  We would not want to see the same happen here.  The 30 day window applies both to the spec lead and essentially to the EG who knows we'll be voting immediately after.
 
 Though a No vote feels like rejection we ultimately believe it is the most supportive vote for gaining a greater level of consensus we believe is necessary from a JSR, while still keeping time pressure.
+
+Tomitribe的没有投票受到关注，规范确实通过JCP进程成功。将JSR传递到下一个阶段的风险在于，如果最终批准投票不成功，则规范要求和EG只有30天才能解决所有问题，或根据JCP规则永久性地停用规范。
+
+我们回应其他选民的看法，赞扬过去14天的进展情况。虽然没有投票提供的30天窗口将不会获得完美的共识，但我们相信这将有很大的帮助。它可以让灰尘沉淀下去。在过去2周的所有变化中，最终投票将会在某些方面更清楚。
+
+我们看到积极的选择30个固定的窗口反馈到EC，因为它保持压力是至关重要的动力。 JSR-299（CDI 1.0）在公开审查投票和最终批准投票之间进行了9个月的时间，大大延误了Java EE 5。我们不想在这里看到同样的事情。 30天的窗口既适用于指标，也适用于知道我们立即投票的EG。
+
+虽然没有投票感觉像是拒绝，我们最终认为这是获得更大程度的共识的最有支持的投票，我们认为这是一个JSR所必需的，同时仍然保持时间压力。
 
 ------------------------------------------------------------------------------
 
@@ -159,6 +227,12 @@ IBM values the JCP standards process. As a key member of the JCP, expert group m
 The Java Platform Module System is a significant new feature for Java SE 9. The work that has been accomplished should not be underestimated. A pragmatic, collaborative approach to the remaining few issues will allow applications to demonstrate the value that this JSR brings to the platform, and will provide invaluable experience that will help Java advance.
 We remain optimistic that that the Expert Group and Specification Lead will continue to work together closely and productively on refining the draft specification. We are confident that the JSR 376 specification can be amended to improve the position on a few remaining technical issues and be presented for Proposed Final Draft without significant disruption to the Java 9 project schedule.
 
+
+在我们对JSR 376的投票中的评论中，我们表示希望看到正在进行的讨论，专家组应该达成更接近的一致意见，即说明书准备好进行拟议的最终草案状态。执行委员会的投票结果支持这一立场。
+通过拥有强大的规范和兼容性测试套件支持的丰富多样的实现，Java更加强大。对于更广泛的Java生态系统来说，拟议的最终草案满足实施者和用户的需求仍然很重要。 JCP是该过程的重要组成部分。
+IBM重视JCP标准流程。作为JCP的关键成员，专家组成员以及许多JCP规范的实现者，对于IBM来说，重要的是我们确保新的规范保护Java生态系统，确保兼容性，同时不断发展技术，确保Java仍然是企业应用。
+Java平台模块系统是Java SE 9的一个重要的新功能。已经完成的工作不应该被低估。对其余几个问题的务实，协作的方法将允许应用程序演示该JSR为平台带来的价值，并将提供有助于Java推进的宝贵经验。
+我们仍然乐观地认为，专家组和规范主管将继续密切和有效地共同完善规范草案。我们相信，JSR 376规范可以修改，以改善其他技术问题的立场，并提交给拟议的最终草案，而不会对Java 9项目进度造成重大影响。
 
 
 
