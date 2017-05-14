@@ -20,7 +20,7 @@
 
 - JSR: Java Specification Requests, 直译为 Java规范请求,如 JVM规范,Java语言规范等等。每个规范,都类似于流程审批,由 JCP 专家委员会负责审核。
 
-- JCP: Java Community Process, JCP组织, 直译为 Java 社区进程。
+- JCP: Java Community Process, JCP组织, 直译为 Java 社区进程/流程。
 
 - EG: Expert Group, 专家组
 
@@ -89,7 +89,7 @@ Software AG担心专家组成员之间缺乏必要的共识。虽然我们也理
 最后一天, 星期一, 2017-05-08, Credit Suisse 投了反对票(No), 反对的理由是:
 Credit Suisse represents customers of the Java technology in the EC. With JSR 376, two main concerns exists (i.e., automatic modules, reflection) that potentially conflict with an easy adoption of this JSR. Our understanding is that solutions have been proposed in the EG and it seems to be beneficial to give the EG some more time to get consensus on these important topics.
 
-Credit Suisse 代表了执行委员会中的Java技术客户。 现在的JSR 376，存在两个主要问题（即 automatic modules, 以及 reflection），这可能与易用性有冲突。 我们的理解是，专家组中已经提出了解决方案，很有必要的给专家组更多的时间来达成共识。
+Credit Suisse 代表了执行委员会中的Java技术客户。 现在的JSR 376，存在两个主要问题（即 automatic modules, 以及 reflection），这可能与易用性有冲突。 我们的理解是，专家组中已经提出了解决方案，很有必要给专家组更多的时间来达成共识。
 ------------------------------------------------------------------------------
 最后一天, 星期一, 2017-05-08, SAP SE 投了反对票(No), 反对的理由是:
 
@@ -101,13 +101,13 @@ What we are especially concerned about however, is the lack of direct communicat
 
 Finally, we adjure all members and the spec lead to come back to the table and communicate directly to each other instead of blaming each other through blogs and open letters!
 
-我们绝对认可到现在为止，由专家组成员以及（特别是）规格领导本人所取得的巨大成就和伟大的工作。虽然JPMS对于Java平台本身的模块化来说非常好，但我们认为Java平台之外的库和框架仍然存在一些粗略的界限，在规范的最终批准之前应该加以解决和商定。
+我们绝对认可，截至目前由专家组成员以及（特别是）规范领导本人所付出的巨大努力,以及取得的伟大成就。虽然JPMS对于Java平台本身的模块化来说非常好，但我们认为Java平台之外的库和框架仍然存在很大的界限，在最终的规范表决之前应该加以解决和商定。
 
-我们承认在OpenJDK中的“项目拼图”的背景下，JPMS的开放发展。但是我们同时关注OpenJDK JEP和JCP JSR流程之间日益紧张的关系。在开发过程中，到目前为止，尚未明确将JPMS /拼图的开发视为实施细节，标准规范将是哪些内容。诸如模块和运行时映像的二进制格式的功能，jlink工具和诸如散列和版本的新类属性都是非标准化实现细节的示例。
+我们承认JPMS的开放发展在OpenJDK中"Jigsaw 项目"的背景下。但我们同时也关注OpenJDK JEP和JCP JSR流程之间日益紧张的关系。在开发过程中，到目前为止，尚未明确将JPMS/拼图的开发视为实施细节，以及哪些哪些内容将会称为标准规范的一部分。诸如模块和运行时映像的二进制格式，jlink 工具和, 以及 新的 class 属性, 诸如 hashes 和 versions 等都是非标准化实现的示例。
 
-然而，我们特别关心的是专家组内缺乏直接沟通。假设这个JSR将不会被批准为所需的三分之二多数，我们期望专家组和规范会导致额外的30天的定期会议，以便整理剩余的问题，并提出一个新的，更多的可持续和前瞻性的建议。虽然我们意识到无法补救所有问题，但我们认为最后几天已经清楚地表明，仍然有可能做出妥协的妥协（例如“自动模块问题”），我们相信额外的时间可以用来提交更新的重新考虑表决规范。
+然而，我们特别关心的是专家组内缺乏直接沟通。假设这个 JSR 不能达到所需的三分之二的大多数同意，我们期望专家组和规范lead在额外的30天时间内进行正规的沟通会议，以便整理出剩下的问题，并提出一些新的，更多的可持续和具有前瞻性的建议。虽然我们意识到无法补救所有的问题，但我们认为最近几天已经清楚地表明，仍然可以做出一些妥协（例如 "automatic modules issue"），我们坚信额外的时间可以用来提交更好的表决规范更新。
 
-最后，我们协调所有成员和规范的导向，回到桌面，直接相互通信，而不是通过博客和公开信函相互指责！
+最后，我们呼吁所有的专家组成员和规范leader，一起坐下来好好谈谈，互相沟通一下，而不是通过博客和公开信相互进行指责！
 
 ------------------------------------------------------------------------------
 最后一天, 星期一, 2017-05-08, London Java Community 投了反对票(No), 反对的理由是:
@@ -120,19 +120,20 @@ If required, we very much look forward to being able to vote ‘YES’ in <= 30 
 
 我们回应SAP的意见，因为我们绝对认可EG成员迄今为止以及（特别是）由Lead Lead自己所做的巨大成就和伟大的工作。
 
-在投票开始时，LJC就投标“否”表示*。在14天的投票期间，规格领导和技术委员会在一些非常困难的问题上达成了共识，如#AutomaticModuleNames。然而，仍然有一些这些问题的谈话，生态系统还没有足够的时间来讨论一些新的设计，足够深度或足够的时间基于最新的规范，例如实施和测试原型。 Eclipse ejc编译器或Maven中最新的自动模块命名设计。
+在投票一开始，LJC就投了反对票(No)。在14天的投票周期中，规格领导和技术委员会在一些非常困难的问题上达成了共识，如 `#AutomaticModuleNames`。然而，仍然有一些这些问题的谈话，还缺乏足够的时间来讨论一些新的设计，足够深度或足够的时间基于最新的规范，例如 Eclipse ejc compiler或 Maven中最新的Automatic Module Naming 设计。
 
-如果需要，我们非常期待能够在<= 30天内在一个版本上投票“是”，该版本为EG（和生态系统）提供了一些额外的时间来讨论/实施/测试这些困难的规格项目。过去14天当然表明即使在反对角度出现观点的时候也可以达成共识，我们认为在最后一个关键点上还需要很短的时间才能真正解决问题。
+如果需要，我们非常期待能够在  <= 30 天之内的一个版本上投赞成票 ‘YES’, 该版本应该为EG（和生态系统）提供了一些额外的时间来 discuss / implement / test 这些困难的规范项。过去的14天已经表明, 即使在反对的立场, 依然可以达成一些共识，我们认为在最后一个关键点上还需要一段时间才能真正解决问题。
 
 ------------------------------------------------------------------------------
 最后一天, 星期一, 2017-05-08, V2COM 投了赞成票(Yes), 并说明了原因:
 
 V2COM shares other EC members' concerns, but we believe that all major concerns can be addressed between this ballot and the next ballot. 
 
-V2COM与其他EC成员的关切共享，但我们认为，在这次投票和下一次投票之间可以解决所有主要的问题。
+V2COM与其他EC成员的关切共享，但我们认为，在这次投票和下一次投票期间,可以解决所有主要的问题。
 
 ------------------------------------------------------------------------------
 最后一天, 星期一, 2017-05-08, Grimstad, Ivar 投了反对票(No), 反对的理由是:
+
 I am voting "No" on the specification as it was submitted at the start of the voting period.  The discussion during the 14 day voting period has been very good, and I applaud the progress being made by the Spec Lead and EG in this period. Especially the latest Automatic Module Naming proposal.
 
 With continued discussion and these changes incorporated in spec, I look forward to vote "Yes" in a potential reconsideration ballot.
@@ -182,7 +183,7 @@ SouJava对Java平台模块系统规范投票为YES。
 最后一天, 星期一, 2017-05-08, Fujitsu Limited 投了赞成票(Yes), 并说明了原因:
 There are a lot of concerns, but we hope EG members will resolve them by the next ballot.
 
-有很多问题，但我们希望会员可以在下一轮的选票中解决。
+虽然还有很多问题，但我们希望专家组成员们可以在下一轮的投票中解决。
 
 ------------------------------------------------------------------------------
 最后一天, 星期一, 2017-05-08, Eclipse Foundation, Inc 投了反对票(No), 反对的理由是:
@@ -198,6 +199,7 @@ While recognizing progress made by expert group and lead, Hewlett Packard enterp
 
 ------------------------------------------------------------------------------
 最后一天, 星期一, 2017-05-08, Tomitribe 投了反对票(No), 反对的理由是:
+
 Tomitribe’s no vote is tempered with a concern the specification does in fact make it through the JCP process successfully.  The risk of passing this JSR through to the next stage is that should it fail the Final Approval Ballot, the spec lead and EG have only 30 days to resolve all issues or the specification fails permanently per JCP rules.
 
 We echo sentiments of other voters in applauding the progress in the last 14 days.  While the 30 days window afforded by a No vote will not gain a perfect consensus, we do believe it will help significantly.  It allows time for the dust to settle; with all the changes in the last 2 weeks, what exactly will be presented for a final vote is in some ways less clear.  
@@ -206,13 +208,13 @@ We see positives in opting for a 30 fixed window for feedback to and from the EC
 
 Though a No vote feels like rejection we ultimately believe it is the most supportive vote for gaining a greater level of consensus we believe is necessary from a JSR, while still keeping time pressure.
 
-Tomitribe的没有投票受到关注，规范确实通过JCP进程成功。将JSR传递到下一个阶段的风险在于，如果最终批准投票不成功，则规范要求和EG只有30天才能解决所有问题，或根据JCP规则永久性地停用规范。
+Tomitribe 投反对票的原因是希望此规范最终能够通过JCP进程。如果让此JSR直接通过并进入到下一阶段的风险在于, 如果最终投票不能通过，则规范lead和EG就只有30天来解决所有的问题，根据JCP规则,此规范会永久性终止。
 
-我们回应其他选民的看法，赞扬过去14天的进展情况。虽然没有投票提供的30天窗口将不会获得完美的共识，但我们相信这将有很大的帮助。它可以让灰尘沉淀下去。在过去2周的所有变化中，最终投票将会在某些方面更清楚。
+我们回应其他投票者的看法，赞扬过去14天的进展情况。虽然在投票不通过时,所提供的30天窗口期内并不一定能获得完美的共识，但我们相信这会有很大的帮助。它可以让灰尘沉淀下去。在过去2周的所有变化中，最终投票将会在某些方面更清楚。
 
-我们看到积极的选择30个固定的窗口反馈到EC，因为它保持压力是至关重要的动力。 JSR-299（CDI 1.0）在公开审查投票和最终批准投票之间进行了9个月的时间，大大延误了Java EE 5。我们不想在这里看到同样的事情。 30天的窗口既适用于指标，也适用于知道我们立即投票的EG。
+我们看到积极的选择30个固定的窗口反馈到EC，因为保持压力也是至关重要的动力。 JSR-299（CDI 1.0）的 Public Review 投票和 Final Approval 投票之间间隔了9个月的时间，大大延误了Java EE 5。我们不想再次看到同样的事情。 30天的窗口既适用于 spec lead，也适用于之后进行投票的EG。
 
-虽然没有投票感觉像是拒绝，我们最终认为这是获得更大程度的共识的最有支持的投票，我们认为这是一个JSR所必需的，同时仍然保持时间压力。
+虽然投反对票感觉像是拒绝, 我们相信最后这是获得更大程度的共识的最有支持的投票，我们认为这是一个JSR所必需的，同时仍然保持时间压力。
 
 ------------------------------------------------------------------------------
 
