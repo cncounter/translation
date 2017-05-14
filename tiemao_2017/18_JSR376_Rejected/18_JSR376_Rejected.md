@@ -1,15 +1,22 @@
 # Java模块化系统在JCP投票中未获通过
 
 
-2017年5月8日,星期一, JSR-376的公开预览版投票结果确定, 最后有10票赞成，13 票反对，该请求未能通过。 投票结果如下图所示:
+自从2009年Oracle收购SUN以来,外界对Oracle的评价一直不太高。匆忙推出的Java8版本更是一个半成品, 但从未像此次一样, JCP专家组的意见和分歧如此巨大。 Java 9.0 一直在跳票, 迫于压力, Oracle想要强推Jigsaw, 却遭到了友军主力的剧烈反对。 JCP 是否会因此名存实亡, Java社区是否会分裂, 是否会出现 Java++? 未来将何去何从, 作为外人,我们还需等待。
+
+2017年5月8日,星期一, Java模块化系统(Jigsaw项目, JSR-376)的公开预览版投票结果确定, 其中10票赞成,13票反对, 该请求未获通过。 
+
+
+此次投票的结果如下图所示:
 
 ![The EC has not approved this ballot](01_jsr_376_result.png)
 
-可能你已经从其他渠道看到这张图片了, 如果你感兴趣,可以查看该结果页面: [https://jcp.org/en/jsr/results?id=5959](https://jcp.org/en/jsr/results?id=5959)
+可能你已经从其他渠道看到这张图片了, 如果你感兴趣,可以查看该结果的详细页面: <https://jcp.org/en/jsr/results?id=5959>
 
-当然, 如果对JSR-376的详细信息感兴趣,请点击: [https://jcp.org/en/jsr/detail?id=376](https://jcp.org/en/jsr/detail?id=376)
+当然, 如果对JSR-376的详细信息感兴趣,请点击: <https://jcp.org/en/jsr/detail?id=376>
 
 下面是几个缩略词的简单说明:
+
+- Jigsaw: 直译为 "拼图", 是Java模块化系统的项目代号, 可以从这个代号中看出一些目标。
 
 - JSR: Java Specification Requests, 直译为 Java规范请求,如 JVM规范,Java语言规范等等。每个规范,都类似于流程审批,由 JCP 专家委员会负责审核。
 
@@ -17,7 +24,9 @@
 
 - EG: Expert Group, 专家组
 
-接下来我们看看详细的投票记录, 挺有意思的, 如果不感兴趣, 直接跳过即可。
+- EC: Executive Committee, 执行委员会
+
+接下来我们看看详细的投票记录, 挺有意思的。
 
 
 ###  投票记录
@@ -44,12 +53,17 @@ From our point of view the lack of consensus inside the EG is a dangerous sign, 
 In addition, problems with popular build tools don't seem like a good starter. Our understanding of the EC is, that part of the work is to prevent the Java ecosystem from harm and in the current state the JSR376 cannot be seen as ready for that matter.
 
 以我们的观点来看，EG内部缺乏共识是一个危险的迹象，既不是所有的问题都被澄清, 或者从单一的角度来看，某些问题也尚未得到明确的解决。 总的来说，我们承认，过去几个月来，还是取得了很大的进步，社区中也解决了很多问题，但现在进行公开审查投票似乎还太早了一点。
-此外，流行的构建工具中存在的问题看起来也不太完美。 我们专家组的意见是，决不能破坏 Java的整个生态，目前来看，JSR376 不能算是准备就绪的状态。
+此外，主流的构建工具中存在的问题看起来也不太完美。 我们专家组的意见是，决不能破坏 Java的整个生态，目前来看，JSR376 的状态不能算是准备就绪。
 ------------------------------------------------------------------------------
 2017-05-03日, 星期三, Red Hat 投了反对票(No), 反对的理由是:
 Red Hat is voting NO on this JSR. The Red Hat middleware team, other members of the EC and Java community members, have mentioned publicly and in more detail our concerns (here
 https://developer.jboss.org/blogs/scott.stark/2017/04/14/critical-deficiencies-in-jigsawjsr-376-java-platform-module-system-ec-member-concerns and here
-https://developer.jboss.org/servlet/JiveServlet/download/38-155022/JSR376.pdf). We have also discussed with our own OpenJDK team, which made good counter arguments to several of the concerns, but in the end we believe a NO vote is the correct course of action. In previous votes and comments on the EG list we have articulated the view that from a middleware/SE developer perspective we believe that Jigsaw does not fulfil its original goals of being a module system which can be used by the likes of Java EE. We understand that after inception the original goals of the EG were initially changed to try to focus it on a module system to be used solely to modularise the JVM and that caused some architecture and implementation approaches which made it difficult for it to be a module system to be used by SE and EE developers. Unfortunately during the lifetime of the EG the goal appeared to switch back to trying to make it a module system for Java developers but previous implementation decisions appear not to have been revisited or could not be changed and as a result the expectations around Jigsaw have not been met by the implementation. Therefore, we are worried about the impact of the current implementation on the wider Java community, particularly existing projects and products including, but also beyond, Java EE. We have raised several issues within the EG list to try to rectify a few of these things in what we believe would have been a minimally invasive manner but they have been rejected. Furthermore, we believe that there has been insufficient consensus in the EG for a series of changes so dramatic to the JVM and which could have an equally dramatic impact on the Java communities, as well as a lack of openness on receiving and discussing community input. We believe that a more considered evaluation of all input and consensus gathering should not take too much time and would result in something which would be better received by the entire Java ecosystem.
+https://developer.jboss.org/servlet/JiveServlet/download/38-155022/JSR376.pdf). 
+
+We have also discussed with our own OpenJDK team, which made good counter arguments to several of the concerns, but in the end we believe a NO vote is the correct course of action. In previous votes and comments on the EG list we have articulated the view that from a middleware/SE developer perspective we believe that Jigsaw does not fulfil its original goals of being a module system which can be used by the likes of Java EE. We understand that after inception the original goals of the EG were initially changed to try to focus it on a module system to be used solely to modularise the JVM and that caused some architecture and implementation approaches which made it difficult for it to be a module system to be used by SE and EE developers. Unfortunately during the lifetime of the EG the goal appeared to switch back to trying to make it a module system for Java developers but previous implementation decisions appear not to have been revisited or could not be changed and as a result the expectations around Jigsaw have not been met by the implementation. Therefore, we are worried about the impact of the current implementation on the wider Java community, particularly existing projects and products including, but also beyond, Java EE. We have raised several issues within the EG list to try to rectify a few of these things in what we believe would have been a minimally invasive manner but they have been rejected. Furthermore, we believe that there has been insufficient consensus in the EG for a series of changes so dramatic to the JVM and which could have an equally dramatic impact on the Java communities, as well as a lack of openness on receiving and discussing community input. We believe that a more considered evaluation of all input and consensus gathering should not take too much time and would result in something which would be better received by the entire Java ecosystem.
+
+Red Hat middleware team 的EC成员, 以及Java社区都期待更多的细节, 请参考 [here](https://developer.jboss.org/blogs/scott.stark/2017/04/14/critical-deficiencies-in-jigsawjsr-376-java-platform-module-system-ec-member-concerns) and [here](https://developer.jboss.org/servlet/JiveServlet/download/38-155022/JSR376.pdf)。 我们和自己的OpenJDK团队进行过讨论，对这些关注点展开了很多交流，最后我们认为投反对票(NO vote)才是正确的选择。在之前专家组邮件列表的投票和评论中, 我们阐明了, 从中间件/JavaSE开发人员的角度看，我们认为 Jigsaw 还未能达成其作为模块化系统的最初目标, Java EE 似乎也是这样。我们了解到, EG的最初目标被项目组改变了, 试图做出一个仅适用于JVM模块化的模块系统之中, 这就导致一些架构和实现方法，难以成为由SE和EE开发者使用的模块系统。杯具的是，EG的目标是试图使其成为普通Java开发者也能使用的模块系统, 但之前的实现决策似乎没有重新修订, 或者是不能被更改, 结果是现在的实现还没有达到对Jigsaw的预期。所以我们担心当前的这种实现会对Java社区造成绝大的冲击，特别是现有的项目和产品，包括但不限于Java EE。我们在EG列表中提出了一些 issues，试图纠正这些事情，我们认为只需要一些很微小的手术，但却被拒绝了。此外，我们认为，专家组对JVM中一系列剧烈的改变缺乏共识，对Java社区也可能产生同样剧烈的影响，以及缺乏开放性,不接受社区的投入和探讨。我们认为，收集各种探讨和投入并进行评估, 应该花不了太多时间，而结果会是整个Java生态都能够更好地接受。
+
 ------------------------------------------------------------------------------
 2017-05-05日, 星期五, Goldman Sachs & Co. 投了赞成票(Yes).
 ------------------------------------------------------------------------------
@@ -134,11 +148,26 @@ Though a No vote feels like rejection we ultimately believe it is the most suppo
 
 ------------------------------------------------------------------------------
 
+投票结束之后,
+
+
+5月9日, IBM 在其[官方博客上解释](https://developer.ibm.com/javasdk/2017/05/09/ibms-no-vote-jsr-376-java-platform-module-system/)道:
+
+In the comment accompanying our vote on JSR 376 we expressed a desire to see ongoing discussion, and that the Expert Group should reach closer consensus that the specification is ready to proceed to Proposed Final Draft status. The result of the Executive Committee ballot supports that position.
+Java is stronger by having a rich variety of implementations backed by a robust specification and compatibility test suite. It remains important to the broader Java ecosystem that the Proposed Final Draft meets the needs of those implementers and users. The JCP is an important part of that process.
+IBM values the JCP standards process. As a key member of the JCP, expert group member, and implementer of many JCP specifications, it is important to IBM that we ensure new specifications protect the Java ecosystem and ensure compatibility while evolving the technology, to ensure that Java remains the best platform for enterprise applications.
+The Java Platform Module System is a significant new feature for Java SE 9. The work that has been accomplished should not be underestimated. A pragmatic, collaborative approach to the remaining few issues will allow applications to demonstrate the value that this JSR brings to the platform, and will provide invaluable experience that will help Java advance.
+We remain optimistic that that the Expert Group and Specification Lead will continue to work together closely and productively on refining the draft specification. We are confident that the JSR 376 specification can be amended to improve the position on a few remaining technical issues and be presented for Proposed Final Draft without significant disruption to the Java 9 project schedule.
 
 
 
 
+Java9强行推出,那么可能就是一个过渡版。
 
+Java9延期推出,那么日子同样过,社区并不会因为跳票而产生多少影响。
+
+
+最后说一句, 其实不用过于担心, Oracle股价未受明显影响, 所以这只是一件小事情。
 
 
 
