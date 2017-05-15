@@ -60,6 +60,8 @@ Quantifiers allow you to specify the number of occurrences to match against. For
 
 Let's start our look at greedy quantifiers by creating three different regular expressions: the letter "a" followed by either ?, *, or +. Let's see what happens when these expressions are tested against an empty input string "":
 
+让我们通过创建三种不同的正则表达式来开始我们看贪婪的量词：字母 "a" 后面跟着 `?`, `*`, or `+`。 让我们看看当这些表达式对空的输入字符串“”进行测试时会发生什么：
+
 
  
 	Enter your regex: a?
