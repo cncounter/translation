@@ -138,10 +138,12 @@ I am voting "No" on the specification as it was submitted at the start of the vo
 
 With continued discussion and these changes incorporated in spec, I look forward to vote "Yes" in a potential reconsideration ballot.
 
-在表决开始时提交的规格表决中，我投了“不”。 14天投票期间的讨论情况非常好，我赞扬规格和EG在此期间取得的进展。 特别是最新的自动模块命名方案。
+在表决开始时，我投了反对票(No)。 14天投票期间的讨论情况非常良好，我赞扬 Spec Lead 和EG在此期间取得的进展。 特别是最新的 Automatic Module Naming 方案。
 
-在继续讨论并将这些变更纳入规范中，我期待着在可能的重新考虑投票中投票“是”。
+随着继续探讨并将这些变更纳入规范中，我期待着在新的投票中选择 赞成("Yes")。
 
+
+########## 到此处
 ------------------------------------------------------------------------------
 最后一天, 星期一, 2017-05-08, Twitter 公司投了反对票(No), 反对的理由是:
 
@@ -189,7 +191,7 @@ There are a lot of concerns, but we hope EG members will resolve them by the nex
 最后一天, 星期一, 2017-05-08, Eclipse Foundation, Inc 投了反对票(No), 反对的理由是:
 Like LJC, the Eclipse Foundation is voting "No" on the spec *as it was submitted* at the start of the voting period. The Eclipse Foundations looks forward to a revised specification which will enable independent implementations. The recent conversations have been very positive, and we feel that the expert group is moving into the right direction. However, the draft spec that are have been asked to vote on do contain a number of serious deficiencies, as documented by the recent conversations on the various mailing lists. We feel that the spec will be significantly improved by an opportunity to complete those conversations and include them in a revised draft.
 
-像LJC一样，Eclipse基金会在投票开始时就提交了*表示“否”。 Eclipse Foundations希望能够实现独立实现的修订规范。 最近的对话非常积极，我们觉得专家组正在朝着正确的方向前进。 然而，已经被要求投票的规范草案包含了一些严重的缺陷，最近几个邮件列表上的谈话记录在案。 我们认为，通过完成这些对话并将其纳入修订草案的机会，规格将大大改善。
+和LJC一样，Eclipse基金会在投票开始时就投了反对票(No)。 Eclipse Foundations希望能够实现独立实现的修订规范。 最近的对话非常积极，我们觉得专家组正在朝着正确的方向前进。 然而，已经被要求投票的规范草案包含了一些严重的缺陷，最近几个邮件列表上的谈话记录在案。 我们认为，通过完成这些对话并将其纳入修订草案的机会，规格将大大改善。
 
 ------------------------------------------------------------------------------
 最后一天, 星期一, 2017-05-08, Hewlett Packard Enterprise 投了反对票(No), 反对的理由是:
