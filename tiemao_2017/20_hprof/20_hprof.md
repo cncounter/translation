@@ -304,9 +304,23 @@ rank   self  accum   count trace method
 
 The HPROF agent periodically samples the stack of all running threads to record the most frequently active stack traces. The `count` field above indicates how many times a particular stack trace was found to be active (not how many times a method was called). These stack traces correspond to the CPU usage hot spots in the application. This option does not require BCI or modifications of the classes loaded and of all the options causes the least disturbance of the application being profiled.
 
+HPROF agent 定期采样所有正在运行的线程的stack, 记录最频繁活跃的 stack traces 。 上面的 `count` 显示了一个特定的stack trace被采样到多少次(并不是这个方法被调用多少次)。 这些 stack traces 对应了应用程序中的CPU使用热点. 这个选项不需要 BCI 或者修改的类加载, 在所有的选项中, 对被分析程序的干扰最小。
+
+
+
+
+
 The interval option can be used to adjust the sampling time or the time that the sampling thread sleeps between samples.
 
+interval 选项可以用来调整采样周期， 或者说 sampling thread 休眠的时间。
+
+
 So what does the above information tell us? First, statistically it's a pretty poor sample, only 126 samples, compiling a larger Java source file would probably yield better information, or better yet a large batch of Java sources. Second, this data pretty much matches the heap=sites data in that we know that `javac` relies heavily on the `ZipFile` class, which makes sense. It appears that any performance improvements in `ZipFile` will probably improve the performance of `javac`. The stack traces of interest here are:
+
+以上信息告诉我们什么? 首先,在统计上这是一个非常少量的采样, 只有126个样本, 编译一个更大的Java源文件,或者是一大批Java源文件, 可能会产生更好的信息. 其次, 这次的数据和 `heap=sites` 示例中的非常匹配, 我们知道`javac`严重依赖`ZipFile`类, 它在其中有很大作用。看来, `ZipFile`类的任何性能优化都可能会提高`javac`的性能。有趣的是这部分 stack traces:
+
+
+
 
 ```
 TRACE 300027:
@@ -333,9 +347,22 @@ java.util.zip.ZipFile$3.nextElement(ZipFile.java:413)
 
 Don't expect the above information to reproduce on identical runs with highly multi-threaded applications, especially when the sample count is low.
 
+不要指望上面的信息能够在多线程应用程序中重现, 尤其是样本数量很低的时候。
+
+
+
+
 ## CPU Usage Times Profile (cpu=times)
 
+## CPU使用量分析(cpu=times)
+
+
 HPROF can collect CPU usage information by injecting code into every method entry and exit, keeping track of exact method call counts and the time spent in each method. This uses Byte Code Injection (BCI) and runs considerably slower than cpu=samples. Following is part of the output collected from a run of the `javac` compiler.
+
+
+HPROF可以将代码注入到每一个方法进入和退出的代码中,以收集CPU使用率信息, 跟踪每个方法调用的次数, 每个方法花费的时间. 这使用的是 Byte Code Injection (BCI) 技术, 字节码注入(BCI)比起 `cpu=samples` 来说执行速度很慢。下面是`javac`执行过程中输出的一部分。
+
+
 
 
 使用的命令为: 
@@ -393,6 +420,9 @@ Looking at the above data, it appears that even though some of the ZipFile$3 cla
 看着上面的数据, 尽管 `ZipFile$3` 的一些方法被调用了 14000 次, 但并没有消耗大量的CPU时间. 既然这样, 这个 sample 可能就没有太多意义, 我也不会花太多时间来分析上述的信息。
 
 
+####################################
+################## 此处
+####################################
 
 
 ## Using HAT with HPROF
