@@ -380,9 +380,20 @@ rank   self  accum   count trace method
 
 Here the count represents the true count of the times this method was entered, and the percentages represent a measure of thread time spent in those method.
 
+其中 count 代表的是此方法真正进入的次数, 百分比则表示此方法消耗的时间/线程总执行时间。
+
+
 The traces normally don't include line numbers but can be added with the `lineno` option.
 
+trace 通常不包括行号, 但也可以通过 `lineno` 选项添加。
+
+
 Looking at the above data, it appears that even though some of the ZipFile$3 class methods are called over 14,000 times, they don't seem to be consuming vast amounts of CPU time. Again, this is probably represents a poor sample and I would not put much time into analyzing the above information.
+
+看着上面的数据, 尽管 `ZipFile$3` 的一些方法被调用了 14000 次, 但并没有消耗大量的CPU时间. 既然这样, 这个 sample 可能就没有太多意义, 我也不会花太多时间来分析上述的信息。
+
+
+
 
 ## Using HAT with HPROF
 
