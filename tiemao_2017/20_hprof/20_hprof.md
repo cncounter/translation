@@ -420,38 +420,78 @@ Looking at the above data, it appears that even though some of the ZipFile$3 cla
 看着上面的数据, 尽管 `ZipFile$3` 的一些方法被调用了 14000 次, 但并没有消耗大量的CPU时间. 既然这样, 这个 sample 可能就没有太多意义, 我也不会花太多时间来分析上述的信息。
 
 
-####################################
-################## 此处
-####################################
-
 
 ## Using HAT with HPROF
 
+## 使用 HAT 与 HPROF
+
+
 [HAT](https://hat.dev.java.net/) (Heap Analysis Tool) is a browser based tool that uses the HPROF binary format to construct web pages so you can browse all the objects in the heap, and see all the references to and from objects.
+
+[HAT](https://hat.dev.java.net/) (Heap Analysis Tool,堆分析工具) 是一款基于浏览器的工具,使用HPROF二进制格式来构建web页面, 可以浏览堆中的所有对象, 以及每个对象中的所有引用。
+
 
 ## A Bit of HPROF History
 
+## HPROF的历史
+
+
 Previous releases of J2SE (1.2 through 1.4) contained an HPROF agent built on the experimental JVMPI. JVMPI worked fairly reliably in the old 1.2 Classic VM, but it was unreliable and difficult to maintain with the newer HotSpot VM and the different garbage collectors in the 1.3 and 1.4 releases. The newer JVM TI in J2SE 5.0 replaces both JVMDI and JVMPI. In the 5.0 release, JVMPI is still available, and the older HPROF JVMPI based agent from 1.4.2 can actually be used with 5.0, but it isn't recommended. The new HPROF, in J2SE 5.0, is (with minor exceptions) a fully functional replacement for the old HPROF but source wise was close to being a complete rewrite. All the old options are available, and the output format is basically the same. So if you are used to the old HPROF output, or you have tools that read any HPROF format, you won't see many differences and hopefully you will see fewer problems that you have seen in the past with the JVMPI-based HPROF. The source to HPROF is available with the full JDK download in the `demo/jvmti/hprof` installation directory.
+
+在 1.2~1.4版本的JDK中, 由一个构建在 experimental JVMPI 上的 HPROF。 但JVMPI 只在 1.2版本的 Classic VM 上工作良好, 而在 HotSpot VM  中以及 1.3~1.4版本中的其他GC上变得不可靠的, 并且难以维护。从 JDK5.0 开始使用新的 JVM TI 来取代 JVMDI 和 JVMPI。 新的 HPROF 是一个接近完全重写的全功能替代产品. 所有的选项依旧可用, 输出格式基本上兼容. HPROF的源码在安装目录 `demo/jvmti/hprof` 下面。
+
+
+
 
 ## How Does HPROF Work?
 
+## HPROF是如何工作的呢?
+
+
 HPROF is a dynamically-linked native library that uses JVM TI and writes out profiling information either to a file descriptor or to a socket in ascii or binary format. This information can be further processed by a profiler front-end tool or dumped to a file. It generates this information through calls to JVM TI, event callbacks from JVM TI, and through Byte Code Insertion (BCI) on all class file images loaded into the VM. JVM TI has an event called `JVMTI_EVENT_CLASS_FILE_LOAD_HOOK` which gives HPROF access to the class file image and an opportunity to modify that class file image before the VM actually loads it. Sound scary? It is, don't take BCI lightly. In the case of HPROF the BCI operations only instrument and don't change the behavior of the bytecodes. Use of JVM TI was pretty critical here for HPROF to do BCI because we needed to do BCI on ALL the classes, including early classes like `java.lang.Object`. Of course, the instrumentation code needs to be made inoperable until the VM has reached a stage where this inserted code can be executed, normally the event `JVMTI_EVENT_VM_INIT`.
+
+HPROF 是一个 native 的动态链接库, 使用 JVM TI , 输出到文件或者 socket 中, 格式是 ascii 或者 二进制. 输出的信息可以由前端分析工具处理, 或者 dump 到文件中. 生成这些信息,需要通过调用JVM TI, 以及 JVM TI事件的回调函数, 以及通过 BCI 插入到JVM中所有class文件映像的字节码中。 JVM TI有一个叫做 `JVMTI_EVENT_CLASS_FILE_LOAD_HOOK`的事件, 使得 HPROF 可以访问class文件映像, 并有机会在JVM加载时修改这个class文件镜像。听起来很恐怖? 是的, 不要小看BCI. HPROF 中 BCI操作只进行统计, 不改变字节码的行为. 对HPROF使用 BCI来说, 使用JVM TI是很重要的。 因为我们需要对所有类执行 做BCI, 包括早期加载的类, 比如`java.lang.Object`。 当然,操作工具代码需要等JVM到达一定阶段, 这种插入的代码才会执行,通常的事件是`JVMTI_EVENT_VM_INIT`。
+
 
 The amount of BCI that HPROF does depends on the options supplied, cpu=times triggers insertions into all method entries and exits, and the heap options trigger BCI on the `<init>` method of `java.lang.object` and any '`newarray`' opcodes seen in any method. This BCI work is actually done through the shared library `java_crw_demo`, which accepts a set of options, a class file image, and returns a new class file image. The `java_crw_demo` library is part of the sources delivered with the J2SE 5.0 in the `demo/jvmti` directory.
 
+HPROF 执行的 BCI 数量取决于指定的选项, `cpu=times` 会插入代码到所有方法的入口和出口, heap 选项触发BCI插入到`java.lang.object`的 `<init>` 方法和所有方法中的 `newarray` 操作码中。BCI的工作实际上是通过共享库`java_crw_demo`来执行的, 其接受一些配置项, 一个 class file image, 并返回一个新的 class file image(类文件映像)。 `java_crw_demo` 库的源码位于`demo/jvmti`目录中。
+
+
 Currently HPROF injects calls to static Java methods which in turn call a native method that is in the HPROF agent library itself. This was an early design choice to limit the extra Java code introduced during profiling. So the combination of the requested JVM TI events, and the created BCI events, provides the basics for HPROF to work.
+
+目前, HPROF注入对静态Java方法的调用, 其中反过来调用HPROF agent的native方法. 这是一个早期的设计, 用来避免在Java代码分析时又产生新的对象. 所以要求组合 JVM TI事件, 以及创建的BCI事件,以支持 HPROF 执行。
+
 
 The cpu=samples option doesn't use BCI, HPROF just spawns a separate thread that sleeps for a fixed number of micro seconds, and wakes up and samples all the running thread stacks using JVM TI.
 
+`cpu=samples` 选项不使用BCI, HPROF只产生一个单独的线程, 休眠固定的微秒, 然后醒来, 使用JVM TI采样所有正在运行的线程stacks 。
+
+
 The cpu=times option attempts to track the running stack of all threads, and keep accurate CPU time usage on all methods. This option probably places the greatest strain on the VM, where every method entry and method exit is tracked. Applications that make many method calls will be impacted more than others.
+
+cpu = *选项尝试跟踪正在运行的所有线程的堆栈,并保持准确的cpu时间使用所有的方法.这个选项可能VM上的最大应变的地方,每一个方法进入和退出方法跟踪。使许多方法调用的应用程序将会比其他的影响。
+
 
 The heap=sites and heap=dump options are the ones that need to track object allocations. These options can be memory intensive (less so with hprof=sites) and applications that allocate many objects or allocate and free many objects will be impacted more with these options. On each object allocation, the stack must be sampled so we know where the object was allocated, and that stack information must be saved. HPROF has a series of tables allocated in the C or `malloc()` heap that track all it's information. HPROF currently does not allocate any Java objects.
 
+`heap=sites` 和 `heap=dump` 选项是跟踪对象分配的工具. 这些选项可能是内存密集型(hprof=sites), 分配/释放很多对象的应用程序可能会受应这类选项的影响. 在每个对象分配时, 必须采样 stack 以便知道是在分配哪种对象, 必须保存 stack 信息。HPROF有一系列的表在 C or `malloc()` heap 中, 用于跟踪所有的信息。HPROF 不分配任何Java对象。
+
+
 ## Summary
+
+## 总结
+
 
 As you can see, the HPROF agent can be used to generate a wide variety of profiles. But as the above examples using `javac` demonstrate, make sure you have a large enough sampling to know that your data makes sense.
 
+如您所见, HPROF agent 可以用于生成各种分析。但如同上面的 `javac` 所展示的那样, 请确保你有一个足够大的采样, 来确定那些有意义的数据。
+
+
 Brave C/JNI programmers could even take the source to HPROF (it's available in the J2SE SDK download in the `demo/jvmti/hprof` directory) and customize it or create their own special profiling tool.
+
+勇敢的 C/JNI 程序员甚至可以查看 HPROF 的源码(在JDK安装目录的 `demo/jvmti/hprof` 下面), 甚至自己开发专有的分析工具。
+
 
 
 
