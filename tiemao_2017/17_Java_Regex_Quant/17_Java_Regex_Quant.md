@@ -60,7 +60,7 @@ Quantifiers allow you to specify the number of occurrences to match against. For
 
 Let's start our look at greedy quantifiers by creating three different regular expressions: the letter "a" followed by either ?, *, or +. Let's see what happens when these expressions are tested against an empty input string "":
 
-让我们通过创建三种不同的正则表达式来开始我们看贪婪的量词：字母 "a" 后面跟着 `?`, `*`, or `+`。 让我们看看当这些表达式对空的输入字符串“”进行测试时会发生什么：
+让我们通过创建三种不同的正则表达式来开始我们看贪婪的量词：字母 "a" 后面跟着 `?`, `*`, or `+`。 让我们看看当这些表达式对空的输入字符串 "" 进行测试时会发生什么：
 
 
  
@@ -77,11 +77,20 @@ Let's start our look at greedy quantifiers by creating three different regular e
 	No match found.
 
 
-### Zero-Length Matches
+### 零长度的匹配(Zero-Length Matches)
+
 
 In the above example, the match is successful in the first two cases because the expressions a? and a* both allow for zero occurrences of the letter a. You'll also notice that the start and end indices are both zero, which is unlike any of the examples we've seen so far. The empty input string "" has no length, so the test simply matches nothing at index 0. Matches of this sort are known as a zero-length matches. A zero-length match can occur in several cases: in an empty input string, at the beginning of an input string, after the last character of an input string, or in between any two characters of an input string. Zero-length matches are easily identifiable because they always start and end at the same index position.
 
+在上面的例子中,匹配成功的是前面两个案例,因为 `a?` and `a*` 都允许出现零个字母`a`. 您还会注意到,开始和结束的 indices 都是零, 这和以往我们见过的例子不同。.输入的空字符串 "" 没有长度, 所以测试只是匹配索引0。这样的匹配被称为零长度匹配. 一个零长度匹配可以在一些情况下发生:  输入空字符串, 输入字符串的开始, 输入字符串最后一个字符之后, 或在任意两个字符之间. 零长度匹配很容易辨认, 因为他们的开始位置和结束位置一样。
+
+
 Let's explore zero-length matches with a few more examples. Change the input string to a single letter "a" and you'll notice something interesting:
+
+让我们来探讨零长度匹配的几个例子。输入一个字母"a" , 你会发现一件有趣的事情:
+
+
+
 
  
 	Enter your regex: a?
@@ -101,7 +110,15 @@ Let's explore zero-length matches with a few more examples. Change the input str
 
 All three quantifiers found the letter "a", but the first two also found a zero-length match at index 1; that is, after the last character of the input string. Remember, the matcher sees the character "a" as sitting in the cell between index 0 and index 1, and our test harness loops until it can no longer find a match. Depending on the quantifier used, the presence of "nothing" at the index after the last character may or may not trigger a match.
 
+这三个量词都可以找到字母"a", 但前两个还在 index=1的位置找到了一次 长度为零的匹配; 也就是说, 字符串的最后一个字符之后. 记住, 匹配器在 index 0 and index 1 中间找到了字符  "a", 以此循环, 直到再也无法找到匹配为止. 根据使用的量词, 在最后一个字符之后的空白 "nothing" 可能会匹配, 也可能不会匹配。
+
+
 Now change the input string to the letter "a" five times in a row and you'll get the following:
+
+现在输入5个字母"a", 你会看到:
+
+
+
 
  
 	Enter your regex: a?
@@ -124,9 +141,20 @@ Now change the input string to the letter "a" five times in a row and you'll get
 
 The expression a? finds an individual match for each character, since it matches when "a" appears zero or one times. The expression a* finds two separate matches: all of the letter "a"'s in the first match, then the zero-length match after the last character at index 5. And finally, a+ matches all occurrences of the letter "a", ignoring the presence of "nothing" at the last index.
 
+表达式 `a?` 对每一个字符都会进行一次匹配, 因为它匹配 "a"  出现0或1次. 表达式 `a*` 会查找两种匹配: 第一匹配多个连续的 "a" 字母, 然后匹配零长度的字符串, index=5. 最后, `a+` 匹配所有出现的字母"a", 忽略最好的空串 "nothing"。
+
+
 At this point, you might be wondering what the results would be if the first two quantifiers encounter a letter other than "a". For example, what happens if it encounters the letter "b", as in "ababaaaab"?
 
+此时, 您可能想知道, 如果前两个量词遇到其他字母时会发生什么. 例如 "ababaaaab" 这样的字符串。
+
+
 Let's find out:
+
+让我们来看看:
+
+
+
 
 
 	Enter your regex: a?
