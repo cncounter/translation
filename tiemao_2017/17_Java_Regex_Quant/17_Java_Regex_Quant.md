@@ -189,7 +189,12 @@ Let's find out:
 
 Even though the letter "b" appears in cells 1, 3, and 8, the output reports a zero-length match at those locations. The regular expression a? is not specifically looking for the letter "b"; it's merely looking for the presence (or lack thereof) of the letter "a". If the quantifier allows for a match of "a" zero times, anything in the input string that's not an "a" will show up as a zero-length match. The remaining a's are matched according to the rules discussed in the previous examples.
 
+虽然字母"b"出现在了下标第 1, 3, 8 处, 输出也显示零长匹配出现在这里. 正则表达式 `a?` 不会专门查找字母"b", 而是只寻找存在(还是不存在)字母"a". 如果量词允许匹配零次, 则只要不是 "a" 字母的地方都将显示一个长度为零的匹配. 其余的"a"则根据前面讨论的规则进行匹配。
+
+
 To match a pattern exactly n number of times, simply specify the number inside a set of braces:
+
+要匹配一个模式 n 次, 只需要在大括号内指定数字即可:
 
  
 	Enter your regex: a{3}
@@ -206,6 +211,11 @@ To match a pattern exactly n number of times, simply specify the number inside a
 
 
 Here, the regular expression a{3} is searching for three occurrences of the letter "a" in a row. The first test fails because the input string does not have enough a's to match against. The second test contains exactly 3 a's in the input string, which triggers a match. The third test also triggers a match because there are exactly 3 a's at the beginning of the input string. Anything following that is irrelevant to the first match. If the pattern should appear again after that point, it would trigger subsequent matches:
+
+这里,{ 3 }的正则表达式搜索三个出现连续的字母“a”。输入字符串第一个测试失败,因为没有足够的比赛.第二个测试包含3的输入字符串,它触发一场比赛。第三个测试也触发一场比赛,因为是初3的输入字符串.任何无关紧要的第一场比赛。如果模式应该出现后再点,它将引发后续的匹配:
+
+
+
 
  
 	Enter your regex: a{3}
