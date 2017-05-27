@@ -1,16 +1,16 @@
 # HPROF: A Heap/CPU Profiling Tool
 
-# HPROF:堆内存/CPU性能分析工具
+# 性能分析工具-HPROF简介
 
 
 The Java 2 Platform Standard Edition (J2SE) has always provided a simple command line profiling tool called HPROF for heap and cpu profiling. HPROF is actually a JVM native agent library which is dynamically loaded through a command line option, at JVM startup, and becomes part of the JVM process. By supplying HPROF options at startup, users can request various types of heap and/or cpu profiling features from HPROF. The data generated can be in textual or binary format, and can be used to track down and isolate performance problems involving memory usage and inefficient code. The binary format file from HPROF can be used with tools such as [jhat](https://hat.dev.java.net/) to browse the allocated objects in the heap.
 
-Java 2 Platform Standard Edition (J2SE), 持续提供一款简单的命令行分析工具: HPROF, 用于堆内存和CPU的性能分析. HPROF 实际上是一个JVM native agent 库, 可以在JVM启动时通过命令行选项加载, 然后附加到JVM进程之中. 在启动时, 可以指定多种选项来定制 HPROF 的功能特征. 生成的数据可以是文本格式或者二进制格式的, 并可以用来跟踪内存使用量, 以及分离出涉及性能问题的低效代码. HPROF生成的二进制文件可以使用其他工具来解析,如[jhat](https://hat.dev.java.net/)浏览对象在堆中分配。
+HPROF是Java 平台提供的一款命令行分析工具 , 用来分析堆内存分配情况以及CPU抽样.  本质是一个JVM native agent 库, 在JVM启动时通过命令行选项进行加载,  然后就附加到JVM进程中. 有多个选项可以控制 HPROF 的功能特征. 其生成的数据可能是文本格式，也可能是二进制格式的, 这些生成的数据可以用来跟踪内存使用量, 以及分离出造成性能问题的低效代码.  HPROF生成的二进制文件可以用其他工具来解析, 例如用 [jhat](https://hat.dev.java.net/) 来查看堆内存中分配的对象。
 
 
 In J2SE Version 5.0, HPROF has been implemented on the new Java Virtual Machine Tool Interface ([JVM TI](http://docs.oracle.com/javase/8/docs/technotes/tools/unix/jhat.html)).
 
-从 J2SE Version 5.0开始, HPROF 已经通过新的 Java Virtual Machine Tool Interface ([JVM TI](http://docs.oracle.com/javase/8/docs/technotes/tools/unix/jhat.html)) 来实现。
+从 J2SE 5.0开始, HPROF 已经的实现采用了新的 Java Virtual Machine Tool Interface ([JVM TI](http://docs.oracle.com/javase/8/docs/technotes/tools/unix/jhat.html)) 。
 
 
 ## HPROF Startup
