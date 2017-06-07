@@ -21,13 +21,12 @@ In J2SE Version 5.0, HPROF has been implemented on the new Java Virtual Machine 
 HPROF is capable of presenting CPU usage, heap allocation statistics, and monitor contention profiles. In addition, it can also report complete heap dumps and states of all the monitors and threads in the Java virtual machine. HPROF can be invoked by:
 
 
-HPROF能够提供的数据包括: CPU使用率, 堆分配统计, 并监控资源争用. 此外,它还可以执行完整的堆转储, 列出JVM中所有的 monitors 和 threads。 调用HPROF的方式如下:
+HPROF能够提供的数据包括: CPU使用情况统计, 堆分配情况统计, 以及资源争用的监控. 此外,还可以执行完整的堆转储, 列出JVM中所有的 monitor 和 thread。 调用HPROF的方法如下:
 
 
 
 ```
 java -agentlib:hprof[=options] ToBeProfiledClass
-
 ```
 
 -OR-
@@ -38,43 +37,42 @@ java -Xrunhprof[:options] ToBeProfiledClass
 
 Depending on the type of profiling requested, HPROF instructs the virtual machine to send it the relevant JVM TI events and processes the event data into profiling information. For example, the following command obtains the heap allocation profile:
 
-根据分析类型的不同, HPROF 让虚拟机给他发送相应的 JVM TI 事件, 并将事件信息处理成为分析数据. 例如,以下命令分析的是堆分配信息:
+根据指定的各种分析类型, HPROF 让虚拟机发送不同的 JVM TI 事件, 并处理事件消息, 形成 profiling 信息. 例如,以下命令分析的是堆分配信息:
 
 
 ```
-java -agentlib:hprof=heap=sites ToBeProfiledClass
-
+java -agentlib:hprof=heap=sites XXXXXXXXClass
 ```
 
 Following is the complete list of options that can be passed to HPROF:
 
-下面查看 HPROF 支持的所有配置项:
+使用以下命令查看 HPROF 支持的所有配置项:
 
 ```
 java -agentlib:hprof=help
 ```
 
-可以看到下面的帮助信息:
+可以看到很多帮助信息( **多个option之间使用逗号分隔**):
 
 ```
      HPROF: Heap and CPU Profiling Agent (JVM TI Demonstration Code)
 
 hprof usage: java -agentlib:hprof=[help]|[<option>=<value>, ...]
 
-Option Name and Value  Description                    Default
+Option名称/值           说明                            默认值
 ---------------------  -----------                    -------
-heap=dump|sites|all    heap profiling                 all
-cpu=samples|times|old  CPU usage                      off
-monitor=y|n            monitor contention             n
-format=a|b             text(txt) or binary output     a
-file=<file>            write data to file             java.hprof[.txt]
+heap=dump|sites|all    堆内存分析(profiling)           all
+cpu=samples|times|old  CPU 使用情况                    off
+monitor=y|n            监视锁(monitor)争用情况         n
+format=a|b             输出文本/a;还是二进制/b;         a
+file=<file>            输出到文件                      java.hprof[.txt]
 net=<host>:<port>      send data over a socket        off
-depth=<size>           stack trace depth              4
-interval=<ms>          sample interval in ms          10
+depth=<size>           打印的调用栈深度                 4
+interval=<ms>          抽样周期(单位 ms)               10
 cutoff=<value>         output cutoff point            0.0001
-lineno=y|n             line number in traces?         y
+lineno=y|n             显示跟踪行号?                   y
 thread=y|n             thread in traces?              n
-doe=y|n                dump on exit?                  y
+doe=y|n                退出时转储(dump on exit)?       y
 msa=y|n                Solaris micro state accounting n
 force=y|n              force output to <file>         y
 verbose=y|n            print messages about dumps     y
