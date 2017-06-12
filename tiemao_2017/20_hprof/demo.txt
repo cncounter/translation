@@ -1,0 +1,18 @@
+
+dump出特定JVM进程:
+
+jmap -dump:live,format=b,file=heap.live.22253.hprof 22253
+
+
+
+
+
+
+使用端口号展示并分析结果:
+
+nohup jhat -port 22253 -J-Xmx4G heap.live.22253.hprof &
+
+
+
+启动?： -agentlib:hprof=heap=all,cpu=samples,depth=6,force=n,file=/home/data/www/doctor-web-doc/logs/hprof_dump.hprof
+
