@@ -60,7 +60,7 @@ Simple, and to the point. You’ll notice that the “5” is conspicuously miss
 
 The doctype looks like this (as seen in the context of a very simple HTML 4.01 page without any content):
 
-doctype 看起来是这样的(在一个非常简单的HTML 4.01页面中，内容为空):
+在一个非常简单的HTML 4.01页面中, doctype 看起来是这样的:
 
 
 ```
@@ -90,7 +90,7 @@ Figure 1. The document tree of a simple web page
 
 If we look at this comparison, we can see that the`html` element in fact contains two elements:`head` and `body`.`head` has two subbranches—a `meta`element and a `title`. The `body`element contains a number of headings, paragraphs, and a`block quote`.
 
-如果我们看一下这个比较，我们可以看到html元素实际上包含两个元素:head和body。head有两个子分支——一个元元素和一个标题。body元素包含大量的标题、段落和块引用。
+可以看到, `html`元素实际上包含两个元素: `head` 和 `body`。 `head` 有两个子元素: 一个`meta`, 和一个`title`。`body` 元素包含很多 标题、段落和 `block quote`。
 
 Note that there’s some symmetry in the way the tags are opened and closed. For example, the paragraph that reads, “It has lots of lovely content …” contains three text nodes, the second of which is wrapped in an `em` element (for emphasis). The paragraph is closed after the content has ended, and before the next element in the tree begins (in this case, it’s a`blockquote`); placing the closing `</p>` after the `blockquote` would break the tree’s structure.
 
@@ -102,11 +102,12 @@ Note that there’s some symmetry in the way the tags are opened and closed. For
 
 Immediately after the doctype comes the [`html`]()element—this is the root element of the document tree and everything that follows is a descendant of that root element.
 
+在doctype之后紧着着出现了 [`html`] 元素，这是文档的根元素，接下来的所有内容都是根元素的后代。
+
+
 If the root element exists within the context of a document that’s identified by its doctype as XHTML, then the `html`element also requires an `xmlns` (XML Namespace) attribute (this isn’t needed for HTML documents):
 
-在doctype出现了html()元素之后，这是文档树的根元素，接下来的所有内容都是根元素的后代。
-
-如果根元素存在于文档的上下文中，其文档类型为XHTML，那么html元素也需要一个xmlns(XML名称空间)属性(这对于html文档不需要):
+如果根元素(root element)存在于文档的上下文中，其文档类型为XHTML，那么 `html` 元素也需要指定 xmlns(XML名称空间)属性(html则不需要):
 
 
 ```
@@ -119,105 +120,96 @@ Here’s an example of an XHTML transitional page:
 
 
 ```
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN""http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>Page title</title></head><body></body></html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN""http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><title>Page title</title></head>
+<body></body>
+</html>
 ```
 
 The`html` element breaks the document into two mainsections: the [`head`]() and the [`body`]().
 
 
-html元素将文档分为两个主要部分:head()和body()。
+`html`元素将文档分为两个主要部分: [`head`]() 和 [`body`]()。
 
 
 ## `head` 元素
 
 The `head` element contains metadata—information that describes the document itself, or associates it with related resources, such as scripts and style sheets.
 
+
+`head` 元素包含描述文档本身的 metadata 信息，以及相关的资源，比如脚本和样式表。
+
+
 The simple example below contains the compulsory [`title`]() element, which represents the document’s title or name—essentially, it identifies what this document is. The content inside the `title` may be used to provide a heading that appears in the browser’s title bar, and when the user saves the page as a favorite. It’s also a very important piece of information in terms of providing a meaningful summary of the page for the search engines, which display the `title`content in the search results. Here’s the `title` inaction:
 
-
-head元素包含描述文档本身的元数据信息，或者将其与相关的资源关联起来，比如脚本和样式表。
-
-下面的简单示例包含强制title()元素，它表示文档的标题或名称，它标识该文档是什么。标题内的内容可用于提供在浏览器标题栏中出现的标题，以及用户将页面保存为最受欢迎的页面。它也是一个非常重要的信息，它为搜索引擎提供了一个有意义的摘要，在搜索结果中显示标题内容。这里的“标题”不作为:
+下面的简单示例包含 [`title`]() 元素, 它表示文档的标题或名称，它标识该文档是什么。 `title` 的内容用于在浏览器标题栏中展示，或者是用户收藏夹中的名称。对于搜索引擎来说, 这也是一个非常重要的信息，因为这就是一段有意义的摘要，下面是一个示例:
 
 
 ```
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN""http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>Page title</title></head><body></body></html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN""http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><title>Page title</title></head>
+<body></body>
+</html>
 ```
 
 In addition to the`title` element, the `head` may also contain:
 
-除了`title`元素,`head`也可能包含:
+除了`title`元素,`head` 还可以包含:
 
 
 - [`base`]()
 
-- (`base`)()
-
-
 
   defines baseURLs for links or resources on the page, and target windows in which to open linked content
 
-定义了页面上的链接或资源,baseurl和目标窗口中打开链接内容
+  定义了页面上的链接或资源的 baseURL, 打开链接内容所对应的基地址。
 
 
 - [`link`]()
 
-- (`link`)()
-
-
 
   refers to are source of some kind, most often to a style sheet that provides instructions about how to style the various elements on the webpage
 
-指的是某种类型的来源,通常一个样式表,它提供说明如何风格网页上的各种元素
+  指向某种类型的资源, 通常是样式表, 它提供了如何展示网页上各种元素的说明。
 
 
 - [`meta`]()
 
-- (`meta`)()
-
-
 
   provides additional information about the page; for example, which character encoding the page uses, a summary of the page’s content, instructions to search engines about whether or not to index content, and soon
 
-提供了额外的信息页面;例如,字符编码页面使用的页面的内容的摘要,指示搜索引擎是否索引内容,而且很快
+  提供了额外的页面信息; 例如, 字符编码, 页面的内容摘要, 指示搜索引擎是否索引内容, 等等。
 
 
 - [`object`]()
 
-- (`object`)()
-
-
 
   represents a generic, multipurpose container for a media object
 
-代表了一个通用的、多功能媒体对象的容器
+  代表一个通用的、多功能的媒体对象容器
 
 
 - [`script`]()
 
-- (`script`)()
-
-
 
   used either to embed or refer to an external script
 
-embed to构件所用的外在一年黄金列脚本
+  用于嵌入脚本, 或者引入外部脚本.
 
 
 - [`style`]()
 
-- (`style`)()
-
-
 
   provides an area for defining embedded (page-specific) CSS styles
 
-提供了一个区域定义嵌入式CSS样式(特殊页面)
+  用于嵌入样式(页面级).
 
 
 All of these elements are optional and can appear in any order within the `head`. Note that none of the elements listed here actually appear on the rendered page, but they are used to affect the content on the page, all of which is defined inside the`body` element.
 
-所有这些元素都是可选的,可以出现在任何顺序`head`。注意,这里没有列出的元素实际上页面上呈现的,但他们是用来影响页面上的内容,这些都是内部定义的`body`元素。
+这些元素都是可选的, 可以是任何顺序。注意, 这里的元素不会显示在页面内, 但他们可以用来影响页面上的内容, 这些内容在 `body` 元素内定义。
 
 
 
@@ -227,10 +219,8 @@ All of these elements are optional and can appear in any order within the `head`
 This is where the bulk of the page is contained. Everything that you can see in the browser window (or viewport) is contained inside this element, including paragraphs, lists, links, images, tables, and more. The [`body`]() element has some unique attributes of its own, all of which are now deprecated, but aside from that, there’s little to say about this element. How the page looks will depend entirely upon the content that you decide to fill it with; refer to the alphabetical listing of all HTML elements to ascertain what these contents might be.
 
 
-这就是页面的大部分内容所在。在浏览器窗口(或viewport)中可以看到的所有内容都包含在这个元素中，包括段落、列表、链接、图像、表等等。body()元素有其自身的一些独特属性，所有这些属性现在都已被弃用，但除此之外，这个元素几乎没有什么可说的。页面的外观将完全取决于您决定填充它的内容;参考所有HTML元素的字母列表，以确定这些内容可能是什么。
+页面中的大部分内容都在 body 内。在浏览器窗口(或viewport)中, 可以看到包含在这个元素中的所有内容，包括 paragraphs, lists, links, images, tables 等等。[`body`]()元素有一些独有的属性，现在这些属性都被弃用，除此之外，这个元素几乎没有什么可说的。 页面的外观将完全取决于填充的内容; 参考所有HTML元素的列表，以确定这些内容可以是什么。
 
 
 原文链接: <https://www.sitepoint.com/web-foundations/basic-structure-of-a-web-page/>
-
-By [Ophelie Lechat](https://www.sitepoint.com/author/ophelie/) April 16, 2014
 
