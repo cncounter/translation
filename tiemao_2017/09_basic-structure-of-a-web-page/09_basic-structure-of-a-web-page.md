@@ -6,7 +6,7 @@
 While this reference aims to provide a thorough breakdown of the various HTML elements and their respective attributes, you also need to understand how these items fit into the bigger picture. A web page is structured as follows.
 
 
-本文简要介绍各种HTML元素与相关的属性，但读者还需要理解一个概念: 整个HTML都是由这些基本元素组合成的。HTML页面的结构如下。
+本文简要介绍各种HTML元素与相关的属性，读者需要理解: 整个HTML都是由这些基本元素组合成的。HTML页面的结构如下。
 
 
 
@@ -16,44 +16,85 @@ While this reference aims to provide a thorough breakdown of the various HTML el
 
 The first item to appear in the source code of a web page is the [doctype](https://www.sitepoint.com/web-foundations/basic-structure-of-a-web-page/doctypes) declaration. This provides the web browser (or other user agent) with information about the type of markup language in which the page is written, which may or may not affect the way the browser renders the content. It may look a little scary at first glance, but the good news is that most WYSIWYG web editors will create the doctype for you automatically after you’ve selected from a dialog the type of document you’re creating. If you aren’t using a WYSIWYG web editing package, you can refer to the [list of doctypes contained in this reference](https://www.sitepoint.com/web-foundations/basic-structure-of-a-web-page/doctypes) and copy the one you want to use.
 
-HTML页面的源代码中, 首先是 [doctype](https://www.sitepoint.com/web-foundations/basic-structure-of-a-web-page/doctypes) 声明。 这告诉浏览器, 该页面是用何种标记语言编写的, 这可能会影响浏览器渲染内容的方式。看起来可能有点复杂，但好消息是，大部分所见即所得(WYSIWYG)的web编辑器自动为您创建了doctype。如果您没有使用WYSIWYG 编辑工具，那么您可以参考其他网页中包含的 doctype, 例如参考此网页中列出的 [doctype列表](https://www.sitepoint.com/web-foundations/basic-structure-of-a-web-page/doctypes), 并复制您想要使用的文件类型。
+HTML 源码中, 首先出现的是 [doctype](https://www.sitepoint.com/web-foundations/basic-structure-of-a-web-page/doctypes) 声明。 这告诉浏览器, 该页面用何种标记语言编写, 这可能会影响浏览器渲染内容的方式。看起来有点复杂，但大部分所见即所得(WYSIWYG)的web编辑器都会自动创建 doctype。如果不使用WYSIWYG 编辑工具，那么可以拷贝其他网页中包含的 doctype, 也可以参考以下 doctype列表。
+
+Doctypes are simply a way to tell the browser—or any other parsers—what type of document they’re looking at. In the case of HTML files, they refer to the specific version and flavor of HTML. The doctype should always be the first item at the top of all your HTML files. In the past, the doctype declaration was an ugly and hard-to-remember mess. For XHTML 1.0 Strict:
+
+Doctypes 是告诉浏览器,它们所看到的文档是什么类型。在HTML文件中，它们指的是HTML的特定版本和展示风格。doctype 应该是所有HTML文件中最顶部的那一行。在之前，doctype 声明很丑,并且也不好记。例如 XHTML 1.0 Strict 写法:
+
+
+```
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+```
+
+And for HTML4 Transitional:
+
+
+还有HTML4过渡式写法:
+
+
+```
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+  "http://www.w3.org/TR/html4/loose.dtd">
+```
+
+Over the years, code editing software began to provide HTML templates with the doctype already included, or else they offered a way to automatically insert one. And naturally, a quick web search will easily bring up the code to insert whatever doctype you require.
+
+多年来，代码编辑器在HTML模板中都自动包含了doctype，或者提供了一种自动插入的方式。自然,他们很容易插入您需要的各种doctype。
+
+Although having that long string of text at the top of our documents hasn’t really hurt us (other than forcing our sites’ viewers to download a few extra bytes), HTML5 has done away with that indecipherable eyesore. Now all you need is this:
+
+尽管在文档顶部有这么一长串文本并没有多少坏处, 但 HTML5 消除了这些可读性差的东西。现在你所需要的就是:
+
+
+```
+ <!doctype html>
+```
+
+Simple, and to the point. You’ll notice that the “5” is conspicuously missing from the declaration. Although the current iteration of web markup is known as “HTML5,” it really is just an evolution of previous HTML standards—and future specifications will simply be a development of what we have today. Because browsers have to support all existing content on the Web, there’s no reliance on the doctype to tell them which features should be supported in a given document.
+
+简单又直接。您会看到，声明中并没有版本号 "5"。尽管当前的版本被称为 HTML5, 但实际上它只是对以前HTML标准的一个演进。因为浏览器必须支持Web上的各种现有内容，所以并不需要 doctype 来说明依赖哪些特性。
+
 
 
 The doctype looks like this (as seen in the context of a very simple HTML 4.01 page without any content):
 
-doctype看起来是这样的(在一个非常简单的HTML 4.01页面中，没有任何内容):
+doctype 看起来是这样的(在一个非常简单的HTML 4.01页面中，内容为空):
 
 
 ```
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN""http://www.w3.org/TR/html4/strict.dtd"><html><head><title>Page title</title></head><body></body></html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN""http://www.w3.org/TR/html4/strict.dtd">
+<html><head><title>Page title</title></head><body></body></html>
 ```
 
-In the example above, the doctype relates to HTML 4.01 Strict. In this reference, you’ll see examples ofHTML 4.01 and also XHTfML 1.0 and 1.1, identified as such. While many of the elements and attributes may have the same names, there are some distinct syntactic differences between the various versions of HTML andXHTML. You can find out more about this in the sections entitled [HTML Versus XHTML](http://www.sitepoint.com/web-foundations/differences-html-xhtml/) and [HTML and XHTML Syntax](http://reference.sitepoint.com/html/html-xhtml-syntax).
+In the example above, the doctype relates to HTML 4.01 Strict. In this reference, you’ll see examples of HTML 4.01 and also XHTfML 1.0 and 1.1, identified as such. While many of the elements and attributes may have the same names, there are some distinct syntactic differences between the various versions of HTML andXHTML. You can find out more about this in the sections entitled [HTML Versus XHTML](http://www.sitepoint.com/web-foundations/differences-html-xhtml/) and [HTML and XHTML Syntax](http://reference.sitepoint.com/html/html-xhtml-syntax).
 
 
-在上面的例子中，doctype与HTML 4.01相关。在本文中，您将看到html 4.01和XHTfML 1.0和1.1的示例。虽然许多元素和属性可能具有相同的名称，但是在不同版本的HTML和xhtml之间存在一些明显的语法差异。您可以在标题为HTML和XHTML(http://www.sitepoint.com/web foundations/差异-HTML-xhtml/)以及HTML和XHTML语法(http://refer.sitepoint.com/html/HTML-XHTML语法)的章节中找到更多关于这方面的内容。
+在上面的例子中，doctype与HTML 4.01 Strict相关。在本文中，您将看到 HTML 4.01 以及 XHTfML 1.0 , 1.1 的示例。虽然许多元素和属性可能具有相同的名称，但在不同版本的HTML和xhtml之间存在一些明显的语法差异。详情请参考 [HTML Versus XHTML](http://www.sitepoint.com/web-foundations/differences-html-xhtml/) 以及 [HTML and XHTML Syntax](http://reference.sitepoint.com/html/html-xhtml-syntax).
 
 
 ## The Document Tree
 
-## 文档树
+## Document 树
 
 A web page could be considered as a document tree that can contain any number of branches.There are rules as to what items each branch can contain (and these are detailed in each element’s reference in the “Contains” and “Contained by”sections). To understand the concept of a document tree, it’s useful to consider a simple web page with typical content features alongside its tree view, as shown in [Figure 1](https://www.sitepoint.com/web-foundations/basic-structure-of-a-web-page/#page-structure__fig-doc-tree).
 
-可以将web页面视为可以包含任意数量分支的文档树。对于每个分支可以包含什么项，有一些规则(这些内容在每个元素的“包含”和“包含”部分中都有详细的说明)。要理解文档树的概念，可以考虑一个简单的web页面，其中包含典型的内容特性，以及它的树视图，如图1所示(https://www.sitepoint.com/web foundations/basic-web页面/页面结构图-doc-doctree)。
+可以将web页面看做包含任意数量枝干的文档树。对于每个分支可以包含什么项，有一些规则(这些内容在每个元素的“包含”和“包含”部分中都有详细的说明)。要理解文档树的概念，可以考虑一个简单的web页面，其中包含典型的内容特性，以及它的树视图，如图1所示:
 
 
 ![Document Tree](https://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2014/04/1397707822DocTree-300x149.png)
 
 Figure 1. The document tree of a simple web page
 
-If we look at this comparison, we can see that the`html` element in fact contains two elements:`head` and `body`.`head` has two subbranches—a `meta`element and a `title`. The `body`element contains a number of headings, paragraphs, and a`block quote`.
 
-Note that there’s some symmetry in the way the tags are opened and closed. For example, the paragraph that reads, “It has lots of lovely content …” contains three text nodes, the second of which is wrapped in an `em` element (for emphasis). The paragraph is closed after the content has ended, and before the next element in the tree begins (in this case, it’s a`blockquote`); placing the closing `</p>`after the `blockquote` would break the tree’s structure.
+If we look at this comparison, we can see that the`html` element in fact contains two elements:`head` and `body`.`head` has two subbranches—a `meta`element and a `title`. The `body`element contains a number of headings, paragraphs, and a`block quote`.
 
 如果我们看一下这个比较，我们可以看到html元素实际上包含两个元素:head和body。head有两个子分支——一个元元素和一个标题。body元素包含大量的标题、段落和块引用。
 
-注意，标签被打开和关闭的方式有一些对称性。例如，“它有很多可爱的内容……”的段落包含三个文本节点，第二个节点被包装在em元素中(为了强调这一点)。段落在内容结束后关闭，并且在树的下一个元素开始之前(在本例中是一个blockquote);在块引号结束后，关闭该段将会破坏树的结构。
+Note that there’s some symmetry in the way the tags are opened and closed. For example, the paragraph that reads, “It has lots of lovely content …” contains three text nodes, the second of which is wrapped in an `em` element (for emphasis). The paragraph is closed after the content has ended, and before the next element in the tree begins (in this case, it’s a`blockquote`); placing the closing `</p>` after the `blockquote` would break the tree’s structure.
+
+注意，标签的打开和关闭有对称性。例如一个段落，“It has lots of lovely content …” 包含三个 text 节点，第二个节点被包装在 `em` 元素中(`em`是强调元素)。 内容结束后段落被关闭，并且在树的下一个元素开始之前(在本例中是一个 `blockquote`); 如果将 `</p>` 标签放到 `blockquote` 之后, 则会破坏树结构。
 
 
 ## `html` 元素
@@ -189,7 +230,7 @@ This is where the bulk of the page is contained. Everything that you can see in 
 这就是页面的大部分内容所在。在浏览器窗口(或viewport)中可以看到的所有内容都包含在这个元素中，包括段落、列表、链接、图像、表等等。body()元素有其自身的一些独特属性，所有这些属性现在都已被弃用，但除此之外，这个元素几乎没有什么可说的。页面的外观将完全取决于您决定填充它的内容;参考所有HTML元素的字母列表，以确定这些内容可能是什么。
 
 
-原文链接: [https://www.sitepoint.com/web-foundations/basic-structure-of-a-web-page/](https://www.sitepoint.com/web-foundations/basic-structure-of-a-web-page/)
+原文链接: <https://www.sitepoint.com/web-foundations/basic-structure-of-a-web-page/>
 
 By [Ophelie Lechat](https://www.sitepoint.com/author/ophelie/) April 16, 2014
 
