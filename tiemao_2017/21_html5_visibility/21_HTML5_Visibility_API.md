@@ -1,4 +1,4 @@
-# Cross browser to detect tab or window is active so animations stay in sync using HTML5 Visibility API
+# 跨浏览器检测窗口/标签页是否处于激活状态
 
 
 
