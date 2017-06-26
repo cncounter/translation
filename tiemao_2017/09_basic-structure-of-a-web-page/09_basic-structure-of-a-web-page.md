@@ -6,7 +6,7 @@
 While this reference aims to provide a thorough breakdown of the various HTML elements and their respective attributes, you also need to understand how these items fit into the bigger picture. A web page is structured as follows.
 
 
-本文简要介绍各种HTML元素与相关的属性，读者需要理解: 整个HTML都是由这些基本元素组合成的。HTML页面的结构如下。
+本文简要介绍HTML元素及相关属性，读者需要有一个概念: HTML页面就是由基本元素以及这些属性组成的。HTML页面的结构如下。
 
 
 
@@ -16,11 +16,11 @@ While this reference aims to provide a thorough breakdown of the various HTML el
 
 The first item to appear in the source code of a web page is the [doctype](https://www.sitepoint.com/web-foundations/basic-structure-of-a-web-page/doctypes) declaration. This provides the web browser (or other user agent) with information about the type of markup language in which the page is written, which may or may not affect the way the browser renders the content. It may look a little scary at first glance, but the good news is that most WYSIWYG web editors will create the doctype for you automatically after you’ve selected from a dialog the type of document you’re creating. If you aren’t using a WYSIWYG web editing package, you can refer to the [list of doctypes contained in this reference](https://www.sitepoint.com/web-foundations/basic-structure-of-a-web-page/doctypes) and copy the one you want to use.
 
-HTML 源码中, 首先出现的是 [doctype](https://www.sitepoint.com/web-foundations/basic-structure-of-a-web-page/doctypes) 声明。 这告诉浏览器, 该页面用何种标记语言编写, 这可能会影响浏览器渲染内容的方式。看起来有点复杂，但大部分所见即所得(WYSIWYG)的web编辑器都会自动创建 doctype。如果不使用WYSIWYG 编辑工具，那么可以拷贝其他网页中包含的 doctype, 也可以参考以下 doctype列表。
+HTML 源码中, 首先看到的是 [doctype](https://www.sitepoint.com/web-foundations/basic-structure-of-a-web-page/doctypes) 声明。 这个声明告诉浏览器, 此页面用何种标记语言编写, 这会影响浏览器渲染内容的方式。虽然看起来有点复杂，但大部分所见即所得(WYSIWYG)的web编辑器都能自动创建 doctype。如果不使用可视化的编辑工具，那么可以拷贝其他网页中包含的 doctype, 也可以参考以下 doctype列表。
 
 Doctypes are simply a way to tell the browser—or any other parsers—what type of document they’re looking at. In the case of HTML files, they refer to the specific version and flavor of HTML. The doctype should always be the first item at the top of all your HTML files. In the past, the doctype declaration was an ugly and hard-to-remember mess. For XHTML 1.0 Strict:
 
-Doctypes 是告诉浏览器,它们所看到的文档是什么类型。在HTML文件中，它们指的是HTML的特定版本和展示风格。doctype 应该是所有HTML文件中最顶部的那一行。在之前，doctype 声明很丑,并且也不好记。例如 XHTML 1.0 Strict 写法:
+doctypes 说明所读取的文档是什么类型。在HTML文件中，指的是HTML版本号以及展示风格。doctype 是HTML文件中最顶部的那一行。在此之前，doctype 声明很丑,并且也不好记。例如 XHTML 1.0 Strict 写法:
 
 
 ```
@@ -31,7 +31,7 @@ Doctypes 是告诉浏览器,它们所看到的文档是什么类型。在HTML文
 And for HTML4 Transitional:
 
 
-还有HTML4过渡式写法:
+再看HTML4过渡式写法:
 
 
 ```
@@ -41,11 +41,11 @@ And for HTML4 Transitional:
 
 Over the years, code editing software began to provide HTML templates with the doctype already included, or else they offered a way to automatically insert one. And naturally, a quick web search will easily bring up the code to insert whatever doctype you require.
 
-多年来，代码编辑器在HTML模板中都自动包含了doctype，或者提供了一种自动插入的方式。自然,他们很容易插入您需要的各种doctype。
+代码编辑器在HTML模板中自动包含了doctype，或者提供了自动插入的方式。
 
 Although having that long string of text at the top of our documents hasn’t really hurt us (other than forcing our sites’ viewers to download a few extra bytes), HTML5 has done away with that indecipherable eyesore. Now all you need is this:
 
-尽管在文档顶部有这么一长串文本并没有多少坏处, 但 HTML5 消除了这些可读性差的东西。现在你所需要的就是:
+尽管文档顶部的这一长串文本也不碍什么事, 但 HTML5 去除了这些不好理解的声明, 统一使用:
 
 
 ```
@@ -54,7 +54,7 @@ Although having that long string of text at the top of our documents hasn’t re
 
 Simple, and to the point. You’ll notice that the “5” is conspicuously missing from the declaration. Although the current iteration of web markup is known as “HTML5,” it really is just an evolution of previous HTML standards—and future specifications will simply be a development of what we have today. Because browsers have to support all existing content on the Web, there’s no reliance on the doctype to tell them which features should be supported in a given document.
 
-简单又直接。您会看到，声明中并没有版本号 "5"。尽管当前的版本被称为 HTML5, 但实际上它只是对以前HTML标准的一个演进。因为浏览器必须支持Web上的各种现有内容，所以并不需要 doctype 来说明依赖哪些特性。
+简单、而且直接。可以看到，声明中并没有版本号 "5"。尽管当前的版本被称为 HTML5, 但实际上它只是对之前HTML标准的一个演进。因为浏览器必须支持Web上的各种现有内容，所以并不需要 doctype 来说明依赖哪些特性。
 
 
 
