@@ -1,17 +1,17 @@
 # Java EE Fundamentals – What is a Java Specification Request (JSR)?
 
-# 什么是 JSR ?
+# [JavaEE基础系列] 什么是 JSR?
 
 > JSR, Java Specification Request, Java规范请求
 
 In the [previous post](https://pedanticdevs.com/2017/06/java-ee-fundamentals-what-is-java-ee.html), we looked at Java EE and what it means. We did mention that Java EE is made up of various components grouped into APIs under a program called the Java Specification Request (JSR).
 
-在以前的文章(https://pedanticdevs.com/2017/06/java-ee-fundamentals-what-is-java-ee.html),我们看了Java EE和它意味着什么.我们提到的Java EE由各种组件分为api在名为Java规范(JSR)请求。
+在前面的[文章](https://pedanticdevs.com/2017/06/java-ee-fundamentals-what-is-java-ee.html)中, 我们介绍了Java EE和它的含义. 我们提到, Java EE 由各种组件构成, 各种组件需要实现由 Java Specification Request(JSR) 所规定的 API。
 
 
 In this post, we are going to take a deeper look at what a JSR is. At its core, a Java Specification Request is a formal, open standard document proposal that is made by an individual or organization to the [Java Community Process](http://jcp.org/), that contains proposed changes, additions and improvements to the Java technology platform.
 
-在这篇文章中,我们将看一个更深的JSR是什么.在其核心,一个Java规范请求是一个正式的、开放的标准文档的提议是由个人或组织(Java Community Process)(http://jcp.org/),包含提出更改,增加和改进Java技术平台。
+在本文中, 我们将深入了解JSR到底是什么. 核心概念: 每个JSR都是正式的、开放的标准文档, 由个人或组织提交给 [Java Community Process](http://jcp.org/) 进行审议, 其中包括所提出的对Java技术平台的变更(changes),增加(additions)以及改进(improvements)。
 
 
 A number of very important points could be gleaned from the above definition. First is that a JSR is a formal document. What this means is that a JSR or a request for adding to the Java technology group must take a certain predefined format. A format defined by the JCP.
