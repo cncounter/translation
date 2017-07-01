@@ -67,7 +67,7 @@ As a JSR is just an abstract specification, it needs some form of implementation
 
 原文日期: 2017年06月23日
 
-翻译日期: 2017年7月1日
+翻译日期: 2017年07月01日
 
 翻译人员: 铁锚: <http://blog.csdn.net/renfufei>
 
