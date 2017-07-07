@@ -31,44 +31,44 @@ Flowing from the above, and remember we did say that the JSR process requires ev
 
 So an implementation of the umbrella JSR or Java EE is what is commonly referred to as an application server. An app server essentially is a concrete implementation of the Java EE spec that you can actually run your code on. The reference implementation of Java EE is [Glassfish Application Server](https://github.com/javaee/glassfish).
 
-Java EE 的实现通常被称为一个应用服务器.一个应用服务器本质上是一个Java EE规范的具体实现,你可以运行您的代码.Java EE的参考实现(Glassfish应用服务器)(https://github.com/javaee/glassfish)。
+Java EE 的实现通常被称为应用服务器. 应用服务器本质上是一个Java EE规范的具体实现, 可以执行JavaEE项目的代码. Java EE 的参考实现是 [Glassfish Application Server](https://github.com/javaee/glassfish)。
 
 
 An application server generally abstracts you the developer away from a lot of mundane stuff that you would have had to manage on your own, like datasource pooling, caching, clustering, and other overheads.
 
-应用服务器一般抽象你开发人员远离很多世俗的东西,你必须管理自己,像数据源池、缓存、集群,
+应用服务器将开发人员必须管理的很多东西抽象出来, 如数据量连接池(datasource pooling)、缓存(caching)、集群(clustering) 等等。
 
 
 The application server generally must also pass the TCK to be fully certified as being compliant with a given umbrella JSR. An app server is also the basis for the portability of Java EE. As a developer, you generally are encouraged to code against the javax.* packages, which is the standard Java EE package namespace.
 
-应用服务器通常也必须通过TCK完全认证是符合给定的雨伞JSR。应用服务器也是Java EE的可移植性的基础.
+通常应用服务器也必须通过相关JSR的TCK完全验证。这也是 Java EE 可移植性的基础. 作为开发人员, 您应该编写使用 `javax.*` 的代码, 这是Java EE 的标准命名空间。
+
 
 
 Now because an app server is subject to a standard, using the Java EE package will mean you can swap out application servers and your code will generally run with little to no modifications. This is really powerful if you think about it.
 
-现在因为一个应用服务器的标准,使用Java EE的包将意味着你可以替换应用服务器和你的代码通常会运行没有修改.如果你仔细想想这真是强大。
+既然有了应用服务器标准, 那么理论上可以无缝切换应用服务器, 而不需要修改代码. 仔细想想这真的强悍。
 
 
 How so? Because for starters, no single application vendor can lock you in. Because you can swap out application servers, theoretically you could change vendors at any time should you be dissatisfied with one vendor.
 
-所以如何?因为首先,没有一个应用程序供应商可以锁定你.因为你可以替换应用服务器,理论上你可以改变供应商在任何时候你应该不满意供应商之一。
+遵守规范有什么优势呢?  你不会被绑死在某家应用服务器厂商. 你可以根据需要切换应用服务器, 想用哪家就用哪家。
 
 
 There are a number of application vendors out there, some free some very expensive. Popular among the open source ones is[Payara Server](http://payara.fish), a Glassfish derived, fully patched, application server that is freely available for download.
 
-有许多应用程序供应商,一些自由非常昂贵。流行的开源的Payara服务器(http://payara.鱼),Glassfish派生,完全修补,免费下载的应用服务器。
+市面上有很多种应用服务器, 其中有些分是免费的、还有一些则收费非常昂贵。 流行的开源的服务器是 [Payara Server](http://payara.fish), 是 Glassfish 的一个分支, 可以免费下载和使用。
 
 
 So Java EE is an abstract spec and it’s concrete realization or implementation is what is called an application server. And as a JSR, the required reference implementation of Java EE is the Glassfish application server.
 
-所以Java EE规范是一个抽象和具体实现或实现所谓的应用服务器.作为一个JSR,所需的参考实现Java EE的Glassfish应用服务器。
+Java EE 是一个抽象的规范, 其具体实现是应用服务器(application server). 参考实现是 Glassfish。
 
 
 In recent times, there has been much about microservices, and there has developed a school of thought that is convinced that given the application server-centric nature of Java EE, it is not suitable for microservices. In the next installment of this Java EE fundamentals series, we will be addressing that.
 
 
-近年来,已经有很多关于microservices,已经开发出一种思想学派,相信给Java EE应用服务器为中心的本质,它是不适合microservices。在Java EE基本面系列的下一篇文章中,我们将解决它。
-
+近年来, 微服务非常火爆, 有一种思想认为, Java EE应用服务器并不适用于微服务。我们将在下一节中进行讨论。
 
 
 
