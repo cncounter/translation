@@ -9,6 +9,7 @@
 
 1. 安装NodeJS
   下载地址: <http://nodejs.cn/download/>
+  推荐下载最新版本的NodeJS,如 v8.1.3+ 等。
   安装到默认目录,完成后查看版本号: `node -v`
 2. npm安装fis3
   在 cmd 中执行: `npm install -g fis3`
