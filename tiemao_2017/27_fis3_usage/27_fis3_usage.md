@@ -97,7 +97,7 @@ Windows 使用示例(cmd 环境):
 
 ```
 E:
-cd E:\exam-web\src\main\webapp
+cd E:\cncounter-web\src\main\webapp
 dir fis-conf.js
 fis3 release prod -d cdn_release
 ```
