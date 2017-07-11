@@ -4,6 +4,7 @@
 
 官网地址是: <https://fex-team.github.io/fis3/index.html>
 
+我们要做前后端分离，将静态资源部署到CDN。调研了几个前端构建工具之后，选择了 fis3, 原因是能满足我们的需求、并且轻量级、配置简单、使用方便、安装也不容易报错。
 
 ## 下载安装
 
@@ -102,7 +103,7 @@ dir fis-conf.js
 fis3 release prod -d cdn_release
 ```
 
-Linux 或者 Mac 大同小异, 请根据需要自己配置
+Linux 或者 Mac 大同小异, 请根据需要自己配置,或者参考官网。
 
 
 
