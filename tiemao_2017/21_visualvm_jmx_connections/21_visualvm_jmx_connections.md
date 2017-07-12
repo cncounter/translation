@@ -77,7 +77,7 @@ This section shows an example of how to connect Java VisualVM to a local applica
 
 1. Start a Java application on the J2SE platform version 5.0, setting the system properties to enable the Java SE platform's out-of-the-box monitoring and management capability, using the command shown below:
 
-1. 在J2SE平台上启动Java应用程序版本5.0,设置系统属性来启用Java SE平台的开箱即用的监视和管理能力,使用的命令如下所示:
+1. 在J2SE平台上启动Java应用程序版本5.0,设置系统属性来启用Java SE平台的开箱即用的监视和管理能力,使用如下所示的命令:
 
 
 
@@ -90,34 +90,46 @@ This section shows an example of how to connect Java VisualVM to a local applica
    ```
 
 
-In the command above, *YourJavaApp* is launched with the Java SE platform's out-of-the-box monitoring and management capability configured as follows:
+   In the command above, *YourJavaApp* is launched with the Java SE platform's out-of-the-box monitoring and management capability configured as follows:
 
 
+   其中指定了以下内容:
 
 
    - The application is exposed for monitoring and management via port 3333.
    - SSL encryption is deactivated.
    - Password authentication is deactivated.
 
+
+   - 程序暴露的监控管理端口是 3333。
+   - 不启用SSL加密。
+   - 不启用密码验证。
+
+
 2. Start Java VisualVM on the same machine.
+
+2. 在同一台机器上启动 VisualVM.
 
 3. In Java VisualVM's Applications window, right click on the Local machine and select 'Add JMX Connection'.
 
-   ![Adding a JMX connection to the local host.](http://docs.oracle.com/javase/8/docs/technotes/guides/visualvm/images/add-jmx-local.png)
+3. 在 VisualVM 窗口中, 右键单击本地(Local),并选择“添加JMX连接”。
+
+
+   ![Adding a JMX connection to the local host.](01_add-jmx-local.png)
 
 4. The Add JMX Connection dialog box opens.
 
-   ![The Add JMX Connection dialog.](http://docs.oracle.com/javase/8/docs/technotes/guides/visualvm/images/add-jmx-connection-dialog.png)
+   ![The Add JMX Connection dialog.](02_add-jmx-connection-dialog.png)
 
    The host name localhost is already filled in. You only need to add the port number on which the application is exposed for monitoring and management.
 
 5. Click OK. The JMX connection will appear in the application tree, with a special JMX connection icon.
 
-   ![A JMX connection to the local host machine.](http://docs.oracle.com/javase/8/docs/technotes/guides/visualvm/images/jmx-icon.png)
+   ![A JMX connection to the local host machine.](03_jmx-icon.png)
 
 6. Right click on the JMX connection, and select Open. The JVM software exposed via the JMX connection can now be monitored and managed via Java VisualVM.
 
-   ![Monitoring an application via a JMX connection.](http://docs.oracle.com/javase/8/docs/technotes/guides/visualvm/images/jmx-connection-rhpanel.png)
+   ![Monitoring an application via a JMX connection.](04_jmx-connection-rhpanel.png)
 
 ### Remote JMX Connections
 
@@ -125,38 +137,46 @@ You can also make explicit JMX connections to applications running on remote hos
 
 1. Right click anywhere in the blank area under the application tree and select Add JMX Connection.
 
-   ![Adding a JMX connection to a remote application.](http://docs.oracle.com/javase/8/docs/technotes/guides/visualvm/images/add-jmx-remote.png)
+   ![Adding a JMX connection to a remote application.](05_add-jmx-remote.png)
 
-2. Provide the machine name and port number for a running JMX agent, that has been started with the appropriate system properties to allow remote management. Here the JMX agent has been exposed on port 2222 of the machine curcuma.![Adding a remote JMX connection.](http://docs.oracle.com/javase/8/docs/technotes/guides/visualvm/images/add-jmx-remote2.png)If you know that the JMX agent has been protected with a username and password, enter them in the Add JMX Connection dialog and specify whether you want the credentials to be saved so
-   that when Java VisualVM restarts it will silently reconnect to the JMX agent without prompting the user for the security credentials again.
+2. Provide the machine name and port number for a running JMX agent, that has been started with the appropriate system properties to allow remote management. Here the JMX agent has been exposed on port 2222 of the machine curcuma.
+
+   ![Adding a remote JMX connection.](06_add-jmx-remote2.png)
+   
+   If you know that the JMX agent has been protected with a username and password, enter them in the Add JMX Connection dialog and specify whether you want the credentials to be saved so that when Java VisualVM restarts it will silently reconnect to the JMX agent without prompting the user for the security credentials again.
 
 3. If the JMX connection is secured and you did not provide a username and password in the Add JMX Connection dialog, you will be prompted to provide a username and password.
 
-   ![JMX connector security credentials.](http://docs.oracle.com/javase/8/docs/technotes/guides/visualvm/images/security-credentials.png)
+   ![JMX connector security credentials.](07_security-credentials.png)
 
 4. If you know the correct username and password, the JMX connection will be established, and the JMX connection will appear in the application tree, with a special JMX connection icon.
 
-   ![Remote JMX connection shown in application tree.](http://docs.oracle.com/javase/8/docs/technotes/guides/visualvm/images/remote-jmx-icon.png)
+   ![Remote JMX connection shown in application tree.](08_remote-jmx-icon.png)
 
 5. Right click on the remote JMX connection and select Open. You can now monitor and manage remote applications via the JMX connection, and manipulate any MBeans that are registered in the MBean server exposed by this connection (note that the Java VisualVM-MBeans plugin must be installed if you want to access to the MBeans tab.)
 
    ​
 
-   ![MBeans in a remote MBean server.](http://docs.oracle.com/javase/8/docs/technotes/guides/visualvm/images/remote-jmx-mbeans.png)
+   ![MBeans in a remote MBean server.](09_remote-jmx-mbeans.png)
+
 
 ## Further Reading About JMX Technology
 
+## 更多信息
+
+
 For more information about JMX technology and monitoring and management of the Java SE platform, see the following documents.
 
-- [JMX technology trail in the Java Tutorials](http://docs.oracle.com/javase/tutorial/jmx/index.html)
-- [Java Management Extensions (JMX) product page](http://docs.oracle.com/javase/8/docs/technotes/guides/jmx/index.html)
-- [Monitoring and Management documentation for the Java SE Platform](http://docs.oracle.com/javase/8/docs/technotes/guides/management/)
+更多关于JMX技术的信息,请参考以下文档。
 
 
+
+- [JMX技术教程](http://docs.oracle.com/javase/tutorial/jmx/index.html)
+- [JMX产品信息](http://docs.oracle.com/javase/8/docs/technotes/guides/jmx/index.html)
+- [Java平台监控管理技术文档](http://docs.oracle.com/javase/8/docs/technotes/guides/management/)
 
 
 
 原文链接: <http://docs.oracle.com/javase/8/docs/technotes/guides/visualvm/jmx_connections.html>
-
 
 
