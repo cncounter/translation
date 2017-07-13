@@ -52,34 +52,32 @@ Java VisualVM 在下列情况并不会自动发现JMX代理, 包括:
 
 Before you can make an explicit JMX connection from Java VisualVM to a running application, this application must be started with the correct system properties. The system properties in question are the following:
 
-之前你可以显式的JMX连接从Java VisualVM运行的应用程序,这个应用程序必须启动正确的系统属性.系统属性的问题如下:
+之前你可以显式的JMX连接从Java VisualVM运行的应用程序,这个应用程序必须启动正确的系统属性. 包括:
 
 
 - `com.sun.management.jmxremote.port`, to specify the port number through which the application will be exposed
 - `com.sun.management.jmxremote.ssl`, to specify whether secure sockets layer (SSL) encryption will be activated to secure the connection to the application
 - `com.sun.management.jmxremote.authenticate`, to specify whether the connection will be password protected
 
-- `com.sun.management.jmxremote.port`指定的端口号,应用程序将会暴露
-- `com.sun.management.jmxremote.ssl`,指定是否安全套接字层(SSL)加密将激活安全连接到应用程序
-- `com.sun.management.jmxremote.authenticate`指定是否将密码保护的连接
+- `com.sun.management.jmxremote.port`指定 jmx 端口号
+- `com.sun.management.jmxremote.ssl`,指定是否使用 SSL 加密
+- `com.sun.management.jmxremote.authenticate` 指定是否使用密码保护
 
 
 
 ### Local JMX Connections
 
-### 本地JMX连接
+### JMX连接本地JVM
 
 
 This section shows an example of how to connect Java VisualVM to a local application via an explicit JMX connection.
 
-本节显示了一个示例Java VisualVM如何连接到本地应用程序通过一个显式的JMX连接。
+本节演示 VisualVM 通过显式的 JMX 连接到本地的应用程序。
 
 
 1. Start a Java application on the J2SE platform version 5.0, setting the system properties to enable the Java SE platform's out-of-the-box monitoring and management capability, using the command shown below:
 
-1. 在J2SE平台上启动Java应用程序版本5.0,设置系统属性来启用Java SE平台的开箱即用的监视和管理能力,使用如下所示的命令:
-
-
+1. 启动Java应用程序时, 设置以下系统属性:
 
    ```
    java -Dcom.sun.management.jmxremote.port=3333 \
@@ -89,11 +87,10 @@ This section shows an example of how to connect Java VisualVM to a local applica
 
    ```
 
-
    In the command above, *YourJavaApp* is launched with the Java SE platform's out-of-the-box monitoring and management capability configured as follows:
 
 
-   其中指定了以下内容:
+   其中指定了这些内容:
 
 
    - The application is exposed for monitoring and management via port 3333.
@@ -101,7 +98,7 @@ This section shows an example of how to connect Java VisualVM to a local applica
    - Password authentication is deactivated.
 
 
-   - 程序暴露的监控管理端口是 3333。
+   - 程序暴露的JMX监控管理端口是 3333。
    - 不启用SSL加密。
    - 不启用密码验证。
 
@@ -112,30 +109,45 @@ This section shows an example of how to connect Java VisualVM to a local applica
 
 3. In Java VisualVM's Applications window, right click on the Local machine and select 'Add JMX Connection'.
 
-3. 在 VisualVM 窗口中, 右键单击本地(Local),并选择“添加JMX连接”。
+3. 在 VisualVM 窗口中, 右键单击本地(Local),并选择 “添加 JMX 连接”(Add JMX Connection)。
 
 
    ![Adding a JMX connection to the local host.](01_add-jmx-local.png)
 
 4. The Add JMX Connection dialog box opens.
 
+4. 接着会打开 JMX Connection 对话框.
+
    ![The Add JMX Connection dialog.](02_add-jmx-connection-dialog.png)
 
    The host name localhost is already filled in. You only need to add the port number on which the application is exposed for monitoring and management.
 
+   host name, 主机名自动填写为 localhost, 只需要输入端口号即可。
+
 5. Click OK. The JMX connection will appear in the application tree, with a special JMX connection icon.
+
+5. 点击 确定(OK). 左侧的应用程序列表中, 出现带 “JMX” 水印标识的连接.
 
    ![A JMX connection to the local host machine.](03_jmx-icon.png)
 
 6. Right click on the JMX connection, and select Open. The JVM software exposed via the JMX connection can now be monitored and managed via Java VisualVM.
 
+6. 右键点击JMX连接，并选择“打开”(Open)。则可以通过Java VisualVM对目标JVM进行监控和管理。
+
+
    ![Monitoring an application via a JMX connection.](04_jmx-connection-rhpanel.png)
 
 ### Remote JMX Connections
 
+### 远程JMX连接
+
 You can also make explicit JMX connections to applications running on remote hosts, as explained below:
 
+也可以通过显式的JMX连接来监控远程的JVM。
+
 1. Right click anywhere in the blank area under the application tree and select Add JMX Connection.
+
+1. 在左侧窗口中, 右键单击空白的地方, 选择 “添加JMX连接”(Add JMX Connection)。
 
    ![Adding a JMX connection to a remote application.](05_add-jmx-remote.png)
 
@@ -154,6 +166,8 @@ You can also make explicit JMX connections to applications running on remote hos
    ![Remote JMX connection shown in application tree.](08_remote-jmx-icon.png)
 
 5. Right click on the remote JMX connection and select Open. You can now monitor and manage remote applications via the JMX connection, and manipulate any MBeans that are registered in the MBean server exposed by this connection (note that the Java VisualVM-MBeans plugin must be installed if you want to access to the MBeans tab.)
+
+5. 右键点击JMX连接，并选择“打开”(Open)。则可以通过Java VisualVM对目标JVM进行监控和管理。and manipulate any MBeans that are registered in the MBean server exposed by this connection (note that the Java VisualVM-MBeans plugin must be installed if you want to access to the MBeans tab.)
 
    ​
 
