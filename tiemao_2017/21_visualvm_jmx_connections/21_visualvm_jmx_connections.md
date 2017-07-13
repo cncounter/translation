@@ -139,7 +139,7 @@ This section shows an example of how to connect Java VisualVM to a local applica
 
 ### Remote JMX Connections
 
-### 远程JMX连接
+### JMX连接远程JVM
 
 You can also make explicit JMX connections to applications running on remote hosts, as explained below:
 
@@ -153,21 +153,29 @@ You can also make explicit JMX connections to applications running on remote hos
 
 2. Provide the machine name and port number for a running JMX agent, that has been started with the appropriate system properties to allow remote management. Here the JMX agent has been exposed on port 2222 of the machine curcuma.
 
+2. 输入远程机器的 hostname 或者IP,以及JMX端口号. 下图连接的是机器 `curcuma`, 端口号为 `2222`.
+
    ![Adding a remote JMX connection.](06_add-jmx-remote2.png)
    
    If you know that the JMX agent has been protected with a username and password, enter them in the Add JMX Connection dialog and specify whether you want the credentials to be saved so that when Java VisualVM restarts it will silently reconnect to the JMX agent without prompting the user for the security credentials again.
 
+   如果 JMX agent 启用了密码保护, 那么在添加JMX连接的对话框中输入用户名和密码, 当然,也可以勾选保存密码, 下次启动 VisualVM 时会自动连接, 以免每次都要输入.
+
 3. If the JMX connection is secured and you did not provide a username and password in the Add JMX Connection dialog, you will be prompted to provide a username and password.
+
+3. 如果 JMX 有密码保护, 而在上一步中没有输入 username and password, 则会弹出密码输入框:
 
    ![JMX connector security credentials.](07_security-credentials.png)
 
 4. If you know the correct username and password, the JMX connection will be established, and the JMX connection will appear in the application tree, with a special JMX connection icon.
 
+4. 输入正确的 username and password, 就建立了 JMX connection, 左侧的应用程序列表中, 出现带 “JMX” 水印标识的连接.
+
    ![Remote JMX connection shown in application tree.](08_remote-jmx-icon.png)
 
 5. Right click on the remote JMX connection and select Open. You can now monitor and manage remote applications via the JMX connection, and manipulate any MBeans that are registered in the MBean server exposed by this connection (note that the Java VisualVM-MBeans plugin must be installed if you want to access to the MBeans tab.)
 
-5. 右键点击JMX连接，并选择“打开”(Open)。则可以通过Java VisualVM对目标JVM进行监控和管理。and manipulate any MBeans that are registered in the MBean server exposed by this connection (note that the Java VisualVM-MBeans plugin must be installed if you want to access to the MBeans tab.)
+5. 右键点击JMX连接，并选择“打开”(Open)。则可以监视目标JVM。以及管理该程序注册的各种 MBeans(当然,你需要安装 Java VisualVM-MBeans 插件, 才会出现 MBeans 标签页.)
 
    ​
 
