@@ -4,7 +4,7 @@
 
 A **Valve** element represents a component that will be inserted into the request processing pipeline for the associated Catalina container ([Engine](https://tomcat.apache.org/tomcat-8.0-doc/config/engine.html), [Host](https://tomcat.apache.org/tomcat-8.0-doc/config/host.html), or [Context](https://tomcat.apache.org/tomcat-8.0-doc/config/context.html)). Individual Valves have distinct processing capabilities, and are described individually below.
 
-*The description below uses the variable name $CATALINA_BASE to refer the base directory against which most relative paths are resolved. If you have not configured Tomcat for multiple instances by setting a CATALINA_BASE directory, then $CATALINA_BASE will be set to the value of $CATALINA_HOME, the directory into which you have installed Tomcat.*
+*The description below uses the variable name `$CATALINA_BASE` to refer the base directory against which most relative paths are resolved. If you have not configured Tomcat for multiple instances by setting a `CATALINA_BASE` directory, then `$CATALINA_BASE` will be set to the value of `$CATALINA_HOME`, the directory into which you have installed Tomcat.*
 
 ### Access Logging
 
@@ -350,139 +350,6 @@ The **Single Sign On** Valve supports the following configuration attributes:
 | **className**             | Java class name of the implementation to use. This MUST be set to **org.apache.catalina.authenticator.SingleSignOn**. |
 | `requireReauthentication` | Default false. Flag to determine whether each request needs to be reauthenticated to the security **Realm**. If "true", this Valve uses cached security credentials (username and password) to reauthenticate to the **Realm** each request associated with an SSO session. If "false", the Valve can itself authenticate requests based on the presence of a valid SSO cookie, without rechecking with the **Realm**. |
 | `cookieDomain`            | Sets the host domain to be used for sso cookies. |
-
-### Authentication
-
-The valves in this section implement **org.apache.catalina.Authenticator** interface.
-
-#### Basic Authenticator Valve
-
-#### Introduction
-
-The **Basic Authenticator Valve** is automatically added to any [Context](https://tomcat.apache.org/tomcat-8.0-doc/config/context.html) that is configured to use BASIC authentication.
-
-If any non-default settings are required, the valve may be configured within [Context](https://tomcat.apache.org/tomcat-8.0-doc/config/context.html) element with the required values.
-
-#### Attributes
-
-The **Basic Authenticator Valve** supports the following configuration attributes:
-
-| Attribute                         | Description                              |
-| --------------------------------- | ---------------------------------------- |
-| `alwaysUseSession`                | Should a session always be used once a user is authenticated? This may offer some performance benefits since the session can then be used to cache the authenticated Principal, hence removing the need to authenticate the user via the Realm on every request. This may be of help for combinations such as BASIC authentication used with the JNDIRealm or DataSourceRealms. However there will also be the performance cost of creating and GC'ing the session. If not set, the default value of `false` will be used. |
-| `cache`                           | Should we cache authenticated Principals if the request is part of an HTTP session? If not specified, the default value of `true` will be used. |
-| `changeSessionIdOnAuthentication` | Controls if the session ID is changed if a session exists at the point where users are authenticated. This is to prevent session fixation attacks. If not set, the default value of `true` will be used. |
-| **className**                     | Java class name of the implementation to use. This MUST be set to **org.apache.catalina.authenticator.BasicAuthenticator**. |
-| `disableProxyCaching`             | Controls the caching of pages that are protected by security constraints. Setting this to `false` may help work around caching issues in some browsers but will also cause secured pages to be cached by proxies which will almost certainly be a security issue. `securePagesWithPragma` offers an alternative, secure, workaround for browser caching issues. If not set, the default value of `true` will be used. |
-| `securePagesWithPragma`           | Controls the caching of pages that are protected by security constraints. Setting this to `false` may help work around caching issues in some browsers by using `Cache-Control: private` rather than the default of `Pragma: No-cache` and `Cache-control: No-cache`. If not set, the default value of `false` will be used. |
-| `secureRandomAlgorithm`           | Name of the algorithm to use to create the `java.security.SecureRandom` instances that generate session IDs. If an invalid algorithm and/or provider is specified, the platform default provider and the default algorithm will be used. If not specified, the default algorithm of SHA1PRNG will be used. If the default algorithm is not supported, the platform default will be used. To specify that the platform default should be used, do not set the secureRandomProvider attribute and set this attribute to the empty string. |
-| `secureRandomClass`               | Name of the Java class that extends `java.security.SecureRandom` to use to generate SSO session IDs. If not specified, the default value is`java.security.SecureRandom`. |
-| `secureRandomProvider`            | Name of the provider to use to create the `java.security.SecureRandom` instances that generate SSO session IDs. If an invalid algorithm and/or provider is specified, the platform default provider and the default algorithm will be used. If not specified, the platform default provider will be used. |
-
-#### Digest Authenticator Valve
-
-#### Introduction
-
-The **Digest Authenticator Valve** is automatically added to any [Context](https://tomcat.apache.org/tomcat-8.0-doc/config/context.html) that is configured to use DIGEST authentication.
-
-If any non-default settings are required, the valve may be configured within [Context](https://tomcat.apache.org/tomcat-8.0-doc/config/context.html) element with the required values.
-
-#### Attributes
-
-The **Digest Authenticator Valve** supports the following configuration attributes:
-
-| Attribute                         | Description                              |
-| --------------------------------- | ---------------------------------------- |
-| `alwaysUseSession`                | Should a session always be used once a user is authenticated? This may offer some performance benefits since the session can then be used to cache the authenticated Principal, hence removing the need to authenticate the user via the Realm on every request. This may be of help for combinations such as BASIC authentication used with the JNDIRealm or DataSourceRealms. However there will also be the performance cost of creating and GC'ing the session. If not set, the default value of `false` will be used. |
-| `cache`                           | Should we cache authenticated Principals if the request is part of an HTTP session? If not specified, the default value of `false` will be used. |
-| `changeSessionIdOnAuthentication` | Controls if the session ID is changed if a session exists at the point where users are authenticated. This is to prevent session fixation attacks. If not set, the default value of `true` will be used. |
-| **className**                     | Java class name of the implementation to use. This MUST be set to **org.apache.catalina.authenticator.DigestAuthenticator**. |
-| `disableProxyCaching`             | Controls the caching of pages that are protected by security constraints. Setting this to `false` may help work around caching issues in some browsers but will also cause secured pages to be cached by proxies which will almost certainly be a security issue. `securePagesWithPragma` offers an alternative, secure, workaround for browser caching issues. If not set, the default value of `true` will be used. |
-| `key`                             | The secret key used by digest authentication. If not set, a secure random value is generated. This should normally only be set when it is necessary to keep key values constant either across server restarts and/or across a cluster. |
-| `nonceCacheSize`                  | To protect against replay attacks, the DIGEST authenticator tracks server nonce and nonce count values. This attribute controls the size of that cache. If not specified, the default value of 1000 is used. |
-| `nonceCountWindowSize`            | Client requests may be processed out of order which in turn means that the nonce count values may be processed out of order. To prevent authentication failures when nonce counts are presented out of order the authenticator tracks a window of nonce count values. This attribute controls how big that window is. If not specified, the default value of 100 is used. |
-| `nonceValidity`                   | The time, in milliseconds, that a server generated nonce will be considered valid for use in authentication. If not specified, the default value of 300000 (5 minutes) will be used. |
-| `opaque`                          | The opaque server string used by digest authentication. If not set, a random value is generated. This should normally only be set when it is necessary to keep opaque values constant either across server restarts and/or across a cluster. |
-| `securePagesWithPragma`           | Controls the caching of pages that are protected by security constraints. Setting this to `false` may help work around caching issues in some browsers by using `Cache-Control: private` rather than the default of `Pragma: No-cache` and `Cache-control: No-cache`. If not set, the default value of `false` will be used. |
-| `secureRandomAlgorithm`           | Name of the algorithm to use to create the `java.security.SecureRandom` instances that generate session IDs. If an invalid algorithm and/or provider is specified, the platform default provider and the default algorithm will be used. If not specified, the default algorithm of SHA1PRNG will be used. If the default algorithm is not supported, the platform default will be used. To specify that the platform default should be used, do not set the secureRandomProvider attribute and set this attribute to the empty string. |
-| `secureRandomClass`               | Name of the Java class that extends `java.security.SecureRandom` to use to generate SSO session IDs. If not specified, the default value is`java.security.SecureRandom`. |
-| `secureRandomProvider`            | Name of the provider to use to create the `java.security.SecureRandom` instances that generate SSO session IDs. If an invalid algorithm and/or provider is specified, the platform default provider and the default algorithm will be used. If not specified, the platform default provider will be used. |
-| `validateUri`                     | Should the URI be validated as required by RFC2617? If not specified, the default value of `true` will be used. This should normally only be set when Tomcat is located behind a reverse proxy and the proxy is modifying the URI passed to Tomcat such that DIGEST authentication always fails. |
-
-#### Form Authenticator Valve
-
-#### Introduction
-
-The **Form Authenticator Valve** is automatically added to any [Context](https://tomcat.apache.org/tomcat-8.0-doc/config/context.html) that is configured to use FORM authentication.
-
-If any non-default settings are required, the valve may be configured within [Context](https://tomcat.apache.org/tomcat-8.0-doc/config/context.html) element with the required values.
-
-#### Attributes
-
-The **Form Authenticator Valve** supports the following configuration attributes:
-
-| Attribute                         | Description                              |
-| --------------------------------- | ---------------------------------------- |
-| `changeSessionIdOnAuthentication` | Controls if the session ID is changed if a session exists at the point where users are authenticated. This is to prevent session fixation attacks. If not set, the default value of `true` will be used. |
-| `characterEncoding`               | Character encoding to use to read the username and password parameters from the request. If not set, the encoding of the request body will be used. |
-| **className**                     | Java class name of the implementation to use. This MUST be set to **org.apache.catalina.authenticator.FormAuthenticator**. |
-| `disableProxyCaching`             | Controls the caching of pages that are protected by security constraints. Setting this to `false` may help work around caching issues in some browsers but will also cause secured pages to be cached by proxies which will almost certainly be a security issue. `securePagesWithPragma` offers an alternative, secure, workaround for browser caching issues. If not set, the default value of `true` will be used. |
-| `landingPage`                     | Controls the behavior of the FORM authentication process if the process is misused, for example by directly requesting the login page or delaying logging in for so long that the session expires. If this attribute is set, rather than returning an error response code, Tomcat will redirect the user to the specified landing page if the login form is submitted with valid credentials. For the login to be processed, the landing page must be a protected resource (i.e. one that requires authentication). If the landing page does not require authentication then the user will not be logged in and will be prompted for their credentials again when they access a protected page. |
-| `securePagesWithPragma`           | Controls the caching of pages that are protected by security constraints. Setting this to `false` may help work around caching issues in some browsers by using `Cache-Control: private` rather than the default of `Pragma: No-cache` and `Cache-control: No-cache`. If not set, the default value of `false` will be used. |
-| `secureRandomAlgorithm`           | Name of the algorithm to use to create the `java.security.SecureRandom` instances that generate session IDs. If an invalid algorithm and/or provider is specified, the platform default provider and the default algorithm will be used. If not specified, the default algorithm of SHA1PRNG will be used. If the default algorithm is not supported, the platform default will be used. To specify that the platform default should be used, do not set the secureRandomProvider attribute and set this attribute to the empty string. |
-| `secureRandomClass`               | Name of the Java class that extends `java.security.SecureRandom` to use to generate SSO session IDs. If not specified, the default value is`java.security.SecureRandom`. |
-| `secureRandomProvider`            | Name of the provider to use to create the `java.security.SecureRandom` instances that generate SSO session IDs. If an invalid algorithm and/or provider is specified, the platform default provider and the default algorithm will be used. If not specified, the platform default provider will be used. |
-
-#### SSL Authenticator Valve
-
-#### Introduction
-
-The **SSL Authenticator Valve** is automatically added to any [Context](https://tomcat.apache.org/tomcat-8.0-doc/config/context.html) that is configured to use SSL authentication.
-
-If any non-default settings are required, the valve may be configured within [Context](https://tomcat.apache.org/tomcat-8.0-doc/config/context.html) element with the required values.
-
-#### Attributes
-
-The **SSL Authenticator Valve** supports the following configuration attributes:
-
-| Attribute                         | Description                              |
-| --------------------------------- | ---------------------------------------- |
-| `cache`                           | Should we cache authenticated Principals if the request is part of an HTTP session? If not specified, the default value of `true` will be used. |
-| **className**                     | Java class name of the implementation to use. This MUST be set to **org.apache.catalina.authenticator.SSLAuthenticator**. |
-| `changeSessionIdOnAuthentication` | Controls if the session ID is changed if a session exists at the point where users are authenticated. This is to prevent session fixation attacks. If not set, the default value of `true` will be used. |
-| `disableProxyCaching`             | Controls the caching of pages that are protected by security constraints. Setting this to `false` may help work around caching issues in some browsers but will also cause secured pages to be cached by proxies which will almost certainly be a security issue. `securePagesWithPragma` offers an alternative, secure, workaround for browser caching issues. If not set, the default value of `true` will be used. |
-| `securePagesWithPragma`           | Controls the caching of pages that are protected by security constraints. Setting this to `false` may help work around caching issues in some browsers by using `Cache-Control: private` rather than the default of `Pragma: No-cache` and `Cache-control: No-cache`. If not set, the default value of `false` will be used. |
-| `secureRandomAlgorithm`           | Name of the algorithm to use to create the `java.security.SecureRandom` instances that generate session IDs. If an invalid algorithm and/or provider is specified, the platform default provider and the default algorithm will be used. If not specified, the default algorithm of SHA1PRNG will be used. If the default algorithm is not supported, the platform default will be used. To specify that the platform default should be used, do not set the secureRandomProvider attribute and set this attribute to the empty string. |
-| `secureRandomClass`               | Name of the Java class that extends `java.security.SecureRandom` to use to generate SSO session IDs. If not specified, the default value is`java.security.SecureRandom`. |
-| `secureRandomProvider`            | Name of the provider to use to create the `java.security.SecureRandom` instances that generate SSO session IDs. If an invalid algorithm and/or provider is specified, the platform default provider and the default algorithm will be used. If not specified, the platform default provider will be used. |
-
-#### SPNEGO Valve
-
-#### Introduction
-
-The **SPNEGO Authenticator Valve** is automatically added to any [Context](https://tomcat.apache.org/tomcat-8.0-doc/config/context.html) that is configured to use SPNEGO authentication.
-
-If any non-default settings are required, the valve may be configured within [Context](https://tomcat.apache.org/tomcat-8.0-doc/config/context.html) element with the required values.
-
-#### Attributes
-
-The **SPNEGO Authenticator Valve** supports the following configuration attributes:
-
-| Attribute                         | Description                              |
-| --------------------------------- | ---------------------------------------- |
-| `applyJava8u40Fix`                | A fix introduced in Java 8 update 40 ( [JDK-8048194](https://bugs.openjdk.java.net/browse/JDK-8048194)) onwards broke SPNEGO authentication for IE with Tomcat running on Windows 2008 R2 servers. This option enables a work-around that allows SPNEGO authentication to continue working. The work-around should not impact other configurations so it is enabled by default. If necessary, the workaround can be disabled by setting this attribute to `false`. |
-| `alwaysUseSession`                | Should a session always be used once a user is authenticated? This may offer some performance benefits since the session can then be used to cache the authenticated Principal, hence removing the need to authenticate the user on every request. This will also help with clients that assume that the server will cache the authenticated user. However there will also be the performance cost of creating and GC'ing the session. For an alternative solution see`noKeepAliveUserAgents`. If not set, the default value of `false` will be used. |
-| `cache`                           | Should we cache authenticated Principals if the request is part of an HTTP session? If not specified, the default value of `true` will be used. |
-| **className**                     | Java class name of the implementation to use. This MUST be set to **org.apache.catalina.authenticator.SpnegoAuthenticator**. |
-| `changeSessionIdOnAuthentication` | Controls if the session ID is changed if a session exists at the point where users are authenticated. This is to prevent session fixation attacks. If not set, the default value of `true` will be used. |
-| `disableProxyCaching`             | Controls the caching of pages that are protected by security constraints. Setting this to `false` may help work around caching issues in some browsers but will also cause secured pages to be cached by proxies which will almost certainly be a security issue. `securePagesWithPragma` offers an alternative, secure, workaround for browser caching issues. If not set, the default value of `true` will be used. |
-| `loginConfigName`                 | The name of the JAAS login configuration to be used to login as the service. If not specified, the default of `com.sun.security.jgss.krb5.accept` is used. |
-| `noKeepAliveUserAgents`           | Some clients (not most browsers) expect the server to cache the authenticated user information for a connection and do not resend the credentials with every request. Tomcat will not do this unless an HTTP session is available. A session will be available if either the application creates one or if `alwaysUseSession` is enabled for this Authenticator.As an alternative to creating a session, this attribute may be used to define the user agents for which HTTP keep-alive is disabled. This means that a connection will only used for a single request and hence there is no ability to cache authenticated user information per connection. There will be a performance cost in disabling HTTP keep-alive.The attribute should be a regular expression that matches the entire user-agent string, e.g. `.*Chrome.*`. If not specified, no regular expression will be defined and no user agents will have HTTP keep-alive disabled. |
-| `securePagesWithPragma`           | Controls the caching of pages that are protected by security constraints. Setting this to `false` may help work around caching issues in some browsers by using `Cache-Control: private` rather than the default of `Pragma: No-cache` and `Cache-control: No-cache`. If not set, the default value of `false` will be used. |
-| `secureRandomAlgorithm`           | Name of the algorithm to use to create the `java.security.SecureRandom` instances that generate session IDs. If an invalid algorithm and/or provider is specified, the platform default provider and the default algorithm will be used. If not specified, the default algorithm of SHA1PRNG will be used. If the default algorithm is not supported, the platform default will be used. To specify that the platform default should be used, do not set the secureRandomProvider attribute and set this attribute to the empty string. |
-| `secureRandomClass`               | Name of the Java class that extends `java.security.SecureRandom` to use to generate SSO session IDs. If not specified, the default value is`java.security.SecureRandom`. |
-| `secureRandomProvider`            | Name of the provider to use to create the `java.security.SecureRandom` instances that generate SSO session IDs. If an invalid algorithm and/or provider is specified, the platform default provider and the default algorithm will be used. If not specified, the platform default provider will be used. |
-| `storeDelegatedCredential`        | Controls if the user' delegated credential will be stored in the user Principal. If available, the delegated credential will be available to applications (e.g. for onward authentication to external services) via the `org.apache.catalina.realm.GSS_CREDENTIAL` request attribute. If not set, the default value of `true`will be used. |
 
 ### Error Report Valve
 
