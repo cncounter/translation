@@ -395,3 +395,5 @@ public class Exec {
 
 NOTE : Prior Vista, System folders were localized on disk like  `C:\Program Files  -> C:\Archivos de programa`  on the Windows with the Spanish localization. Since Vista, System Folders always exists with the english name BUT when viewed through Explorer, the localized name is shown. See http://msmvps.com/blogs/carlosq/archive/2007/02/12/windows-vista-junctions-points-mui-and-localized-folder-names.aspx
 
+
+原文链接: <http://www.rgagnon.com/javadetails/java-0014.html>
