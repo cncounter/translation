@@ -5,6 +5,9 @@
 
 JRE安装包, JDK安装包, 以及 Server JRE 压缩包, 可以在 Java SE Download 页面下载: <http://www.oracle.com/technetwork/java/javase/downloads/index.html>;
 
+
+![Server-JRE-2](02_server_jre.jpg)
+
 Java 相关的术语请参考: <http://www.oracle.com/technetwork/java/glossary-135216.html>.
 
 The JRE is used to run a broad variety of Java programs including Java applications on desktops.  The JDK is for Java developers. It contains a complete JRE as described above and tools required to create Java programs, sign code, generate documentation, etc. The JDK also ships several tools meant to monitor and debug programs.
@@ -20,6 +23,8 @@ Server JRE 适用于哪些情况呢? 从服务器端程序的角度看, JRE缺�
 Enter the Server JRE: The Server JRE was designed for server-side applications by including just the commonly required features from the JRE and JDK. The Server JRE does not have a dedicated installer: It is simply a compressed directory for easier use.
 
 Server JRE 是专为服务器端程序设计的, 只包含JRE/JDK中最常用的那部分功能. 为了做到简单, Server JRE 没有安装包, 是一个绿色版的压缩文件。
+
+![Server-JRE-1](01_server_jre_download.jpg)
 
 **Will the Server JRE work for all server applications?**
 
