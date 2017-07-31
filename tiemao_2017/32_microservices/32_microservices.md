@@ -1,16 +1,10 @@
 # Java EE Fundamentals – Microservices
 
-#  5.微服务 - JavaEE基础系列
+#  5. Microservices - JavaEE基础系列
 
 This is the fifth post in the [Java EE](https://is.gd/theoryee) Fundamentals series
 
 本文是JavaEE基础系列的第五节。
-
-[Java EE Fundamentals – What is Java EE?](https://pedanticdevs.com/2017/06/java-ee-fundamentals-what-is-java-ee.html)
-[Java EE Fundamentals – What is a Java Specification Request (JSR)?](https://pedanticdevs.com/2017/06/java-ee-fundamentals-java-specification-request-what-is-a-jsr.html)
-[Java EE Fundamentals – What is a Reference Implementation?](https://pedanticdevs.com/2017/06/java-ee-fundamentals-what-is-a-jsr-reference-implementation.html)
-[Java EE Fundamentals – What is an Application Server?](https://pedanticdevs.com/2017/06/java-ee-fundamentals-what-is-an-application-server.html)
-
 
 1. [Java EE简介 - JavaEE基础系列](http://blog.csdn.net/renfufei/article/details/74073705)
 2. [JSR简介 - JavaEE基础系列](http://blog.csdn.net/renfufei/article/details/74074616)
@@ -21,33 +15,33 @@ This is the fifth post in the [Java EE](https://is.gd/theoryee) Fundamentals ser
 
 [Microservices](https://en.wikipedia.org/wiki/Microservices) is the latest software architecture that seems to be the buzzword of the day. It has been around in[ one form](https://en.wikipedia.org/wiki/Service-oriented_architecture) or the other since the early days of software engineering.
 
-[Microservices,微服务](https://en.wikipedia.org/wiki/Microservices) 如今是世界上最热门的软件架构。相对于早期的软件工程来说, 它已经变成了一种新的形式:[面向服务的架构(SOA)](https://en.wikipedia.org/wiki/Service-oriented_architecture) 。
+[Microservices,微服务](https://en.wikipedia.org/wiki/Microservices) 是当今世界上最火爆的软件开发架构。相对于早期的软件工程来说, 微服务已成为了一种新形式的 [面向服务的架构(SOA)](https://en.wikipedia.org/wiki/Service-oriented_architecture) 。
 
 Essentially microservices means breaking down applications into distinct components that all coordinate to form a whole. Now there are arguments against Java EE given it’s application server centric nature. There are those that think Java EE is heavy and geared towards the monolith style of application development.
 
-微服务本质上是将应用拆分成多个不同的组件, 然后组合成一个整体. 现在有思想反对将 Java EE 应用服务器当成核心。他们认为 Java EE 太笨重, 只适用于巨无霸式的应用程序开发。
+微服务本质上是将系统拆分成多个不同的组件, 互相之间协调组合成一个整体。 现在有一种说法, 认为Java EE 应用服务器不再是Java生态的核心。原因是 Java EE 太笨重了, 只适合开发单体应用程序。
 
 However, this is very incorrect. In fact, Java EE is more than suitable for a microservices architecture. At its core, microservices basically means an application being self-contained in terms of its runtime dependencies. Meaning generally the application has a small footprint and can theoretically be deployed to almost any usable platform.
 
-事实上, Java EE 也非常适用于微服务架构. 最最核心的地方, 微服务的运行时依赖高度内聚(self-contained). 同时,微服务应用占用空间小, 理论上,可以部署到任何平台运行。
+但这种说法其实是有问题的, Java EE 也非常适用于微服务架构开发. 最最核心的地方, 微服务的运行时是自包容的(self-contained), 代码和依赖都在一起. 同时,微服务占用空间小, 理论上,可以部署到任何平台。
 
 Java EE has tools available that make it super easy to create a microservices oriented application with it. The following 4 tools are more than enough to create any kind of microservices with Java EE.
 
-有很多支持 Java EE 的工具, 可以很容易地创建面向微服务的应用程序。以下4种工具足以创建 Java EE 中各种类型的微服务应用。
+有很多支持 Java EE 的工具, 可以简单快速地创建面向微服务的应用。下面是4种常见的微服务创建工具。
 
 # **Payara Micro**
 
 
 [Payara Micro](https://www.payara.fish/payara_micro) is a microservices geared version of the popular, open source, Glassfish derived Payara Server. Payara Micro is designed for running Java EE applications in a modern containerized / virtualized infrastructure, using automated provisioning tools like Chef, Ansible or Puppet. Payara Micro makes it easy to java -jar your Java EE application.
 
-[Payara Micro](https://www.payara.fish/payara_micro) 是一款流行的 microservices geared version, 基于 Glassfish 服务器开发的开源服务器. Payara Micro 是专为容器/虚机环境设计的, 支持自动配置工具, 如Chef, Ansible 以及 Puppet. 用 java -jar 的方式运行 Java EE 应用非常简单。
+[Payara Micro](https://www.payara.fish/payara_micro) 基于 Glassfish 开发, 是一款开源的 microservices 创建工具, 当前处于 geared 版本. Payara Micro 是专为容器/虚机环境设计的, 支持各种自动配置管理工具, 如Chef, Ansible 和 Puppet 等. Payara Micro 可以非常简单地使用 ·java -jar· 方式运行 Java EE 应用。
 
 # **JBoss Wildfly Swarm**
 
 
 [WildFly Swarm](http://wildfly-swarm.io/) offers an innovative approach to packaging and running Java EE applications by packaging them with just enough of the server runtime to “java -jar” your application. Essentially it bundles your Java EE dependencies with your application making your resulting war/jar self contained.
 
-[WildFly Swarm](http://wildfly-swarm.io/) 提供了一种全新的方法来包装和运行Java EE应用程序, 通过 “java -jar” 的方式即可执行服务器运行时. 本质上, 是将 Java EE 依赖整体打包到一起, 使得应用程序 `war/jar` 自包含(self contained)。
+[WildFly Swarm](http://wildfly-swarm.io/) 提供了一种全新的方法来包装和运行Java EE 应用, 通过 “java -jar” 的方式即可执行服务器运行时. 本质上, 是将 Java EE 依赖整体打包到一起, 使得应用程序 `war/jar` 自包含(self contained)。
 
 # **KumuluzEE**
 
