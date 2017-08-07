@@ -13,8 +13,8 @@
   推荐下载最新版本的NodeJS,如 v8.1.3+ 等。
   安装到默认目录,完成后查看版本号: `node -v`
 2. npm安装fis3
-  在 cmd 中执行: `npm install -g fis3`
-  安装fis3后,在 cmd 中执行 `fis3 -v` 判断是否安装成功
+  在 cmd/shell 中执行: `npm install -g fis3`
+  安装fis3后,在 cmd/shell 中执行 `fis3 -v` 判断是否安装成功
 
 相关的 shell 命令如下:
 
@@ -24,10 +24,14 @@ npm install -g fis3
 fis3 -v
 ```
 
+如下图所示:
+
+![](01_npm_v_fis3_v.jpg)
+
 
 ## 简单使用
 
-> **说明:** fis3等前端构建工具,依赖的是相对路径, 如`./xxx/xxx.js` 等; 识别: `<img src="">`、`<link href="">`、 `<script src="">`  `url('')` 等资源配置。
+> **说明:** fis3等前端构建工具,依赖的是相对路径, 如`./xxx/xxx.js`, `images/logo.png` 等; 识别: `<img src="">`、`<link href="">`、 `<script src="">`  `url('')` 等资源配置。
 >
 > 如果你的项目不符合此要求, 需要进行一定的修改。
 
