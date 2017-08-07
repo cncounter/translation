@@ -2,6 +2,9 @@
 
 Array-Like,即伪数组。泛指其行为和API与数组相似,但又不完全一致的对象。
 
+分析文章: <https://github.com/hanzichi/underscore-analysis/issues/14>
+
+
 ## 数组
 
 
