@@ -40,8 +40,11 @@ NodeJS安装完成后, 自动安装了 node, npm 等工具。
 
 npm 全称就是 node package manage,是软件包管理工具.
 
-如果某些安装包被墙,则可以配置代理, 或者使用 cnpm 工具。
+如果某些安装包被墙,则可以配置代理, 或者使用淘宝的npm注册中心:
 
+```
+npm config set registry "https://registry.npm.taobao.org" 
+```
 
 ### 2. npm安装fis3
   
