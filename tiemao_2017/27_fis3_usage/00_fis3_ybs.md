@@ -192,7 +192,12 @@ Linux 或者 Mac 大同小异, 请根据需要自己配置,或者参考官网。
 5. 部署到 beta 环境的Tomcat/也可以在beta环境从git获取后打包部署
 
 
-其他环境类似.
+prod环境类似.
+
+1. 生成 prod 环境的CDN资源,并上传到git仓库
+2. 打包 prod 版本.
+3. 发布static资源到nginx/CDN回源域名
+4. 发布web服务器/此步骤可并行
 
 
 
