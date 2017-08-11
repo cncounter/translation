@@ -34,7 +34,7 @@ Java EE has tools available that make it super easy to create a microservices or
 
 [Payara Micro](https://www.payara.fish/payara_micro) is a microservices geared version of the popular, open source, Glassfish derived Payara Server. Payara Micro is designed for running Java EE applications in a modern containerized / virtualized infrastructure, using automated provisioning tools like Chef, Ansible or Puppet. Payara Micro makes it easy to java -jar your Java EE application.
 
-[Payara Micro](https://www.payara.fish/payara_micro) 基于 Glassfish 开发, 是一款开源的 microservices 创建工具, 当前处于 geared 版本. Payara Micro 是专为容器/虚机环境设计的, 支持各种自动配置管理工具, 如Chef, Ansible 和 Puppet 等. Payara Micro 可以非常简单地使用 ·java -jar· 方式运行 Java EE 应用。
+[Payara Micro](https://www.payara.fish/payara_micro) 基于 Glassfish 开发, 是一款开源的 microservices 创建工具, 当前处于 geared 版本. Payara Micro 是专为容器/虚机环境设计的, 支持多种配置管理工具, 如Chef, Ansible 和 Puppet 等. Payara Micro 可以非常简单地使用 ·java -jar· 方式运行 Java EE 应用。
 
 # **JBoss Wildfly Swarm**
 
