@@ -97,9 +97,9 @@ In general as a rule of thumb:
 
 <br/>
 
-- 如果数据分为热数据与冷数据, 推荐使用 **allkeys-lru** 策略。 也就是, 其中一部分key经常被读写. 如果不确定具体的业务特征, 那么 **allkeys-lru** 是一个很好的选择。
-- 如果循环读写所有的key, 或者各个key的访问频率差不多, 可以使用 **allkeys-random** 策略, 即读写所有元素的概率差不多。
-- 如果想要 Redis 根据 TTL 来筛选需要删除的key, 请使用 **volatile-ttl** 策略。
+- 如果分为热数据与冷数据, 推荐使用 **allkeys-lru** 策略。 也就是, 其中一部分key经常被读写. 如果不确定具体的业务特征, 那么 **allkeys-lru** 是一个很好的选择。
+- 如果需要循环读写所有的key, 或者各个key的访问频率差不多, 可以使用 **allkeys-random** 策略, 即读写所有元素的概率差不多。
+- 假如要让 Redis 根据 TTL 来筛选需要删除的key, 请使用 **volatile-ttl** 策略。
 
 
 
@@ -211,7 +211,7 @@ As you can see Redis 3.0 does a better job with 5 samples compared to Redis 2.8,
 
 Note that LRU is just a model to predict how likely a given key will be accessed in the future. Moreover, if your data access pattern closely resembles the power law, most of the accesses will be in the set of keys that the LRU approximated algorithm will be able to handle well.
 
-注意,LRU只是用来预测将来可能会继续访问某个key的一个概率模型. 此外,如果数据访问的情况符合幂次模式, 那么对于大部分的请求来说, LRU都会表现良好。
+注意,LRU只是用来预测将来可能会继续访问某个key的一个概率模型. 此外,如果数据访问的情况符合幂律分布(power law), 那么对于大部分的请求来说, LRU都会表现良好。
 
 
 In simulations we found that using a power law access pattern, the difference between true LRU and Redis approximation were minimal or non-existent.
