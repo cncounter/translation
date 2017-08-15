@@ -5,7 +5,7 @@
 
 When Redis is used as a cache, sometimes it is handy to let it automatically evict old data as you add new one. This behavior is very well known in the community of developers, since it is the default behavior of the popular*memcached* system.
 
-用 Redis 作为缓存时, 如果用满内存空间, 就会自动删除老的数据。 默认情况下 *memcached* 就是这种方式, 大部分开发者都比较熟悉。
+用 Redis 作为缓存时, 如果用满内存空间, 就会自动驱逐老的数据。 默认情况下 *memcached* 就是这种方式, 大部分开发者都比较熟悉。
 
 
 LRU is actually only one of the supported eviction methods. This page covers the more general topic of the Redis `maxmemory` directive that is used in order to limit the memory usage to a fixed amount, and it also covers in depth the LRU algorithm used by Redis, that is actually an approximation of the exact LRU.
@@ -45,7 +45,7 @@ When the specified amount of memory is reached, it is possible to select among d
 
 ## Eviction policies
 
-## 删除策略
+## 驱逐策略
 
 
 The exact behavior Redis follows when the `maxmemory` limit is reached is configured using the `maxmemory-policy`configuration directive.
@@ -83,7 +83,7 @@ The policies **volatile-lru**, **volatile-random** and **volatile-ttl** behave l
 
 To pick the right eviction policy is important depending on the access pattern of your application, however you can reconfigure the policy at runtime while the application is running, and monitor the number of cache misses and hits using the Redis [INFO](https://redis.io/commands/info) output in order to tune your setup.
 
-您需要根据系统的特征, 来选择合适的删除策略。 当然, 在运行过程中也可以通过命令动态设置删除策略, 并通过 [INFO](https://redis.io/commands/info) 命令监控缓存的 miss 和 hit, 来进行调优。
+您需要根据系统的特征, 来选择合适的驱逐策略。 当然, 在运行过程中也可以通过命令动态设置驱逐策略, 并通过 [INFO](https://redis.io/commands/info) 命令监控缓存的 miss 和 hit, 来进行调优。
 
 
 In general as a rule of thumb:
@@ -115,12 +115,12 @@ It is also worth to note that setting an expire to a key costs memory, so using 
 
 ## How the eviction process works
 
-## 删除的内部处理过程
+## 驱逐的内部处理过程
 
 
 It is important to understand that the eviction process works like this:
 
-删除过程可以这样理解:
+驱逐过程可以这样理解:
 
 
 - A client runs a new command, resulting in more data added.
@@ -152,17 +152,17 @@ If a command results in a lot of memory being used (like a big set intersection 
 
 Redis LRU algorithm is not an exact implementation. This means that Redis is not able to pick the *best candidate* for eviction, that is, the access that was accessed the most in the past. Instead it will try to run an approximation of the LRU algorithm, by sampling a small number of keys, and evicting the one that is the best (with the oldest access time) among the sampled keys.
 
-Redis 实现的不是纯粹的 LRU算法。也就是在删除 key 时,并不能选择最应该抛弃的那个, 即访问的访问大多数在过去. Redis使用的是一种近似的LRU算法, 通过抽样少量的 key, 然后删除其中最符合条件的那个key(with the oldest access time)。
+Redis 使用的并不是完全LRU算法。自动驱逐的 key , 并不一定是最满足LRU特征的那个. 而是通过近似LRU算法, 抽取少量的 key 样本, 然后删除其中访问时间最古老的那个key。
 
 
 However since Redis 3.0 the algorithm was improved to also take a pool of good candidates for eviction. This improved the performance of the algorithm, making it able to approximate more closely the behavior of a real LRU algorithm.
 
-从 Redis 3.0 开始, 删除算法得到了很大的改进, 使用了一个 pool 来作为删除候选. 这提高了算法的效率, 使其能够更接近于真实的LRU算法。
+驱逐算法, 从 Redis 3.0 开始得到了巨大的优化, 使用 pool(池子) 来作为候选. 这大大提升了算法效率, 也更接近于真实的LRU算法。
 
 
 What is important about the Redis LRU algorithm is that you **are able to tune** the precision of the algorithm by changing the number of samples to check for every eviction. This parameter is controlled by the following configuration directive:
 
-Redis 的 LRU 算法中, 可以通过设置样本(sample)的数量来优化算法的精度。 这个参数通过以下指令配置:
+在 Redis 的 LRU 算法中, 可以通过设置样本(sample)的数量来调优算法精度。 通过以下指令配置:
 
 
 ```
@@ -172,7 +172,7 @@ maxmemory-samples 5
 
 The reason why Redis does not use a true LRU implementation is because it costs more memory. However the approximation is virtually equivalent for the application using Redis. The following is a graphical comparison of how the LRU approximation used by Redis compares with true LRU.
 
-Redis 不使用真正的LRU实现的原因是为了节省内存。但 Redis 的行为和LRU基本上是等价的. 下面是一个 Redis LRU 与真正的 LRU 行为的对比图。
+为什么不使用完全LRU实现? 原因是为了节省内存。但 Redis 的行为和LRU基本上是等价的. 下面是 Redis LRU 与完全LRU算法的一个行为对比图。
 
 
 ![LRU comparison](lru_comparison.png)
@@ -180,12 +180,12 @@ Redis 不使用真正的LRU实现的原因是为了节省内存。但 Redis 的�
 
 The test to generate the above graphs filled a Redis server with a given number of keys. The keys were accessed from the first to the last, so that the first keys are the best candidates for eviction using an LRU algorithm. Later more 50% of keys are added, in order to force half of the old keys to be evicted.
 
-测试过程中, 依次从第一个 key 开始访问, 所以第一个 key 才是LRU算法的最佳删除对象。
+测试过程中, 依次从第一个 key 开始访问, 所以最前面的 key 才是最佳的驱逐对象。
 
 
 You can see three kind of dots in the graphs, forming three distinct bands.
 
-图中可以看到三种类型的点, 形成三个不同的条带。
+从图中可以看到三种类型的点, 构成了三个不同的条带。
 
 
 - The light gray band are objects that were evicted.
@@ -194,34 +194,34 @@ You can see three kind of dots in the graphs, forming three distinct bands.
 
 <br/>
 
-- 浅灰色的部分表示被删除的对象。
-- 灰色的部分表示未被删除对象。
-- 绿色的部分表示后添加的对象。
+- 浅灰色部分表示被驱逐的对象。
+- 灰色部分表示 "未被驱逐" 的对象。
+- 绿色部分表示后面加入的对象。
 
 
 
 In a theoretical LRU implementation we expect that, among the old keys, the first half will be expired. The Redis LRU algorithm will instead only *probabilistically* expire the older keys.
 
-在理论LRU的实现中, 如同我们期待的一样, 在旧的key中, 前半部分被释放了。而 Redis 的 LRU 算法只是较大概率地(*probabilistically*)将时间较长的 key 给释放了。
+在纯粹的LRU算法实现中, 前半部分旧的key被释放了。而 Redis 的 LRU 算法只是将时间较长的 key 较大概率地(*probabilistically*)释放了。
 
 
 As you can see Redis 3.0 does a better job with 5 samples compared to Redis 2.8, however most objects that are among the latest accessed are still retained by Redis 2.8. Using a sample size of 10 in Redis 3.0 the approximation is very close to the theoretical performance of Redis 3.0.
 
-正如你所看到的, Redis 3.0 中 5 样本的效果比起 Redis 2.8 要好, 当然 Redis 2.8 中最后访问的key基本上都还留在内存中. Redis 3.0 中使用10个样本时,已经非常接近与真正的 LRU 算法。
+如你所见, Redis 3.0 中, 5样本的效果比 Redis 2.8 要好很多。 当然, Redis 2.8 也不错,最后访问的key基本上都还留在内存中. 在 Redis 3.0 中使用 10 样本时, 已经非常接近纯粹的LRU算法了。
 
 Note that LRU is just a model to predict how likely a given key will be accessed in the future. Moreover, if your data access pattern closely resembles the power law, most of the accesses will be in the set of keys that the LRU approximated algorithm will be able to handle well.
 
-注意,LRU只是一个用来预测将来可能会访问某个给定key的概率模型. 此外,如果数据访问的情况符合幂次模式, 那么LRU对于大部分的访问都会表现良好。
+注意,LRU只是用来预测将来可能会继续访问某个key的一个概率模型. 此外,如果数据访问的情况符合幂次模式, 那么对于大部分的请求来说, LRU都会表现良好。
 
 
 In simulations we found that using a power law access pattern, the difference between true LRU and Redis approximation were minimal or non-existent.
 
-在模拟中, 我们发现, 如果使用幂律访问模式, 真正的LRU 和Redis的结果差别很小, 甚至看不出来。
+在模拟中, 我们发现, 如果使用幂律方式访问, 纯粹的LRU和Redis的结果差别非常, 甚至看不出来。
 
 
 However you can raise the sample size to 10 at the cost of some additional CPU usage in order to closely approximate true LRU, and check if this makes a difference in your cache misses rate.
 
-当然你也可以提高样本数量为10, 以额外消耗一些CPU为代价, 使得结果更接近于真实的LRU, 并通过 cache miss 统计来判断差异。
+当然也可以将样本数量提高到10, 以额外消耗一些CPU为代价, 使得结果更接近于真实的LRU, 并通过 cache miss 统计信息来判断差异。
 
 
 To experiment in production with different values for the sample size by using the `CONFIG SET maxmemory-samples <count>` command, is very simple.
