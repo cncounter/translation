@@ -1,6 +1,6 @@
 #### Execute an external program
 
-#### 执行外部程序
+#### Java代码中调用外部程序
 
 Be sure to **read** this [Javaworld article](http://www.javaworld.com/javaworld/jw-12-2000/jw-1229-traps.html?page=1). It describes the various **pitfalls** related to the Runtime.exec() method.
 
