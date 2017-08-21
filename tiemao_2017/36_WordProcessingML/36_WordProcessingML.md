@@ -1,10 +1,13 @@
 Anatomy of a WordProcessingML File
+==
 
 # Package Structure
 
 A WordprocessingML or docx file is a zip file (a package) containing a number of "parts"--typically UTF-8 or UTF-16 encoded XML files, though strictly defined, a part is a stream of bytes. The package may also contain other media files, such as images and video. The structure is organized according to the [Open Packaging Conventions](http://officeopenxml.com/whatIsOOXML.php).
 
-You can look at the file structure and the files by simply renaming any docx file to a zip file and unzipping the file.![WordprocessingML file structure](http://officeopenxml.com/images/zipFile1.gif)
+You can look at the file structure and the files by simply renaming any docx file to a zip file and unzipping the file.
+
+![WordprocessingML file structure](01_zipFile1.gif)
 
 # Content Types
 
@@ -20,6 +23,8 @@ It's important to keep this in mind when adding new parts to the package.
 
 Every package contains a relationships part that defines the relationships between the other parts and to resources outside of the package. This separates the relationships from content and makes it easy to change relationships without changing the sources that reference targets.
 
+![package relationships part](02_zipFile2.gif)
+
 For an OOXML package, there is always a relationships part (.rels) within the _rels folder that identifies the starting parts of the package, or the package relationships. For example, the following defines the identity of the start part for the content:
 
 ```
@@ -29,6 +34,8 @@ For an OOXML package, there is always a relationships part (.rels) within the _r
 There are also typically relationships within .rels for app.xml and core.xml.
 
 In addition to the relationships part for the package, each part that is the source of one or more relationships will have its own relationships part. Each such relationship part is found within a _rels sub-folder of the part and is named by appending '.rels' to the name of the part. Typically the main content part (document.xml) has its own relationships part. It will contain relationships to the other parts of the content, such as styles.xml, themes,xml, and footer.xml, as well as the URIs for external links.
+
+![document relationships part](03_zipFile3.gif)
 
 A relationship can be either explicit or implicit. For an explicit relationship, a resource is referenced using the Id attribute of a <Relationship> element. That is, the Id in the source maps directly to an Id of a relationship item, with an explicit reference to the target.
 
