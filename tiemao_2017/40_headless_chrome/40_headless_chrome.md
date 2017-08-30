@@ -1,13 +1,21 @@
-# Chrome后台任务模式简介
+# Chrome Headless 命令行操作简介
 
+> `Headless` 是指没有GUI界面,运行在后台的程序。
 
-
+本文简要介绍如何使用命令行来调用 Chrome 执行后台任务。 关于 NodeJS 和 C++ 的API调用, 请参考本文末尾的相关链接。
 
 Headless Chrome is shipping in Chrome 59. It's a way to run the Chrome browser in a headless environment. Essentially, running Chrome without chrome! It brings all modern web platform features provided by Chromium and the Blink rendering engine to the command line.
 
-Why is that useful?
+Chrome Headless 模式从 Chrome 59 版本开始提供! 它使所有现代web平台特性提供的铬和眨眼的渲染引擎命令行。
+
+
+### Headless模式用来做什么?
 
 A headless browser is a great tool for automated testing and server environments where you don't need a visible UI shell. For example, you may want to run some tests against a real web page, create a PDF of it, or just inspect how the browser renders an URL.
+
+无头浏览器自动化测试是一个伟大的工具和服务器环境中你不需要一个可见的UI层.例如,您可能想要运行一些测试对一个真正的web页面,创建一个PDF,或只是检查浏览器如何呈现一个URL。
+
+
 
 
 生成页面加载后的截图:
