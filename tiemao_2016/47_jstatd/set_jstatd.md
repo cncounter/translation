@@ -47,6 +47,26 @@ CPU图形没有显示 ,原因是 jstatd 不支持监控CPU。
 
 说明: 客户端与服务器的JVM大版本号必须一致或者兼容。
 
+## 6. 配置JMX端口监听
+
+因为 JMX 端口是独属于各个Java程序的，所以需要在启动JVM的脚本,
+
+例如 Tomcat 的 `catalina.sh` 或 `startenv.sh` 中加上环境变量:
+
+
+```
+export JAVA_OPTS="$JAVA_OPTS
+    -Dcom.sun.management.jmxremote.port=19999
+    -Dcom.sun.management.jmxremote.ssl=false
+    -Dcom.sun.management.jmxremote.authenticate=false
+    -Djava.rmi.server.hostname=47.88.26.176"
+
+```
+
+此处为了排版方便，实际使用时请删除换行符.
+
+其中, `hostname=47.88.26.176` 是公网IP，`port=19999` 是端口号。如果只有一个IP，那么不指定 hostname 也可以。
+
 
 ## 参考:
 
