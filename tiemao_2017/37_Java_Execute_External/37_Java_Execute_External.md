@@ -1,10 +1,10 @@
 #### Execute an external program
 
-#### Java代码中调用外部程序
+#### Java调用外部程序
 
 Be sure to **read** this [Javaworld article](http://www.javaworld.com/javaworld/jw-12-2000/jw-1229-traps.html?page=1). It describes the various **pitfalls** related to the Runtime.exec() method.
 
-一定要读* * * *这[Javaworld文章](http://www.javaworld.com/javaworld/jw - 12 - 2000/jw - 1229 traps.html?page=1)。它描述了各种相关* *陷阱* * Runtime.exec()方法。
+基础知识请参考Javaworld的文章: [Runtime.exec() 的错误用法集锦](http://www.javaworld.com/article/2071275/core-java/when-runtime-exec---won-t.html)。它描述了各种相关* *陷阱* * Runtime.exec()方法。
 
 ##### Using Runtime.exec()
 
