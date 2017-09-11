@@ -8,7 +8,7 @@ Lars沃格尔(c)2007、2016 vogella GmbHVersion 3.0,24.06.2016
 
 > This tutorial introduces the usage of regular expressions and describes their implementation in Java. It also provides several Java regular expression examples.
 
-> 本教程介绍了正则表达式的使用和描述他们在Java实现。它还提供了多个Java正则表达式的例子。
+> 本教程通过实例介绍正则表达式的用法,以及Java中 regular expression 的实现。
 
 ## 1. Regular Expressions
 
@@ -16,11 +16,11 @@ Lars沃格尔(c)2007、2016 vogella GmbHVersion 3.0,24.06.2016
 
 ### 1.1. What are regular expressions?
 
-### 1.1。正则表达式是什么?
+### 1.1。什么是正则表达式?
 
 A *regular expression* defines a search pattern for strings. The abbreviation for regular expression is *regex*. The search pattern can be anything from a simple character, a fixed string or a complex expression containing special characters describing the pattern. The pattern defined by the regex may match one or several times or not at all for a given string.
 
-* *正则表达式定义字符串的搜索模式。正则表达式的缩写是正则表达式* *.搜索模式可以从一个简单的人物,一个固定的字符串或一个复杂的表达式包含特殊字符描述模式.模式定义的正则表达式可以匹配一个或几次或者根本不对于一个给定的字符串。
+*正则表达式(regular expression)* 定义了一种字符串的搜索模式。缩写是 *regex*. 搜索模式(search pattern)可以有多种形式, 如 简单字符(character), 固定的字符串(fixed string), 或者包含转义字符的复杂表达式. 对于给定的字符串(string), 正则表达式定义的模式可以匹配一到多次,也可以一次都不匹配。
 
 Regular expressions can be used to search, edit and manipulate text.
 
@@ -28,7 +28,7 @@ Regular expressions can be used to search, edit and manipulate text.
 
 The process of analyzing or modifying a text with a regex is called: *The regular expression is applied to the text/string*. The pattern defined by the regex is applied on the text from left to right. Once a source character has been used in a match, it cannot be reused. For example, the regex `aba` will match *ababababa* only two times (aba_aba__).
 
-分析的过程或修改文本正则表达式叫做:*正则表达式应用于文本字符串* /。模式定义的正则表达式是应用于文本从左到右.一旦用于源字符匹配,它不能被重用。例如,正则表达式`aba`只匹配* ababababa *两次(aba_aba__)。
+使用正则表达式来分析/修改文本的过程称为: *应用于文本/字符串的正则表达式* 。正则表达式是从左到右进行匹配的. 一旦string中的某个源字符被匹配到,就不能再次配匹配了。例如, 正则表达式 `aba` 只能匹配 *ababababa* 两次(`aba_aba__`)。
 
 ### 1.2. Regex examples
 
