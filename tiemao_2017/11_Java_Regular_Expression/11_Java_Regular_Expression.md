@@ -12,11 +12,11 @@ Lars沃格尔(c)2007、2016 vogella GmbHVersion 3.0,24.06.2016
 
 ## 1. Regular Expressions
 
-## 1。正则表达式
+## 1. 正则表达式
 
 ### 1.1. What are regular expressions?
 
-### 1.1。什么是正则表达式?
+### 1.1. 什么是正则表达式?
 
 A *regular expression* defines a search pattern for strings. The abbreviation for regular expression is *regex*. The search pattern can be anything from a simple character, a fixed string or a complex expression containing special characters describing the pattern. The pattern defined by the regex may match one or several times or not at all for a given string.
 
@@ -32,7 +32,7 @@ The process of analyzing or modifying a text with a regex is called: *The regula
 
 ### 1.2. Regex examples
 
-### 1.2。正则表达式示例
+### 1.2. 正则表达式示例
 
 A simple example for a regular expression is a (literal) string. For example, the *Hello World* regex matches the "Hello World" string. `.` (dot) is another example for a regular expression. A dot matches any single character; it would match, for example, "a" or "1".
 
@@ -53,27 +53,27 @@ The following tables lists several regular expressions and describes which patte
 
 ### 1.3. Support for regular expressions in programming languages
 
-### 1.3。在编程语言支持正则表达式
+### 1.3. 编程语言对正则表达式的支持
 
 Regular expressions are supported by most programming languages, e.g., Java, Perl, Groovy, etc. Unfortunately each language supports regular expressions slightly different.
 
-正则表达式支持大多数编程语言,例如、Java、Perl,Groovy等等。不幸的是每种语言支持正则表达式略有不同。
+大多数编程语言都支持正则表达式, 例如 Java、Perl, Groovy 等等。但各种语言支持的正则表达式都有一些不同。
 
 ## 2. Prerequisites
 
-## 2。先决条件
+## 2. 预备知识
 
 The following tutorial assumes that you have basic knowledge of the Java programming language.
 
-下面的教程假设您基本的Java编程语言的知识。
+本教程假设您基本掌握了Java编程语言。
 
 Some of the following examples use JUnit to validate the result. You should be able to adjust them in case if you do not want to use JUnit. To learn about JUnit please see [JUnit Tutorial](http://www.vogella.com/tutorials/JUnit/article.html).
 
-下面的例子使用JUnit来验证的结果。你应该能够调整他们,以防如果您不想使用JUnit。了解JUnit请参阅[JUnit教程](http://www.vogella.com/tutorials/JUnit/article.html)。
+部分示例使用JUnit来验证结果。如果不想使用JUnit,可以自己修改测试代码。关于 JUnit 的教程请参考 [JUnit教程: http://www.vogella.com/tutorials/JUnit/article.html](http://www.vogella.com/tutorials/JUnit/article.html)。
 
 ## 3. Rules of writing regular expressions
 
-## 3所示。编写正则表达式规则
+## 3. 正则表达式的书写规则
 
 The following description is an overview of available meta characters which can be used in regular expressions. This chapter is supposed to be a references for the different regex elements.
 
@@ -81,7 +81,7 @@ The following description is an overview of available meta characters which can 
 
 ### 3.1. Common matching symbols
 
-### 3.1。常见的匹配的符号
+### 3.1. 常见的匹配的符号
 
 
 
