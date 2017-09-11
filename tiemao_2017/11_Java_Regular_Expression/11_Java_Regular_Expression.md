@@ -1,24 +1,47 @@
 # Java Regex - Tutorial
 
+# Java正则表达式-教程
+
 Lars Vogel, (c) 2007, 2016 vogella GmbHVersion 3.0,24.06.2016
+
+Lars沃格尔(c)2007、2016 vogella GmbHVersion 3.0,24.06.2016
 
 > This tutorial introduces the usage of regular expressions and describes their implementation in Java. It also provides several Java regular expression examples.
 
+> 本教程介绍了正则表达式的使用和描述他们在Java实现。它还提供了多个Java正则表达式的例子。
+
 ## 1. Regular Expressions
+
+## 1。正则表达式
 
 ### 1.1. What are regular expressions?
 
+### 1.1。正则表达式是什么?
+
 A *regular expression* defines a search pattern for strings. The abbreviation for regular expression is *regex*. The search pattern can be anything from a simple character, a fixed string or a complex expression containing special characters describing the pattern. The pattern defined by the regex may match one or several times or not at all for a given string.
+
+* *正则表达式定义字符串的搜索模式。正则表达式的缩写是正则表达式* *.搜索模式可以从一个简单的人物,一个固定的字符串或一个复杂的表达式包含特殊字符描述模式.模式定义的正则表达式可以匹配一个或几次或者根本不对于一个给定的字符串。
 
 Regular expressions can be used to search, edit and manipulate text.
 
+正则表达式可以用来搜索,编辑和操纵文本。
+
 The process of analyzing or modifying a text with a regex is called: *The regular expression is applied to the text/string*. The pattern defined by the regex is applied on the text from left to right. Once a source character has been used in a match, it cannot be reused. For example, the regex `aba` will match *ababababa* only two times (aba_aba__).
+
+分析的过程或修改文本正则表达式叫做:*正则表达式应用于文本字符串* /。模式定义的正则表达式是应用于文本从左到右.一旦用于源字符匹配,它不能被重用。例如,正则表达式`aba`只匹配* ababababa *两次(aba_aba__)。
 
 ### 1.2. Regex examples
 
+### 1.2。正则表达式的例子
+
 A simple example for a regular expression is a (literal) string. For example, the *Hello World* regex matches the "Hello World" string. `.` (dot) is another example for a regular expression. A dot matches any single character; it would match, for example, "a" or "1".
 
+正则表达式是一个简单的例子(文字)的字符串。例如,* Hello World *正则表达式匹配的字符串“Hello World”。`.`(点)是另一个例子为一个正则表达式。一个点匹配任何单个的字符;它将匹配,例如,“a”或“1”。
+
 The following tables lists several regular expressions and describes which pattern they would match.
+
+下表列出了一些正则表达式和描述了模式匹配。
+
 
 | Regex            | Matches                                  |
 | ---------------- | ---------------------------------------- |
@@ -28,19 +51,37 @@ The following tables lists several regular expressions and describes which patte
 
 ### 1.3. Support for regular expressions in programming languages
 
+### 1.3。在编程语言支持正则表达式
+
 Regular expressions are supported by most programming languages, e.g., Java, Perl, Groovy, etc. Unfortunately each language supports regular expressions slightly different.
+
+正则表达式支持大多数编程语言,例如、Java、Perl,Groovy等等。不幸的是每种语言支持正则表达式略有不同。
 
 ## 2. Prerequisites
 
+## 2。先决条件
+
 The following tutorial assumes that you have basic knowledge of the Java programming language.
+
+下面的教程假设您基本的Java编程语言的知识。
 
 Some of the following examples use JUnit to validate the result. You should be able to adjust them in case if you do not want to use JUnit. To learn about JUnit please see [JUnit Tutorial](http://www.vogella.com/tutorials/JUnit/article.html).
 
+下面的例子使用JUnit来验证的结果。你应该能够调整他们,以防如果您不想使用JUnit。了解JUnit请参阅[JUnit教程](http://www.vogella.com/tutorials/JUnit/article.html)。
+
 ## 3. Rules of writing regular expressions
+
+## 3所示。编写正则表达式规则
 
 The following description is an overview of available meta characters which can be used in regular expressions. This chapter is supposed to be a references for the different regex elements.
 
+以下说明is an overview of meta查阅国家倾销进口品characters邮件表达形式。这一章中supposed is regex different for the参考资料内容。
+
 ### 3.1. Common matching symbols
+
+### 3.1。常见的匹配的符号
+
+
 
 | Regular Expression | Description                              |
 | ------------------ | ---------------------------------------- |
@@ -57,7 +98,13 @@ The following description is an overview of available meta characters which can 
 
 ### 3.2. Meta characters
 
+### 3.2。元字符
+
 The following meta characters have a pre-defined meaning and make certain common patterns easier to use, e.g., `\d` instead of `[0..9]`.
+
+下面的元字符有一个预定义的意义,确定共同模式更容易使用,例如,`\d`而不是`[0..9]`。
+
+
 
 | Regular Expression | Description                              |
 | ------------------ | ---------------------------------------- |
@@ -76,7 +123,13 @@ The following meta characters have a pre-defined meaning and make certain common
 
 ### 3.3. Quantifier
 
+### 3.3。量词
+
 A quantifier defines how often an element can occur. The symbols ?, *, + and {} define the quantity of the regular expressions
+
+一个量词定义一个元素可以发生的频率。这些符号吗?*,+,{ }定义正则表达式的数量
+
+
 
 | Regular Expression | Description                              | Examples                                 |
 | ------------------ | ---------------------------------------- | ---------------------------------------- |
@@ -89,13 +142,23 @@ A quantifier defines how often an element can occur. The symbols ?, *, + and {} 
 
 ### 3.4. Grouping and back reference
 
+### 3.4。分组和参考
+
 You can group parts of your regular expression. In your pattern you group elements with round brackets, e.g., `()`. This allows you to assign a repetition operator to a complete group.
+
+你可以把部分正则表达式。与圆括弧模式组元素,例如,`()`。这允许您指定一个重复操作一个完整的组织。
 
 In addition these groups also create a back reference to the part of the regular expression. This captures the group. A back reference stores the part of the `String` which matched the group. This allows you to use this part in the replacement.
 
+除了这些团体还创建一个引用正则表达式的一部分。这抓住了。返回引用存储的一部分`String`它匹配。这允许您使用这部分替代。
+
 Via the `$` you can refer to a group. `$1` is the first group, `$2` the second, etc.
 
+通过`$`您可以参考。`$1`第一组,`$2`第二,等等。
+
 Let’s, for example, assume you want to replace all whitespace between a letter followed by a point or a comma. This would involve that the point or the comma is part of the pattern. Still it should be included in the result.
+
+例如,让我们假设你想替换所有空格之间的字母后跟一个点或一个逗号。这将涉及点或逗号是模式的一部分.还应该包含在结果中。
 
 ```
 // Removes whitespace between a word character and . or ,
@@ -103,7 +166,11 @@ String pattern = "(\\w)(\\s+)([\\.,])";
 System.out.println(EXAMPLE_TEST.replaceAll(pattern, "$1$3"));
 ```
 
+
+
 This example extracts the text between a title tag.
+
+这个例子中提取标题标记之间的文本。
 
 ```
 // Extract the text between the two title elements
@@ -111,35 +178,67 @@ pattern = "(?i)(<title.*?>)(.+?)()";
 String updated = EXAMPLE_TEST.replaceAll(pattern, "$2");
 ```
 
+
+
 ### 3.5. Negative look ahead
+
+### 3.5。负面展望未来
 
 Negative look ahead provides the possibility to exclude a pattern. With this you can say that a string should not be followed by another string.
 
+负面展望未来提供了可能性排除模式。用这个你可以说一个字符串不应该跟着另一个字符串。
+
 Negative look ahead are defined via `(?!pattern)`. For example, the following will match "a" if "a" is not followed by "b".
+
+通过定义负面展望未来`(?!pattern)`。例如,以下将匹配“a”如果“a”不是“b”紧随其后。
 
 ```
 a(?!b)
 ```
 
+
+
 ### 3.6. Specifying modes inside the regular expression
 
+### 3.6。在正则表达式指定模式
+
 You can add the mode modifiers to the start of the regex. To specify multiple modes, simply put them together as in (?ismx).
+
+您可以添加修饰符模式的正则表达式。要指定多个模式,只需把它们放在一起(? ismx)。
 
 - (?i) makes the regex case insensitive.
 - (?s) for "single line mode" makes the dot match all characters, including line breaks.
 - (?m) for "multi-line mode" makes the caret and dollar match at the start and end of each line in the subject string.
 
+- (?我)使正则表达式不区分大小写。
+- (?)“单行模式”使点匹配所有字符,包括换行符。
+- (?)“多行模式”使插入符号和元匹配的每一行的开始和结束的主题字符串。
+
 ### 3.7. Backslashes in Java
+
+### 3.7。反斜杠在Java中
 
 The backslash `\` is an escape character in Java Strings. That means backslash has a predefined meaning in Java. You have to use double backslash `\\` to define a single backslash. If you want to define `\w`, then you must be using `\\w` in your regex. If you want to use backslash as a literal, you have to type `\\\\` as `\` is also an escape character in regular expressions.
 
+反斜杠`\`Java是一个转义字符的字符串。这意味着反斜杠在Java有一个预定义的意义。你必须使用两个反斜杠`\\`定义一个反斜杠。如果你想定义的`\w`,那么你必须使用`\\w`在你的正则表达式。如果您想要使用反斜杠作为文字,你需要的类型`\\\\`作为`\`也是一个转义字符的正则表达式。
+
 ## 4. Using regular expressions with String methods
+
+## 4所示。使用正则表达式的字符串的方法
 
 ### 4.1. Redefined methods on String for processing regular expressions
 
+### 4.1。重新定义字符串处理正则表达式的方法
+
 `Strings` in Java have built-in support for regular expressions. `Strings` have four built-in methods for regular expressions, i.e., the `matches()`, `split())`, `replaceFirst()` and`replaceAll()` methods. The `replace()` method does NOT support regular expressions.
 
+`Strings`在Java中都内置了对正则表达式的支持。`Strings`有四个内置的正则表达式的方法,即。,`matches()`,`split())`,`replaceFirst()`和`replaceAll()`方法。的`replace()`方法不支持正则表达式。
+
 These methods are not optimized for performance. We will later use classes which are optimized for performance.
+
+这些方法不是优化了性能。我们将稍后使用类的优化性能。
+
+
 
 | Method                                   | Description                              |
 | ---------------------------------------- | ---------------------------------------- |
@@ -149,6 +248,10 @@ These methods are not optimized for performance. We will later use classes which
 | `s.replaceAll("regex"), "replacement"`   | Replaces all occurances of `"regex"` with`"replacement`. |
 
 Create for the following example the Java project `de.vogella.regex.test`.
+
+下面的示例Java项目创建`de.vogella.regex.test`。
+
+
 
 ```
 package de.vogella.regex.test;
@@ -172,12 +275,19 @@ public class RegexTestStrings {
 
 ### 4.2. Examples
 
+### 4.2。例子
+
+
+
 ```
  The following class gives several examples for the usage of
 regular expressions with strings. See the comment for the purpose.
 ```
 
 If you want to test these examples, create for the Java project `de.vogella.regex.string`.
+
+如果你想测试这些示例,创建Java项目`de.vogella.regex.string`。
+
 
 ```
 package de.vogella.regex.string;
@@ -230,6 +340,9 @@ public class StringMatcher {
 ```
 
 And a small JUnit Test to validates the examples.
+
+和一个小JUnit测试验证的例子。
+
 
 ```
 package de.vogella.regex.string;
@@ -311,9 +424,17 @@ public class StringMatcherTest {
 
 ## 5. Pattern and Matcher
 
+## 5。模式和匹配器
+
 For advanced regular expressions the `java.util.regex.Pattern` and `java.util.regex.Matcher` classes are used.
 
+先进的正则表达式`java.util.regex.Pattern`和`java.util.regex.Matcher`类是使用。
+
 You first create a `Pattern` object which defines the regular expression. This `Pattern` object allows you to create a `Matcher` object for a given string. This `Matcher` object then allows you to do regex operations on a `String`.
+
+首先创建一个`Pattern`对象定义正则表达式。这`Pattern`允许你创建一个对象`Matcher`对于一个给定的字符串对象。这`Matcher`对象允许您做regex操作`String`。
+
+
 
 ```
 package de.vogella.regex.test;
@@ -346,13 +467,25 @@ public class RegexTestPatternMatcher {
 
 ## 6. Java Regex Examples
 
+## 6。Java正则表达式的例子
+
 The following lists typical examples for the usage of regular expressions. I hope you find similarities to your real-world problems.
+
+以下列出了使用正则表达式的典型例子。我希望你找到相似之处你的现实问题。
 
 ### 6.1. Or
 
+### 6.1。或
+
 Task: Write a regular expression which matches a text line if this text line contains either the word "Joe" or the word "Jim" or both.
 
+任务:写一个正则表达式匹配一个文本行如果这个文本行包含单词“乔”或“吉姆”这个词。
+
 Create a project `de.vogella.regex.eitheror` and the following class.
+
+创建一个项目`de.vogella.regex.eitheror`和下面的类。
+
+
 
 ```
 package de.vogella.regex.eitheror;
@@ -379,9 +512,17 @@ public class EitherOrCheck {
 
 ### 6.2. Phone number
 
+### 6.2。电话号码
+
 Task: Write a regular expression which matches any phone number.
 
+任务:写一个正则表达式匹配任何电话号码。
+
 A phone number in this example consists either out of 7 numbers in a row or out of 3 number, a (white)space or a dash and then 4 numbers.
+
+电话号码在这个例子中包含连续7的数字或3号,(白色)空间或少许,然后4号。
+
+
 
 ```
 package de.vogella.regex.phonenumber;
@@ -409,9 +550,17 @@ public class CheckPhone {
 
 ### 6.3. Check for a certain number range
 
+### 6.3。检查一定数量范围
+
 The following example will check if a text contains a number with 3 digits.
 
+下面的例子将检查文本是否包含一个数字3位数。
+
 Create the Java project `de.vogella.regex.numbermatch` and the following class.
+
+创建Java项目`de.vogella.regex.numbermatch`和下面的类。
+
+
 
 ```
 package de.vogella.regex.numbermatch;
@@ -455,9 +604,17 @@ public class CheckNumber {
 
 ### 6.4. Building a link checker
 
+### 6.4。建立一个链接检查器
+
 The following example allows you to extract all valid links from a webpage. It does not consider links which start with "javascript:" or "mailto:".
 
+下面的示例允许您从网页中提取所有有效链接。它不考虑链接开始“javascript:”或“mailto:”。
+
 Create a Java project called *de.vogella.regex.weblinks* and the following class:
+
+创建一个名为* de.vogella.regex的Java项目。树立自信*和下面的类:
+
+
 
 ```
 package de.vogella.regex.weblinks;
@@ -542,37 +699,65 @@ public class LinkGetter {
 
 ### 6.5. Finding duplicated words
 
+### 6.5。发现重复的单词
+
 The following regular expression matches duplicated words.
+
+下面的正则表达式匹配重复的单词。
 
 ```
 \b(\w+)\s+\1\b
 ```
 
+
+
 `\b` is a word boundary and `\1` references to the captured match of the first group, i.e., the first word.
+
+`\b`是一个单词边界和`\1`引用了第一组的匹配,即。,第一个单词。
 
 The `(?!-in)\b(\w+) \1\b` finds duplicate words if they do not start with "-in".
 
+的`(?!-in)\b(\w+) \1\b`发现重复的单词,如果他们不从“——”开始。
+
 TIP:Add `(?s)` to search across multiple lines.
+
+提示:添加`(?s)`跨多行搜索。
 
 ### 6.6. Finding elements which start in a new line
 
+### 6.6。发现元素中开始一个新行
+
 The following regular expression allows you to find the "title" word, in case it starts in a new line, potentially with leading spaces.
+
+下面的正则表达式允许您找到“标题”这个词,它开始在一个新行,可能与领先的空间。
 
 ```
 (\n\s*)title
 ```
 
+
+
 ### 6.7. Finding (Non-Javadoc) statements
 
+### 6.7。找到(Non-Javadoc)语句
+
 Sometimes (Non-Javadoc) are used in Java source code to indicate that the method overrides a super method. As of Java 1.6 this can be done via the `@Override` annotation and it is possible to remove these statements from your code. The following regular expression can be used to identify these statements.
+
+有时(Non-Javadoc)在Java源代码中使用表明该方法覆盖一个超级方法。在Java 1.6可以通过`@Override`注释和可以将这些语句从您的代码。下面的正则表达式可以用来识别这些语句。
 
 ```
 (?s) /\* \(non-Javadoc\).*?\*/
 ```
 
+
+
 #### 6.7.1. Replacing the DocBook table statement with Asciidoc
 
+#### 6.7.1。用Asciidoc取代DocBook表声明
+
 You can replace statements like the following:
+
+你可以替换语句如下:
 
 ```
 <programlisting language="java">
@@ -580,13 +765,23 @@ You can replace statements like the following:
 </programlisting>
 ```
 
+
+
 Corresponding regex:
+
+相应的正则表达式:
 
 ```
 `\s+<programlisting language="java">\R.\s+<xi:include xmlns:xi="http://www\.w3\.org/2001/XInclude" parse="text" href="\./examples/(.*).\s+/>\R.\s+</programlisting>`
 ```
 
+
+
 Target could be your example:
+
+目标可能是你的例子:
+
+
 
 ```
 `\R[source,java]\R----\R include::res/$1[]\R----
@@ -594,19 +789,36 @@ Target could be your example:
 
 ## 7. Processing regular expressions in Eclipse
 
+## 7所示。在Eclipse中处理正则表达式
+
 The Eclipse IDE allows to perform search and replace across a set of files using regular expressions. In Eclipse use the Ctrl+H shortcut to open the *Search* dialog.
+
+执行搜索和替换的Eclipse IDE允许跨一组文件使用正则表达式。在Eclipse中使用Ctrl + H快捷方式打开搜索* *对话框。
 
 Select the *File Search* tab and check the *Regular expression* flag before entering your regular expression. You can also specify the file type and the scope for the search and replace operation.
 
+选择搜索* *文件选项卡,并检查*正则表达式*国旗在进入你的正则表达式。您还可以指定文件类型和范围的搜索和替换操作。
+
 The following screenshots demonstrate how to search for the <![CDATA[]]]> XML tag with leading whitespace and how to remove the whitespace.
+
+下面的截图演示如何搜索< ![CDATA[]]]> XML标记与领先的空白,如何删除空格。
 
 image::regularexpressioneclipse10.png[Search and replace in Eclipse part 1,pdfwidth=40%}
 
+图片::regularexpressioneclipse10。png(第1部分在Eclipse中搜索和替换,pdfwidth = 40% }
+
 ![Search and replace in Eclipse part 2](http://www.vogella.com/tutorials/JavaRegularExpressions/img/xregularexpressioneclipse20.png.pagespeed.ic.blZ0iUfGRU.webp)
+
+
 
 The resulting dialog allows you to review the changes and remove elements which should not be replaced. If you press the `OK` button, the changes are applied.
 
+结果对话框允许您查看更改和删除元素不应该被取代。如果你按下`OK`应用按钮,更改。
+
 ![Search and replace in Eclipse part 3](http://www.vogella.com/tutorials/JavaRegularExpressions/img/xregularexpressioneclipse30.png.pagespeed.ic.lnmFei5IPp.webp)
+
+
+
 
 ## 8. About this website
 
