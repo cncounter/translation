@@ -32,22 +32,24 @@ The process of analyzing or modifying a text with a regex is called: *The regula
 
 ### 1.2. Regex examples
 
-### 1.2。正则表达式的例子
+### 1.2。正则表达式示例
 
 A simple example for a regular expression is a (literal) string. For example, the *Hello World* regex matches the "Hello World" string. `.` (dot) is another example for a regular expression. A dot matches any single character; it would match, for example, "a" or "1".
 
-正则表达式是一个简单的例子(文字)的字符串。例如,* Hello World *正则表达式匹配的字符串“Hello World”。`.`(点)是另一个例子为一个正则表达式。一个点匹配任何单个的字符;它将匹配,例如,“a”或“1”。
+最简单的例子是文本字符串。例如, 正则表达式 `Hello World` 匹配的就是字符串 "Hello World"。 正则表达式中的 `.`(dot,英文句号 ,点号)则是另一种用法。每个点号匹配任意的单个字符(character); 例如, "a" 或者 "1" 之类的字符。
 
 The following tables lists several regular expressions and describes which pattern they would match.
 
-下表列出了一些正则表达式和描述了模式匹配。
+下表列出了一些简单正则表达式,以及匹配的模式。
 
 
 | Regex            | Matches                                  |
 | ---------------- | ---------------------------------------- |
-| this is text     | Matches exactly "this is text"           |
-| this\s+is\s+text | Matches the word "this" followed by one or more whitespace characters followed by the word "is" followed by one or more whitespace characters followed by the word "text". |
-| ^\d+(\.\d+)?     | ^ defines that the patter must start at beginning of a new line. \d+ matches one or several digits. The ? makes the statement in brackets optional. \. matches ".", parentheses are used for grouping. Matches for example "5", "1.5" and "2.21". |
+| `this is text`     | 完全匹配 "this is text"           |
+| `this\s+is\s+text` | 匹配的内容为: 字符串 "this", 加上1到多个空白字符(whitespace characters), 加上字符串 "is", 加上1到多个空白字符(whitespace characters),  再加上字符串 "text". |
+| `^\d+(\.\d+)?`     | 转义字符 `^`(非) 在此处表示：必须匹配一行的开始处. `\d+` 匹配1到多个数字. 英文问号 `?` 表示小括号中的部分是可选的(即出现 0~1次). `\.` 匹配的是字符 ".", 圆括号(parentheses) 表示一个分组. 整个正则匹配的是正整数或小数,例如: "5", "1.5" 或者 "2.21" 等等. |
+
+> 说明,中文全角空格(`　`)不是(whitespace characters)，可以认为其属于特殊字符,或者属于汉字。
 
 ### 1.3. Support for regular expressions in programming languages
 
