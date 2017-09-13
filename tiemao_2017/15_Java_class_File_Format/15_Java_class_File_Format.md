@@ -7,38 +7,39 @@ This chapter describes the `class` file format of the Java Virtual Machine. Each
 
 A `class` file consists of a stream of 8-bit bytes. All 16-bit, 32-bit, and 64-bit quantities are constructed by reading in two, four, and eight consecutive 8-bit bytes, respectively. Multibyte data items are always stored in big-endian order, where the high bytes come first. In the Java SE platform, this format is supported by interfaces `java.io.DataInput` and `java.io.DataOutput` and classes such as `java.io.DataInputStream` and `java.io.DataOutputStream`.
 
-`class` 文件由8位的字节流组成(8-bit bytes)。所有的16位、32位和64位的值都是由连续的 2个,4个,8个字节组成. 多字节组成的数据项, 存储为大端字节序(big-endian order), 高位字节放在前面。在Java SE平台上, 所有实现 `java.io.DataInput` 和 `java.io.DataOutput` 接口的类都支持这种格式， 如 `java.io.DataInputStream` 以及 `java.io.DataOutputStream` 类。
+`class` 文件由8位的字节流组成(8-bit bytes)。所有的16位、32位和64位的数据都是由连续的 2个,4个,8个字节组成. 多字节组成的数据项, 存储为大端字节序(big-endian order), 高位字节放在前面。在Java中, 读写这种格式的标准接口是 `java.io.DataInput` 和 `java.io.DataOutput`, 所有实现类, 比如 `java.io.DataInputStream` 以及 `java.io.DataOutputStream` 类都支持class文件格式。
 
-> 大端字节序(big-endian order): 比如数值 `454355811`, 表述为二进制就是 `00011011 00010100 11101011 01100011`; 对应的16进制为 `1B14EB63`, 也可以加上 `0x`的前缀 `0x1B14EB63`;  
-> 在内存中从前到后的排列是: `| 1B | 14 | EB | 63 |`。
-> 小端字节序, 内存中从前到后的排列就是: `| 63 | EB | 14 | 1B |`。
+> **备注**: 大端字节序(big-endian order): 比如数值 `454355811`, 表述为二进制就是 `00011011 00010100 11101011 01100011`; 对应的16进制为 `1B14EB63`, 也可以加上 `0x`的前缀 `0x1B14EB63`;  
+> 从前到后的字节流是: `| 1B | 14 | EB | 63 |`。
+> 小端字节序, 从前到后的字节流就是: `| 63 | EB | 14 | 1B |`。
 > 可以看到、小端字节序并不方便人类的直观理解。
 > ???? 待校对。。。
 
 This chapter defines its own set of data types representing `class` file data: The types `u1`, `u2`, and `u4` represent an unsigned one-, two-, or four-byte quantity, respectively. In the Java SE platform, these types may be read by methods such as `readUnsignedByte`, `readUnsignedShort`, and `readInt` of the interface `java.io.DataInput`.
 
-本章定义了一些 `class` 文件数据的表示类型: `u1`, `u2`, 和 `u4` 分别表示无符号的 1字节、2字节和4字节的量. 在Java SE平台, 这些类型可以通过 `java.io.DataInput` 接口的 `readUnsignedByte`, `readUnsignedShort`, and `readInt` 方法读取。
+本章使用的数据类型为: `u1`, `u2`, 和 `u4`, 分别表示无符号(unsigned)的 1字节、2字节和4字节数据. 在Java中, 这些类型可以通过 `java.io.DataInput` 接口的 `readUnsignedByte`, `readUnsignedShort`, and `readInt` 方法来读取。
 
+> "quantity", 本文大部分翻译为 "数据";
 
 This chapter presents the `class` file format using pseudostructures written in a C-like structure notation. To avoid confusion with the fields of classes and class instances, etc., the contents of the structures describing the `class` file format are referred to as *items*. Successive items are stored in the `class` file sequentially, without padding or alignment.
 
-本章提出的 `class` 文件格式, 使用类C语言的伪结构(pseudo-structures)表示。为了避免混淆 属性域(field) 与 类实例(instance), 表示 `class` 文件格式的结构体 称为 *items* (项)。 各个项按顺序连续地存储在 `class` 文件中, 互相之间没有填充或对齐。
+本章使用类C语言方式的伪结构体(pseudo-structures)来表示 `class` 文件格式。为了区别 field(属性域) 和 instance(类实例), `class` 文件对应结构体中的内容称之为 *item(项)*。 各个 item 按顺序保存到 `class` 文件中, 没有补齐(padding)或对齐(alignment)。
 
 
 *Tables*, consisting of zero or more variable-sized items, are used in several `class` file structures. Although we use C-like array syntax to refer to table items, the fact that tables are streams of varying-sized structures means that it is not possible to translate a table index directly to a byte offset into the table.
 
-*Tables*, 包含 0 或多个大小可变的项,用于多个 `class` 文件结构. 虽然我们使用 类C数组 的语法来引用表中的项, 但实际上, 表是由不同大小的结构所组成的流, 也就是说不能通过下标和字节偏移量直接进行访问。
+*Table(表)*, 由0到多个大小可变的item组成, 在多种结构中都有使用. 虽然我们使用数组的方式来指向 table 中的 item , 但实际上 table 是一串数据流, 由多个不同大小的结构所组成, 也就不能通过下标简单地计算出偏移量。
 
 
 Where we refer to a data structure as an *array*, it consists of zero or more contiguous fixed-sized items and can be indexed like an array.
 
-而 *array* 数据结构, 则包含0到多个,连续的,固定大小的项, 可以像数组一样被索引。
+而 *array(数组)* 结构, 则包含0到多个, 连续的, 固定尺寸的 item, 可以像数组一样计算出偏移量。
 
 
 Reference to an ASCII character in this chapter should be interpreted to mean the Unicode code point corresponding to the ASCII character.
 
 
-本章引用的每一个ASCII字符, 都应该解释为表示ASCII字符的相应Unicode编码。
+本章所列的每一个ASCII字符, 都表示对应的Unicode编码。
 
 
 
