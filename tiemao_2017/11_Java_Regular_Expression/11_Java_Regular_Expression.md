@@ -114,10 +114,11 @@ The following meta characters have a pre-defined meaning and make certain common
 | `\W`               | 非单词字符, 等价于 `[^\w]`             |
 | `\S+`              | 匹配1到多个非空白字符          |
 | `\b`               | 匹配单词边界(word boundary), 单词字符指的是 `[a-zA-Z0-9_]` |
-
-| **   | These meta characters have the same first letter as their representation, e.g., digit, space, word, and boundary. Uppercase symbols define the opposite. |
 | ---- | ---------------------------------------- |
 |      |                                          |
+
+
+> These meta characters have the same first letter as their representation, e.g., digit, space, word, and boundary. Uppercase symbols define the opposite. 
 
 ### 3.3. Quantifier
 
