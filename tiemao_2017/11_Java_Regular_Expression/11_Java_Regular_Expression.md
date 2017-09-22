@@ -1,14 +1,10 @@
 # Java Regex - Tutorial
 
-# Java正则表达式-教程
-
-Lars Vogel, (c) 2007, 2016 vogella GmbHVersion 3.0,24.06.2016
-
-Lars沃格尔(c)2007、2016 vogella GmbHVersion 3.0,24.06.2016
+# Java正则表达式教程
 
 > This tutorial introduces the usage of regular expressions and describes their implementation in Java. It also provides several Java regular expression examples.
 
-> 本教程通过实例介绍正则表达式的用法,以及Java中 regular expression 的实现。
+> 本教程通过实例介绍正则表达式的用法,以及Java中 正则表达式的实现。
 
 ## 1. Regular Expressions
 
@@ -16,15 +12,15 @@ Lars沃格尔(c)2007、2016 vogella GmbHVersion 3.0,24.06.2016
 
 ### 1.1. What are regular expressions?
 
-### 1.1. 什么是正则表达式?
+### 1.1. 正则表达式简介
 
 A *regular expression* defines a search pattern for strings. The abbreviation for regular expression is *regex*. The search pattern can be anything from a simple character, a fixed string or a complex expression containing special characters describing the pattern. The pattern defined by the regex may match one or several times or not at all for a given string.
 
-*正则表达式(regular expression)* 定义了一种字符串的搜索模式。缩写是 *regex*. 搜索模式(search pattern)可以有多种形式, 如 简单字符(character), 固定的字符串(fixed string), 或者包含转义字符的复杂表达式. 对于给定的字符串(string), 正则表达式定义的模式可以匹配一到多次,也可以一次都不匹配。
+*正则表达式(regular expression)* 定义了一种字符串的搜索模式。缩写是 *regex*. 搜索模式(search pattern)包括多种形式, 如 简单字符(character), 固定字符串(fixed string), 或以及包含转义字符的复杂表达式等等. 对于给定的字符串, 正则表达式所定义的模式可以匹配一次或多次,也可能一次都不匹配。
 
 Regular expressions can be used to search, edit and manipulate text.
 
-正则表达式可以用来搜索,编辑和操纵文本。
+正则表达式常用来搜索,编辑和操纵文本。
 
 The process of analyzing or modifying a text with a regex is called: *The regular expression is applied to the text/string*. The pattern defined by the regex is applied on the text from left to right. Once a source character has been used in a match, it cannot be reused. For example, the regex `aba` will match *ababababa* only two times (aba_aba__).
 
@@ -32,7 +28,7 @@ The process of analyzing or modifying a text with a regex is called: *The regula
 
 ### 1.2. Regex examples
 
-### 1.2. 正则表达式示例
+### 1.2. 示例
 
 A simple example for a regular expression is a (literal) string. For example, the *Hello World* regex matches the "Hello World" string. `.` (dot) is another example for a regular expression. A dot matches any single character; it would match, for example, "a" or "1".
 
@@ -65,7 +61,7 @@ Regular expressions are supported by most programming languages, e.g., Java, Per
 
 The following tutorial assumes that you have basic knowledge of the Java programming language.
 
-本教程假设您基本掌握了Java编程语言。
+本教程假设读者基本掌握Java编程语言。
 
 Some of the following examples use JUnit to validate the result. You should be able to adjust them in case if you do not want to use JUnit. To learn about JUnit please see [JUnit Tutorial](http://www.vogella.com/tutorials/JUnit/article.html).
 
@@ -73,51 +69,51 @@ Some of the following examples use JUnit to validate the result. You should be a
 
 ## 3. Rules of writing regular expressions
 
-## 3. 正则表达式的书写规则
+## 3. 正则表达式的语法规则
 
 The following description is an overview of available meta characters which can be used in regular expressions. This chapter is supposed to be a references for the different regex elements.
 
-以下说明is an overview of meta查阅国家倾销进口品characters邮件表达形式。这一章中supposed is regex different for the参考资料内容。
+下面简要介绍正则表达式中的元字符。本章可以作为各种正则元素的参考。
 
 ### 3.1. Common matching symbols
 
-### 3.1. 常见的匹配的符号
+### 3.1. 通用表达式简介
 
 
 
 | Regular Expression | Description                              |
 | ------------------ | ---------------------------------------- |
-| `.`                | Matches any character                    |
-| `^regex`           | Finds regex that must match at the beginning of the line. |
-| `regex$`           | Finds regex that must match at the end of the line. |
-| `[abc]`            | Set definition, can match the letter a or b or c. |
-| `[abc][vz]`        | Set definition, can match a or b or c followed by either v or z. |
-| `[^abc]`           | When a caret appears as the first character inside square brackets, it negates the pattern. This pattern matches any character except a or b or c. |
-| `[a-d1-7]`         | Ranges: matches a letter between a and d and figures from 1 to 7, but not d1. |
-| `X|Z`              | Finds X or Z.                            |
-| `XZ`               | Finds X directly followed by Z.          |
-| `$`                | Checks if a line end follows.            |
+| `.`                | 点号(`.`),匹配任意字符                             |
+| `^regex`           | 小尖号(`^`), 必须以后面紧跟着的字符(如regex)打头. |
+| `regex$`           | 美元符号(`$`),对应的字符(如regex)必须出现在一行结尾. |
+| `[abc]`            | 字符的集合(set), 匹配 a or b or c. |
+| `[abc][vz]`        | 字符的集合(set), 匹配 a or b or c 加上 v or z. |
+| `[^abc]`           | 如果小尖号(`^`, caret, 此处读作 `非`) 是中括号里面的第一个字符, , 则表示否定(negate). 匹配 `a`, `b`, `c` 三个字符之外的其他任意字符. |
+| `[a-d1-7]`         | 范围表示法: 匹配 `a` 到 `d` 之间的单个字符,或者 `1` 到 `7`之间的单个字符, 但不是`d1`这种. |
+| `X|Z`              | 匹配 `X` 或者 `Z`.                            |
+| `XZ`               | 匹配`XZ`, X和Z必须按顺序全部出现.          |
+| `$`                | 判断一行是否结束.            |
 
 ### 3.2. Meta characters
 
-### 3.2。元字符
+### 3.2. Meta characters(元字符)
 
 The following meta characters have a pre-defined meaning and make certain common patterns easier to use, e.g., `\d` instead of `[0..9]`.
 
-下面的元字符有一个预定义的意义,确定共同模式更容易使用,例如,`\d`而不是`[0..9]`。
+下面的元字符有预置的含义, 可以更简单地提取通用模式, 例如, 使用 `\d` 来代替 `[0..9]`。
 
 
 
 | Regular Expression | Description                              |
 | ------------------ | ---------------------------------------- |
-| `\d`               | Any digit, short for `[0-9]`             |
-| `\D`               | A non-digit, short for `[^0-9]`          |
-| `\s`               | A whitespace character, short for `[ \t\n\x0b\r\f]` |
-| `\S`               | A non-whitespace character, short for    |
-| `\w`               | A word character, short for `[a-zA-Z_0-9]` |
-| `\W`               | A non-word character `[^\w]`             |
-| `\S+`              | Several non-whitespace characters        |
-| `\b`               | Matches a word boundary where a word character is `[a-zA-Z0-9_]` |
+| `\d`               | 任意数字, 等价于 `[0-9]` 但更简洁        |
+| `\D`               | 非数字, 等价于  `[^0-9]` 但更简洁        |
+| `\s`               | 空白字符(whitespace), 等价于 `[ \t\n\x0b\r\f]` |
+| `\S`               | 非空白字符, short for    |
+| `\w`               | 单词字符,字母数字下划线,(word character), 等价于 `[a-zA-Z_0-9]` |
+| `\W`               | 非单词字符, 等价于 `[^\w]`             |
+| `\S+`              | 匹配1到多个非空白字符          |
+| `\b`               | 匹配单词边界(word boundary), 单词字符指的是 `[a-zA-Z0-9_]` |
 
 | **   | These meta characters have the same first letter as their representation, e.g., digit, space, word, and boundary. Uppercase symbols define the opposite. |
 | ---- | ---------------------------------------- |
@@ -125,7 +121,7 @@ The following meta characters have a pre-defined meaning and make certain common
 
 ### 3.3. Quantifier
 
-### 3.3。量词
+### 3.3. Quantifier(量词)
 
 A quantifier defines how often an element can occur. The symbols ?, *, + and {} define the quantity of the regular expressions
 
@@ -855,4 +851,6 @@ See [Licence](http://www.vogella.com/license.html).
 
 
 原文链接: <http://www.vogella.com/tutorials/JavaRegularExpressions/article.html>
+
+原文日期: 2016.06.24
 
