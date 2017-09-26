@@ -417,7 +417,9 @@ Shape Properties.
 
 - 不能有`&nbsp;` ?
 
+参考:
 
+- <https://msdn.microsoft.com/en-us/library/office/gg615596(v=office.14).aspx>
 
 
 
