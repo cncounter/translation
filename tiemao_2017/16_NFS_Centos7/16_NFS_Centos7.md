@@ -38,7 +38,7 @@ Now we will install these packages at the CentOS 7.0 server end as:
 首先安装 nfs-utils 包:
 
 
-    yum install nfs-utils
+    yum install nfs-utils -y
 
 
 Now the configuration part will include as:
@@ -161,41 +161,55 @@ Now we are ready with the NFS server part.
 In my case I have the client as CentOS 7.0 desktop. Other CentOS versions will also work for the same. Install the packages as follows:
 
 
-首先安装 nfs-utils 包:
+客户端 CentOS 7.0上, 首先安装 nfs-utils 包:
 
 
-    yum install nfs-utils
+    yum install nfs-utils -y
 
+如果客户端是 CentOS 6,使用下面的安装语句
 
+```
+# CentOS 6安装软件包  
+yum -y install nfs-utils rpcbind 
+```
+
+显示`10.172.115.120`服务器上的nfs磁盘:
+
+    showmount -e 10.172.115.120
 
 
 Now create the NFS directory mount point as follows:
 
 然后创建NFS挂载点:
 
-    mkdir -p /usr/local/download
+    mkdir -p /usr/local/download/web2
 
 
 Start the services and add them to boot menu.
 
 接着添加启动项, 并启动服务。
 
+```
+# CentOS7
 
-    systemctl enable rpcbind
+systemctl enable rpcbind
 
-    systemctl enable nfs-server
+systemctl enable nfs-server
 
-    systemctl enable nfs-lock
+systemctl enable nfs-lock
 
-    systemctl enable nfs-idmap
+systemctl enable nfs-idmap
 
-    systemctl start rpcbind
+systemctl start rpcbind
 
-    systemctl start nfs-server
+systemctl start nfs-server
 
-    systemctl start nfs-lock
+systemctl start nfs-lock
 
-    systemctl start nfs-idmap
+systemctl start nfs-idmap
+```
+
+CentOS6客户端不需要设置这些服务。 可以直接执行下面的挂载语句
 
 
 Next we will mount the NFS shared content in the client machine as shown below:
@@ -203,10 +217,10 @@ Next we will mount the NFS shared content in the client machine as shown below:
 接下来, 在客户端机器挂载NFS目录:
 
 
-	mount -t nfs 10.172.115.120:/usr/local/download /usr/local/download
+	mount -t nfs 10.172.115.120:/usr/local/download /usr/local/download/web2
 
 
-意思是将 10.172.115.120 上的 /usr/local/download 节点挂载到本机的 /usr/local/download 目录。
+意思是将 10.172.115.120 上的 /usr/local/download 节点挂载到本机的 /usr/local/download/web2 目录。
 
 
 Now we are connected with the NFS share, we will crosscheck it as follows:
@@ -277,7 +291,7 @@ Add the entries like this:
 添加一个条目:
 
 
-    10.172.115.120:/usr/local/download    /usr/local/download   nfs defaults 0 0
+    10.172.115.120:/usr/local/download    /usr/local/download/web2   nfs defaults 0 0
 
 
 Note 10.172.115.120 is the server NFS-share  IP address, it will vary in your case.
