@@ -481,3 +481,5 @@ sudo vim wp-config.php
 - <https://www.digitalocean.com/community/tutorials/initial-server-setup-with-centos-7>
 
 
+- <https://codex.wordpress.org/Nginx>
+
