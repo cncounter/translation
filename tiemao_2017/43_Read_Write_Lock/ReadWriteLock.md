@@ -10,7 +10,7 @@ A `ReadWriteLock` maintains a pair of associated [`locks`](https://docs.oracle.c
 
 All `ReadWriteLock` implementations must guarantee that the memory synchronization effects of `writeLock` operations (as specified in the [`Lock`](https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/locks/Lock.html) interface) also hold with respect to the associated `readLock`. That is, a thread successfully acquiring the read lock will see all updates made upon previous release of the write lock.
 
-所有`ReadWriteLock`实现必须保证内存同步的影响`writeLock`操作(按[`Lock`)(https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/locks/Lock.html)接口)也持有相关的`readLock`。成功,一个线程获取读取锁将会看到所有更新在先前版本的写锁。
+`ReadWriteLock` 的实现类必须保证 `writeLock`操作对内存同步的效果(参见 [`Lock`](https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/locks/Lock.html) 接口说明文档), 同时也必须遵守 `readLock` 相关的规范。 也就是说, 某个线程获取到读锁的时候, 必须能看到前面的写锁线程所做的更新。
 
 A read-write lock allows for a greater level of concurrency in accessing shared data than that permitted by a mutual exclusion lock. It exploits the fact that while only a single thread at a time (a *writer* thread) can modify the shared data, in many cases any number of threads can concurrently read the data (hence *reader* threads). In theory, the increase in concurrency permitted by the use of a read-write lock will lead to performance improvements over the use of a mutual exclusion lock. In practice this increase in concurrency will only be fully realized on a multi-processor, and then only if the access patterns for the shared data are suitable.
 
