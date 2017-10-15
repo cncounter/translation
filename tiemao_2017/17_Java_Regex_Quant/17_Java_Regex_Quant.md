@@ -322,19 +322,19 @@ There are subtle differences among greedy, reluctant, and possessive quantifiers
 
 Greedy quantifiers are considered "greedy" because they force the matcher to read in, or eat, the entire input string prior to attempting the first match. If the first match attempt (the entire input string) fails, the matcher backs off the input string by one character and tries again, repeating the process until a match is found or there are no more characters left to back off from. Depending on the quantifier used in the expression, the last thing it will try matching against is 1 or 0 characters.
 
-贪婪量词被认为是“贪婪的”,因为他们强迫读的匹配器,或吃,整个输入字符串在试图第一场比赛之前.如果第一个匹配尝试(整个输入字符串)失败,匹配器的背了一个字符的输入字符串并再次尝试,重复这个过程,直到找到匹配或没有其他字符从左到回来.根据使用的量词表达,它将尝试匹配对的最后一件事就是1或0字符。
+贪婪量词(Greedy quantifier), 其试图在第一个匹配时就吃掉所有的输入字符. 如果第一个匹配试图吃掉整个输入字符串失败, 匹配器吐掉最后一个字符, 并再次尝试匹配, 重复这个过程, 直到找到一个匹配, 或者是一个字符都不剩下. 根据表达式中的量词, 最后才尝试匹配0或者是1个字符。
 
 The reluctant quantifiers, however, take the opposite approach: They start at the beginning of the input string, then reluctantly eat one character at a time looking for a match. The last thing they try is the entire input string.
 
-然而,不情愿的量词采取相反的方法:他们从输入字符串的开头开始,然后不情愿地吃一个字符时间寻找一个匹配.他们的最后一件事就是整个输入字符串。
+懒惰量词(reluctant quantifier),采取的策略正好相反: 他们从输入字符串的开头开始, 每吃下一个字符,就尝试进行一次匹配. 最后才尝试匹配整个输入字符串。
 
 Finally, the possessive quantifiers always eat the entire input string, trying once (and only once) for a match. Unlike the greedy quantifiers, possessive quantifiers never back off, even if doing so would allow the overall match to succeed.
 
-最后,所有格量词总是吃整个输入字符串,尝试一次(且仅一次)比赛.与贪婪量词,占有欲强的量词从不后退,即使这样做会使整个匹配成功。
+占有量词(possessive quantifier) 总是吃下整个输入字符串, 只尝试一次匹配. 与贪婪量词不同,占有量词从不后退, 即使匹配失败。
 
 To illustrate, consider the input string xfooxxxxxxfoo.
 
-为了说明这一点,考虑xfooxxxxxxfoo输入字符串。
+请看下面的示例:
 
 
 
@@ -354,15 +354,15 @@ To illustrate, consider the input string xfooxxxxxxfoo.
 
 The first example uses the greedy quantifier .* to find "anything", zero or more times, followed by the letters "f" "o" "o". Because the quantifier is greedy, the .* portion of the expression first eats the entire input string. At this point, the overall expression cannot succeed, because the last three letters ("f" "o" "o") have already been consumed. So the matcher slowly backs off one letter at a time until the rightmost occurrence of "foo" has been regurgitated, at which point the match succeeds and the search ends.
 
-第一个例子使用贪婪量词。*寻找“什么”,零个或多个时期,紧随其后的是字母“f”“o”“o”。因为贪婪量词,.*部分表达式的第一次吃整个输入字符串。在这一点上,整个表达式不能成功,因为最后三个字母(“f”“o”“o”)已经被消耗.因此,匹配器慢慢退后一个字母,直到最右边的出现,“foo”令人反胃的,此时比赛成功,搜索结束。
+第一个示例使用贪婪量词。`.*` 查找的是任意字符(anything), 零到多次, 紧随其后的是字母 "f" "o" "o"。因为是贪婪量词, `.*` 部分首先吃掉整个输入字符串。此时整个表达式匹配不成功, 因为最后三个字母("f" "o" "o")已经被 `.*` 吃掉了. 然后, 匹配器慢慢地吐出最后1个字符,再吐出最后1个字符,再吐出最后1个字符, 直到最右边出现 "foo" 为止, 这时候匹配成功, 查找结束。
 
 The second example, however, is reluctant, so it starts by first consuming "nothing". Because "foo" doesn't appear at the beginning of the string, it's forced to swallow the first letter (an "x"), which triggers the first match at 0 and 4. Our test harness continues the process until the input string is exhausted. It finds another match at 4 and 13.
 
-然而,第二个例子是不情愿的,所以它开始首先使用“无”.Because "foo" doesn 't appear at the beginning of the string, it' s forced to swallow the first letter (an "x"), which triggers the first match at 0 and 4.我们的测试工具继续输入字符串的过程,直到筋疲力尽。找到另一个比赛在4和13所示。
+第二个例子是懒惰模式的, 所以它最开始什么都不吃. 因为紧接着后面没有出现 "foo"，所以它被迫吞下第一个字母("x"), 然后触发了第一个匹配, 在0和4之间。然后从索引4的后面继续匹配过程, 直到输入字符串耗尽为止。它在4和13之间找到了另一个匹配。
 
 The third example fails to find a match because the quantifier is possessive. In this case, the entire input string is consumed by .*+, leaving nothing left over to satisfy the "foo" at the end of the expression. Use a possessive quantifier for situations where you want to seize all of something without ever backing off; it will outperform the equivalent greedy quantifier in cases where the match is not immediately found.
 
-第三个例子未能找到匹配由于量词的占有欲。在这种情况下,整个输入字符串被.* +,剩下的剩下来满足“foo”结束时的表情.使用所有格量词的情况你想抓住所有的东西没有后退;它将超越相当于贪婪量词的情况下是不相匹配 立即发现。
+第三个例子, 由于使用占有量词, 所以未能找到匹配。在这种情况下, 整个输入字符串都被 `.*+` 吃掉了, 剩下的空字符串不能满足"foo". 占有量词只适用于想匹配所有的字符的情况, 而且它寸步不让;  如果不能立即匹配, 它的性能会比贪婪模式要好。
 
 
 
