@@ -251,19 +251,19 @@ Finally, to specify an upper limit on the number of occurances, add a second num
 
 Here the first match is forced to stop at the upper limit of 6 characters. The second match includes whatever is left over, which happens to be three a's — the mimimum number of characters allowed for this match. If the input string were one character shorter, there would not be a second match since only two a's would remain.
 
-这里的第一场比赛是被迫停在6个字符的上限.第二个比赛包括任何遗留下来的,恰好是三的——至少要为这场比赛允许的字符数.如果输入字符串是一个字符短,不会有第二个比赛以来的仍将只有两个。
+这里的第一个匹配在到6个字符上限时停止. 第二个匹配包含了剩下的字母, 恰好是三个 `a` —— 该模式要求的最小字符个数. 如果输入的字符串再短一点点, 就不会发生第二个匹配, 因为2个 `a` 字母匹配不上该模式。
 
-Capturing Groups and Character Classes with Quantifiers
+### Capturing Groups and Character Classes with Quantifiers
 
-捕获组和字符类量词
+### 作用于捕获组(Capturing Groups)或字符类(Character Class)的量词
 
 Until now, we've only tested quantifiers on input strings containing one character. In fact, quantifiers can only attach to one character at a time, so the regular expression "abc+" would mean "a, followed by b, followed by c one or more times". It would not mean "abc" one or more times. However, quantifiers can also attach to Character Classes and Capturing Groups, such as [abc]+ (a or b or c, one or more times) or (abc)+ (the group "abc", one or more times).
 
-到目前为止,我们只测试了量词在输入字符串包含一个字符.事实上,量词只能连接到一个字符,所以正则表达式“abc +”意味着“a,紧随其后的是b,紧随其后的是c的一个或多个时代”.这并不意味着“abc”一次或多次.然而,量词也可以附加字符类和捕获组,如(abc)+(a或b或c,一个或多个次)或(abc)+(该组织“abc”,一次或多次)。
+到目前为止, 我们对量词只测试了单个字符的情况. 事实上, 量词每次只能连接到一个字符上, 所以正则表达式 “`abc +`” 的含义是:  “字母a, 后面跟着字母b, 然后再跟着 1到多个字母c”.  而不是出现1到多次的 “abc”. 当然, 量词也可以关联到字符类(Character Class)和捕获组(Capturing Group), 例如 `[abc]+`, 表示 "a或b或c, 出现1到多次"), 而 `(abc)+` 则表示 “`abc`” 这个组整体出现 1次到多次。
 
 Let's illustrate by specifying the group (dog), three times in a row.
 
-让我们说明通过指定组(狗),连续三次。
+让我们看看具体的示例, 指定group (`dog`) 连续出现三次。
 
 
 	Enter your regex: (dog){3}
@@ -277,11 +277,11 @@ Let's illustrate by specifying the group (dog), three times in a row.
 
 Here the first example finds three matches, since the quantifier applies to the entire capturing group. Remove the parentheses, however, and the match fails because the quantifier {3} now applies only to the letter "g".
 
-这里第一个例子发现三场,因为量词适用于整个捕获组.删除括号,然而,这场比赛失败,因为量词{ 3 }现在仅适用于字母“g”。
+第一个例子需要匹配3次, 因为量词作用于整个捕获组. 如果把小括号去掉, 那么就会匹配失败, 因为量词`{3}`现在只作用于字母"`g`"。
 
 Similarly, we can apply a quantifier to an entire character class:
 
-类似地,我们可以应用一个量词整个字符类:
+类似地,我们可以测试作用于整个字符类(character class)的量词:
 
 	Enter your regex: [abc]{3}
 	Enter input string to search: abccabaaaccbbbc
@@ -298,15 +298,27 @@ Similarly, we can apply a quantifier to an entire character class:
 
 Here the quantifier {3} applies to the entire character class in the first example, but only to the letter "c" in the second.
 
-这里的量词{ 3 }适用于整个字符类在第一个示例中,但只有在第二个字母“c”。
+第一个示例这量词 `{3}` 作用于整个字符类, 在第二个示例这则只作用于字母 "c"。
 
 ### Differences Among Greedy, Reluctant, and Possessive Quantifiers
 
-### 差异贪婪,不情愿,占有欲强的量词
+### 贪婪,懒惰和全量之间的不同
 
 There are subtle differences among greedy, reluctant, and possessive quantifiers.
 
-有微妙的差异贪婪,不情愿,占有欲强的量词。
+在 贪婪,懒惰和全量 这三种量词之间有一些小小的不同。
+
+
+
+###### =========================#####################
+
+=========================
+
+=========================
+
+###### ##########
+
+
 
 Greedy quantifiers are considered "greedy" because they force the matcher to read in, or eat, the entire input string prior to attempting the first match. If the first match attempt (the entire input string) fails, the matcher backs off the input string by one character and tries again, repeating the process until a match is found or there are no more characters left to back off from. Depending on the quantifier used in the expression, the last thing it will try matching against is 1 or 0 characters.
 
