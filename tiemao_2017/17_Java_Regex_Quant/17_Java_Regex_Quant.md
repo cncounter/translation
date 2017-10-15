@@ -2,11 +2,11 @@
 
 >###名词解释
 >
->`greedy`: 贪婪型,最大匹配模式;
+>`greedy`: 贪婪模式,最大匹配模式;
 >
->`reluctant`: 懒惰型,最小匹配模式;
+>`reluctant`: 懒惰模式,最小匹配模式;
 >
->`possessive`: 占有型,完全匹配模式; 也翻译为[支配型];
+>`possessive`: 占有型,全部匹配模式; 也翻译为[`支配型`];
 
 
 ### Quantifiers
@@ -16,76 +16,76 @@
 Quantifiers allow you to specify the number of occurrences to match against. For convenience, the three sections of the Pattern API specification describing greedy, reluctant, and possessive quantifiers are presented below. At first glance it may appear that the quantifiers X?, X?? and X?+ do exactly the same thing, since they all promise to match "X, once or not at all". There are subtle implementation differences which will be explained near the end of this section.
 
 
-量词(Quantifiers)可以用来指定要匹配的次数。为了方便起见，下面分别介绍 Pattern API 规范中的 greedy(贪婪), reluctant(懒惰), 和 possessive(占有) 量词。表面上看起来这些量词, 如 `X?`, `X??` 和 `X?+` 都差不多, 因为都是匹配 "X, 一次或者不出现"。本文稍后会解释他们在实现上的细微差别。
+量词(Quantifiers)可以用来指定要匹配的次数。为了方便起见，下面分别介绍 Pattern API 规范中的 greedy(贪婪), reluctant(懒惰), 和 possessive(占有) 量词。表面上看起来这些量词都差不多, 如 `X?`, `X??` 和 `X?+` , 因为都是匹配 "X, 一次或者不出现"。稍后解释他们在实现上的细微差别。
 
 
 
 <table>
 <tbody><tr>
-<th id="h1">Greedy</th>
-<th id="h2">Reluctant</th>
-<th id="h3">Possessive</th>
-<th id="h4">Meaning</th>
+<th id="h1">Greedy(贪婪模式)</th>
+<th id="h2">Reluctant(懒惰模式)</th>
+<th id="h3">Possessive(完全模式)</th>
+<th id="h4">Meaning(说明)</th>
 </tr>
 <tr>
 <td headers="h1"><code>X?</code></td>
 <td headers="h2"><code>X??</code></td>
 <td headers="h3"><code>X?+</code></td>
-<td headers="h4"><code style="font-style: italic">X</code>, once or not at all</td>
+<td headers="h4"><code style="font-style: italic">X</code>, 出现1次或不出现</td>
 </tr>
 <tr>
 <td headers="h1"><code>X*</code></td>
 <td headers="h2"><code>X*?</code></td>
 <td headers="h3"><code>X*+</code></td>
-<td headers="h4"><code style="font-style: italic">X</code>, zero or more times</td>
+<td headers="h4"><code style="font-style: italic">X</code>, 出现0到多次</td>
 </tr>
 <tr>
 <td headers="h1"><code>X+</code></td>
 <td headers="h2"><code>X+?</code></td>
 <td headers="h3"><code>X++</code></td>
-<td headers="h4"><code style="font-style: italic">X</code>, one or more times</td>
+<td headers="h4"><code style="font-style: italic">X</code>, 出现1到多次</td>
 </tr>
 <tr>
 <td headers="h1"><code>X{n}</code></td>
 <td headers="h2"><code>X{n}?</code></td>
 <td headers="h3"><code>X{n}+</code></td>
-<td headers="h4"><code style="font-style: italic">X</code>, exactly <i><code>n</code></i> times</td>
+<td headers="h4"><code style="font-style: italic">X</code>, 精确匹配 <i><code>n</code></i> 次</td>
 </tr>
 <tr>
 <td headers="h1"><code>X{n,}</code></td>
 <td headers="h2"><code>X{n,}?</code></td>
 <td headers="h3"><code>X{n,}+</code></td>
-<td headers="h4"><code style="font-style: italic">X</code>, at least <i><code>n</code></i> times</td>
+<td headers="h4"><code style="font-style: italic">X</code>, 最少出现 <i><code>n</code></i> 次</td>
 </tr>
 <tr>
 <td headers="h1"><code>X{n,m}</code></td>
 <td headers="h2"><code>X{n,m}?</code></td>
 <td headers="h3"><code>X{n,m}+</code></td>
-<td headers="h4"><code style="font-style: italic">X</code>, at least <i><code>n</code></i> but not more than <i><code>m</code></i> times</td>
+<td headers="h4"><code style="font-style: italic">X</code>, 最少出现 <i><code>n</code></i> 次, 最多出现 <i><code>m</code></i> 次</td>
 </tr>
 </tbody></table>
 
 
 Let's start our look at greedy quantifiers by creating three different regular expressions: the letter "a" followed by either ?, *, or +. Let's see what happens when these expressions are tested against an empty input string "":
 
-让我们通过创建三种不同的正则表达式来开始我们看贪婪的量词：字母 "a" 后面跟着 `?`, `*`, or `+`。 让我们看看当这些表达式对空的输入字符串 "" 进行测试时会发生什么：
+下面我们通过示例来看三种量词的差别：字母 "a" 后面跟着 `?`, `*`, 或者 `+`。 先来看看对空字符串 `""` 进行测试时会发生什么：
 
 
- 
+
 	Enter your regex: a?
 	Enter input string to search: 
 	I found the text "" starting at index 0 and ending at index 0.
-
+	
 	Enter your regex: a*
 	Enter input string to search: 
 	I found the text "" starting at index 0 and ending at index 0.
-
+	
 	Enter your regex: a+
 	Enter input string to search: 
 	No match found.
 
 
-### 零长度的匹配(Zero-Length Matches)
+### 零长匹配(Zero-Length Matches)
 
 
 In the above example, the match is successful in the first two cases because the expressions a? and a* both allow for zero occurrences of the letter a. You'll also notice that the start and end indices are both zero, which is unlike any of the examples we've seen so far. The empty input string "" has no length, so the test simply matches nothing at index 0. Matches of this sort are known as a zero-length matches. A zero-length match can occur in several cases: in an empty input string, at the beginning of an input string, after the last character of an input string, or in between any two characters of an input string. Zero-length matches are easily identifiable because they always start and end at the same index position.
@@ -100,17 +100,17 @@ Let's explore zero-length matches with a few more examples. Change the input str
 
 
 
- 
+
 	Enter your regex: a?
 	Enter input string to search: a
 	I found the text "a" starting at index 0 and ending at index 1.
 	I found the text "" starting at index 1 and ending at index 1.
-
+	
 	Enter your regex: a*
 	Enter input string to search: a
 	I found the text "a" starting at index 0 and ending at index 1.
 	I found the text "" starting at index 1 and ending at index 1.
-
+	
 	Enter your regex: a+
 	Enter input string to search: a
 	I found the text "a" starting at index 0 and ending at index 1.
@@ -128,7 +128,7 @@ Now change the input string to the letter "a" five times in a row and you'll get
 
 
 
- 
+
 	Enter your regex: a?
 	Enter input string to search: aaaaa
 	I found the text "a" starting at index 0 and ending at index 1.
@@ -137,12 +137,12 @@ Now change the input string to the letter "a" five times in a row and you'll get
 	I found the text "a" starting at index 3 and ending at index 4.
 	I found the text "a" starting at index 4 and ending at index 5.
 	I found the text "" starting at index 5 and ending at index 5.
-
+	
 	Enter your regex: a*
 	Enter input string to search: aaaaa
 	I found the text "aaaaa" starting at index 0 and ending at index 5.
 	I found the text "" starting at index 5 and ending at index 5.
-
+	
 	Enter your regex: a+
 	Enter input string to search: aaaaa
 	I found the text "aaaaa" starting at index 0 and ending at index 5.
@@ -177,7 +177,7 @@ Let's find out:
 	I found the text "a" starting at index 7 and ending at index 8.
 	I found the text "" starting at index 8 and ending at index 8.
 	I found the text "" starting at index 9 and ending at index 9.
-
+	
 	Enter your regex: a*
 	Enter input string to search: ababaaaab
 	I found the text "a" starting at index 0 and ending at index 1.
@@ -187,7 +187,7 @@ Let's find out:
 	I found the text "aaaa" starting at index 4 and ending at index 8.
 	I found the text "" starting at index 8 and ending at index 8.
 	I found the text "" starting at index 9 and ending at index 9.
-
+	
 	Enter your regex: a+
 	Enter input string to search: ababaaaab
 	I found the text "a" starting at index 0 and ending at index 1.
@@ -204,15 +204,15 @@ To match a pattern exactly n number of times, simply specify the number inside a
 
 要匹配一个模式 n 次, 只需要在大括号内指定数字即可:
 
- 
+
 	Enter your regex: a{3}
 	Enter input string to search: aa
 	No match found.
-
+	
 	Enter your regex: a{3}
 	Enter input string to search: aaa
 	I found the text "aaa" starting at index 0 and ending at index 3.
-
+	
 	Enter your regex: a{3}
 	Enter input string to search: aaaa
 	I found the text "aaa" starting at index 0 and ending at index 3.
@@ -225,7 +225,7 @@ Here, the regular expression a{3} is searching for three occurrences of the lett
 
 
 
- 
+
 	Enter your regex: a{3}
 	Enter input string to search: aaaaaaaaa
 	I found the text "aaa" starting at index 0 and ending at index 3.
@@ -235,7 +235,7 @@ Here, the regular expression a{3} is searching for three occurrences of the lett
 
 To require a pattern to appear at least n times, add a comma after the number:
 
- 
+
 	Enter your regex: a{3,}
 	Enter input string to search: aaaaaaaaa
 	I found the text "aaaaaaaaa" starting at index 0 and ending at index 9.
@@ -245,7 +245,7 @@ With the same input string, this test finds only one match, because the 9 a's in
 
 Finally, to specify an upper limit on the number of occurances, add a second number inside the braces:
 
- 
+
 	Enter your regex: a{3,6} // find at least 3 (but no more than 6) a's in a row
 	Enter input string to search: aaaaaaaaa
 	I found the text "aaaaaa" starting at index 0 and ending at index 6.
@@ -260,12 +260,12 @@ Until now, we've only tested quantifiers on input strings containing one charact
 
 Let's illustrate by specifying the group (dog), three times in a row.
 
- 
+
 	Enter your regex: (dog){3}
 	Enter input string to search: dogdogdogdogdogdog
 	I found the text "dogdogdog" starting at index 0 and ending at index 9.
 	I found the text "dogdogdog" starting at index 9 and ending at index 18.
-
+	
 	Enter your regex: dog{3}
 	Enter input string to search: dogdogdogdogdogdog
 	No match found.
@@ -282,7 +282,7 @@ Similarly, we can apply a quantifier to an entire character class:
 	I found the text "aaa" starting at index 6 and ending at index 9.
 	I found the text "ccb" starting at index 9 and ending at index 12.
 	I found the text "bbc" starting at index 12 and ending at index 15.
-
+	
 	Enter your regex: abc{3}
 	Enter input string to search: abccabaaaccbbbc
 	No match found.
@@ -306,12 +306,12 @@ To illustrate, consider the input string xfooxxxxxxfoo.
 	Enter your regex: .*foo  // greedy quantifier
 	Enter input string to search: xfooxxxxxxfoo
 	I found the text "xfooxxxxxxfoo" starting at index 0 and ending at index 13.
-
+	
 	Enter your regex: .*?foo  // reluctant quantifier
 	Enter input string to search: xfooxxxxxxfoo
 	I found the text "xfoo" starting at index 0 and ending at index 4.
 	I found the text "xxxxxxfoo" starting at index 4 and ending at index 13.
-
+	
 	Enter your regex: .*+foo // possessive quantifier
 	Enter input string to search: xfooxxxxxxfoo
 	No match found.
