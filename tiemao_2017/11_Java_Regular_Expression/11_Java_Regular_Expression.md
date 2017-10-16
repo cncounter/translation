@@ -126,7 +126,7 @@ The following meta characters have a pre-defined meaning and make certain common
 
 A quantifier defines how often an element can occur. The symbols ?, *, + and {} define the quantity of the regular expressions
 
-一个量词定义一个元素可以发生的频率。这些符号吗?*,+,{ }定义正则表达式的数量
+量词定义某个元素可以出现的次数。`?`, `*`, `+` 和 `{}` 符号定义了正则表达式的数量。
 
 
 
@@ -139,13 +139,14 @@ A quantifier defines how often an element can occur. The symbols ?, *, + and {} 
 | `{X,Y}`            | Occurs between X and Y times,            | `\d{1,4}` means `\d` must occur at least once and at a maximum of four. |
 | `*?`               | `?` after a quantifier makes it a *reluctant quantifier*. It tries to find the smallest match. This makes the regular expression stop at the first match. |                                          |
 
+
 ### 3.4. Grouping and back reference
 
-### 3.4。分组和参考
+### 3.4。捕获组和回退说明
 
 You can group parts of your regular expression. In your pattern you group elements with round brackets, e.g., `()`. This allows you to assign a repetition operator to a complete group.
 
-你可以把部分正则表达式。与圆括弧模式组元素,例如,`()`。这允许您指定一个重复操作一个完整的组织。
+可以把正则表达式的一部分作为一组, 使用用圆括号 `()` 括起来。这样就可以指定某一个部分进行重复。
 
 In addition these groups also create a back reference to the part of the regular expression. This captures the group. A back reference stores the part of the `String` which matched the group. This allows you to use this part in the replacement.
 
@@ -153,7 +154,7 @@ In addition these groups also create a back reference to the part of the regular
 
 Via the `$` you can refer to a group. `$1` is the first group, `$2` the second, etc.
 
-通过`$`您可以参考。`$1`第一组,`$2`第二,等等。
+可以使用 `$` 来引用一个捕获组。例如 `$1` 表示第一组, `$2` 表示第二组, 以此类推。
 
 Let’s, for example, assume you want to replace all whitespace between a letter followed by a point or a comma. This would involve that the point or the comma is part of the pattern. Still it should be included in the result.
 
