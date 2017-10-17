@@ -1,98 +1,88 @@
 #2.28. TortoiseGit - Merging
 
-2.28 #。TortoiseGit -合并
+#2.28 TortoiseGit - 分支合并(Merging)
 
 Where branches are used to maintain separate lines of development, at some stage you will want to merge the changes made on one branch back into the other branch, or vice versa.
 
-地方分支机构是用于维护单独的线的发展,在某个阶段你要合并的更改回另一个分支,一个分支,反之亦然。
+分支(branches)主要用于维护一条单独开发线, 在达到某个阶段时, 需要将某个分支所做的修改合并到其他分支, 或者把其他分支合并到当前分支。
 
 It is important to understand how branching and merging works in Git before you start using it, as it can become quite complex. For hints where to find more information about Git and merging see [Section 2, “Reading Guide”](tgit-preface-readingguide.html).
 
-重要的是要理解如何在Git分支和合并工作在你开始使用它,因为它会变得非常复杂.提示在哪里可以找到更多的信息Git和合并看到(第二节,“阅读指南”)(tgit-preface-readingguide.html)。
+首先需要理解的Git分支与合并的工作原理。 因为分支有一点点复杂. 关于Git合并的更多信息请参考: [Section 2, “Reading Guide”](tgit-preface-readingguide.html)。
 
 The next point to note is that merging *always* takes place within a working tree. If you want to merge changes *into* a branch, you have to have a working tree for that branch checked out, and invoke the merge wizard from that working tree using TortoiseGit → Merge....
 
-第二点要注意的是,合并* *总是发生在工作树.如果你想改变*到*一个分支合并,你必须有一个工作签出树的分支,并调用合并向导的工作树使用TortoiseGit→合并....
+第二点要注意的是, TortoiseGit的分支合并 *只* 能在工作树上进行. 所以如果想将变更 *合并到* 某个分支, 就必须先将这个分支检出(checked out)到工作目录, 然后在工作目录中通过合并向导进行合并, 即 `TortoiseGit → Merge....`
 
 **Figure 2.43. Merge dialog**
 
-* *见2.43。融入社会dialog * *
+**图2.43. Merge dialog(分支合并对话框) **
 
 ![Merge dialog](41_01_TortoiseGit _Merging_en.png)
 
-!(合并对话框)(41 _01_tortoisegit _Merging_en.png)
 
 ```
 ​对应的中文版本如下所示:
 ```
 
 
-
-![](41_02_TortoiseGit _Merging_zh.png)
+![分支合并对话框](41_02_TortoiseGit _Merging_zh.png)
 
 
 
 In general it is a good idea to perform a merge into an unmodified working tree. If you have made other changes in your working tree, commit those first. If the merge does not go as you expect, you may want to revert the changes, and the Revert command will discard *all* changes including any you made before the merge.
 
-一般来说它是一个好主意来执行一个合并成一个修改的工作树。如果你有了其他的改变你的工作树,先提交这些.如果没有按你希望合并,你可能想要恢复的变化,恢复命令将丢弃* *变化包括任何你在合并之前。
+一般来说, 执行合并之前, 需要工作目录中没有未提交的更改。 如果工作目录有文件变更, 最好是先将变更提交. 这样的话, 即使合并失败或者合并结果不符合预期, 那还可以恢复(revert)合并过程所产生的变化, Revert 命令将会丢弃合并过程所做的任何变更, 恢复到合并之前的状态。
 
 You can choose one commit that you want to merge from.
 
-你可以选择一个你想要合并的提交。
+可以选择以下类型的提交作为合并来源。
 
 - HEAD
 
-- 头
+  Current commit checked out.
 
-Current commit checked out.
-
-当前提交签出。
+  检出的当前提交。
 
 - Branch
 
-- 分支
+  The latest commit of chosen branch.
 
-The latest commit of chosen branch.
-
-最新提交的选择分支。
+  分支, 该分支的最新提交。
 
 - Tag
 
-- 标签
+  The commit of chosen tag.
 
-The commit of chosen tag.
-
-提交选择的标签。
+  标签, 选择标签对应的提交。
 
 - Commit
 
-- 提交
+  Any commit, you click ... to launch log dialog to choose commit. You also can input commit hash, or friendly commit name, such as HEAD~4.
 
-Any commit, you click ... to launch log dialog to choose commit. You also can input commit hash, or friendly commit name, such as HEAD~4.
+  任何一次提交, 可以点击 ` ... ` 按钮, 在弹出的日志对话框中选择某次提交(commit)。 当然,也可以直接输入提交所对应的hash值, 或者是命名友好的提交名称, 如 `HEAD~4`。
 
-任何承诺,你点击…启动日志对话框选择提交。您还可以输入提交散列,或友好提交名称,如头~ 4。
+`Squash` Just merge change from the other branch. Can't recorder Merge information. The new commit will not record merge branch as one parent commit. Log view will not show merge line between two branch.
 
-Squash Just merge change from the other branch. Can't recorder Merge information. The new commit will not record merge branch as one parent commit. Log view will not show merge line between two branch.
+勾选 `Squash` 选项, 只从其他分支合并更改, 而不记录合并信息(Merge information)。 新的提交不会将源分支作为当前分支的  parent commit. 日志视图里面也不会显示两个分支间的合并线。
 
-南瓜刚从其他分支合并更改。不能记录合并信息。新提交将不记录作为一个家长提交合并分支.日志视图不会显示合并两个分支之间的界线。
+`No Fast Forward` Generate a merge commit even if the merge resolved as a fast-forward.
 
-No Fast Forward Generate a merge commit even if the merge resolved as a fast-forward.
+勾选 `No Fast Forward` 选项, 即使合并解决为 fast-forward 也会生成合并提交(merge commit)。
 
-没有快进生成合并提交即使合并解析为快进。
+`No Commit` Do not automatically create a commit after merge.
 
-No Commit Do not automatically create a commit after merge.
+勾选 `No Commit` 选项, 则合并后不会自动创建一次提交(commit)。
 
-没有提交合并后不自动创建一个承诺。
+`Messages` Populate the log message with one-line descriptions from the actual commits that are being merged. Can specify the number of commits to be included in the merge message.
 
-Messages Populate the log message with one-line descriptions from the actual commits that are being merged. Can specify the number of commits to be included in the merge message.
-
-消息日志消息填充一行描述与实际提交被合并。可以指定数量的承诺被包括在合并的消息。
+勾选 `Messages` 选项, 弹出一行日志信息, 描述实际被合并的提交。 可以指定数量的承诺被包括在合并的消息。
 
 You can see more information at [Section G.3.79, “git-merge(1)”](git-command.html#git-merge(1))
 
-你可以看到更多的信息在[G.3.79节,“git-merge(1)”)(git-command.html # git-merge(1))
+更多信息请参考: [Section G.3.79, “git-merge(1)”](git-command.html#git-merge(1))
 
 Although major merge working is done by git automatically, conflict maybe happen during merge, please see [Section 2.31, “Resolving Conflicts”](tgit-dug-conflicts.html) to how to resolve conflict.
 
-虽然主要的工作是通过git自动合并,合并期间可能发生冲突,请参阅[2.31节,“解决冲突”](tgit-dug-conflicts.html)如何解决冲突。
+虽然通过 git 可以进行主要的自动合并工作, 但在合并时有可能会发生冲突, 请点击 [Section 2.31, “Resolving Conflicts”](tgit-dug-conflicts.html) 查看如何解决冲突。
 
