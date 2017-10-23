@@ -40,15 +40,12 @@ Although the basic operation of a read-write lock is straight-forward, there are
 
 You should consider all of these things when evaluating the suitability of a given implementation for your application.
 
-你应该考虑所有这些事情在评估给定实现是否适合您的应用程序。
+在判断某种读写锁实现是否满足系统需求时, 应该综合考虑以上几点。
 
-- Since:
+- Since: 1.5
 
-- 自:
+- 此接口由 JDK 1.5 引入
 
-1.5
-
-1.5
 
 <https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/locks/ReadWriteLock.html>
 
