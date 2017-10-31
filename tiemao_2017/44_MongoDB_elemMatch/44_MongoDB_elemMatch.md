@@ -153,6 +153,16 @@ MongoDB中根据数组子元素进行匹配,有两种方式。
 查询的结果都是2条记录。
 
 
+
+### 查询数组长度大于1的记录:
+
+```
+{ "qList": {$exists : true}, $where: 'this.qList.length>1' }
+```
+
+2条结果都匹配。
+
+
 日期: 2017年10月23日
 
 作者: [铁锚: http://blog.csdn.net/renfufei](http://blog.csdn.net/renfufei)
