@@ -186,7 +186,7 @@ String updated = EXAMPLE_TEST.replaceAll(pattern, "$2");
 
 Negative look ahead provides the possibility to exclude a pattern. With this you can say that a string should not be followed by another string.
 
-环视否定(Negative look ahead) 用来排除符合某种模式的内容。也就是说后面不能跟着符合某种特征的字符串。
+环视否定(Negative look ahead, 零宽度断言) 用来排除符合某种模式的内容。也就是说后面不能跟着符合某种特征的字符串。
 
 Negative look ahead are defined via `(?!pattern)`. For example, the following will match "a" if "a" is not followed by "b".
 
@@ -196,11 +196,17 @@ Negative look ahead are defined via `(?!pattern)`. For example, the following wi
 a(?!b)
 ```
 
-同理, 匹配a字母,要求后面必须是 b 字母的情况:
+类似的, 匹配a字母,要求后面必须是 b 字母的情况:
 
 ```
-a(?b)
+a(?=b)
 ```
+
+> 注意，我们有一个向前查找的语法(也叫顺序环视): `(?=exp)`, 会查找前后【位置】的 exp; 所环视的内容却不包含在正则表达式匹配中。
+> 
+> 如果将等号换成感叹号, 零宽度断言 `(?!exp)`, 就变成了否定语义，也就是说查找的位置的后面不能是exp。
+>
+> 参考: 利用正则表达式排除特定字符串 <http://www.cnblogs.com/wangqiguo/archive/2012/05/08/2486548.html>
 
 
 
