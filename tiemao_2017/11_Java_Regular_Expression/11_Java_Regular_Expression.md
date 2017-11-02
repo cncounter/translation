@@ -39,9 +39,9 @@ The following tables lists several regular expressions and describes which patte
 下表列出了一些简单正则表达式,以及匹配的模式。
 
 
-| Regex            | Matches                                  |
-| ---------------- | ---------------------------------------- |
-| `this is text`     | 完全匹配 "this is text"           |
+| Regex              | Matches                                  |
+| ------------------ | ---------------------------------------- |
+| `this is text`     | 完全匹配 "this is text"                      |
 | `this\s+is\s+text` | 匹配的内容为: 字符串 "this", 加上1到多个空白字符(whitespace characters), 加上字符串 "is", 加上1到多个空白字符(whitespace characters),  再加上字符串 "text". |
 | `^\d+(\.\d+)?`     | 转义字符 `^`(非) 在此处表示：必须匹配一行的开始处. `\d+` 匹配1到多个数字. 英文问号 `?` 表示小括号中的部分是可选的(即出现 0~1次). `\.` 匹配的是字符 ".", 圆括号(parentheses) 表示一个分组. 整个正则匹配的是正整数或小数,例如: "5", "1.5" 或者 "2.21" 等等. |
 
@@ -83,16 +83,16 @@ The following description is an overview of available meta characters which can 
 
 | Regular Expression | Description                              |
 | ------------------ | ---------------------------------------- |
-| `.`                | 点号(`.`),匹配任意字符                             |
-| `^regex`           | 小尖号(`^`), 起始标识, 前面不能出现其他字符. |
-| `regex$`           | 美元符号(`$`), 结束标识,后面不能再出现其他字符. |
-| `[abc]`            | 字符集合(set), 匹配 a 或者 b 或者 c. |
+| `.`                | 点号(`.`),匹配任意字符                           |
+| `^regex`           | 小尖号(`^`), 起始标识, 前面不能出现其他字符.              |
+| `regex$`           | 美元符号(`$`), 结束标识,后面不能再出现其他字符.             |
+| `[abc]`            | 字符集合(set), 匹配 a 或者 b 或者 c.               |
 | `[abc][vz]`        | 字符集合(set), 匹配 a 或者 b 或者 c ,紧接着加上 v 或者 z. |
 | `[^abc]`           | 如果小尖号(`^`, caret, 此处读作 `非`) 出现在中括号里面的首位, , 则表示否定(negate). 此示例匹配除了 `a`, `b`, `c` 三个字符之外的其他任意字符. |
 | `[a-d1-7]`         | 范围表示法: 匹配 `a` 到 `d` 之间的单个字符,或者 `1` 到 `7`之间的单个字符, 此示例不匹配`d1`这种. |
-| `X|Z`              | 匹配 `X` 或者 `Z`.                            |
-| `XZ`               | 匹配`XZ`, X和Z必须按顺序全部出现.          |
-| `$`                | 判断一行是否结束.            |
+| `X|Z`              | 匹配 `X` 或者 `Z`.                           |
+| `XZ`               | 匹配`XZ`, X和Z必须按顺序全部出现.                    |
+| `$`                | 判断一行是否结束.                                |
 
 ### 3.2. Meta characters
 
@@ -106,16 +106,14 @@ The following meta characters have a pre-defined meaning and make certain common
 
 | Regular Expression | Description                              |
 | ------------------ | ---------------------------------------- |
-| `\d`               | 任意数字, 等价于 `[0-9]` 但更简洁        |
-| `\D`               | 非数字, 等价于  `[^0-9]` 但更简洁        |
-| `\s`               | 空白字符(whitespace), 等价于 `[ \t\n\x0b\r\f]` |
-| `\S`               | 非空白字符, 等价于 `[^\s]`    |
+| `\d`               | 任意数字, 等价于 `[0-9]` 但更简洁                   |
+| `\D`               | 非数字, 等价于  `[^0-9]` 但更简洁                  |
+| `\s`               | 空白字符(whitespace), 等价于 `[ \t\n\x0b\r\f]`  |
+| `\S`               | 非空白字符, 等价于 `[^\s]`                       |
 | `\w`               | 单词字符,(word character),字母数字下划线, 等价于 `[a-zA-Z_0-9]` |
-| `\W`               | 非单词字符, 等价于 `[^\w]`             |
-| `\S+`              | 匹配1到多个非空白字符          |
+| `\W`               | 非单词字符, 等价于 `[^\w]`                       |
+| `\S+`              | 匹配1到多个非空白字符                              |
 | `\b`               | 匹配单词边界(word boundary), 单词字符指的是 `[a-zA-Z0-9_]` |
-| ---- | ---------------------------------------- |
-|      |                                          |
 
 
 > These meta characters have the same first letter as their representation, e.g., digit, space, word, and boundary. Uppercase symbols define the opposite. 
@@ -132,38 +130,38 @@ A quantifier defines how often an element can occur. The symbols ?, *, + and {} 
 
 
 
-| Regular Expression | Description            | Examples                                 |
-| ------------------ | ---------------------- | ---------------------------------------- |
-| `*`                | 0到多次, 等价于 `{0,}` | `X*` 匹配0到多个连续的X,  `.*` 则匹配任意字符串|
-| `+`                | 1到多次, 等价于 `{1,}` | `X+`- 匹配1到多个连续的X      |
-| `?`                | 0到1次, 等价于 `{0,1}` | `X?` 匹配0个,后者1个X         |
-| `{X}`              | 精确匹配 X 次, `{}` 指定前面序列的出现次数 | `\d{3}` 匹配3位数字, `.{10}` 匹配任意的10个字符. |
-| `{X,Y}`            | 出现 X 到 Y 次,        | `\d{1,4}` 表示 `\d` 至少出现1次数字,最多出现4个数字. |
-| `*?`               | 在量词后面加上 `?`, 则表示懒惰模式(*reluctant quantifier*). 尝试匹配最少的字符串. 找到第一个满足正则表达式的地方就停止搜索. |                                          |
+| Regular Expression | Description                              | Examples                             |
+| ------------------ | ---------------------------------------- | ------------------------------------ |
+| `*`                | 0到多次, 等价于 `{0,}`                         | `X*` 匹配0到多个连续的X,  `.*` 则匹配任意字符串      |
+| `+`                | 1到多次, 等价于 `{1,}`                         | `X+`- 匹配1到多个连续的X                     |
+| `?`                | 0到1次, 等价于 `{0,1}`                        | `X?` 匹配0个,后者1个X                      |
+| `{X}`              | 精确匹配 X 次, `{}` 指定前面序列的出现次数               | `\d{3}` 匹配3位数字, `.{10}` 匹配任意的10个字符.  |
+| `{X,Y}`            | 出现 X 到 Y 次,                              | `\d{1,4}` 表示 `\d` 至少出现1次数字,最多出现4个数字. |
+| `*?`               | 在量词后面加上 `?`, 则表示懒惰模式(*reluctant quantifier*). 尝试匹配最少的字符串. 找到第一个满足正则表达式的地方就停止搜索. |                                      |
 
 
 ### 3.4. Grouping and back reference
 
-### 3.4。捕获组和回退说明
+### 3.4. 分组与向后引用
 
 You can group parts of your regular expression. In your pattern you group elements with round brackets, e.g., `()`. This allows you to assign a repetition operator to a complete group.
 
-可以把正则表达式的一部分作为一组, 使用用圆括号 `()` 括起来。这样就可以指定某一个部分进行重复。
+可以把正则表达式的一部分进行分组,  用圆括号 `()` 括起来。这样就可以对某个部分进行重复。
 
 In addition these groups also create a back reference to the part of the regular expression. This captures the group. A back reference stores the part of the `String` which matched the group. This allows you to use this part in the replacement.
 
-除了这些团体还创建一个引用正则表达式的一部分。这抓住了。返回引用存储的一部分`String`它匹配。这允许您使用这部分替代。
+此外, 分组还允许对正则表达式中的一部分进行引用。也就是捕获组(captures the group)。向后引用(back reference) 保存的是该分组所匹配的那部分`String`。进行字符串替换的时候可以使用这些部分。
 
 Via the `$` you can refer to a group. `$1` is the first group, `$2` the second, etc.
 
-可以使用 `$` 来引用一个捕获组。例如 `$1` 表示第一组, `$2` 表示第二组, 以此类推。
+使用 `$` 来引用一个捕获组。例如 `$1` 表示第一组, `$2` 表示第二组, 以此类推, `$0`则表示整个正则匹配的部分。
 
 Let’s, for example, assume you want to replace all whitespace between a letter followed by a point or a comma. This would involve that the point or the comma is part of the pattern. Still it should be included in the result.
 
-例如,让我们假设你想替换所有空格之间的字母后跟一个点或一个逗号。这将涉及点或逗号是模式的一部分.还应该包含在结果中。
+例如, 想要去除字母和句号/逗号之间的所有空格。这时候句号/逗号也是整个正则中的一部分,所以应该原样保留在结果中。
 
 ```
-// Removes whitespace between a word character and . or ,
+// 去除字母与 . 或 , 之间的空格
 String pattern = "(\\w)(\\s+)([\\.,])";
 System.out.println(EXAMPLE_TEST.replaceAll(pattern, "$1$3"));
 ```
@@ -172,10 +170,10 @@ System.out.println(EXAMPLE_TEST.replaceAll(pattern, "$1$3"));
 
 This example extracts the text between a title tag.
 
-这个例子中提取标题标记之间的文本。
+下面的示例提取 title 标签中的内容。
 
 ```
-// Extract the text between the two title elements
+// 提取2个 title 元素之间的内容
 pattern = "(?i)(<title.*?>)(.+?)()";
 String updated = EXAMPLE_TEST.replaceAll(pattern, "$2");
 ```
@@ -184,15 +182,15 @@ String updated = EXAMPLE_TEST.replaceAll(pattern, "$2");
 
 ### 3.5. Negative look ahead
 
-### 3.5。负面展望未来
+### 3.5. 前向预览排除
 
 Negative look ahead provides the possibility to exclude a pattern. With this you can say that a string should not be followed by another string.
 
-负面展望未来提供了可能性排除模式。用这个你可以说一个字符串不应该跟着另一个字符串。
+前向预览排除模式用来排除符合某种模式的内容。也就是说后面不能跟着符合某种特征的字符串。
 
 Negative look ahead are defined via `(?!pattern)`. For example, the following will match "a" if "a" is not followed by "b".
 
-通过定义负面展望未来`(?!pattern)`。例如,以下将匹配“a”如果“a”不是“b”紧随其后。
+前向预览排除模式使用 `(?!pattern)` 这种格式定义。例如, 下面的正则, 只能匹配后面不是 b 字母的 “a”字母。
 
 ```
 a(?!b)
@@ -202,31 +200,39 @@ a(?!b)
 
 ### 3.6. Specifying modes inside the regular expression
 
-### 3.6。在正则表达式指定模式
+### 3.6. 指定正则表达式的模式
 
 You can add the mode modifiers to the start of the regex. To specify multiple modes, simply put them together as in (?ismx).
 
-您可以添加修饰符模式的正则表达式。要指定多个模式,只需把它们放在一起(? ismx)。
+可以在正则表达式的开头指定模式修饰符。如果要指定多个模式,  把它们放在一起即可, 如 `(?ismx)`。
 
 - (?i) makes the regex case insensitive.
+
 - (?s) for "single line mode" makes the dot match all characters, including line breaks.
+
 - (?m) for "multi-line mode" makes the caret and dollar match at the start and end of each line in the subject string.
 
-- (?我)使正则表达式不区分大小写。
-- (?)“单行模式”使点匹配所有字符,包括换行符。
-- (?)“多行模式”使插入符号和元匹配的每一行的开始和结束的主题字符串。
+  ​
+
+- `(?i) ` 使正则表达式不区分大小写。
+
+- `(?s)` 单行模式(single line mode), 使点号(`.`) 匹配所有的字符, 包括换行(`\n`)。
+
+- `(?m)` 多行模式(multi-line mode),  使 小尖号(`^`,caret ) 和 美元符号(`$`, dollar)  匹配目标字符串中每一行的开始和结束。
 
 ### 3.7. Backslashes in Java
 
-### 3.7。反斜杠在Java中
+### 3.7. Java中的反斜杠 `\`
 
 The backslash `\` is an escape character in Java Strings. That means backslash has a predefined meaning in Java. You have to use double backslash `\\` to define a single backslash. If you want to define `\w`, then you must be using `\\w` in your regex. If you want to use backslash as a literal, you have to type `\\\\` as `\` is also an escape character in regular expressions.
 
-反斜杠`\`Java是一个转义字符的字符串。这意味着反斜杠在Java有一个预定义的意义。你必须使用两个反斜杠`\\`定义一个反斜杠。如果你想定义的`\w`,那么你必须使用`\\w`在你的正则表达式。如果您想要使用反斜杠作为文字,你需要的类型`\\\\`作为`\`也是一个转义字符的正则表达式。
+在Java字符串中, 反斜杠(`\`, backslash) 是转义字符。也就是说反斜杠在Java有预定的含义。在程序源代码中, 必须使用两个反斜杠`\\`来表示一个反斜杠符号。如果想定义的正则表达式是 `\w`, 就必须使用 `\\w` 这种形式。如果想要匹配文本中的反斜杠,  则需要使用4个反斜杠 `\\\\` 形式的正则表达式。
+
+
 
 ## 4. Using regular expressions with String methods
 
-## 4所示。使用正则表达式的字符串的方法
+## 4. 在 String 的方法中使用正则表达式
 
 ### 4.1. Redefined methods on String for processing regular expressions
 
