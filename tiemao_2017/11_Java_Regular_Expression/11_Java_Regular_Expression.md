@@ -84,12 +84,12 @@ The following description is an overview of available meta characters which can 
 | Regular Expression | Description                              |
 | ------------------ | ---------------------------------------- |
 | `.`                | 点号(`.`),匹配任意字符                             |
-| `^regex`           | 小尖号(`^`), 必须以后面紧跟着的字符(如regex)打头. |
-| `regex$`           | 美元符号(`$`),对应的字符(如regex)必须出现在一行结尾. |
-| `[abc]`            | 字符的集合(set), 匹配 a or b or c. |
-| `[abc][vz]`        | 字符的集合(set), 匹配 a or b or c 加上 v or z. |
-| `[^abc]`           | 如果小尖号(`^`, caret, 此处读作 `非`) 是中括号里面的第一个字符, , 则表示否定(negate). 匹配 `a`, `b`, `c` 三个字符之外的其他任意字符. |
-| `[a-d1-7]`         | 范围表示法: 匹配 `a` 到 `d` 之间的单个字符,或者 `1` 到 `7`之间的单个字符, 但不是`d1`这种. |
+| `^regex`           | 小尖号(`^`), 起始标识, 前面不能出现其他字符. |
+| `regex$`           | 美元符号(`$`), 结束标识,后面不能再出现其他字符. |
+| `[abc]`            | 字符集合(set), 匹配 a 或者 b 或者 c. |
+| `[abc][vz]`        | 字符集合(set), 匹配 a 或者 b 或者 c ,紧接着加上 v 或者 z. |
+| `[^abc]`           | 如果小尖号(`^`, caret, 此处读作 `非`) 出现在中括号里面的首位, , 则表示否定(negate). 此示例匹配除了 `a`, `b`, `c` 三个字符之外的其他任意字符. |
+| `[a-d1-7]`         | 范围表示法: 匹配 `a` 到 `d` 之间的单个字符,或者 `1` 到 `7`之间的单个字符, 此示例不匹配`d1`这种. |
 | `X|Z`              | 匹配 `X` 或者 `Z`.                            |
 | `XZ`               | 匹配`XZ`, X和Z必须按顺序全部出现.          |
 | `$`                | 判断一行是否结束.            |
@@ -100,7 +100,7 @@ The following description is an overview of available meta characters which can 
 
 The following meta characters have a pre-defined meaning and make certain common patterns easier to use, e.g., `\d` instead of `[0..9]`.
 
-下面的元字符有预置的含义, 可以更简单地提取通用模式, 例如, 使用 `\d` 来代替 `[0..9]`。
+下面的元字符有预置的含义, 可以用于提取通用模式, 例如, 使用 `\d` 代替 `[0..9]`。
 
 
 
@@ -109,8 +109,8 @@ The following meta characters have a pre-defined meaning and make certain common
 | `\d`               | 任意数字, 等价于 `[0-9]` 但更简洁        |
 | `\D`               | 非数字, 等价于  `[^0-9]` 但更简洁        |
 | `\s`               | 空白字符(whitespace), 等价于 `[ \t\n\x0b\r\f]` |
-| `\S`               | 非空白字符, short for    |
-| `\w`               | 单词字符,字母数字下划线,(word character), 等价于 `[a-zA-Z_0-9]` |
+| `\S`               | 非空白字符, 等价于 `[^\s]`    |
+| `\w`               | 单词字符,(word character),字母数字下划线, 等价于 `[a-zA-Z_0-9]` |
 | `\W`               | 非单词字符, 等价于 `[^\w]`             |
 | `\S+`              | 匹配1到多个非空白字符          |
 | `\b`               | 匹配单词边界(word boundary), 单词字符指的是 `[a-zA-Z0-9_]` |
@@ -119,6 +119,8 @@ The following meta characters have a pre-defined meaning and make certain common
 
 
 > These meta characters have the same first letter as their representation, e.g., digit, space, word, and boundary. Uppercase symbols define the opposite. 
+
+> 为什么使用这些符号表示元字符? 主要取自于英文单词的首字母, 例如: digit(数字), space(空白), word (单词), 以及 boundary(边界)。对应的大写字符则表示相反的意思。
 
 ### 3.3. Quantifier
 
@@ -130,14 +132,14 @@ A quantifier defines how often an element can occur. The symbols ?, *, + and {} 
 
 
 
-| Regular Expression | Description                              | Examples                                 |
-| ------------------ | ---------------------------------------- | ---------------------------------------- |
-| `*`                | Occurs zero or more times, is short for `{0,}` | `X*` finds no or several letter X, <sbr /> `.*` finds any character sequence |
-| `+`                | Occurs one or more times, is short for `{1,}` | `X+`- Finds one or several letter X      |
-| `?`                | Occurs no or one times, `?` is short for `{0,1}`. | `X?` finds no or exactly one letter X    |
-| `{X}`              | Occurs X number of times, `{}`describes the order of the preceding liberal | `\d{3}` searches for three digits, `.{10}` for any character sequence of length 10. |
-| `{X,Y}`            | Occurs between X and Y times,            | `\d{1,4}` means `\d` must occur at least once and at a maximum of four. |
-| `*?`               | `?` after a quantifier makes it a *reluctant quantifier*. It tries to find the smallest match. This makes the regular expression stop at the first match. |                                          |
+| Regular Expression | Description            | Examples                                 |
+| ------------------ | ---------------------- | ---------------------------------------- |
+| `*`                | 0到多次, 等价于 `{0,}` | `X*` 匹配0到多个连续的X,  `.*` 则匹配任意字符串|
+| `+`                | 1到多次, 等价于 `{1,}` | `X+`- 匹配1到多个连续的X      |
+| `?`                | 0到1次, 等价于 `{0,1}` | `X?` 匹配0个,后者1个X         |
+| `{X}`              | 精确匹配 X 次, `{}` 指定前面序列的出现次数 | `\d{3}` 匹配3位数字, `.{10}` 匹配任意的10个字符. |
+| `{X,Y}`            | 出现 X 到 Y 次,        | `\d{1,4}` 表示 `\d` 至少出现1次数字,最多出现4个数字. |
+| `*?`               | 在量词后面加上 `?`, 则表示懒惰模式(*reluctant quantifier*). 尝试匹配最少的字符串. 找到第一个满足正则表达式的地方就停止搜索. |                                          |
 
 
 ### 3.4. Grouping and back reference
