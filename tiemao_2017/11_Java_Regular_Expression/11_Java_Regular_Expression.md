@@ -203,7 +203,7 @@ a(?=b)
 ```
 
 > 注意，我们有一个向前查找的语法(也叫顺序环视): `(?=exp)`, 会查找前后【位置】的 exp; 所环视的内容却不包含在正则表达式匹配中。
-> 
+>
 > 如果将等号换成感叹号, 零宽度断言 `(?!exp)`, 就变成了否定语义，也就是说查找的位置的后面不能是exp。
 >
 > 参考: 利用正则表达式排除特定字符串 <http://www.cnblogs.com/wangqiguo/archive/2012/05/08/2486548.html>
@@ -249,28 +249,28 @@ The backslash `\` is an escape character in Java Strings. That means backslash h
 
 ### 4.1. Redefined methods on String for processing regular expressions
 
-### 4.1。重新定义字符串处理正则表达式的方法
+### 4.1. String 类中正则表达式相关的方法
 
 `Strings` in Java have built-in support for regular expressions. `Strings` have four built-in methods for regular expressions, i.e., the `matches()`, `split())`, `replaceFirst()` and`replaceAll()` methods. The `replace()` method does NOT support regular expressions.
 
-`Strings`在Java中都内置了对正则表达式的支持。`Strings`有四个内置的正则表达式的方法,即。,`matches()`,`split())`,`replaceFirst()`和`replaceAll()`方法。的`replace()`方法不支持正则表达式。
+`Strings` 类内置了4个支持正则表达式的方法, 即: `matches()`, `split()`, `replaceFirst()` 和`replaceAll()` 方法。注意 `replace()` 方法并不支持正则表达式。
 
 These methods are not optimized for performance. We will later use classes which are optimized for performance.
 
-这些方法不是优化了性能。我们将稍后使用类的优化性能。
+这些方法并没有专门进行性能优化。 稍后我们将使用优化过的 class。
 
 
 
 | Method                                   | Description                              |
 | ---------------------------------------- | ---------------------------------------- |
-| `s.matches("regex")`                     | Evaluates if `"regex"` matches `s`. Returns only `true` if the WHOLE string can be matched. |
-| `s.split("regex")`                       | Creates an array with substrings of `s` divided at occurrence of `"regex"`. `"regex"` is not included in the result. |
-| `s.replaceFirst("regex"), "replacement"` | Replaces first occurance of `"regex"` with`"replacement`. |
-| `s.replaceAll("regex"), "replacement"`   | Replaces all occurances of `"regex"` with`"replacement`. |
+| `s.matches("regex")`                     | 判断 s 是否匹配正在表达式  `"regex"` .  只有整个字符串匹配正则表达式时才返回 `true` . |
+| `s.split("regex")`                       | 使用正则表达式 `"regex"` 作为分隔符来拆分字符串, 返回结果是 String[] 数组. 注意  `"regex"` 对应的字符串并不包含在返回结果中. |
+| `s.replaceFirst("regex", "replacement"`) | 将第一个匹配  `"regex"` 的内容替换为 `"replacement`. |
+| `s.replaceAll("regex", "replacement")`   | 将所有匹配  `"regex"` 的内容替换为 `"replacement`.  |
 
 Create for the following example the Java project `de.vogella.regex.test`.
 
-下面的示例Java项目创建`de.vogella.regex.test`。
+下面是对应的示例代码。
 
 
 
