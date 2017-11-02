@@ -182,19 +182,26 @@ String updated = EXAMPLE_TEST.replaceAll(pattern, "$2");
 
 ### 3.5. Negative look ahead
 
-### 3.5. 前向预览排除
+### 3.5. 环视否定(Negative look ahead)
 
 Negative look ahead provides the possibility to exclude a pattern. With this you can say that a string should not be followed by another string.
 
-前向预览排除模式用来排除符合某种模式的内容。也就是说后面不能跟着符合某种特征的字符串。
+环视否定(Negative look ahead) 用来排除符合某种模式的内容。也就是说后面不能跟着符合某种特征的字符串。
 
 Negative look ahead are defined via `(?!pattern)`. For example, the following will match "a" if "a" is not followed by "b".
 
-前向预览排除模式使用 `(?!pattern)` 这种格式定义。例如, 下面的正则, 只能匹配后面不是 b 字母的 “a”字母。
+环视否定(Negative look ahead) 使用 `(?!pattern)` 这种格式定义。例如, 下面的正则, 只能匹配后面不是 b 字母的 “a”字母。
 
 ```
 a(?!b)
 ```
+
+同理, 匹配a字母,要求后面必须是 b 字母的情况:
+
+```
+a(?b)
+```
+
 
 
 
