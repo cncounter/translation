@@ -1,5 +1,7 @@
 # MongoDB中对数组元素进行查询
 
+## 查询
+
 MongoDB中根据数组子元素进行匹配,有两种方式。
 
 1. 使用 "[数组名].[子元素字段名]" 的方式进行匹配。
@@ -161,6 +163,66 @@ MongoDB中根据数组子元素进行匹配,有两种方式。
 ```
 
 2条结果都匹配。
+
+
+
+## MongoDB下载
+
+MongoDB 下载地址:  <https://www.mongodb.com/download-center>
+
+在其中可以选择各种版本，例如企业版(Enterprise Server)
+
+
+### Windows版MongoDB下载
+
+Windows版下载地址: <https://www.mongodb.org/dl/win32/>
+
+在其中找到最新版的zip文件, 例如 [mongodb-win32-x86_64-v3.4-latest.zip](http://downloads.mongodb.org/win32/mongodb-win32-x86_64-v3.4-latest.zip?_ga=2.63154223.1629277877.1509681508-565722504.1498706182)
+
+下载之后解压即可。
+
+其中2个比较重要的文件:
+
+- `mongo.exe` 客户端程序
+- `mongod.exe` 服务器程序
+
+查看帮助 `mongod.exe -h`:
+
+```
+D:\mongo\mongodb-win32-x86_64-3.4.10\bin>mongod.exe -h
+
+```
+
+可以看到各种帮助信息， 例如安装Windows服务, 启动服务器等。
+
+
+```
+--dbpath arg		directory for datafiles 
+    - defaults to \data\db\ 
+    which is D:\data\db\ based on the current working drive
+```
+
+如果在CMD执行 mongod.exe 文件, 会提示工作目录不存在, 并且闪退。 所以需要保证data目录存在, 例如 `D:\data\db\` 之类的。
+
+所以最好是手动指定 data 目录。
+
+```
+cd D:\mongo\mongodb-win32-x86_64-3.4.10\bin
+
+mongod.exe --dbpath D:\data\db\
+
+```
+
+其他命令请参考官网。
+
+
+至于MongoDB的GUI客户端, 推荐使用 Studio 3T, 下载页面： <https://studio3t.com/download/>
+
+安装之后， 如果是个人使用，选择非商业授权许可就可以免费使用。
+
+Studio 3T 支持 IntelliShell 控制台,在 Edit --> Preferences 中指定 `mongo.exe` 即可。
+
+
 
 
 日期: 2017年10月23日
