@@ -255,11 +255,11 @@ Here the first match is forced to stop at the upper limit of 6 characters. The s
 
 ### Capturing Groups and Character Classes with Quantifiers
 
-### 作用于捕获组(Capturing Groups)或字符类(Character Class)的量词
+### 作用于捕获组(Capturing Groups)或字符集合(Character Class)的量词
 
 Until now, we've only tested quantifiers on input strings containing one character. In fact, quantifiers can only attach to one character at a time, so the regular expression "abc+" would mean "a, followed by b, followed by c one or more times". It would not mean "abc" one or more times. However, quantifiers can also attach to Character Classes and Capturing Groups, such as [abc]+ (a or b or c, one or more times) or (abc)+ (the group "abc", one or more times).
 
-到目前为止, 我们对量词只测试了单个字符的情况. 事实上, 量词每次只能连接到一个字符上, 所以正则表达式 “`abc +`” 的含义是:  “字母a, 后面跟着字母b, 然后再跟着 1到多个字母c”.  而不是出现1到多次的 “abc”. 当然, 量词也可以关联到字符类(Character Class)和捕获组(Capturing Group), 例如 `[abc]+`, 表示 "a或b或c, 出现1到多次"), 而 `(abc)+` 则表示 “`abc`” 这个组整体出现 1次到多次。
+到目前为止, 我们对量词只测试了单个字符的情况. 事实上, 量词每次只能连接到一个字符上, 所以正则表达式 “`abc +`” 的含义是:  “字母a, 后面跟着字母b, 然后再跟着 1到多个字母c”.  而不是出现1到多次的 “abc”. 当然, 量词也可以关联到字符集合(Character Class)和捕获组(Capturing Group), 例如 `[abc]+`, 表示 "a或b或c, 出现1到多次"), 而 `(abc)+` 则表示 “`abc`” 这个组整体出现 1次到多次。
 
 Let's illustrate by specifying the group (dog), three times in a row.
 
@@ -281,7 +281,7 @@ Here the first example finds three matches, since the quantifier applies to the 
 
 Similarly, we can apply a quantifier to an entire character class:
 
-类似地,我们可以测试作用于整个字符类(character class)的量词:
+类似地,我们可以测试作用于整个字符集合(character class)的量词:
 
 	Enter your regex: [abc]{3}
 	Enter input string to search: abccabaaaccbbbc
@@ -298,7 +298,7 @@ Similarly, we can apply a quantifier to an entire character class:
 
 Here the quantifier {3} applies to the entire character class in the first example, but only to the letter "c" in the second.
 
-第一个示例这量词 `{3}` 作用于整个字符类, 在第二个示例这则只作用于字母 "c"。
+第一个示例这量词 `{3}` 作用于整个字符集合, 在第二个示例这则只作用于字母 "c"。
 
 ### Differences Among Greedy, Reluctant, and Possessive Quantifiers
 

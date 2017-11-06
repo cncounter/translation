@@ -1,8 +1,8 @@
 # noisy neighbor (cloud computing performance)
 
-# 公有云与坏邻居效应
+# 云计算性能 - 公有云中的坏邻居效应
 
-> noisy neighbor effect, 坏邻居效应
+> noisy neighbor effect, 坏邻居效应, 资源争抢
 
 
 
