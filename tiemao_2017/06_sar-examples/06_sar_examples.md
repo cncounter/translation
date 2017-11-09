@@ -1,32 +1,29 @@
 # 10 Useful Sar (Sysstat) Examples for UNIX / Linux Performance Monitoring
 
-# Linux性能监控: sar 示例
+# 实战Linux性能监控: sar 命令
 
-
-
-
-Using sar you can monitor performance of various Linux subsystems (CPU, Memory, I/O..) in real time.
-
-Linux使用sar可以监视性能的各种子系统(CPU、内存、I / O . .)。
-
-
-
-![Linux Sar Examples](http://static.thegeekstuff.com/wp-content/uploads/2011/12/sar-tutorial-300x176.png)
-
-
-Using sar, you can also collect all performance data on an on-going basis, store them, and do historical analysis to identify bottlenecks.
-
-利用sar,还可以收集所有性能数据在一个持续的基础上,存储它们,做历史分析来识别瓶颈。
 
 
 Sar is part of the sysstat package.
 
-特别行政区是sysstat包的一部分。
+sar 是 sysstat 工具包的一部分。
+
+
+Using sar you can monitor performance of various Linux subsystems (CPU, Memory, I/O..) in real time.
+
+通过 sar 可以实时监控Linux各种子系统的性能指标, 例如 CPU、内存、I/O 等等。
+
+
+
+Using sar, you can also collect all performance data on an on-going basis, store them, and do historical analysis to identify bottlenecks.
+
+通常可以定时通过 sar 命令采集本机的各种性能参数, 并存储下来, 以便通过历史分析找出性能瓶颈。
+
 
 
 This article explains how to install and configure sysstat package (which contains sar utility) and explains how to monitor the following Linux performance statistics using sar.
 
-本文解释如何安装和配置sysstat包(包含sar工具)并解释了如何使用sar监控以下Linux性能统计数据。
+本文介绍如何安装与配置 sysstat 工具包, 并讲解如何监控以下性能统计信息。
 
 
 1.  Collective CPU usage
@@ -42,80 +39,89 @@ This article explains how to install and configure sysstat package (which contai
 
 <br/>
 
-1. 针对社区集体使用
-2. 单个CPU统计数据
-3. 内存使用和可用
-4. 交换空间和可用使用
-5. 整体系统的I / O活动
-6. 个人设备I / O活动
-7. 上下文切换统计
-8. 运行队列和平均负载数据
+1. 采集 CPU 使用率
+2. 每个 CPU 内核的统计信息
+3. 内存的使用量和可用值
+4. 交换空间的使用量和可用值
+5. 系统整体的I/O活动
+6. 每个I/O设备的活动情况
+7. 切换统计上下文
+8. 执行队列与平均负载数据
 9. 网络统计信息
-10. 
+10. 在特定时间报告 sar 数据
 
 
 
 This is the only guide you’ll need for sar utility. So, bookmark this for your future reference.
 
-这是唯一指导您需要对sar实用程序。书签这个对你将来参考。
+本文非常详尽地介绍sar工具。建议您收藏备用。
 
 
 ## I. Install and Configure Sysstat
 
-## I. 安装和配置Sysstat
+## I. 安装和配置 sysstat
 
 
 ### Install Sysstat Package
 
-### 特别是Sysstat成套
+### 安装 sysstat 工具包
 
 
 First, make sure the latest version of sar is available on your system. Install it using any one of the following methods depending on your distribution.
 
-首先,确保sar系统上可用的最新版本。安装使用任何下列方法取决于您的发行版之一。
+首先, 确保系统上的 sar 处于最新版本。可以使用下列方法安装该工具包。
 
+通过 apt-get 安装:
 
-	sudo apt-get install sysstat
+```
+sudo apt-get install sysstat
+```
 
-(or)
+RHEL 使用如下方式安装:
 
-	yum install sysstat
+```
+sudo yum install -y sysstat
+```
 
-(or)
+或者下载 rpm 包安装:
 
-	rpm -ivh sysstat-10.0.0-1.i586.rpm
-
+```
+rpm -ivh sysstat-10.0.0-1.i586.rpm
+```
 
 
 ### Install Sysstat from Source
 
-### 从源代码安装Sysstat
+### 编译 sysstat 源代码安装
 
 
 Download the latest version from [sysstat download page](http://sebastien.godard.pagesperso-orange.fr/download.html).
 
-下载最新版本从sysstat下载页面(http://sebastien.godard.pagesperso-orange.fr/download.html)。
+从官网下载最新版的源码, 下载页面为: <http://sebastien.godard.pagesperso-orange.fr/download.html>。
 
 
 You can also use wget to download the
 
-您还可以使用wget下载
+可以通过wget下载
 
 
+```
+sudo wget -O sysstat.tar.xz http://perso.orange.fr/sebastien.godard/sysstat-11.6.1.tar.xz
 
-	wget http://pagesperso-orange.fr/sebastien.godard/sysstat-10.0.0.tar.bz2
+sudo xz -dk sysstat.tar.xz
+sudo tar -xf sysstat.tar
 
-	tar xvfj sysstat-10.0.0.tar.bz2
 
-	cd sysstat-10.0.0
+cd sysstat-11.6.1
 
-	./configure --enable-install-cron
+sudo ./configure --enable-install-cron
 
+```
 
 
 **Note:** Make sure to pass the option –enable-install-cron. This does the following automatically for you. If you don’t configure sysstat with this option, you have to do this ugly job yourself manually.
 
-* *注意:* * -enable-install-cron确保通过选项。这下面的自动为你.如果你不sysstat配置这个选项,你必须做这丑陋的自己手工的工作。
+**注意:** 编译时必须指定 `-enable-install-cron` 参数。该参数会自动执行下面这些步骤. 如果不指定这个编译参数, 就需要手工来执行这些重复的工作。
 
 
 *   Creates /etc/rc.d/init.d/sysstat
@@ -124,32 +130,33 @@ You can also use wget to download the
 
 <br/>
 
-*创建/etc/rc.d/init.d/sysstat
-*从/etc/rc.d/rc*.创建适当的链接/etc/rc.d/init. d /目录d / sysstat sysstat Linux引导过程中自动开始。
-例如,* /etc/rc.d/rc3.d / S01sysstat自动/etc/rc.d/init.d/sysstat有关
+*   创建 `/etc/rc.d/init.d/sysstat`
+*   从 `/etc/rc.d/rc*.d/` 目录创建适当的链接到 `/etc/rc.d/init.d/sysstat`, 随系统一起启动。
+*   例如, `/etc/rc.d/rc3.d/S01sysstat` 被自动链接到 `/etc/rc.d/init.d/sysstat`
 
 
 After the ./configure, install it as shown below.
 
-会晤。起见,特别是it as / missiriya行业。
+执行完成 `./configure` 操作之后, 通过下面的语句进行 install。
 
+```
+sudo make && sudo make install
 
-	make
-
-	make install
+```
 
 
 **Note:** This will install sar and other systat utilities under /usr/local/bin
 
-* *注意:* *这将安装sar和其他systat /usr/local/bin下公用事业
+**提示:** 这会将 systat 中的工具安装到 `/usr/local/bin` 目录下
 
 
 Once installed, verify the sar version using “sar -V”. Version 10 is the current stable version of sysstat.
 
-一旦安装完毕,验证特区使用“sar - v”版本。sysstat的版本10是当前稳定版本。
+安装完成之后, 通过需要校验一下 sar 的版本号。
 
-
-	$ sar -V
+```
+sar -V
+```
 
 > sysstat version 10.0.0
 >
