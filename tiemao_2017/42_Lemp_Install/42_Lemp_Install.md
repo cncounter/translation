@@ -150,6 +150,8 @@ ifconfig eth0 | grep inet | awk '{ print $2 }'
 
 自动安装的 nginx 配置文件位于 `/etc/nginx` 目录:
 
+使用 `sudo nginx -t` 可以看到使用的配置文件
+
 ```
 cd /etc/nginx
 ls -l 
@@ -183,24 +185,24 @@ server {
 
    
     location / {
-        root   /usr/share/nginx/html;
+        root   /usr/local/www/wordpress;
         index index.php  index.html index.htm;
     }
 
     error_page  404              /404.html;
     location = /404.html {
-        root   /usr/share/nginx/html;
+        root   /usr/local/www/wordpress;
     }
 
     error_page   500 502 503 504  /50x.html;
     location = /50x.html {
-        root   /usr/share/nginx/html;
+        root   /usr/local/www/wordpress;
     }
 
     # pass the PHP scripts to FastCGI server listening on 127.0.0.1:9000
     #
     location ~ \.php$ {
-        root           /usr/share/nginx/html;
+        root           /usr/local/www/wordpress;
         fastcgi_pass   127.0.0.1:9000;
         fastcgi_index  index.php;
         fastcgi_param  SCRIPT_FILENAME   $document_root$fastcgi_script_name;
@@ -259,13 +261,13 @@ sudo yum -y install php-fpm php-mysql
 sudo vim /etc/php.ini
 ```
 
-将配置 `cgi.fix_pathinfo=1` 修改为:
+将配置 `cgi.fix_pathinfo=1` (默认值为1)修改为:
 
 ```
 cgi.fix_pathinfo=0
 ```
 
-这样会比较安全,详情请搜索。 如果新版本已经注释,则不需要管这个配置。
+这样会比较安全,详情请搜索。 。
 
 
 > vim 快捷搜索: 先按 ESC, 再以斜杠加搜索内容回车,例如: `/fix_pathinfo`。 查找下一个输入小写的 `n` 即可。
@@ -295,7 +297,7 @@ group = nginx
 #### 4.4.1 创建测试页面
 
 ```
-sudo vim /usr/share/nginx/html/info.php
+sudo vim /usr/local/www/wordpress/info.php
 
 ```
 
@@ -417,15 +419,17 @@ wget -O wordpress.latest.tar.gz https://wordpress.org/latest.tar.gz
 解压,:
 
 ```
-sudo mkdir -p /usr/share/nginx/html/wp-content/uploads
+sudo mkdir -p /usr/local/www/wordpress/
 sudo tar zxf wordpress.latest.tar.gz
-sudo mv wordpress/* /usr/share/nginx/html/
+sudo mv wordpress/* /usr/local/www/wordpress/
+sudo mkdir -p /usr/local/www/wordpress/wp-content/uploads
+
 ```
 
 修改文件:
 
 ```
-sudo chown -R nginx:nginx /usr/share/nginx/html/*
+sudo chown -R nginx:nginx /usr/local/www/wordpress
 
 ```
 
@@ -446,7 +450,7 @@ sudo chown -R nginx:nginx /usr/share/nginx/html/*
 
 依次配置数据库名字,用户名,密码。当然，上面的示例中我们设置的都是 `wordpress`。 数据库主机保持默认值 localhost。 提交即可。
 
-如果权限不对，不能写入wp-config.php文件(可能是nginx用户没有 /usr/share/nginx/html 目录的写入权限)。
+如果权限不对，不能写入wp-config.php文件(可能是nginx用户没有 /usr/local/www/wordpress 目录的写入权限)。
 
 > 抱歉，我不能写入wp-config.php文件。
 > 
@@ -455,7 +459,7 @@ sudo chown -R nginx:nginx /usr/share/nginx/html/*
 那么, 通过命令在后台手工配置即可:
 
 ```
-cd  /usr/share/nginx/html
+cd  /usr/local/www/wordpress
 cp wp-config-sample.php wp-config.php
 vim wp-config.php
 
