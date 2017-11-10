@@ -1,6 +1,6 @@
 # JVM Internals
 
-​        
+        
 
 This article explains the internal architecture of the Java Virtual Machine (JVM).  The following diagram show the key internal components of a typical JVM that conforms to [The Java Virtual Machine Specification Java SE 7 Edition](http://www.amazon.co.uk/Virtual-Machine-Specification-Edition-Series/dp/0133260445).
 
@@ -23,7 +23,6 @@ The components shown on this diagram are each explained below in two sections.  
   *   [Dynamic Linking](#dynamic_linking)
 
 
-
 * [Shared Between Threads](#shared_between_threads)
 
   * [Heap](#heap)
@@ -44,7 +43,7 @@ The components shown on this diagram are each explained below in two sections.  
 
 
 
-​        
+        
 
 ## Thread
 
@@ -66,7 +65,7 @@ If you use jconsole or any debugger it is possible to see there are numerous thr
   This thread receives signals sent to the JVM process and handle them inside the JVM by calling the appropriate JVM methods.
 
 
-​        
+     
 
 ## Per Thread
 
@@ -132,7 +131,7 @@ Gets compiled to the following byte code:
     1:	istore_1	// Pop value from top of operand stack and store as local variable 1
 
 
-​        
+     
 
 For more detail explaining interactions between the local variables array, operand stack and run time constant pool [see the section on Class File Structure below](#class_file_structure).
 
@@ -145,7 +144,7 @@ C/C++ code is typically compiled to an object file then multiple object files ar
 When a Java class is compiled, all references to variables and methods are stored in the class's constant pool as a symbolic reference. A symbolic reference is a logical reference not a reference that actually points to a physical memory location.  The JVM implementation can choose when to resolve symbolic references, this can happen when the class file is verified, after being loaded, called eager or static resolution, instead this can happen when the symbolic reference is used for the first time called lazy or late resolution. However the JVM has to behave as if the resolution occurred when each reference is first used and throw any resolution errors at this point.  Binding is the process of the field, method or class identified by the symbolic reference being replaced by a direct reference, this only happens once because the symbolic reference is completely replaced.  If the symbolic reference refers to a class that has not yet been resolved then this class will be loaded.  Each direct reference is stored as an offset against the storage structure associated with the runtime location of the variable or method.
 
 
-​        
+      
 
 ## Shared Between Threads
 
@@ -159,11 +158,11 @@ To support garbage collection the heap is divided into three sections:
 
   *   Often split between Eden and Survivor
 
-* **Old Generation** (also called Tenured Generation)
-* **Permanent Generation**
+*   **Old Generation** (also called Tenured Generation)
+*   **Permanent Generation**
 
 
-​        
+       
 
 ### Memory Management
 
@@ -177,7 +176,7 @@ Typically this works as follows:
 4.  The permanent generation is collected every time the old generation is collected.  They are both collected when either becomes full.
 
 
-​        
+       
 
 ### Non-Heap Memory
 
@@ -287,120 +286,114 @@ It is possible to view the byte code in a compiled Java class by using the javap
 
 If you compile the following simple class:
 
-    package org.jvminternals;
+```
+package org.jvminternals;
 
-    public class SimpleClass {
-
-        public void sayHello() {
-            System.out.println("Hello");
-        }
-    
+public class SimpleClass {
+    public void sayHello() {
+        System.out.println("Hello");
     }
+}
+```
 
 Then you get the following output if you run:
 
+```
 javap -v -p -s -sysinfo -constants classes/org/jvminternals/SimpleClass.class
+```
 
-    public class org.jvminternals.SimpleClass
-      SourceFile: "SimpleClass.java"
-      minor version: 0
-      major version: 51
-      flags: ACC_PUBLIC, ACC_SUPER
-    Constant pool:
-       #1 = Methodref          #6.#17         //  java/lang/Object."<init>":()V
-       #2 = Fieldref           #18.#19        //  java/lang/System.out:Ljava/io/PrintStream;
-       #3 = String             #20            //"Hello"
-       #4 = Methodref          #21.#22        //  java/io/PrintStream.println:(Ljava/lang/String;)V
-       #5 = Class              #23            //  org/jvminternals/SimpleClass
-       #6 = Class              #24            //  java/lang/Object
-       #7 = Utf8               <init>
-       #8 = Utf8               ()V
-       #9 = Utf8               Code
-      #10 = Utf8               LineNumberTable
-      #11 = Utf8               LocalVariableTable
-      #12 = Utf8               this
-      #13 = Utf8               Lorg/jvminternals/SimpleClass;
-      #14 = Utf8               sayHello
-      #15 = Utf8               SourceFile
-      #16 = Utf8               SimpleClass.java
-      #17 = NameAndType        #7:#8          //  "<init>":()V
-      #18 = Class              #25            //  java/lang/System
-      #19 = NameAndType        #26:#27        //  out:Ljava/io/PrintStream;
-      #20 = Utf8               Hello
-      #21 = Class              #28            //  java/io/PrintStream
-      #22 = NameAndType        #29:#30        //  println:(Ljava/lang/String;)V
-      #23 = Utf8               org/jvminternals/SimpleClass
-      #24 = Utf8               java/lang/Object
-      #25 = Utf8               java/lang/System
-      #26 = Utf8               out
-      #27 = Utf8               Ljava/io/PrintStream;
-      #28 = Utf8               java/io/PrintStream
-      #29 = Utf8               println
-      #30 = Utf8               (Ljava/lang/String;)V
-    {
-      public org.jvminternals.SimpleClass();
-        Signature: ()V
-        flags: ACC_PUBLIC
-        Code:
-          stack=1, locals=1, args_size=1
-            0: aload_0
-            1: invokespecial #1    // Method java/lang/Object."<init>":()V
-            4: return
-          LineNumberTable:
-            line 3: 0
-          LocalVariableTable:
-            Start  Length  Slot  Name   Signature
-              0      5      0    this   Lorg/jvminternals/SimpleClass;
-    
-      public void sayHello();
-        Signature: ()V
-        flags: ACC_PUBLIC
-        Code:
-          stack=2, locals=1, args_size=1
-            0: getstatic #2    // Field java/lang/System.out:Ljava/io/PrintStream;
-            3: ldc #3    // String"Hello"
-            5: invokevirtual #4    // Method java/io/PrintStream.println:(Ljava/lang/String;)V
-            8: return
-          LineNumberTable:
-            line 6: 0
-            line 7: 8
-          LocalVariableTable:
-            Start  Length  Slot  Name   Signature
-              0      9      0    this   Lorg/jvminternals/SimpleClass;
-    }
+
+```
+public class org.jvminternals.SimpleClass
+  SourceFile: "SimpleClass.java"
+  minor version: 0
+  major version: 51
+  flags: ACC_PUBLIC, ACC_SUPER
+Constant pool:
+   #1 = Methodref          #6.#17         //  java/lang/Object."<init>":()V
+   #2 = Fieldref           #18.#19        //  java/lang/System.out:Ljava/io/PrintStream;
+   #3 = String             #20            //  "Hello"
+   #4 = Methodref          #21.#22        //  java/io/PrintStream.println:(Ljava/lang/String;)V
+   #5 = Class              #23            //  org/jvminternals/SimpleClass
+   #6 = Class              #24            //  java/lang/Object
+   #7 = Utf8               <init>
+   #8 = Utf8               ()V
+   #9 = Utf8               Code
+  #10 = Utf8               LineNumberTable
+  #11 = Utf8               LocalVariableTable
+  #12 = Utf8               this
+  #13 = Utf8               Lorg/jvminternals/SimpleClass;
+  #14 = Utf8               sayHello
+  #15 = Utf8               SourceFile
+  #16 = Utf8               SimpleClass.java
+  #17 = NameAndType        #7:#8          //  "<init>":()V
+  #18 = Class              #25            //  java/lang/System
+  #19 = NameAndType        #26:#27        //  out:Ljava/io/PrintStream;
+  #20 = Utf8               Hello
+  #21 = Class              #28            //  java/io/PrintStream
+  #22 = NameAndType        #29:#30        //  println:(Ljava/lang/String;)V
+  #23 = Utf8               org/jvminternals/SimpleClass
+  #24 = Utf8               java/lang/Object
+  #25 = Utf8               java/lang/System
+  #26 = Utf8               out
+  #27 = Utf8               Ljava/io/PrintStream;
+  #28 = Utf8               java/io/PrintStream
+  #29 = Utf8               println
+  #30 = Utf8               (Ljava/lang/String;)V
+{
+  public org.jvminternals.SimpleClass();
+    Signature: ()V
+    flags: ACC_PUBLIC
+    Code:
+      stack=1, locals=1, args_size=1
+        0: aload_0
+        1: invokespecial #1    // Method java/lang/Object."<init>":()V
+        4: return
+      LineNumberTable:
+        line 3: 0
+      LocalVariableTable:
+        Start  Length  Slot  Name   Signature
+          0      5      0    this   Lorg/jvminternals/SimpleClass;
+
+  public void sayHello();
+    Signature: ()V
+    flags: ACC_PUBLIC
+    Code:
+      stack=2, locals=1, args_size=1
+        0: getstatic      #2    // Field java/lang/System.out:Ljava/io/PrintStream;
+        3: ldc            #3    // String "Hello"
+        5: invokevirtual  #4    // Method java/io/PrintStream.println:(Ljava/lang/String;)V
+        8: return
+      LineNumberTable:
+        line 6: 0
+        line 7: 8
+      LocalVariableTable:
+        Start  Length  Slot  Name   Signature
+          0      9      0    this   Lorg/jvminternals/SimpleClass;
+}
+```
 
 This class file shows three main sections the constant pool, the constructor and the sayHello method.
 
-<ul class="list">
-            * **Constant Pool** – this provides the same information that a symbol table typically provides and is [described in more detail below.](#constant_pool)
-            * **Methods** – each containing four areas:
-
-* signature and access flags
-         * byte code
-         * LineNumberTable – this provides information to a debugger to indicate which line corresponds to which byte code instruction, for example line 6 in the Java code corresponds to byte code 0 in the sayHello method and line 7 corresponds to byte code 8.
-         * LocalVariableTable – this lists all local variables provided in the frame, in both examples the only local variable is this.
+* Constant Pool – this provides the same information that a symbol table typically provides and is described in more detail below.
+* Methods – each containing four areas:
+  * signature and access flags
+  * byte code
+  * LineNumberTable – this provides information to a debugger to indicate which line corresponds to which byte code instruction, for example line 6 in the Java code corresponds to byte code 0 in the sayHello method and line 7 corresponds to byte code 8.
+  * LocalVariableTable – this lists all local variables provided in the frame, in both examples the only local variable is this.
 
 The following byte code operands are used in this class file
 
-aload_0
-
-This opcode is one of a group of opcodes with the format aload_&lt;n&gt;.  They all load an object reference into the operand stack.  The &lt;n&gt; refers to the location in the local variable array that is being accessed but can only be 0, 1, 2 or 3.  There are other similar opcodes for loading values that are not an object reference iload_&lt;n&gt;, lload_&lt;n&gt;, float_&lt;n&gt; and dload_&lt;n&gt; where i is for int, l is for long, f is for float and d is for double.  Local variables with an index higher than 3 can be loaded using iload, lload, float, dload and aload.  These opcodes all take a single operand that specifies the index of local variable to load.
-
-ldc
-
-This opcode is used to push a constant from the run time constant pool into the operand stack.
-
-getstatic
-
-This opcode is used to push a static value from a static field listed in the run time constant pool into the operand stack.
-
-invokespecial, invokevirtual
-
-These opcodes are in a group of opcodes that invoke methods these are invokedynamic, invokeinterface, invokespecial, invokestatic, invokevirtual.  In this class file invokespecial and invokevirutal are both used the difference between these is that invokevirutal invokes a method based on the class of the object. The invokespecial instruction is used to invoke instance initialization methods as well as private methods and methods of a superclass of the current class.
-
-return
-
-This opcode is in a group of opcodes ireturn, lreturn, freturn, dreturn, areturn and return.  Each of these opcodes are a typed return statement that returns a different type where i is for int, l is for long, f is for float, d is for double and a is for an object reference.  The opcode with no leading type letter return only returns void.
+* aload_0
+  This opcode is one of a group of opcodes with the format aload_&lt;n&gt;.  They all load an object reference into the operand stack.  The &lt;n&gt; refers to the location in the local variable array that is being accessed but can only be 0, 1, 2 or 3.  There are other similar opcodes for loading values that are not an object reference iload_&lt;n&gt;, lload_&lt;n&gt;, float_&lt;n&gt; and dload_&lt;n&gt; where i is for int, l is for long, f is for float and d is for double.  Local variables with an index higher than 3 can be loaded using iload, lload, float, dload and aload.  These opcodes all take a single operand that specifies the index of local variable to load.
+* ldc
+    This opcode is used to push a constant from the run time constant pool into the operand stack.
+* getstatic
+    This opcode is used to push a static value from a static field listed in the run time constant pool into the operand stack.
+* invokespecial, invokevirtual
+    These opcodes are in a group of opcodes that invoke methods these are invokedynamic,   invokeinterface, invokespecial, invokestatic, invokevirtual.  In this class file invokespecial and invokevirutal are both used the difference between these is that invokevirutal invokes a method based on the class of the object. The invokespecial instruction is used to invoke instance initialization methods as well as private methods and methods of a superclass of the current class.
+* return
+    This opcode is in a group of opcodes ireturn, lreturn, freturn, dreturn, areturn and return.  Each of these opcodes are a typed return statement that returns a different type where i is for int, l is for long, f is for float, d is for double and a is for an object reference.  The opcode with no leading type letter return only returns void.
 
 As in any typical byte code the majority of the operands interact with the local variables, operand stack and run time constant pool as follows.
 
@@ -412,11 +405,6 @@ The sayHello() method is more complex as it has to resolve symbolic references t
 
 ![local variables, operand stack and run time constant pool changes when calling System.out in Java Virtual Machine (JVM)](bytecode_explanation_sayHello.png)
 
-        <!--
-
-### Object Memory Structure
--->
-        <!---->
 
 ### Classloader
 
@@ -426,15 +414,23 @@ The JVM starts up by loading an initial class using the bootstrap classloader.  
 
 **Linking** is the process of taking a class or interface verifying and preparing the type and its direct superclass and superinterfaces.  Linking consists of three steps verifying, preparing and optionally resolving.
 
-**_Verifying_** is the process of confirming the class or interface representation is structurally correct and obeys the semantic requirements of the Java programming language and JVM, for example the following checks are performed:
+  **_Verifying_** is the process of confirming the class or interface representation is structurally correct and obeys the semantic requirements of the Java programming language and JVM, for example the following checks are performed:
+
+1. consistent and correctly formatted symbol table
+2. final methods / classes not overridden
+3. methods respect access control keywords
+4. methods have correct number and type of parameters
+5. bytecode doesn't manipulate stack incorrectly
+6. variables are initialized before being read
+7. variables are a value of the correct type
 
 Performing these checks during the verifying stages means these checks do not need to be performed at runtime.  Verification during linking slows down class loading however it avoids the need to perform these checks multiple when executing the bytecode.
 
-**_Preparing_** involves allocation of memory for static storage and any data structures used by the JVM such as method tables.  Static fields are created and initialized to their default values, however, no initializers or code is executed at this stage as that happens as part of initialization.
+  **_Preparing_** involves allocation of memory for static storage and any data structures used by the JVM such as method tables.  Static fields are created and initialized to their default values, however, no initializers or code is executed at this stage as that happens as part of initialization.
 
-**_Resolving_** is an optional stage which involves checking symbolic references by loading the referenced classes or interfaces and checking the references are correct.  If this does not take place at this point the resolution of symbolic references can be deferred until just prior to their use by a byte code instruction.
+  **_Resolving_** is an optional stage which involves checking symbolic references by loading the referenced classes or interfaces and checking the references are correct.  If this does not take place at this point the resolution of symbolic references can be deferred until just prior to their use by a byte code instruction.
 
-**Initialization** of a class or interface consists of executing the class or interface initialization method &lt;clinit&gt;
+**Initialization** of a class or interface consists of executing the class or interface initialization method <clinit>
 
 ![class loading, linking and initialization in the Java Virtual Machine (JVM)](Class_Loading_Linking_Initializing.png)
 
@@ -468,39 +464,46 @@ The JVM maintains a per-type constant pool, a run time data structure that is si
 
 Several types of data is stored in the constant pool including
 
-<ul class="list">
-            * numeric literals
-            * string literals
-            * class references
-            * field references
-            * method references
+
+* numeric literals
+* string literals
+* class references
+* field references
+* method references
 
 For example the following code:
 
-    Object foo = new Object();
+```
+Object foo = new Object();
+```
 
 Would be written in byte code as follows:
 
-     0: 	new #2 		    // Class java/lang/Object
-     1:	dup
-     2:	invokespecial #3    // Method java/ lang/Object "<init>"( ) V
+```
+0: 	new #2 		    // Class java/lang/Object
+1:	dup
+2:	invokespecial #3    // Method java/ lang/Object "<init>"( ) V
+```
 
 The new opcode (operand code) is followed by the #2 operand.  This operand is an index into the constant pool and therefore is referencing the second entry in the constant pool.  The second entry is a class reference, this entry in turn references another entry in the constant pool containing the name of the class as a constant UTF8 string with the value // Class java/lang/Object.  This symbolic link can then be used to lookup the class for java.lang.Object.  The new opcode creates a class instance and initializes its variables.  A reference to the new class instance is then added to the operand stack.  The dup opcode then creates an extra copy of the top reference on the operand stack and adds this to the top of the operand stack.  Finally an instance initialization method is called on line 2 by invokespecial.  This operand also contains a reference to the constant pool.  The initialization method consumes (pops) the top reference off the operand pool as an argument to the method.  At the end there is one reference to the new object that has been both created and initialized.
 
 If you compile the following simple class:
 
-    package org.jvminternals;
+```
+package org.jvminternals;
 
-    public class SimpleClass {
+public class SimpleClass {
 
-        public void sayHello() {
-            System.out.println("Hello");
-        }
-    
+    public void sayHello() {
+        System.out.println("Hello");
     }
+
+}
+```
 
 The constant pool in the generated class file would look like:
 
+```
     Constant pool:
        #1 = Methodref          #6.#17         //  java/lang/Object."<init>":()V
        #2 = Fieldref           #18.#19        //  java/lang/System.out:Ljava/io/PrintStream;
@@ -532,56 +535,29 @@ The constant pool in the generated class file would look like:
       #28 = Utf8               java/io/PrintStream
       #29 = Utf8               println
       #30 = Utf8               (Ljava/lang/String;)V
+```
 
 The constant pool contains the following types:
 
-Integer
-
-A 4 byte int constant
-
-Long
-
-An 8 byte long constant
-
-Float
-
-A 4 byte float constant
-
-Double
-
-A 8 byte double constant
-
-String
-
-A String constant that points at another Utf8 entry in the constant pool which contains the actual bytes
-
-Utf8
-
-A stream of bytes representing a Utf8 encoded sequence of characters
-
-Class
-
-A Class constant that points at another Utf8 entry in the constant pool which contains the fully qualified class name in the internal JVM format (this is used by the [dynamic linking process](#dynamic_linking))
-
-NameAndType
-
-A colon separated pair of values each pointing at other entries in the constant pool.  The first value (before the colon) points at a Utf8 string entry that is the method or field name.  The second value points at a Utf8 entry that represents the type, in the case of a field this is the fully qualified class name, in the case of a method this is a list of fully qualified class names one per parameter.
-
-Fieldref,
-Methodref,
-InterfaceMethodref
-
-A dot separated pair of values each pointing at other entries in the constant pool.  The first value (before the dot) points at a Class entry.  The second value points at a NameAndType entry.
+- `Integer` A 4 byte int constant
+- `Long` An 8 byte long constant
+- `Float` A 4 byte float constant
+- `Double` - A 8 byte double constant
+- `String` - A String constant that points at another Utf8 entry in the constant pool which contains the actual bytes
+- `Utf8` A stream of bytes representing a Utf8 encoded sequence of characters
+- `Class`  A Class constant that points at another Utf8 entry in the constant pool which contains the fully qualified class name in the internal JVM format (this is used by the [dynamic linking process](#dynamic_linking))
+- `NameAndType` A colon separated pair of values each pointing at other entries in the constant pool.  The first value (before the colon) points at a Utf8 string entry that is the method or field name.  The second value points at a Utf8 entry that represents the type, in the case of a field this is the fully qualified class name, in the case of a method this is a list of fully qualified class names one per parameter.
+- `Fieldref`,`Methodref`,`InterfaceMethodref` A dot separated pair of values each pointing at other entries in the constant pool.  The first value (before the dot) points at a Class entry.  The second value points at a NameAndType entry.
 
 ### Exception Table
 
 The exception table stores per-exception handler information such as:
 
-<ul class="list">
-            * Start point
-            * End point
-            * PC offset for handler code
-            * Constant pool index for exception class being caught
+
+* Start point
+* End point
+* PC offset for handler code
+* Constant pool index for exception class being caught
 
 If a method has defined a try-catch or a try-finally exception handler then an Exception Table will be created.  This contains information for each exception handler or finally block including the range over which the handler applies, what type of exception is being handled and where the handler code is.
 
@@ -599,7 +575,9 @@ Reference counting is used to control when a symbol is removed from the symbol t
 
 The Java Language Specification requires that identical string literals, that contain the same sequence of Unicode code points, must refer to the same instance of String.  In addition if String.intern() is called on an instance of String a reference must be returned that would be identical to the reference return if the string was a literal. The following therefore holds true:
 
-    ("j" + "v" + "m").intern() == "jvm"
+```
+("j" + "v" + "m").intern() == "jvm"
+```
 
 In the Hotspot JVM interned string are held in the string table, which is a Hashtable mapping object pointers to symbols (i.e. Hashtable&lt;oop, Symbol&gt;), and is held in the permanent generation.  For both the symbol table (see above) and the string table all entries are held in a canonicalized form to improve efficiency and ensure each entry only appears once.
 
