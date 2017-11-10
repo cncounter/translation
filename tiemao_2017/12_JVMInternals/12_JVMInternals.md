@@ -52,27 +52,18 @@ A thread is a thread of execution in a program. The JVM allows an application to
 
 ### JVM System Threads
 
-If you use jconsole or any debugger it is possible to see there are numerous threads running in the background.  These background threads run in addition to the main thread, which is created as part of invoking <span class="keyword">public static void main(String[])</span>, and any threads created by the main thread.  The main background system threads in the Hotspot JVM are:
+If you use jconsole or any debugger it is possible to see there are numerous threads running in the background.  These background threads run in addition to the main thread, which is created as part of invoking `public static void main(String[])`, and any threads created by the main thread.  The main background system threads in the Hotspot JVM are:
 
-VM thread
-
-This thread waits for operations to appear that require the JVM to reach a safe-point.  The reason these operations have to happen on a separate thread is because they all require the JVM to be at a safe point where modifications to the heap can not occur.  The type of operations performed by this thread are "stop-the-world" garbage collections, thread stack dumps, thread suspension and biased locking revocation.
-
-Periodic task thread
-
-This thread is responsible for timer events (i.e. interrupts) that are used to schedule execution of periodic operations
-
-GC threads
-
-These threads support the different types of garbage collection activities that occur in the JVM
-
-Compiler threads
-
-These threads compile byte code to native code at runtime
-
-Signal dispatcher thread
-
-This thread receives signals sent to the JVM process and handle them inside the JVM by calling the appropriate JVM methods.
+* VM thread
+  This thread waits for operations to appear that require the JVM to reach a safe-point.  The reason these operations have to happen on a separate thread is because they all require the JVM to be at a safe point where modifications to the heap can not occur.  The type of operations performed by this thread are "stop-the-world" garbage collections, thread stack dumps, thread suspension and biased locking revocation.
+* Periodic task thread
+  This thread is responsible for timer events (i.e. interrupts) that are used to schedule execution of periodic operations
+* GC threads
+  These threads support the different types of garbage collection activities that occur in the JVM
+* Compiler threads
+  These threads compile byte code to native code at runtime
+* Signal dispatcher thread
+  This thread receives signals sent to the JVM process and handle them inside the JVM by calling the appropriate JVM methods.
 
 
 ​        
@@ -138,7 +129,7 @@ The operand stack is used during the execution of byte code instructions in a si
 Gets compiled to the following byte code:
 
     0:	iconst_0	// Push 0 to top of the operand stack
-     1:	istore_1	// Pop value from top of operand stack and store as local variable 1
+    1:	istore_1	// Pop value from top of operand stack and store as local variable 1
 
 
 ​        
@@ -166,7 +157,7 @@ To support garbage collection the heap is divided into three sections:
 
 *   **Young Generation**
 
-        *   Often split between Eden and Survivor
+  *   Often split between Eden and Survivor
 
 * **Old Generation** (also called Tenured Generation)
 * **Permanent Generation**
@@ -194,10 +185,9 @@ Objects that are logically considered as part of the JVM mechanics are not creat
 
 The non-heap memory includes:
 
-            * **Permanent Generation** that contains
-
-*   the method area
-*   interned strings
+* **Permanent Generation** that contains
+  * the method area
+  * interned strings
 
 
 * **Code Cache** used for compilation and storage of methods that have been compiled to native code by the JIT compiler
@@ -212,55 +202,37 @@ Java byte code is interpreted however this is not as fast as directly executing 
 The method area stores per-class information such as:
 
 
-            * **Classloader Reference**
-            * **Run Time Constant Pool**
-
-*   Numeric constants
-*   Field references
-*   Method References
-*   Attributes
-
-
-            * **Field data**
-
-*   Per field
-
-        *   Name
-  *   Type
-    *   Modifiers
-    *   Attributes
-
-
-            * **Method data**
-
-*   Per method
-
-        *   Name
-  *   Return Type
-    *   Parameter Types (in order)
-    *   Modifiers
-    *   Attributes
-
-
-
-**Method code**
-
-​                
-
-* Per method
-
-* Bytecodes
-         * Operand stack size
-         * Local variable size
-         * Local variable table
-         * Exception table
-
-* Per exception handler
-
-* Start point
-         * End point
-         * PC offset for handler code
-         * Constant pool index for exception class being caught
+* **Classloader Reference**
+* **Run Time Constant Pool**
+  * Numeric constants
+  * Field references
+  * Method References
+  * Attributes
+* **Field data**
+  * Per field
+    * Name
+    * Type
+    * Modifiers
+    * Attributes
+* **Method data**
+  * Per method
+    * Name
+    * Return Type
+    * Parameter Types (in order)
+    * Modifiers
+    * Attributes
+* **Method code**
+  * Per method
+    * Bytecodes
+    * Operand stack size
+    * Local variable size
+    * Local variable table
+    * Exception table
+      * Per exception handler
+        * Start point
+        * End point
+        * PC offset for handler code
+        * Constant pool index for exception class being caught
 
 
 
@@ -270,62 +242,46 @@ All threads share the same method area, so access to the method area data and th
 
 A compiled class file consists of the following structure:
 
-    ClassFile {
-        u4			magic;
-        u2			minor_version;
-        u2			major_version;
-        u2			constant_pool_count;
-        cp_info		contant_pool[constant_pool_count – 1];
-        u2			access_flags;
-        u2			this_class;
-        u2			super_class;
-        u2			interfaces_count;
-        u2			interfaces[interfaces_count];
-        u2			fields_count;
-        field_info		fields[fields_count];
-        u2			methods_count;
-        method_info		methods[methods_count];
-        u2			attributes_count;
-        attribute_info	attributes[attributes_count];
-    }
+```
+ClassFile {
+    u4			magic;
+    u2			minor_version;
+    u2			major_version;
+    u2			constant_pool_count;
+    cp_info		contant_pool[constant_pool_count – 1];
+    u2			access_flags;
+    u2			this_class;
+    u2			super_class;
+    u2			interfaces_count;
+    u2			interfaces[interfaces_count];
+    u2			fields_count;
+    field_info		fields[fields_count];
+    u2			methods_count;
+    method_info		methods[methods_count];
+    u2			attributes_count;
+    attribute_info	attributes[attributes_count];
+}
+```
 
-magic,
- minor_version,
- major_version
 
-specifies information about the version of the class and the version of the JDK this class was compiled for.
-
-constant_pool
-
-similar to a symbol table although it contains more data [this is described in more detail below.](#constant_pool)
-
-access_flags
-
-provides the list of modifiers for this class.
-
-this_class
-
-index into the constant_pool providing the fully qualified name of this class i.e. org/jamesdbloom/foo/Bar
-
-super_class
-
-index into the constant_pool providing a symbolic reference to the super class i.e. java/lang/Object
-
-interfaces
-
-array of indexes into the constant_pool providing a symbolic references to all interfaces that have been implemented.
-
-fields
-
-array of indexes into the constant_pool giving a complete description of each field.
-
-methods
-
-array of indexes into the constant_pool giving a complete description of each method signature, if the method is not abstract or native then the bytecode is also present.
-
-attributes
-
-array of different value that provide additional information about the class including any annotations with RetentionPolicy.<span class="final_value">CLASS</span> or RetentionPolicy.<span class="final_value">RUNTIME</span>
+* magic, minor_version, major_version
+  specifies information about the version of the class and the version of the JDK this class was compiled for.
+* constant_pool
+  similar to a symbol table although it contains more data [this is described in more detail below.](#constant_pool)
+* access_flags
+  provides the list of modifiers for this class.
+* this_class
+  index into the constant_pool providing the fully qualified name of this class i.e. org/jamesdbloom/foo/Bar
+* super_class
+  index into the constant_pool providing a symbolic reference to the super class i.e. java/lang/Object
+* interfaces
+  array of indexes into the constant_pool providing a symbolic references to all interfaces that have been implemented.
+* fields
+  array of indexes into the constant_pool giving a complete description of each field.
+* methods
+  array of indexes into the constant_pool giving a complete description of each method signature, if the method is not abstract or native then the bytecode is also present.
+* attributes
+  array of different value that provide additional information about the class including any annotations with RetentionPolicy.`CLASS` or RetentionPolicy.`RUNTIME`
 
 It is possible to view the byte code in a compiled Java class by using the javap command.
 
@@ -351,7 +307,7 @@ javap -v -p -s -sysinfo -constants classes/org/jvminternals/SimpleClass.class
       major version: 51
       flags: ACC_PUBLIC, ACC_SUPER
     Constant pool:
-       #1 = Methodref          #6.#17         //  java/lang/Object.<span class="constant_value">"<init>":()V</span>
+       #1 = Methodref          #6.#17         //  java/lang/Object."<init>":()V
        #2 = Fieldref           #18.#19        //  java/lang/System.out:Ljava/io/PrintStream;
        #3 = String             #20            //"Hello"
        #4 = Methodref          #21.#22        //  java/io/PrintStream.println:(Ljava/lang/String;)V
@@ -367,7 +323,7 @@ javap -v -p -s -sysinfo -constants classes/org/jvminternals/SimpleClass.class
       #14 = Utf8               sayHello
       #15 = Utf8               SourceFile
       #16 = Utf8               SimpleClass.java
-      #17 = NameAndType        #7:#8          //  <span class="constant_value">"<init>":()V</span>
+      #17 = NameAndType        #7:#8          //  "<init>":()V
       #18 = Class              #25            //  java/lang/System
       #19 = NameAndType        #26:#27        //  out:Ljava/io/PrintStream;
       #20 = Utf8               Hello
@@ -388,7 +344,7 @@ javap -v -p -s -sysinfo -constants classes/org/jvminternals/SimpleClass.class
         Code:
           stack=1, locals=1, args_size=1
             0: aload_0
-            1: invokespecial #1    // Method java/lang/Object.<span class="constant_value">"<init>":()V</span>
+            1: invokespecial #1    // Method java/lang/Object."<init>":()V
             4: return
           LineNumberTable:
             line 3: 0
@@ -464,7 +420,7 @@ The sayHello() method is more complex as it has to resolve symbolic references t
 
 ### Classloader
 
-The JVM starts up by loading an initial class using the bootstrap classloader.  The class is then linked and initialized before <span class="keyword">public static void main(String[])</span> is invoked.  The execution of this method will in turn drive the loading, linking and initialization of additional classes and interfaces as required.
+The JVM starts up by loading an initial class using the bootstrap classloader.  The class is then linked and initialized before `public static void main(String[])` is invoked.  The execution of this method will in turn drive the loading, linking and initialization of additional classes and interfaces as required.
 
 **Loading** is the process of finding the class file that represents the class or interface type with a particular name and reading it into a byte array.  Next the bytes are parsed to confirm they represent a Class object and have the correct major and minor versions.  Any class or interface named as a direct superclass is also loaded.  Once this is completed a class or interface object is created from the binary representation.
 
@@ -527,7 +483,7 @@ Would be written in byte code as follows:
 
      0: 	new #2 		    // Class java/lang/Object
      1:	dup
-     2:	invokespecial #3    // Method java/ lang/Object <span class="constant_value">"<init>"( ) V</span>
+     2:	invokespecial #3    // Method java/ lang/Object "<init>"( ) V
 
 The new opcode (operand code) is followed by the #2 operand.  This operand is an index into the constant pool and therefore is referencing the second entry in the constant pool.  The second entry is a class reference, this entry in turn references another entry in the constant pool containing the name of the class as a constant UTF8 string with the value // Class java/lang/Object.  This symbolic link can then be used to lookup the class for java.lang.Object.  The new opcode creates a class instance and initializes its variables.  A reference to the new class instance is then added to the operand stack.  The dup opcode then creates an extra copy of the top reference on the operand stack and adds this to the top of the operand stack.  Finally an instance initialization method is called on line 2 by invokespecial.  This operand also contains a reference to the constant pool.  The initialization method consumes (pops) the top reference off the operand pool as an argument to the method.  At the end there is one reference to the new object that has been both created and initialized.
 
@@ -546,7 +502,7 @@ If you compile the following simple class:
 The constant pool in the generated class file would look like:
 
     Constant pool:
-       #1 = Methodref          #6.#17         //  java/lang/Object.<span class="constant_value">"<init>":()V</span>
+       #1 = Methodref          #6.#17         //  java/lang/Object."<init>":()V
        #2 = Fieldref           #18.#19        //  java/lang/System.out:Ljava/io/PrintStream;
        #3 = String             #20            //"Hello"
        #4 = Methodref          #21.#22        //  java/io/PrintStream.println:(Ljava/lang/String;)V
@@ -562,7 +518,7 @@ The constant pool in the generated class file would look like:
       #14 = Utf8               sayHello
       #15 = Utf8               SourceFile
       #16 = Utf8               SimpleClass.java
-      #17 = NameAndType        #7:#8          //  <span class="constant_value">"<init>":()V</span>
+      #17 = NameAndType        #7:#8          //  "<init>":()V
       #18 = Class              #25            //  java/lang/System
       #19 = NameAndType        #26:#27        //  out:Ljava/io/PrintStream;
       #20 = Utf8               Hello
