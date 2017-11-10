@@ -9,39 +9,38 @@ This article explains the internal architecture of the Java Virtual Machine (JVM
 The components shown on this diagram are each explained below in two sections.  [First section](#threads) covers the components that are created for each thread and the [second section](#shared_between_threads) covers the components that are created independently of threads.
 
 
-                * [Threads](#threads)
+* [Threads](#threads)
 
-*   [JVM System Threads](#jvm_system_threads)
-*   [Per Thread](#per_thread)
-*   [program Counter (PC)](#program_counter)
-*   [Stack](#stack)
-*   [Native Stack](#native_stack)
-*   [Stack Restrictions](#stack_restrictions)
-*   [Frame](#frame)
-*   [Local Variables Array](#local_variables_array)
-*   [Operand Stack](#operand_stack)
-*   [Dynamic Linking](#dynamic_linking)
+  *   [JVM System Threads](#jvm_system_threads)
+  *   [Per Thread](#per_thread)
+  *   [program Counter (PC)](#program_counter)
+  *   [Stack](#stack)
+  *   [Native Stack](#native_stack)
+  *   [Stack Restrictions](#stack_restrictions)
+  *   [Frame](#frame)
+  *   [Local Variables Array](#local_variables_array)
+  *   [Operand Stack](#operand_stack)
+  *   [Dynamic Linking](#dynamic_linking)
 
 
 
-                * [Shared Between Threads](#shared_between_threads)
+* [Shared Between Threads](#shared_between_threads)
 
-*   [Heap](#heap)
-* [Memory Management](#memory_management)
-* [Non-Heap Memory](#non_heap_memory)
-* [Just In Time (JIT) Compilation](#jit_compilation)
-* [Method Area](#method_area)
-* [Class File Structure](#class_file_structure)
+  * [Heap](#heap)
+  * [Memory Management](#memory_management)
+  * [Non-Heap Memory](#non_heap_memory)
+  * [Just In Time (JIT) Compilation](#jit_compilation)
+  * [Method Area](#method_area)
+  * [Class File Structure](#class_file_structure)
+  * [Classloader](#classloader)
+  * [Faster Class Loading](#faster_class_loading)
+  * [Where Is The Method Area](#where_is_the_method_area)
+  * [Classloader Reference](#classloader_reference)
+  * [Run Time Constant Pool](#constant_pool)
+  * [Exception Table](#exception_table)
+  * [Symbol Table](#symbol_table)
+  * [Interned Strings (String Table)](#string_table)
 
-         <!--*   [Object Memory Structure](#)
-     -->*   [Classloader](#classloader)
-* [Faster Class Loading](#faster_class_loading)
-* [Where Is The Method Area](#where_is_the_method_area)
-* [Classloader Reference](#classloader_reference)
-* [Run Time Constant Pool](#constant_pool)
-* [Exception Table](#exception_table)
-* [Symbol Table](#symbol_table)
-* [Interned Strings (String Table)](#string_table)
 
 
 
