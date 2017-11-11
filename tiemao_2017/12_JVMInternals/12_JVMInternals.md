@@ -1,11 +1,11 @@
 # JVM Internals
 
-# JVM内部
+# JVM内部结构详解
 
 
 This article explains the internal architecture of the Java Virtual Machine (JVM).  The following diagram show the key internal components of a typical JVM that conforms to [The Java Virtual Machine Specification Java SE 7 Edition](http://www.amazon.co.uk/Virtual-Machine-Specification-Edition-Series/dp/0133260445).
 
-本文解释了Java虚拟机(JVM)的内部结构.下图显示一个典型的JVM的关键内部组件符合[Java虚拟机规范Java SE 7版)(http://www.amazon.co).英国/ Virtual-Machine-Specification-Edition-Series / dp / 0133260445)。
+本文详细介绍Java虚拟机(JVM)的内部结构. 下图展示了符合 [Java虚拟机规范第7版](http://www.amazon.co.uk/Virtual-Machine-Specification-Edition-Series/dp/0133260445) 的JVM核心组件。
 
 ![internal architecture of Java Virtual Machine (JVM)](JVM_Internal_Architecture.png)
 
@@ -13,11 +13,9 @@ This article explains the internal architecture of the Java Virtual Machine (JVM
 
 The components shown on this diagram are each explained below in two sections.  [First section](#threads) covers the components that are created for each thread and the [second section](#shared_between_threads) covers the components that are created independently of threads.
 
-这图上所示的组件都解释了下面两个部分.(第一部分)(#线程)涵盖了为每个线程创建的组件和(第二部分)(# shared_between_threads)涵盖了独立的线程创建的组件。
+这些组件分为两节进行介绍. 第一个部分是为每个线程创建的组件, 第二部分是所有线程共同使用的组件, 这些组件独立于线程。
 
 * [Threads](#threads)
-
-*(线程)(#线程)
   *   [JVM System Threads](#jvm_system_threads)
   *   [Per Thread](#per_thread)
   *   [program Counter (PC)](#program_counter)
@@ -28,21 +26,7 @@ The components shown on this diagram are each explained below in two sections.  
   *   [Local Variables Array](#local_variables_array)
   *   [Operand Stack](#operand_stack)
   *   [Dynamic Linking](#dynamic_linking)
-
-*(JVM系统线程)(# jvm_system_threads)
-(每个线程)*(# per_thread)
-(程序计数器(PC))*(# program_counter)
-*(栈)(#栈)
-(本地堆栈)*(# native_stack)
-*(堆栈限制)(# stack_restrictions)
-*(框架)(#框架)
-*(局部变量数组)(# local_variables_array)
-(操作数堆栈)*(# operand_stack)
-*(动态链接)(# dynamic_linking)
-
 * [Shared Between Threads](#shared_between_threads)
-
-*(线程间共享)(# shared_between_threads)
   * [Heap](#heap)
   * [Memory Management](#memory_management)
   * [Non-Heap Memory](#non_heap_memory)
@@ -58,6 +42,20 @@ The components shown on this diagram are each explained below in two sections.  
   * [Symbol Table](#symbol_table)
   * [Interned Strings (String Table)](#string_table)
 
+<br/>
+
+*(线程)(#线程)
+*(JVM系统线程)(# jvm_system_threads)
+(每个线程)*(# per_thread)
+(程序计数器(PC))*(# program_counter)
+*(栈)(#栈)
+(本地堆栈)*(# native_stack)
+*(堆栈限制)(# stack_restrictions)
+*(框架)(#框架)
+*(局部变量数组)(# local_variables_array)
+(操作数堆栈)*(# operand_stack)
+*(动态链接)(# dynamic_linking)
+*(线程间共享)(# shared_between_threads)
 *(堆)(#堆)
 *(内存管理)(# memory_management)
 (非堆内存)*(# non_heap_memory)
