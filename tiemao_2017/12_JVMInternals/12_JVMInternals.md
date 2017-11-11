@@ -1,6 +1,6 @@
 # JVM Internals
 
-        
+
 
 This article explains the internal architecture of the Java Virtual Machine (JVM).  The following diagram show the key internal components of a typical JVM that conforms to [The Java Virtual Machine Specification Java SE 7 Edition](http://www.amazon.co.uk/Virtual-Machine-Specification-Edition-Series/dp/0133260445).
 
@@ -43,7 +43,7 @@ The components shown on this diagram are each explained below in two sections.  
 
 
 
-        
+
 
 ## Thread
 
@@ -65,7 +65,6 @@ If you use jconsole or any debugger it is possible to see there are numerous thr
   This thread receives signals sent to the JVM process and handle them inside the JVM by calling the appropriate JVM methods.
 
 
-     
 
 ## Per Thread
 
@@ -122,14 +121,16 @@ All types take a single slot in the local variable array except long and double 
 The operand stack is used during the execution of byte code instructions in a similar way that general-purpose registers are used in a native CPU.  Most JVM byte code spends its time manipulating the operand stack by pushing, popping, duplicating, swapping, or executing operations that produce or consume values.  Therefore, instructions that move values between the array of local variables and the operand stack are very frequent in byte code. For example, a simple variable initialization results in two byte codes that interact with the operand stack.
 
 
-
+```
     int i;
+```
 
 Gets compiled to the following byte code:
 
-    0:	iconst_0	// Push 0 to top of the operand stack
-    1:	istore_1	// Pop value from top of operand stack and store as local variable 1
-
+```
+    0:    iconst_0    // Push 0 to top of the operand stack
+    1:    istore_1    // Pop value from top of operand stack and store as local variable 1
+```    
 
      
 
@@ -243,22 +244,22 @@ A compiled class file consists of the following structure:
 
 ```
 ClassFile {
-    u4			magic;
-    u2			minor_version;
-    u2			major_version;
-    u2			constant_pool_count;
-    cp_info		contant_pool[constant_pool_count – 1];
-    u2			access_flags;
-    u2			this_class;
-    u2			super_class;
-    u2			interfaces_count;
-    u2			interfaces[interfaces_count];
-    u2			fields_count;
-    field_info		fields[fields_count];
-    u2			methods_count;
-    method_info		methods[methods_count];
-    u2			attributes_count;
-    attribute_info	attributes[attributes_count];
+    u4            magic;
+    u2            minor_version;
+    u2            major_version;
+    u2            constant_pool_count;
+    cp_info        contant_pool[constant_pool_count – 1];
+    u2            access_flags;
+    u2            this_class;
+    u2            super_class;
+    u2            interfaces_count;
+    u2            interfaces[interfaces_count];
+    u2            fields_count;
+    field_info        fields[fields_count];
+    u2            methods_count;
+    method_info        methods[methods_count];
+    u2            attributes_count;
+    attribute_info    attributes[attributes_count];
 }
 ```
 
@@ -480,9 +481,9 @@ Object foo = new Object();
 Would be written in byte code as follows:
 
 ```
-0: 	new #2 		    // Class java/lang/Object
-1:	dup
-2:	invokespecial #3    // Method java/ lang/Object "<init>"( ) V
+0:     new #2             // Class java/lang/Object
+1:    dup
+2:    invokespecial #3    // Method java/ lang/Object "<init>"( ) V
 ```
 
 The new opcode (operand code) is followed by the #2 operand.  This operand is an index into the constant pool and therefore is referencing the second entry in the constant pool.  The second entry is a class reference, this entry in turn references another entry in the constant pool containing the name of the class as a constant UTF8 string with the value // Class java/lang/Object.  This symbolic link can then be used to lookup the class for java.lang.Object.  The new opcode creates a class instance and initializes its variables.  A reference to the new class instance is then added to the operand stack.  The dup opcode then creates an extra copy of the top reference on the operand stack and adds this to the top of the operand stack.  Finally an instance initialization method is called on line 2 by invokespecial.  This operand also contains a reference to the constant pool.  The initialization method consumes (pops) the top reference off the operand pool as an argument to the method.  At the end there is one reference to the new object that has been both created and initialized.
