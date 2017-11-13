@@ -225,6 +225,12 @@ Studio 3T 支持 IntelliShell 控制台,在 Edit --> Preferences 中指定 `mong
 
 ### 更新多条数据
 
+update方法定义如下: 
+
+```
+db.collection.update(query, update, options)
+```
+
 [mongodb的update官方文档](https://docs.mongodb.com/manual/reference/method/db.collection.update/) 说明内容如下:
 
 ```
@@ -242,8 +248,9 @@ db.collection.update(
 
 可以看到, update 可以接受3个参数, 第一个是过滤条件, 第二个是执行的更新操作, 第三个是配置选项。
 
+默认情况下, `update()`方法只更新1条数据,
 
-其中, 更新多条数据时，要指定选项  `{ multi:true }` 。
+如果要更新所有匹配查询条件的document，要指定选项  `{ multi:true }` 。
 
 
 将第0个元素的content更新, 语句为:
