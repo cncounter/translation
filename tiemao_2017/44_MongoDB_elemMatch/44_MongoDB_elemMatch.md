@@ -197,7 +197,7 @@ D:\mongo\mongodb-win32-x86_64-3.4.10\bin>mongod.exe -h
 
 
 ```
---dbpath arg		directory for datafiles 
+--dbpath arg        directory for datafiles 
     - defaults to \data\db\ 
     which is D:\data\db\ based on the current working drive
 ```
@@ -221,6 +221,55 @@ mongod.exe --dbpath D:\data\db\
 安装之后， 如果是个人使用，选择非商业授权许可就可以免费使用。
 
 Studio 3T 支持 IntelliShell 控制台,在 Edit --> Preferences 中指定 `mongo.exe` 即可。
+
+
+### 更新多条数据
+
+[mongodb的update官方文档](https://docs.mongodb.com/manual/reference/method/db.collection.update/) 说明内容如下:
+
+```
+db.collection.update(
+   <query>,
+   <update>,
+   {
+     upsert: <boolean>,
+     multi: <boolean>,
+     writeConcern: <document>,
+     collation: <document>
+   }
+)
+```
+
+可以看到, update 可以接受3个参数, 第一个是过滤条件, 第二个是执行的更新操作, 第三个是配置选项。
+
+
+其中, 更新多条数据时，要指定选项  `{ multi:true }` 。
+
+
+将第0个元素的content更新, 语句为:
+
+
+```javascript
+db.test.update
+(
+    {
+      "_id": { 
+        $in:  [ 
+          "123",
+          "124"
+        ]
+      }
+    },
+    {
+      "$set": { 
+        "qList.0.content" : "医学伦理学的公正原则是"
+        }
+    },  
+    {
+        multi:true 
+    } 
+);
+```
 
 
 
