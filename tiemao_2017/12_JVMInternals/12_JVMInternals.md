@@ -59,7 +59,7 @@ A thread is a thread of execution in a program. The JVM allows an application to
 
 If you use jconsole or any debugger it is possible to see there are numerous threads running in the background.  These background threads run in addition to the main thread, which is created as part of invoking `public static void main(String[])`, and any threads created by the main thread.  The main background system threads in the Hotspot JVM are:
 
-如果你使用jconsole或任何调试器可以看到有许多线程在后台运行.这些后台线程运行在主线程之外,这是创建调用的一部分`public static void main(String[])`,任何线程由主线程。主要的背景系统Hotspot JVM中的线程:
+如果使用 `jconsole` 或者其他调试器(debugger), 就可以看到JVM中有许多线程在后台运行. 这些后台线程运行在主线程之外, 主线程(main thread)就是执行 `public static void main(String[])` 的那个线程, 当然主线程也可能会创建一些自定义线程。Hotspot JVM中主要的系统线程包括:
 
 * VM thread
   This thread waits for operations to appear that require the JVM to reach a safe-point.  The reason these operations have to happen on a separate thread is because they all require the JVM to be at a safe point where modifications to the heap can not occur.  The type of operations performed by this thread are "stop-the-world" garbage collections, thread stack dumps, thread suspension and biased locking revocation.
@@ -72,21 +72,21 @@ If you use jconsole or any debugger it is possible to see there are numerous thr
 * Signal dispatcher thread
   This thread receives signals sent to the JVM process and handle them inside the JVM by calling the appropriate JVM methods.
 
-* VM线程
-这个线程等待操作出现要求JVM到达安全点.原因这些操作发生在一个单独的线程,因为他们都需要在一个安全的地方JVM堆修改不能发生.这个线程执行的操作的类型是“停止一切”的垃圾收集,线程堆栈转储,线程暂停,偏向锁撤销。
-*定期任务线程
-这个线程负责计时器事件(即中断)用于计划的执行周期操作
+* VM thread(虚拟机线程)
+  这个线程等待需要JVM到达安全点的那些操作. 为什么要将这些操作抽出来单独用一个线程来执行呢? 是因为需要JVM中的线程都到达安全点, 这样堆内存才不会发生变化. 这个线程执行的操作就是 "stop-the-world" 垃圾收集, 线程栈转储, 线程暂停, 以及偏向锁撤销。
+* Periodic task thread(定期任务线程)
+  这个线程负责用于执行周期任务计划的 timer 事件(即中断,interrupts)
 * GC线程
-这些线程支持不同类型的发生在JVM的垃圾收集活动
-*编译器线程
-这些线程在运行时字节码编译成本地代码
-*信号调度程序线程
-这个线程接收信号发送到JVM进程并处理它们在JVM JVM通过调用适当的方法。
+  这些线程支持JVM中各种类型的垃圾收集活动
+* Compiler threads(编译线程)
+  这些线程在运行时将字节码编译为本地机器代码
+* Signal dispatcher thread(信号调度线程)
+  这个线程接收发送给JVM进程的各种信号, 并调用相关的处理方法。
 
 
 ## Per Thread
 
-## 每个线程
+## 单个线程的结构
 
 Each thread of execution has the following components:
 
