@@ -94,23 +94,23 @@ Each thread of execution has the following components:
 
 ### Program Counter (PC)
 
-### 程序计数器(PC)
+### 程序计数器(PC, Program Counter)
 
 Address of the current instruction (or opcode) unless it is native.  If the current method is native then the PC is undefined.  All CPUs have a PC, typically the PC is incremented after each instruction and therefore holds the address of the next instruction to be executed.  The JVM uses the PC to keep track of where it is executing instructions, the PC will in fact be pointing at a memory address in the Method Area.
 
-当前指令的地址(或操作码),除非它是原生。如果当前方法是本地PC是未定义的.通常所有的cpu都有电脑,电脑是每条指令后增加,因此拥有执行下一个指令的地址.JVM使用电脑来跟踪它在哪里执行指令,PC事实上会指着一个内存地址的方法。
+PC中记录的是当前指令(或操作码)的地址, 如果当前方法是native 方法, 则PC的值为 undefined. 所有的CPU/内核都有自己的 PC , 通常是每条指令执行完成后递增, 因此持有的是下一条指令的地址. JVM通过 PC 来跟踪当前执行指令的地址, 事实上PC指向方法区中的某个内存地址。
 
 ### Stack
 
-### 堆栈
+### 栈(Stack)
 
 Each thread has its own stack that holds a frame for each method executing on that thread.  The stack is a Last In First Out (LIFO) data structure, so the currently executing method is at the top of the stack. A new frame is created and added (pushed) to the top of stack for every method invocation.  The frame is removed (popped) when the method returns normally or if an uncaught exception is thrown during the method invocation. The stack is not directly manipulated, except to push and pop frame objects, and therefore the frame objects may be allocated in the Heap and the memory does not need to be contiguous.
 
-每个线程都有自己的堆栈,一个框架为每个方法的线程上执行.堆栈是一个后进先出(LIFO)的数据结构,因此当前执行的方法是在堆栈的顶部.创建和添加一个新的帧(推)为每个方法调用堆栈的顶部.帧删除(突然)方法返回正常或者方法调用期间未捕获的异常.栈是不能直接操作,除了推动和流行框架对象,因此帧对象可能是在堆中分配内存不需要连续的。
+每个线程都有自己的 stack(栈, 也叫线程栈), 其中包含的, 是执行链上, 分配给每个方法的栈帧(frame, 方法栈帧). 栈是一种后进先出(LIFO, Last In First Out)的数据结构, 因此当前执行方法的栈帧(frame)在栈的最顶部. 每调用一个方法, 都会创建一个新的栈帧并压入(pushed/added)到栈的顶部. 在方法正常返回, 或者异常退出时, 栈帧就会从栈顶弹出(popped/removed). 栈除了压入(push)和弹出(pop)栈帧之外,不支持其他操作, 所以栈帧对象可能是在堆中分配, 而且分配的物理内存不一定是连续的。
 
 ### Native Stack
 
-### 本地堆栈
+### 本地方法栈(Native Stack)
 
 Not all JVMs support native methods, however, those that do typically create a per thread native method stack.  If a JVM has been implemented using a C-linkage model for Java Native Invocation (JNI) then the native stack will be a C stack.  In this case the order of arguments and return value will be identical in the native stack to typical C program. A native method can typically (depending on the JVM implementation) call back into the JVM and invoke a Java method.  Such a native to Java invocation will occur on the stack (normal Java stack); the thread will leave the native stack and create a new frame on the stack (normal Java stack).
 
