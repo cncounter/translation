@@ -310,16 +310,6 @@ There are subtle differences among greedy, reluctant, and possessive quantifiers
 
 
 
-###### =========================#####################
-
-=========================
-
-=========================
-
-###### ##########
-
-
-
 Greedy quantifiers are considered "greedy" because they force the matcher to read in, or eat, the entire input string prior to attempting the first match. If the first match attempt (the entire input string) fails, the matcher backs off the input string by one character and tries again, repeating the process until a match is found or there are no more characters left to back off from. Depending on the quantifier used in the expression, the last thing it will try matching against is 1 or 0 characters.
 
 贪婪量词(Greedy quantifier), 其试图在第一个匹配时就吃掉所有的输入字符. 如果第一个匹配试图吃掉整个输入字符串失败, 匹配器吐掉最后一个字符, 并再次尝试匹配, 重复这个过程, 直到找到一个匹配, 或者是一个字符都不剩下. 根据表达式中的量词, 最后才尝试匹配0或者是1个字符。
