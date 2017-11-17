@@ -142,7 +142,7 @@ A quantifier defines how often an element can occur. The symbols ?, *, + and {} 
 
 ### 3.4. Grouping and back reference
 
-### 3.4. 分组与向后引用
+### 3.4. 分组(Grouping)与向后引用(back reference)
 
 You can group parts of your regular expression. In your pattern you group elements with round brackets, e.g., `()`. This allows you to assign a repetition operator to a complete group.
 
@@ -150,7 +150,7 @@ You can group parts of your regular expression. In your pattern you group elemen
 
 In addition these groups also create a back reference to the part of the regular expression. This captures the group. A back reference stores the part of the `String` which matched the group. This allows you to use this part in the replacement.
 
-此外, 分组还允许对正则表达式中的一部分进行引用。也就是捕获组(captures the group)。向后引用(back reference) 保存的是该分组所匹配的那部分`String`。进行字符串替换的时候可以使用这些部分。
+此外, 还可以在替换时对正则表达式中的分组进行引用。也就是捕获组(captures the group)。向后引用(back reference) 保存的是该分组所匹配的那部分`String`。进行字符串替换的时候可以使用这些部分。
 
 Via the `$` you can refer to a group. `$1` is the first group, `$2` the second, etc.
 
@@ -186,7 +186,7 @@ String updated = EXAMPLE_TEST.replaceAll(pattern, "$2");
 
 Negative look ahead provides the possibility to exclude a pattern. With this you can say that a string should not be followed by another string.
 
-环视否定(Negative look ahead, 零宽度断言) 用来排除符合某种模式的内容。也就是说后面不能跟着符合某种特征的字符串。
+环视否定(Negative look ahead, 又叫零宽度断言) 用来排除符合某种模式的内容。也就是说后面不能跟着符合某种特征的字符串。
 
 Negative look ahead are defined via `(?!pattern)`. For example, the following will match "a" if "a" is not followed by "b".
 
