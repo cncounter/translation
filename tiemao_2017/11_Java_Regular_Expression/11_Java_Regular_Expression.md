@@ -296,63 +296,60 @@ public class RegexTestStrings {
 
 ### 4.2. Examples
 
-### 4.2。例子
+### 4.2. 示例
 
 
 
-```
- The following class gives several examples for the usage of
+> The following class gives several examples for the usage of
 regular expressions with strings. See the comment for the purpose.
-```
+
+> 下面给出几个用于 string 的正则表达式示例。请参照注释信息阅读。
 
 If you want to test these examples, create for the Java project `de.vogella.regex.string`.
 
-如果你想测试这些示例,创建Java项目`de.vogella.regex.string`。
+如果想测试这些示例, 创建Java项目 `de.vogella.regex.string`。
 
 
 ```
 package de.vogella.regex.string;
 
 public class StringMatcher {
-        // returns true if the string matches exactly "true"
+        // 如果 string 中的字符串完全匹配  "`true`", 则返回 true
         public boolean isTrue(String s){
                 return s.matches("true");
         }
-        // returns true if the string matches exactly "true" or "True"
+        // 如果 string 中的字符串完全匹配  "`true`" or "`True`", 则返回 true
         public boolean isTrueVersion2(String s){
                 return s.matches("[tT]rue");
         }
 
-        // returns true if the string matches exactly "true" or "True"
-        // or "yes" or "Yes"
+        // 如果 string 中的字符串完全匹配  "`true`" or "`True`"
+        // or "`yes`" or "`Yes`", 则返回 true
         public boolean isTrueOrYes(String s){
                 return s.matches("[tT]rue|[yY]es");
         }
 
-        // returns true if the string contains exactly "true"
+        // 如果 string 中包含字符串 "`true`", 则返回 true
         public boolean containsTrue(String s){
                 return s.matches(".*true.*");
         }
 
-
-        // returns true if the string contains of three letters
+        // 如果 string 包含3个字母, 则返回 true
         public boolean isThreeLetters(String s){
                 return s.matches("[a-zA-Z]{3}");
                 // simpler from for
 //                return s.matches("[a-Z][a-Z][a-Z]");
         }
 
-
-
-        // returns true if the string does not have a number at the beginning
+        // 如果 string 不是以数字开头, 则返回 true
         public boolean isNoNumberAtBeginning(String s){
                 return s.matches("^[^\\d].*");
         }
-        // returns true if the string contains a arbitrary number of characters except b
+        // 如果 string 中包含了除 `b` 之外的字符, 则返回 true
         public boolean isIntersection(String s){
                 return s.matches("([\\w&&[^b]])*");
         }
-        // returns true if the string contains a number less than 300
+        // 如果 string 中包含了小于300的数字, 则返回 true
         public boolean isLessThenThreeHundred(String s){
                 return s.matches("[^0-9]*[12]?[0-9]{1,2}[^0-9]*");
         }
@@ -362,7 +359,7 @@ public class StringMatcher {
 
 And a small JUnit Test to validates the examples.
 
-和一个小JUnit测试验证的例子。
+我们通过 JUnit 测试来验证。
 
 
 ```
@@ -445,7 +442,7 @@ public class StringMatcherTest {
 
 ## 5. Pattern and Matcher
 
-## 5。模式和匹配器
+## 5. Pattern 与 Matcher
 
 For advanced regular expressions the `java.util.regex.Pattern` and `java.util.regex.Matcher` classes are used.
 
