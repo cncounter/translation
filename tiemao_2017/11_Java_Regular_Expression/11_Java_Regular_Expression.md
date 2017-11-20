@@ -307,7 +307,7 @@ regular expressions with strings. See the comment for the purpose.
 
 If you want to test these examples, create for the Java project `de.vogella.regex.string`.
 
-如果想测试这些示例, 创建Java项目 `de.vogella.regex.string`。
+如果想测试这些示例, 创建一个Java包, `de.vogella.regex.string`。
 
 
 ```
@@ -484,23 +484,23 @@ public class RegexTestPatternMatcher {
 
 ## 6. Java Regex Examples
 
-## 6。Java正则表达式的例子
+## 6. Java正则表达式示例
 
 The following lists typical examples for the usage of regular expressions. I hope you find similarities to your real-world problems.
 
-以下列出了使用正则表达式的典型例子。我希望你找到相似之处你的现实问题。
+下面列出了正则表达式的典型使用示例。希望读者根据实际情况进行相应的变化。
 
 ### 6.1. Or
 
-### 6.1。或
+### 6.1 或运算(or)
 
 Task: Write a regular expression which matches a text line if this text line contains either the word "Joe" or the word "Jim" or both.
 
-任务:写一个正则表达式匹配一个文本行如果这个文本行包含单词“乔”或“吉姆”这个词。
+任务: 编写正则表达式, 用来匹配包含 "Joe" 或者 "Jim", 或者两个单词都出现的行。
 
 Create a project `de.vogella.regex.eitheror` and the following class.
 
-创建一个项目`de.vogella.regex.eitheror`和下面的类。
+创建一个包, `de.vogella.regex.eitheror` 和下面的类。
 
 
 
@@ -529,15 +529,15 @@ public class EitherOrCheck {
 
 ### 6.2. Phone number
 
-### 6.2。电话号码
+### 6.2. 电话号码(Phone number)
 
 Task: Write a regular expression which matches any phone number.
 
-任务:写一个正则表达式匹配任何电话号码。
+任务: 编写正则表达式, 匹配任意电话号码。
 
 A phone number in this example consists either out of 7 numbers in a row or out of 3 number, a (white)space or a dash and then 4 numbers.
 
-电话号码在这个例子中包含连续7的数字或3号,(白色)空间或少许,然后4号。
+此处我们假设电话号码的格式为 "7位连续的数字"; 或者是 "3位数字加空格/逗号, 再跟上4位数字"。
 
 
 
@@ -567,15 +567,15 @@ public class CheckPhone {
 
 ### 6.3. Check for a certain number range
 
-### 6.3。检查一定数量范围
+### 6.3. 校验一定的数字范围
 
 The following example will check if a text contains a number with 3 digits.
 
-下面的例子将检查文本是否包含一个数字3位数。
+下面的例子用于校验文本是否包含3位数的数字。
 
 Create the Java project `de.vogella.regex.numbermatch` and the following class.
 
-创建Java项目`de.vogella.regex.numbermatch`和下面的类。
+创建Java包 `de.vogella.regex.numbermatch` 和下面的类。
 
 
 
@@ -604,9 +604,6 @@ public class CheckNumber {
                 assertTrue(test(s));
         }
 
-
-
-
         public static boolean test (String s){
                 Pattern pattern = Pattern.compile("\\d{3}");
                 Matcher matcher = pattern.matcher(s);
@@ -621,15 +618,15 @@ public class CheckNumber {
 
 ### 6.4. Building a link checker
 
-### 6.4。建立一个链接检查器
+### 6.4. 校验超链接
 
 The following example allows you to extract all valid links from a webpage. It does not consider links which start with "javascript:" or "mailto:".
 
-下面的示例允许您从网页中提取所有有效链接。它不考虑链接开始“javascript:”或“mailto:”。
+下面的示例从网页中提取所有有效链接。排除 "javascript:" 或者 "mailto:" 开头的情况。
 
 Create a Java project called *de.vogella.regex.weblinks* and the following class:
 
-创建一个名为* de.vogella.regex的Java项目。树立自信*和下面的类:
+创建Java包 *de.vogella.regex.weblinks*, 以及下面的类:
 
 
 
@@ -709,18 +706,18 @@ public class LinkGetter {
                         return url + link;
                 }
                 throw new RuntimeException("Cannot make the link absolute. Url: " + url
-                                + " Link " + link);
+                  + " Link " + link);
         }
 }
 ```
 
 ### 6.5. Finding duplicated words
 
-### 6.5。发现重复的单词
+### 6.5 查找重复的单词
 
 The following regular expression matches duplicated words.
 
-下面的正则表达式匹配重复的单词。
+下面的正则表达式用来匹配重复的单词。
 
 ```
 \b(\w+)\s+\1\b
@@ -730,23 +727,23 @@ The following regular expression matches duplicated words.
 
 `\b` is a word boundary and `\1` references to the captured match of the first group, i.e., the first word.
 
-`\b`是一个单词边界和`\1`引用了第一组的匹配,即。,第一个单词。
+`\b` 是单词的边界符, `\1` 则引用第一个分组匹配, 此处的分组为前一个单词 `(\w+)`。
 
 The `(?!-in)\b(\w+) \1\b` finds duplicate words if they do not start with "-in".
 
-的`(?!-in)\b(\w+) \1\b`发现重复的单词,如果他们不从“——”开始。
+`(?!-in)\b(\w+) \1\b` 匹配不以"-in"开始 的重复单词, 。
 
 TIP:Add `(?s)` to search across multiple lines.
 
-提示:添加`(?s)`跨多行搜索。
+提示: 可以在正则表达式末尾增加 `(?s)` 来进行跨行搜索。
 
 ### 6.6. Finding elements which start in a new line
 
-### 6.6。发现元素中开始一个新行
+### 6.6. 查找新行中的第一个元素
 
 The following regular expression allows you to find the "title" word, in case it starts in a new line, potentially with leading spaces.
 
-下面的正则表达式允许您找到“标题”这个词,它开始在一个新行,可能与领先的空间。
+下面的正则表达式, 用来查找单词 "title", 要求它必须在一行的开头, 前面允许有空格。
 
 ```
 (\n\s*)title
@@ -756,7 +753,7 @@ The following regular expression allows you to find the "title" word, in case it
 
 ### 6.7. Finding (Non-Javadoc) statements
 
-### 6.7。找到(Non-Javadoc)语句
+### 6.7. 找到(Non-Javadoc)语句
 
 Sometimes (Non-Javadoc) are used in Java source code to indicate that the method overrides a super method. As of Java 1.6 this can be done via the `@Override` annotation and it is possible to remove these statements from your code. The following regular expression can be used to identify these statements.
 
