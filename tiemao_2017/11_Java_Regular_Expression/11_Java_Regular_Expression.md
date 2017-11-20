@@ -446,11 +446,11 @@ public class StringMatcherTest {
 
 For advanced regular expressions the `java.util.regex.Pattern` and `java.util.regex.Matcher` classes are used.
 
-先进的正则表达式`java.util.regex.Pattern`和`java.util.regex.Matcher`类是使用。
+正则表达式的高级用法, 需要 `java.util.regex.Pattern` 和 `java.util.regex.Matcher` 类的支持。
 
 You first create a `Pattern` object which defines the regular expression. This `Pattern` object allows you to create a `Matcher` object for a given string. This `Matcher` object then allows you to do regex operations on a `String`.
 
-首先创建一个`Pattern`对象定义正则表达式。这`Pattern`允许你创建一个对象`Matcher`对于一个给定的字符串对象。这`Matcher`对象允许您做regex操作`String`。
+首先需要创建一个 `Pattern` 对象, 用来定义正则表达式。通过 `Pattern` 对象, 给定一个 string, 则产生一个 `Matcher` 对象。通过这个 `Matcher` 对象就可以对 `String` 进行 regex 操作。
 
 
 
@@ -465,17 +465,16 @@ public class RegexTestPatternMatcher {
 
         public static void main(String[] args) {
                 Pattern pattern = Pattern.compile("\\w+");
-                // in case you would like to ignore case sensitivity,
-                // you could use this statement:
+                // 如果需要忽略大小写问题, 可以使用:
                 // Pattern pattern = Pattern.compile("\\s+", Pattern.CASE_INSENSITIVE);
                 Matcher matcher = pattern.matcher(EXAMPLE_TEST);
-                // check all occurance
+                // 查找所有匹配
                 while (matcher.find()) {
                         System.out.print("Start index: " + matcher.start());
                         System.out.print(" End index: " + matcher.end() + " ");
                         System.out.println(matcher.group());
                 }
-                // now create a new pattern and matcher to replace whitespace with tabs
+                // 将空格替换为 tabs
                 Pattern replace = Pattern.compile("\\s+");
                 Matcher matcher2 = replace.matcher(EXAMPLE_TEST);
                 System.out.println(matcher2.replaceAll("\t"));
