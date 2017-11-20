@@ -757,7 +757,7 @@ The following regular expression allows you to find the "title" word, in case it
 
 Sometimes (Non-Javadoc) are used in Java source code to indicate that the method overrides a super method. As of Java 1.6 this can be done via the `@Override` annotation and it is possible to remove these statements from your code. The following regular expression can be used to identify these statements.
 
-有时(Non-Javadoc)在Java源代码中使用表明该方法覆盖一个超级方法。在Java 1.6可以通过`@Override`注释和可以将这些语句从您的代码。下面的正则表达式可以用来识别这些语句。
+有时候Java代码中, 可能包含了 (Non-Javadoc), 用于表明该方法覆写了一个超类方法。在Java 1.6 中可以使用 `@Override`  注解, 该注解是可以从Java代码中删除的。下面的正则表达式可以用来找出这类注解。
 
 ```
 (?s) /\* \(non-Javadoc\).*?\*/
@@ -767,7 +767,7 @@ Sometimes (Non-Javadoc) are used in Java source code to indicate that the method
 
 #### 6.7.1. Replacing the DocBook table statement with Asciidoc
 
-#### 6.7.1。用Asciidoc取代DocBook表声明
+#### 6.7.1。用 Asciidoc 替换 DocBook 声明
 
 You can replace statements like the following:
 
@@ -783,7 +783,7 @@ You can replace statements like the following:
 
 Corresponding regex:
 
-相应的正则表达式:
+相应的正则表达式为:
 
 ```
 `\s+<programlisting language="java">\R.\s+<xi:include xmlns:xi="http://www\.w3\.org/2001/XInclude" parse="text" href="\./examples/(.*).\s+/>\R.\s+</programlisting>`
@@ -793,8 +793,7 @@ Corresponding regex:
 
 Target could be your example:
 
-目标可能是你的例子:
-
+Target 可能是这样的:
 
 
 ```
@@ -803,25 +802,22 @@ Target could be your example:
 
 ## 7. Processing regular expressions in Eclipse
 
-## 7所示。在Eclipse中处理正则表达式
+## 7. 在Eclipse编辑器中使用正则表达式
 
 The Eclipse IDE allows to perform search and replace across a set of files using regular expressions. In Eclipse use the Ctrl+H shortcut to open the *Search* dialog.
 
-执行搜索和替换的Eclipse IDE允许跨一组文件使用正则表达式。在Eclipse中使用Ctrl + H快捷方式打开搜索* *对话框。
+在 Eclipse IDE 中, 可以使用正则表达式来进行查找和替换。一般是使用快捷键 `Ctrl+H` 打开 **搜索/Search** 对话框。
 
 Select the *File Search* tab and check the *Regular expression* flag before entering your regular expression. You can also specify the file type and the scope for the search and replace operation.
 
-选择搜索* *文件选项卡,并检查*正则表达式*国旗在进入你的正则表达式。您还可以指定文件类型和范围的搜索和替换操作。
+选择 *File Search* 选项卡, 并勾选 *Regular expression* 标识, 则可能进行正则表达式查找/替换。当然, 还可以指定文件类型, 以及 查找/替换 的范围。
 
 The following screenshots demonstrate how to search for the <![CDATA[]]]> XML tag with leading whitespace and how to remove the whitespace.
 
-下面的截图演示如何搜索< ![CDATA[]]]> XML标记与领先的空白,如何删除空格。
+下图演示了如何查找 XML 标签 `<![CDATA[]]]>` 和前面的空格, 以及如何删除空格。
 
-image::regularexpressioneclipse10.png[Search and replace in Eclipse part 1,pdfwidth=40%}
 
-图片::regularexpressioneclipse10。png(第1部分在Eclipse中搜索和替换,pdfwidth = 40% }
-
-![Search and replace in Eclipse part 2](http://www.vogella.com/tutorials/JavaRegularExpressions/img/xregularexpressioneclipse20.png.pagespeed.ic.blZ0iUfGRU.webp)
+![Search and replace in Eclipse part 2](01_eclipse_search.png)
 
 
 
@@ -829,7 +825,7 @@ The resulting dialog allows you to review the changes and remove elements which 
 
 结果对话框允许您查看更改和删除元素不应该被取代。如果你按下`OK`应用按钮,更改。
 
-![Search and replace in Eclipse part 3](http://www.vogella.com/tutorials/JavaRegularExpressions/img/xregularexpressioneclipse30.png.pagespeed.ic.lnmFei5IPp.webp)
+![Search and replace in Eclipse part 3](02_eclipse_replace.png)
 
 
 
