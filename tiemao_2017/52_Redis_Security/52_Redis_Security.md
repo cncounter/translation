@@ -1,108 +1,205 @@
 # Redis Security
 
+# Redis 安全
+
 This document provides an introduction to the topic of security from the point of view of Redis: the access control provided by Redis, code security concerns, attacks that can be triggered from the outside by selecting malicious inputs and other similar topics are covered.
+
+本文介绍的主题的观点Redis 安全:Redis 提供的访问控制、代码安全问题,攻击,可以从外部通过选择触发恶意输入和其他类似的主题。
 
 For security related contacts please open an issue on GitHub, or when you feel it is really important that the security of the communication is preserved, use the GPG key at the end of this document.
 
+促进安全与接触GitHub开放效力有一票,然而,一本特别是it is真正重要的2000 preserved is of the沟通,使用GPG key at the end of咨询文件。
+
 ## Redis general security model
+
+## Redis 一般安全模型
 
 Redis is designed to be accessed by trusted clients inside trusted environments. This means that usually it is not a good idea to expose the Redis instance directly to the internet or, in general, to an environment where untrusted clients can directly access the Redis TCP port or UNIX socket.
 
+Redis 被设计成通过值得信赖的客户访问内部信任的环境.这意味着通常不是一个好主意的Redis 实例直接暴露在互联网或,,的环境中不受信任的客户可以直接访问Redis TCP端口或UNIX socket。
+
 For instance, in the common context of a web application implemented using Redis as a database, cache, or messaging system, the clients inside the front-end (web side) of the application will query Redis to generate pages or to perform operations requested or triggered by the web application user.
+
+,客户内部应用程序的前端(网络方面)将查询Redis 生成页面或执行操作请求或由web应用程序用户。
 
 In this case, the web application mediates access between Redis and untrusted clients (the user browsers accessing the web application).
 
+在这种情况下,web应用程序之间的协调访问Redis 和不受信任的客户端(用户浏览器访问web应用程序)。
+
 This is a specific example, but, in general, untrusted access to Redis should always be mediated by a layer implementing ACLs, validating user input, and deciding what operations to perform against the Redis instance.
+
+这是一个具体的例子,但是,总的来说,不受信任的访问Redis 应该由一层实现acl,验证用户输入,和决定执行什么操作Redis 实例。
 
 In general, Redis is not optimized for maximum security but for maximum performance and simplicity.
 
+一般来说,Redis 不适合最大安全但最大性能和简单。
+
 ## Network security
+
+## 网络安全
 
 Access to the Redis port should be denied to everybody but trusted clients in the network, so the servers running Redis should be directly accessible only by the computers implementing the application using Redis.
 
+Access to the重申应当被everybody to港口trusted目标客户in the网络,所以应该直接访问服务器运行Redis 只通过电脑实现应用程序使用Redis 。
+
 In the common case of a single computer directly exposed to the internet, such as a virtualized Linux instance (Linode, EC2, ...), the Redis port should be firewalled to prevent access from the outside. Clients will still be able to access Redis using the loopback interface.
 
+在一个common case of computer直接接触,如to the internet as a虚拟Linux,Linode instance(EC2,….),Redis 港口应该从外部防火墙阻止访问。客户仍然能够访问Redis 使用环回接口。
+
 Note that it is possible to bind Redis to a single interface by adding a line like the following to the **redis.conf** file:
+
+注意,可以将Redis 绑定到一个接口通过添加如下行* *Redis 。conf * *文件:
 
 ```
 bind 127.0.0.1
 
 ```
 
+
+
 Failing to protect the Redis port from the outside can have a big security impact because of the nature of Redis. For instance, a single **FLUSHALL** command can be used by an external attacker to delete the whole data set.
+
+未能保护Redis 港口从外面有一个很大的安全性质的影响,因为Redis .例如,单个* * FLUSHALL * *命令可以使用外部攻击者删除整个数据集。
 
 ## Protected mode
 
+## 保护模式
+
 Unfortunately many users fail to protect Redis instances from being accessed from external networks. Many instances are simply left exposed on the internet with public IPs. For this reasons since version 3.2.0, when Redis is executed with the default configuration (binding all the interfaces) and without any password in order to access it, it enters a special mode called **protected mode**. In this mode Redis only replies to queries from the loopback interfaces, and reply to other clients connecting from other addresses with an error, explaining what is happening and how to configure Redis properly.
+
+不幸的是许多用户未能保护Redis 实例从外部网络访问。很多情况下只是暴露在互联网上,公共ip.为这个原因自3.2版.0,执行Redis 时使用默认配置(绑定的所有接口)和没有任何密码来访问它,它进入一个特殊的模式称为* *保护模式* *.在这种模式下只Redis 回复查询的环回接口,并回复其他客户连接其他地址和一个错误,解释正在发生的事情以及如何配置正确Redis 。
 
 We expect protected mode to seriously decrease the security issues caused by unprotected Redis instances executed without proper administration, however the system administrator can still ignore the error given by Redis and just disable protected mode or manually bind all the interfaces.
 
+我们希望保护模式严重下降所造成的安全问题不受保护的Redis 实例执行没有适当的管理,然而,系统管理员还可以忽略的错误Redis 然后禁用保护模式或手动绑定的所有接口。
+
 ## Authentication feature
+
+## 身份验证功能
 
 While Redis does not try to implement Access Control, it provides a tiny layer of authentication that is optionally turned on editing the **redis.conf** file.
 
+虽然Redis 不试图实现访问控制,它提供了一个小层的身份验证选择打开编辑* *Redis 。conf文件* *。
+
 When the authorization layer is enabled, Redis will refuse any query by unauthenticated clients. A client can authenticate itself by sending the **AUTH** command followed by the password.
 
+当启用授权层时,Redis 将拒绝任何查询未经身份验证的客户端。客户端可以通过发送验证自己* *认证* *命令密码紧随其后。
+
 The password is set by the system administrator in clear text inside the redis.conf file. It should be long enough to prevent brute force attacks for two reasons:
+
+由系统管理员设置密码以明文在Redis 。conf文件。它应该是足够长的时间来防止暴力破解攻击,有两个原因:
 
 - Redis is very fast at serving queries. Many passwords per second can be tested by an external client.
 - The Redis password is stored inside the **redis.conf** file and inside the client configuration, so it does not need to be remembered by the system administrator, and thus it can be very long.
 
+- Redis 是非常快的查询服务。许多密码每秒可以由一个外部客户端进行测试。
+- Redis 密码存储在* *Redis 。conf * *文件在客户端配置,所以它不需要记得由系统管理员,因此它可以很长。
+
 The goal of the authentication layer is to optionally provide a layer of redundancy. If firewalling or any other system implemented to protect Redis from external attackers fail, an external client will still not be able to access the Redis instance without knowledge of the authentication password.
+
+身份验证的目标层是有选择地提供一层冗余.如果防火墙或其他系统实现保护Redis 从外部攻击者失败,外部客户端仍然不能访问身份验证密码的Redis 实例没有知识。
 
 The AUTH command, like every other Redis command, is sent unencrypted, so it does not protect against an attacker that has enough access to the network to perform eavesdropping.
 
+身份验证命令,像其他Redis 命令,发送加密的,所以它不能防止攻击者有足够的访问网络进行窃听。
+
 ## Data encryption support
+
+## 数据加密支持
 
 Redis does not support encryption. In order to implement setups where trusted parties can access a Redis instance over the internet or other untrusted networks, an additional layer of protection should be implemented, such as an SSL proxy. We recommend [spiped](http://www.tarsnap.com/spiped.html).
 
+Redis 不支持加密.为了实现设置信任方可以通过互联网访问Redis 实例或其他不可信网络,应该执行一个额外的保护层,如SSL代理。我们建议(spiped)(http://www.tarsnap.com/spiped.html)。
+
 ## Disabling of specific commands
+
+## 禁用特定的命令
 
 It is possible to disable commands in Redis or to rename them into an unguessable name, so that normal clients are limited to a specified set of commands.
 
+可以禁用命令Redis 或重命名成一个名字,以便正常客户是有限的一组指定的命令。
+
 For instance, a virtualized server provider may offer a managed Redis instance service. In this context, normal users should probably not be able to call the Redis **CONFIG** command to alter the configuration of the instance, but the systems that provide and remove instances should be able to do so.
 
+例如,一个虚拟服务器提供者可能会提供一个管理Redis 实例服务.在这种情况下,普通用户应该无法调用Redis * *配置* *命令来改变实例的配置,但是提供的系统和删除实例应该能够这样做。
+
 In this case, it is possible to either rename or completely shadow commands from the command table. This feature is available as a statement that can be used inside the redis.conf configuration file. For example:
+
+在这种情况下,可以重命名或完全影子命令从命令表。这个特性可以作为声明,在Redis 可以使用。conf配置文件.例如:
 
 ```
 rename-command CONFIG b840fc02d524045429941cc15f59e41cb7be6c52
 
 ```
 
+
+
 In the above example, the **CONFIG** command was renamed into an unguessable name. It is also possible to completely disable it (or any other command) by renaming it to the empty string, like in the following example:
+
+在上面的例子中,* * * *配置命令重命名为一个名字.也可以完全禁用它(或任何其他命令)通过重命名空字符串,像下面的例子:
 
 ```
 rename-command CONFIG ""
 
 ```
 
+
+
 ## Attacks triggered by carefully selected inputs from external clients
+
+## 从外部客户袭击由精心挑选的输入
 
 There is a class of attacks that an attacker can trigger from the outside even without external access to the instance. An example of such attacks are the ability to insert data into Redis that triggers pathological (worst case) algorithm complexity on data structures implemented inside Redis internals.
 
+她最近estate of——attacker can,无之外from the trigger对外access to the even审判.这些便是一例——每年有are triggers提供数据,重申pathological(algorithm complexity恶劣case)为基地的数据结构internals再重复一遍。
+
 For instance an attacker could supply, via a web form, a set of strings that is known to hash to the same bucket into a hash table in order to turn the O(1) expected time (the average time) to the O(N) worst case, consuming more CPU than expected, and ultimately causing a Denial of Service.
+
+例如攻击者可以供应,通过一个web表单,已知一组字符串,散列到相同的桶到哈希表为了把O(1)预期的时间(平均时间)O(N)坏的情况下,消费比预期更多的CPU,并最终导致拒绝服务。
 
 To prevent this specific attack, Redis uses a per-execution pseudo-random seed to the hash function.
 
+为了防止这种特定攻击,Redis 使用哈希函数的每次执行伪随机种子。
+
 Redis implements the SORT command using the qsort algorithm. Currently, the algorithm is not randomized, so it is possible to trigger a quadratic worst-case behavior by carefully selecting the right set of inputs.
+
+Redis 实现命令使用qsort算法.目前,该算法不是随机的,因此有可能引发二次最糟糕的行为通过仔细选择正确的输入。
 
 ## String escaping and NoSQL injection
 
+## 字符串转义和NoSQL注入
+
 The Redis protocol has no concept of string escaping, so injection is impossible under normal circumstances using a normal client library. The protocol uses prefixed-length strings and is completely binary safe.
+
+字符串转义的Redis 协议没有概念,所以注射是不可能在正常情况下使用一个普通的客户端库.协议使用prefixed-length字符串和完全是二进制安全。
 
 Lua scripts executed by the **EVAL** and **EVALSHA** commands follow the same rules, and thus those commands are also safe.
 
+Lua脚本执行的* * EVAL * *和* * EVALSHA * *命令遵循相同的规则,因此这些命令也是安全的。
+
 While it would be a very strange use case, the application should avoid composing the body of the Lua script using strings obtained from untrusted sources.
+
+时这将是一个非常奇怪的用例中,应用程序应该避免创作的主体Lua脚本使用字符串来自不受信任的来源。
 
 ## Code security
 
+## 代码安全
+
 In a classical Redis setup, clients are allowed full access to the command set, but accessing the instance should never result in the ability to control the system where Redis is running.
+
+在一个经典的Redis 设置中,客户允许完全访问命令集,但是访问实例不应该导致控制系统Redis 在哪里运行的能力。
 
 Internally, Redis uses all the well known practices for writing secure code, to prevent buffer overflows, format bugs and other memory corruption issues. However, the ability to control the server configuration using the **CONFIG**command makes the client able to change the working dir of the program and the name of the dump file. This allows clients to write RDB Redis files at random paths, that is [a security issue](http://antirez.com/news/96) that may easily lead to the ability to compromise the system and/or run untrusted code as the same user as Redis is running.
 
+在内部,Redis 使用所有的知名实践编写安全的代码,为了防止缓冲区溢出,格式错误和其他内存泄露问题.但是,应该对控制server configuration using the * * * * CONFIG command偏客户端能够to change the dir working and the program of the file name of the dump.这允许客户端写RDBRedis 随机文件路径,(安全问题)(http://antirez.com/news/96)可能容易导致妥协的能力系统和/或运行不受信任的代码像Redis 运行相同的用户。
+
 Redis does not requires root privileges to run. It is recommended to run it as an unprivileged *redis* user that is only used for this purpose. The Redis authors are currently investigating the possibility of adding a new configuration parameter to prevent **CONFIG SET/GET dir** and other similar run-time configuration directives. This would prevent clients from forcing the server to write Redis dump files at arbitrary locations.
 
+Redis 不需要root特权来运行。建议作为非特权*Redis *用户运行它,只是用于此目的.Redis 作者目前调查的可能性,添加一个新的配置参数以防止* *配置设置/获取dir * *和其他类似指示运行时配置.这将防止客户迫使服务器写在任意地点Redis 转储文件。
+
 ## GPG key
+
+## GPG密钥
 
 ```
 -----BEGIN PGP PUBLIC KEY BLOCK-----
@@ -158,7 +255,11 @@ vI1sAEeV6ZM/uc4CDI3E2TxEbQ==
 
 ```
 
+
+
 **Key fingerprint**
+
+* * * * Key复制
 
 ```
 pub   4096R/0E5C88D6 2013-11-07 [expires: 2063-10-26]
@@ -170,4 +271,6 @@ pub   4096R/0E5C88D6 2013-11-07 [expires: 2063-10-26]
 
 
 原文链接: <https://redis.io/topics/security>
+
+
 
