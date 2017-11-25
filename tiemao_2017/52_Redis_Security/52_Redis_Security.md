@@ -1,14 +1,14 @@
 # Redis Security
 
-# Redis 安全
+# Redis 安全提示
 
 This document provides an introduction to the topic of security from the point of view of Redis: the access control provided by Redis, code security concerns, attacks that can be triggered from the outside by selecting malicious inputs and other similar topics are covered.
 
-本文介绍的主题的观点Redis 安全:Redis 提供的访问控制、代码安全问题,攻击,可以从外部通过选择触发恶意输入和其他类似的主题。
+本文档主要介绍 Redis 安全相关的问题: Redis 提供的访问控制机制、代码安全问题, 可能从外部触发的恶意输入攻击, 以及其他相关的问题。
 
 For security related contacts please open an issue on GitHub, or when you feel it is really important that the security of the communication is preserved, use the GPG key at the end of this document.
 
-促进安全与接触GitHub开放效力有一票,然而,一本特别是it is真正重要的2000 preserved is of the沟通,使用GPG key at the end of咨询文件。
+如果要反馈安全问题, 请在 GitHub 上提出 issue, 当然, 如果你觉得某个安全问题特禀重要或者紧急, 请使用本文末尾提供的 GPG key。
 
 ## Redis general security model
 
