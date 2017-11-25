@@ -12,27 +12,27 @@ For security related contacts please open an issue on GitHub, or when you feel i
 
 ## Redis general security model
 
-## Redis 一般安全模型
+## Redis 总体安全模型
 
 Redis is designed to be accessed by trusted clients inside trusted environments. This means that usually it is not a good idea to expose the Redis instance directly to the internet or, in general, to an environment where untrusted clients can directly access the Redis TCP port or UNIX socket.
 
-Redis 被设计成通过值得信赖的客户访问内部信任的环境.这意味着通常不是一个好主意的Redis 实例直接暴露在互联网或,,的环境中不受信任的客户可以直接访问Redis TCP端口或UNIX socket。
+Redis 设想的运行环境, 是在内网中与受信任的客户端之间通讯. 也就是说, Redis 实例不应该直接暴露在公网上, 也不应该让不受信的客户机直接连到 Redis TCP 端口或UNIX socket上。
 
 For instance, in the common context of a web application implemented using Redis as a database, cache, or messaging system, the clients inside the front-end (web side) of the application will query Redis to generate pages or to perform operations requested or triggered by the web application user.
 
-,客户内部应用程序的前端(网络方面)将查询Redis 生成页面或执行操作请求或由web应用程序用户。
+例如, 将 Redis 作为web应用程序的 database, cache, or messaging system, 用户与web应用交互, 触发查询操作或者执行操作请求。
 
 In this case, the web application mediates access between Redis and untrusted clients (the user browsers accessing the web application).
 
-在这种情况下,web应用程序之间的协调访问Redis 和不受信任的客户端(用户浏览器访问web应用程序)。
+在这种情况下, web应用作为桥头堡, 连接 Redis, 与不受信任的客户端(如浏览器)之间进行交互。
 
 This is a specific example, but, in general, untrusted access to Redis should always be mediated by a layer implementing ACLs, validating user input, and deciding what operations to perform against the Redis instance.
 
-这是一个具体的例子,但是,总的来说,不受信任的访问Redis 应该由一层实现acl,验证用户输入,和决定执行什么操作Redis 实例。
+这是一个具体的例子,但是,总的来说,不受信任的客户端与 Redis 之间, 应该有一层 ACL 实现, 用来校验用户输入, 并决定对 Redis 实例执行什么操作。
 
 In general, Redis is not optimized for maximum security but for maximum performance and simplicity.
 
-一般来说,Redis 不适合最大安全但最大性能和简单。
+总的来说, Redis 并没有对安全问题做过多设计, 主要是为了保证性能和使用简单。
 
 ## Network security
 
