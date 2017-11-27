@@ -36,19 +36,19 @@ In general, Redis is not optimized for maximum security but for maximum performa
 
 ## Network security
 
-## 网络安全
+## 网络安全问题
 
 Access to the Redis port should be denied to everybody but trusted clients in the network, so the servers running Redis should be directly accessible only by the computers implementing the application using Redis.
 
-Access to the重申应当被everybody to港口trusted目标客户in the网络,所以应该直接访问服务器运行Redis 只通过电脑实现应用程序使用Redis 。
+除了受信网络的客户端,其他连接Redis端口的网络请求应该被拦截, 所以运行 Redis 的服务器主机, 应该只允许使用 Redis 的那些应用程序直连。
 
 In the common case of a single computer directly exposed to the internet, such as a virtualized Linux instance (Linode, EC2, ...), the Redis port should be firewalled to prevent access from the outside. Clients will still be able to access Redis using the loopback interface.
 
-在一个common case of computer直接接触,如to the internet as a虚拟Linux,Linode instance(EC2,….),Redis 港口应该从外部防火墙阻止访问。客户仍然能够访问Redis 使用环回接口。
+假如Linux虚拟化实例(Linode, EC2, 等等)直接暴露在公网上, 那也应该使用防火墙将 Redis 端口保护起来, 阻止外部访问。而本地的客户端仍然能够通过回环地址(loopback, 127.*.*.*)访问Redis。
 
 Note that it is possible to bind Redis to a single interface by adding a line like the following to the **redis.conf** file:
 
-注意,可以将Redis 绑定到一个接口通过添加如下行* *Redis 。conf * *文件:
+当然, 还可以将 Redis 绑定到本机的某块网卡上, 例如在 **redis.conf** 配置文件中增加以下配置:
 
 ```
 bind 127.0.0.1
@@ -56,10 +56,9 @@ bind 127.0.0.1
 ```
 
 
-
 Failing to protect the Redis port from the outside can have a big security impact because of the nature of Redis. For instance, a single **FLUSHALL** command can be used by an external attacker to delete the whole data set.
 
-未能保护Redis 港口从外面有一个很大的安全性质的影响,因为Redis .例如,单个* * FLUSHALL * *命令可以使用外部攻击者删除整个数据集。
+如果不对外部访问做保护措施, 可能会带来严重的安全隐患. 例如, 攻击者只需要执行一个 **FLUSHALL** 命令, 就能清除所有数据。
 
 ## Protected mode
 
