@@ -62,15 +62,15 @@ Failing to protect the Redis port from the outside can have a big security impac
 
 ## Protected mode
 
-## 保护模式
+## 保护模式(Protected mode)
 
 Unfortunately many users fail to protect Redis instances from being accessed from external networks. Many instances are simply left exposed on the internet with public IPs. For this reasons since version 3.2.0, when Redis is executed with the default configuration (binding all the interfaces) and without any password in order to access it, it enters a special mode called **protected mode**. In this mode Redis only replies to queries from the loopback interfaces, and reply to other clients connecting from other addresses with an error, explaining what is happening and how to configure Redis properly.
 
-不幸的是许多用户未能保护Redis 实例从外部网络访问。很多情况下只是暴露在互联网上,公共ip.为这个原因自3.2版.0,执行Redis 时使用默认配置(绑定的所有接口)和没有任何密码来访问它,它进入一个特殊的模式称为* *保护模式* *.在这种模式下只Redis 回复查询的环回接口,并回复其他客户连接其他地址和一个错误,解释正在发生的事情以及如何配置正确Redis 。
+杯具的是, 许多 Redis 实例都没有拒绝外部网络的访问。很多情况下是暴露在公网服务器IP上. 由于这个原因, 从 3.2.0 版本开始, Redis 的默认配置(绑定所有网卡), 如果客户端连接没有设置密码, 则会进入一种特殊的模式, **保护模式(Protected mode)**. 在保护模式下, Redis 只允许本地回环地址访问, 其他地址的客户端连接时会返回错误信息, 解释具体原因以及如何配置。
 
 We expect protected mode to seriously decrease the security issues caused by unprotected Redis instances executed without proper administration, however the system administrator can still ignore the error given by Redis and just disable protected mode or manually bind all the interfaces.
 
-我们希望保护模式严重下降所造成的安全问题不受保护的Redis 实例执行没有适当的管理,然而,系统管理员还可以忽略的错误Redis 然后禁用保护模式或手动绑定的所有接口。
+我们希望保护模式能够有效降低不受保护的Redis 实例所造成的安全问题, 当然, 系统管理员也可以忽略Redis给出的错误信息, 禁用保护模式, 或者手动绑定到所有网卡。
 
 ## Authentication feature
 
