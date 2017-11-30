@@ -66,11 +66,11 @@ Failing to protect the Redis port from the outside can have a big security impac
 
 Unfortunately many users fail to protect Redis instances from being accessed from external networks. Many instances are simply left exposed on the internet with public IPs. For this reasons since version 3.2.0, when Redis is executed with the default configuration (binding all the interfaces) and without any password in order to access it, it enters a special mode called **protected mode**. In this mode Redis only replies to queries from the loopback interfaces, and reply to other clients connecting from other addresses with an error, explaining what is happening and how to configure Redis properly.
 
-杯具的是, 许多 Redis 实例都没有拒绝外部网络的访问。很多情况下是暴露在公网服务器IP上. 由于这个原因, 从 3.2.0 版本开始, Redis 的默认配置(绑定所有网卡), 如果客户端连接没有设置密码, 则会进入一种特殊的模式, **保护模式(Protected mode)**. 在保护模式下, Redis 只允许本地回环地址访问, 其他地址的客户端连接时会返回错误信息, 解释具体原因以及如何配置。
+杯具的是, 很多 Redis 实例都没有拒绝外部网络访问。很多具有公网IP的实例就这样暴露了.  基于这种情况, 从 Redis 3.2.0 版本开始, 如果使用默认配置(绑定到所有网卡), 并且没有密码验证保护, 则会进入一种特殊的模式, 称为 **保护模式(Protected mode)**. 在保护模式下, Redis 只允许本地回环地址访问。 其他地址的客户端在连接时, 会收到错误信息, 其中描述了具体原因以及如何配置。
 
 We expect protected mode to seriously decrease the security issues caused by unprotected Redis instances executed without proper administration, however the system administrator can still ignore the error given by Redis and just disable protected mode or manually bind all the interfaces.
 
-我们希望保护模式能够有效降低不受保护的Redis 实例所造成的安全问题, 当然, 系统管理员也可以忽略Redis给出的错误信息, 禁用保护模式, 或者手动绑定到所有网卡。
+我们希望保护模式能有效降低 Redis 实例的安全问题, 当然, 系统管理员也可以禁用保护模式, 或者手动绑定到所有IP。
 
 ## Authentication feature
 
@@ -78,29 +78,29 @@ We expect protected mode to seriously decrease the security issues caused by unp
 
 While Redis does not try to implement Access Control, it provides a tiny layer of authentication that is optionally turned on editing the **redis.conf** file.
 
-虽然 Redis 不实现访问控制, 但也提供了一个小小的 身份验证层(authorization layer), 可以通过 **redis.conf** 文件来开启。
+虽然 Redis 没有实现访问控制, 但也提供了一个小小的 身份验证层(authorization layer), 通过 **redis.conf** 文件来开启。
 
 When the authorization layer is enabled, Redis will refuse any query by unauthenticated clients. A client can authenticate itself by sending the **AUTH** command followed by the password.
 
-如果启用了 身份验证层, Redis 将拒绝未经身份验证的客户端查询。客户端可以通过 **AUTH** 命令+密码 的方式来进行身份验证。
+如果启用了 身份验证, Redis 会拒绝所有未经身份验证的客户端请求。客户端可以通过 **AUTH** 命令+密码 的方式执行身份验证。
 
 The password is set by the system administrator in clear text inside the redis.conf file. It should be long enough to prevent brute force attacks for two reasons:
 
-密码以明文的方式配置在 redis.conf 文件中。应该具备足够的长度, 以防止暴力破解, 有两个原因:
+因为密码以明文的方式设置在 redis.conf 文件中。所以密码应该足够长, 以防止暴力破解, 原因如下:
 
 - Redis is very fast at serving queries. Many passwords per second can be tested by an external client.
 - The Redis password is stored inside the **redis.conf** file and inside the client configuration, so it does not need to be remembered by the system administrator, and thus it can be very long.
 
-- Redis 的查询服务非常高效。一个外部客户端每秒可以进行很多此密码尝试。
-- Redis 密码存储在 **redis.conf** 中, 所以系统管理员没有必要记住, 需要的时候进行拷贝即可, 因此可以很长。
+- Redis 的查询效率非常高。客户端每秒可以执行很多次密码验证。
+- 密码存储在 **redis.conf** 中, 所以管理员不用记忆密码, 需要的时候直接拷贝即可, 因此设置很长的密码并没有什么影响。
 
 The goal of the authentication layer is to optionally provide a layer of redundancy. If firewalling or any other system implemented to protect Redis from external attackers fail, an external client will still not be able to access the Redis instance without knowledge of the authentication password.
 
-身份验证层的目标,是提供可选的一层冗余. 如果防火墙或者其他系统实现没能有效保护Redis, 外部客户端不知道密码的话, 依然不能访问 Redis 实例。
+身份验证层的目的, 是提供可选的一个冗余层. 如果防火墙失效, 或者未能有效保护 Redis, 只要外部人员不知道密码, 依然不能访问 Redis 实例。
 
 The AUTH command, like every other Redis command, is sent unencrypted, so it does not protect against an attacker that has enough access to the network to perform eavesdropping.
 
-AUTH 命令, 和其他 Redis 命令一样, 都是不加密传输的, 所以就不能防止具有网络窃听权限的攻击者。
+和其他 Redis 命令一样, `AUTH` 命令也是不进行加密传输的, 所以不能防止网络窃听, 假若网络情况特别不安全的话。
 
 ## Data encryption support
 
@@ -108,7 +108,7 @@ AUTH 命令, 和其他 Redis 命令一样, 都是不加密传输的, 所以就�
 
 Redis does not support encryption. In order to implement setups where trusted parties can access a Redis instance over the internet or other untrusted networks, an additional layer of protection should be implemented, such as an SSL proxy. We recommend [spiped](http://www.tarsnap.com/spiped.html).
 
-因为 Redis 不支持加密. 为了在互联网/或不可信网络上, 实现只有信任方才可以正常访问Redis 实例, 应该具有额外的保护层, 例如SSL代理。我们推荐 [spiped](http://www.tarsnap.com/spiped.html)。
+因为 Redis 不支持加密.  想要在互联网/或不可信网络上实现加密传输, 就需要额外的保护层, 例如SSL代理。我们推荐使用 [spiped](http://www.tarsnap.com/spiped.html)。
 
 ## Disabling of specific commands
 
@@ -116,15 +116,15 @@ Redis does not support encryption. In order to implement setups where trusted pa
 
 It is possible to disable commands in Redis or to rename them into an unguessable name, so that normal clients are limited to a specified set of commands.
 
-可以禁用某些 Redis 命令, 或者将命令重命名, 这样正常客户就不能执行某些危险的命令了。
+可以将某些 Redis 命令禁用, 或者重命名, 这样一般的客户端就不能执行某些危险的命令了。
 
 For instance, a virtualized server provider may offer a managed Redis instance service. In this context, normal users should probably not be able to call the Redis **CONFIG** command to alter the configuration of the instance, but the systems that provide and remove instances should be able to do so.
 
-例如, 虚拟服务提供商可能会提供一些 Redis 实例管理服务. 在这种情况下, 普通用户不允许调用 **CONFIG** 命令来修改实例的配置, 但是供应商应该能够执行这些操作。
+例如, 虚拟服务提供商, 可能会同时给客户提供 Redis 实例管理服务. 这时候, 就不允许客户自己调用 **CONFIG** 命令来修改实例配置, 但服务提供商自己应该能够创建和销毁这些实例。
 
 In this case, it is possible to either rename or completely shadow commands from the command table. This feature is available as a statement that can be used inside the redis.conf configuration file. For example:
 
-在这种情况下, 可以重命名, 或者从命令表中完全隐藏这些命令。这个特性可以通过 redis.conf 配置文件指定. 例如:
+这种情况下, 可以通过重命名, 或者在命令表中隐藏这些命令。该特性可以通过 redis.conf 配置文件指定. 如:
 
 ```
 rename-command CONFIG b840fc02d524045429941cc15f59e41cb7be6c52
@@ -134,7 +134,7 @@ rename-command CONFIG b840fc02d524045429941cc15f59e41cb7be6c52
 
 In the above example, the **CONFIG** command was renamed into an unguessable name. It is also possible to completely disable it (or any other command) by renaming it to the empty string, like in the following example:
 
-在上面的例子中, **CONFIG** 命令被重命名为另一个非常复杂的名字. 当然, 也可以通过重命名为空字符串 `""`, 来禁用某些命令,像下面这样:
+此处将 **CONFIG** 命令重命名为另一个非常复杂的名字. 当然, 也可以将命令重命名为空串 `""`, 以禁用某些命令:
 
 ```
 rename-command CONFIG ""
@@ -145,11 +145,11 @@ rename-command CONFIG ""
 
 ## Attacks triggered by carefully selected inputs from external clients
 
-## 从外部发起的特殊输入攻击
+## 外部精心构造的特定输入攻击
 
 There is a class of attacks that an attacker can trigger from the outside even without external access to the instance. An example of such attacks are the ability to insert data into Redis that triggers pathological (worst case) algorithm complexity on data structures implemented inside Redis internals.
 
-没有密码的黑客, 也有可能在外部攻击Redis. 例如, 最坏情况下, 由于Redis内部算法和数据结构的复杂性, 黑客有可能利用这些数据结构, 将数据插入到Redis库中。
+即使黑客没有密码, 也可能攻击到 Redis. 例如, 黑客有可能利用 Redis内部算法和数据结构的某些漏洞, 这些数据结构(最坏情况下), 将数据插入到Redis库中。
 
 For instance an attacker could supply, via a web form, a set of strings that is known to hash to the same bucket into a hash table in order to turn the O(1) expected time (the average time) to the O(N) worst case, consuming more CPU than expected, and ultimately causing a Denial of Service.
 
