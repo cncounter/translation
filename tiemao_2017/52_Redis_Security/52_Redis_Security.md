@@ -4,11 +4,11 @@
 
 This document provides an introduction to the topic of security from the point of view of Redis: the access control provided by Redis, code security concerns, attacks that can be triggered from the outside by selecting malicious inputs and other similar topics are covered.
 
-本文档主要介绍 Redis 安全相关的问题: Redis 提供的访问控制机制、代码安全问题, 可能从外部触发的恶意输入攻击, 以及其他相关的问题。
+本文简要介绍 Redis 安全相关的话题, 包括:  Redis访问控制机制、Redis源码安全性, 外部输入可能触发的恶意攻击, 以及其他相关问题。
 
 For security related contacts please open an issue on GitHub, or when you feel it is really important that the security of the communication is preserved, use the GPG key at the end of this document.
 
-如果要反馈安全问题, 请在 GitHub 上提出 issue, 当然, 如果你觉得某个安全问题特禀重要或者紧急, 请使用本文末尾提供的 GPG key。
+如果要反馈安全问题, 请到 [GitHub](https://github.com/antirez/redis) 上提出 [issue](https://github.com/antirez/redis/issues), 当然, 如果需要私密通信, 请使用文末提供的 GPG key。
 
 ## Redis general security model
 
@@ -16,23 +16,23 @@ For security related contacts please open an issue on GitHub, or when you feel i
 
 Redis is designed to be accessed by trusted clients inside trusted environments. This means that usually it is not a good idea to expose the Redis instance directly to the internet or, in general, to an environment where untrusted clients can directly access the Redis TCP port or UNIX socket.
 
-Redis 设想的运行环境, 是在内网中与受信任的客户端之间通讯. 也就是说, Redis 实例不应该直接暴露在公网上, 也不应该让不受信的客户机直接连到 Redis TCP 端口或UNIX socket上。
+Redis 设想的运行环境, 是与受信客户端在内网中进行通讯. 也就是说, Redis 实例不应该直接暴露到公网上, 也不应该让不受信的客户机直连到 Redis 的 TCP端口/或UNIX socket。
 
 For instance, in the common context of a web application implemented using Redis as a database, cache, or messaging system, the clients inside the front-end (web side) of the application will query Redis to generate pages or to perform operations requested or triggered by the web application user.
 
-例如, 将 Redis 作为web应用程序的 database, cache, or messaging system, 用户与web应用交互, 触发查询操作或者执行操作请求。
+比如, 可以将 Redis 作为web系统的 database, cache, 或者 messaging system。 用户只能与web进行交互, 由WEB应用来进行查询或执行其他操作。
 
 In this case, the web application mediates access between Redis and untrusted clients (the user browsers accessing the web application).
 
-在这种情况下, web应用作为桥头堡, 连接 Redis, 与不受信任的客户端(如浏览器)之间进行交互。
+在这种情况下, web应用作为桥头堡, 连接 Redis, 避免Redis与不受信任的客户端(如浏览器)进行直接交互。
 
 This is a specific example, but, in general, untrusted access to Redis should always be mediated by a layer implementing ACLs, validating user input, and deciding what operations to perform against the Redis instance.
 
-这是一个具体的例子,但是,总的来说,不受信任的客户端与 Redis 之间, 应该有一层 ACL 实现, 用来校验用户输入, 并决定对 Redis 实例执行什么操作。
+这只是一中特定场景, 但总体说来, 不受信任的客户端与 Redis 之间, 必须有一层 ACL(访问控制层)实现, 用于鉴权和校验用户输入, 并决定是否对 Redis 实例执行操作。
 
 In general, Redis is not optimized for maximum security but for maximum performance and simplicity.
 
-总的来说, Redis 并没有对安全问题做过多设计, 主要是为了保证性能和使用简单。
+总的来说, Redis 并没有为安全问题做过多设计, 最主要的原因是为了保证高性能, 以及使用简便。
 
 ## Network security
 
@@ -40,15 +40,15 @@ In general, Redis is not optimized for maximum security but for maximum performa
 
 Access to the Redis port should be denied to everybody but trusted clients in the network, so the servers running Redis should be directly accessible only by the computers implementing the application using Redis.
 
-除了受信网络的客户端,其他连接Redis端口的网络请求应该被拦截, 所以运行 Redis 的服务器主机, 应该只允许使用 Redis 的那些应用程序直连。
+除了受信网络的客户端, 其他客户端发起的网络请求需要被拦截, 所以运行 Redis 服务的系统, 应该只允许使用 Redis 的那些应用程序直连。
 
 In the common case of a single computer directly exposed to the internet, such as a virtualized Linux instance (Linode, EC2, ...), the Redis port should be firewalled to prevent access from the outside. Clients will still be able to access Redis using the loopback interface.
 
-假如Linux虚拟化实例(Linode, EC2, 等等)直接暴露在公网上, 那也应该使用防火墙将 Redis 端口保护起来, 阻止外部访问。而本地的客户端仍然能够通过回环地址(loopback, 127.*.*.*)访问Redis。
+如果使用的是 Linux虚拟机(Linode, EC2, 等等), 因为这些机器可能直接暴露在公网上, 所以需要防火墙来保护 Redis 端口, 阻止外部访问。而本地的客户端则通过回环地址(loopback, 127.*.*.*)来访问Redis。
 
 Note that it is possible to bind Redis to a single interface by adding a line like the following to the **redis.conf** file:
 
-当然, 还可以将 Redis 绑定到本机的某块网卡上, 例如在 **redis.conf** 配置文件中增加以下配置:
+当然, 也可以将 Redis 端口直接绑定到本机的某块网卡/IP上, 在 **redis.conf** 配置文件中增加如下配置即可:
 
 ```
 bind 127.0.0.1
@@ -58,7 +58,7 @@ bind 127.0.0.1
 
 Failing to protect the Redis port from the outside can have a big security impact because of the nature of Redis. For instance, a single **FLUSHALL** command can be used by an external attacker to delete the whole data set.
 
-如果不对外部访问做保护措施, 可能会带来严重的安全隐患. 例如, 攻击者只需要执行一个 **FLUSHALL** 命令, 就能清除所有数据。
+假如不对外部访问做隔离, 可能会带来严重的安全隐患. 例如, 攻击者只要执行一个 **FLUSHALL** 命令, 就能让Redis的所有数据Over。
 
 ## Protected mode
 
@@ -197,7 +197,7 @@ Redis 不需要 root 权限来启动。建议使用专有的非特权账户 *red
 
 ## GPG key
 
-## GPG密钥
+## GPG密钥(GPG key)
 
 ```
 -----BEGIN PGP PUBLIC KEY BLOCK-----
