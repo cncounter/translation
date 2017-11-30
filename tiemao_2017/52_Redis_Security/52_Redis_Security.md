@@ -1,6 +1,6 @@
 # Redis Security
 
-# Redis安全性说明文档
+# Redis安全注意事项
 
 This document provides an introduction to the topic of security from the point of view of Redis: the access control provided by Redis, code security concerns, attacks that can be triggered from the outside by selecting malicious inputs and other similar topics are covered.
 
@@ -145,23 +145,23 @@ rename-command CONFIG ""
 
 ## Attacks triggered by carefully selected inputs from external clients
 
-## 外部精心构造的特定输入攻击
+## 精心构造的外部输入攻击
 
 There is a class of attacks that an attacker can trigger from the outside even without external access to the instance. An example of such attacks are the ability to insert data into Redis that triggers pathological (worst case) algorithm complexity on data structures implemented inside Redis internals.
 
-即使黑客没有密码, 也可能攻击到 Redis. 例如, 黑客有可能利用 Redis内部算法和数据结构的某些漏洞, 这些数据结构(最坏情况下), 将数据插入到Redis库中。
+即使黑客没有密码, 也可能攻击到 Redis. 例如, 黑客有可能利用 Redis内部算法和数据结构的漏洞, 最坏情况下, 甚至可以将数据插入到Redis库中。
 
 For instance an attacker could supply, via a web form, a set of strings that is known to hash to the same bucket into a hash table in order to turn the O(1) expected time (the average time) to the O(N) worst case, consuming more CPU than expected, and ultimately causing a Denial of Service.
 
-例如, 攻击者可以通过web表单, 提交大量的 hash 值相同的字符串集合, 这样就有可能把 时间复杂度为 O(1) 的散列操作, 降级到 O(N) 的最坏情况, 导致 CPU 资源耗尽, 造成拒绝服务攻击(Denial of Service, Dos)。
+例如, 可以通过web表单, 将 hash 值取模之后相同的一大批字符串提交到 hash table 中, 这样就可能将时间复杂度为 O(1) 的散列操作, 降级为 O(N) 的最坏情况, 导致 CPU 资源耗尽, 形成拒绝服务攻击(Denial of Service, Dos)。
 
 To prevent this specific attack, Redis uses a per-execution pseudo-random seed to the hash function.
 
-为了防止这类攻击, Redis 的哈希函数, 对每次调用都使用不同的伪随机数种子。
+为了防止这类攻击, Redis 每次启动, 都使用不同的伪随机数种子(pseudo-random seed)来执行 hash 运算。
 
 Redis implements the SORT command using the qsort algorithm. Currently, the algorithm is not randomized, so it is possible to trigger a quadratic worst-case behavior by carefully selecting the right set of inputs.
 
-Redis 对 SORT 命令使用 qsort 算法. 目前, 该算法不是随机的, 如果攻击者精心构造一组特定的输入, 最坏情况下, 造成二次方的复杂度。
+Redis 的 `SORT` 命令使用了 qsort 算法. 目前为止, 该算法不是随机的, 如果攻击者精心构造一组特定的输入, 在最坏情况下, 可能会造成平方级的时间消耗。
 
 ## String escaping and NoSQL injection
 
@@ -169,11 +169,11 @@ Redis 对 SORT 命令使用 qsort 算法. 目前, 该算法不是随机的, 如�
 
 The Redis protocol has no concept of string escaping, so injection is impossible under normal circumstances using a normal client library. The protocol uses prefixed-length strings and is completely binary safe.
 
-Redis 协议中没有字符串转义(escaping)的概念, 所以在正常情况下, 是不可能通过正常客户端进行注入的. Redis 协议使用 prefixed-length 的字符串, 完全是二进制安全的。
+Redis 协议中没有字符串转义(escaping)的概念, 所以正常情况下, 不可能通过客户端进行注入. Redis 协议使用的是 prefixed-length 的字符串, 是二进制安全的。
 
 Lua scripts executed by the **EVAL** and **EVALSHA** commands follow the same rules, and thus those commands are also safe.
 
-**EVAL** 和 **EVALSHA** 命令执行的Lua脚本, 也遵循同样的规则, 因此这些命令也都是安全的。
+**EVAL** 和 **EVALSHA** 命令执行的Lua脚本, 也遵循同样的规则, 因此这些命令都是安全的。
 
 While it would be a very strange use case, the application should avoid composing the body of the Lua script using strings obtained from untrusted sources.
 
@@ -185,15 +185,15 @@ While it would be a very strange use case, the application should avoid composin
 
 In a classical Redis setup, clients are allowed full access to the command set, but accessing the instance should never result in the ability to control the system where Redis is running.
 
-在典型的 Redis 配置中, 客户允许执行所有命令, 除了控制 Redis 宿主机的。
+在一般的 Redis 配置中, 客户端可以执行 command set 中的所有命令, 对实例的访问不太可对 Redis 宿主机的行为造成影响。
 
 Internally, Redis uses all the well known practices for writing secure code, to prevent buffer overflows, format bugs and other memory corruption issues. However, the ability to control the server configuration using the **CONFIG**command makes the client able to change the working dir of the program and the name of the dump file. This allows clients to write RDB Redis files at random paths, that is [a security issue](http://antirez.com/news/96) that may easily lead to the ability to compromise the system and/or run untrusted code as the same user as Redis is running.
 
-在 Redis 内部, 使用各种著名的代码安全最佳实践, 来阻止缓冲区溢出(buffer overflow), 格式错误(format bug), 以及其他内存泄露问题(memory corruption). 但是, 控制服务器配置的 **CONFIG** 命令, 有可能改变服务器的工作目录(working dir), 以及 dump 文件的名称. 这就允许客户端将 RDB Redis 文件写入任何路径, 也就造成了 [a security issue](http://antirez.com/news/96), 有可能会损害系统, 利用和Redis服务相同的账户权限来执行不受信任的代码。
+Redis内部使用了各种著名的代码安全最佳实践, 以阻止缓冲区溢出(buffer overflow), 格式错误(format bug), 或者其他内存泄露问题(memory corruption). 但是, 控制服务器配置的 **CONFIG** 命令, 有可能修改服务器的工作目录(working dir), 以及 dump 文件的名称. 这就允许客户端将 RDB Redis 文件写入任何路径, 也就造成了 [安全问题](http://antirez.com/news/96), 通过启动 Redis 服务的账户权限, 来执行某些操作, 以及某些危险的代码, 甚至有可能造成系统宕机(译者注: 如占满某些目录/磁盘空间等等)。
 
 Redis does not requires root privileges to run. It is recommended to run it as an unprivileged *redis* user that is only used for this purpose. The Redis authors are currently investigating the possibility of adding a new configuration parameter to prevent **CONFIG SET/GET dir** and other similar run-time configuration directives. This would prevent clients from forcing the server to write Redis dump files at arbitrary locations.
 
-Redis 不需要 root 权限来启动。建议使用专有的非特权账户 *redis*. Redis 作者目前正在尝试, 是否有必要增加一个新的配置参数, 来阻止 **CONFIG SET/GET dir** 和其他类似的运行时配置命令. 这能有效防止客户端将服务器的dump文件写到任意位置。
+Redis 不应该使用 root 权限来启动。建议使用非特权的专有账户 *`redis`*. Redis 作者目前正在尝试, 已决定是否有必要增加新的配置参数, 来阻止 **CONFIG SET/GET dir** 和类似的运行时配置命令. 这能有效阻止客户端将服务器的 dump 文件写到其他目录。
 
 ## GPG key
 
@@ -269,5 +269,9 @@ pub   4096R/0E5C88D6 2013-11-07 [expires: 2063-10-26]
 
 原文链接: <https://redis.io/topics/security>
 
+
+翻译日期: 2017年11月30日
+
+翻译人员: [铁锚: http://blog.csdn.net/renfufei](http://blog.csdn.net/renfufei)
 
 
