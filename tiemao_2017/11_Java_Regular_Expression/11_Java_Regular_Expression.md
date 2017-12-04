@@ -1,30 +1,32 @@
 # Java Regex - Tutorial
 
-# Java正则表达式教程
+# Java正则表达式系列(1): 入门
 
 > This tutorial introduces the usage of regular expressions and describes their implementation in Java. It also provides several Java regular expression examples.
 
-> 本教程通过实例介绍正则表达式的用法,以及Java中 正则表达式的实现。
+> 本教程简要介绍Java正则表达式和实现方式，并通过实例来讲解具体的用法。
 
 ## 1. Regular Expressions
 
-## 1. 正则表达式
+## 1. 正则表达式(Regular Expression)
 
 ### 1.1. What are regular expressions?
 
-### 1.1. 正则表达式简介
+### 1.1. 简介
 
 A *regular expression* defines a search pattern for strings. The abbreviation for regular expression is *regex*. The search pattern can be anything from a simple character, a fixed string or a complex expression containing special characters describing the pattern. The pattern defined by the regex may match one or several times or not at all for a given string.
 
-*正则表达式(regular expression)* 定义了一种字符串的搜索模式。缩写是 *regex*. 搜索模式(search pattern)包括多种形式, 如 简单字符(character), 固定字符串(fixed string), 或以及包含转义字符的复杂表达式等等. 对于给定的字符串, 正则表达式所定义的模式可以匹配一次或多次,也可能一次都不匹配。
+*正则表达式(regular expression)*, 也有翻译为 *正规式*, 用来定义一种字符串的搜索模式。其缩写是 *regex*(`reg - ex`). 
+
+搜索模式(search pattern)可以多种多样, 例如, 单个字符(character), 特定字符串(fixed string), 或者是包含特定含义的复杂表达式. 给定一个 string, 正则表达式可能匹配一到多次, 也可能一次都不匹配。
 
 Regular expressions can be used to search, edit and manipulate text.
 
-正则表达式常用来搜索,编辑和操纵文本。
+正则表达式一般用来搜索、编辑或替换文本(text), 本质上, text 和 string 是一回事。
 
 The process of analyzing or modifying a text with a regex is called: *The regular expression is applied to the text/string*. The pattern defined by the regex is applied on the text from left to right. Once a source character has been used in a match, it cannot be reused. For example, the regex `aba` will match *ababababa* only two times (aba_aba__).
 
-使用正则表达式来分析/修改文本的过程称为: *应用于文本/字符串的正则表达式* 。正则表达式是从左到右进行匹配的. 一旦string中的某个源字符被匹配到,就不能再次配匹配了。例如, 正则表达式 `aba` 只能匹配 *ababababa* 两次(`aba_aba__`)。
+利用正则表达式来分析/修改文本的过程, 称为: *应用于文本/字符串的正则表达式* 。正则表达式扫描字符串的顺序是从左到右进行的. 只要某个字符被匹配成功, 在下次匹配中就不会再使用。例如, 正则表达式 `aba`, 匹配字符串 *ababababa* 时, 只会扫描到两个匹配(`aba_aba__`)。
 
 ### 1.2. Regex examples
 
