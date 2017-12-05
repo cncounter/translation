@@ -44,4 +44,4 @@ Tomcat的 `catalina.out` 日志信息如下:
 
 日期: 2017年12月05日
 
-作者: 铁锚: http://blog.csdn.net/renfufei
+作者: [铁锚: http://blog.csdn.net/renfufei](http://blog.csdn.net/renfufei)
