@@ -112,3 +112,72 @@ Session 大多借助于 Cookie 技术来实现。原因是支持度广，实现�
 
 
 
+
+###
+
+
+标准的MAVEN-Web项目结构如下:
+
+```
+project-name/
+  ----pom.xml
+  ++--target/
+  ++--src/
+      ++--main/
+          ++--java/
+          ++--resources/
+          ++--webapp/
+              ----index.jsp
+              ++--WEB-INF/
+                  ----web.xml
+      ++--test/
+          ++--java/
+          ++--resources/
+
+```
+
+
+创建项目 `spring-session-demo`。
+
+
+pom.xml 文件如下所示:
+
+```
+<project 
+  xmlns="http://maven.apache.org/POM/4.0.0" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
+    http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.cncounter.demo</groupId>
+    <artifactId>spring-session-demo</artifactId>
+    <packaging>war</packaging>
+    <version>1.0-SNAPSHOT</version>
+    <name>spring-session-demo Maven Webapp</name>
+    <url>http://maven.apache.org</url>
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>3.8.1</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.session</groupId>
+            <artifactId>spring-session</artifactId>
+            <version>1.3.1.RELEASE</version>
+        </dependency>
+    </dependencies>
+    <build>
+        <finalName>spring-session-demo</finalName>
+    </build>
+</project>
+```
+
+
+
+
+
+
