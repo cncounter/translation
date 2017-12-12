@@ -1,22 +1,26 @@
 # Plain old Java object
 
-# 普通旧式Java对象
+# Java基础: POJO简介
+
+> POJO, Plain old Java object, 纯粹的老式Java对象, 相对于 JavaBean 而言
 
 From Wikipedia, the free encyclopedia
 
-来自维基百科，自由的百科全书
+维基百科介绍如下:
 
 In software engineering, a plain old Java object (POJO) is an ordinary Java object, not bound by any special restriction and not requiring any class path. The term was coined by Martin Fowler, Rebecca Parsons and Josh MacKenzie in September 2000: [1]
 
-在软件工程中,一个普通Java对象(POJO)是一个普通的Java对象,不受任何特殊限制,不需要任何类路径.这个词是由马丁,丽贝卡·帕森斯和乔什·麦肯齐在2000年9月:[1]
+在软件工程领域中, plain old Java object (POJO) 属于一种普通的Java对象, 不受其他任何约束和限制, 也不需要依赖(Java标准库之外的)其他类. 这个词由 [Martin Fowler](https://www.martinfowler.com/bliki/POJO.html), Rebecca Parsons 和 Josh MacKenzie, 在准备2000年9月份的一次会议时所创造:
 
-> "We wondered why people were so against using regular objects in their systems and concluded that it was because simple objects lacked a fancy name. So we gave them one, and it's caught on very nicely."
 
-> "We if people were so against using regular objects in their systems and concluded that it was because simple objects lacked a fancy name.所以我们给了他们一个,这是很好。”
+> In the talk we were pointing out the many benefits of encoding business logic into regular java objects rather than using Entity Beans. We wondered why people were so against using regular objects in their systems and concluded that it was because simple objects lacked a fancy name. So we gave them one, and it's caught on very nicely.
+
+> 和Entity Bean比起来, 将业务逻辑编码到普通java对象中会有很多好处。但为什么人们不愿意这样做呢? 我们在讨论过程中得出结论： 因为名字太土、一点都不高大上。 于是我们就取了这么一个花哨的名字。 
+
 
 The term "POJO" initially denoted a Java object which does not follow any of the major Java object models, conventions, or frameworks; nowadays "POJO" may be used as an acronym for "Plain Old JavaScript Object" as well, in which case the term denotes a JavaScript object of similar pedigree.[2]
 
-“POJO”一词最初表示一个Java对象,不遵循任何主要的Java对象模型、约定,或框架;如今“POJO”可能被用作“普通JavaScript对象”的缩写,在这种情况下,这个词代表一个JavaScript对象相似的血统。[2]
+"POJO" 一词最初表示普通的Java对象, 普通到什么地步呢? 那就是不需要遵循任何主流的 Java对象模型、约定,以及框架约束; 当然现在 "POJO" 也可能用来表示 "[Plain Ole JavaScript Object](http://ajaxian.com/archives/return-of-the-pojo-plain-ole-javascript)" 的缩写, 这时候表示类似的JavaScript对象。
 
 The term continues the pattern of older terms for technologies that do not use fancy new features, such as POTS (Plain Old Telephone Service) in telephony and Pod (Plain Old Documentation) in Perl. The equivalent to POJO on the .NET framework is Plain Old CLR Object (POCO).[3] For PHP, it is Plain Old PHP Object (POPO).
 
