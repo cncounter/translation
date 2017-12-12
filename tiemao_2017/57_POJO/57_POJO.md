@@ -134,12 +134,93 @@ With the annotation as given above the bean isn't a truly pure POJO anymore, but
 
 
 
+# Understanding POJOs
+
+> From <https://spring.io/understanding/POJO>
+
+POJO means **Plain Old Java Object**. It refers to a Java object (instance of definition) that isn't bogged down by framework extensions.
+
+For example, to receive messages from JMS, you need to write a class that implements the `MessageListener` interface.
+
+```
+public class ExampleListener implements MessageListener {
+
+    public void onMessage(Message message) {
+        if (message instanceof TextMessage) {
+            try {
+                System.out.println(((TextMessage) message).getText());
+            }
+            catch (JMSException ex) {
+                throw new RuntimeException(ex);
+            }
+        }
+        else {
+            throw new IllegalArgumentException(<span class="pl-pds">"Message must be of type TextMessage"</span>);
+        }
+    }
+
+}
+```
+
+This ties your code to a particular solution (JMS in this example) and makes it hard to later migrate to an alternative messaging solution. If you build your application with lots of listeners, choosing AMQP or something else can become hard or impossible based on biting off this much technical debt.
+
+A POJO-driven approach means writing your message handling solution free of interfaces.
+
+```
+@Component
+public class ExampleListener {
+
+    @JmsListener(destination = <span class="pl-pds">"myDestination"</span>)
+    public void processOrder(String message) {
+    	System.out.println(message);
+    }
+}
+```
+
+In this example, your code isn't directly tied to any interface. Instead, the responsibility of connecting it to a JMS queue is moved into annotations, which are easier to update. In this specific example, you could replace `@JmsListener` with `@RabbitListener`. In other situations, it's possible to have POJO-based solutions without ANY specific annotations.
+
+This is just one example. It is not meant to illustrate JMS vs. RabbitMQ, but instead the value of coding without being tied to specific interfaces. By using **plain old Java objects**, your code can be much simpler. This lends itself to better testing, flexibility, and ability to make new decisions in the future.
+
+The Spring Framework and its various portfolio projects are always aiming for ways to reduce coupling between your code and existing libraries. This is a principle concept of dependency injection, where the way your service is utilized should be part of wiring the application and not the service itself.
 
 
 
+# What is POJO in Java?
+
+> From <https://www.quora.com/What-is-POJO-in-Java>
+
+POJO stands for “Plain Old Java Object” — it’s a pure data structure that has fields with getters and possibly setters, and may override some methods from Object (e.g. equals) or some other interface like Serializable, but does not have behavior of its own. It’s the Java equivalent of a C `struct`
+
+For example, this is a POJO:
+
+```
+
+1.  classPoint{
+2.  privatedoublex;
+3.  privatedoubley;
+4.  publicdoublegetX(){returnx;}
+5.  publicdoublegetY(){returny;}
+6.  publicvoidsetX(doublev){x=v;}
+7.  publicvoidsetY(doublev){y=v;}
+8.  publicboolean equals(Objectother){...}
+9.  }
+```
+
+As soon as you start adding methods that operate on points, like vector addition or complex multiplication, you no longer have a POJO.
+
+POJOs can have all of their methods defined automatically based on their field names and types — IDEs can do this for you, but the most elegant way is to use the annotations defined by [Project Lombok](https://projectlombok.org/):
+
+```
+
+1.  @Data
+2.  classPoint{
+3.  privatedoublex;
+4.  privatedoubley;
+5.  }
+```
 
 
-
+# 参考
 
 
 - 维基百科: <https://en.wikipedia.org/wiki/Plain_old_Java_object>
