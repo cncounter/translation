@@ -28,3 +28,7 @@ Read more:
 - [blog posts from YDN](http://stevesouders.com/dev/efws/blogposts.php)
 - [links from the book](https://stevesouders.com/hpws/links.php)
 - [`sleep.cgi`](https://stevesouders.com/hpws/sleep.txt) source code
+
+
+原文链接: <https://stevesouders.com/hpws/rules.php>
+
