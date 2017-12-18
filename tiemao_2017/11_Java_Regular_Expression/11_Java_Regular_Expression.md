@@ -16,7 +16,7 @@
 
 A *regular expression* defines a search pattern for strings. The abbreviation for regular expression is *regex*. The search pattern can be anything from a simple character, a fixed string or a complex expression containing special characters describing the pattern. The pattern defined by the regex may match one or several times or not at all for a given string.
 
-*正则表达式(regular expression)*, 也有翻译为 *正规式*, 用来定义一种字符串的搜索模式。其缩写是 *regex*(`reg - ex`). 
+*正则表达式(regular expression)*, 也有翻译为 *正规式*, 用来表示一类文本模式。其缩写是 *regex*(`reg-ex`). 
 
 搜索模式(search pattern)可以多种多样, 例如, 单个字符(character), 特定字符串(fixed string), 或者是包含特定含义的复杂表达式. 给定一个 string, 正则表达式可能匹配一到多次, 也可能一次都不匹配。
 
