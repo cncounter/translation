@@ -744,11 +744,11 @@ TIP:Add `(?s)` to search across multiple lines.
 
 ### 6.6. Finding elements which start in a new line
 
-### 6.6. 查找新行中的第一个元素
+### 6.6. 查找每行起始位置的元素
 
 The following regular expression allows you to find the "title" word, in case it starts in a new line, potentially with leading spaces.
 
-下面的正则表达式, 用来查找单词 "title", 要求它必须在一行的开头, 前面允许有空格。
+下面的正则, 用来查找一行开头的单词 "title", 前面允许有空格。
 
 ```
 (\n\s*)title
