@@ -307,53 +307,54 @@ public class RegexTestStrings {
 > The following class gives several examples for the usage of
 regular expressions with strings. See the comment for the purpose.
 
-> 下面给出几个用于 string 的正则表达式示例。请参照注释信息阅读。
+> 下面给出一些正则表达式的使用示例。请参照注释信息。
 
 If you want to test these examples, create for the Java project `de.vogella.regex.string`.
 
-如果想测试这些示例, 创建一个Java包, `de.vogella.regex.string`。
+如果想测试这些示例, 请将java文件放到一个Java包下, 如 `de.vogella.regex.string`。
 
 
 ```
 package de.vogella.regex.string;
 
 public class StringMatcher {
-        // 如果 string 中的字符串完全匹配  "`true`", 则返回 true
+        // 如果字符串完全匹配  "`true`", 则返回 true
         public boolean isTrue(String s){
                 return s.matches("true");
         }
-        // 如果 string 中的字符串完全匹配  "`true`" or "`True`", 则返回 true
+        // 如果字符串完全匹配  "`true`" 或 "`True`", 则返回 true
         public boolean isTrueVersion2(String s){
                 return s.matches("[tT]rue");
         }
 
-        // 如果 string 中的字符串完全匹配  "`true`" or "`True`"
-        // or "`yes`" or "`Yes`", 则返回 true
+        // 如果字符串完全匹配  "`true`" 或 "`True`"
+        // 或 "`yes`" 或 "`Yes`", 则返回 true
         public boolean isTrueOrYes(String s){
                 return s.matches("[tT]rue|[yY]es");
         }
 
-        // 如果 string 中包含字符串 "`true`", 则返回 true
+        // 如果包含字符串 "`true`", 则返回 true
         public boolean containsTrue(String s){
                 return s.matches(".*true.*");
         }
 
-        // 如果 string 包含3个字母, 则返回 true
+        // 如果包含3个字母, 则返回 true
         public boolean isThreeLetters(String s){
                 return s.matches("[a-zA-Z]{3}");
-                // simpler from for
-//                return s.matches("[a-Z][a-Z][a-Z]");
+                // 当然也等价于下面这种比较土的方式
+		// return s.matches("[a-Z][a-Z][a-Z]");
         }
 
-        // 如果 string 不是以数字开头, 则返回 true
+        // 如果不以数字开头, 则返回 true
         public boolean isNoNumberAtBeginning(String s){
+		// 可能 "^\\D.*" 更好一点
                 return s.matches("^[^\\d].*");
         }
-        // 如果 string 中包含了除 `b` 之外的字符, 则返回 true
+        // 如果包含了 `b` 之外的字符, 则返回 true
         public boolean isIntersection(String s){
                 return s.matches("([\\w&&[^b]])*");
         }
-        // 如果 string 中包含了小于300的数字, 则返回 true
+        // 如果包含的某串数字小于300, 则返回 true
         public boolean isLessThenThreeHundred(String s){
                 return s.matches("[^0-9]*[12]?[0-9]{1,2}[^0-9]*");
         }
