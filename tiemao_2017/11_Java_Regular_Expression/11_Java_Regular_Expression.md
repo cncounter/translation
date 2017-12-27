@@ -627,11 +627,11 @@ public class CheckNumber {
 
 The following example allows you to extract all valid links from a webpage. It does not consider links which start with "javascript:" or "mailto:".
 
-下面的示例从网页中提取所有有效链接。排除 "javascript:" 或者 "mailto:" 开头的情况。
+假设需要从网页中找出所有的有效链接。当然,需要排除 "javascript:" 和 "mailto:" 开头的情况。
 
 Create a Java project called *de.vogella.regex.weblinks* and the following class:
 
-创建Java包 *de.vogella.regex.weblinks*, 以及下面的类:
+创建 *de.vogella.regex.weblinks* 包, 以及下面的类:
 
 
 
