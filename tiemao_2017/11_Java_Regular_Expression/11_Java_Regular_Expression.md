@@ -1,6 +1,6 @@
 # Java Regex - Tutorial
 
-# Java正则表达式系列(1): 入门教程
+# 正则表达式入门教程: (1)Java正则简介和示例
 
 > This tutorial introduces the usage of regular expressions and describes their implementation in Java. It also provides several Java regular expression examples.
 
@@ -572,15 +572,15 @@ public class CheckPhone {
 
 ### 6.3. Check for a certain number range
 
-### 6.3. 校验一定的数字范围
+### 6.3. 判断特定数字范围
 
 The following example will check if a text contains a number with 3 digits.
 
-下面的例子用于校验文本是否包含3位数的数字。
+以下示例用来判断文本中是否具有连续的3位数字。
 
 Create the Java project `de.vogella.regex.numbermatch` and the following class.
 
-创建Java包 `de.vogella.regex.numbermatch` 和下面的类。
+创建 `de.vogella.regex.numbermatch` 包和下面的类。
 
 
 
