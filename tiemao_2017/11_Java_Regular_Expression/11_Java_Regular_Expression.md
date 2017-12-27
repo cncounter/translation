@@ -250,33 +250,32 @@ The backslash `\` is an escape character in Java Strings. That means backslash h
 
 ## 4. Using regular expressions with String methods
 
-## 4. 在 String 的方法中使用正则表达式
+## 4. String类正则相关的方法
 
 ### 4.1. Redefined methods on String for processing regular expressions
 
-### 4.1. String 类中正则表达式相关的方法
+### 4.1. String 类重新定义了正则相关的方法
 
 `Strings` in Java have built-in support for regular expressions. `Strings` have four built-in methods for regular expressions, i.e., the `matches()`, `split())`, `replaceFirst()` and`replaceAll()` methods. The `replace()` method does NOT support regular expressions.
 
-`Strings` 类内置了4个支持正则表达式的方法, 即: `matches()`, `split()`, `replaceFirst()` 和`replaceAll()` 方法。注意 `replace()` 方法并不支持正则表达式。
+Java中 `String` 类内置了4个支持正则的方法, 即: `matches()`, `split()`, `replaceFirst()` 和`replaceAll()` 方法。 需要注意, `replace()` 是纯字符串替换, 不支持正则表达式。
 
 These methods are not optimized for performance. We will later use classes which are optimized for performance.
 
-这些方法并没有专门进行性能优化。 稍后我们将使用优化过的 class。
+这些方法并没有对性能进行优化。稍后我们将讨论优化过的类。
 
 
 
-| Method                                   | 说明                              |
+| 方法                                     | 说明                              |
 | ---------------------------------------- | ---------------------------------------- |
-| `s.matches("regex")`                     | 判断 s 是否匹配正在表达式  `"regex"` .  只有整个字符串匹配正则表达式时才返回 `true` . |
-| `s.split("regex")`                       | 使用正则表达式 `"regex"` 作为分隔符来拆分字符串, 返回结果是 String[] 数组. 注意  `"regex"` 对应的字符串并不包含在返回结果中. |
-| `s.replaceFirst("regex", "replacement"`) | 将第一个匹配  `"regex"` 的内容替换为 `"replacement`. |
+| `s.matches("regex")`                     | 判断字符串 s 是否能匹配正则  `"regex"`.  只有整个字符串匹配正则才返回 `true` . |
+| `s.split("regex")`                       | 用正则表达式 `"regex"` 作为分隔符来拆分字符串, 返回结果是 String[] 数组. 注意 `"regex"` 对应的分隔符并不包含在返回结果中. |
+| `s.replaceFirst("regex", "replacement"`) | 替换第一个匹配 `"regex"` 的内容为 `"replacement`. |
 | `s.replaceAll("regex", "replacement")`   | 将所有匹配  `"regex"` 的内容替换为 `"replacement`.  |
 
 Create for the following example the Java project `de.vogella.regex.test`.
 
-下面是对应的示例代码。
-
+下面是对应的示例。
 
 
 ```
@@ -293,7 +292,7 @@ public class RegexTestStrings {
                 for (String string : splitString) {
                         System.out.println(string);
                 }
-                // replace all whitespace with tabs
+                // 将所有空白符(whitespace) 替换为 tab
                 System.out.println(EXAMPLE_TEST.replaceAll("\\s+", "\t"));
         }
 }
