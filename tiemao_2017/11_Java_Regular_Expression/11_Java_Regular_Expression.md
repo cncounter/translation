@@ -38,16 +38,16 @@ A simple example for a regular expression is a (literal) string. For example, th
 
 The following tables lists several regular expressions and describes which pattern they would match.
 
-下表列出了一些简单正则表达式,以及匹配的模式。
+下表列举了一些简单的正则表达式,和对应的匹配模式。
 
 
 | Regex              | Matches                                  |
 | ------------------ | ---------------------------------------- |
 | `this is text`     | 完全匹配 "this is text"                      |
-| `this\s+is\s+text` | 匹配的内容为: 字符串 "this", 加上1到多个空白字符(whitespace characters), 加上字符串 "is", 加上1到多个空白字符(whitespace characters),  再加上字符串 "text". |
-| `^\d+(\.\d+)?`     | 转义字符 `^`(非) 在此处表示：必须匹配一行的开始处. `\d+` 匹配1到多个数字. 英文问号 `?` 表示小括号中的部分是可选的(即出现 0~1次). `\.` 匹配的是字符 ".", 圆括号(parentheses) 表示一个分组. 整个正则匹配的是正整数或小数,例如: "5", "1.5" 或者 "2.21" 等等. |
+| `this\s+is\s+text` | 匹配的内容为: "this", 加上1到多个空白符(whitespace character, 如空格,tab,换行等), 加上 "is", 加上1到多个空白符, 再加上 "text". |
+| `^\d+(\.\d+)?`     | 正则表达式以转义字符 `^`(小尖号)打头, 表示这行必须以小尖号后面的字符模式开始, 才会达成匹配. `\d+` 匹配1到多个数字. 英文问号 `?` 表示可以出现 0~1次. `\.` 匹配的是字符 ".", 小括号(parentheses) 表示一个分组. 所以这个正则表达式可以匹配正整数或者小数,如: "5", "66.6" 或者 "5.21" 等等. |
 
-> 说明,中文全角空格(`　`)不是(whitespace characters)，可以认为其属于特殊字符,或者属于汉字。
+> 说明,中文的全角空格(`　`)字符不属于空白字符(whitespace characters), 可以认为其属于一个特殊的汉字。
 
 ### 1.3. Support for regular expressions in programming languages
 
