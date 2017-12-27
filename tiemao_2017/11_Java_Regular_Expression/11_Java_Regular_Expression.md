@@ -75,7 +75,7 @@ Some of the following examples use JUnit to validate the result. You should be a
 
 The following description is an overview of available meta characters which can be used in regular expressions. This chapter is supposed to be a references for the different regex elements.
 
-我们先来看看什么是元字符(meta character)。
+本章介绍各种正则元素的范本, 我们会先介绍什么是元字符(meta character)。
 
 ### 3.1. Common matching symbols
 
@@ -102,25 +102,25 @@ The following description is an overview of available meta characters which can 
 
 The following meta characters have a pre-defined meaning and make certain common patterns easier to use, e.g., `\d` instead of `[0..9]`.
 
-下面的元字符有预置的含义, 可以用于提取通用模式, 例如, 使用 `\d` 代替 `[0..9]`。
+下面这些是预定义的元字符, 可用于提取通用模式, 如 `\d` 可以代替 `[0-9]`, 或者`[0123456789]`。
 
 
 
 | Regular Expression | Description                              |
 | ------------------ | ---------------------------------------- |
-| `\d`               | 任意数字, 等价于 `[0-9]` 但更简洁                   |
+| `\d`               | 单个数字, 等价于 `[0-9]` 但更简洁                   |
 | `\D`               | 非数字, 等价于  `[^0-9]` 但更简洁                  |
 | `\s`               | 空白字符(whitespace), 等价于 `[ \t\n\x0b\r\f]`  |
 | `\S`               | 非空白字符, 等价于 `[^\s]`                       |
-| `\w`               | 单词字符,(word character),字母数字下划线, 等价于 `[a-zA-Z_0-9]` |
+| `\w`               | 反斜线加上小写w, 表示单个标识符,即字母数字下划线, 等价于 `[a-zA-Z_0-9]` |
 | `\W`               | 非单词字符, 等价于 `[^\w]`                       |
 | `\S+`              | 匹配1到多个非空白字符                              |
-| `\b`               | 匹配单词边界(word boundary), 单词字符指的是 `[a-zA-Z0-9_]` |
+| `\b`               | 匹配单词外边界(word boundary), 单词字符指的是 `[a-zA-Z0-9_]` |
 
 
 > These meta characters have the same first letter as their representation, e.g., digit, space, word, and boundary. Uppercase symbols define the opposite. 
 
-> 为什么使用这些符号表示元字符? 主要取自于英文单词的首字母, 例如: digit(数字), space(空白), word (单词), 以及 boundary(边界)。对应的大写字符则表示相反的意思。
+> 这些元字符主要取自于对应单词的英文首字母, 例如: digit(数字), space(空白), word (单词), 以及 boundary(边界)。对应的大写字符则用来表示取反。
 
 ### 3.3. Quantifier
 
