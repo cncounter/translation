@@ -75,7 +75,7 @@ Some of the following examples use JUnit to validate the result. You should be a
 
 The following description is an overview of available meta characters which can be used in regular expressions. This chapter is supposed to be a references for the different regex elements.
 
-下面简要介绍正则表达式中的元字符。本章可以作为各种正则元素的参考。
+我们先来看看什么是元字符(meta character)。
 
 ### 3.1. Common matching symbols
 
@@ -85,13 +85,13 @@ The following description is an overview of available meta characters which can 
 
 | Regular Expression | Description                              |
 | ------------------ | ---------------------------------------- |
-| `.`                | 点号(`.`),匹配任意字符                           |
+| `.`                | 点号(`.`), 匹配任意一个字符                           |
 | `^regex`           | 小尖号(`^`), 起始标识, 前面不能出现其他字符.              |
-| `regex$`           | 美元符号(`$`), 结束标识,后面不能再出现其他字符.             |
-| `[abc]`            | 字符集合(set), 匹配 a 或者 b 或者 c.               |
-| `[abc][vz]`        | 字符集合(set), 匹配 a 或者 b 或者 c ,紧接着加上 v 或者 z. |
-| `[^abc]`           | 如果小尖号(`^`, caret, 此处读作 `非`) 出现在中括号里面的首位, , 则表示否定(negate). 此示例匹配除了 `a`, `b`, `c` 三个字符之外的其他任意字符. |
-| `[a-d1-7]`         | 范围表示法: 匹配 `a` 到 `d` 之间的单个字符,或者 `1` 到 `7`之间的单个字符, 此示例不匹配`d1`这种. |
+| `regex$`           | 美元符号(`$`,dollar,美刀), 结束标识,后面不能再出现其他字符.             |
+| `[abc]`            | 字符集合(set), 匹配 a 或 b 或 c.               |
+| `[abc][vz]`        | 字符集合(set), 匹配 a 或 b 或 c,紧接着是 v 或 z. |
+| `[^abc]`           | 如果小尖号(`^`, caret, 此处读作 `非`) 出现在中括号里面的第一位, 则表示否定(negate). 这里匹配: 除 `a`, `b`, `c` 之外的其他任意字符. |
+| `[a-d1-7]`         | 范围表示法: 匹配 `a` 到 `d` 之间的单个字符, 或者 `1` 到 `7`之间的单个字符, 整体只匹配单个字符, 而不是 `d1` 这种组合. |
 | `X|Z`              | 匹配 `X` 或者 `Z`.                           |
 | `XZ`               | 匹配`XZ`, X和Z必须按顺序全部出现.                    |
 | `$`                | 判断一行是否结束.                                |
