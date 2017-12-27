@@ -217,11 +217,11 @@ a(?=b)
 
 ### 3.6. Specifying modes inside the regular expression
 
-### 3.6. 指定正则表达式的模式
+### 3.6. 正则表达式的模式
 
 You can add the mode modifiers to the start of the regex. To specify multiple modes, simply put them together as in (?ismx).
 
-可以在正则表达式的开头指定模式修饰符。如果要指定多个模式,  把它们放在一起即可, 如 `(?ismx)`。
+在正则表达式开头可以指定模式修饰符(mode modifier)。还可以组合多种模式, 如 `(?is)pattern`。
 
 - (?i) makes the regex case insensitive.
 
@@ -231,11 +231,12 @@ You can add the mode modifiers to the start of the regex. To specify multiple mo
 
   ​
 
-- `(?i) ` 使正则表达式不区分大小写。
+- `(?i)` 正则表达式匹配时不区分大小写。
 
-- `(?s)` 单行模式(single line mode), 使点号(`.`) 匹配所有的字符, 包括换行(`\n`)。
+- `(?s)` 单行模式(single line mode), 使点号(`.`) 匹配所有字符, 包括换行(`\n`)。
 
-- `(?m)` 多行模式(multi-line mode),  使 小尖号(`^`,caret ) 和 美元符号(`$`, dollar)  匹配目标字符串中每一行的开始和结束。
+- `(?m)` 多行模式(multi-line mode),  使 小尖号(`^`,caret) 和 美元符号(`$`, dollar) 匹配目标字符串中每一行的开始和结束。
+
 
 ### 3.7. Backslashes in Java
 
