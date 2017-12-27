@@ -55,7 +55,7 @@ The following tables lists several regular expressions and describes which patte
 
 Regular expressions are supported by most programming languages, e.g., Java, Perl, Groovy, etc. Unfortunately each language supports regular expressions slightly different.
 
-大多数编程语言都支持正则表达式, 例如 Java、Perl, Groovy 等等。但各种语言支持的正则表达式都有一些不同。
+大多数编程语言都支持正则表达式, 如 Java、Perl, Groovy 等等。但各种语言的正则表达式写法略有一些不同。
 
 ## 2. Prerequisites
 
