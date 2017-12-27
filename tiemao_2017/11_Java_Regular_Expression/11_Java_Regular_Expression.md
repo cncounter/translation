@@ -489,23 +489,23 @@ public class RegexTestPatternMatcher {
 
 ## 6. Java Regex Examples
 
-## 6. Java正则表达式示例
+## 6. 正则表达式示例
 
 The following lists typical examples for the usage of regular expressions. I hope you find similarities to your real-world problems.
 
-下面列出了正则表达式的典型使用示例。希望读者根据实际情况进行相应的变化。
+下面列出了常用的正则表达式使用情景。希望读者根据实际情况进行适当的调整。
 
 ### 6.1. Or
 
-### 6.1 或运算(or)
+### 6.1 或运算(Or)
 
 Task: Write a regular expression which matches a text line if this text line contains either the word "Joe" or the word "Jim" or both.
 
-任务: 编写正则表达式, 用来匹配包含 "Joe" 或者 "Jim", 或者两个单词都出现的行。
+任务: 编写正则表达式, 用来匹配包含单词 "Joe" 或者 "Jim" , 或者两者都包含的行。
 
 Create a project `de.vogella.regex.eitheror` and the following class.
 
-创建一个包, `de.vogella.regex.eitheror` 和下面的类。
+创建 `de.vogella.regex.eitheror` 包和下面的类。
 
 
 
