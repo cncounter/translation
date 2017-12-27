@@ -240,11 +240,11 @@ You can add the mode modifiers to the start of the regex. To specify multiple mo
 
 ### 3.7. Backslashes in Java
 
-### 3.7. Java中的反斜杠 `\`
+### 3.7. Java中的反斜杠
 
 The backslash `\` is an escape character in Java Strings. That means backslash has a predefined meaning in Java. You have to use double backslash `\\` to define a single backslash. If you want to define `\w`, then you must be using `\\w` in your regex. If you want to use backslash as a literal, you have to type `\\\\` as `\` is also an escape character in regular expressions.
 
-在Java字符串中, 反斜杠(`\`, backslash) 是转义字符。也就是说反斜杠在Java有预定的含义。在程序源代码中, 必须使用两个反斜杠`\\`来表示一个反斜杠符号。如果想定义的正则表达式是 `\w`, 就必须使用 `\\w` 这种形式。如果想要匹配文本中的反斜杠,  则需要使用4个反斜杠 `\\\\` 形式的正则表达式。
+在Java字符串中, 反斜杠(`\`, backslash) 是转义字符, 有内置的含义。在源代码级别, 需要使用两个反斜杠`\\`来表示一个反斜杠字符。如果想定义的正则表达式是 `\w`, 在 `.java` 文件源码中就需要写成 `\\w`。 如果想要匹配文本中的1个反斜杠, 则源码中需要写4个反斜杠 `\\\\`。
 
 
 
