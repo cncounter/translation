@@ -718,7 +718,7 @@ public class LinkGetter {
 
 ### 6.5. Finding duplicated words
 
-### 6.5 查找重复的单词
+### 6.5. 查找重复的单词
 
 The following regular expression matches duplicated words.
 
@@ -758,11 +758,11 @@ The following regular expression allows you to find the "title" word, in case it
 
 ### 6.7. Finding (Non-Javadoc) statements
 
-### 6.7. 找到(Non-Javadoc)语句
+### 6.7. 找到非Javadoc风格的语句
 
 Sometimes (Non-Javadoc) are used in Java source code to indicate that the method overrides a super method. As of Java 1.6 this can be done via the `@Override` annotation and it is possible to remove these statements from your code. The following regular expression can be used to identify these statements.
 
-有时候Java代码中, 可能包含了 (Non-Javadoc), 用于表明该方法覆写了一个超类方法。在Java 1.6 中可以使用 `@Override`  注解, 该注解是可以从Java代码中删除的。下面的正则表达式可以用来找出这类注解。
+有时候, 在Java代码中会出现非Javadoc风格(Non-Javadoc)的语句; 如 Java 1.6 中的 `@Override`  注解, 用于告诉IDE该方法覆写了超类方法。这种是可以从源码中清除的。下面的正则用来找出这类注解。
 
 ```
 (?s) /\* \(non-Javadoc\).*?\*/
@@ -772,11 +772,11 @@ Sometimes (Non-Javadoc) are used in Java source code to indicate that the method
 
 #### 6.7.1. Replacing the DocBook table statement with Asciidoc
 
-#### 6.7.1。用 Asciidoc 替换 DocBook 声明
+#### 6.7.1. 用 Asciidoc 替换 DocBook 声明
 
 You can replace statements like the following:
 
-你可以替换语句如下:
+例如有下面这样的XML:
 
 ```
 <programlisting language="java">
@@ -788,7 +788,7 @@ You can replace statements like the following:
 
 Corresponding regex:
 
-相应的正则表达式为:
+可以用下面的正则来匹配:
 
 ```
 `\s+<programlisting language="java">\R.\s+<xi:include xmlns:xi="http://www\.w3\.org/2001/XInclude" parse="text" href="\./examples/(.*).\s+/>\R.\s+</programlisting>`
@@ -798,7 +798,7 @@ Corresponding regex:
 
 Target could be your example:
 
-Target 可能是这样的:
+替换目标可以是下面这样的regex:
 
 
 ```
@@ -807,19 +807,19 @@ Target 可能是这样的:
 
 ## 7. Processing regular expressions in Eclipse
 
-## 7. 在Eclipse编辑器中使用正则表达式
+## 7. 在Eclipse中使用正则表达式
 
 The Eclipse IDE allows to perform search and replace across a set of files using regular expressions. In Eclipse use the Ctrl+H shortcut to open the *Search* dialog.
 
-在 Eclipse IDE 中, 可以使用正则表达式来进行查找和替换。一般是使用快捷键 `Ctrl+H` 打开 **搜索/Search** 对话框。
+在Eclipse或者其他编辑器中, 可以使用正则来执行查找和替换。一般使用快捷键 `Ctrl+H` 打开 **搜索/Search** 对话框。
 
 Select the *File Search* tab and check the *Regular expression* flag before entering your regular expression. You can also specify the file type and the scope for the search and replace operation.
 
-选择 *File Search* 选项卡, 并勾选 *Regular expression* 标识, 则可能进行正则表达式查找/替换。当然, 还可以指定文件类型, 以及 查找/替换 的范围。
+选择 *File Search* 选项卡, 并勾选 *Regular expression* 标识, 则可以进行正则查找/替换。当然, 还可以指定文件类型, 以及查找/替换的目录范围。
 
 The following screenshots demonstrate how to search for the <![CDATA[]]]> XML tag with leading whitespace and how to remove the whitespace.
 
-下图演示了如何查找 XML 标签 `<![CDATA[]]]>` 和前面的空格, 以及如何删除空格。
+下图展示了如何查找XML标签 `<![CDATA[]]]>` 和前面的空格, 以及如何去除这些空格。
 
 
 ![Search and replace in Eclipse part 2](01_eclipse_search.png)
@@ -828,7 +828,7 @@ The following screenshots demonstrate how to search for the <![CDATA[]]]> XML ta
 
 The resulting dialog allows you to review the changes and remove elements which should not be replaced. If you press the `OK` button, the changes are applied.
 
-结果对话框允许您查看更改和删除元素不应该被取代。如果你按下`OK`应用按钮,更改。
+在结果对话框中可以查看有哪些地方会被替换, 可以去掉不想替换的元素。没问题的话, 点击 `OK` 按钮, 就会进行替换。
 
 ![Search and replace in Eclipse part 3](02_eclipse_replace.png)
 
@@ -836,6 +836,8 @@ The resulting dialog allows you to review the changes and remove elements which 
 
 
 ## 8. About this website
+
+## 8. 关于原文网站
 
 [Support free content![Support free tutorials](http://www.vogella.com/img/common/50x57xvogella-donate.png.pagespeed.ic.UDQmaK-2g7.webp)](http://www.vogella.com/support.html)
 
@@ -846,6 +848,8 @@ The resulting dialog allows you to review the changes and remove elements which 
 [Get source code![Source Code](http://www.vogella.com/img/common/xcode.png.pagespeed.ic.2NM8n8v5dG.webp)](http://www.vogella.com/code/index.html)
 
 ## 9. Links and Literature
+
+## 9. 相关链接
 
 [Regular-Expressions.info on Using Regular Expressions in Java](http://www.regular-expressions.info/java.html)
 
@@ -858,12 +862,6 @@ The resulting dialog allows you to review the changes and remove elements which 
 | [TRAINING](http://www.vogella.com/training/) | [SERVICE & SUPPORT](http://www.vogella.com/consulting/) |
 | ---------------------------------------- | ---------------------------------------- |
 | The vogella company provides comprehensive [training and education services](http://www.vogella.com/training/) from experts in the areas of Eclipse RCP, Android, Git, Java, Gradle and Spring. We offer both public and inhouse training. Whichever course you decide to take, you are guaranteed to experience what many before you refer to as [“The best IT class I have ever attended”](http://www.vogella.com/training/). | The vogella company offers [expert consulting](http://www.vogella.com/consulting/)services, development support and coaching. Our customers range from Fortune 100 corporations to individual developers. |
-
-## Appendix A: Copyright and License
-
-Copyright © 2012-2016 vogella GmbH. Free use of the software examples is granted under the terms of the EPL License. This tutorial is published under the [Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Germany](http://creativecommons.org/licenses/by-nc-sa/3.0/de/deed.en) license.
-
-See [Licence](http://www.vogella.com/license.html).
 
 
 
