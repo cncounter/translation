@@ -184,29 +184,29 @@ String updated = EXAMPLE_TEST.replaceAll(pattern, "$2");
 
 ### 3.5. Negative look ahead
 
-### 3.5. 环视否定(Negative look ahead)
-
-环视(look ahead)是一种高级技巧, 环视的部分不会匹配到正则之中, 但却要求匹配的字符串前面/后面具备环视部分的特征。
+### 3.5. 环视否定
 
 Negative look ahead provides the possibility to exclude a pattern. With this you can say that a string should not be followed by another string.
 
-环视否定(Negative look ahead, 又叫零宽度断言) 用来排除符合某种模式的内容。也就是说后面不能跟着符合某种特征的字符串。
+环视否定(Negative look ahead), 又叫零宽度断言, 用于在匹配的同时, 排除掉某些情形。也就是说前面/后面不能是符合某种特征的字符串。
 
 Negative look ahead are defined via `(?!pattern)`. For example, the following will match "a" if "a" is not followed by "b".
 
-环视否定(Negative look ahead) 使用 `(?!pattern)` 这种格式定义。例如, 下面的正则, 只能匹配后面不是 b 字母的 “a”字母。
+环视否定(Negative look ahead) 使用 `(?!pattern)` 这种格式定义。例如, 下面的正则, 只匹配后面不是 b 字母的 "a" 字母。
 
 ```
 a(?!b)
 ```
 
-类似的, 匹配a字母,要求后面必须是 b 字母的情况:
+类似的, 只匹配a字母, 但要求后面只能是 b 字母, 否则这个 a 就不符合需要:
 
 ```
 a(?=b)
 ```
 
 > 注意，我们有一个向前查找的语法(也叫顺序环视): `(?=exp)`, 会查找前后【位置】的 exp; 所环视的内容却不包含在正则表达式匹配中。
+>
+> 环视(look ahead)是一种高级技巧, 环视的部分不会匹配到结果之中, 但却要求匹配的字符串前面/后面具备环视部分的特征。
 >
 > 如果将等号换成感叹号, 零宽度断言 `(?!exp)`, 就变成了否定语义，也就是说查找的位置的后面不能是exp。
 >
