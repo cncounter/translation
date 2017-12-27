@@ -8,7 +8,7 @@
 
 ## 1. Regular Expressions
 
-## 1. 正则表达式(Regular Expression)
+## 1. 正则表达式
 
 ### 1.1. What are regular expressions?
 
@@ -16,7 +16,7 @@
 
 A *regular expression* defines a search pattern for strings. The abbreviation for regular expression is *regex*. The search pattern can be anything from a simple character, a fixed string or a complex expression containing special characters describing the pattern. The pattern defined by the regex may match one or several times or not at all for a given string.
 
-*正则表达式(regular expression)*, 也翻译为 *正规式*, 用来表示一种文本搜索模式。英文缩写是 *regex*(`reg-ex`). 
+*正则表达式(Regular Expression)*, 也翻译为 *正规式*, 用来表示一种文本搜索模式。英文缩写是 *regex*(`reg-ex`). 
 
 搜索模式(search pattern)可能多种多样, 如, 单个字符(character), 特定字符串(fixed string), 包含特殊含义的复杂表达式等等. 对于给定的字符串, 正则表达式可能匹配一到多次, 也可能一次都不匹配。
 
@@ -71,7 +71,7 @@ Some of the following examples use JUnit to validate the result. You should be a
 
 ## 3. Rules of writing regular expressions
 
-## 3. 正则表达式的语法规则
+## 3. 语法规则
 
 The following description is an overview of available meta characters which can be used in regular expressions. This chapter is supposed to be a references for the different regex elements.
 
@@ -98,11 +98,11 @@ The following description is an overview of available meta characters which can 
 
 ### 3.2. Meta characters
 
-### 3.2. Meta characters(元字符)
+### 3.2. 元字符
 
 The following meta characters have a pre-defined meaning and make certain common patterns easier to use, e.g., `\d` instead of `[0..9]`.
 
-下面这些是预定义的元字符, 可用于提取通用模式, 如 `\d` 可以代替 `[0-9]`, 或者`[0123456789]`。
+下面这些是预定义的元字符(Meta characters), 可用于提取通用模式, 如 `\d` 可以代替 `[0-9]`, 或者`[0123456789]`。
 
 
 
@@ -124,11 +124,11 @@ The following meta characters have a pre-defined meaning and make certain common
 
 ### 3.3. Quantifier
 
-### 3.3. Quantifier(量词)
+### 3.3. 量词
 
 A quantifier defines how often an element can occur. The symbols ?, *, + and {} define the quantity of the regular expressions
 
-量词用来指定某个元素可以出现的次数。`?`, `*`, `+` 和 `{}` 等符号定义了正则表达式的数量。
+量词(Quantifier)用来指定某个元素可以出现的次数。`?`, `*`, `+` 和 `{}` 等符号定义了正则表达式的数量。
 
 
 
@@ -144,26 +144,26 @@ A quantifier defines how often an element can occur. The symbols ?, *, + and {} 
 
 ### 3.4. Grouping and back reference
 
-### 3.4. 分组(Grouping)与向后引用(back reference)
+### 3.4. 分组和引用
 
 You can group parts of your regular expression. In your pattern you group elements with round brackets, e.g., `()`. This allows you to assign a repetition operator to a complete group.
 
-可以把正则表达式的一部分进行分组,  用圆括号 `()` 括起来。这样就可以对某个部分进行重复。
+可以对正则表达式进行分组(Grouping), 用圆括号 `()` 括起来。这样就可以对括号内的整体使用量词。
 
 In addition these groups also create a back reference to the part of the regular expression. This captures the group. A back reference stores the part of the `String` which matched the group. This allows you to use this part in the replacement.
 
-此外, 还可以在替换时对正则表达式中的分组进行引用。也就是捕获组(captures the group)。向后引用(back reference) 保存的是该分组所匹配的那部分`String`。进行字符串替换的时候可以使用这些部分。
+当然, 在进行替换的时候, 还可以对分组进行引用。也就是捕获组(captures the group)。向后引用(back reference) 指向匹配中该分组所对应的字符串。进行替换时可以通过 $ 来引用。
 
 Via the `$` you can refer to a group. `$1` is the first group, `$2` the second, etc.
 
-使用 `$` 来引用一个捕获组。例如 `$1` 表示第一组, `$2` 表示第二组, 以此类推, `$0`则表示整个正则匹配的部分。
+使用 `$` 来引用一个捕获组。例如 `$1` 表示第一组, `$2` 表示第二组, 以此类推, `$0`则表示整个正则所匹配的部分。
 
 Let’s, for example, assume you want to replace all whitespace between a letter followed by a point or a comma. This would involve that the point or the comma is part of the pattern. Still it should be included in the result.
 
-例如, 想要去除字母和句号/逗号之间的所有空格。这时候句号/逗号也是整个正则中的一部分,所以应该原样保留在结果中。
+例如, 想要去掉单词后面, 句号/逗号(point or comma)前面的空格。可以把句号/逗号写入正则中, 然后原样输出到结果中即可。
 
 ```
-// 去除字母与 . 或 , 之间的空格
+// 去除单词与 `.|,` 之间的空格
 String pattern = "(\\w)(\\s+)([\\.,])";
 System.out.println(EXAMPLE_TEST.replaceAll(pattern, "$1$3"));
 ```
@@ -172,10 +172,10 @@ System.out.println(EXAMPLE_TEST.replaceAll(pattern, "$1$3"));
 
 This example extracts the text between a title tag.
 
-下面的示例提取 title 标签中的内容。
+提取 <title> 标签的内容:
 
 ```
-// 提取2个 title 元素之间的内容
+// 提取 <title> 标签的内容
 pattern = "(?i)(<title.*?>)(.+?)()";
 String updated = EXAMPLE_TEST.replaceAll(pattern, "$2");
 ```
