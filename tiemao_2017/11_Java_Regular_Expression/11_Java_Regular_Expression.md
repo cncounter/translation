@@ -447,15 +447,15 @@ public class StringMatcherTest {
 
 ## 5. Pattern and Matcher
 
-## 5. Pattern 与 Matcher
+## 5. Pattern与Matcher简介
 
 For advanced regular expressions the `java.util.regex.Pattern` and `java.util.regex.Matcher` classes are used.
 
-正则表达式的高级用法, 需要 `java.util.regex.Pattern` 和 `java.util.regex.Matcher` 类的支持。
+要支持正则表达式的高级特性, 需要借助 `java.util.regex.Pattern` 和 `java.util.regex.Matcher` 类。
 
 You first create a `Pattern` object which defines the regular expression. This `Pattern` object allows you to create a `Matcher` object for a given string. This `Matcher` object then allows you to do regex operations on a `String`.
 
-首先需要创建一个 `Pattern` 对象, 用来定义正则表达式。通过 `Pattern` 对象, 给定一个 string, 则产生一个 `Matcher` 对象。通过这个 `Matcher` 对象就可以对 `String` 进行 regex 操作。
+首先创建/编译 `Pattern` 对象, 用来定义正则表达式。对 `Pattern` 对象, 给定一个字符串, 则产生一个对应的 `Matcher` 对象。通过 `Matcher` 对象就可以对 `String` 进行各种正则相关的操作。
 
 
 
@@ -470,10 +470,10 @@ public class RegexTestPatternMatcher {
 
         public static void main(String[] args) {
                 Pattern pattern = Pattern.compile("\\w+");
-                // 如果需要忽略大小写问题, 可以使用:
-                // Pattern pattern = Pattern.compile("\\s+", Pattern.CASE_INSENSITIVE);
+                // 如需忽略大小写, 可以使用:
+                // Pattern pattern = Pattern.compile("\\w+", Pattern.CASE_INSENSITIVE);
                 Matcher matcher = pattern.matcher(EXAMPLE_TEST);
-                // 查找所有匹配
+                // 查找所有匹配的结果
                 while (matcher.find()) {
                         System.out.print("Start index: " + matcher.start());
                         System.out.print(" End index: " + matcher.end() + " ");
