@@ -41,7 +41,7 @@ The following tables lists several regular expressions and describes which patte
 下表列举了一些简单的正则表达式,和对应的匹配模式。
 
 
-| Regex              | Matches                                  |
+| 正则表达式         | Matches                                  |
 | ------------------ | ---------------------------------------- |
 | `this is text`     | 完全匹配 "this is text"                      |
 | `this\s+is\s+text` | 匹配的内容为: "this", 加上1到多个空白符(whitespace character, 如空格,tab,换行等), 加上 "is", 加上1到多个空白符, 再加上 "text". |
@@ -83,7 +83,7 @@ The following description is an overview of available meta characters which can 
 
 
 
-| Regular Expression | Description                              |
+| 正则表达式 | 说明                              |
 | ------------------ | ---------------------------------------- |
 | `.`                | 点号(`.`), 匹配任意一个字符                           |
 | `^regex`           | 小尖号(`^`), 起始标识, 前面不能出现其他字符.              |
@@ -92,7 +92,7 @@ The following description is an overview of available meta characters which can 
 | `[abc][vz]`        | 字符集合(set), 匹配 a 或 b 或 c,紧接着是 v 或 z. |
 | `[^abc]`           | 如果小尖号(`^`, caret, 此处读作 `非`) 出现在中括号里面的第一位, 则表示否定(negate). 这里匹配: 除 `a`, `b`, `c` 之外的其他任意字符. |
 | `[a-d1-7]`         | 范围表示法: 匹配 `a` 到 `d` 之间的单个字符, 或者 `1` 到 `7`之间的单个字符, 整体只匹配单个字符, 而不是 `d1` 这种组合. |
-| `X|Z`              | 匹配 `X` 或者 `Z`.                           |
+| X\|Z             | 匹配 `X` 或者 `Z`.                           |
 | `XZ`               | 匹配`XZ`, X和Z必须按顺序全部出现.                    |
 | `$`                | 判断一行是否结束.                                |
 
@@ -106,7 +106,7 @@ The following meta characters have a pre-defined meaning and make certain common
 
 
 
-| Regular Expression | Description                              |
+| 正则表达式         | 说明                                     |
 | ------------------ | ---------------------------------------- |
 | `\d`               | 单个数字, 等价于 `[0-9]` 但更简洁                   |
 | `\D`               | 非数字, 等价于  `[^0-9]` 但更简洁                  |
@@ -186,6 +186,8 @@ String updated = EXAMPLE_TEST.replaceAll(pattern, "$2");
 
 ### 3.5. 环视否定(Negative look ahead)
 
+环视(look ahead)是一种高级技巧, 环视的部分不会匹配到正则之中, 但却要求匹配的字符串前面/后面具备环视部分的特征。
+
 Negative look ahead provides the possibility to exclude a pattern. With this you can say that a string should not be followed by another string.
 
 环视否定(Negative look ahead, 又叫零宽度断言) 用来排除符合某种模式的内容。也就是说后面不能跟着符合某种特征的字符串。
@@ -263,7 +265,7 @@ These methods are not optimized for performance. We will later use classes which
 
 
 
-| Method                                   | Description                              |
+| Method                                   | 说明                              |
 | ---------------------------------------- | ---------------------------------------- |
 | `s.matches("regex")`                     | 判断 s 是否匹配正在表达式  `"regex"` .  只有整个字符串匹配正则表达式时才返回 `true` . |
 | `s.split("regex")`                       | 使用正则表达式 `"regex"` 作为分隔符来拆分字符串, 返回结果是 String[] 数组. 注意  `"regex"` 对应的字符串并不包含在返回结果中. |
