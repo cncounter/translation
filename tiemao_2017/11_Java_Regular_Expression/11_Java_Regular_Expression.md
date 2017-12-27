@@ -732,15 +732,15 @@ The following regular expression matches duplicated words.
 
 `\b` is a word boundary and `\1` references to the captured match of the first group, i.e., the first word.
 
-`\b` 是单词的边界符, `\1` 则引用第一个分组匹配, 此处的分组为前一个单词 `(\w+)`。
+`\b` 是单词边界, `\1` 则引用第一个分组, 此处的第一个分组为前一个单词 `(\w+)`。
 
 The `(?!-in)\b(\w+) \1\b` finds duplicate words if they do not start with "-in".
 
-`(?!-in)\b(\w+) \1\b` 匹配不以"-in"开始 的重复单词, 。
+`(?!-in)\b(\w+) \1\b` 通过环视否定, 来匹配前面不是 "`-in`" 开始的重复单词。
 
 TIP:Add `(?s)` to search across multiple lines.
 
-提示: 可以在正则表达式末尾增加 `(?s)` 来进行跨行搜索。
+提示: 可以在最前面加上 `(?s)` 标志来执行跨行搜索。
 
 ### 6.6. Finding elements which start in a new line
 
