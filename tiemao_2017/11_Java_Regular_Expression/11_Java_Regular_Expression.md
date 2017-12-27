@@ -1,10 +1,10 @@
 # Java Regex - Tutorial
 
-# Java正则表达式系列(1): 入门
+# Java正则表达式系列(1): 入门教程
 
 > This tutorial introduces the usage of regular expressions and describes their implementation in Java. It also provides several Java regular expression examples.
 
-> 本教程简要介绍Java正则表达式和实现方式，并通过实例来讲解具体的用法。
+> 本教程简要介绍Java的正则表达式及其实现方式，并通过实例来讲解具体用法。
 
 ## 1. Regular Expressions
 
@@ -16,17 +16,17 @@
 
 A *regular expression* defines a search pattern for strings. The abbreviation for regular expression is *regex*. The search pattern can be anything from a simple character, a fixed string or a complex expression containing special characters describing the pattern. The pattern defined by the regex may match one or several times or not at all for a given string.
 
-*正则表达式(regular expression)*, 也有翻译为 *正规式*, 用来表示一类文本模式。其缩写是 *regex*(`reg-ex`). 
+*正则表达式(regular expression)*, 也翻译为 *正规式*, 用来表示一种文本搜索模式。英文缩写是 *regex*(`reg-ex`). 
 
-搜索模式(search pattern)可以多种多样, 例如, 单个字符(character), 特定字符串(fixed string), 或者是包含特定含义的复杂表达式. 给定一个 string, 正则表达式可能匹配一到多次, 也可能一次都不匹配。
+搜索模式(search pattern)可能多种多样, 如, 单个字符(character), 特定字符串(fixed string), 包含特殊含义的复杂表达式等等. 对于给定的字符串, 正则表达式可能匹配一到多次, 也可能一次都不匹配。
 
 Regular expressions can be used to search, edit and manipulate text.
 
-正则表达式一般用来搜索、编辑或替换文本(text), 本质上, text 和 string 是一回事。
+正则表达式一般用来查找、编辑和替换文本(text), 本质上, text(文本) 和 string(字符串) 是一回事。
 
 The process of analyzing or modifying a text with a regex is called: *The regular expression is applied to the text/string*. The pattern defined by the regex is applied on the text from left to right. Once a source character has been used in a match, it cannot be reused. For example, the regex `aba` will match *ababababa* only two times (aba_aba__).
 
-利用正则表达式来分析/修改文本的过程, 称为: *应用于文本/字符串的正则表达式* 。正则表达式扫描字符串的顺序是从左到右进行的. 只要某个字符被匹配成功, 在下次匹配中就不会再使用。例如, 正则表达式 `aba`, 匹配字符串 *ababababa* 时, 只会扫描到两个匹配(`aba_aba__`)。
+用正则表达式来分析/修改文本的过程, 称为: *应用于文本/字符串的正则表达式* 。正则表达式扫描字符串的顺序是从左到右. 每个字符都只能被匹配成功一次, 下次匹配扫描就会从后面开始。例如, 正则表达式 `aba`, 匹配字符串 *ababababa* 时, 只会扫描到两个匹配(`aba_aba__`)。
 
 ### 1.2. Regex examples
 
@@ -34,7 +34,7 @@ The process of analyzing or modifying a text with a regex is called: *The regula
 
 A simple example for a regular expression is a (literal) string. For example, the *Hello World* regex matches the "Hello World" string. `.` (dot) is another example for a regular expression. A dot matches any single character; it would match, for example, "a" or "1".
 
-最简单的例子是文本字符串。例如, 正则表达式 `Hello World` 匹配的就是字符串 "Hello World"。 正则表达式中的 `.`(dot,英文句号 ,点号)则是另一种用法。每个点号匹配任意的单个字符(character); 例如, "a" 或者 "1" 之类的字符。
+最简单的例子是字母串。例如, 正则表达式 `Hello World` 能匹配的就是字符串 "Hello World"。 正则表达式中,  点号 `.`(dot,英文句号)属于通配符, 点号匹配任意一个字符(character); 例如, "a" 或者 "1"; 当然, 默认情况下点号不能匹配换行 `\n`, 需要特殊标识指定才行。
 
 The following tables lists several regular expressions and describes which pattern they would match.
 
