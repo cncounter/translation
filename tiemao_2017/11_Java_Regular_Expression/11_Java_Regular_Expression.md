@@ -534,15 +534,15 @@ public class EitherOrCheck {
 
 ### 6.2. Phone number
 
-### 6.2. 电话号码(Phone number)
+### 6.2. 匹配电话号码
 
 Task: Write a regular expression which matches any phone number.
 
-任务: 编写正则表达式, 匹配任意电话号码。
+任务: 编写正则表达式, 匹配各种电话号码。
 
 A phone number in this example consists either out of 7 numbers in a row or out of 3 number, a (white)space or a dash and then 4 numbers.
 
-此处我们假设电话号码的格式为 "7位连续的数字"; 或者是 "3位数字加空格/逗号, 再跟上4位数字"。
+假设电话号码(Phone number)的格式为 "7位连续的数字"; 或者是 "3位数字加空格/横线, 再加上4位数字"。
 
 
 
