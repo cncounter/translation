@@ -63,11 +63,11 @@ Regular expressions are supported by most programming languages, e.g., Java, Per
 
 The following tutorial assumes that you have basic knowledge of the Java programming language.
 
-本教程假设读者基本掌握Java编程语言。
+本教程要求读者具备Java语言相关的基础知识。
 
 Some of the following examples use JUnit to validate the result. You should be able to adjust them in case if you do not want to use JUnit. To learn about JUnit please see [JUnit Tutorial](http://www.vogella.com/tutorials/JUnit/article.html).
 
-部分示例使用JUnit来验证结果。如果不想使用JUnit,可以自己修改测试代码。关于 JUnit 的教程请参考 [JUnit教程: http://www.vogella.com/tutorials/JUnit/article.html](http://www.vogella.com/tutorials/JUnit/article.html)。
+下面的一些示例通过 JUnit 来验证执行结果。如果不想使用JUnit, 也可以改写相关代码。关于JUnit的知识请参考 [JUnit教程: http://www.vogella.com/tutorials/JUnit/article.html](http://www.vogella.com/tutorials/JUnit/article.html)。
 
 ## 3. Rules of writing regular expressions
 
