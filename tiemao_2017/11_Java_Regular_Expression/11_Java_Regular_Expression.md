@@ -1,10 +1,10 @@
 # Java Regex - Tutorial
 
-# 正则表达式入门教程: (1)Java正则简介和示例
+# Java正则教程(1): 正则表达式入门
 
 > This tutorial introduces the usage of regular expressions and describes their implementation in Java. It also provides several Java regular expression examples.
 
-> 本教程简要介绍Java的正则表达式及其实现方式，并通过实例来讲解具体用法。
+> 本文简要介绍Java的正则表达式及其实现方式，并通过实例讲解正则表达式的具体用法。
 
 ## 1. Regular Expressions
 
@@ -16,7 +16,7 @@
 
 A *regular expression* defines a search pattern for strings. The abbreviation for regular expression is *regex*. The search pattern can be anything from a simple character, a fixed string or a complex expression containing special characters describing the pattern. The pattern defined by the regex may match one or several times or not at all for a given string.
 
-*正则表达式(Regular Expression)*, 也翻译为 *正规式*, 用来表示一种文本搜索模式。英文缩写是 *regex*(`reg-ex`). 
+*正则表达式(Regular Expression)*, 简称 *正则*, 也翻译为 *正规式*, 用来表示文本搜索模式。英文缩写是 *regex*(`reg-ex`). 
 
 搜索模式(search pattern)可能多种多样, 如, 单个字符(character), 特定字符串(fixed string), 包含特殊含义的复杂表达式等等. 对于给定的字符串, 正则表达式可能匹配一到多次, 也可能一次都不匹配。
 
@@ -41,7 +41,7 @@ The following tables lists several regular expressions and describes which patte
 下表列举了一些简单的正则表达式,和对应的匹配模式。
 
 
-| 正则表达式         | Matches                                  |
+| 正则表达式              | Matches                                  |
 | ------------------ | ---------------------------------------- |
 | `this is text`     | 完全匹配 "this is text"                      |
 | `this\s+is\s+text` | 匹配的内容为: "this", 加上1到多个空白符(whitespace character, 如空格,tab,换行等), 加上 "is", 加上1到多个空白符, 再加上 "text". |
@@ -83,18 +83,18 @@ The following description is an overview of available meta characters which can 
 
 
 
-| 正则表达式 | 说明                              |
-| ------------------ | ---------------------------------------- |
-| `.`                | 点号(`.`), 匹配任意一个字符                           |
-| `^regex`           | 小尖号(`^`), 起始标识, 前面不能出现其他字符.              |
-| `regex$`           | 美元符号(`$`,dollar,美刀), 结束标识,后面不能再出现其他字符.             |
-| `[abc]`            | 字符集合(set), 匹配 a 或 b 或 c.               |
-| `[abc][vz]`        | 字符集合(set), 匹配 a 或 b 或 c,紧接着是 v 或 z. |
-| `[^abc]`           | 如果小尖号(`^`, caret, 此处读作 `非`) 出现在中括号里面的第一位, 则表示否定(negate). 这里匹配: 除 `a`, `b`, `c` 之外的其他任意字符. |
-| `[a-d1-7]`         | 范围表示法: 匹配 `a` 到 `d` 之间的单个字符, 或者 `1` 到 `7`之间的单个字符, 整体只匹配单个字符, 而不是 `d1` 这种组合. |
-| X\|Z             | 匹配 `X` 或者 `Z`.                           |
-| `XZ`               | 匹配`XZ`, X和Z必须按顺序全部出现.                    |
-| `$`                | 判断一行是否结束.                                |
+| 正则表达式       | 说明                                       |
+| ----------- | ---------------------------------------- |
+| `.`         | 点号(`.`), 匹配任意一个字符                        |
+| `^regex`    | 小尖号(`^`), 起始标识, 前面不能出现其他字符.              |
+| `regex$`    | 美元符号(`$`,dollar,美刀), 结束标识,后面不能再出现其他字符.   |
+| `[abc]`     | 字符集合(set), 匹配 a 或 b 或 c.                 |
+| `[abc][vz]` | 字符集合(set), 匹配 a 或 b 或 c,紧接着是 v 或 z.      |
+| `[^abc]`    | 如果小尖号(`^`, caret, 此处读作 `非`) 出现在中括号里面的第一位, 则表示否定(negate). 这里匹配: 除 `a`, `b`, `c` 之外的其他任意字符. |
+| `[a-d1-7]`  | 范围表示法: 匹配 `a` 到 `d` 之间的单个字符, 或者 `1` 到 `7`之间的单个字符, 整体只匹配单个字符, 而不是 `d1` 这种组合. |
+| X\|Z        | 匹配 `X` 或者 `Z`.                           |
+| `XZ`        | 匹配`XZ`, X和Z必须按顺序全部出现.                    |
+| `$`         | 判断一行是否结束.                                |
 
 ### 3.2. Meta characters
 
@@ -106,16 +106,16 @@ The following meta characters have a pre-defined meaning and make certain common
 
 
 
-| 正则表达式         | 说明                                     |
-| ------------------ | ---------------------------------------- |
-| `\d`               | 单个数字, 等价于 `[0-9]` 但更简洁                   |
-| `\D`               | 非数字, 等价于  `[^0-9]` 但更简洁                  |
-| `\s`               | 空白字符(whitespace), 等价于 `[ \t\n\x0b\r\f]`  |
-| `\S`               | 非空白字符, 等价于 `[^\s]`                       |
-| `\w`               | 反斜线加上小写w, 表示单个标识符,即字母数字下划线, 等价于 `[a-zA-Z_0-9]` |
-| `\W`               | 非单词字符, 等价于 `[^\w]`                       |
-| `\S+`              | 匹配1到多个非空白字符                              |
-| `\b`               | 匹配单词外边界(word boundary), 单词字符指的是 `[a-zA-Z0-9_]` |
+| 正则表达式 | 说明                                       |
+| ----- | ---------------------------------------- |
+| `\d`  | 单个数字, 等价于 `[0-9]` 但更简洁                   |
+| `\D`  | 非数字, 等价于  `[^0-9]` 但更简洁                  |
+| `\s`  | 空白字符(whitespace), 等价于 `[ \t\n\x0b\r\f]`  |
+| `\S`  | 非空白字符, 等价于 `[^\s]`                       |
+| `\w`  | 反斜线加上小写w, 表示单个标识符,即字母数字下划线, 等价于 `[a-zA-Z_0-9]` |
+| `\W`  | 非单词字符, 等价于 `[^\w]`                       |
+| `\S+` | 匹配1到多个非空白字符                              |
+| `\b`  | 匹配单词外边界(word boundary), 单词字符指的是 `[a-zA-Z0-9_]` |
 
 
 > These meta characters have the same first letter as their representation, e.g., digit, space, word, and boundary. Uppercase symbols define the opposite. 
@@ -132,14 +132,14 @@ A quantifier defines how often an element can occur. The symbols ?, *, + and {} 
 
 
 
-| 正则表达式         | 说明                                     | 示例                             |
-| ------------------ | ---------------------------------------- | ------------------------------------ |
-| `*`                | 0到多次, 等价于 `{0,}`                         | `X*` 匹配0到多个连续的X,  `.*` 则匹配任意字符串      |
-| `+`                | 1到多次, 等价于 `{1,}`                         | `X+` 匹配1到多个连续的X                     |
-| `?`                | 0到1次, 等价于 `{0,1}`                        | `X?` 匹配0个,后者1个X                      |
-| `{n}`              | 精确匹配 n 次 `{}` 前面序列出现的次数               | `\d{3}` 匹配3位数字, `.{10}` 匹配任意10个字符.  |
-| `{m, n}`            | 出现 m 到 n 次,                              | `\d{1,4}` 匹配至少1位数字,至多4位数字. |
-| `*?`               | 在量词后面加上 `?`, 表示懒惰模式(*reluctant quantifier*). 从左到右慢慢扫描, 找到第一个满足正则表达式的地方就暂停搜索, 用来尝试匹配最少的字符串.|                                      |
+| 正则表达式    | 说明                                       | 示例                                 |
+| -------- | ---------------------------------------- | ---------------------------------- |
+| `*`      | 0到多次, 等价于 `{0,}`                         | `X*` 匹配0到多个连续的X,  `.*` 则匹配任意字符串    |
+| `+`      | 1到多次, 等价于 `{1,}`                         | `X+` 匹配1到多个连续的X                    |
+| `?`      | 0到1次, 等价于 `{0,1}`                        | `X?` 匹配0个,后者1个X                    |
+| `{n}`    | 精确匹配 n 次 `{}` 前面序列出现的次数                  | `\d{3}` 匹配3位数字, `.{10}` 匹配任意10个字符. |
+| `{m, n}` | 出现 m 到 n 次,                              | `\d{1,4}` 匹配至少1位数字,至多4位数字.         |
+| `*?`     | 在量词后面加上 `?`, 表示懒惰模式(*reluctant quantifier*). 从左到右慢慢扫描, 找到第一个满足正则表达式的地方就暂停搜索, 用来尝试匹配最少的字符串. |                                    |
 
 
 ### 3.4. Grouping and back reference
@@ -266,11 +266,11 @@ These methods are not optimized for performance. We will later use classes which
 
 
 
-| 方法                                     | 说明                              |
+| 方法                                       | 说明                                       |
 | ---------------------------------------- | ---------------------------------------- |
 | `s.matches("regex")`                     | 判断字符串 s 是否能匹配正则  `"regex"`.  只有整个字符串匹配正则才返回 `true` . |
 | `s.split("regex")`                       | 用正则表达式 `"regex"` 作为分隔符来拆分字符串, 返回结果是 String[] 数组. 注意 `"regex"` 对应的分隔符并不包含在返回结果中. |
-| `s.replaceFirst("regex", "replacement"`) | 替换第一个匹配 `"regex"` 的内容为 `"replacement`. |
+| `s.replaceFirst("regex", "replacement"`) | 替换第一个匹配 `"regex"` 的内容为 `"replacement`.   |
 | `s.replaceAll("regex", "replacement")`   | 将所有匹配  `"regex"` 的内容替换为 `"replacement`.  |
 
 Create for the following example the Java project `de.vogella.regex.test`.
@@ -305,7 +305,7 @@ public class RegexTestStrings {
 
 
 > The following class gives several examples for the usage of
-regular expressions with strings. See the comment for the purpose.
+> regular expressions with strings. See the comment for the purpose.
 
 > 下面给出一些正则表达式的使用示例。请参照注释信息。
 
@@ -835,37 +835,27 @@ The resulting dialog allows you to review the changes and remove elements which 
 
 
 
-## 8. About this website
 
-## 8. 关于原文网站
 
-[Support free content![Support free tutorials](http://www.vogella.com/img/common/50x57xvogella-donate.png.pagespeed.ic.UDQmaK-2g7.webp)](http://www.vogella.com/support.html)
 
-[Questions and discussion![Questions and discussion](http://www.vogella.com/img/common/xquestions.png.pagespeed.ic.8WW9jZNPm-.webp)](http://www.vogella.com/contact.html)
+## 8. Links and Literature
 
-[Tutorial & code license![License](http://www.vogella.com/img/common/xlicense.png.pagespeed.ic.CHvbzakxya.webp)](http://www.vogella.com/license.html)
+## 8. 相关链接
 
-[Get source code![Source Code](http://www.vogella.com/img/common/xcode.png.pagespeed.ic.2NM8n8v5dG.webp)](http://www.vogella.com/code/index.html)
-
-## 9. Links and Literature
-
-## 9. 相关链接
-
-[Regular-Expressions.info on Using Regular Expressions in Java](http://www.regular-expressions.info/java.html)
-
-[Regulare xpressions examples](http://www.regular-expressions.info/examples.html)
-
-[The Java Tutorials: Lesson: Regular Expressions](http://docs.oracle.com/javase/tutorial/essential/regex/)
-
-### 9.1. vogella GmbH training and consulting support
-
-| [TRAINING](http://www.vogella.com/training/) | [SERVICE & SUPPORT](http://www.vogella.com/consulting/) |
-| ---------------------------------------- | ---------------------------------------- |
-| The vogella company provides comprehensive [training and education services](http://www.vogella.com/training/) from experts in the areas of Eclipse RCP, Android, Git, Java, Gradle and Spring. We offer both public and inhouse training. Whichever course you decide to take, you are guaranteed to experience what many before you refer to as [“The best IT class I have ever attended”](http://www.vogella.com/training/). | The vogella company offers [expert consulting](http://www.vogella.com/consulting/)services, development support and coaching. Our customers range from Fortune 100 corporations to individual developers. |
+- 示例代码下载: <http://www.vogella.com/code/index.html>
+- [Regular-Expressions.info on Using Regular Expressions in Java](http://www.regular-expressions.info/java.html)
+- [Regulare xpressions examples](http://www.regular-expressions.info/examples.html)
+- [The Java Tutorials: Lesson: Regular Expressions](http://docs.oracle.com/javase/tutorial/essential/regex/)
 
 
 
 原文链接: <http://www.vogella.com/tutorials/JavaRegularExpressions/article.html>
 
 原文日期: 2016.06.24
+
+翻译日期: 2017-12-28
+
+翻译人员: [铁锚 http://blog.csdn.net/renfufei/](http://blog.csdn.net/renfufei/)
+
+
 
