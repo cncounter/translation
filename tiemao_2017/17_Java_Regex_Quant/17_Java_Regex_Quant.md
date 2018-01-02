@@ -263,62 +263,58 @@ Here the first match is forced to stop at the upper limit of 6 characters. The s
 这里的第一个匹配在达到上限的6个字符时停止. 第二个匹配包含了剩下的字母, 恰好是要求的最小字符个数: 三个 `a`. 如果输入的文本再少一个字符, 第二次匹配就不会发生, 因为只有2个 `a` 则匹配不了该模式。
 
 
-###################################
-###################################
-###################################
-###################################
-
-
 ### Capturing Groups and Character Classes with Quantifiers
 
-### 作用于捕获组(Capturing Groups)或字符集合(Character Class)的量词
+### 关联到捕获组和/或字符集合的量词
 
 Until now, we've only tested quantifiers on input strings containing one character. In fact, quantifiers can only attach to one character at a time, so the regular expression "abc+" would mean "a, followed by b, followed by c one or more times". It would not mean "abc" one or more times. However, quantifiers can also attach to Character Classes and Capturing Groups, such as [abc]+ (a or b or c, one or more times) or (abc)+ (the group "abc", one or more times).
 
-到目前为止, 我们对量词只测试了单个字符的情况. 事实上, 量词每次只能连接到一个字符上, 所以正则表达式 “`abc +`” 的含义是:  “字母a, 后面跟着字母b, 然后再跟着 1到多个字母c”.  而不是出现1到多次的 “abc”. 当然, 量词也可以关联到字符集合(Character Class)和捕获组(Capturing Group), 例如 `[abc]+`, 表示 "a或b或c, 出现1到多次"), 而 `(abc)+` 则表示 “`abc`” 这个组整体出现 1次到多次。
+到目前为止, 我们只是用量词来测试了单个字符的情况. 但实际上, 量词只关联到一个字符上, 所以正则 “`abc+`” 的含义是:  “字母`a`, 后面跟着字母`b`, 然后再跟着1到多个字母`c`”. 而不表示1到多次的 “abc”. 当然, 量词可以关联到字符集合(Character Class)和捕获组(Capturing Group), 例如 `[abc]+`, 表示 "出现1到多次的a或b或c, 也就是abc三个字母组成的任意组合"), 而正则 `(abc)+` 表示 “`abc`” 这个 group 整体出现 1次到多次, 例如 `abcabcabc`。
 
 Let's illustrate by specifying the group (dog), three times in a row.
 
-让我们看看具体的示例, 指定group (`dog`) 连续出现三次。
+让我们看一个具体的示例, 指定分组 `dog` 连续出现三次。
 
+```
+Enter your regex: (dog){3}
+Enter input string to search: dogdogdogdogdogdog
+I found the text "dogdogdog" starting at index 0 and ending at index 9.
+I found the text "dogdogdog" starting at index 9 and ending at index 18.
 
-	Enter your regex: (dog){3}
-	Enter input string to search: dogdogdogdogdogdog
-	I found the text "dogdogdog" starting at index 0 and ending at index 9.
-	I found the text "dogdogdog" starting at index 9 and ending at index 18.
-	
-	Enter your regex: dog{3}
-	Enter input string to search: dogdogdogdogdogdog
-	No match found.
+Enter your regex: dog{3}
+Enter input string to search: dogdogdogdogdogdog
+No match found.
+```
 
 Here the first example finds three matches, since the quantifier applies to the entire capturing group. Remove the parentheses, however, and the match fails because the quantifier {3} now applies only to the letter "g".
 
-第一个例子需要匹配3次, 因为量词作用于整个捕获组. 如果把小括号去掉, 那么就会匹配失败, 因为量词`{3}`现在只作用于字母"`g`"。
+第一个示例, 匹配了3次, 因为量词作用于整个捕获组. 如果把小括号去掉, 就会匹配失败, 因为这时候量词`{3}`只作用于字母"`g`"。
 
 Similarly, we can apply a quantifier to an entire character class:
 
-类似地,我们可以测试作用于整个字符集合(character class)的量词:
+类似地,我们将量词作用于整个字符集合(character class):
 
-	Enter your regex: [abc]{3}
-	Enter input string to search: abccabaaaccbbbc
-	I found the text "abc" starting at index 0 and ending at index 3.
-	I found the text "cab" starting at index 3 and ending at index 6.
-	I found the text "aaa" starting at index 6 and ending at index 9.
-	I found the text "ccb" starting at index 9 and ending at index 12.
-	I found the text "bbc" starting at index 12 and ending at index 15.
-	
-	Enter your regex: abc{3}
-	Enter input string to search: abccabaaaccbbbc
-	No match found.
+```
+Enter your regex: [abc]{3}
+Enter input string to search: abccabaaaccbbbc
+I found the text "abc" starting at index 0 and ending at index 3.
+I found the text "cab" starting at index 3 and ending at index 6.
+I found the text "aaa" starting at index 6 and ending at index 9.
+I found the text "ccb" starting at index 9 and ending at index 12.
+I found the text "bbc" starting at index 12 and ending at index 15.
 
+Enter your regex: abc{3}
+Enter input string to search: abccabaaaccbbbc
+No match found.
+```
 
 Here the quantifier {3} applies to the entire character class in the first example, but only to the letter "c" in the second.
 
-第一个示例这量词 `{3}` 作用于整个字符集合, 在第二个示例这则只作用于字母 "c"。
+第一个示例中, 量词 `{3}` 作用于整个字符集合, 在第二个示例中, 量词只作用于字母 "c"。
 
 ### Differences Among Greedy, Reluctant, and Possessive Quantifiers
 
-### 贪婪,懒惰和全量之间的不同
+### 贪婪,懒惰和全量量词之间的区别
 
 There are subtle differences among greedy, reluctant, and possessive quantifiers.
 
