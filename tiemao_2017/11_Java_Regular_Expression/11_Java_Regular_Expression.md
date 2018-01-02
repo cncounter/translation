@@ -1,6 +1,6 @@
 # Java Regex - Tutorial
 
-# Java正则教程(1): 正则表达式入门
+# Java基础系列(2): 正则表达式入门
 
 > This tutorial introduces the usage of regular expressions and describes their implementation in Java. It also provides several Java regular expression examples.
 
