@@ -1,14 +1,14 @@
-# Java基础系列(3): 量词与量词模式
+# Java基础系列(3): 量词与匹配方式
 
 >###名词解释
 >
->`greedy`: 贪婪模式,最大匹配模式;
+>`greedy`: 贪婪型,最大匹配方式;
 >
->`reluctant`: 懒惰模式,最小匹配模式;
+>`reluctant`: 懒惰型,最小匹配方式;
 >
->`possessive`: 占有型,全部匹配模式; 也翻译为[`支配型`];
+>`possessive`: 独占型,全部匹配方式; 也翻译为[`支配型`];
 >
-> 这3种量词, 是修饰量词的量词, 中文翻译为量词模式, 和正则表达式的模式(大小写不敏感之类)不同。
+> 这3种量词, 是修饰量词的量词, 可以理解为量词模式, 和正则表达式的模式(大小写不敏感之类)不同。
 
 
 ### Quantifiers
@@ -18,7 +18,7 @@
 Quantifiers allow you to specify the number of occurrences to match against. For convenience, the three sections of the Pattern API specification describing greedy, reluctant, and possessive quantifiers are presented below. At first glance it may appear that the quantifiers X?, X?? and X?+ do exactly the same thing, since they all promise to match "X, once or not at all". There are subtle implementation differences which will be explained near the end of this section.
 
 
-量词(Quantifier)用来指定正则匹配需要的次数。为了方便，分为3个部分介绍 Pattern API 规范, 分别是 greedy(贪婪), reluctant(懒惰), 和 possessive(占有) 量词。表面上看, `X?`, `X??` 和 `X?+` 这几种量词都差不多, 都是匹配 "出现0到1次大写的X"。 下文将会讲解他们在实现上的细微差别。
+量词(Quantifier)用来指定正则匹配需要的次数。为了方便，分为3个部分介绍 Pattern API 规范, 分别是 greedy(贪婪), reluctant(懒惰), 和 possessive(独占) 量词。表面上看, `X?`, `X??` 和 `X?+` 这几种量词都差不多, 都是匹配 "出现0到1次大写的X"。 下文将会讲解他们在实现上的细微差别。
 
 
 
@@ -26,7 +26,7 @@ Quantifiers allow you to specify the number of occurrences to match against. For
 <tbody><tr>
 <th>Greedy(贪婪)</th>
 <th>Reluctant(懒惰)</th>
-<th>Possessive(占有)</th>
+<th>Possessive(独占)</th>
 <th>说明</th>
 </tr>
 <tr>
@@ -70,7 +70,7 @@ Quantifiers allow you to specify the number of occurrences to match against. For
 
 Let's start our look at greedy quantifiers by creating three different regular expressions: the letter "a" followed by either ?, *, or +. Let's see what happens when these expressions are tested against an empty input string "":
 
-我们创建3个基本的正则表达式：字母 "`a`" 后面紧跟 `?`, `*`, 或者 `+`。然后使用贪婪模式来进行匹配。 先来看看碰到空字符串 `""` 是什么情况：
+我们创建3个基本的正则表达式：字母 "`a`" 后面紧跟 `?`, `*`, 或者 `+`。然后使用贪婪型来进行匹配。 先来看看碰到空字符串 `""` 是什么情况：
 
 
 ```
@@ -318,58 +318,52 @@ Here the quantifier {3} applies to the entire character class in the first examp
 
 There are subtle differences among greedy, reluctant, and possessive quantifiers.
 
-在 贪婪,懒惰和全量 这三种量词之间有一些小小的不同。
-
+贪婪(Greedy),懒惰(Reluctant)和全量(Possessive)这三种量词模式之间有一些细微的差别。
 
 
 Greedy quantifiers are considered "greedy" because they force the matcher to read in, or eat, the entire input string prior to attempting the first match. If the first match attempt (the entire input string) fails, the matcher backs off the input string by one character and tries again, repeating the process until a match is found or there are no more characters left to back off from. Depending on the quantifier used in the expression, the last thing it will try matching against is 1 or 0 characters.
 
-贪婪量词(Greedy quantifier), 其试图在第一个匹配时就吃掉所有的输入字符. 如果第一个匹配试图吃掉整个输入字符串失败, 匹配器吐掉最后一个字符, 并再次尝试匹配, 重复这个过程, 直到找到一个匹配, 或者是一个字符都不剩下. 根据表达式中的量词, 最后才尝试匹配0或者是1个字符。
+贪婪量词(Greedy quantifier), 其试图在第一次匹配时就吃掉所有的输入字符. 如果尝试吃掉整个字符串失败, 则放过最后一个字符, 并再次尝试匹配, 重复这个过程, 直到找到一个匹配, 或者是没有可回退的字符为止. 根据正则中的量词, 最后尝试匹配的可能是0或1个字符。
 
 The reluctant quantifiers, however, take the opposite approach: They start at the beginning of the input string, then reluctantly eat one character at a time looking for a match. The last thing they try is the entire input string.
 
-懒惰量词(reluctant quantifier),采取的策略正好相反: 他们从输入字符串的开头开始, 每吃下一个字符,就尝试进行一次匹配. 最后才尝试匹配整个输入字符串。
+懒惰量词(reluctant quantifier),采取的策略正好相反: 从输入字符串的起始处, 每吃下一个字符,就尝试进行一次匹配. 最后才会尝试匹配整个输入字符串。
 
 Finally, the possessive quantifiers always eat the entire input string, trying once (and only once) for a match. Unlike the greedy quantifiers, possessive quantifiers never back off, even if doing so would allow the overall match to succeed.
 
-占有量词(possessive quantifier) 总是吃下整个输入字符串, 只尝试一次匹配. 与贪婪量词不同,占有量词从不后退, 即使匹配失败。
+独占量词(possessive quantifier), 则是吃下整个输入字符串, 只进行一次匹配尝试. 独占量词从不后退, 即使匹配失败, 这点是和贪婪量词的不同。
 
 To illustrate, consider the input string xfooxxxxxxfoo.
 
 请看下面的示例:
 
 
+```
+Enter your regex: .*foo  // Java默认贪婪型
+Enter input string to search: xfooxxxxxxfoo
+I found the text "xfooxxxxxxfoo" starting at index 0 and ending at index 13.
 
-	Enter your regex: .*foo  // greedy quantifier
-	Enter input string to search: xfooxxxxxxfoo
-	I found the text "xfooxxxxxxfoo" starting at index 0 and ending at index 13.
-	
-	Enter your regex: .*?foo  // reluctant quantifier
-	Enter input string to search: xfooxxxxxxfoo
-	I found the text "xfoo" starting at index 0 and ending at index 4.
-	I found the text "xxxxxxfoo" starting at index 4 and ending at index 13.
-	
-	Enter your regex: .*+foo // possessive quantifier
-	Enter input string to search: xfooxxxxxxfoo
-	No match found.
+Enter your regex: .*?foo  // 懒惰型
+Enter input string to search: xfooxxxxxxfoo
+I found the text "xfoo" starting at index 0 and ending at index 4.
+I found the text "xxxxxxfoo" starting at index 4 and ending at index 13.
 
+Enter your regex: .*+foo // 独占模式
+Enter input string to search: xfooxxxxxxfoo
+No match found.
+```
 
 The first example uses the greedy quantifier .* to find "anything", zero or more times, followed by the letters "f" "o" "o". Because the quantifier is greedy, the .* portion of the expression first eats the entire input string. At this point, the overall expression cannot succeed, because the last three letters ("f" "o" "o") have already been consumed. So the matcher slowly backs off one letter at a time until the rightmost occurrence of "foo" has been regurgitated, at which point the match succeeds and the search ends.
 
-第一个示例使用贪婪量词。`.*` 查找的是任意字符(anything), 零到多次, 紧随其后的是字母 "f" "o" "o"。因为是贪婪量词, `.*` 部分首先吃掉整个输入字符串。此时整个表达式匹配不成功, 因为最后三个字母("f" "o" "o")已经被 `.*` 吃掉了. 然后, 匹配器慢慢地吐出最后1个字符,再吐出最后1个字符,再吐出最后1个字符, 直到最右边出现 "foo" 为止, 这时候匹配成功, 查找结束。
+第一个示例使用的是贪婪量词 `.*`, 匹配0到多个的任意字符(anything), 紧随其后的是字母 "f" "o" "o"。因为是贪婪量词, `.*` 部分首先吃掉整个输入字符串, 发现整个表达式匹配不成功, 因为最后三个字母("f" "o" "o")已经被 `.*` 吃掉了; 然后, 匹配器放开最后1个字符,再放开最后1个字符,再放开最后1个字符, 直到右边剩下 "foo" 为止, 这时候匹配成功, 查找结束。
 
 The second example, however, is reluctant, so it starts by first consuming "nothing". Because "foo" doesn't appear at the beginning of the string, it's forced to swallow the first letter (an "x"), which triggers the first match at 0 and 4. Our test harness continues the process until the input string is exhausted. It finds another match at 4 and 13.
 
-第二个例子是懒惰模式的, 所以它最开始什么都不吃. 因为紧接着后面没有出现 "foo"，所以它被迫吞下第一个字母("x"), 然后触发了第一个匹配, 在0和4之间。然后从索引4的后面继续匹配过程, 直到输入字符串耗尽为止。它在4和13之间找到了另一个匹配。
+第二个示例是懒惰型, 所以最开始什么都不吃. 因为后面不是 "foo"，所以不得不吃下第一个字母("x"), 然后就触发了第一次匹配, 在索引0到4之间。接着从索引4的后面再次进行匹配尝试, 直到尝试完整个输入字符串。在索引4到13之间触发了第二次匹配。
 
 The third example fails to find a match because the quantifier is possessive. In this case, the entire input string is consumed by .*+, leaving nothing left over to satisfy the "foo" at the end of the expression. Use a possessive quantifier for situations where you want to seize all of something without ever backing off; it will outperform the equivalent greedy quantifier in cases where the match is not immediately found.
 
-第三个例子, 由于使用占有量词, 所以未能找到匹配。在这种情况下, 整个输入字符串都被 `.*+` 吃掉了, 剩下的空字符串不能满足"foo". 占有量词只适用于想匹配所有的字符的情况, 而且它寸步不让;  如果不能立即匹配, 它的性能会比贪婪模式要好。
-
-
-
-
-
+第三个例子, 使用的是独占量词, 所以没有匹配成功。在这个示例中, 因为整个输入字符串都被 `.*+` 吃掉了, 剩下的空白自然不能对应 "foo". 由此可知, 独占量词只能用于匹配所有字符的情况, 它从不后退; 比起贪婪型, 如果都不能匹配到, 其性能会好一些。
 
 
 原文链接: <https://docs.oracle.com/javase/tutorial/essential/regex/quant.html>
@@ -380,4 +374,10 @@ The third example fails to find a match because the quantifier is possessive. In
 
 [Pattern-API文档](https://docs.oracle.com/javase/8/docs/api/java/util/regex/Pattern.html)
 
-[regex教程目录](https://docs.oracle.com/javase/tutorial/essential/regex/index.ht           
+[regex教程目录](https://docs.oracle.com/javase/tutorial/essential/regex/index.html)
+
+
+翻译日期: 2018年1月2日
+
+翻译人员: [铁锚 http://blog.csdn.net/renfufei](http://blog.csdn.net/renfufei/)
+
