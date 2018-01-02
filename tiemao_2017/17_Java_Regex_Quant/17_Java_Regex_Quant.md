@@ -1,4 +1,4 @@
-# Java基础系列(3): 正则量词与模式
+# Java基础系列(3): 量词与量词模式
 
 >###名词解释
 >
@@ -7,6 +7,8 @@
 >`reluctant`: 懒惰模式,最小匹配模式;
 >
 >`possessive`: 占有型,全部匹配模式; 也翻译为[`支配型`];
+>
+> 这3种量词, 是修饰量词的量词, 中文翻译为量词模式, 和正则表达式的模式(大小写不敏感之类)不同。
 
 
 ### Quantifiers
@@ -68,7 +70,7 @@ Quantifiers allow you to specify the number of occurrences to match against. For
 
 Let's start our look at greedy quantifiers by creating three different regular expressions: the letter "a" followed by either ?, *, or +. Let's see what happens when these expressions are tested against an empty input string "":
 
-下面通过示例来分析：字母 "`a`" 后面紧跟 `?`, `*`, 或者 `+` 这三种量词的区别。 先测试一下空字符串 `""` 的情形：
+我们创建3个基本的正则表达式：字母 "`a`" 后面紧跟 `?`, `*`, 或者 `+`。然后使用贪婪模式来进行匹配。 先来看看碰到空字符串 `""` 是什么情况：
 
 
 ```
@@ -86,173 +88,186 @@ No match found.
 ```
 
 
-### 零长度匹配(Zero-Length Matches)
+### 零长匹配
 
 
 In the above example, the match is successful in the first two cases because the expressions a? and a* both allow for zero occurrences of the letter a. You'll also notice that the start and end indices are both zero, which is unlike any of the examples we've seen so far. The empty input string "" has no length, so the test simply matches nothing at index 0. Matches of this sort are known as a zero-length matches. A zero-length match can occur in several cases: in an empty input string, at the beginning of an input string, after the last character of an input string, or in between any two characters of an input string. Zero-length matches are easily identifiable because they always start and end at the same index position.
 
-在上面的演示中, 前两次都匹配成功, 因为 `a?` 和 `a*` 都允许出现 0 个 `a`.  您还应该注意到, 开始索引和结束索引 都是 0, 这可能和以前所见过的情况不同。输入的空字符串` ""` 长度,  所以只会在索引0处匹配。这种匹配被称为零长度匹配. 
+上面的示例中, 前两个正则成功匹配, 因为 `a?` 和 `a*` 都允许出现 0 次 `a`.  且开始索引和结束索引 都是 0, 这和之前所见的情形略有不同。空字符串` ""` 的长度为0, 所以只能在索引0处匹配。这种情况称为零长匹配(Zero-Length Match). 
 
-可能出现在下列情况:  输入值为空字符串, 或者在字符串的开头, 或者在字符串结尾字符之后, 或在任意两个字符之间.  零长度匹配很容易辨认,  因为开始位置和结束位置一样。
+零长匹配可能出现的情况包括:  空文本, 字符串起始处, 字符串结尾处, 以及任意两个字符之间.  零长匹配很容易辨认, 因为开始索引和结束索引的位置相等。
 
 
 Let's explore zero-length matches with a few more examples. Change the input string to a single letter "a" and you'll notice something interesting:
 
-让我们来看几个更复杂的零长度匹配示例。输入单个字母 "`a`" , 你会发现一些有趣的事情:
+下面来看几个零长匹配的示例。输入文本为单个字母 "`a`" , 你会看到一些有趣的地方:
 
 
+```
+Enter your regex: a?
+Enter input string to search: a
+I found the text "a" starting at index 0 and ending at index 1.
+I found the text "" starting at index 1 and ending at index 1.
 
-	Enter your regex: a?
-	Enter input string to search: a
-	I found the text "a" starting at index 0 and ending at index 1.
-	I found the text "" starting at index 1 and ending at index 1.
-	
-	Enter your regex: a*
-	Enter input string to search: a
-	I found the text "a" starting at index 0 and ending at index 1.
-	I found the text "" starting at index 1 and ending at index 1.
-	
-	Enter your regex: a+
-	Enter input string to search: a
-	I found the text "a" starting at index 0 and ending at index 1.
+Enter your regex: a*
+Enter input string to search: a
+I found the text "a" starting at index 0 and ending at index 1.
+I found the text "" starting at index 1 and ending at index 1.
+
+Enter your regex: a+
+Enter input string to search: a
+I found the text "a" starting at index 0 and ending at index 1.
+```
 
 
 All three quantifiers found the letter "a", but the first two also found a zero-length match at index 1; that is, after the last character of the input string. Remember, the matcher sees the character "a" as sitting in the cell between index 0 and index 1, and our test harness loops until it can no longer find a match. Depending on the quantifier used, the presence of "nothing" at the index after the last character may or may not trigger a match.
 
-这三种量词都可以查找到字母"a",  但前两个还在 index=1 的位置找到了一次 零长度匹配;  也就是字符串的最后一个字符之后的地方.  记住,  匹配器在 index 0 和 index 1 中间找到了字符  "a", 以此循环, 直到再也找不到匹配为止. 根据使用的量词, 最后一个字符之后的空白(nothing) 可能会匹配, 也可能不会被匹配到。
+3种量词都可以匹配到字母"a", 但前两个还找到了一次零长匹配, 在 index=1 的位置, 也就是字符串结尾之处. 可以看到, 匹配器先在 index=0 和 index=1 之间找到了字符 "a", 往后类推, 直到再也匹配不到为止. 根据使用量词的不同, 文本结尾处的空白(nothing)可能被匹配到, 也可能不被匹配到。
 
 
 Now change the input string to the letter "a" five times in a row and you'll get the following:
 
-现在输入5个字母"`a`", 你会看到:
+我们看看连续输入5个字母"`a`"的情况:
 
 
+```
+Enter your regex: a?
+Enter input string to search: aaaaa
+I found the text "a" starting at index 0 and ending at index 1.
+I found the text "a" starting at index 1 and ending at index 2.
+I found the text "a" starting at index 2 and ending at index 3.
+I found the text "a" starting at index 3 and ending at index 4.
+I found the text "a" starting at index 4 and ending at index 5.
+I found the text "" starting at index 5 and ending at index 5.
 
-	Enter your regex: a?
-	Enter input string to search: aaaaa
-	I found the text "a" starting at index 0 and ending at index 1.
-	I found the text "a" starting at index 1 and ending at index 2.
-	I found the text "a" starting at index 2 and ending at index 3.
-	I found the text "a" starting at index 3 and ending at index 4.
-	I found the text "a" starting at index 4 and ending at index 5.
-	I found the text "" starting at index 5 and ending at index 5.
-	
-	Enter your regex: a*
-	Enter input string to search: aaaaa
-	I found the text "aaaaa" starting at index 0 and ending at index 5.
-	I found the text "" starting at index 5 and ending at index 5.
-	
-	Enter your regex: a+
-	Enter input string to search: aaaaa
-	I found the text "aaaaa" starting at index 0 and ending at index 5.
+Enter your regex: a*
+Enter input string to search: aaaaa
+I found the text "aaaaa" starting at index 0 and ending at index 5.
+I found the text "" starting at index 5 and ending at index 5.
+
+Enter your regex: a+
+Enter input string to search: aaaaa
+I found the text "aaaaa" starting at index 0 and ending at index 5.
+```	
 
 The expression a? finds an individual match for each character, since it matches when "a" appears zero or one times. The expression a* finds two separate matches: all of the letter "a"'s in the first match, then the zero-length match after the last character at index 5. And finally, a+ matches all occurrences of the letter "a", ignoring the presence of "nothing" at the last index.
 
-表达式 `a?` 对每个字符都会进行一次匹配, 因为它匹配的是0次或1次  `"a"`. 表达式 `a*` 会找到两次匹配: 第一次匹配多个连续的字母 "a" , 第二次匹配零长度的字符串, 字符串结束后的 index=5 位置.  而 `a+` 则匹配所有出现的字母"a", 忽略最后的空串(nothing)。
+正则 `a?` 对每个字母进行1次匹配, 因为它匹配的是0到1个 `"a"`. 正则 `a*` 会匹配2次: 其中第1次匹配多个连续的字母 "a" , 第2次是零长匹配, 字符串结束位置 index=5 的地方. 而 `a+` 只会匹配所有出现的"a"字母, 忽略最后的空白(nothing)。
 
 
 At this point, you might be wondering what the results would be if the first two quantifiers encounter a letter other than "a". For example, what happens if it encounters the letter "b", as in "ababaaaab"?
 
-此时, 您可能想知道, 如果遇到其他字母时会发生什么. 例如 "ababaaaab" 这样的字符串。
+现在, 我们想知道, 前2个正则在碰到其他字母时会发生什么. 例如碰到 "ababaaaab" 之中的 `b` 字母时。
 
 
 Let's find out:
 
-让我们来看看:
+请看示例:
 
 
+```
+Enter your regex: a?
+Enter input string to search: ababaaaab
+I found the text "a" starting at index 0 and ending at index 1.
+I found the text "" starting at index 1 and ending at index 1.
+I found the text "a" starting at index 2 and ending at index 3.
+I found the text "" starting at index 3 and ending at index 3.
+I found the text "a" starting at index 4 and ending at index 5.
+I found the text "a" starting at index 5 and ending at index 6.
+I found the text "a" starting at index 6 and ending at index 7.
+I found the text "a" starting at index 7 and ending at index 8.
+I found the text "" starting at index 8 and ending at index 8.
+I found the text "" starting at index 9 and ending at index 9.
 
-	Enter your regex: a?
-	Enter input string to search: ababaaaab
-	I found the text "a" starting at index 0 and ending at index 1.
-	I found the text "" starting at index 1 and ending at index 1.
-	I found the text "a" starting at index 2 and ending at index 3.
-	I found the text "" starting at index 3 and ending at index 3.
-	I found the text "a" starting at index 4 and ending at index 5.
-	I found the text "a" starting at index 5 and ending at index 6.
-	I found the text "a" starting at index 6 and ending at index 7.
-	I found the text "a" starting at index 7 and ending at index 8.
-	I found the text "" starting at index 8 and ending at index 8.
-	I found the text "" starting at index 9 and ending at index 9.
-	
-	Enter your regex: a*
-	Enter input string to search: ababaaaab
-	I found the text "a" starting at index 0 and ending at index 1.
-	I found the text "" starting at index 1 and ending at index 1.
-	I found the text "a" starting at index 2 and ending at index 3.
-	I found the text "" starting at index 3 and ending at index 3.
-	I found the text "aaaa" starting at index 4 and ending at index 8.
-	I found the text "" starting at index 8 and ending at index 8.
-	I found the text "" starting at index 9 and ending at index 9.
-	
-	Enter your regex: a+
-	Enter input string to search: ababaaaab
-	I found the text "a" starting at index 0 and ending at index 1.
-	I found the text "a" starting at index 2 and ending at index 3.
-	I found the text "aaaa" starting at index 4 and ending at index 8.
+Enter your regex: a*
+Enter input string to search: ababaaaab
+I found the text "a" starting at index 0 and ending at index 1.
+I found the text "" starting at index 1 and ending at index 1.
+I found the text "a" starting at index 2 and ending at index 3.
+I found the text "" starting at index 3 and ending at index 3.
+I found the text "aaaa" starting at index 4 and ending at index 8.
+I found the text "" starting at index 8 and ending at index 8.
+I found the text "" starting at index 9 and ending at index 9.
 
+Enter your regex: a+
+Enter input string to search: ababaaaab
+I found the text "a" starting at index 0 and ending at index 1.
+I found the text "a" starting at index 2 and ending at index 3.
+I found the text "aaaa" starting at index 4 and ending at index 8.
+```
 
 Even though the letter "b" appears in cells 1, 3, and 8, the output reports a zero-length match at those locations. The regular expression a? is not specifically looking for the letter "b"; it's merely looking for the presence (or lack thereof) of the letter "a". If the quantifier allows for a match of "a" zero times, anything in the input string that's not an "a" will show up as a zero-length match. The remaining a's are matched according to the rules discussed in the previous examples.
 
-虽然字母"b"出现在了下标 1, 3, 8 处, 输出也显示了零长匹配出现在这里. 正则表达式 `a?` 不会专门查找字母"b", 而是只寻找存在(或不存在) "a" 字母的地方. 如果量词允许匹配零次, 则只要不是 "a" 字母的地方都显示一次零长度匹配. 其余的"a"则根据前面讨论的规则进行匹配。
+字母 "b" 出现在索引为 1, 3, 8 的位置, 输出结果也表明零长匹配出现在这些地方. 正则 `a?` 不会专门查找字母"b", 而只查找 存在/或不存在字母 "a" 的地方. 如果量词允许0次匹配, 则只要不是 "a" 字母的地方都会出现一次零长匹配. 其余的"a"则根据前面介绍的规则进行匹配。
 
 
 To match a pattern exactly n number of times, simply specify the number inside a set of braces:
 
-要精确匹配一个模式 n 次, 只需要在大括号内指定数字即可:
+要精确匹配某个模式 n 次, 只需要在大括号内指定数字即可:
 
+```
+Enter your regex: a{3}
+Enter input string to search: aa
+No match found.
 
-	Enter your regex: a{3}
-	Enter input string to search: aa
-	No match found.
-	
-	Enter your regex: a{3}
-	Enter input string to search: aaa
-	I found the text "aaa" starting at index 0 and ending at index 3.
-	
-	Enter your regex: a{3}
-	Enter input string to search: aaaa
-	I found the text "aaa" starting at index 0 and ending at index 3.
+Enter your regex: a{3}
+Enter input string to search: aaa
+I found the text "aaa" starting at index 0 and ending at index 3.
 
+Enter your regex: a{3}
+Enter input string to search: aaaa
+I found the text "aaa" starting at index 0 and ending at index 3.
+```
 
 Here, the regular expression a{3} is searching for three occurrences of the letter "a" in a row. The first test fails because the input string does not have enough a's to match against. The second test contains exactly 3 a's in the input string, which triggers a match. The third test also triggers a match because there are exactly 3 a's at the beginning of the input string. Anything following that is irrelevant to the first match. If the pattern should appear again after that point, it would trigger subsequent matches:
 
-此处, `a{3}`匹配三个连续出现的字母“`a`”。第一个输入字符串测试失败, 因为没有足够的`a`. 第二个测试字符串中包含3个字母 'a', 所以触发了一次匹配。第三个测试也触发了一次匹配, 因为在输入字符串开头, 出现了3个字母'a'.后面如果再出现其他字母,也与第一次匹配无关。如果模式该点之后还可以继续进行匹配, 那么就会触发后续匹配:
+正则 `a{3}` 匹配连续出现的三个“`a`”字母。第一次测试匹配失败, 是因为字母`a`的数量不足. 第二次测试时, 字符串中刚好包含3个 `a` 字母, 所以匹配了一次。第三次测试也触发了一次匹配, 因为输入文本的签名有3个 `a` 字母. 后面再出现的字母, 与第一次匹配无关。如果后面还有这种模式的字符串, 则使用后面的子串触发后续匹配:
 
 
-
-	Enter your regex: a{3}
-	Enter input string to search: aaaaaaaaa
-	I found the text "aaa" starting at index 0 and ending at index 3.
-	I found the text "aaa" starting at index 3 and ending at index 6.
-	I found the text "aaa" starting at index 6 and ending at index 9.
+```
+Enter your regex: a{3}
+Enter input string to search: aaaaaaaaa
+I found the text "aaa" starting at index 0 and ending at index 3.
+I found the text "aaa" starting at index 3 and ending at index 6.
+I found the text "aaa" starting at index 6 and ending at index 9.
+```
 
 To require a pattern to appear at least n times, add a comma after the number:
 
-要求一个模式至少出现`n`次，可以在数字后面加一个逗号,例如:
+要求某种模式至少出现`n`次，可以在数字后面加一个逗号,例如:
 
-
-	Enter your regex: a{3,}
-	Enter input string to search: aaaaaaaaa
-	I found the text "aaaaaaaaa" starting at index 0 and ending at index 9.
+```
+Enter your regex: a{3,}
+Enter input string to search: aaaaaaaaa
+I found the text "aaaaaaaaa" starting at index 0 and ending at index 9.
+```
 
 With the same input string, this test finds only one match, because the 9 a's in a row satisfy the need for "at least" 3 a's.
 
-同样的输入字符串，这个测试只匹配了一次，因为9 个 `a` 字母的序列也满足 “至少3个a字母” 的需求。
+同样是9个字母a, 这里就只匹配了一次，因为9个 `a` 字母的序列也满足 "最少3个a字母" 的需求。
 
 Finally, to specify an upper limit on the number of occurances, add a second number inside the braces:
 
-如果要指定出现次数的上限，在括号内添加第二个数字即可:
+如果要指定出现次数的最大值，在大括号内加上第二个数字即可:
 
 
-	Enter your regex: a{3,6} // find at least 3 (but no more than 6) a's in a row
-	Enter input string to search: aaaaaaaaa
-	I found the text "aaaaaa" starting at index 0 and ending at index 6.
-	I found the text "aaa" starting at index 6 and ending at index 9.
+```
+Enter your regex: a{3,6} // 最少3个,最多6个a字母
+Enter input string to search: aaaaaaaaa
+I found the text "aaaaaa" starting at index 0 and ending at index 6.
+I found the text "aaa" starting at index 6 and ending at index 9.
+```
 
 Here the first match is forced to stop at the upper limit of 6 characters. The second match includes whatever is left over, which happens to be three a's — the mimimum number of characters allowed for this match. If the input string were one character shorter, there would not be a second match since only two a's would remain.
 
-这里的第一个匹配在到6个字符上限时停止. 第二个匹配包含了剩下的字母, 恰好是三个 `a` —— 该模式要求的最小字符个数. 如果输入的字符串再短一点点, 就不会发生第二个匹配, 因为2个 `a` 字母匹配不上该模式。
+这里的第一个匹配在达到上限的6个字符时停止. 第二个匹配包含了剩下的字母, 恰好是要求的最小字符个数: 三个 `a`. 如果输入的文本再少一个字符, 第二次匹配就不会发生, 因为只有2个 `a` 则匹配不了该模式。
+
+
+###################################
+###################################
+###################################
+###################################
+
 
 ### Capturing Groups and Character Classes with Quantifiers
 
@@ -369,7 +384,4 @@ The third example fails to find a match because the quantifier is possessive. In
 
 [Pattern-API文档](https://docs.oracle.com/javase/8/docs/api/java/util/regex/Pattern.html)
 
-[regex教程目录](https://docs.oracle.com/javase/tutorial/essential/regex/index.html)
-
-
-
+[regex教程目录](https://docs.oracle.com/javase/tutorial/essential/regex/index.ht           
