@@ -1,4 +1,4 @@
-# Java正则表达式系列(2): 量词
+# Java基础系列(3): 正则量词与模式
 
 >###名词解释
 >
@@ -11,78 +11,79 @@
 
 ### Quantifiers
 
-### 量词(Quantifiers)
+### 量词
 
 Quantifiers allow you to specify the number of occurrences to match against. For convenience, the three sections of the Pattern API specification describing greedy, reluctant, and possessive quantifiers are presented below. At first glance it may appear that the quantifiers X?, X?? and X?+ do exactly the same thing, since they all promise to match "X, once or not at all". There are subtle implementation differences which will be explained near the end of this section.
 
 
-量词(Quantifiers)可以用来指定要匹配的次数。为了方便起见，下面分别介绍 Pattern API 规范中的 greedy(贪婪), reluctant(懒惰), 和 possessive(占有) 量词。表面上看起来这些量词都差不多, 如 `X?`, `X??` 和 `X?+` , 因为都是匹配 "X, 一次或者不出现"。稍后解释他们在实现上的细微差别。
+量词(Quantifier)用来指定正则匹配需要的次数。为了方便，分为3个部分介绍 Pattern API 规范, 分别是 greedy(贪婪), reluctant(懒惰), 和 possessive(占有) 量词。表面上看, `X?`, `X??` 和 `X?+` 这几种量词都差不多, 都是匹配 "出现0到1次大写的X"。 下文将会讲解他们在实现上的细微差别。
 
 
 
 <table>
 <tbody><tr>
-<th id="h1">Greedy(贪婪)</th>
-<th id="h2">Reluctant(懒惰)</th>
-<th id="h3">Possessive(占有)</th>
-<th id="h4">Meaning(说明)</th>
+<th>Greedy(贪婪)</th>
+<th>Reluctant(懒惰)</th>
+<th>Possessive(占有)</th>
+<th>说明</th>
 </tr>
 <tr>
-<td headers="h1"><code>X?</code></td>
-<td headers="h2"><code>X??</code></td>
-<td headers="h3"><code>X?+</code></td>
-<td headers="h4"><code style="font-style: italic">X</code>, 出现1次或不出现</td>
+<td><code>X?</code></td>
+<td><code>X??</code></td>
+<td><code>X?+</code></td>
+<td><code>X</code>, 出现0或1次</td>
 </tr>
 <tr>
-<td headers="h1"><code>X*</code></td>
-<td headers="h2"><code>X*?</code></td>
-<td headers="h3"><code>X*+</code></td>
-<td headers="h4"><code style="font-style: italic">X</code>, 出现0到多次</td>
+<td><code>X*</code></td>
+<td><code>X*?</code></td>
+<td><code>X*+</code></td>
+<td><code>X</code>, 出现0到多次</td>
 </tr>
 <tr>
-<td headers="h1"><code>X+</code></td>
-<td headers="h2"><code>X+?</code></td>
-<td headers="h3"><code>X++</code></td>
-<td headers="h4"><code style="font-style: italic">X</code>, 出现1到多次</td>
+<td><code>X+</code></td>
+<td><code>X+?</code></td>
+<td><code>X++</code></td>
+<td><code>X</code>, 出现1到多次</td>
 </tr>
 <tr>
-<td headers="h1"><code>X{n}</code></td>
-<td headers="h2"><code>X{n}?</code></td>
-<td headers="h3"><code>X{n}+</code></td>
-<td headers="h4"><code style="font-style: italic">X</code>, 精确匹配 <i><code>n</code></i> 次</td>
+<td><code>X{n}</code></td>
+<td><code>X{n}?</code></td>
+<td><code>X{n}+</code></td>
+<td><code>X</code>, 精确匹配 <code>n</code> 次</td>
 </tr>
 <tr>
-<td headers="h1"><code>X{n,}</code></td>
-<td headers="h2"><code>X{n,}?</code></td>
-<td headers="h3"><code>X{n,}+</code></td>
-<td headers="h4"><code style="font-style: italic">X</code>, 最少出现 <i><code>n</code></i> 次</td>
+<td><code>X{n,}</code></td>
+<td><code>X{n,}?</code></td>
+<td><code>X{n,}+</code></td>
+<td><code>X</code>, 最少出现 <code>n</code> 次</td>
 </tr>
 <tr>
-<td headers="h1"><code>X{n,m}</code></td>
-<td headers="h2"><code>X{n,m}?</code></td>
-<td headers="h3"><code>X{n,m}+</code></td>
-<td headers="h4"><code style="font-style: italic">X</code>, 最少出现 <i><code>n</code></i> 次, 最多出现 <i><code>m</code></i> 次</td>
+<td><code>X{n,m}</code></td>
+<td><code>X{n,m}?</code></td>
+<td><code>X{n,m}+</code></td>
+<td><code>X</code>, 最少出现 <code>n</code> 次, 最多出现 <code>m</code> 次</td>
 </tr>
 </tbody></table>
 
 
 Let's start our look at greedy quantifiers by creating three different regular expressions: the letter "a" followed by either ?, *, or +. Let's see what happens when these expressions are tested against an empty input string "":
 
-下面我们通过示例来看三种量词的差别：字母 "a" 后面跟着 `?`, `*`, 或者 `+`。 先来看看对空字符串 `""` 进行测试时会发生什么：
+下面通过示例来分析：字母 "`a`" 后面紧跟 `?`, `*`, 或者 `+` 这三种量词的区别。 先测试一下空字符串 `""` 的情形：
 
 
+```
+Enter your regex: a?
+Enter input string to search: 
+I found the text "" starting at index 0 and ending at index 0.
 
-	Enter your regex: a?
-	Enter input string to search: 
-	I found the text "" starting at index 0 and ending at index 0.
-	
-	Enter your regex: a*
-	Enter input string to search: 
-	I found the text "" starting at index 0 and ending at index 0.
-	
-	Enter your regex: a+
-	Enter input string to search: 
-	No match found.
+Enter your regex: a*
+Enter input string to search: 
+I found the text "" starting at index 0 and ending at index 0.
+
+Enter your regex: a+
+Enter input string to search: 
+No match found.
+```
 
 
 ### 零长度匹配(Zero-Length Matches)
