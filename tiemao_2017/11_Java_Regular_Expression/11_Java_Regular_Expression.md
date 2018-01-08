@@ -184,31 +184,42 @@ String updated = EXAMPLE_TEST.replaceAll(pattern, "$2");
 
 ### 3.5. Negative look ahead
 
-### 3.5. 环视否定
+### 3.5. 环视
+
+Lookahead and lookbehind, collectively called "lookaround", are zero-length assertions
+
+环视(lookaround), 分为顺序环视(Lookahead)与逆序环视(lookbehind), 属于零宽度断言(zero-length assertion)。 类似于行起始标识(`^`)和结束标识(`$`); 或者单词边界(`\b`)一类的位置标识。
+
 
 Negative look ahead provides the possibility to exclude a pattern. With this you can say that a string should not be followed by another string.
 
-环视否定(Negative look ahead), 又叫零宽度断言, 用于在匹配的同时, 排除掉某些情形。也就是说前面/后面不能是符合某种特征的字符串。
+顺序否定环视(Negative look ahead), 用于在匹配的同时, 排除掉某些情形。也就是说其后面不能是符合某种特征的字符串。
 
 Negative look ahead are defined via `(?!pattern)`. For example, the following will match "a" if "a" is not followed by "b".
 
-环视否定(Negative look ahead) 使用 `(?!pattern)` 这种格式定义。例如, 下面的正则, 只匹配后面不是 b 字母的 "a" 字母。
+顺序否定环视(Negative look ahead) 使用 `(?!pattern)` 这种格式定义。例如, 下面的正则, 只匹配后面不是 b 字母的 "a" 字母。
 
 ```
 a(?!b)
 ```
 
-类似的, 只匹配a字母, 但要求后面只能是 b 字母, 否则这个 a 就不符合需要:
+类似的, 顺序环视(look ahead), 也叫顺序肯定环视。 如,只匹配a字母, 但要求后面只能是 b 字母, 否则这个 a 就不符合需要:
 
 ```
 a(?=b)
 ```
 
-> 注意，**环视** 是一种向前/后查找的语法(也叫顺序环视): `(?=exp)`, 会查找前/后【位置】的 exp; 所环视的内容却不包含在正则表达式匹配中。
+> 注意，**环视** 是一种向前/后查找的语法: `(?=exp)`, 会查找后面位置的 exp; 所环视的内容却不包含在正则表达式匹配中。
 >
-> 环视(look ahead)是一种高级技巧, 环视的部分不会匹配到结果之中, 但却要求匹配的字符串前面/后面具备环视部分的特征。
+> 环视(lookaround)是一种高级技巧, 环视的部分不会匹配到结果之中, 但却要求匹配的字符串前面/后面具备环视部分的特征。
 >
-> 如果将等号换成感叹号, 就是环视否定 `(?!exp)`, 变成否定语义，也就是说查找的位置的前面/后面不能是exp。
+> 如果将等号换成感叹号, 就是环视否定 `(?!exp)`, 变成否定语义，也就是说查找的位置的后面不能是exp。
+>
+> 逆序肯定环视, `(?<=exp)`, 表示所在位置左侧能够匹配 exp
+>
+> 逆序否定环视, `(?<!exp)`, 表示所在位置左侧不能匹配 exp
+>
+> 详情请参考: 正则应用之——逆序环视探索: <http://blog.csdn.net/lxcnn/article/details/4954134>
 >
 > 参考: 利用正则表达式排除特定字符串 <http://www.cnblogs.com/wangqiguo/archive/2012/05/08/2486548.html>
 
