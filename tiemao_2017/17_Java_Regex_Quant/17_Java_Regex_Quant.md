@@ -1,14 +1,14 @@
-# Java基础系列(3): 量词与匹配方式
+# Java正则系列: (2)量词
 
->###名词解释
+>###翻译说明
 >
->`greedy`: 贪婪型,最大匹配方式;
+>`greedy`: 贪婪型, 最大匹配方式;
 >
->`reluctant`: 懒惰型,最小匹配方式;
+>`reluctant`: 懒惰型, 最小匹配方式;
 >
->`possessive`: 独占型,全部匹配方式; 也翻译为[`支配型`];
+>`possessive`: 独占型, 全部匹配方式; 也翻译为[`支配型`];
 >
-> 这3种量词, 是修饰量词的量词, 可以理解为量词模式, 和正则表达式的模式(大小写不敏感之类)不同。
+> 这3种量词, 是修饰量词的量词, 可以理解为正则格式重复的匹配类型。
 
 
 ### Quantifiers
@@ -18,7 +18,7 @@
 Quantifiers allow you to specify the number of occurrences to match against. For convenience, the three sections of the Pattern API specification describing greedy, reluctant, and possessive quantifiers are presented below. At first glance it may appear that the quantifiers X?, X?? and X?+ do exactly the same thing, since they all promise to match "X, once or not at all". There are subtle implementation differences which will be explained near the end of this section.
 
 
-量词(Quantifier)用来指定正则匹配需要的次数。为了方便，分为3个部分介绍 Pattern API 规范, 分别是 greedy(贪婪), reluctant(懒惰), 和 possessive(独占) 量词。表面上看, `X?`, `X??` 和 `X?+` 这几种量词都差不多, 都是匹配 "出现0到1次大写的X"。 下文将会讲解他们在实现上的细微差别。
+量词(Quantifier)用来指定某部分正则所重复的次数。为了方便，本文分别介绍 Pattern API 规范中的3种类型, 分别是 greedy(贪婪), reluctant(懒惰), 和 possessive(独占) 量词。表面上看, `X?`, `X??` 和 `X?+` 这几种量词都差不多, 都是匹配 "出现0到1次大写的X"。 下文将会讲解他们在实现上的细微差别。
 
 
 
@@ -203,7 +203,7 @@ Even though the letter "b" appears in cells 1, 3, and 8, the output reports a ze
 
 To match a pattern exactly n number of times, simply specify the number inside a set of braces:
 
-要精确匹配某个模式 n 次, 只需要在大括号内指定数字即可:
+要精确匹配某个格式 n 次, 只需要在大括号内指定数字即可:
 
 ```
 Enter your regex: a{3}
@@ -221,7 +221,7 @@ I found the text "aaa" starting at index 0 and ending at index 3.
 
 Here, the regular expression a{3} is searching for three occurrences of the letter "a" in a row. The first test fails because the input string does not have enough a's to match against. The second test contains exactly 3 a's in the input string, which triggers a match. The third test also triggers a match because there are exactly 3 a's at the beginning of the input string. Anything following that is irrelevant to the first match. If the pattern should appear again after that point, it would trigger subsequent matches:
 
-正则 `a{3}` 匹配连续出现的三个“`a`”字母。第一次测试匹配失败, 是因为字母`a`的数量不足. 第二次测试时, 字符串中刚好包含3个 `a` 字母, 所以匹配了一次。第三次测试也触发了一次匹配, 因为输入文本的签名有3个 `a` 字母. 后面再出现的字母, 与第一次匹配无关。如果后面还有这种模式的字符串, 则使用后面的子串触发后续匹配:
+正则 `a{3}` 匹配连续出现的三个“`a`”字母。第一次测试匹配失败, 是因为字母`a`的数量不足. 第二次测试时, 字符串中刚好包含3个 `a` 字母, 所以匹配了一次。第三次测试也触发了一次匹配, 因为输入文本的签名有3个 `a` 字母. 后面再出现的字母, 与第一次匹配无关。如果后面还有这种格式的字符串, 则使用后面的子串触发后续匹配:
 
 
 ```
@@ -234,7 +234,7 @@ I found the text "aaa" starting at index 6 and ending at index 9.
 
 To require a pattern to appear at least n times, add a comma after the number:
 
-要求某种模式至少出现`n`次，可以在数字后面加一个逗号,例如:
+要求某种格式至少出现`n`次，可以在数字后面加一个逗号,例如:
 
 ```
 Enter your regex: a{3,}
@@ -260,7 +260,7 @@ I found the text "aaa" starting at index 6 and ending at index 9.
 
 Here the first match is forced to stop at the upper limit of 6 characters. The second match includes whatever is left over, which happens to be three a's — the mimimum number of characters allowed for this match. If the input string were one character shorter, there would not be a second match since only two a's would remain.
 
-这里的第一个匹配在达到上限的6个字符时停止. 第二个匹配包含了剩下的字母, 恰好是要求的最小字符个数: 三个 `a`. 如果输入的文本再少一个字符, 第二次匹配就不会发生, 因为只有2个 `a` 则匹配不了该模式。
+这里的第一个匹配在达到上限的6个字符时停止. 第二个匹配包含了剩下的字母, 恰好是要求的最小字符个数: 三个 `a`. 如果输入的文本再少一个字符, 第二次匹配就不会发生, 因为只有2个 `a` 则匹配不了该格式。
 
 
 ### Capturing Groups and Character Classes with Quantifiers
@@ -363,7 +363,7 @@ The second example, however, is reluctant, so it starts by first consuming "noth
 
 The third example fails to find a match because the quantifier is possessive. In this case, the entire input string is consumed by .*+, leaving nothing left over to satisfy the "foo" at the end of the expression. Use a possessive quantifier for situations where you want to seize all of something without ever backing off; it will outperform the equivalent greedy quantifier in cases where the match is not immediately found.
 
-第三个例子, 使用的是独占量词, 所以没有匹配成功。在这个示例中, 因为整个输入字符串都被 `.*+` 吃掉了, 剩下的空白自然不能对应 "foo". 由此可知, 独占量词只能用于匹配所有字符的情况, 它从不后退; 比起贪婪型, 如果都不能匹配到, 其性能会好一些。
+第三个例子, 使用的是独占量词, 所以没有匹配成功。在这个示例中, 因为整个输入字符串都被 `.*+` 吃掉了, 剩下的空白自然不能对应 "foo". 由此可知, 独占量词只能用于匹配所有字符的情况, 它从不后退; 如果都不能匹配到, 独占量词的性能会比贪婪型好一些。
 
 
 原文链接: <https://docs.oracle.com/javase/tutorial/essential/regex/quant.html>
