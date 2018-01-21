@@ -1,6 +1,6 @@
 # Building an Application with Spring Boot
 
-# Spring Boot示例入门教程
+# Spring Boot 入门教程
 
 This guide provides a sampling of how [Spring Boot](https://github.com/spring-projects/spring-boot) helps you accelerate and facilitate application development. As you read more Spring Getting Started guides, you will see more use cases for Spring Boot. It is meant to give you a quick taste of Spring Boot. If you want to create your own Spring Boot-based project, visit [Spring Initializr](https://start.spring.io/), fill in your project details, pick your options, and you can download either a Maven build file, or a bundled up project as a zip file.
 
@@ -528,44 +528,38 @@ The embedded server is started up on a random port by virtue of the `webEnvironm
 
 If you are building a web site for your business, you probably need to add some management services. Spring Boot provides several out of the box with its [actuator module](https://docs.spring.io/spring-boot/docs/1.5.9.RELEASE/reference/htmlsingle/#production-ready), such as health, audits, beans, and more.
 
-如果您正在构建一个网站为你的业务,你可能需要添加一些管理服务。Spring Boot提供了几个的开箱即用的致动器模块(https://docs.spring.io / spring-boot / docs / 1.5.9.RELEASE /引用/ htmlsingle / #生产就绪),如健康、审计,豆类等等。
+构建业务处理系统, 可能需要添加一些管理服务。Spring Boot提供了多种开箱即用的[actuator module](https://docs.spring.io/spring-boot/docs/1.5.9.RELEASE/reference/htmlsingle/#production-ready)服务, 如健康检测、审计, bean 等等。
 
 Add this to your build file’s list of dependencies:
 
-添加到你的构建文件的依赖关系:
-
-
-```
-`compile("org.springframework.boot:spring-boot-starter-actuator")`
-```
-
-
-
-If you are using Maven, add this to your list of dependencies:
-
-如果你是使用Maven,添加你的依赖关系列表:
+添加依赖关系:
 
 
 
 ```
-`<dependency><groupId>org.springframework.boot</groupId><artifactId>spring-boot-starter-actuator</artifactId></dependency>`
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
 ```
 
 
 
 If you are using Maven, execute:
 
-如果你是使用Maven,执行:
+启动服务:
 
 
 ```
-mvn package &amp;&amp; java -jar target/gs-spring-boot-0.1.0.jar
+mvn package && java -jar target/gs-spring-boot-0.1.0.jar
 ```
 
 
 
 You will see a new set of RESTful end points added to the application. These are management services provided by Spring Boot.
 
+
+可以看到程序中增加了一些 RESTful 接口, 类似这样:
 
 
 ```
@@ -591,16 +585,18 @@ You will see a new set of RESTful end points added to the application. These are
 
 They include: errors, [environment](http://localhost:8080/env), [health](http://localhost:8080/health), [beans](http://localhost:8080/beans), [info](http://localhost:8080/info), [metrics](http://localhost:8080/metrics), [trace](http://localhost:8080/trace), [configprops](http://localhost:8080/configprops), and [dump](http://localhost:8080/dump).
 
-它们包括:错误,(环境)(http://localhost:8080 / env),(健康)(http://localhost:8080 /健康),(bean)(http://localhost:8080 / bean),[信息](http://localhost:8080 /信息),[标准](http:/ / localhost:8080 /指标),(跟踪)(http://localhost:8080 /跟踪),[configprops](http://localhost:8080 / configprops)和(垃圾场)(http://localhost:8080 /转储)。
+主要包括:  error, [environment](http://localhost:8080/env), [health](http://localhost:8080/health), [beans](http://localhost:8080/beans), [info](http://localhost:8080/info), [metrics](http://localhost:8080/metrics), [trace](http://localhost:8080/trace), [configprops](http://localhost:8080/configprops), 以及 [dump](http://localhost:8080/dump)
+
 
 
 There is also a `/shutdown` endpoint, but it’s only visible by default via JMX. To [enable it as an HTTP endpoint](https://docs.spring.io/spring-boot/docs/1.5.9.RELEASE/reference/htmlsingle/#production-ready-customizing-endpoints), add `endpoints.shutdown.enabled=true` to your `application.properties` file. 
 
+其实还有一个 `/shutdown` 接口, 但默认只能通过 JMX 调用, 如果要允许HTTP方式调用, 在 `application.properties` 配置文件中指定 `endpoints.shutdown.enabled=true` 即可, 详情请参考: <https://docs.spring.io/spring-boot/docs/1.5.9.RELEASE/reference/htmlsingle/#production-ready-customizing-endpoints> 
 
 
 It’s easy to check the health of the app.
 
-很容易检查应用程序的健康状况。
+很容易检查应用的健康状况。
 
 
 
@@ -614,7 +610,7 @@ $ curl localhost:8080/health
 
 You can try to invoke shutdown through curl.
 
-你可以试着通过curl调用关闭。
+也可以尝试通过curl调用 shutdown 接口。
 
 
 
@@ -627,61 +623,68 @@ $ curl -X POST localhost:8080/shutdown
 
 Because we didn’t enable it, the request is blocked by the virtue of not existing.
 
-因为我们没有启用它,请求被不存在的美德。
+因为我们没有启用HTTP方式的关闭, 所以提示 not supported。
 
 For more details about each of these REST points and how you can tune their settings with an `application.properties` file, you can read detailed [docs about the endpoints](https://docs.spring.io/spring-boot/docs/1.5.9.RELEASE/reference/htmlsingle/#production-ready-endpoints).
 
-更多细节关于每一个休息点和如何优化他们的设置`application.properties`文件,你可以阅读详细(文档的端点)(https://docs.spring.io/spring-boot/docs/1.5.9.RELEASE/reference/htmlsingle/ # production-ready-endpoints)。
+关于REST point以及优化的更多细节, 请参考: [docs about the endpoints](https://docs.spring.io/spring-boot/docs/1.5.9.RELEASE/reference/htmlsingle/#production-ready-endpoints)。
 
 ## View Spring Boot’s starters
 
-## Spring Boot初学者的观点
+## 参考 Spring Boot 入门教程
 
 You have seen some of [Spring Boot’s "starters"](https://docs.spring.io/spring-boot/docs/1.5.9.RELEASE/reference/htmlsingle/#using-boot-starter). You can see them all [here in source code](https://github.com/spring-projects/spring-boot/tree/master/spring-boot-project/spring-boot-starters).
 
-您已经看到了一些(Spring Boot的“初学者”)(https://docs.spring.io/spring-boot/docs/1.5.9.RELEASE/reference/htmlsingle/ # using-boot-starter).你可以看到他们都在源代码(https://github.com/spring-projects/spring-boot/tree/master/spring-boot-project/spring-boot-starters)。
+可以看到, Spring编写了很多入门教程, 请参考 [Spring Boot’s "starters"](https://docs.spring.io/spring-boot/docs/1.5.9.RELEASE/reference/htmlsingle/#using-boot-starter). 相应的源代码zai Github上, <https://github.com/spring-projects/spring-boot/tree/master/spring-boot-project/spring-boot-starters>。
 
 ## JAR support and Groovy support
 
-## JAR和Groovy支持
+## JAR支持和Groovy支持
 
 The last example showed how Spring Boot makes it easy to wire beans you may not be aware that you need. And it showed how to turn on convenient management services.
 
-最后一个例子展示了Spring Boot很容易线豆你可能没有意识到,你所需要的。它展示了如何打开方便管理服务。
+最后的例子展示了Spring Boot可以很方便地添加管理服务。
 
 But Spring Boot does yet more. It supports not only traditional WAR file deployments, but also makes it easy to put together executable JARs thanks to Spring Boot’s loader module. The various guides demonstrate this dual support through the `spring-boot-gradle-plugin` and `spring-boot-maven-plugin`.
 
-但Spring Boot更多。不仅支持传统WAR文件部署,但也很容易放在一起可执行jar由于Spring Boot加载程序模块.通过各种指南演示这种双重支持`spring-boot-gradle-plugin`和`spring-boot-maven-plugin`。
+但Spring Boot的优点不止这些。不仅支持传统的WAR文件部署方式, 也可以通过 Spring Boot’s loader module 来生成可执行 JAR 包. 本质上是通过 `spring-boot-gradle-plugin` and `spring-boot-maven-plugin` 插件来进行支持。
 
 On top of that, Spring Boot also has Groovy support, allowing you to build Spring MVC web apps with as little as a single file.
 
-最重要的是,Spring Boot的也有Groovy支持,允许您构建Spring MVC web应用程序与一个单独的文件中。
+最方便的是, Spring Boot支持Groovy, 可以使用单个文件来构建 Spring MVC web应用。
 
 Create a new file called **app.groovy** and put the following code in it:
 
-创建一个新的名为* *应用程序的文件。groovy * *,把下面的代码:
+创建一个名为  **app.groovy** 的文件, 加入下面的代码:
 
 
 
 ```
-`@RestControllerclassThisWillActuallyRun{@RequestMapping("/")Stringhome(){return"Hello World!"}}`
+@RestController
+class ThisWillActuallyRun {
+
+    @RequestMapping("/")
+    String home() {
+        return "Hello World!"
+    }
+
+}
 ```
 
 
 
 It doesn’t matter where the file is. You can even fit an application that small inside a [single tweet](https://twitter.com/rob_winch/status/364871658483351552)! 
 
-
+文件放在哪儿都无所谓, 更多信息请参考 <https://twitter.com/rob_winch/status/364871658483351552>
 
 
 Next, [install Spring Boot’s CLI](https://docs.spring.io/spring-boot/docs/1.5.9.RELEASE/reference/htmlsingle/#getting-started-installing-the-cli).
 
-接下来,(安装Spring Boot的CLI)(https://docs.spring.io/spring-boot/docs/1.5.9.RELEASE/reference/htmlsingle/ # getting-started-installing-the-cli)。
+接下来,  [安装 Spring Boot’s CLI](https://docs.spring.io/spring-boot/docs/1.5.9.RELEASE/reference/htmlsingle/#getting-started-installing-the-cli)
 
 Run it as follows:
 
-运行如下:
-
+然后运行下面的命令:
 
 
 ```
@@ -691,7 +694,7 @@ $ spring run app.groovy
 
 This assumes you shut down the previous application, to avoid a port collision. 
 
-
+这里需要关闭之前运行的程序, 以避免端口冲突。
 
 From a different terminal window:
 
@@ -707,7 +710,7 @@ Hello World!
 
 Spring Boot does this by dynamically adding key annotations to your code and using [Groovy Grape](http://groovy.codehaus.org/Grape) to pull down libraries needed to make the app run.
 
-Spring Boot通过动态地添加关键注释你的代码和使用(Groovy Grape)(http://groovy.codehaus.org/Grape)下拉库需要使应用程序运行。
+Spring Boot通过动态地添加注解, 并使用 [Groovy Grape](http://groovy.codehaus.org/Grape) 来拉取需要的运行时库。
 
 ## Summary
 
@@ -723,7 +726,7 @@ Congratulations! You built a simple web application with Spring Boot and learned
 
 The following guides may also be helpful:
 
-也可以参考下面的教程:
+还可以参考下面的教程:
 
 *   [Securing a Web Application](https://spring.io/guides/gs/securing-web/)
 
