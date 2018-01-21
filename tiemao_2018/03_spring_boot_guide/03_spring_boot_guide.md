@@ -393,67 +393,134 @@ Greetings from Spring Boot!
 
 You will want to add a test for the endpoint you added, and Spring Test already provides some machinery for that, and it’s easy to include in your project.
 
-您想要添加一个测试端点添加,和弹簧测试已经提供了一些机械,并且很容易包含在您的项目。
-
-Add this to your build file’s list of dependencies:
-
-添加到你的构建文件的依赖关系:
-
-
-
-```
-`testCompile("org.springframework.boot:spring-boot-starter-test")`
-```
-
+如果想要添加测试, 在项目中使用 Spring Test即可。
 
 
 If you are using Maven, add this to your list of dependencies:
 
-如果你是使用Maven,添加你的依赖关系列表:
+如果使用Maven, 添加你的依赖关系:
 
 
 
 ```
-`<dependency><groupId>org.springframework.boot</groupId><artifactId>spring-boot-starter-test</artifactId><scope>test</scope></dependency>`
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
 ```
 
 
 
 Now write a simple unit test that mocks the servlet request and response through your endpoint:
 
-现在写一个简单的单元测试,模拟servlet请求和响应通过端点:
+接着编写单元测试,模拟(mock)终端发送servlet请求和处理响应:
 
 `src/test/java/hello/HelloControllerTest.java`
 
 
 
 ```
-`packagehello;importstaticorg.hamcrest.Matchers.equalTo;importstaticorg.springframework.test.web.servlet.result.MockMvcResultMatchers.content;importstaticorg.springframework.test.web.servlet.result.MockMvcResultMatchers.status;importorg.junit.Test;importorg.junit.runner.RunWith;importorg.springframework.beans.factory.annotation.Autowired;importorg.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;importorg.springframework.boot.test.context.SpringBootTest;importorg.springframework.http.MediaType;importorg.springframework.test.context.junit4.SpringRunner;importorg.springframework.test.web.servlet.MockMvc;importorg.springframework.test.web.servlet.request.MockMvcRequestBuilders;@RunWith(SpringRunner.class)@SpringBootTest@AutoConfigureMockMvcpublicclassHelloControllerTest{@AutowiredprivateMockMvcmvc;@TestpublicvoidgetHello()throwsException{mvc.perform(MockMvcRequestBuilders.get("/").accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk()).andExpect(content().string(equalTo("Greetings from Spring Boot!")));}}`
+package hello;
+
+import static org.hamcrest.Matchers.equalTo;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+
+@RunWith(SpringRunner.class)
+@SpringBootTest
+@AutoConfigureMockMvc
+public class HelloControllerTest {
+
+    @Autowired
+    private MockMvc mvc;
+
+    @Test
+    public void getHello() throws Exception {
+        mvc.perform(MockMvcRequestBuilders.get("/").accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().string(equalTo("Greetings from Spring Boot!")));
+    }
+}
 ```
 
 
 
 The `MockMvc` comes from Spring Test and allows you, via a set of convenient builder classes, to send HTTP requests into the `DispatcherServlet` and make assertions about the result. Note the use of the `@AutoConfigureMockMvc` together with `@SpringBootTest` to inject a `MockMvc` instance. Having used `@SpringBootTest` we are asking for the whole application context to be created. An alternative would be to ask Spring Boot to create only the web layers of the context using the `@WebMvcTest`. Spring Boot automatically tries to locate the main application class of your application in either case, but you can override it, or narrow it down, if you want to build something different.
 
-的`MockMvc`来自Spring Boot的测试,并允许您通过一组方便构建器类,发送HTTP请求到`DispatcherServlet`并对结果做出断言。注意使用`@AutoConfigureMockMvc`在一起`@SpringBootTest`注入一个`MockMvc`实例。使用`@SpringBootTest`我们要求要创建整个应用程序环境。另一种只被要求Spring Boot创建web层的环境中使用`@WebMvcTest`。弹簧启动自动试图定位的主要应用程序类应用程序在任何一种情况下,你可以覆盖它,或缩小它,如果你想建立不同的东西。
+`MockMvc` 是Spring Test中的注解, 可以很方便地用来构建器测试类, 发送HTTP请求到 `DispatcherServlet` , 以及对响应结果执行断言。
+
+需要注意,  `@AutoConfigureMockMvc` 可以和 `@SpringBootTest` 一起使用, 以自动注入 `MockMvc`实例。 
+
+通过使用 `@SpringBootTest` 注解, 表明需要创建整个应用程序环境。 如果只想创建 web 层的执行环境, 可以使用 `@WebMvcTest` 注解。 Spring Boot会尝试自动查找 main 函数所在的类, 当然我们也可以自己指定,或者缩小查找范围。
 
 As well as mocking the HTTP request cycle we can also use Spring Boot to write a very simple full-stack integration test. For example, instead of (or as well as) the mock test above we could do this:
 
-以及模拟HTTP请求周期我们也可以使用Spring Boot写一个非常简单的完整的集成测试。例如,而不是上面的模拟测试(或一样)我们可以这样做:
+除了模拟HTTP请求, 我们也可以使用Spring Boot来编写一个简单的集成测试。例如, 我们可以这样做:
 
 `src/test/java/hello/HelloControllerIT.java`
 
 
 
 ```
-`packagehello;importstaticorg.hamcrest.Matchers.equalTo;importstaticorg.junit.Assert.assertThat;importjava.net.URL;importorg.junit.Before;importorg.junit.Test;importorg.junit.runner.RunWith;importorg.springframework.beans.factory.annotation.Autowired;importorg.springframework.boot.context.embedded.LocalServerPort;importorg.springframework.boot.test.context.SpringBootTest;importorg.springframework.boot.test.web.client.TestRestTemplate;importorg.springframework.http.ResponseEntity;importorg.springframework.test.context.junit4.SpringRunner;@RunWith(SpringRunner.class)@SpringBootTest(webEnvironment=SpringBootTest.WebEnvironment.RANDOM_PORT)publicclassHelloControllerIT{@LocalServerPortprivateintport;privateURLbase;@AutowiredprivateTestRestTemplatetemplate;@BeforepublicvoidsetUp()throwsException{this.base=newURL("http://localhost:"+port+"/");}@TestpublicvoidgetHello()throwsException{ResponseEntity<String>response=template.getForEntity(base.toString(),String.class);assertThat(response.getBody(),equalTo("Greetings from Spring Boot!"));}}`
+package hello;
+
+import static org.hamcrest.Matchers.equalTo;
+import static org.junit.Assert.assertThat;
+
+import java.net.URL;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.embedded.LocalServerPort;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.junit4.SpringRunner;
+
+@RunWith(SpringRunner.class)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+public class HelloControllerIT {
+
+    @LocalServerPort
+    private int port;
+
+    private URL base;
+
+    @Autowired
+    private TestRestTemplate template;
+
+    @Before
+    public void setUp() throws Exception {
+        this.base = new URL("http://localhost:" + port + "/");
+    }
+
+    @Test
+    public void getHello() throws Exception {
+        ResponseEntity<String> response = template.getForEntity(base.toString(),
+                String.class);
+        assertThat(response.getBody(), equalTo("Greetings from Spring Boot!"));
+    }
+}
 ```
 
 
 
 The embedded server is started up on a random port by virtue of the `webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT` and the actual port is discovered at runtime with the `@LocalServerPort`.
 
-嵌入式服务器已经启动了一个随机端口的美德`webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT`和实际端口在运行时被发现的`@LocalServerPort`。
+`webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT` 指定嵌入式服务器启动一个随机端口,  具体的端口号可以在运行时通过  `@LocalServerPort` 获得。
 
 ## Add production-grade services
 
