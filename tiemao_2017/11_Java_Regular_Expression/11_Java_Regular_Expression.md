@@ -2,6 +2,8 @@
 
 # Java正则系列: (1)入门教程
 
+正则表达式, 可以匹配字符, 也可以匹配位置。
+
 > This tutorial introduces the usage of regular expressions and describes their implementation in Java. It also provides several Java regular expression examples.
 
 > 本文简要介绍Java的正则表达式及其实现方式，并通过实例讲解正则表达式的具体用法。
@@ -88,8 +90,8 @@ The following description is an overview of available meta characters which can 
 | `.`         | 点号(`.`), 匹配任意一个字符                        |
 | `^regex`    | 小尖号(`^`), 起始标识, 前面不能出现其他字符.              |
 | `regex$`    | 美元符号(`$`,dollar,美刀), 结束标识,后面不能再出现其他字符.   |
-| `[abc]`     | 字符集合(set), 匹配 a 或 b 或 c.                 |
-| `[abc][vz]` | 字符集合(set), 匹配 a 或 b 或 c,紧接着是 v 或 z.      |
+| `[abc]`     | 字符组(set), 匹配 a 或 b 或 c.                 |
+| `[abc][vz]` | 字符组(set), 匹配 a 或 b 或 c,紧接着是 v 或 z.      |
 | `[^abc]`    | 如果小尖号(`^`, caret, 此处读作 `非`) 出现在中括号里面的第一位, 则表示否定(negate). 这里匹配: 除 `a`, `b`, `c` 之外的其他任意字符. |
 | `[a-d1-7]`  | 范围表示法: 匹配 `a` 到 `d` 之间的单个字符, 或者 `1` 到 `7`之间的单个字符, 整体只匹配单个字符, 而不是 `d1` 这种组合. |
 | X\|Z        | 匹配 `X` 或者 `Z`.                           |
