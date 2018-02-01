@@ -1,5 +1,6 @@
 # Getting Started with WebRTC
 
+# 开始使用WebRTC
 
 > WebRTC is a new front in the long war for an open and unencumbered web.
 >
@@ -7,35 +8,68 @@
 
 ## Real-time communication without plugins
 
+## 实时通信没有插件
+
 Imagine a world where your phone, TV and computer could all communicate on a common platform. Imagine it was easy to add video chat and peer-to-peer data sharing to your web application. That's the vision of WebRTC.
 
+想象一个世界里,你的电话,电视和电脑都可以在一个共同的交流平台。想象很容易添加视频聊天和点对点数据共享您的web应用程序.这是WebRTC的愿景。
+
 Want to try it out? WebRTC is available now in Google Chrome, Opera and Firefox. A good place to start is the simple video chat application at [apprtc.appspot.com](https://apprtc.appspot.com/):
+
+
 
 1. Open [apprtc.appspot.com](https://apprtc.appspot.com/) in Chrome, Opera or Firefox.
 2. Click the Allow button to let the app use your webcam.
 3. Open the URL displayed at the bottom of the page in a new tab or, better still, on a different computer.
 
+1. 
+2. 
+3. 打开URL显示在页面的底部在新标签页,或者更好的是,在不同的电脑。
+
 There is a walkthrough of this application.
+
+这个应用程序的介绍。
+
+
 
 ## Quick start
 
+## 快速启动
+
 Haven't got time to read this article, or just want code?
+
+没有时间去阅读这篇文章,或者只是想要代码?
 
 1. Get an overview of WebRTC from the Google I/O presentation (the slides are [here](http://io13webrtc.appspot.com/)):
 
    ​
+1.
 
 2. If you haven't used getUserMedia, take a look at the [HTML5 Rocks article](http://www.html5rocks.com/en/tutorials/getusermedia/intro/) on the subject, and view the source for the simple example at [simpl.info/gum](http://www.simpl.info/getusermedia).
 
+2. 如果你还没有使用getUserMedia,看看HTML5岩石的文章(http://www.html5rocks.com/en/tutorials/getusermedia/intro/)在这个问题上,查看源代码的简单的例子(simpl.info /胶)(http://www.simpl.info/getusermedia)。
+
 3. Get to grips with the RTCPeerConnection API by reading through the simple example below and the demo at [simpl.info/pc](http://www.simpl.info/pc), which implements WebRTC on a single web page.
+
+3. 掌握RTCPeerConnection API通过阅读下面的简单示例和演示(simpl.info / pc)(http://www.simpl.info/pc),实现WebRTC在一个web页面。
 
 4. Learn more about how WebRTC uses servers for signaling, and firewall and NAT traversal, by reading through the code and console logs from [apprtc.appspot.com](https://apprtc.appspot.com/).
 
+4.
+
 5. Can’t wait and just want to try out WebRTC right now? Try out some of the [20+ demos](https://webrtc.github.io/samples) that exercise the WebRTC JavaScript APIs.
+
+5.
 
 6. Having trouble with your machine and WebRTC? Try out our troubleshooting page [test.webrtc.org](https://test.webrtc.org/).
 
+6. 你的机器和WebRTC还有问题?试试我们的故障诊断页面[test.webrtc.org](https://test.webrtc.org/)。
+
 Alternatively, jump straight into our [WebRTC codelab](https://www.bitbucket.org/webrtc/codelab): a step-by-step guide that explains how to build a complete video chat app, including a simple signaling server.
+
+或者,直接跳转到我们的WebRTC codelab(https://www.bitbucket.org/webrtc/codelab):一个循序渐进的指导,解释如何构建一个完整的视频聊天应用程序,包括一个简单的信令服务器。
+
+
 
 ## A very short history of WebRTC
 
