@@ -716,13 +716,15 @@ A full discussion of security for streaming media is out of scope for this artic
 
 ## In conclusion
 
+## 总结
+
 The APIs and standards of WebRTC can democratize and decentralize tools for content creation and communication—for telephony, gaming, video production, music making, news gathering and many other applications.
 
 Technology doesn't get much more [disruptive](http://en.wikipedia.org/wiki/Disruptive_innovation) than this.
 
 We look forward to what JavaScript developers make of WebRTC as it becomes widely implemented. As blogger Phil Edholm [put it](http://www.nojitter.com/post/232901042/webrtc-is-it-a-game-changer), 'Potentially, WebRTC and HTML5 could enable the same transformation for real-time communications that the original browser did for information.'
 
-## Developer tools
+## 开发工具与类库
 
 - WebRTC stats for an ongoing session can be found at:
   - **chrome://webrtc-internals** page in Chrome
@@ -741,7 +743,7 @@ We look forward to what JavaScript developers make of WebRTC as it becomes widel
   - [WebRTC demo bugs](https://github.com/webrtc/samples/issues/new)
   - [Adapter.js bugs](https://github.com/webrtc/adapter/issues/new)
 
-## Learn more
+## 相关学习资料
 
 - [WebRTC presentation at Google I/O 2013](https://www.youtube.com/watch?v=p2HzZkd2A40) (the slides are at [io13webrtc.appspot.com](http://io13webrtc.appspot.com/))
 - [Justin Uberti's WebRTC session at Google I/O 2012](https://www.youtube.com/watch?v=E8C8ouiXHHk)
@@ -755,7 +757,7 @@ We look forward to what JavaScript developers make of WebRTC as it becomes widel
 - [WebRTC on GitHub](https://github.com/webrtc)
 - [Stack Overflow](http://stackoverflow.com/questions/tagged/webrtc) is a good place to look for answers and ask questions about WebRTC
 
-## Standards and protocols
+## 相关协议与标准
 
 - [The WebRTC W3C Editor's Draft](http://dev.w3.org/2011/webrtc/editor/webrtc.html)
 - [W3C Editor's Draft: Media Capture and Streams](http://dev.w3.org/2011/webrtc/editor/getusermedia.html) (aka getUserMedia)
