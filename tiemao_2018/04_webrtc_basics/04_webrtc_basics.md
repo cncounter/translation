@@ -37,7 +37,7 @@ There is a walkthrough of this application.
 
 ## Quick start
 
-## 快速启动
+## 快速学习
 
 Haven't got time to read this article, or just want code?
 
@@ -45,32 +45,36 @@ Haven't got time to read this article, or just want code?
 
 1. Get an overview of WebRTC from the Google I/O presentation (the slides are [here](http://io13webrtc.appspot.com/)):
 
-   ​
-1.
+   
 
 2. If you haven't used getUserMedia, take a look at the [HTML5 Rocks article](http://www.html5rocks.com/en/tutorials/getusermedia/intro/) on the subject, and view the source for the simple example at [simpl.info/gum](http://www.simpl.info/getusermedia).
 
-2. 如果你还没有使用getUserMedia,看看HTML5岩石的文章(http://www.html5rocks.com/en/tutorials/getusermedia/intro/)在这个问题上,查看源代码的简单的例子(simpl.info /胶)(http://www.simpl.info/getusermedia)。
-
 3. Get to grips with the RTCPeerConnection API by reading through the simple example below and the demo at [simpl.info/pc](http://www.simpl.info/pc), which implements WebRTC on a single web page.
-
-3. 掌握RTCPeerConnection API通过阅读下面的简单示例和演示(simpl.info / pc)(http://www.simpl.info/pc),实现WebRTC在一个web页面。
 
 4. Learn more about how WebRTC uses servers for signaling, and firewall and NAT traversal, by reading through the code and console logs from [apprtc.appspot.com](https://apprtc.appspot.com/).
 
-4.
-
 5. Can’t wait and just want to try out WebRTC right now? Try out some of the [20+ demos](https://webrtc.github.io/samples) that exercise the WebRTC JavaScript APIs.
 
-5.
 
 6. Having trouble with your machine and WebRTC? Try out our troubleshooting page [test.webrtc.org](https://test.webrtc.org/).
 
-6. 你的机器和WebRTC还有问题?试试我们的故障诊断页面[test.webrtc.org](https://test.webrtc.org/)。
+<br/>
+​
+1. 观看 Google I/O 大会上演示的 [WebRTC-PPT](http://io13webrtc.appspot.com/) 或者视频: <https://www.youtube.com/embed/p2HzZkd2A40>
+
+2. 如果对 getUserMedia 还不熟悉, 可以参考 [使用HTML5捕捉视频和声音](https://www.html5rocks.com/zh/tutorials/getusermedia/intro/), 相关的Demo页面: <http://www.simpl.info/getusermedia>。
+
+3. 掌握RTCPeerConnection 相关的API, 示例页面为: <http://www.simpl.info/pc>, 其在单个网页中实现了WebRTC。
+
+4. 想要深入学习 WebRTC 内部的信令传输，穿墙打洞等技术细节, 请访问 <https://apprtc.appspot.com/>, 并通过F12打开控制台, 查看日志.
+
+5. GitHub上有很多WebRTC相关的示例, 请访问: <https://webrtc.github.io/samples>
+
+6. 如果使用 WebRTC 出错, 可以尝试访问诊断页面 <https://test.webrtc.org/>。
 
 Alternatively, jump straight into our [WebRTC codelab](https://www.bitbucket.org/webrtc/codelab): a step-by-step guide that explains how to build a complete video chat app, including a simple signaling server.
 
-或者,直接跳转到我们的WebRTC codelab(https://www.bitbucket.org/webrtc/codelab):一个循序渐进的指导,解释如何构建一个完整的视频聊天应用程序,包括一个简单的信令服务器。
+另外, 可以打开我们的实验室页面 <https://www.bitbucket.org/webrtc/codelab>, 跟着教程, 学习如何构建一个完整的视频聊天程序, 其中包括搭建一个简单的信令服务器。
 
 
 
