@@ -1,29 +1,32 @@
 # Getting Started with WebRTC
 
-# 开始使用WebRTC
+# WebRTC入门简介
 
 > WebRTC is a new front in the long war for an open and unencumbered web.
 >
 >  ---- By : [Brendan Eich](http://hacks.mozilla.org/2012/03/video-mobile-and-the-open-web/), inventor of JavaScript
 
+> JavaScript创始人说: WebRTC是自由开放网络中的先锋战士!
+
 ## Real-time communication without plugins
 
-## 实时通信没有插件
+## 无需插件的实时通信技术
 
 Imagine a world where your phone, TV and computer could all communicate on a common platform. Imagine it was easy to add video chat and peer-to-peer data sharing to your web application. That's the vision of WebRTC.
 
-想象一个世界里,你的电话,电视和电脑都可以在一个共同的交流平台。想象很容易添加视频聊天和点对点数据共享您的web应用程序.这是WebRTC的愿景。
+想象一下, 手机, 电脑, 电视可以通过平台进行实时的聊天和通信。通过Web应用, 即可远程视频聊天, 传输文件以和数据. 没有监控,不用担心泄密, 蓝天将会变得多么美好! 这就是WebRTC的目标和未来。
 
 Want to try it out? WebRTC is available now in Google Chrome, Opera and Firefox. A good place to start is the simple video chat application at [apprtc.appspot.com](https://apprtc.appspot.com/):
 
+当前最新版本的 Google Chrome, Opera 和 Firefox 浏览器都已经支持 WebRTC, 相关的demo请访问: <https://apprtc.appspot.com/>
 
 
 1. Open [apprtc.appspot.com](https://apprtc.appspot.com/) in Chrome, Opera or Firefox.
 2. Click the Allow button to let the app use your webcam.
 3. Open the URL displayed at the bottom of the page in a new tab or, better still, on a different computer.
 
-1. 
-2. 
+1. 使用新浏览器访问 <https://apprtc.appspot.com/>
+2. 允许网站使用摄像头(webcam) 
 3. 打开URL显示在页面的底部在新标签页,或者更好的是,在不同的电脑。
 
 There is a walkthrough of this application.
@@ -762,9 +765,9 @@ We look forward to what JavaScript developers make of WebRTC as it becomes widel
 - [IETF proposed standard for ICE](http://tools.ietf.org/html/rfc5245)
 - IETF RTCWEB Working Group Internet-Draft: [Web Real-Time Communication Use-cases and Requirements](http://tools.ietf.org/html/draft-ietf-rtcweb-use-cases-and-requirements-10)
 
-## WebRTC support summary
+## WebRTC浏览器兼容
 
-### MediaStream and getUserMedia
+### MediaStream 和 getUserMedia 兼容情况
 
 - Chrome desktop 18.0.1008+; Chrome for Android 29+
 - Opera 18+; Opera for Android 20+
@@ -772,20 +775,26 @@ We look forward to what JavaScript developers make of WebRTC as it becomes widel
 - Firefox 17+
 - Microsoft Edge
 
-### RTCPeerConnection
+### RTCPeerConnection 兼容情况
+
+也可以用来获取局域网IP地址, Demo: <http://www.cncounter.com/test/getLocalIP.jsp>
 
 - Chrome desktop 20+ (now 'flagless', i.e. no need to set about:flags); Chrome for Android 29+ (flagless)
 - Opera 18+ (on by default); Opera for Android 20+ (on by default)
 - Firefox 22+ (on by default)
 
-### RTCDataChannel
+### RTCDataChannel 兼容情况
 
 - Experimental version in Chrome 25, more stable (and with Firefox interoperability) in Chrome 26+; Chrome for Android 29+
 - Stable version (and with Firefox interoperability) in Opera 18+; Opera for Android 20+
 - Firefox 22+ (on by default)
 
-Native APIs for RTCPeerConnection are also available: [documentation on webrtc.org](http://www.webrtc.org/native-code/native-apis).
+RTCPeerConnection 相关的Native API文档请参考: <http://www.webrtc.org/native-code/native-apis>.
 
-For more detailed information about cross-platform support for APIs such as getUserMedia, see [caniuse.com](http://caniuse.com/stream).
+各个浏览器对 getUserMedia 等API的支持情况, 请参考: <http://caniuse.com/stream>.
+
 
 原文链接: <https://www.html5rocks.com/en/tutorials/webrtc/basics/>
+
+原文日期: 2014年02月21日
+
