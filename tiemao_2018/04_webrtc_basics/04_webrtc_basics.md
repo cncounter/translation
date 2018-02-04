@@ -6,7 +6,7 @@
 >
 >  ---- By : [Brendan Eich](http://hacks.mozilla.org/2012/03/video-mobile-and-the-open-web/), inventor of JavaScript
 
-> JavaScript创始人说: WebRTC是自由开放网络中的先锋战士!
+> JavaScript创始人[Brendan Eich](http://hacks.mozilla.org/2012/03/video-mobile-and-the-open-web/)认为: WebRTC是自由开放网络中的先锋战士!
 
 ## Real-time communication without plugins
 
@@ -80,21 +80,37 @@ Alternatively, jump straight into our [WebRTC codelab](https://www.bitbucket.org
 
 ## A very short history of WebRTC
 
-## WebRTC 简史
+## WebRTC的历史由来
 
 One of the last major challenges for the web is to enable human communication via voice and video: Real Time Communication, RTC for short. RTC should be as natural in a web application as entering text in a text input. Without it, we're limited in our ability to innovate and develop new ways for people to interact.
 
+对WEB应用系统来说, 最大的挑战就是实时通讯, 英文 Real Time Communication,  简称 RTC, 也就是视频/语音聊天. 而且RTC应该尽可能简单, 用起来就和文本输入框一样简便, 那就大功告成了。没有RTC, 互联网用户的交流和沟通就会受到很大的限制。
+
 Historically, RTC has been corporate and complex, requiring expensive audio and video technologies to be licensed or developed in house. Integrating RTC technology with existing content, data and services has been difficult and time consuming, particularly on the web.
+
+从历史上看, RTC一直是企业级的复杂系统, 需要昂贵的音频和视频技术, 且需要专门的地盘和设备. 将RTC与现有的数据、内容、和服务集成并兼容, 将会非常复杂和麻烦, 特别是在web系统上。
 
 Gmail video chat became popular in 2008, and in 2011 Google introduced Hangouts, which use the Google Talk service (as does Gmail). Google bought GIPS, a company which had developed many components required for RTC, such as codecs and echo cancellation techniques. Google open sourced the technologies developed by GIPS and engaged with relevant standards bodies at the IETF and W3C to ensure industry consensus. In May 2011, Ericsson built [the first implementation of WebRTC](https://labs.ericsson.com/developer-community/blog/beyond-html5-peer-peer-conversational-video).
 
+Gmail视频聊天在2008年火了起来, 在2011年谷歌推出了Hangouts, 使用Google Talk服务(Gmail也一样). 谷歌收购了一家叫做GIPS的公司, GIPS公司拥有许多RTC所需的技术和组件, 如编解码器(codecs)和回音消除技术. 谷歌将这些技术开源, 并与相关标准组织, IETF和W3C, 制定行业规范. 2011年5月, 爱立信实现了[第一个 WebRTC 应用](https://labs.ericsson.com/developer-community/blog/beyond-html5-peer-peer-conversational-video)。
+
 WebRTC has now implemented open standards for real-time, plugin-free video, audio and data communication. The need is real:
+
+WebRTC 现在是一个开放的标准, 用于实时的plugin-free视频、音频和基础数据通信, 不需要安装单独的插件插件。亮点在于:
 
 - Many web services already use RTC, but need downloads, native apps or plugins. These includes Skype, Facebook (which uses Skype) and Google Hangouts (which use the Google Talk plugin).
 - Downloading, installing and updating plugins can be complex, error prone and annoying.
 - Plugins can be difficult to deploy, debug, troubleshoot, test and maintain—and may require licensing and integration with complex, expensive technology. It's often difficult to persuade people to install plugins in the first place!
 
+- 尽管有很多web服务实现了RTC, 但需要下载插件或者安装本地程序。例如 Skype, Facebook(用的就是Skype), 以及谷歌视频群聊(Google Hangouts, 用的是Google Talk plugin)。
+- 下载,安装和更新插件可能比较麻烦, 而且容易出错。
+- 一般来说,插件很难部署、调试、以及诊断、测试。要修改还得有许可协议, 维护起来更麻烦, 需要集成一堆笨重的东西. 而且到处都提示用户安装插件, 体验也很不友好!
+
 The guiding principles of the WebRTC project are that its APIs should be open source, free, standardized, built into web browsers and more efficient than existing technologies.
+
+WebRTC项目的指导原则, 是api必须开源,免费, 标准化, 而且内置到浏览器之中, 还有比现有的技术性能更强。
+
+
 
 ## Where are we now?
 
