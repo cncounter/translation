@@ -111,24 +111,43 @@ The guiding principles of the WebRTC project are that its APIs should be open so
 WebRTC项目的指导原则, 是api必须开源,免费, 标准化, 而且内置到浏览器之中, 还有比现有的技术性能更强。
 
 
-
 ## Where are we now?
+
+## WebRTC 目前的发展状况
 
 WebRTC is used in various apps like WhatsApp, Facebook Messenger, appear.in and platforms such as TokBox. There is even an experimental WebRTC enabled iOS Browser named Bowser. WebRTC has also been integrated with [WebKitGTK+](https://labs.ericsson.com/developer-community/blog/beyond-html5-conversational-voice-and-video-implemented-webkit-gtk)and [Qt](https://www.youtube.com/watch?v=Vm5ebKWKNE8) native apps.
 
+WebRTC已经被各种APP所使用, 如 WhatsApp, Facebook Messenger, appear.in 以及 TokBox 之类的平台。甚至在 iOS 上也有实验性质的WebRTC浏览器, 名为 Bowser(水槽). WebRTC也被[WebKitGTK+](https://labs.ericsson.com/developer-community/blog/beyond-html5-conversational-voice-and-video-implemented-webkit-gtk) 和  [Qt](https://www.youtube.com/watch?v=Vm5ebKWKNE8) native app 集成。
+
 Microsoft added MediaCapture and Stream APIs to [Edge](http://blogs.windows.com/msedgedev/2015/05/13/announcing-media-capture-functionality-in-microsoft-edge/).
+
+Microsoft 在 [Edge](http://blogs.windows.com/msedgedev/2015/05/13/announcing-media-capture-functionality-in-microsoft-edge/) 浏览器中增加了 MediaCapture 和 Stream 等API。
+
+
 
 WebRTC implements three APIs:
 
-- `MediaStream` (aka `getUserMedia`)
+WebRTC 标准定义了以下3个 API:
+
+- `MediaStream` (也称为 `getUserMedia`)
 - `RTCPeerConnection`
 - `RTCDataChannel`
 
 `**getUserMedia**` is available in Chrome, Opera, Firefox and Edge. Take a look at the cross-browser demo at [demo](https://webrtc.github.io/samples/src/content/getusermedia/gum/) and Chris Wilson's [amazing examples](http://webaudiodemos.appspot.com/) using `getUserMedia` as input for Web Audio.
 
-`**RTCPeerConnection**` is in Chrome (on desktop and for Android), Opera (on desktop and in the latest Android Beta) and in Firefox. A word of explanation about the name: after several iterations, `RTCPeerConnection` is currently implemented by Chrome and Opera as `webkitRTCPeerConnection` and by Firefox as `mozRTCPeerConnection`. Other names and implementations have been deprecated. When the standards process has stabilized, the prefixes will be removed. There's an ultra-simple demo of Chromium's RTCPeerConnection implementation at [GitHub](https://webrtc.github.io/samples/src/content/peerconnection/pc1/) and a great video chat application at [apprtc.appspot.com](https://apprtc.appspot.com/). This app uses [adapter.js](https://github.com/webrtc/adapter), a JavaScript shim, maintained Google with help from the [WebRTC community](https://github.com/webrtc/adapter/graphs/contributors), that abstracts away browser differences and spec changes.
+`**getUserMedia**` 在新版的Chrome,Opera,Firefox和Edge浏览器上可用。关于跨浏览器的演示请参考: <https://webrtc.github.io/samples/src/content/getusermedia/gum/>, 以及Chris Wilson编写的Web Audio示例: <http://webaudiodemos.appspot.com/>。
+
+**`RTCPeerConnection`** is in Chrome (on desktop and for Android), Opera (on desktop and in the latest Android Beta) and in Firefox. A word of explanation about the name: after several iterations, `RTCPeerConnection` is currently implemented by Chrome and Opera as `webkitRTCPeerConnection` and by Firefox as `mozRTCPeerConnection`. Other names and implementations have been deprecated. When the standards process has stabilized, the prefixes will be removed. There's an ultra-simple demo of Chromium's RTCPeerConnection implementation at [GitHub](https://webrtc.github.io/samples/src/content/peerconnection/pc1/) and a great video chat application at [apprtc.appspot.com](https://apprtc.appspot.com/). This app uses [adapter.js](https://github.com/webrtc/adapter), a JavaScript shim, maintained Google with help from the [WebRTC community](https://github.com/webrtc/adapter/graphs/contributors), that abstracts away browser differences and spec changes.
+
+** `RTCPeerConnection`**  在Firefox,以及PC版和安卓版的Chrome,Opera上可用. `RTCPeerConnection` 有一些其他名字: 在Chrome上是 `webkitRTCPeerConnection`, 在 Firefox 上面是 `mozRTCPeerConnection`. 如果规范正式发布, 则前缀会被去掉. 在GitHub 上有一个非常简单的Chromium Demo: <https://webrtc.github.io/samples/src/content/peerconnection/pc1/>, 视频聊天相关的demo可以参考 <https://apprtc.appspot.com/>。 其中Google 团队维护了一个兼容各种浏览器的JavaScript库: [adapter.js](https://github.com/webrtc/adapter), 贡献者在这里: [WebRTC community](https://github.com/webrtc/adapter/graphs/contributors).
 
 **RTCDataChannel** is supported by Chrome, Opera and Firefox. Check out one of the data channel demos at [GitHub](https://webrtc.github.io/samples/) to see it in action.
+
+**`RTCDataChannel`** 兼容Chrome, Opera 和 Firefox, 可以参考 GitHub 上的示例 <https://webrtc.github.io/samples/>。
+
+
+
+
 
 ### A word of warning
 
