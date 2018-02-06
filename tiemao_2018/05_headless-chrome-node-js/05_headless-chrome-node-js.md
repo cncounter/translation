@@ -6,7 +6,7 @@
 
 使用 HeadLess-Chrome 的好处是: 
 
-- 不需要显卡支持, 可以在Linux服务器环境上执行, 也就支持客户端调用。
+- 不需要显卡支持, 可以在Linux服务器环境上运行。
 
 - 还可以用于自动化测试环境。 
 
@@ -27,10 +27,12 @@
 2.1 生成页面加载后的截图:
 
 ```
-chrome --headless --screenshot=C:/cncounter_.screenshot.png  --window-size=1024,768 http://cncounter.com
+chrome --headless --screenshot=C:/cncounter.screenshot.png  --window-size=1024,768 http://cncounter.com
 ```
 
 如果有重定向, 则截图为重定向之后的网页, 因为是 loaded 之后再保存。
+
+如果找不到 chrome, 可能需要设置alias。可以参考本文末尾的相关链接。
 
 
 2.2 页面打印为PDF文件:
@@ -78,6 +80,14 @@ chrome --headless --print-to-pdf=C:/cncounter.pdf  http://www.cncounter.com
 ```
 --screenshot=C:/xxxx.png
 ```
+
+- 启动debug监听端口;此模式下不会自动退出。
+
+```
+--remote-debugging-port=9222
+```
+
+这些参数有些可能是互斥的。 NodeJS的API本质上是启动一个监听端口, 然后通过协议与这个端口进行通信。
 
 Linux 和 MacOSX系统, 基本上也是一样的用法, 除了文件路径写法不一样。
 
@@ -169,6 +179,8 @@ npm install chrome-launcher --save
 // 引入依赖
 const chromeLauncher = require('chrome-launcher');
 const CDP = require('chrome-remote-interface');
+
+// CDP=Chrome Debugging Protocol缩写
 
 // 自动执行的函数调用
 (async function() {
@@ -325,7 +337,83 @@ node screenshot.js
 看起来有点丑, 因为没有指定各种参数。
 
 
-### 7. 调用PDF打印
+### 7. 安装 Puppeteer
+
+Puppeteer是一个上层API,封装了大部分操作, 内置Chrome, 使用非常简单简洁:
+
+
+
+
+#### 使用 npm 安装
+
+因为墙的原因, 可能需要使用淘宝镜像安装 puppeteer:
+
+```
+mkdir -p puppeteerdemo
+cd puppeteerdemo
+
+npm config set puppeteer_download_host=https://npm.taobao.org/mirrors
+npm i puppeteer
+
+```
+
+#### 用淘宝的 cnpm 安装，自动使用国内源:
+
+```
+mkdir -p puppeteerdemo
+cd puppeteerdemo
+npm install -g cnpm --registry=https://registry.npm.taobao.org
+cnpm i puppeteer
+```
+
+还不行就自己使用代理。
+
+#### 使用 yarn 安装
+
+还可以使用 yarn 安装 puppeteer, 因为墙的原因, 需要设置环境变量 `PUPPETEER_SKIP_CHROMIUM_DOWNLOAD`, 并在 launch 时指定 `executablePath` 参数, 参考下面的API。
+
+
+```
+mkdir -p puppeteerdemo
+cd puppeteerdemo
+
+npm config set PUPPETEER_SKIP_CHROMIUM_DOWNLOAD
+yarn add puppeteer
+```
+
+
+### 8. puppeteer 打印PDF
+
+创建 puppeteer.js 文件:
+
+```
+// 加载依赖库
+const puppeteer = require('puppeteer');
+
+(async () => {
+  // 创建浏览器实例
+  const browser = await puppeteer.launch();
+  // 打开新标签页
+  const page = await browser.newPage();
+  // 打开页面
+  await page.goto('https://www.cncounter.com');
+  // 截屏
+  await page.screenshot({path: 'cncounter.png'});
+  // 打印PDF
+  await page.pdf({
+    path: 'cncounter_p.pdf'
+  });
+
+  // 执行完成之后, 关闭浏览器
+  await browser.close();
+})();
+```
+
+puppeteer相关的API和配置项请参考: <https://github.com/GoogleChrome/puppeteer/blob/master/docs/api.md>
+
+
+
+### 
 
 
 
@@ -367,6 +455,8 @@ Chrome 的 headless 模式可用于自动化测试，尽管还有一些不完善
 1. [phantomjs官网](http://phantomjs.org/)
 
 1. [casperjs官网](http://casperjs.org/)
+
+1. [Puppeteer API](https://developers.google.com/web/tools/puppeteer/)
 
 1. [MDN: async function 简介](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function)
 
