@@ -11,7 +11,7 @@
 - 还可以用于自动化测试环境。 
 
 
-###  1. 安装 Chrome
+###  1. 安装 Chrome(可省略...)
 
 要求最新版, 至少是 Chrome60+。 请通过搜索引擎来查询和下载。
 
@@ -62,7 +62,7 @@ Puppeteer是一个上层API,封装了大部分操作, 内置Chrome, 使用非常
 
 #### 使用 npm 安装
 
-因为墙的原因, 可能需要使用淘宝镜像安装 puppeteer:
+因为墙的原因, 需要使用淘宝镜像安装 puppeteer:
 
 ```
 mkdir -p puppeteerdemo
@@ -73,7 +73,7 @@ npm i puppeteer
 
 ```
 
-#### 用淘宝的 cnpm 安装，自动使用国内源:
+#### 或者用淘宝的 cnpm 安装，自动使用国内源:
 
 ```
 mkdir -p puppeteerdemo
@@ -95,7 +95,7 @@ cnpm i puppeteer
 const puppeteer = require('puppeteer');
 
 (async () => {
-  // 创建浏览器实例
+  // 创建浏览器实例, 等待Promise返回
   const browser = await puppeteer.launch();
   // 打开新标签页
   const page = await browser.newPage();
@@ -113,16 +113,16 @@ const puppeteer = require('puppeteer');
 })();
 ```
 
+然后在命令行执行:
+
+```
+node puppeteer.js
+```
+
 具体的配置项请参考: <puppeteer.js> 文件。
 
 
 puppeteer相关的API和配置项请参考: <https://github.com/GoogleChrome/puppeteer/blob/master/docs/api.md>
-
-
-### 总结
-
-Chrome 的 headless 模式可用于自动化测试，尽管还有一些不完善的地方。
-但毕竟是真实的浏览器, 比起其他测试套具来说具有很多优势。
 
 
 

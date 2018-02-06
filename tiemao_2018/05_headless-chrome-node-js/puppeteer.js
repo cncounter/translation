@@ -2,7 +2,7 @@
 const puppeteer = require('puppeteer');
 
 (async () => {
-  // 创建浏览器实例
+  // 创建浏览器实例, 等待Promise返回
   const browser = await puppeteer.launch();
   // 打开新标签页
   const page = await browser.newPage();

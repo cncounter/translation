@@ -445,6 +445,14 @@ const puppeteer = require('puppeteer');
 
 ```
 
+
+
+然后在命令行执行:
+
+```
+node puppeteer.js
+```
+
 puppeteer相关的API和配置项请参考: <https://github.com/GoogleChrome/puppeteer/blob/master/docs/api.md>
 
 
