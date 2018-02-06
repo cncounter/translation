@@ -79,7 +79,11 @@ chrome --headless --print-to-pdf=C:/cncounter.pdf  http://www.cncounter.com
 --screenshot=C:/xxxx.png
 ```
 
-更多参数请参考本文末尾的链接:
+Linux 和 MacOSX系统, 基本上也是一样的用法, 除了文件路径写法不一样。
+
+总的来说, 命令行模式的HeadLess Chrome功能太弱了, 很多配置目前基本上是不支持的, 只能期待以后的版本进行增强。
+
+更多参数信息请查看本文末尾的链接。
 
 
 
@@ -142,6 +146,11 @@ npm install chrome-launcher --save
 ```
 
 ### 5. 执行JS脚本
+
+`chrome-launcher` 这个 NPM module 能自动查找到机器上安装的 Chrome 程序, 并启动 debug 实例, 加载浏览器, 以及关闭浏览器。当然, 因为基于Node,所以支持跨平台使用!
+
+`chrome-remote-interface` 是一个底层API, 比 Puppeteer's API 更底层. 比起直接使用 DevTools protocol 来说, 此API更加方便.
+
 
 然后,  创建 `index.js` 文件, 并输入内容:
 
@@ -217,6 +226,7 @@ E:\CODE_ALL\04_Demo_ALL\headless>node index.js
 1. 垃圾收集简介 - GC参考手册
 
 ```
+
 
 当然, 这里的演示很简单。 实际上可以执行各种操作, 比如, 用JS模拟点击某个链接, 填写并提交表单, 执行Ajax, 以及其他交互。
 
