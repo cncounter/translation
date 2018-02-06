@@ -1,14 +1,89 @@
 # NodeJS调用HeadLess-Chrome
 
-HeadLess就是无界面的意思。
+`Headless` 是指没有图形化界面(GUI),运行在后台的程序。
 
-###  安装 Chrome
+本文先简要介绍命令行模式如何调用Chrome, 然后再介绍如何通过 NodeJS 来调用HeadLess-Chrome。 至于C++的API调用则不涉及。
 
-要求最新版, 至少是 Chrome60+。
+使用 HeadLess-Chrome 的好处是: 
+
+- 不需要显卡支持, 可以在Linux服务器环境上执行, 也就支持客户端调用。
+
+- 还可以用于自动化测试环境。 
+
+- 另外, 加入IP代理池拿来刷点击量/投票也是不错的选择, 如蘑菇代理: <http://www.mogumiao.com/>。
 
 
 
-### 1. 安装NodeJS
+
+###  1. 安装 Chrome
+
+要求最新版, 至少是 Chrome60+。 请通过搜索引擎来查询和下载。
+
+
+### 2. 命令行模式简介
+
+
+
+2.1 生成页面加载后的截图:
+
+```
+chrome --headless --screenshot=C:/cncounter_.screenshot.png  --window-size=1024,768 http://cncounter.com
+```
+
+如果有重定向, 则截图为重定向之后的网页, 因为是 loaded 之后再保存。
+
+
+2.2 页面打印为PDF文件:
+
+```
+chrome --headless --print-to-pdf=C:/cncounter.pdf  http://www.cncounter.com
+```
+
+2.3 其他命令行参数:
+
+
+- 自定义 user-agent: 
+
+```
+--user-agent="Renfufei.Test 02"
+```
+
+
+- 指定超时时间, 超过此时间测会强制触发 DOMContentLoaded 事件。 
+
+```
+--timeout=1000
+```
+
+- 指定 repl 以执行JS脚本:
+
+```
+--repl
+```
+
+- 指定窗口大小:
+
+```
+--window-size=1280,800
+```
+
+- 打印页面到 PDF 文件:
+
+```
+--print-to-pdf=C:/xxx.pdf
+```
+
+- 截屏:
+
+```
+--screenshot=C:/xxxx.png
+```
+
+更多参数请参考本文末尾的链接:
+
+
+
+### 3. 安装NodeJS
 
 然后安装 NodeJS。NodeJS中文网站是: <http://nodejs.cn/>, 简介如下:
 
@@ -54,7 +129,7 @@ npm config set registry "https://registry.npm.taobao.org" 
 
 
 
-### 2. 安装依赖
+### 4. 安装依赖
  
 在工作目录下, 创建 headless 项目, 初始化, 并安装依赖:
 
@@ -66,7 +141,7 @@ npm install chrome-remote-interface --save
 npm install chrome-launcher --save
 ```
 
-### 执行JS交互
+### 5. 执行JS脚本
 
 然后,  创建 `index.js` 文件, 并输入内容:
 
@@ -143,18 +218,18 @@ E:\CODE_ALL\04_Demo_ALL\headless>node index.js
 
 ```
 
-当然, 这里的演示很简单。 实际上可以执行各种操作, 比如, 用JS模拟点击某个链接, 填写并提交表单, 执行Ajax, 以及各种交互。
+当然, 这里的演示很简单。 实际上可以执行各种操作, 比如, 用JS模拟点击某个链接, 填写并提交表单, 执行Ajax, 以及其他交互。
 
-而且支持配置, 可以写到 JSON 配置文件里, 然后在Node脚本中调用。
+而且支持配置, 可以将配置写到 JSON 文件里, 然后在Node脚本中使用。
 
 还可以通过 Mocha 等测试平台进行校验, 判断是否达到UI或者UX的需求。
 
 
 
-### 页面截图(Screenshot)
+### 6. 页面截图(Screenshot)
 
 
-页面截图可以使用 Page 对象的 captureScreenshot 函数来执行:
+页面截图可以使用 Page 对象的 `captureScreenshot` 函数来执行:
 
 创建 `screenshot.js` 文件:
 
@@ -229,7 +304,13 @@ node screenshot.js
 看起来有点丑, 因为没有指定各种参数。
 
 
-总结
+### 7. 调用PDF打印
+
+
+
+
+
+### 总结
 
 Chrome 的 headless 模式可用于自动化测试，尽管还有一些不完善的地方。
 但毕竟是真实的浏览器, 比起其他测试套具来说具有很多优势。
@@ -245,12 +326,29 @@ Chrome 的 headless 模式可用于自动化测试，尽管还有一些不完善
 参考: <https://www.sitepoint.com/headless-chrome-node-js/>
 
 
-其他参考:
+其他链接:
 
-- <http://phantomjs.org/>
-- <http://casperjs.org/>
-- <https://developers.google.com/web/updates/2017/04/headless-chrome>
-- <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function
-- <https://www.sitepoint.com/simplifying-asynchronous-coding-async-functions/>
+
+1. [Getting Started with Headless Chrome](https://developers.google.com/web/updates/2017/04/headless-chrome)
+
+1. [Chrome-Headless模式shell命令行参数1](https://cs.chromium.org/chromium/src/headless/app/headless_shell.cc)
+
+1. [Chrome-Headless模式shell命令行开关](https://cs.chromium.org/chromium/src/headless/app/headless_shell_switches.cc)
+
+1. [DIV.IO中文文章: Chrome Headless 模式  ](https://div.io/topic/1978)
+
+1. [Headless Chromium README.md](https://chromium.googlesource.com/chromium/src/+/master/headless/README.md)
+
+1. [Chrome DevTools Protocol ](https://chromedevtools.github.io/devtools-protocol/)
+
+1. [Automated testing with Headless Chrome](https://developers.google.com/web/updates/2017/06/headless-karma-mocha-chai)
+
+1. [phantomjs官网](http://phantomjs.org/)
+
+1. [casperjs官网](http://casperjs.org/)
+
+1. [MDN: async function 简介](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function)
+
+1. [sitepoint 文章: Async Function 实战](https://www.sitepoint.com/simplifying-asynchronous-coding-async-functions/)
 
 
