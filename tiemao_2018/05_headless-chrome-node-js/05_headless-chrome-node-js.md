@@ -49,7 +49,7 @@ chrome --headless --print-to-pdf=C:/cncounter.pdf  http://www.cncounter.com
 ```
 
 
-- 指定超时时间, 超过此时间测会强制触发 DOMContentLoaded 事件。 
+- 指定超时时间, 超过此时间未完成加载则会强制触发 DOMContentLoaded 事件。 
 
 ```
 --timeout=1000
@@ -117,19 +117,30 @@ npm -v
 ```
 
 
-NodeJS安装完成后, 自动安装了 node, npm 等工具。
+NodeJS安装完成后, 自动安装了 node环境, 以及 npm 等工具。
 
-其中, node 是一个 REPL 环境, 可以执行各种JS脚本, 示例如下所示:
+其中, node 是一个 REPL 环境, 可以执行各种JS脚本, 示例如下。
 
-![](03_node_usage.jpg)
+```
+C:\Users\Administrator>node
+> Math.pow(2, 8)
+256
+> console.log(':'+new Date().getTime())
+:1517903686795
+undefined
+> .exit
 
-npm 全称就是 node package manage,是软件包管理工具.
+C:\Users\Administrator>
+```
+
+npm 全称就是 node package manage, 即Node的软件包管理工具.
 
 如果某些安装包被墙,则可以配置代理, 或者使用淘宝的npm注册中心:
 
 ```
 npm config set registry "https://registry.npm.taobao.org" 
 ```
+
 
 
 
