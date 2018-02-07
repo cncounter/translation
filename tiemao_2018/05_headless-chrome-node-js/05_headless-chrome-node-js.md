@@ -457,6 +457,110 @@ puppeteer相关的API和配置项请参考: <https://github.com/GoogleChrome/pup
 
 
 
+### 9. 使用 http 服务来调用
+
+NodeJS 通过 http/https 模块来提供web服务。
+
+创建新项目:
+
+```
+mkdir -p pdfprint
+cd pdfprint
+```
+
+创建 `server.js` 文件
+
+```
+// 模块以及端口号
+const http = require('http');
+const http_port = 80;
+
+// 请求处理器
+const requestHandler = (request, response) => {
+  console.log("request.url="+request.url);
+  response.end('Hello Node.js Server!');
+};
+
+// server实例
+const server = http.createServer(requestHandler);
+// 监听
+server.listen(http_port, function(err){
+  if (err) {
+    return console.error('something bad happened', err);
+  }
+  console.log(`server is listening on ${http_port}`);
+});
+
+```
+
+启动服务器:
+
+```
+node server.js
+```
+
+
+安装 express 框架:
+
+```
+mkdir -p pdfprint
+cd pdfprint
+
+npm install express --save
+
+npm install express-handlebars --save
+
+```
+
+其中 `--save` 的意思,是同时将依赖信息写入 package.json;
+
+
+然后编写 express-server.js 文件:
+
+```
+// express参考API: http://expressjs.com/en/api.html
+
+// 模块依赖
+const path = require('path');
+const express = require('express');
+// 端口号
+const http_port = 80;
+// express服务实例
+const server = express();
+
+// 请求 Mapping
+// get, post, put, all 等
+server.get('/', function(request, response){
+    // express 包装的参数
+    var params = request.query;
+    response.json(params);
+});
+
+// 启动监听
+server.listen(http_port, function(err){
+  if (err) {
+    // 如果启动时发生错误:
+    return console.error('something bad happened', err);
+  }
+  console.log(`server is listening on ${http_port}`);
+});
+```
+
+启动 express 服务器:
+
+```
+node express-server.js
+```
+
+启用调试模式:
+```
+set DEBUG=express*
+node express-server.js
+
+```
+
+
+参考: <https://blog.risingstack.com/your-first-node-js-http-server/>
 
 
 
