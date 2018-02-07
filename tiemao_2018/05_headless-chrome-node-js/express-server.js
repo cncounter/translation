@@ -1,6 +1,7 @@
 // express参考API: http://expressjs.com/en/api.html
 
 // 模块依赖
+var http = require('http');
 const path = require('path');
 const express = require('express');
 const exphbs = require('express-handlebars');
@@ -8,6 +9,8 @@ const exphbs = require('express-handlebars');
 const http_port = 80;
 // express服务实例
 const server = express();
+//
+const printpdf = require('./printpdf.js');
 
 // mount 事件
 server.on('mount', function (parent) {
@@ -73,6 +76,26 @@ server.get('/random.json', function(request, response){
 server.get('/pdf.json', function(request, response){
 	// express 包装的参数
 	var params = request.query;
+	// 请求URL
+	var url = params.url;
+	// 文件保存路径
+	var path = params.path;
+	// 回调地址
+	var callback = params.callback;
+
+	//
+	var config = {
+		url : url,
+		path : path,
+		callback : callback
+	};
+	var promise = printpdf.printpdf(config);
+	//
+	promise.then(function(){
+		// 回调通知
+		callback && http.get(callback);
+	});
+
     //response.end('Hello From Express!');
     response.json(params);
 });
