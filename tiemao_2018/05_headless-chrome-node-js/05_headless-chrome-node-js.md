@@ -759,6 +759,54 @@ http://localhost/pdf.json?callback=http%3A%2F%2Fwww.cncounter.com%2Ftest%2Fcount
 ```
 
 
+### 11. zip压缩文件夹
+
+安装 zip-folder: 
+
+```
+npm install zip-folder --save
+```
+
+创建 testzip.js 文件, 简单代码:
+
+```
+
+
+var zipFolder = require('zip-folder');
+//
+function zip(folderPath, zipFilePath){
+     
+    zipFolder(folderPath, zipFilePath, function(err) {
+        if(err) {
+          console.log('oh no!', err);
+        } else {
+          console.log('EXCELLENT');
+        }
+    });
+};
+
+//
+var workspace = "workspace";
+
+// 文件名称
+var filename = "testZip.zip";
+var taskid = 12345;
+// 文件保存路径
+var dirname = workspace + "/" + taskid;
+// 简单ZIP
+zip(dirname, workspace+"/"+filename);
+
+
+```
+
+执行: 
+
+```
+node testzip.js
+```
+
+
+
 
 ### 总结
 
