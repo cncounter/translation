@@ -457,7 +457,7 @@ puppeteer相关的API和配置项请参考: <https://github.com/GoogleChrome/pup
 
 
 
-### 9. 使用 http 服务来调用
+### 9. 使用 http 服务
 
 NodeJS 通过 http/https 模块来提供web服务。
 
@@ -564,6 +564,202 @@ node express-server.js
 
 
 
+### 10. 用 http 服务来调用
+
+
+创建 printpdf.js 文件:
+
+```
+// 简单的打印PDF的模块
+// 提供2个方法: 
+// initBrowser(); 初始化浏览器
+// printpdf(config, browser); 
+!(function(exports){
+
+    // 加载依赖库
+    const puppeteer = require('puppeteer');
+
+    async function initBrowser(){
+      // 创建浏览器实例
+      const browser = await puppeteer.launch();
+      return browser;
+    };
+
+    async function printpdf(config, browser){
+        //
+        var browser = config.browser;
+        var needCloseBrowser = false;
+        //
+        if(!browser){
+            browser = await initBrowser();
+            needCloseBrowser = true;
+        }
+        // 打开新标签页
+        const pageTab = await browser.newPage();
+        
+        // 请求URL
+        var url = config.url;
+        // 文件保存路径
+        var path = config.path;
+        // 回调地址
+        var callback = config.callback;
+        // 打开页面
+        await pageTab.goto(url);
+        //
+        var pdf_option = {
+              // 保存路径, 可以为绝对路径
+              path: path,
+              // 缩放倍数, 默认 1
+              //scale: 1,
+              // 页眉模板
+              //headerTemplate: '',
+              // 页脚模板
+              //footerTemplate: '',
+              // 是否显示页眉页脚, 默认 false
+              displayHeaderFooter : false,
+              // 打印背景图片, 默认 false
+              printBackground : true,
+              // 水平方向, 默认 false
+              //landscape : true,
+              // 打印页码范围, 默认空串表示所有,格式: '1-5, 8, 11-13'
+              // pageRanges : '',
+              // 纸张尺寸, 默认 'Letter', 如:
+              // Letter:Legal:Tabloid:Ledger:
+              // A0:A1:A2:A3:A4:A5:A6:
+              format : 'A4',
+              // format 优先级比 width 和 height 高
+              // 可以带单位,支持'px','cm','in','mm'
+              //width : 800,
+              //height : '600px',
+              // 页边距
+              margin : {
+                  top    : '1cm',
+                  right  : '1cm',
+                  bottom : '1cm',
+                  left   : '1cm',
+              }
+          };
+      // 模拟 screen 媒介样式来打印PDF
+      await pageTab.emulateMedia('screen');
+      // 打印PDF
+      await pageTab.pdf(pdf_option);
+
+      // 关闭标签页
+      await pageTab.close()
+
+      // 执行完成之后, 关闭浏览器
+      if(needCloseBrowser){
+        await browser.close();
+      }
+    };
+
+    //
+    exports.initBrowser = initBrowser;
+    exports.printpdf = printpdf;
+
+// end
+})(exports);
+```
+
+
+创建 express-pdf.js 文件:
+
+```
+// express参考API: http://expressjs.com/en/api.html
+
+// 模块依赖
+var http = require('http');
+const path = require('path');
+const express = require('express');
+// 端口号
+const http_port = 80;
+// express服务实例
+const server = express();
+//
+const printpdf = require('./printpdf.js');
+
+// 请求 Mapping; get, post, put, all 等
+
+server.get('/printpdf.json', function(request, response){
+    // express 包装的参数
+    var params = request.query;
+    // 请求URL
+    var url = params.url;
+    // 文件保存路径
+    var path = params.path;
+    // 文件名称
+    var filename = params.filename;
+    // 回调地址
+    var callback = params.callback;
+    //
+    var startMillis = new Date().getTime();
+
+    //
+    var config = {
+        url : url,
+        path : path,
+        callback : callback
+    };
+    var promise = printpdf.printpdf(config);
+    //
+    promise.then(function(){
+        //
+        var successMillis = new Date().getTime();
+        var costMillis = successMillis - startMillis;
+        //
+        console.log("costMillis=", costMillis);
+        //  加上成功标识
+        // 回调通知
+        callback && http.get(callback, function(resp){
+            let data = '';
+            // A chunk of data has been recieved.
+            resp.on('data', (chunk) => {
+                data += chunk;
+                data = data.trim();
+            });
+            resp.on('end', () => {
+                console.log("request:"+callback, ";statusCode=", resp.statusCode);
+                console.log("data="+data);
+            });
+        });
+    }).catch(function(err){
+        //
+        console.error(err);
+        //  加上错误消息
+        // 回调通知
+        callback && http.get(callback);
+    });
+
+    response.json(params);
+});
+
+
+// 启动监听
+server.listen(http_port, function(err){
+  if (err) {
+    // 如果启动时发生错误:
+    return console.error('something bad happened', err);
+  }
+  console.log(`server is listening on ${http_port}`);
+});
+
+```
+
+
+启动服务器:
+
+```
+node express-pdf.js
+```
+
+在浏览器输入地址,加入参数访问即可查看效果:
+
+```
+http://localhost/pdf.json?callback=http%3A%2F%2Fwww.cncounter.com%2Ftest%2Fcounter.jsp%3Fformat%3Djson&url=http%3A%2F%2Fonline.yiboshi.com%2Fonline%2Fysdk%2Flogin.html&path=E%3A%2Fonline.yiboshi.com_login.pdf
+```
+
+
+
 ### 总结
 
 Chrome 的 headless 模式可用于自动化测试，尽管还有一些不完善的地方。
@@ -605,6 +801,6 @@ Chrome 的 headless 模式可用于自动化测试，尽管还有一些不完善
 
 1. [MDN: async function 简介](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function)
 
-1. [sitepoint 文章: Async Function 实战](https://www.sitepoint.com/simplifying-asynchronous-coding-async-functions/)
+1. [sitepoint文章: Async Function 实战](https://www.sitepoint.com/simplifying-asynchronous-coding-async-functions/)
 
-
+1. [NodeJS中文网-API文档](http://nodejs.cn/api/http.html)

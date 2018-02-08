@@ -20,7 +20,7 @@ server.on('mount', function (parent) {
 // 中间件模式
 server.use(function(request, response, next){
   console.log("request.url="+request.url);
-  console.log("request.headers=", request.headers);
+  //console.log("request.headers=", request.headers);
   next();
 });
 
@@ -50,9 +50,9 @@ server.set('views', path.join(__dirname, 'views'));
 // get, post, put, all 等
 
 server.all('*', function requireAuth(request, response, next){
-	// 校验
-	//
-	next();
+    // 校验
+    //
+    next();
 });
 
 //
@@ -74,27 +74,65 @@ server.get('/random.json', function(request, response){
 
 //
 server.get('/pdf.json', function(request, response){
-	// express 包装的参数
-	var params = request.query;
-	// 请求URL
-	var url = params.url;
-	// 文件保存路径
-	var path = params.path;
-	// 回调地址
-	var callback = params.callback;
+    // express 包装的参数
+    var params = request.query;
+    // 请求URL
+    var url = params.url;
+    // 文件保存路径
+    var path = params.path;
+    // 文件名称
+    var filename = params.filename;
+    // 回调地址
+    var callback = params.callback;
+    //
+    var startMillis = new Date().getTime();
 
-	//
-	var config = {
-		url : url,
-		path : path,
-		callback : callback
-	};
-	var promise = printpdf.printpdf(config);
-	//
-	promise.then(function(){
-		// 回调通知
-		callback && http.get(callback);
-	});
+    //
+    var config = {
+        url : url,
+        path : path,
+        callback : callback
+    };
+    var promise = printpdf.printpdf(config);
+    //
+    promise.then(function(){
+        //
+        var successMillis = new Date().getTime();
+        var costMillis = successMillis - startMillis;
+        //
+        console.log("costMillis=", costMillis);
+        //  加上成功标识
+        // 回调通知
+        callback && http.get(callback, function(resp){
+            let data = '';
+              // A chunk of data has been recieved.
+            resp.on('data', (chunk) => {
+                data += chunk;
+                data = data.trim();
+            });
+            resp.on('end', () => {
+                console.log("request:"+callback, ";statusCode=", resp.statusCode);
+                console.log("data="+data);
+            });
+        });
+    }).catch(function(err){
+        //
+        console.error(err);
+        //  加上错误消息
+        // 回调通知
+        callback && http.get(callback, function(resp){
+            let data = '';
+              // A chunk of data has been recieved.
+            resp.on('data', (chunk) => {
+                data += chunk;
+                data = data.trim();
+            });
+            resp.on('end', () => {
+                console.log("request:"+callback, ";statusCode=", resp.statusCode);
+                console.log(data);
+            });
+        });
+    });
 
     //response.end('Hello From Express!');
     response.json(params);
