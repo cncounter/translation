@@ -754,12 +754,203 @@ node express-pdf.js
 
 在浏览器输入地址,加入参数访问即可查看效果:
 
+<http://localhost/pdf.json?callback=http%3A%2F%2Fwww.cncounter.com%2Ftest%2Fcounter.jsp%3Fformat%3Djson&url=http%3A%2F%2Fonline.yiboshi.com%2Fonline%2Fysdk%2Flogin.html&path=E%3A%2Fonline.yiboshi.com_login.pdf>
+
+
+### 11. 截屏并保存
+
+
+
+创建 puppeteer-screenshot.js 文件:
+
 ```
-http://localhost/pdf.json?callback=http%3A%2F%2Fwww.cncounter.com%2Ftest%2Fcounter.jsp%3Fformat%3Djson&url=http%3A%2F%2Fonline.yiboshi.com%2Fonline%2Fysdk%2Flogin.html&path=E%3A%2Fonline.yiboshi.com_login.pdf
+// 简单的截屏模块
+// 提供2个方法: 
+// initBrowser(); 初始化浏览器
+// screenshot(config, browser); 
+!(function(exports){
+
+    // 加载依赖库
+    const puppeteer = require('puppeteer');
+
+    async function initBrowser(){
+      // 创建浏览器实例
+      const browser = await puppeteer.launch();
+      return browser;
+    };
+
+    async function screenshot(config, browser){
+        //
+        var browser = config.browser;
+        var needCloseBrowser = false;
+        //
+        if(!browser){
+            browser = await initBrowser();
+            needCloseBrowser = true;
+        }
+        // 打开新标签页
+        const pageTab = await browser.newPage();
+        
+        // 请求URL
+        var url = config.url;
+        // 文件保存路径
+        var path = config.path;
+        // 回调地址
+        var callback = config.callback;
+        // 打开页面
+        await pageTab.goto(url);
+        //
+        var screenshot_option = {
+              // 保存路径, 绝对/相对路径
+              path: path,
+              // jpeg or png
+              type: 'png',
+              // 是否为全页面截屏, 默认 false
+              fullPage : true,
+              // 省略白色背景, 可能为透明, 默认 false
+              omitBackground : true
+              // 图片质量; 0-100, png无效
+              // ,quality: 100
+              // 指定截屏范围
+              /*
+              ,clip : {
+                  x  : 0,
+                  y  : 0,
+                  width : '1cm',
+                  height   : '1cm',
+              }*/
+          };
+      // 模拟 screen 媒介样式来截屏screenshot
+      await pageTab.emulateMedia('screen');
+      // 截屏screenshot
+      // Promise which resolves to buffer with captured screenshot
+      var buffer = await pageTab.screenshot(screenshot_option);
+
+      // 关闭标签页
+      await pageTab.close()
+      // 执行完成之后, 关闭浏览器
+      if(needCloseBrowser){
+        await browser.close();
+      }
+    };
+
+    //
+    exports.initBrowser = initBrowser;
+    exports.screenshot = screenshot;
+
+// end
+})(exports);
 ```
 
 
-### 11. zip压缩文件夹
+
+创建 express-screenshot.js 文件:
+
+```
+// express参考API: http://expressjs.com/en/api.html
+
+// 模块依赖
+var http = require('http');
+const path = require('path');
+const express = require('express');
+// 端口号
+const http_port = 80;
+// express服务实例
+const server = express();
+//
+const screenshot = require('./puppeteer-screenshot.js');
+
+// 请求 Mapping; get, post, put, all 等
+
+server.get('/screenshot.json', function(request, response){
+    // express 包装的参数
+    var params = request.query;
+    // 请求URL
+    var url = params.url;
+    // 文件保存路径
+    var path = params.path;
+    // 文件名称
+    var filename = params.filename;
+    // 回调地址
+    var callback = params.callback;
+    //
+    var startMillis = new Date().getTime();
+
+    //
+    var config = {
+        url : url,
+        path : path,
+        callback : callback
+    };
+    var promise = screenshot.screenshot(config);
+    //
+    promise.then(function(){
+        //
+        var successMillis = new Date().getTime();
+        var costMillis = successMillis - startMillis;
+        //
+        console.log("costMillis=", costMillis);
+        //  加上成功标识
+        // 回调通知
+        callback && http.get(callback, function(resp){
+            let data = '';
+            // A chunk of data has been recieved.
+            resp.on('data', (chunk) => {
+                data += chunk;
+                data = data.trim();
+            });
+            resp.on('end', () => {
+                console.log("request:"+callback, ";statusCode=", resp.statusCode);
+                console.log("data="+data);
+            });
+        });
+    }).catch(function(err){
+        //
+        console.error(err);
+        //  加上错误消息
+        // 回调通知
+        callback && http.get(callback);
+    });
+
+    response.json(params);
+});
+
+
+// 启动监听
+server.listen(http_port, function(err){
+  if (err) {
+    // 如果启动时发生错误:
+    return console.error('something bad happened', err);
+  }
+  console.log(`server is listening on ${http_port}`);
+});
+
+```
+
+
+启动服务器:
+
+```
+node express-screenshot.js
+```
+
+在浏览器输入地址,加入参数访问即可查看效果:
+
+<http://localhost/screenshot.json?callback=http%3A%2F%2Fwww.cncounter.com%2Ftest%2Fcounter.jsp%3Fformat%3Djson&url=https%3A%2F%2Fraw.githubusercontent.com%2Fcncounter%2Fcncounter-web%2Fmaster%2Fsrc%2Fmain%2Fwebapp%2FWEB-INF%2Fweb.xml&path=E%3A%2Fonline.yiboshi.com_login.png>
+
+
+
+
+
+
+
+
+
+
+
+
+
+### 12. zip压缩文件夹
 
 安装 zip-folder: 
 
@@ -806,8 +997,7 @@ node testzip.js
 ```
 
 
-
-### 12. 文件下载
+### 13. 文件下载
 
 创建 testdownload.js 文件:
 
