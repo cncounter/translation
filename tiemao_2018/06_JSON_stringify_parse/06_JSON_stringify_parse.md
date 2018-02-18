@@ -1,23 +1,23 @@
-# JSON.parse()与JSON.stringify()方法简介
+# JSON 序列化与反序列化
 
 
-### JSON.parse()
-
-### JSON.parse()
+### JSON.parse() 方法
 
 The JSON.parse() method parses a JSON string, constructing the JavaScript value or object described by the string. An optional reviver function can be provided to perform a transformation on the resulting object before it is returned.
 
-JSON.parse()方法解析JSON字符串,构建JavaScript值或对象所描述的字符串.可以提供一个可选的兴奋剂函数生成的对象上执行转换之前返回。
+`JSON.parse()`方法, 可以将JSON字符串解析为JavaScript对象或对应的值。
+
+在使用时, 第二个参数可以传一个 reviver 函数, 在返回之前调用, 可以将生成的对象进行某些转换操作。
 
 ```
 var json = '{"result":true, "count":42}';
 obj = JSON.parse(json);
 
 console.log(obj.count);
-// expected output: 42
+// 预期输出: 42
 
 console.log(obj.result);
-// expected output: true
+// 预期输出: true
 
 ```
 
@@ -25,7 +25,7 @@ console.log(obj.result);
 
 Syntax
 
-语法
+#### 参数格式
 
 ```
 JSON.parse(text[, reviver])
@@ -35,15 +35,13 @@ JSON.parse(text[, reviver])
 
 Parameters
 
-参数
+#### 参数说明
 
 text
 
-文本
-
-The string to parse as JSON. See the JSON object for a description of JSON syntax.
-
-字符串解析为JSON。看到JSON对象的JSON的语法的描述。
+- `text`
+  The string to parse as JSON. See the JSON object for a description of JSON syntax.
+  要解析的JSON字符串。看到JSON对象的JSON的语法的描述。
 
 reviver Optional
 
@@ -491,8 +489,10 @@ console.log(restoredSession);
 
 相关链接:
 
-<https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/parse>
+<https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/JSON>
 
-<https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify>
+<https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/JSON/parse>
+
+<https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify>
 
 
