@@ -1,10 +1,10 @@
 # Saying "NO"
 
-# 说“不”
+# 学会说“不”, 拒绝背锅
 
 I saw [this cartoon](http://theoatmeal.com/comics/design_hell) in a tweet today. It’s the story of how a boss corrupts the work of a professional.  It’s a funny cartoon, and a sad story that happens all too often in our profession.  But who, exactly, was at fault?...
 
-我看到这幅漫画(http://theoatmeal.com/comics/design_hell)在今天的一条微博。这是老板如何腐败的故事一个专业的工作.这是一个有趣的卡通,和一个悲伤的故事经常发生在我们的职业。但谁,错了吗?…
+今天在tweet上看到一幅有趣的漫画 <http://theoatmeal.com/comics/design_hell>。讲述老板是如何如何坑死了专业设计师的作品. 漫画很有趣, 在我们的工作中这种悲剧也经常会发生。那到底是谁的锅?...
 
 The difference between a laborer and a professional is that a laborer takes orders from his boss, and a professional provides input to his superiors.  Laborers are hired to take direction.  Professionals are hired to ensure that the direction chosen makes sense.
 
