@@ -1,10 +1,10 @@
 # Saying "NO"
 
-# 学会说“不”, 拒绝背锅
+# 勇敢说不,拒绝背锅
 
 I saw [this cartoon](http://theoatmeal.com/comics/design_hell) in a tweet today. It’s the story of how a boss corrupts the work of a professional.  It’s a funny cartoon, and a sad story that happens all too often in our profession.  But who, exactly, was at fault?...
 
-今天在tweet上看到一幅有趣的漫画 <http://theoatmeal.com/comics/design_hell>。讲述老板是如何如何坑死了专业设计师的作品. 漫画很有趣, 在我们的工作中这种悲剧也经常会发生。
+今天在tweet上看到一幅有趣的漫画 <http://theoatmeal.com/comics/design_hell>。讲述上级是如何如何坑死了专业设计师的作品. 漫画很有趣, 在我们的工作中这种悲剧也经常会发生。
 
 到底是谁的锅?...
 
@@ -31,7 +31,7 @@ Doctor:  _“Ooops, sorry, time for my break.”_
 
 Clearly we don’t expect doctors to behave this way.  Even though the patient is the boss, the patient expects the doctor to have the answers and help set the direction.
 
-很明显这个医生很坑人。即使这个病人就是你的老板, 他还是希望医生能够给出答案, 并提出有用的建议和治疗方向。
+很明显这个医生很坑人。即使这个病人就是你的上级, 他还是希望医生能够给出答案, 并提出有用的建议和治疗方向。
 
 Here’s another version of the conversation:
 
@@ -56,7 +56,7 @@ Which of these two doctors would you rather be?  Now project these two doctors i
 
 Programmers are professionals.  They know more about designing and implementing software systems than their bosses do.  Indeed, they are hired for this knowledge and expertise.  And they have a solemn duty to prevent their managers from doing things that would be harmful.
 
-程序员是专业人士。他们知道更多关于设计和实现软件系统比他们的老板。事实上,他们雇佣了这方面的知识和技能.和他们有一个庄严的义务,以防止他们的经理做的事情将是有害的。
+程序员作为软件行业的专业人士。比管理人员具备更多设计和实现相关的知识。事实上,就是因为在这方面的知识和技能才被聘用. 天然有一项神圣的义务, 就是防止项目经理做蠢事, 把团队带进坑里。
 
 All this boils down to one simple thing.  Professionals are willing to say “No”. When their managers come to them with direction that makes no sense, a professional programmer will refuse the direction.
 
@@ -64,23 +64,23 @@ All this boils down to one simple thing.  Professionals are willing to say “No
 
 Is this risky?  Sure.  But part of being a professional is the willingness to stand on principle.  There are lines that a professional will not cross.
 
-这是危险的吗?确定。但作为一个专业的一部分是愿意站在原则。有行专业不会交叉。
+这是做有风险吗? 确实是。但作为专业人士, 应该坚持原则, 不能没有底线。
 
 Of course saying “No.” is only one side of the coin.  Professionals are also expected to explain their positions, and come up with viable alternatives.  Professionals _negotiate_ with their superiors until both parties are satisfied with the chosen direction.
 
-当然说“不。”只是硬币的一面。专业人士也将解释自己的立场,提出可行的替代方案.专业人士_negotiate_上级,直到双方都满意的选择方向。
+当然, 说“No.”只是第一步。 专业人士会展现自己的职业素质, 提出可行的替代方案. 专业人士会与上级进行争取, 直到双方都满意所选择的方案。
 
 The poor web-designer schmuck in that cartoon was not behaving as a professional. He was behaving as a laborer.  The fiasco at the end was _his_ fault.  He should have said “No.” and started a _negotiation_ with his customer instead of just doing everything the customer said.
 
-这个卡通的可怜的网页设计师的笨蛋不像一个专业的行为。他是作为一个雇员的行为。最后的惨败是_his_的错。他应该说“没有.”,开始_negotiation_与他的客户,而不只是做任何客户说。
+漫画中那个可怜的网页设计师看起来有点蠢, 不像是一个专业人员的行为。作为一个只会听指挥的打工者, 最后的结果当然是成为背锅侠。他应该勇敢说 “No”, 在一开始就与客户进行有效的沟通和谈判, 而不是听客户的指挥。
 
 The cartoonist painted the web-designer as a wise but impotent victim, and the boss as the overbearing dufus.  The reality is that the web-designer took the role of the victim voluntarily and shirked his responsibility to refuse direction that he considered harmful.
 
-漫画家画的网页设计师明智但无能的受害者,和老板专横的杜甫.现实情况是,网页设计师把受害者的角色自愿和规避责任拒绝方向,他被认为是有害的。
+漫画家塑造的设计师是一个聪明却软弱的受害者, 而上级却是一个专横的例子. 网页设计师事实上是咎由自取, 因为他规避责任, 拒绝指出错误的地方。
 
 If you are a professional, you _never_ allow yourself to be put in the role of the victim.
 
-如果你是专业人士,你就绝不应该让自己成为受害者的角色。
+如果你是专业人士, 就绝不会干这类蠢事, 让自己变成受害者。
 
 Posted by Uncle Bob on 12/04/2009
 
