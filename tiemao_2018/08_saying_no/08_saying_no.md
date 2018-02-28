@@ -27,11 +27,24 @@ Patient: "Isn’t there something less drastic you could do?"
 Doctor:  "Ooops, sorry, time for my break."
 ```
 
+---
+
+```
+患者: "医生, 我胳膊受伤了。"
+医生: "想要我帮你做点什么?"
+患者: "我的手很疼, 能不能让它不疼"
+医生: "是要把你的胳膊锯掉么? 这我在行！"
+患者: "不不不,我的意思是说让手不要那么疼了。"
+医生: "嗯,也可以把你手上所有的神经给挑断, 这样就不疼了。"
+患者: "额, 有没有危害小点的治疗手段呢?"
+医生: "哦哦哦~~抱歉啊抱歉~我下班时间到了,下次再给你看看吧！"
+```
+
 
 
 Clearly we don’t expect doctors to behave this way.  Even though the patient is the boss, the patient expects the doctor to have the answers and help set the direction.
 
-很明显这个医生很坑人。即便对话中的这个病人换成你的上级, 也还是会希望医生能够做出解答, 并给出有用的建议和治疗方向。
+看到这个坑人的医生是不是想抽他?。即便对话中的病人换成你的上级, 他也是希望医生能够做出解答, 并给出有用的建议和治疗方向。
 
 Here’s another version of the conversation:
 
@@ -46,6 +59,19 @@ Patient:  "No, just cut it off."
 Doctor:   "Sir, I do not cut off healthy arms."
 Patient:  "But I’m paying you.  You have to do what I say!"
 Doctor:   "No, sir, I don’t.  Cutting off your arm would violate my oath."
+```
+
+---
+
+```
+患者: "医生, 请帮我把手给锯了。"
+医生: "为什么叻?"
+患者: "我这胳膊疼得受不了, 太坑人了, 将他锯掉吧。"
+医生: "让我看看, 嗯嗯, 看起来是骨折了, 可能有一点点骨裂。 建议你做一个X光！"
+患者: "不用那么麻烦, 直接锯掉就行了。"
+医生: "抱歉, 我从来不锯可以医好的手。"
+患者: "但顾客是上帝！我付钱给你, 你就应该听我的！"
+医生: "抱歉~我不会锯的。给你锯了才是侮辱我的智商！"
 ```
 
 
