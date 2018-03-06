@@ -1,0 +1,3 @@
+
+nohup node index.js &
+
