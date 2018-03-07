@@ -172,6 +172,8 @@ npm install -g cnpm --registry=https://registry.npm.taobao.org
 
 #### cnpm 安装 puppeteer
 
+puppeteer, 音[,pʌpɪ'tɪr]; 类似: 帕皮提尔; 意思是 操纵,傀儡师;
+
  
 在工作目录下, 创建 puppeteer demo 项目, 初始化, 并安装依赖:
 
@@ -284,6 +286,10 @@ node demo-pdf.js
 
 更多puppeteer相关的API和配置项请参考: <https://github.com/GoogleChrome/puppeteer/blob/master/docs/api.md>
 
+
+#### 6.2 中文问题:
+
+请参考: <https://segmentfault.com/a/1190000011382062>
 
 
 ### 7. 使用 http 服务
