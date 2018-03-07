@@ -1,34 +1,34 @@
 # Building Java Projects with Maven
 
-# 与Maven构建Java项目
+# 用Maven构建Java项目
 
 This guide walks you through using Maven to build a simple Java project.
 
-本指南指导您通过使用Maven构建一个简单的Java项目。
+本文带你用Maven来构建一个简单的Java项目。
 
 ## What you’ll build
 
-## 你会建立
+## 任务目标
 
 You’ll create an application that provides the time of day and then build it with Maven.
 
-您将创建一个应用程序,它提供一天中不同的时间,然后用Maven构建它。
+创建一个简单的应用程序, 提供一天中不同的时间, 创建完成后, 用Maven来进行构建。
 
 ## What you’ll need
 
-## 你需要什么
+## 准备工作
 
 *   About 15 minutes
 
-* 15分钟
+* 大约需要15分钟左右的时间。
 
 *   A favorite text editor or IDE
 
-*最喜欢的文本编辑器或IDE
+* 选择一款熟悉的文本编辑器或IDE
 
 *   [JDK 6](http://www.oracle.com/technetwork/java/javase/downloads/index.html) or later
 
-*(JDK 6)(http://www.oracle.com/technetwork/java/javase/downloads/index.html)或更高版本
+* 安装 [JDK 6](http://www.oracle.com/technetwork/java/javase/downloads/index.html) 或更高版本
 
 ## How to complete this guide
 
