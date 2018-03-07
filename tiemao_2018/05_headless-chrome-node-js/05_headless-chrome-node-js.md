@@ -287,9 +287,14 @@ node demo-pdf.js
 更多puppeteer相关的API和配置项请参考: <https://github.com/GoogleChrome/puppeteer/blob/master/docs/api.md>
 
 
-#### 6.2 中文问题:
+#### 6.2 Linux 中文乱码问题:
 
-请参考: <https://segmentfault.com/a/1190000011382062>
+请参考: <http://182.92.149.152/python/article_96.html>
+
+如果是 CentOS7.2/7.3的依赖库问题, 请参考: <https://segmentfault.com/a/1190000011382062>
+
+
+
 
 
 ### 7. 使用 http 服务
