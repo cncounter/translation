@@ -261,6 +261,20 @@ OK,去服务端检查一下吧!
 OK, 大功告成 :)
 
 
+### 5. 卸载 nfs 挂载
+
+找到挂载的目录，执行umount命令:
+
+```
+umount -f -l /usr/local/download/web2
+```
+
+其中:
+
+* `-f`参数 – Force unmount (in case of an unreachable NFS system). (Requires kernel 2.1.116 or later.)
+
+* `-l`参数 – Lazy unmount. Detach the filesystem from the filesystem hierarchy now, and cleanup all references to the filesystem as soon as it is not busy anymore. (Requires kernel 2.4.11 or later.)
+
 
 
 作者Twitter: [Srijan Kishore](http://twitter.com/howtoforgecom)
