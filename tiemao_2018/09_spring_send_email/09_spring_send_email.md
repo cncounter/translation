@@ -1,5 +1,7 @@
 # spring通过QQ邮箱发送Email
 
+> 本文简要介绍如何通过Spring框架的支持,通过QQ邮箱来发送简单文本邮件,以及附件。
+
 spring-context-support很早就内置支持邮件发送。
 
 当然, 官方文档明确指出, 需要依赖 JavaMail 这个库。
@@ -25,9 +27,17 @@ pom.xml中的依赖如下:
     <artifactId>mail</artifactId>
     <version>1.4.7</version>
 </dependency>
+<dependency>
+    <groupId>commons-io</groupId>
+    <artifactId>commons-io</artifactId>
+    <version>2.2</version>
+</dependency>
 ```
 
-## 接口与相关的实现类
+其中, `commons-io` 根据需要决定, 本文中使用了 IOUtils工具类, 提供了很多方便又强大的IO工具方法, 有兴趣可以研究一下。
+
+
+## Spring-Mail 相关的接口与实现类
 
 - `MailSender` , 发送简单邮件的顶层接口。
 - `JavaMailSender` , 继承顶层接口, 支持发送 MIME 邮件。
@@ -169,4 +179,4 @@ Spring Email使用教程: <http://www.baeldung.com/spring-email>
 
 spring集成Email文档: <https://docs.spring.io/spring/docs/current/spring-framework-reference/integration.html#mail>
 
-日期: 2018年3月1日
+日期: 2018年4月8日
