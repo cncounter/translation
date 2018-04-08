@@ -119,13 +119,16 @@ public class TestSpringAttachEmail {
         JavaMailSender mailSender = getJavaMailSender();
         // MIME 邮件
         MimeMessage mimeMessage = mailSender.createMimeMessage();
-        // 辅助类
-        MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
+        // 辅助类; 明确使用 UTF-8 编码; 否则HTML报中文乱码
+        MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
+        //
+        boolean isHTML = true;
         // 邮件信息
         helper.setFrom("10001@qq.com"); // 发件人邮箱
         helper.setTo("10086@vip.qq.com"); // 收件人邮箱
         helper.setSubject("测试Spring发送附件-1"); // 标题
-        helper.setText("您的文件: PWA开发简介.zip; 请下载附件!"); // 文本信息
+        helper.setText("请点击: <a href='http://www.yuledanao.com/dl/PWA_INTRO.zip'><b>PWA开发简介.zip</b></a>;" +
+                " 或者下载附件!", isHTML); // HTML-信息
 
         // 增加1个附件; 可以使用多种资源API
         String fileName1 = "E:/PWA开发简介.zip";
