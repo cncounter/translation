@@ -143,6 +143,8 @@ public class TestSpringAttachEmail {
             System.out.println("邮件发送成功!"); // 没有报错就是好消息 :-)
         } catch (MailException ex) {
             System.err.println("发送失败:" + ex.getMessage());
+        } finally {
+            IOUtils.closeQuietly(inputStream1);
         }
     }
 
