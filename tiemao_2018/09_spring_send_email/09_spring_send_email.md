@@ -89,7 +89,7 @@ public class TestSpringEmail {
 
 ```
 
-测试结果如下:
+测试结果如下图所示:
 
 ![05_01_text_mail.png](./05_01_text_mail.png)
 
@@ -300,6 +300,12 @@ public class TestSpringImageEmail {
     }
 }
 ```
+
+如果在公网上没有固定的HTTP服务器或者CDN服务器, 则需要使用内联的方式来发送图片。
+
+可以从网络上下载到图片资源, 则引用 HTTP 资源更简单便捷。 
+
+需要CSS样式则设置HTML元素的style属性即可。
 
 执行结果如下图所示:
 
