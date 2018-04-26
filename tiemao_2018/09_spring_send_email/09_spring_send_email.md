@@ -1,6 +1,6 @@
 # spring通过QQ邮箱发送Email
 
-> 本文简要介绍如何通过Spring框架的支持,通过QQ邮箱来发送简单文本邮件,以及附件。
+> 本文简要介绍如何通过Spring框架的支持,通过QQ邮箱来发送邮件,包括简单文本，附件、以及内联图片、HTML以及HTTP图片。
 
 spring-context-support很早就内置支持邮件发送。
 
