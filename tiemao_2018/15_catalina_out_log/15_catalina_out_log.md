@@ -79,3 +79,7 @@ org.apache.catalina.core.ContainerBase.[Catalina].[localhost].[/host-manager].ha
 
 当然, 能升级最好是升级版本。
 
+
+更多信息，请参考: <https://tomcat.apache.org/tomcat-8.0-doc/logging.html>
+
+2018年5月7日
