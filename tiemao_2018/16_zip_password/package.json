@@ -1,0 +1,15 @@
+{
+  "name": "16_zip_password",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "chilkat_node8_win32": "^9.50.72"
+  }
+}
