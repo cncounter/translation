@@ -20,9 +20,26 @@ Defines a value from -16 to 15 that helps determine the oom_score of a process. 
 > 例如 pid=12884, root用户执行: 
 
 ```
-cat /proc/12884/oom_adj
-echo -17 > /proc/12884/oom_adj
-cat /proc/12884/oom_adj
+$ cat /proc/12884/oom_adj
+0
+
+$ cat /proc/12884/oom_score
+161
+
+$ cat /proc/12884/oom_score_adj 
+0
+
+# change ...
+$ echo -17 > /proc/12884/oom_adj
+
+$ cat /proc/12884/oom_adj
+-17
+
+$ cat /proc/12884/oom_score
+0
+
+$ cat /proc/12884/oom_score_adj 
+-1000
 
 ```
 
@@ -35,6 +52,8 @@ Any processes spawned by an adjusted process will inherit that process's oom_sco
 如果调整过某个进程的 `oom_adj` 配置, 那么由该进程创建的所有进程, 都会继承 oom_score 分值。 例如, 假设某个 sshd 进程受 oom_killer 的保护, 则所有的 SSH会话也将受到保护. 这样的配置, 如果发生OOM, 有可能会影响 oom_killer 拯救系统的功能。
 
 
+
+更多信息请参考: Linux内核OOM机制的详细分析: <http://blog.51cto.com/laoxu/1267097>
 
 
 原文链接: <https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/6/html/performance_tuning_guide/s-memory-captun>
