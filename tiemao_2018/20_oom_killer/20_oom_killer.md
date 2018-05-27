@@ -15,7 +15,7 @@ The following parameter can be set on a per-process basis, giving you increased 
 
 Defines a value from -16 to 15 that helps determine the oom_score of a process. The higher the oom_score value, the more likely the process will be killed by the oom_killer. Setting a oom_adj value of -17 disables the oom_killer for that process.
 
-正常范围是 `-16` 到 `15`, 用于确定一个进程的OOM评分(oom_score)。这个分值越高, 该进程越有可能被OOM终结者给干掉。 如果设置为 `-17`, 则禁止 oom_killer 杀死该进程。
+正常范围是 `-16` 到 `15`, 用于计算一个进程的OOM评分(oom_score)。这个分值越高, 该进程越有可能被OOM终结者给干掉。 如果设置为 `-17`, 则禁止 oom_killer 杀死该进程。
 
 > 例如 pid=12884, root用户执行: 
 
