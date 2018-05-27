@@ -17,6 +17,15 @@ Defines a value from -16 to 15 that helps determine the oom_score of a process. 
 
 正常范围是 `-16` 到 `15`, 用于确定一个进程的OOM评分(oom_score)。这个分值越高, 该进程越有可能被OOM终结者给干掉。 如果设置为 `-17`, 则禁止 oom_killer 杀死该进程。
 
+> 例如 pid=12884, root用户执行: 
+
+```
+cat /proc/12884/oom_adj
+echo -17 > /proc/12884/oom_adj
+cat /proc/12884/oom_adj
+
+```
+
 Important
 
 ## 重要提示
