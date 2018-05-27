@@ -17,6 +17,9 @@ Defines a value from -16 to 15 that helps determine the oom_score of a process. 
 
 正常范围是 `-16` 到 `15`, 用于计算一个进程的OOM评分(oom_score)。这个分值越高, 该进程越有可能被OOM终结者给干掉。 如果设置为 `-17`, 则禁止 oom_killer 杀死该进程。
 
+## 示例
+
+
 > 例如 pid=12884, root用户执行: 
 
 ```
@@ -42,6 +45,67 @@ $ cat /proc/12884/oom_score_adj
 -1000
 
 ```
+
+
+## 案例
+
+
+> 问题描述:
+
+    Java网站经常挂掉, 原因疑似Java进程被杀死。
+
+
+> 配置信息:
+
+    服务器 : 阿里云ECS
+    IP地址 : 192.168.1.52
+    CPU    : 4核-虚拟CPU Intel Xeon E5-2650 2.60GHz
+    物理内存: 8GB
+
+
+> 现状:
+
+    内存不足: 4个Java进程, 2.1+1.7+1.7+1.3 =6.8G, 已占用绝大部分内存。
+
+
+> 查看OOM终结者日志:
+
+Linux系统的OOM终结者, Out of memory killer 日志。
+
+```
+sudo cat /var/log/messages | grep killer -A 2 -B 2
+
+```
+
+假如物理内存不足, Linux 会找出一头比较壮的进程来杀掉。
+
+参考: <https://blog.csdn.net/renfufei/article/details/78178757>
+
+经排查发现, 具有如下日志:
+
+```
+$ sudo cat /var/log/messages | grep killer -A 2 -B 2
+May 21 09:55:01 web1 systemd: Started Session 500687 of user root.
+May 21 09:55:02 web1 systemd: Starting Session 500687 of user root.
+May 21 09:55:23 web1 kernel: java invoked oom-killer: gfp_mask=0x201da, order=0, oom_score_adj=0
+May 21 09:55:24 web1 kernel: java cpuset=/ mems_allowed=0
+May 21 09:55:24 web1 kernel: CPU: 3 PID: 25434 Comm: java Not tainted 3.10.0-514.6.2.el7.x86_64 #1
+--
+May 21 12:05:01 web1 systemd: Started Session 500843 of user root.
+May 21 12:05:01 web1 systemd: Starting Session 500843 of user root.
+May 21 12:05:22 web1 kernel: jstatd invoked oom-killer: gfp_mask=0x201da, order=0, oom_score_adj=0
+May 21 12:05:22 web1 kernel: jstatd cpuset=/ mems_allowed=0
+May 21 12:05:23 web1 kernel: CPU: 2 PID: 10467 Comm: jstatd Not tainted 3.10.0-514.6.2.el7.x86_64 #1
+```
+
+可以确定, 确实是物理内存不足引起的。
+
+> 提示: 所有启动的 `-Xmx` 加起来, 大于系统的剩余内存, 就可能发生这种情况。
+
+
+
+
+
 
 Important
 
