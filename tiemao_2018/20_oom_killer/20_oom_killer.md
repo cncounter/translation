@@ -103,6 +103,12 @@ May 21 12:05:23 web1 kernel: CPU: 2 PID: 10467 Comm: jstatd Not tainted 3.10.0-5
 > 提示: 所有启动的 `-Xmx` 加起来, 大于系统的剩余内存, 就可能发生这种情况。
 
 
+> 查询系统所有进程的 oom_score:
+
+```
+ps -eo pid,comm,pmem --sort -rss | \
+awk '{"cat /proc/"$1"/oom_score" | getline oom; print $0"\t"oom}'
+```
 
 
 
@@ -117,7 +123,11 @@ Any processes spawned by an adjusted process will inherit that process's oom_sco
 
 
 
-更多信息请参考: Linux内核OOM机制的详细分析: <http://blog.51cto.com/laoxu/1267097>
+更多信息请参考: 
+
+- Linux内核OOM机制的详细分析: <http://blog.51cto.com/laoxu/1267097>
+
+- Linux 找出最有可能被 OOM Killer 杀掉的进程: <https://github.com/Yhzhtk/note/issues/31>
 
 
 原文链接: <https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/6/html/performance_tuning_guide/s-memory-captun>
