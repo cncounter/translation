@@ -131,6 +131,34 @@ cp -a logs/gc.log ~/
 ```
 
 
+查看那个类的对象最多:
+
+```
+jmap -histo 3826
+```
+
+结果大致如下:
+
+```
+ num     #instances         #bytes  class name
+----------------------------------------------
+   1:       7136946      633792432  [C
+   2:       2270596      345130592  com.****.domain.po.home.sign.XXXXPO
+   3:      11146835      267524040  java.lang.Long
+   4:       4026491      186644464  [B
+   5:       7134162      171219888  java.lang.String
+   6:       2270600      127153600  org.apache.ibatis.mapping.ParameterMapping
+   7:       2281792      109526016  java.util.HashMap
+   8:       2384251       76296032  java.util.HashMap$Node
+   9:         57691       42643840  [Ljava.lang.Object;
+```
+
+像 `[C` 表示 `char[]`,  `[B` 表示 `byte[]`, 这种基础数据类型很难分析出什么问题。
+
+关键是找到我们自己的 package, 如: `com.****.domain.po.home.sign`。这里可以看到, 存在了227万个PO对象, 对一般系统来说,可能会有点问题。
+
+有可能存在内存泄露。
+
 ## Dump堆内存
 
 
