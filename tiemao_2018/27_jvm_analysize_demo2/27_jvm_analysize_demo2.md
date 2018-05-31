@@ -186,13 +186,15 @@ mat的默认的内存配置是 1024MB, 分析3GB的dump文件会报错。
 -Xmx6600m
 ```
 
-然后打开 MemoryAnalyzer.exe 
+双击打开 MemoryAnalyzer.exe 
 
-选择 dump 文件
+选择菜单 File --> Open File...  选择对应的 dump 文件。
 
-执行 leak suspects Report, 分析内存泄露。
+选择 Leak Suspects Report 并确定, 分析内存泄露方面的报告。
 
-分析完成后, 汇总信息如下
+![](00_mat_leak_suspects_report.png)
+
+然后等待, 分析完成后, 汇总信息如下:
 
 ![](01_mat_leak_overview.png)
 
