@@ -7,7 +7,7 @@
 
 配置信息:
 
-    服务器 : 阿里云ECS
+    服务器 : 阿里云ECS, CentOS 7.2
     IP地址 : 192.168.1.52
     CPU    : 4核-虚拟CPU Intel Xeon E5-2650 2.60GHz
     物理内存: 8GB
@@ -189,6 +189,10 @@ export JAVA_OPTS="$JAVA_OPTS
 ![](add_jmx.png)
 
 参考: <https://github.com/cncounter/cncounter/blob/v0.0.4/%E6%9C%8D%E5%8A%A1%E5%99%A8config/Linux_web2/server_op_log.md#%E9%85%8D%E7%BD%AE-jmx-%E8%BF%9C%E7%A8%8B%E6%9C%8D%E5%8A%A1>
+
+
+
+相关链接: [27_jvm_analysize_demo2.md](../27_jvm_analysize_demo2/27_jvm_analysize_demo2.md)
 
 
 
