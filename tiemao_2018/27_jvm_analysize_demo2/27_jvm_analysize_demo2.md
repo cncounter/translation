@@ -193,7 +193,7 @@ tar zcf 3826.hprof.tar.gz 3826.hprof
 
 分析JVM的 Dump文件, 最好用的工具是 `mat`,  全称是 `Eclipse Memory Analyzer` Tools。  优势在于, 可以从 GC root 进行对象引用分析, 计算各个 root 所引用的对象有多少, 比较容易定位内存泄露。
 
-这是一款独立的产品, 100MB不到, 可以从官方下载。 下载地址: <>
+MAT是一款独立的产品, 100MB不到, 可以从官方下载。 下载地址: <https://www.eclipse.org/mat/>
 
 
 
