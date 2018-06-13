@@ -1,5 +1,7 @@
 # JVM监控与内存调优
 
+参考: [JVM_MONITOR] 部分
+
 
 JVM配置参数 
 
