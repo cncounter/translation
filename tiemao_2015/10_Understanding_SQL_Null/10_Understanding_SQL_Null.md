@@ -89,6 +89,8 @@
 
 如果条件调换过来, 查询结果就没有问题。 现在我们查询有package的用户.
 
+> 译者注：这里的 *没问题* 只是指可以得到查询结果，但并不符合预期，并不会包含 id 为 null 的行
+
 	select * from users 
 	where id in (select user_id from packages)
 
