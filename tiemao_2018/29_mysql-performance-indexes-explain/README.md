@@ -15,28 +15,23 @@ Let’s imagine we have the following insert in our database (and let’s assume
 假设我们有以下插入我们的数据库(假设用户1和画廊已经创建的):
 
 ```
-`INSERT INTO `homestead`.`images` (`id`, `gallery_id`, `original_filename`, `filename`, `description`) VALUES
+INSERT INTO `homestead`.`images` (`id`, `gallery_id`, `original_filename`, `filename`, `description`) VALUES
 (1, 1, 'me.jpg', 'me.jpg', 'A photo of me walking down the street'),
 (2, 1, 'dog.jpg', 'dog.jpg', 'A photo of my dog on the street'),
 (3, 1, 'cat.jpg', 'cat.jpg', 'A photo of my cat walking down the street'),
 (4, 1, 'purr.jpg', 'purr.jpg', 'A photo of my cat purring');    
-`
+
 ```
 
-<svg class="icon" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 30 30" xml:space="preserve"><g><path d="M23.3,14.9c0-0.4-0.3-0.9-0.8-1.2l-10-6.4c-1.1-0.7-2-0.1-2,1.3v7.5C15.8,13.7,23.1,14.9,23.3,14.9z M23.3,15 c-7.9,0.6-11.4,3.5-12.8,5.7v0.8c0,1.4,0.9,2,2,1.3l10-6.4C23.1,16,23.4,15.5,23.3,15z"></path></g></svg><svg class="circle" width="70" height="70" version="1.1" xmlns="http://www.w3.org/2000/svg"><circle cx="35" cy="35" r="32"></circle></svg><svg class="circle active" width="70" height="70" version="1.1" xmlns="http://www.w3.org/2000/svg"><circle cx="35" cy="35" r="32"></circle></svg>
-
-skip
-
-Ads by Hooly
 
 Obviously, this amount of data will not cause any trouble, but let’s use it to do a simple profile. Let’s consider the following query:
 
 显然,这的数据量并不会造成任何麻烦,但我们用它来做一个简单的概要文件。让我们考虑以下查询:
 
 ```
-`SELECT * FROM `homestead`.`images` AS i
+SELECT * FROM `homestead`.`images` AS i
 WHERE i.description LIKE '%street%';
-`
+
 ```
 
 
@@ -50,11 +45,11 @@ To get an accurate running time on this query, we would use the following SQL:
 得到一个准确的运行时间在这个查询,我们将使用以下SQL:
 
 ```
-`set profiling = 1;
+set profiling = 1;
 SELECT * FROM `homestead`.`images` AS i
 WHERE i.description LIKE '%street%';
 show profiles;
-`
+
 ```
 
 
@@ -63,30 +58,30 @@ The result would look like the following:
 
 结果看起来像下面的:
 
-<table><thead><tr><th style="text-align:center;">Query_Id</th>
-<th style="text-align:right;">Duration</th>
-<th style="text-align:left;">Query</th>
-</tr></thead><tbody><tr><td style="text-align:center;">1</td>
-<td style="text-align:right;">0.00016950</td>
-<td style="text-align:left;">SHOW WARNINGS</td>
-</tr><tr><td style="text-align:center;">2</td>
-<td style="text-align:right;">0.00039200</td>
-<td style="text-align:left;">SELECT * FROM `homestead`.`images` AS i \nWHERE i.description LIKE \’%street%\’\nLIMIT 0, 1000</td>
-</tr><tr><td style="text-align:center;">3</td>
-<td style="text-align:right;">0.00037600</td>
-<td style="text-align:left;">SHOW KEYS FROM `homestead`.`images`</td>
-</tr><tr><td style="text-align:center;">4</td>
-<td style="text-align:right;">0.00034625</td>
-<td style="text-align:left;">SHOW DATABASES LIKE \’homestead\</td>
-</tr><tr><td style="text-align:center;">5</td>
-<td style="text-align:right;">0.00027600</td>
-<td style="text-align:left;">SHOW TABLES FROM `homestead` LIKE \’images\’</td>
-</tr><tr><td style="text-align:center;">6</td>
-<td style="text-align:right;">0.00024950</td>
-<td style="text-align:left;">SELECT * FROM `homestead`.`images` WHERE 0=1</td>
-</tr><tr><td style="text-align:center;">7</td>
-<td style="text-align:right;">0.00104300</td>
-<td style="text-align:left;">SHOW FULL COLUMNS FROM `homestead`.`images` LIKE \’id\’</td>
+<table><thead><tr><th>Query_Id</th>
+<th>Duration</th>
+<th>Query</th>
+</tr></thead><tbody><tr><td>1</td>
+<td>0.00016950</td>
+<td>SHOW WARNINGS</td>
+</tr><tr><td>2</td>
+<td>0.00039200</td>
+<td>SELECT * FROM `homestead`.`images` AS i \nWHERE i.description LIKE \’%street%\’\nLIMIT 0, 1000</td>
+</tr><tr><td>3</td>
+<td>0.00037600</td>
+<td>SHOW KEYS FROM `homestead`.`images`</td>
+</tr><tr><td>4</td>
+<td>0.00034625</td>
+<td>SHOW DATABASES LIKE \’homestead\</td>
+</tr><tr><td>5</td>
+<td>0.00027600</td>
+<td>SHOW TABLES FROM `homestead` LIKE \’images\’</td>
+</tr><tr><td>6</td>
+<td>0.00024950</td>
+<td>SELECT * FROM `homestead`.`images` WHERE 0=1</td>
+</tr><tr><td>7</td>
+<td>0.00104300</td>
+<td>SHOW FULL COLUMNS FROM `homestead`.`images` LIKE \’id\’</td>
 </tr></tbody></table>
 
 
@@ -117,7 +112,7 @@ To exemplify the usage of `explain`, we’ll use the query made by our `UserMana
 
 ```
 `SELECT * FROM `homestead`.`users` WHERE email = 'claudio.ribeiro@examplemail.com';
-`
+
 ```
 
 
@@ -127,8 +122,8 @@ To use the `explain` command, we simply prepend it before select type queries:
 使用`explain`命令,我们只是预谋之前选择查询类型:
 
 ```
-`EXPLAIN SELECT * FROM `homestead`.`users` WHERE email = 'claudio.ribeiro@examplemail.com';
-`
+EXPLAIN SELECT * FROM `homestead`.`users` WHERE email = 'claudio.ribeiro@examplemail.com';
+
 ```
 
 
@@ -262,11 +257,11 @@ Going back to our application schema, we might want to obtain all gallery images
 回到我们的应用程序模式,我们想获得所有画廊图片。我们也想只有照片包含单词“猫”的描述.这绝对是一个案例,我们可以发现在项目需求。让我们看看查询:
 
 ```
-`SELECT gal.name, gal.description, img.filename, img.description FROM `homestead`.`users` AS users
+SELECT gal.name, gal.description, img.filename, img.description FROM `homestead`.`users` AS users
 LEFT JOIN `homestead`.`galleries` AS gal ON users.id = gal.user_id
 LEFT JOIN `homestead`.`images` AS img on img.gallery_id = gal.id
 WHERE img.description LIKE '%dog%';
-`
+
 ```
 
 
@@ -276,11 +271,11 @@ In this more complex case we should have some more information to analyze on our
 在更复杂的情况下,我们应该有一些分析在我们的更多信息`explain`:
 
 ```
-`EXPLAIN SELECT gal.name, gal.description, img.filename, img.description FROM `homestead`.`users` AS users
+EXPLAIN SELECT gal.name, gal.description, img.filename, img.description FROM `homestead`.`users` AS users
 LEFT JOIN `homestead`.`galleries` AS gal ON users.id = gal.user_id
 LEFT JOIN `homestead`.`images` AS img on img.gallery_id = gal.id
 WHERE img.description LIKE '%dog%';
-`
+
 ```
 
 
@@ -358,10 +353,10 @@ Looking at our query, there are two ways of approaching it. First, the `Users` t
 看着我们的查询,有两种方式接近它。首先,`Users`表没有被使用。我们要么扩大查询,以确保我们的目标用户,或者我们应该完全移除`users`查询的一部分。只有增加复杂性和时间对我们的整体性能。
 
 ```
-`SELECT gal.name, gal.description, img.filename, img.description FROM `homestead`.`galleries` AS gal
+SELECT gal.name, gal.description, img.filename, img.description FROM `homestead`.`galleries` AS gal
 LEFT JOIN `homestead`.`images` AS img on img.gallery_id = gal.id
 WHERE img.description LIKE '%dog%';
-`
+
 ```
 
 
@@ -423,12 +418,12 @@ There are also two very interesting cases we must look at: the `newest` and `rel
 还有两个很有趣的情况下,我们必须看看:`newest`和`related`在我们的应用程序的功能。这些适用于某个角落画廊和接触情况下,我们应该意识到:
 
 ```
-`EXPLAIN SELECT * FROM `homestead`.`galleries` AS gal
+EXPLAIN SELECT * FROM `homestead`.`galleries` AS gal
 LEFT JOIN `homestead`.`users` AS u ON u.id = gal.user_id
 WHERE u.id = 1
 ORDER BY gal.created_at DESC
 LIMIT 5;
-`
+
 ```
 
 
@@ -438,10 +433,10 @@ The above is for the related galleries.
 以上是相关的画廊。
 
 ```
-`EXPLAIN SELECT * FROM `homestead`.`galleries` AS gal
+EXPLAIN SELECT * FROM `homestead`.`galleries` AS gal
 ORDER BY gal.created_at DESC
 LIMIT 5;
-`
+
 ```
 
 
