@@ -1,10 +1,10 @@
 # MySQL Performance Boosting with Indexes and Explain
 
-# MySQL索引和解释的性能提高
+# 通过explain利用索引调优MySQL性能
 
 **Techniques to improve application performance can come from a lot of different places, but normally the first thing we look at — the most common bottleneck — is the database. Can it be improved? How can we measure and understand what needs and can be improved?**
 
-* *技术来提高应用程序的性能可以来自很多不同的地方,但通常我们看的第一件事是数据库——最常见的瓶颈.它可以改善吗?我们如何衡量和理解需求和可以提高什么? * *
+> **提升系统性能的技术和花样种类繁多, 但最优先采用的方式是数据库调优 —— 因为数据库是系统中最常见的性能瓶颈. 怎样提升数据库性能呢? 我们又如何来衡量性能指标, 以及提升呢?**
 
 One very simple yet very useful tool is query profiling. Enabling profiling is a simple way to get a more accurate time estimate of running a query. This is a two-step process. First, we have to enable profiling. Then, we call `show profiles` to actually get the query running time.
 
@@ -100,7 +100,7 @@ We can either rely on our knowledge of SQL and improvise, or we can rely on the 
 
 **Explain** is used to obtain a query execution plan, or how MySQL will execute our query. It works with `SELECT`, `DELETE`, `INSERT`, `REPLACE`, and `UPDATE` statements, and it displays information from the optimizer about the statement execution plan. The [official documentation](https://dev.mysql.com/doc/refman/5.7/en/explain.html) does a pretty good job of describing how `explain` can help us:
 
-* * * *是用来解释获得查询执行计划,或MySQL将如何执行我们的查询。它的工作原理与`SELECT`,`DELETE`,`INSERT`,`REPLACE`,`UPDATE`语句,它显示的信息优化器关于语句的执行计划。(官方文档)(https://dev.mysql.com/doc/refman/5.7/en/explain).html)很好地描述`explain`可以帮助我们:
+** **是用来解释获得查询执行计划,或MySQL将如何执行我们的查询。它的工作原理与`SELECT`,`DELETE`,`INSERT`,`REPLACE`,`UPDATE`语句,它显示的信息优化器关于语句的执行计划。(官方文档)(https://dev.mysql.com/doc/refman/5.7/en/explain).html)很好地描述`explain`可以帮助我们:
 
 > With the help of EXPLAIN, you can see where you should add indexes to tables so that the statement executes faster by using indexes to find rows. You can also use EXPLAIN to check whether the optimizer joins the tables in an optimal order.
 
@@ -196,7 +196,7 @@ These results are not easy to understand at first sight, so let’s take a close
 
 *   `type`: this field is how MySQL joins the tables used. This is probably **the most important** field in the explain output. It can indicate missing indexes and it can also show how the query should be rewritten. The possible values for this field are the following (ordered from the best type to the worst):
 
-*`type`:这个字段是MySQL连接所使用的表。这可能是最重要的* * * *字段解释输出.它可以显示缺失索引也可以显示查询应该重写。这个领域的可能值以下(命令从最好到最差的):
+*`type`:这个字段是MySQL连接所使用的表。这可能是最重要的** **字段解释输出.它可以显示缺失索引也可以显示查询应该重写。这个领域的可能值以下(命令从最好到最差的):
 
     *   `system`: the table has zero or one row.
     *   `const`: the table has only one matching row which is indexed. The is the fastest type of join.
@@ -542,10 +542,10 @@ Because this is a common problem, there’s also a small list of common solution
 *   **Don’t sort by expressions**. Expressions and functions don’t allow index usage by `ORDER BY`.
 *   **Beware of a large `LIMIT` value**. Large `LIMIT` values will force `ORDER BY` to sort a bigger number of rows. This affects performance.
 
-* * * * *确保我们使用的索引。在我们的例子中,`created_at`是一个很好的候选人,因为它是我们订购。这样,我们都有`ORDER BY`和`LIMIT`没有执行扫描和排序结果集。
-* * *主要表中按列排序* *。通常情况下,如果`ORDER BY`是由从表中字段不是第一个连接顺序,然后索引不能被使用。
-* * * * *不排序表达式。不允许使用索引表达式和函数`ORDER BY`。
-* * *小心的`LIMIT`价值* *。广泛的`LIMIT`值将迫使`ORDER BY`更大的行数进行排序。这会影响性能。
+** ** *确保我们使用的索引。在我们的例子中,`created_at`是一个很好的候选人,因为它是我们订购。这样,我们都有`ORDER BY`和`LIMIT`没有执行扫描和排序结果集。
+** *主要表中按列排序**。通常情况下,如果`ORDER BY`是由从表中字段不是第一个连接顺序,然后索引不能被使用。
+** ** *不排序表达式。不允许使用索引表达式和函数`ORDER BY`。
+** *小心的`LIMIT`价值**。广泛的`LIMIT`值将迫使`ORDER BY`更大的行数进行排序。这会影响性能。
 
 These are some of the measures we should take when we have both `LIMIT` and `ORDER BY` in order to minimize performance issues.
 
