@@ -8,3 +8,14 @@ textarea的中文输入判断与搜狗输入法的特殊行为
 https://zhuanlan.zhihu.com/p/27475781
 
 2018年6月12日
+
+
+
+操作系统真实的虚拟内存是什么样的:
+1. 内存及虚存基本布局
+https://blog.csdn.net/iihero/article/details/8236079
+二:Windows下内存限制:
+https://blog.csdn.net/iihero/article/details/8245590
+三. committed memory:
+https://blog.csdn.net/iihero/article/details/8263189
+
