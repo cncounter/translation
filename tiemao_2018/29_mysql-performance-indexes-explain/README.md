@@ -111,7 +111,7 @@ To exemplify the usage of `explain`, we’ll use the query made by our `UserMana
 举例说明使用`explain`我们将使用的查询`UserManager.php`找到一个用户通过电子邮件:
 
 ```
-`SELECT * FROM `homestead`.`users` WHERE email = 'claudio.ribeiro@examplemail.com';
+SELECT * FROM `homestead`.`users` WHERE email = 'claudio.ribeiro@examplemail.com';
 
 ```
 
