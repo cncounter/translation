@@ -66,22 +66,22 @@ The result would look like the following:
 <td>SHOW WARNINGS</td>
 </tr><tr><td>2</td>
 <td>0.00039200</td>
-<td>SELECT * FROM `homestead`.`images` AS i \nWHERE i.description LIKE \’%street%\’\nLIMIT 0, 1000</td>
+<td>SELECT * FROM `homestead`.`images` AS i <br>WHERE i.description LIKE '%street%'<br>LIMIT 0, 1000</td>
 </tr><tr><td>3</td>
 <td>0.00037600</td>
 <td>SHOW KEYS FROM `homestead`.`images`</td>
 </tr><tr><td>4</td>
 <td>0.00034625</td>
-<td>SHOW DATABASES LIKE \’homestead\</td>
+<td>SHOW DATABASES LIKE 'homestead'</td>
 </tr><tr><td>5</td>
 <td>0.00027600</td>
-<td>SHOW TABLES FROM `homestead` LIKE \’images\’</td>
+<td>SHOW TABLES FROM `homestead` LIKE 'images'</td>
 </tr><tr><td>6</td>
 <td>0.00024950</td>
 <td>SELECT * FROM `homestead`.`images` WHERE 0=1</td>
 </tr><tr><td>7</td>
 <td>0.00104300</td>
-<td>SHOW FULL COLUMNS FROM `homestead`.`images` LIKE \’id\’</td>
+<td>SHOW FULL COLUMNS FROM `homestead`.`images` LIKE 'id'</td>
 </tr></tbody></table>
 
 
