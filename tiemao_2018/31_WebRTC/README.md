@@ -1,5 +1,7 @@
 # Real time communication with WebRTC
 
+# WebRTC 实时通信技术
+
 ## [1.Introduction](1_Introduction.md)
 
 ## [2.Overview](2_Overview.md)
@@ -21,7 +23,7 @@
 ## [10.Congratulations](10_Congratulations.md)
 
 
-samples: <https://webrtc.github.io/samples/>
+Demo链接: <https://webrtc.github.io/samples/>
 
 原文链接: <https://codelabs.developers.google.com/codelabs/webrtc-web>
 
