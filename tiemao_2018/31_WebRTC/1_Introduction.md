@@ -4,33 +4,31 @@
 
 WebRTC is an open source project to enable realtime communication of audio, video and data in Web and native apps.
 
-WebRTC是一个开源项目,使实时通讯的音频、视频和数据在网络和本地应用。
+WebRTC 是一个实时通信领域的开源项目, 致力于在Web以及原生App平台上进行语音、视频、数据等方面的实时通讯。
 
 WebRTC has several JavaScript APIs — click the links to see demos.
 
-WebRTC有几个JavaScript api——点击链接查看演示。
+WebRTC包括下面这些 JavaScript API —— 点击对应的链接可以查看对应的demo。
 
-*   [`getUserMedia()`](https://webrtc.github.io/samples/src/content/getusermedia/gum/): capture audio and video.
-*   [`MediaRecorder`](https://webrtc.github.io/samples/src/content/getusermedia/record/): record audio and video.
-*   [`RTCPeerConnection`](https://webrtc.github.io/samples/src/content/peerconnection/pc1/): stream audio and video between users.
-*   [`RTCDataChannel`](https://webrtc.github.io/samples/src/content/datachannel/basic/): stream data between users.
+*   [`getUserMedia()`](https://webrtc.github.io/samples/src/content/getusermedia/gum/): 获取(capture)音频(audio)和视频(video).
+*   [`MediaRecorder`](https://webrtc.github.io/samples/src/content/getusermedia/record/): 录制(record)音频(audio)和视频(video).
+*   [`RTCPeerConnection`](https://webrtc.github.io/samples/src/content/peerconnection/pc1/): 在用户之间传输音频(audio)和视频(video)流(stream).
+*   [`RTCDataChannel`](https://webrtc.github.io/samples/src/content/datachannel/basic/): 在用户之间传输数据流(data stream).
 
-*(`getUserMedia()`)(https://webrtc.github.io/samples/src/content/getusermedia/gum/):捕捉音频和视频。
-*(`MediaRecorder`)(https://webrtc.github.io/samples/src/content/getusermedia/record/):记录音频和视频。
-*(`RTCPeerConnection`)(https://webrtc.github.io/samples/src/content/peerconnection/pc1/):流之间的音频和视频的用户。
-*(`RTCDataChannel`)(https://webrtc.github.io/samples/src/content/datachannel/basic/):用户之间的流数据。
 
 ## Where can I use WebRTC?
 
-## 我在哪里可以用WebRTC吗?
+## WebRTC的平台支持情况
 
 In Firefox, Opera and in Chrome on desktop and Android. WebRTC is also available for native apps on iOS and Android.
 
-在Firefox、Opera和铬在桌面和Android。WebRTC也可以,Android和iOS上的本地应用。
+当前桌面端和 Android 版本的 Firefox、Opera 以及 Chrome 浏览器都支持WebRTC。 另外、一部分iOS和Android的原生App也支持WebRTC。
+
+> 译者注: 国内使用量巨大的360浏览器、搜狗浏览器兼容性基本和Chrome一致。当然, 应该使用最新的版本(当前时间: 2018年6月28日)。
 
 ## What is signaling?
 
-## 信号是什么?
+## 信令简介(signaling)
 
 WebRTC uses RTCPeerConnection to communicate streaming data between browsers, but also needs a mechanism to coordinate communication and to send control messages, a process known as signaling. Signaling methods and protocols are not specified by WebRTC. In this codelab you will use Socket.IO for messaging, but there are [many alternatives](https://github.com/muaz-khan/WebRTC-Experiment/blob/master/Signaling.md).
 
