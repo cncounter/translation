@@ -4,11 +4,11 @@
 
 WebRTC is an open source project to enable realtime communication of audio, video and data in Web and native apps.
 
-WebRTC 是一个实时通信领域的开源项目, 致力于在Web以及原生App平台上进行语音、视频、数据等方面的实时通讯。
+WebRTC 是实时通信领域的一个开源项目, 致力于在Web/原生App平台进行语音、视频、数据等方面的实时通讯。
 
 WebRTC has several JavaScript APIs — click the links to see demos.
 
-WebRTC包括下面这些 JavaScript API —— 点击对应的链接可以查看对应的demo。
+WebRTC 主要包括以下 JavaScript API —— 点击对应的链接可以查看相关demo。
 
 *   [`getUserMedia()`](https://webrtc.github.io/samples/src/content/getusermedia/gum/): 获取(capture)音频(audio)和视频(video).
 *   [`MediaRecorder`](https://webrtc.github.io/samples/src/content/getusermedia/record/): 录制(record)音频(audio)和视频(video).
