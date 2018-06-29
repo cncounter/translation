@@ -23,7 +23,18 @@
 ## [10.Congratulations](10_Congratulations.md)
 
 
+
+# 翻译说明
+
+- CNC全文翻译(有道API): <http://www.cncounter.com/tools/translation.php>
+- CNC to-markdown工具 : <http://www.cncounter.com/test/to-markdown/index.html>
+- Chrome 控制台, 拷贝 outerHTML
+
+
+翻译人员: 铁锚 <https://blog.csdn.net/renfufei/>
+
+
+
 Demo链接: <https://webrtc.github.io/samples/>
 
 原文链接: <https://codelabs.developers.google.com/codelabs/webrtc-web>
-
