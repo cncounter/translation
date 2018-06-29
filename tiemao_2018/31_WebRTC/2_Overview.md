@@ -18,3 +18,4 @@ Build an app to get video and take snapshots with your webcam and share them pee
 *   The sample code
 *   A text editor
 *   Basic knowledge of HTML, CSS and JavaScript
+
