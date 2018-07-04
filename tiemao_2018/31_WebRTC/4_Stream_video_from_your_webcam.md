@@ -1,5 +1,6 @@
 ## 4. Stream video from your webcam
 
+
 ## What you'll learn
 
 In this step you'll find out how to:
@@ -8,11 +9,12 @@ In this step you'll find out how to:
 *   Manipulate stream playback.
 *   Use CSS and SVG to manipulate video.
 
-A complete version of this step is in the **step-01** folder.
+A complete version of this step is in the `step-01` folder.
+
 
 ## A dash of HTML...
 
-Add a `video` element and a `script` element to **index.html** in your **work** directory:
+Add a `video` element and a `script` element to `index.html` in your `work` directory:
 
 ```
 <!DOCTYPE html>
@@ -65,15 +67,17 @@ navigator.mediaDevices.getUserMedia(mediaStreamConstraints)
   .then(gotLocalMediaStream).catch(handleLocalMediaStreamError);
 ```
 
-All the JavaScript examples here use `'use strict';` to avoid common coding gotchas.
+> All the JavaScript examples here use `'use strict';` to avoid common coding gotchas.
 
-Find out more about what that means in [ECMAScript 5 Strict Mode, JSON, and More](http://ejohn.org/blog/ecmascript-5-strict-mode-json-and-more/).
+> Find out more about what that means in [ECMAScript 5 Strict Mode, JSON, and More](http://ejohn.org/blog/ecmascript-5-strict-mode-json-and-more/).
+
 
 ## Try it out
 
-Open **index.html** in your browser and you should see something like this (featuring the view from your webcam, of course!):
+Open `index.html` in your browser and you should see something like this (featuring the view from your webcam, of course!):
 
-![](https://codelabs.developers.google.com/codelabs/webrtc-web/img/fe2d10aa2ccc033.png)
+![](04_01_demo.png)
+
 
 ## How it works
 
@@ -117,7 +121,7 @@ const hdConstraints = {
 
 The [MediaTrackConstraints specification](https://w3c.github.io/mediacapture-main/getusermedia.html#media-track-constraints) lists all potential constraint types, though not all options are supported by all browsers. If the resolution requested isn't supported by the currently selected camera, `getUserMedia()` will be rejected with an `OverconstrainedError` and the user will not be prompted to give permission to access their camera.
 
-You can view a demo showing how to use constraints to request different resolutions [here](https://simpl.info/getusermedia/constraints/), and a demo using constraints to choose camera and microphone [here](https://simpl.info/getusermedia/sources/).
+> You can view a demo showing how to use constraints to request different resolutions [here](https://simpl.info/getusermedia/constraints/), and a demo using constraints to choose camera and microphone [here](https://simpl.info/getusermedia/sources/).
 
 If `getUserMedia()` is successful, the video stream from the webcam is set as the source of the video element:
 
@@ -126,6 +130,7 @@ function gotLocalMediaStream(mediaStream) {
   localVideo.srcObject = mediaStream;
 }
 ```
+
 
 ## Bonus points
 
