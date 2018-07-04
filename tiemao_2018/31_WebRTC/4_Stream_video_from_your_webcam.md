@@ -1,34 +1,34 @@
 ## 4. Stream video from your webcam
 
-## 4. 从web摄像头捕获视频
+## 4. 从web摄像头获取视频流
 
 ## What you'll learn
 
-## 你将学习
+## 本节要点
 
 In this step you'll find out how to:
 
-在此步骤中,我们将了解如何:
+在本节的课程中, 我们将学习以下知识点:
 
 *   Get a video stream from your webcam.
 *   Manipulate stream playback.
 *   Use CSS and SVG to manipulate video.
 
-*得到一个视频摄像头。
-*操作流播放。
-*使用CSS和SVG操作视频。
+* 从web摄像头获取视频流(video stream)
+* 播放视频流
+* 使用CSS和SVG来处理视频。
 
 A complete version of this step is in the `step-01` folder.
 
-这一步是在一个完整的版本`step-01`文件夹中。
+本节的完整版代码位于 `step-01` 文件夹中。
 
 ## A dash of HTML...
 
-## 少量的HTML……
+## HTML代码
 
 Add a `video` element and a `script` element to `index.html` in your `work` directory:
 
-添加一个`video`元素和一个`script`元素`index.html`在你的`work`目录:
+在 `work` 目录下的 `index.html` 文件中, 增加 `video` 标签和 `script` 标签:
 
 ```
 <!DOCTYPE html>
@@ -40,6 +40,7 @@ Add a `video` element and a `script` element to `index.html` in your `work` dire
 
 <body>
   <h1>Realtime communication with WebRTC</h1>
+  <!-- 增加的代码在下面这里: -->
   <video autoplay playsinline></video>
   <script src="js/main.js"></script>
 </body>
@@ -47,42 +48,45 @@ Add a `video` element and a `script` element to `index.html` in your `work` dire
 </html>
 ```
 
+> 注意: 如果有中文, 则 `.html` 文件需要使用 UTF-8 编码保存/另存。
+
 
 
 ## ...and a pinch of JavaScript
 
-## …和少许JavaScript
+## JavaScript代码
 
 Add the following to **main.js** in your **js** folder:
 
-添加以下主要* *。js * * * *你* * js文件夹:
+在 `js` 目录下的 `main.js` 文件中, 加上下面的代码:
+
 
 ```
 'use strict';
 
-// On this codelab, you will be streaming only video (video: true).
+// 本节只需要使用到 video (video: true).
 const mediaStreamConstraints = {
   video: true,
 };
 
-// Video element where stream will be placed.
+// 用于播放视频流stream 的 video元素.
 const localVideo = document.querySelector('video');
 
 // Local stream that will be reproduced on the video.
 let localStream;
 
-// Handles success by adding the MediaStream to the video element.
+// success 处理函数;  by adding the MediaStream to the video element.
 function gotLocalMediaStream(mediaStream) {
   localStream = mediaStream;
   localVideo.srcObject = mediaStream;
 }
 
-// Handles error by logging a message to the console with the error message.
+// error 处理函数;  将 error 信息打印到 console.
 function handleLocalMediaStreamError(error) {
   console.log('navigator.getUserMedia error: ', error);
 }
 
-// Initializes media stream.
+// 初始化 media stream.
 navigator.mediaDevices.getUserMedia(mediaStreamConstraints)
   .then(gotLocalMediaStream).catch(handleLocalMediaStreamError);
 ```
@@ -91,11 +95,11 @@ navigator.mediaDevices.getUserMedia(mediaStreamConstraints)
 
 > All the JavaScript examples here use `'use strict';` to avoid common coding gotchas.
 
-> 所有的JavaScript使用例子`'use strict';`为了避免常见的编码问题。
+> 本教程的所有 JavaScript 代码, 都在起始处加上 `'use strict';` 这样能避免很多新手常犯的编程错误。
 
 > Find out more about what that means in [ECMAScript 5 Strict Mode, JSON, and More](http://ejohn.org/blog/ecmascript-5-strict-mode-json-and-more/).
 
-> 找到更多关于这意味着什么(ECMAScript 5严格模式、JSON和更多)(http://ejohn.org/blog/ecmascript-5-strict-mode-json-and-more/)。
+> 关于严格模式的更多信息, 可以参考 [ECMAScript 5 Strict Mode, JSON, and More](http://ejohn.org/blog/ecmascript-5-strict-mode-json-and-more/)。
 
 ## Try it out
 
