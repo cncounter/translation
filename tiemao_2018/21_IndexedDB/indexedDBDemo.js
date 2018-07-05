@@ -8,14 +8,64 @@ var configTemplate = {
     tableName : "",        // 表名
     keyName : "",        // 主键
     autoIncrement : false,        // 自增
-	// 索引: 如 {idxName : 'realName', columnName: 'realName', unique : false}
+    // 索引: 如 {idxName : 'realName', columnName: 'realName', unique : false}
     idxArray : [],        
     db : null,        // 数据库对象
     data : {},        // 数据
-    onsuccess : function(database, config){},    // 成功回调
+    onsuccess : function(db, config){},    // 成功回调
     onerror : function(event, config){},        // 失败回调
-    onupgradeneeded : function(database, config){} // 升级数据库回调
+    onupgradeneeded : function(db, config){} // 升级数据库回调
 };
+
+/*
+**************************************************
+
+// 配置
+var dbConfig1 = {
+    dbName : "drugDict",        // 数据库名
+    dbVersion : 1        // 数据库版本
+};
+
+// 简单测试 Promise 方式;
+connectDataBase(dbConfig1).then(function(db){
+    // 赋值存储
+	dbConfig1.db = db;
+	//
+    console.log("1.onsuccess:::::: db.name:",db.name);
+    console.dir(db);
+}).catch(function(e){
+    //
+    console.log("1.onerror::::::", e);
+});
+
+**************************************************
+
+// 回调方式配置: 
+var dbConfig2 = {
+    dbName : "drugDictDetail", // 数据库名
+    dbVersion : 1,        // 数据库版本
+    onsuccess : function(db, config){
+        console.log("2.onsuccess:::::: db.name:",db.name);
+		console.dir(config);
+    },
+    onupgradeneeded : function(db, config){ 
+        console.log("2.onupgradeneeded:::::: db.name:",db.name);
+		console.dir(config);
+    },
+	// 回调方式可以接收第二个参数;
+    onerror : function(e, config){
+        console.log("2.onerror:::::: dbName:", config.dbName, " ;error:", e);
+		console.dir(e);
+		console.dir(config);
+    }
+};
+// 测试回调方式调用
+connectDataBase(dbConfig2);
+
+
+
+**************************************************
+*/
 
 // 连接数据库; 如果不存在则会创建
 function connectDataBase(config){
@@ -64,6 +114,23 @@ function connectDataBase(config){
     return promise;
 };
 
+/*
+**************************************************
+//
+var tableConfig1 = {
+
+};
+
+
+
+
+
+
+
+
+**************************************************
+*/
+
 // 创建表
 function createTable(config){
     // 参数
@@ -72,7 +139,7 @@ function createTable(config){
     var onsuccess = config.onsuccess;
     var onerror = config.onerror;
     var onupgradeneeded = config.onupgradeneeded;
-	//
+    //
     var tableName = config.tableName;        // 表名
     var keyName = config.tableName;        // 主键名称
     var autoIncrement = config.autoIncrement;        // 自增
@@ -88,27 +155,27 @@ function createTable(config){
           console.log("触发数据库更新操作; dbName=", dbName,
               "dbVersion=", dbVersion);
           var db = event.target.result;
-		  // 创建表
-		  var options = {};
-		  if(keyName){
-			  options.keyName = keyName;
-		  }
-		  if(autoIncrement){
-			  options.autoIncrement = autoIncrement;
-		  }
-		  var objectStore = db.createObjectStore(tableName, { keyPath: keyName });
-		  //
-		  if(idxArray && idxArray.length){
-			  idxArray.forEach(function(idx, i){
-				  //
-				  var columnName = idx.columnName;
-				  var idxName = idx.idxName || columnName;
-				  var unique = idx.unique ? true : false;
-				  //
-				  objectStore.createIndex(idxName, columnName, { unique: unique });
-			  });
-		  }
-			//
+          // 创建表
+          var options = {};
+          if(keyName){
+              options.keyName = keyName;
+          }
+          if(autoIncrement){
+              options.autoIncrement = autoIncrement;
+          }
+          var objectStore = db.createObjectStore(tableName, { keyPath: keyName });
+          //
+          if(idxArray && idxArray.length){
+              idxArray.forEach(function(idx, i){
+                  //
+                  var columnName = idx.columnName;
+                  var idxName = idx.idxName || columnName;
+                  var unique = idx.unique ? true : false;
+                  //
+                  objectStore.createIndex(idxName, columnName, { unique: unique });
+              });
+          }
+            //
           if(onupgradeneeded){
               onupgradeneeded(db, config);
           }
@@ -143,7 +210,7 @@ function insert(config){
     var db = config.db;        // 数据库对象
     var onsuccess = config.onsuccess;
     var onerror = config.onerror;
-	
+    
     var tableName = config.tableName;        // 表名
     var data = config.data;        // 数据
 
@@ -183,7 +250,7 @@ function update(config){
     var db = config.db;        // 数据库对象
     var onsuccess = config.onsuccess;
     var onerror = config.onerror;
-	
+    
     var tableName = config.tableName;        // 表名
     var data = config.data;        // 数据
 
@@ -222,7 +289,7 @@ function remove(config){
     var db = config.db;        // 数据库对象
     var onsuccess = config.onsuccess;
     var onerror = config.onerror;
-	
+    
     var tableName = config.tableName;        // 表名
     var keyValue = config.keyValue;        // 主键值
 
@@ -276,7 +343,7 @@ function get(config){
         // 错误
         request.onerror = function (event) {
           console.log("读取数据失败; tableName=", tableName, 
-			  "tableName=", tableName, "keyValue=",keyValue);
+              "tableName=", tableName, "keyValue=",keyValue);
           reject(event);
           if(onerror){
               onerror(event, config);
@@ -322,25 +389,25 @@ function listAll(config){
               onerror(event, config);
           }
         };
-		//
-		var dataList = [];
+        //
+        var dataList = [];
         // 操作成功
         request.onsuccess = function (event) {
-			//
-			var cursor = event.target.result;
-			//
-			if (cursor) {
-				var id = cursor.key;
-				var data = cursor.value;
-				dataList.push(data);
-			   cursor.continue();
-			} else {
-			  console.log("没有更多数据了！");
-			  resolve(dataList);
-			  if(onsuccess){
-				  onsuccess(dataList, config);
-			  }
-			}
+            //
+            var cursor = event.target.result;
+            //
+            if (cursor) {
+                var id = cursor.key;
+                var data = cursor.value;
+                dataList.push(data);
+               cursor.continue();
+            } else {
+              console.log("没有更多数据了！");
+              resolve(dataList);
+              if(onsuccess){
+                  onsuccess(dataList, config);
+              }
+            }
         };
     });
     //
