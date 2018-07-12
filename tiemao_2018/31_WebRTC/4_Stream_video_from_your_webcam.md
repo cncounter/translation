@@ -1,6 +1,6 @@
 ## 4. Stream video from your webcam
 
-## 4. 从web摄像头获取视频流
+## 4. 从摄像头获取视频
 
 ## What you'll learn
 
@@ -14,9 +14,9 @@ In this step you'll find out how to:
 *   Manipulate stream playback.
 *   Use CSS and SVG to manipulate video.
 
-* 从web摄像头获取视频流(video stream)
-* 播放视频流
-* 使用CSS和SVG来处理视频。
+* 从摄像头(webcam)获取视频流(video stream)
+* 操纵视频流的展示
+* 通过CSS和SVG来处理视频。
 
 A complete version of this step is in the `step-01` folder.
 
@@ -48,7 +48,7 @@ Add a `video` element and a `script` element to `index.html` in your `work` dire
 </html>
 ```
 
-> 注意: 如果有中文, 则 `.html` 文件需要使用 UTF-8 编码保存/另存。
+> 注意: 如果有中文字符, 则 `.html` 文件需要使用 UTF-8 编码保存/另存。
 
 
 
@@ -66,7 +66,7 @@ Add the following to **main.js** in your **js** folder:
 
 // 本节只需要使用到 video (video: true).
 const mediaStreamConstraints = {
-  video: true,
+  video: true
 };
 
 // 用于播放视频流stream 的 video元素.
@@ -89,13 +89,14 @@ function handleLocalMediaStreamError(error) {
 // 初始化 media stream.
 navigator.mediaDevices.getUserMedia(mediaStreamConstraints)
   .then(gotLocalMediaStream).catch(handleLocalMediaStreamError);
+
 ```
 
 
 
 > All the JavaScript examples here use `'use strict';` to avoid common coding gotchas.
 
-> 本教程的所有 JavaScript 代码, 都在起始处加上 `'use strict';` 这样能避免很多新手常犯的编程错误。
+> 本教程中的 JavaScript 代码, 都在起始处加上 `'use strict';` 这样做可以避免很多新手常犯的编程错误。
 
 > Find out more about what that means in [ECMAScript 5 Strict Mode, JSON, and More](http://ejohn.org/blog/ecmascript-5-strict-mode-json-and-more/).
 
@@ -103,23 +104,21 @@ navigator.mediaDevices.getUserMedia(mediaStreamConstraints)
 
 ## Try it out
 
-## 试试
+## 运行起来试试
 
 Open `index.html` in your browser and you should see something like this (featuring the view from your webcam, of course!):
 
-开放`index.html`
+在浏览器中打开对应的 `index.html` 页面, 效果类似如下:
 
 ![](04_01_demo.png)
 
+当然, 页面中展示的是摄像头实时拍摄的内容。
 
 
 ## How it works
 
-## 它是如何工作的
+## 原理解析
 
-Following the `getUserMedia()` call, the browser requests permission from the user to access their camera (if this is the first time camera access has been requested for the current origin). If successful, a [MediaStream](https://developer.mozilla.org/en/docs/Web/API/MediaStream) is returned, which can be used by a media element via the `srcObject` attribute:
-
-后,`getUserMedia()`.如果成功,则返回(MediaStream)(https://developer.mozilla.org/en/docs/Web/API/MediaStream),这可以通过使用的媒体元素`srcObject`属性:
 
 ```
 navigator.mediaDevices.getUserMedia(mediaStreamConstraints)
@@ -127,6 +126,16 @@ navigator.mediaDevices.getUserMedia(mediaStreamConstraints)
 
 }
 ```
+
+
+Following the `getUserMedia()` call, the browser requests permission from the user to access their camera (if this is the first time camera access has been requested for the current origin). If successful, a [MediaStream](https://developer.mozilla.org/en/docs/Web/API/MediaStream) is returned, which can be used by a media element via the `srcObject` attribute:
+
+调用 `getUserMedia()` 方法之后, 浏览器会判断该 domain 是否具有读取摄像头的权限, 假如是第一次请求, 则会弹出对话框让用户决定是否允许。 如下图所示:
+
+![](04_02_allow_use_webcam.png)
+
+
+如果权限验证通过, 则返回 [MediaStream](https://developer.mozilla.org/en/docs/Web/API/MediaStream) 对象, 该对象可以赋值给 media 元素的 `srcObject` 属性:
 
 
 
@@ -140,11 +149,11 @@ function gotLocalMediaStream(mediaStream) {
 
 The `constraints` argument allows you to specify what media to get. In this example, video only, since audio is disabled by default:
 
-的`constraints`参数允许您指定媒体得到什么。在这个例子中,视频,因为音频默认是禁用:
+约束参数 `constraints` 可以指定获取哪些 media 信息。因为声音(audio)的默认值是禁用的, 所以这里只获取了 video 流:
 
 ```
 const mediaStreamConstraints = {
-  video: true,
+  video: true
 };
 ```
 
@@ -152,7 +161,7 @@ const mediaStreamConstraints = {
 
 You can use constraints for additional requirements such as video resolution:
 
-您可以使用约束等附加要求视频分辨率:
+还可以加上更多的约束条件, 例如设置视频分辨率:
 
 ```
 const hdConstraints = {
@@ -171,15 +180,24 @@ const hdConstraints = {
 
 The [MediaTrackConstraints specification](https://w3c.github.io/mediacapture-main/getusermedia.html#media-track-constraints) lists all potential constraint types, though not all options are supported by all browsers. If the resolution requested isn't supported by the currently selected camera, `getUserMedia()` will be rejected with an `OverconstrainedError` and the user will not be prompted to give permission to access their camera.
 
-.`getUserMedia()`将被拒绝`OverconstrainedError`
+[MediaTrackConstraints 规范文档](https://w3c.github.io/mediacapture-main/getusermedia.html#media-track-constraints) 列出了所有可用的约束类型, 虽然有一些浏览器不兼容其中的某些选项。如果当前选择的摄像头不支持给定的约束选项, 调用 `getUserMedia()` 时则会抛出 `OverconstrainedError` 错误。默认也不会提示用户进行再次授权。
+
+当然, 用户随时可以管理授权信息, 或者切换摄像头, 如下图所示:
+
+![](04_03_webcam_manage.png)
+
+各个版本的浏览器界面可能略有不同, 但应该都能找到管理授权的地方。搞不定的就上网搜索。
+
+
+
 
 > You can view a demo showing how to use constraints to request different resolutions [here](https://simpl.info/getusermedia/constraints/), and a demo using constraints to choose camera and microphone [here](https://simpl.info/getusermedia/sources/).
 
-> 您可以查看一个演示如何使用约束要求不同的决议(这里)(https://simpl.信息/ getusermedia /约束/),和一个演示使用约束选择摄像头和麦克风(这里)(https://simpl.info/getusermedia/sources/)。
+> 关于限制不同分辨率的demo, 请参考 <https://simpl.info/getusermedia/constraints/>, 选择摄像头和麦克风的demo请参考: <https://simpl.info/getusermedia/sources/>。
 
 If `getUserMedia()` is successful, the video stream from the webcam is set as the source of the video element:
 
-如果`getUserMedia()`成功,摄像头的视频设置视频元素的来源:
+如果 `getUserMedia()` 调用成功, 则将摄像头传过来的视频流, 赋给 video 标签:
 
 ```
 function gotLocalMediaStream(mediaStream) {
@@ -191,7 +209,7 @@ function gotLocalMediaStream(mediaStream) {
 
 ## Bonus points
 
-## 加分
+## 要点
 
 *   The `localStream` object passed to `getUserMedia()` is in global scope, so you can inspect it from the browser console: open the console, type _stream_ and press Return. (To view the console in Chrome, press Ctrl-Shift-J, or Command-Option-J if you're on a Mac.)
 *   What does `localStream.getVideoTracks()` return?
