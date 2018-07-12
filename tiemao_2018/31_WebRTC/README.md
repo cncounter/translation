@@ -2,15 +2,15 @@
 
 # WebRTC 实时通信技术
 
-## [1.Introduction](1_Introduction.md)
+## [1.WebRTC简介](1_Introduction.md)
 
-## [2.Overview](2_Overview.md)
+## [2.WebRTC课程概述](2_Overview.md)
 
-## [3.Get the sample code](3_Get_the_sample_code.md)
+## [3.获取示例代码](3_Get_the_sample_code.md)
 
-## [4.Stream video from your webcam](4_Stream_video_from_your_webcam.md)
+## [4.从摄像头获取视频](4_Stream_video_from_your_webcam.md)
 
-## [5.Stream video with RTCPeerConnection](5_Stream_video_with_RTCPeerConnection.md)
+## [5.通过RTCPeerConnection传输视频流](5_Stream_video_with_RTCPeerConnection.md)
 
 ## [6.Use RTCDataChannel to exchange data](6_Use_RTCDataChannel_to_exchange_data.md)
 
