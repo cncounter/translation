@@ -209,18 +209,21 @@ function gotLocalMediaStream(mediaStream) {
 
 ## Bonus points
 
-## 要点
+## 练习与实践
 
 *   The `localStream` object passed to `getUserMedia()` is in global scope, so you can inspect it from the browser console: open the console, type _stream_ and press Return. (To view the console in Chrome, press Ctrl-Shift-J, or Command-Option-J if you're on a Mac.)
 *   What does `localStream.getVideoTracks()` return?
 *   Try calling `localStream.getVideoTracks()[0].stop()`.
 *   Look at the constraints object: what happens when you change it to `{audio: true, video: true}`?
-*   What size is the video element? How can you get the video's natural size from JavaScript, as opposed to display size? Use the Chrome Dev Tools to check.*   Try adding CSS filters to the video element. For example:
+*   What size is the video element? How can you get the video's natural size from JavaScript, as opposed to display size? Use the Chrome Dev Tools to check.
+*   Try adding CSS filters to the video element. For example:
 
-*`localStream`对象传递给`getUserMedia()`在全球范围内,所以你可以从浏览器控制台检查:打开控制台,类型_stream_并按返回.(查看控制台在Chrome,新闻Ctrl-Shift-J或Command-Option-J如果你在Mac)。
-*是什么`localStream.getVideoTracks()`回报呢?
-*试着打电话`localStream.getVideoTracks()[0].stop()``{audio: true, video: true}`吗?
-.*尝试添加CSS过滤器视频元素。例如:
+* `localStream` 是一个全局变量, 所以可以从 console 中查看: 打开浏览器控制台, 输入 `localStream` 并按回车。 (打开控制台的方式: Windows下按F12并选择; 或者组合快捷键: `Ctrl-Shift-J`;  Mac则是 `Command-Option-J`)。
+* `localStream.getVideoTracks()` 返回的是什么值呢?
+* 查看 constraints 对象: 如果设置为 `{audio: true, video: true}`, 有什么效果呢?
+* video 元素的大小是多少? 如何通过JavaScript获得视频的原生尺寸呢? 而不是仅仅获取显示出来的尺寸? 试着用 Chrome开发工具来查看相关的API。
+* 尝试对 video 元素添加 CSS 过滤器。例如:
+
 
 ```
 video {
@@ -230,9 +233,9 @@ video {
 
 
 
-*   Try adding SVG filters. For example:
+* Try adding SVG filters. For example:
 
-*尝试添加SVG过滤器。例如:
+* 尝试添加SVG过滤器。例如:
 
 ```
 video {
@@ -254,11 +257,14 @@ In this step you learned how to:
 *   Set media constraints.
 *   Mess with the video element.
 
+* 从网络摄像头获取视频。
+* 设置媒体约束(media constraint)。
+* 放置视频元素。
 
 
 A complete version of this step is in the **step-01** folder.
 
-一个完整版的这一步是* * step-01 * *文件夹。
+本节的完整版代码位于 **step-01** 文件夹下。
 
 ## Tips
 
@@ -267,8 +273,8 @@ A complete version of this step is in the **step-01** folder.
 *   Don't forget the `autoplay` attribute on the `video` element. Without that, you'll only see a single frame!
 *   There are lots more options for `getUserMedia()` constraints. Take a look at the demo at [webrtc.github.io/samples/src/content/peerconnection/constraints](https://webrtc.github.io/samples/src/content/peerconnection/constraints/). As you'll see, there are lots of interesting WebRTC samples on that site.
 
-不要忘记你的`autoplay``video`元素。没有,你只会看到一个单帧!
-*有更多选择`getUserMedia()`.如您所见,该网站上有很多有趣的WebRTC样本。
+*   不要忘记 `video` 元素的 `autoplay` 属性。如果没有设置, 则只能看到第一帧画面!
+*   `getUserMedia()`方法提供了很多选项, 请参考 <https://webrtc.github.io/samples/src/content/peerconnection/constraints/>. 当然, 其中也提供了很多有趣的 WebRTC 示例。
 
 ## Best practice
 
@@ -276,7 +282,7 @@ A complete version of this step is in the **step-01** folder.
 
 *   Make sure your video element doesn't overflow its container. We've added `width` and `max-width` to set a preferred size and a maximum size for the video. The browser will calculate the height automatically:
 
-*确保你的视频不溢出容器元素。我们增加了`width`和`max-width`设置首选大小和最大大小的视频。浏览器将自动计算高度:
+* 请确保 video 元素的内容不会溢出包裹他的容器。可以通过 `width` 和 `max-width` 样式来设置 video 的默认尺寸、以及最大尺寸。 浏览器自动计算对应的 height 属性:
 
 ```
 video {
@@ -289,9 +295,9 @@ video {
 
 ## Next up
 
-## 接下来
+## 下一步做什么呢?
 
 You've got video, but how do you stream it? Find out in the next step!
 
-你有视频,但是如何流吗?在下一步中找到!
+既然获取到了 video 信息, 但是如何使用呢? 我们在下一小节讨论!
 
