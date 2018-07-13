@@ -1,6 +1,6 @@
 ## 5. Stream video with RTCPeerConnection
 
-## 5. 通过 RTCPeerConnection 传输视频流
+## 5.通过RTCPeerConnection传输流媒体视频
 
 ## What you'll learn
 
