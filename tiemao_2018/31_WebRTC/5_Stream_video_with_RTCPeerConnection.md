@@ -4,47 +4,47 @@
 
 ## What you'll learn
 
-## 你将学习
+## 本节内容
 
 In this step you'll find out how to:
 
-在此步骤中,我们将了解如何:
+本节课程, 我们将学习以下内容:
 
 - Abstract away browser differences with the WebRTC shim, [adapter.js](https://github.com/webrtc/adapter).
 - Use the RTCPeerConnection API to stream video.
 - Control media capture and streaming.
 
-- 抽象WebRTC垫片,浏览器差异(adapter.js)(https://github.com/webrtc/adapter)。
-- 使用RTCPeerConnection API流视频。
-- 控制媒体捕捉和流。
+- 使用WebRTC兼容库: [adapter.js](https://github.com/webrtc/adapter), 来抹平各个浏览器间的差异。
+- 通过 RTCPeerConnection API 传输流媒体视频。
+- 控制 media 的捕捉和传输。
 
 A complete version of this step is in the **step-2** folder.
 
-一个完整版的这一步是* *步骤2 * *文件夹。
+本节的完整版代码位于 **step-2** 文件夹中。
 
 ## What is RTCPeerConnection?
 
-## RTCPeerConnection是什么?
+## RTCPeerConnection 简介
 
 RTCPeerConnection is an API for making WebRTC calls to stream video and audio, and exchange data.
 
-RTCPeerConnection是一个API让WebRTC调用流视频和音频,和交换数据。
+RTCPeerConnection 是用来供 WebRTC 进行视频、音频数据流调用, 以及数据交换的API。
 
 This example sets up a connection between two RTCPeerConnection objects (known as peers) on the same page.
 
-这个例子中设置两个RTCPeerConnection对象之间的连接(称为同行)在相同的页面上。
+本文的示例程序, 将会在同一个页面上, 通过两个RTCPeerConnection对象(即peers)建立一条连接通道。
 
 Not much practical use, but good for understanding how RTCPeerConnection works.
 
-没有什么实际用途,但有利于理解RTCPeerConnection是如何工作的。
+虽然还没有什么实际的作用, 但对于理解 RTCPeerConnection 的工作原理还是挺有用的。
 
 ## Add video elements and control buttons
 
-## 添加视频元素和控制按钮
+## 添加 video 元素以及控制按钮
 
 In **index.html** replace the single video element with two video elements and three buttons:
 
-在* *指数。html * *取代单一视频元素有两个视频元素和三个按钮:
+在 **index.html** 文件中, 配置两个 video 元素, 以及三个按钮:
 
 ```
 <video id="localVideo" autoplay playsinline></video>
@@ -62,15 +62,15 @@ In **index.html** replace the single video element with two video elements and t
 
 One video element will display the stream from `getUserMedia()`and the other will show the same video streamed via RTCPeerconnection. (In a real world application, one video element would display the local stream and the other the remote stream.)
 
-将显示一个视频元素流`getUserMedia()`和其他将显示相同的视频通过RTCPeerconnection流。(在现实世界的应用程序中,一个视频元素将显示本地流和其他远程流)。
+其中的一个 video 元素(`localVideo`)用于展示 `getUserMedia()` 获取到的流媒体信息, 另一个video 元素(`remoteVideo`)则通过RTCPeerconnection, 显示同样的内容。在实际使用时, 页面中的两个 video 元素, 一个用来展示本地的视频, 另一个则播放远端的视频内容(参考微信视频聊天, 有一大一小两个视频播放界面)。
 
 ## Add the adapter.js shim
 
-## 添加适配器。js垫片
+## 添加 adapter.js 兼容库
 
 Add a link to the current version of [**adapter.js**](https://github.com/webrtc/adapter)** **above the link to **main.js**:
 
-添加一个链接到当前版本的(* * adapter.js * *)(https://github.com/webrtc/adapter)* * * *以上链接到* * main.js * *:
+在 **main.js** 引用的前面, 添加 [**adapter.js**](https://github.com/webrtc/adapter) 的最新版本:
 
 ```
 <script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
@@ -80,19 +80,19 @@ Add a link to the current version of [**adapter.js**](https://github.com/webrtc/
 
 **adapter.js** is a shim to insulate apps from spec changes and prefix differences. (Though in fact, the standards and protocols used for WebRTC implementations are highly stable, and there are only a few prefixed names.)
 
-* *适配器。js * *是一个垫片隔离应用程序从规范和前缀的差异变化.(尽管事实上,WebRTC实现使用的标准和协议是高度稳定的,只有几个前缀的名字。)
+**adapter.js** 是一个适配程序、隔离了应用程序和规范变更、前缀变化等差异.(事实上, WebRTC实现所使用的标准和协议都是非常稳定的, 只有几个定义好的API。)
 
 In this step, we've linked to the most recent version of **adapter.js**, which is fine for a codelab but not may not be right for a production app**. **The [adapter.js GitHub repo](https://github.com/webrtc/adapter) explains techniques for making sure your app always accesses the most recent version.
 
-在这一步中,我们与* *适配器的最新版本。js * *,好codelab但不可能不适合生产应用* *。* *(适配器。js GitHub回购)(https://github.com/webrtc/adapter)解释了技术来确保应用程序总是访问最新版本。
+在这一步中, 我们链接到 **adapter.js** 的最新版本。对于实验和教程来说很强大了, 但如果用于生产环境可能还需要进一步完善。 `adapter.js`仓库的地址为:  <https://github.com/webrtc/adapter>, 其中的解析技术保证你使用到的是最新的版本。
 
 For full information about WebRTC interop, see [webrtc.org/web-apis/interop](https://webrtc.org/web-apis/interop/).
 
-WebRTC reparacion供For[webrtc.org/web-apis/interop](此前,见https://webrtc.org/web-apis/interop/)。
+WebRTC 交互相关的信息, 请参考: <https://webrtc.org/web-apis/interop/>。
 
 **Index.html** should now look like this:
 
-* *指数。html * *现在看起来应该像这样:
+现在, **Index.html**的内容如下:
 
 ```
 <!DOCTYPE html>
@@ -125,11 +125,11 @@ WebRTC reparacion供For[webrtc.org/web-apis/interop](此前,见https://webrtc.or
 
 ## Install the RTCPeerConnection code
 
-## 安装RTCPeerConnection代码
+## 安装 RTCPeerConnection 代码
 
-Replace **main.js **with the version in the **step-02** folder.
+Replace **main.js** with the version in the **step-02** folder.
 
-取代主要* *。js版本的* * * * step-02 * *文件夹。
+使用 **step-02**文件夹中的 **main.js** 文件替换 work 目录下对应文件。
 
 It's not ideal doing cut-and-paste with large chunks of code in a codelab, but in order to get RTCPeerConnection up and running, there's no alternative but to go the whole hog.
 
