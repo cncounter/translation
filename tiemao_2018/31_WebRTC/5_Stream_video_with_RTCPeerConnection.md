@@ -8,15 +8,15 @@
 
 In this step you'll find out how to:
 
-本节课程, 我们将学习以下内容:
+我们将在本节课程中, 学习以下内容:
 
 - Abstract away browser differences with the WebRTC shim, [adapter.js](https://github.com/webrtc/adapter).
 - Use the RTCPeerConnection API to stream video.
 - Control media capture and streaming.
 
-- 使用WebRTC兼容库: [adapter.js](https://github.com/webrtc/adapter), 来抹平各个浏览器间的差异。
+- 使用WebRTC兼容库: [adapter.js](https://github.com/webrtc/adapter), 来抹平各浏览器间的差异。
 - 通过 RTCPeerConnection API 传输流媒体视频。
-- 控制 media 的捕捉和传输。
+- 控制 media 的捕捉与传输。
 
 A complete version of this step is in the **step-2** folder.
 
@@ -28,15 +28,15 @@ A complete version of this step is in the **step-2** folder.
 
 RTCPeerConnection is an API for making WebRTC calls to stream video and audio, and exchange data.
 
-RTCPeerConnection 是用来供 WebRTC 进行视频、音频数据流调用, 以及数据交换的API。
+RTCPeerConnection 是 WebRTC 中用来进行 视频流/音频流传输, 以及数据交换的API。
 
 This example sets up a connection between two RTCPeerConnection objects (known as peers) on the same page.
 
-本文的示例程序, 将会在同一个页面上, 通过两个RTCPeerConnection对象(即peers)建立一条连接通道。
+本文的示例程序, 将会在一个页面上, 通过两个 RTCPeerConnection 对象(即peers)建立一条连接通道。
 
 Not much practical use, but good for understanding how RTCPeerConnection works.
 
-虽然还没有什么实际的作用, 但对于理解 RTCPeerConnection 的工作原理还是挺有用的。
+虽然没什么实际的作用, 但主要目的是为了理解 RTCPeerConnection 的工作原理。
 
 ## Add video elements and control buttons
 
@@ -62,7 +62,7 @@ In **index.html** replace the single video element with two video elements and t
 
 One video element will display the stream from `getUserMedia()`and the other will show the same video streamed via RTCPeerconnection. (In a real world application, one video element would display the local stream and the other the remote stream.)
 
-其中的一个 video 元素(`localVideo`)用于展示 `getUserMedia()` 获取到的流媒体信息, 另一个video 元素(`remoteVideo`)则通过RTCPeerconnection, 显示同样的内容。在实际使用时, 页面中的两个 video 元素, 一个用来展示本地的视频, 另一个则播放远端的视频内容(参考微信视频聊天, 有一大一小两个视频播放界面)。
+其中的一个 video 元素(`id="localVideo"`)用于展示 `getUserMedia()` 获取到的流媒体信息, 另一个 video 元素(`id="remoteVideo"`)则通过RTCPeerconnection, 显示同样的内容。在实际的应用中, 页面中一般有两个 video 元素, 一个用来展示本地视频, 另一个则播放远程传输过来的视频( 请参考微信视频聊天, 其中有一大一小两个视频播放窗口 )。
 
 ## Add the adapter.js shim
 
@@ -88,11 +88,11 @@ In this step, we've linked to the most recent version of **adapter.js**, which i
 
 For full information about WebRTC interop, see [webrtc.org/web-apis/interop](https://webrtc.org/web-apis/interop/).
 
-WebRTC 交互相关的信息, 请参考: <https://webrtc.org/web-apis/interop/>。
+WebRTC 相关的详细交互信息, 请参考: <https://webrtc.org/web-apis/interop/>。
 
 **Index.html** should now look like this:
 
-现在, **Index.html**的内容如下:
+现在, **Index.html** 的内容如下:
 
 ```
 <!DOCTYPE html>
@@ -125,43 +125,44 @@ WebRTC 交互相关的信息, 请参考: <https://webrtc.org/web-apis/interop/>�
 
 ## Install the RTCPeerConnection code
 
-## 安装 RTCPeerConnection 代码
+## 调用 RTCPeerConnection
 
 Replace **main.js** with the version in the **step-02** folder.
 
-使用 **step-02**文件夹中的 **main.js** 文件替换 work 目录下对应文件。
+使用 **step-02** 文件夹中的 **main.js** 文件替换 work 目录下对应文件。
 
 It's not ideal doing cut-and-paste with large chunks of code in a codelab, but in order to get RTCPeerConnection up and running, there's no alternative but to go the whole hog.
 
-这不是理想做codelab剪切和粘贴大量代码,但为了得到RTCPeerConnection启动并运行,有别无选择的干到底。
+在 demo 教程的一个步骤中, 替换大量的代码可能学习起来有点麻烦, 但没有什么更好的办法, 因为 RTCPeerConnection 要跑起来是一个环环相扣的过程。
+
 
 You'll learn how the code works in a moment.
 
-您将了解代码是如何工作的。
+下面我们将详细讲解代码的工作原理。
 
 ## Make the call
 
-## 打这个电话
+## 拨打视频通话
 
 Open **index.html**, click the **Start** button to get video from your webcam, and click **Call** to make the peer connection. You should see the same video (from your webcam) in both video elements. View the browser console to see WebRTC logging.
 
-开* *指数。html * *,单击开始* * * *按钮得到从你的摄像头的视频,然后点击电话* * * *的对等连接。您应该看到相同的视频(从你的摄像头)在视频元素.查看浏览器控制台看到WebRTC日志记录。
+打开 **index.html**, 单击 **Start** 按钮, 从摄像头获取视频, 然后点击 **Call** 来简历对等连接(peer connection)。 如果成功, 那么就可以在两个 video 中看到相同的视频内容. 查看浏览器的控制台, 看看 WebRTC 的日志记录。
 
 ## How it works
 
-## 它是如何工作的
+## 原理解析
 
 This step does a lot...
 
-这一步做了很多……
+这一步做了很多的操作...
 
 **If you want to skip the explanation below, that's fine.**
 
-* *如果你想跳过下面的解释,这很好。* *
+**下面的内容比较复杂, 如果不关心具体过程, 可以直接跳到下一节。**
 
 **You can still continue with the codelab!**
 
-* *你仍然可以继续codelab ! * *
+**跳过下面的步骤, 依然可以继续该教程的学习!**
 
 WebRTC uses the RTCPeerConnection API to set up a connection to stream video between WebRTC clients, known as **peers**.
 
