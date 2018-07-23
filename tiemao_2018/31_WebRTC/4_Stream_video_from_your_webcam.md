@@ -299,5 +299,5 @@ video {
 
 You've got video, but how do you stream it? Find out in the next step!
 
-既然获取到了 video 信息, 但是如何使用呢? 我们在下一小节讨论!
+既然获取到了 video 信息, 那如何使用呢? 我们将在下一小节讨论!
 
