@@ -196,75 +196,75 @@ First up, Alice and Bob exchange network information. The expression 'finding ca
 
 1. Alice 创建一个 RTCPeerConnection 实例, 设置好 `onicecandidate (addEventListener('icecandidate'))` 回调函数。 **main.js**中对应的代码为:
 
-```
-let localPeerConnection;
-```
+    ```
+    let localPeerConnection;
+    ```
 
-以及,
-
-
-```
-localPeerConnection = new RTCPeerConnection(servers);
-localPeerConnection.addEventListener('icecandidate', handleConnection);
-localPeerConnection.addEventListener(
-    'iceconnectionstatechange', handleConnectionChange);
-```
+    以及,
 
 
-
-The `servers` argument to RTCPeerConnection isn't used in this example.
-
-在本例中, RTCPeerConnection 构造函数的参数 `servers` 是 null。
-
-This is where you could specify STUN and TURN servers.
-
-在 `servers` 参数中可以指定 STUN 和 TURN 服务器相关的信息。
-
-WebRTC is designed to work peer-to-peer, so users can connect by the most direct route possible. However, WebRTC is built to cope with real-world networking: client applications need to traverse [NAT gateways](http://en.wikipedia.org/wiki/NAT_traversal) and firewalls, and peer to peer networking needs fallbacks in case direct connection fails.
-
-WebRTC 是为 peer-to-peer 网络设计的, 所以用户可以在大部分直连的网络中使用. 但现实情况很复杂, WebRTC需要面对的是: 客户端程序需要穿透 [NAT网关](http://en.wikipedia.org/wiki/NAT_traversal) 以及各种防火墙, 在直连失败的情况下, peer-to-peer 网络需要回退策略。
-
-As part of this process, the WebRTC APIs use STUN servers to get the IP address of your computer, and TURN servers to function as relay servers in case peer-to-peer communication fails. [WebRTC in the real world](http://www.html5rocks.com/en/tutorials/webrtc/infrastructure/) explains in more detail.
-
-为了解决 peer-to-peer 通信失败的问题,WebRTC API 通过 STUN 服务来获取客户端的公网IP, 使用 TURN 作为中继服务器。更详细的信息请参考: [WebRTC in the real world](http://www.html5rocks.com/en/tutorials/webrtc/infrastructure/) 。
-
-1. Alice calls `getUserMedia()` and adds the stream passed to that:
-
-1. Alice 调用 `getUserMedia()`, 并将获取到的 stream 传递给 localPeerConnection:
-
-```
-navigator.mediaDevices.getUserMedia(mediaStreamConstraints).
-  then(gotLocalMediaStream).
-  catch(handleLocalMediaStreamError);
-```
+    ```
+    localPeerConnection = new RTCPeerConnection(servers);
+    localPeerConnection.addEventListener('icecandidate', handleConnection);
+    localPeerConnection.addEventListener(
+        'iceconnectionstatechange', handleConnectionChange);
+    ```
 
 
 
-```
-function gotLocalMediaStream(mediaStream) {
-  localVideo.srcObject = mediaStream;
-  localStream = mediaStream;
-  trace('Received local stream.');
-  callButton.disabled = false;  // Enable call button.
-}
-```
+  > The `servers` argument to RTCPeerConnection isn't used in this example.
+
+  > 在本例中, RTCPeerConnection 构造函数的参数 `servers` 是 null。
+
+  > This is where you could specify STUN and TURN servers.
+
+  > 在 `servers` 参数中可以指定 STUN 和 TURN 服务器相关的信息。
+
+  > WebRTC is designed to work peer-to-peer, so users can connect by the most direct route possible. However, WebRTC is built to cope with real-world networking: client applications need to traverse [NAT gateways](http://en.wikipedia.org/wiki/NAT_traversal) and firewalls, and peer to peer networking needs fallbacks in case direct connection fails.
+
+  > WebRTC 是为 peer-to-peer 网络设计的, 所以用户可以在大部分直连的网络中使用. 但现实情况很复杂, WebRTC需要面对的是: 客户端程序需要穿透 [NAT网关](http://en.wikipedia.org/wiki/NAT_traversal) 以及各种防火墙, 在直连失败的情况下, peer-to-peer 网络需要回退策略。
+
+  > As part of this process, the WebRTC APIs use STUN servers to get the IP address of your computer, and TURN servers to function as relay servers in case peer-to-peer communication fails. [WebRTC in the real world](http://www.html5rocks.com/en/tutorials/webrtc/infrastructure/) explains in more detail.
+
+  > 为了解决 peer-to-peer 通信失败的问题,WebRTC API 通过 STUN 服务来获取客户端的公网IP, 使用 TURN 作为中继服务器。更详细的信息请参考: [WebRTC in the real world](http://www.html5rocks.com/en/tutorials/webrtc/infrastructure/) 。
+
+2. Alice calls `getUserMedia()` and adds the stream passed to that:
+
+2. Alice 调用 `getUserMedia()`, 并将获取到的 stream 传递给 localPeerConnection:
+
+	```
+    navigator.mediaDevices.getUserMedia(mediaStreamConstraints).
+      then(gotLocalMediaStream).
+      catch(handleLocalMediaStreamError);
+    ```
 
 
 
-```
-localPeerConnection.addStream(localStream);
-trace('Added local stream to localPeerConnection.');
-```
+    ```
+    function gotLocalMediaStream(mediaStream) {
+      localVideo.srcObject = mediaStream;
+      localStream = mediaStream;
+      trace('Received local stream.');
+      callButton.disabled = false;  // Enable call button.
+    }
+    ```
 
 
 
-1. The `onicecandidate` handler from step 1. is called when network candidates become available.
-2. Alice sends serialized candidate data to Bob. In a real application, this process (known as **signaling**) takes place via a messaging service – you'll learn how to do that in a later step. Of course, in this step, the two RTCPeerConnection objects are on the same page and can communicate directly with no need for external messaging.
-3. When Bob gets a candidate message from Alice, he calls `addIceCandidate()`, to add the candidate to the remote peer description:
+    ```
+    localPeerConnection.addStream(localStream);
+    trace('Added local stream to localPeerConnection.');
+    ```
 
-1. 在 **step 1** 之中引入的 `onicecandidate` 处理函数, 在网络候选者变得可用时会被调用。
-2. Alice 将序列化之后的候选者数据发送给 Bob。这个过程被称为 **signaling**(信令), 在实际应用中, 是通过消息服务来传递的。 在后面的教程中我们会学到. 当然,在本节中, 因为两个 RTCPeerConnection 实例在同一页面中, 所以可以直接通信, 而不再需要外部的消息服务。
-3. Bob从Alice获得候选者信息之后, 他调用 `addIceCandidate()`, 将候选信息传递给 remote peer description:
+
+
+3. The `onicecandidate` handler from step 1. is called when network candidates become available.
+4. Alice sends serialized candidate data to Bob. In a real application, this process (known as **signaling**) takes place via a messaging service – you'll learn how to do that in a later step. Of course, in this step, the two RTCPeerConnection objects are on the same page and can communicate directly with no need for external messaging.
+5. When Bob gets a candidate message from Alice, he calls `addIceCandidate()`, to add the candidate to the remote peer description:
+
+3. 在 **step 1** 之中引入的 `onicecandidate` 处理函数, 在网络候选者变得可用时会被调用。
+4. Alice 将序列化之后的候选者数据发送给 Bob。这个过程被称为 **signaling**(信令), 在实际应用中, 是通过消息服务来传递的。 在后面的教程中我们会学到. 当然,在本节中, 因为两个 RTCPeerConnection 实例在同一页面中, 所以可以直接通信, 而不再需要外部的消息服务。
+5. Bob从Alice获得候选者信息之后, 他调用 `addIceCandidate()`, 将候选信息传递给 remote peer description:
 
 ```
 function handleConnection(event) {
@@ -420,9 +420,9 @@ A complete version of this step is in the **step-2** folder.
 - Find out more about the adapter.js shim from the [adapter.js GitHub repo](https://github.com/webrtc/adapter).
 - Want to see what the world's best video chat app looks like? Take a look at AppRTC, the WebRTC project's canonical app for WebRTC calls: [app](https://appr.tc/), [code](https://github.com/webrtc/apprtc). Call setup time is less than 500 ms.
 
-- 有很多学在这一步!寻找其他资源,详细说明RTCPeerConnection看看[webrtc.org/start)(https://webrtc.org/start).这个页面包含JavaScript框架的建议,如果你想使用WebRTC,但不想争论api。
-- 找到更多关于适配器。js的垫片(适配器。js GitHub回购)(https://github.com/webrtc/adapter)。
-- 希望看到世界上最好的视频聊天应用程序是什么样子的?看看AppRTC,WebRTC项目的规范化应用WebRTC电话:(app)(https://appr.tc/),(代码)(https://github.com/webrtc/apprtc)。呼叫建立时间小于500 ms。
+- 本节涉及到了很多知识点! 更多关于 RTCPeerConnection 的内容, 请参考 [webrtc.org/start](https://webrtc.org/start). 里面有一些对于 JavaScript 框架的建议, 如果你只是想使用WebRTC,但不想涉及到API的话。
+- 从 [adapter.js GitHub repo](https://github.com/webrtc/adapter) 中阅读更多的信息。
+- 想要体验当今世界上最好的WebRTC视频聊天应用吗? 那可以看看 AppRTC, 这是WebRTC项目的标准实现: [app](https://appr.tc/), [code](https://github.com/webrtc/apprtc)。 创建通话的时间可以小于 500 ms。
 
 ## Best practice
 
@@ -430,7 +430,7 @@ A complete version of this step is in the **step-2** folder.
 
 - To future-proof your code, use the new Promise-based APIs and enable compatibility with browsers that don't support them by using [adapter.js](https://github.com/webrtc/adapter).
 
-- 不会过时的代码,使用新的基于承诺的api和实现兼容的浏览器不支持他们通过使用(adapter.js)(https://github.com/webrtc/adapter)。
+- 想要代码不会轻易过时, 请使用基于 Promise的API， 并通过 [adapter.js](https://github.com/webrtc/adapter) 来兼容各种浏览器。
 
 ## Next up
 
@@ -438,9 +438,9 @@ A complete version of this step is in the **step-2** folder.
 
 This step shows how to use WebRTC to stream video between peers — but this codelab is also about data!
 
-这个步骤显示了如何使用WebRTC同行之间的流视频——但这codelab也是关于数据!
+本节演示了如何使用WebRTC在端点之间传输视频流 —— 但本教程还要演示如何传输数据!
 
 In the next step find out how to stream arbitrary data using RTCDataChannel.
 
-在下一步中找出如何使用RTCDataChannel流任意数据。
+下一小节, 我们将学习如何使用 RTCDataChannel 来传输任意数据。
 
