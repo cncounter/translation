@@ -299,11 +299,11 @@ WebRTC同行还需要发现和交换本地和远程音频和视频媒体信息,�
 1. Alice 执行 RTCPeerConnection 的 `createOffer()` 方法。返回的 promise 中提供了一个 RTCSessionDescription: 即 Alice 的本地会话描述:
 
 
-  ```
-trace('localPeerConnection createOffer start.');
-localPeerConnection.createOffer(offerOptions)
-  .then(createdOffer).catch(setSessionDescriptionError);
-  ```
+    ```
+    trace('localPeerConnection createOffer start.');
+    localPeerConnection.createOffer(offerOptions)
+      .then(createdOffer).catch(setSessionDescriptionError);
+    ```
 
 
 
@@ -318,52 +318,52 @@ localPeerConnection.createOffer(offerOptions)
 5. 当Alice获取到Bob的会话描述信息, 则使用 `setRemoteDescription()` 方法填入远端会话信息。
 
 
-  ```
-// Logs offer creation and sets peer connection session descriptions.
-function createdOffer(description) {
-  trace(`Offer from localPeerConnection:\n${description.sdp}`);
+    ```
+    // Logs offer creation and sets peer connection session descriptions.
+    function createdOffer(description) {
+      trace(`Offer from localPeerConnection:\n${description.sdp}`);
 
-  trace('localPeerConnection setLocalDescription start.');
-  localPeerConnection.setLocalDescription(description)
-    .then(() => {
-      setLocalDescriptionSuccess(localPeerConnection);
-    }).catch(setSessionDescriptionError);
+      trace('localPeerConnection setLocalDescription start.');
+      localPeerConnection.setLocalDescription(description)
+        .then(() => {
+          setLocalDescriptionSuccess(localPeerConnection);
+        }).catch(setSessionDescriptionError);
 
-  trace('remotePeerConnection setRemoteDescription start.');
-  remotePeerConnection.setRemoteDescription(description)
-    .then(() => {
-      setRemoteDescriptionSuccess(remotePeerConnection);
-    }).catch(setSessionDescriptionError);
+      trace('remotePeerConnection setRemoteDescription start.');
+      remotePeerConnection.setRemoteDescription(description)
+        .then(() => {
+          setRemoteDescriptionSuccess(remotePeerConnection);
+        }).catch(setSessionDescriptionError);
 
-  trace('remotePeerConnection createAnswer start.');
-  remotePeerConnection.createAnswer()
-    .then(createdAnswer)
-    .catch(setSessionDescriptionError);
-}
+      trace('remotePeerConnection createAnswer start.');
+      remotePeerConnection.createAnswer()
+        .then(createdAnswer)
+        .catch(setSessionDescriptionError);
+    }
 
-// Logs answer to offer creation and sets peer connection session descriptions.
-function createdAnswer(description) {
-  trace(`Answer from remotePeerConnection:\n${description.sdp}.`);
+    // Logs answer to offer creation and sets peer connection session descriptions.
+    function createdAnswer(description) {
+      trace(`Answer from remotePeerConnection:\n${description.sdp}.`);
 
-  trace('remotePeerConnection setLocalDescription start.');
-  remotePeerConnection.setLocalDescription(description)
-    .then(() => {
-      setLocalDescriptionSuccess(remotePeerConnection);
-    }).catch(setSessionDescriptionError);
+      trace('remotePeerConnection setLocalDescription start.');
+      remotePeerConnection.setLocalDescription(description)
+        .then(() => {
+          setLocalDescriptionSuccess(remotePeerConnection);
+        }).catch(setSessionDescriptionError);
 
-  trace('localPeerConnection setRemoteDescription start.');
-  localPeerConnection.setRemoteDescription(description)
-    .then(() => {
-      setRemoteDescriptionSuccess(localPeerConnection);
-    }).catch(setSessionDescriptionError);
-}
-  ```
+      trace('localPeerConnection setRemoteDescription start.');
+      localPeerConnection.setRemoteDescription(description)
+        .then(() => {
+          setRemoteDescriptionSuccess(localPeerConnection);
+        }).catch(setSessionDescriptionError);
+    }
+    ```
 
 
-
-6. Ping!
 
 6. Ping!
+
+6. 接通!
 
 ## Bonus points
 
@@ -372,43 +372,44 @@ function createdAnswer(description) {
 1. Take a look at **chrome://webrtc-internals**. This provides WebRTC stats and debugging data. (A full list of Chrome URLs is at **chrome://about**.)
 2. Style the page with CSS:
 
-1. 看看* * chrome:/ / webrtc-internals * *。这提供了WebRTC统计数据和调试数据。(一个完整的列表的Chrome url在* * Chrome:/ / * *。)
-2. 用CSS样式页面:
+1. 新标签页中打开 **`chrome://webrtc-internals`**。 该页面提供了 WebRTC 相关的统计数据和调试信息。(Chrome 相关的功能url列举在 **`chrome://about`** 之中)
+2. 修改页面的CSS样式:
 
-- Put the videos side by side.
-- Make the buttons the same width, with bigger text.
-- Make sure the layout works on mobile.
+  - Put the videos side by side.
+  - Make the buttons the same width, with bigger text.
+  - Make sure the layout works on mobile.
 
-- 把视频并排。
-- 使按钮相同的宽度,和更大的文本。
-- 确保布局在移动工作。
+  - 将视频并排在一起。
+  - 统一按钮的宽高, 使用更大的字号。
+  - 适配移动端。
 
-1. From the Chrome Dev Tools console, look at `localStream`, `localPeerConnection` and `remotePeerConnection`.
-2. From the console, look at `localPeerConnectionpc1.localDescription`. What does SDP format look like?
+3. From the Chrome Dev Tools console, look at `localStream`, `localPeerConnection` and `remotePeerConnection`.
+4. From the console, look at `localPeerConnectionpc1.localDescription`. What does SDP format look like?
 
-1. 从Chrome开发工具控制台,看看`localStream`,`localPeerConnection`和`remotePeerConnection`。
-2. 从控制台,看看`localPeerConnectionpc1.localDescription`。SDP的格式是什么样子?
+3. 在Chrome控制台中(Chrome Dev Tools console), 查看 `localStream`, `localPeerConnection` 和 `remotePeerConnection`对象的信息。
+4. 在控制台中, 查看 `localPeerConnectionpc1.localDescription` 。SDP的格式是什么样的?
 
 ## What you learned
 
-## 你学到了什么
+## 知识点回顾
 
 In this step you learned how to:
 
-在这个步骤中,您了解了如何:
+在本节课程中, 我们学到了:
 
 - Abstract away browser differences with the WebRTC shim, [adapter.js](https://github.com/webrtc/adapter).
 - Use the RTCPeerConnection API to stream video.
 - Control media capture and streaming.
 - Share media and network information between peers to enable a WebRTC call.
 
-- 抽象WebRTC垫片,浏览器差异(adapter.js)(https://github.com/webrtc/adapter)。
-- 使用RTCPeerConnection API流视频。
-- 控制媒体捕捉和流。
-- 在同行之间共享媒体和网络信息,使WebRTC调用。
+- 使用 WebRTC 兼容库来填平浏览器的差异: [adapter.js](https://github.com/webrtc/adapter)。
+- 使用RTCPeerConnection API来传输视频流。
+- 控制 media 捕捉和传输。
+- 在两个端点(peer)之间, 共享 media 和网络信息, 以连通WebRTC通信。
 
 A complete version of this step is in the **step-2** folder.
 
+本节的完整代码位于 **step-2** 文件夹中。
 
 
 ## Tips
