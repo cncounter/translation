@@ -62,7 +62,7 @@ In **index.html** replace the single video element with two video elements and t
 
 One video element will display the stream from `getUserMedia()`and the other will show the same video streamed via RTCPeerconnection. (In a real world application, one video element would display the local stream and the other the remote stream.)
 
-其中的一个 video 元素(`id="localVideo"`)用于展示 `getUserMedia()` 获取到的流媒体信息, 另一个 video 元素(`id="remoteVideo"`)则通过RTCPeerconnection, 显示同样的内容。在实际的应用中, 页面中一般有两个 video 元素, 一个用来展示本地视频, 另一个则播放远程传输过来的视频( 请参考微信视频聊天, 其中有一大一小两个视频播放窗口 )。
+其中的一个 video 元素(`id="localVideo"`)用于展示 `getUserMedia()` 获取到的流媒体信息, 另一个 video 元素(`id="remoteVideo"`)则通过RTCPeerconnection, 显示同样的内容。在实际的应用中, 页面中一般有两个 video 元素: 第一个用来展示本地视频, 第二个则用来播放远程传输过来的视频( 请参考微信视频聊天, 其中有一大一小两个视频播放窗口 )。
 
 ## Add the adapter.js shim
 
@@ -156,50 +156,51 @@ This step does a lot...
 
 这一步做了很多的操作...
 
-**If you want to skip the explanation below, that's fine.**
+> **If you want to skip the explanation below, that's fine.**
 
-**下面的内容比较复杂, 如果不关心具体过程, 可以直接跳到下一节。**
+> **下面的内容比较复杂, 如果不关心具体过程, 可以直接跳到下一节。**
 
-**You can still continue with the codelab!**
+> **You can still continue with the codelab!**
 
-**跳过下面的步骤, 依然可以继续该教程的学习!**
+> **跳过下面的步骤, 依然可以继续该教程的学习!**
 
 WebRTC uses the RTCPeerConnection API to set up a connection to stream video between WebRTC clients, known as **peers**.
 
-WebRTC使用RTCPeerConnection API建立一个连接到流视频WebRTC客户之间,被称为* * * *。
+WebRTC 通过 RTCPeerConnection API, 在 WebRTC 客户端之间创建连接, 以传输流视频, 客户端被称为 **peer**。
 
 In this example, the two RTCPeerConnection objects are on the same page: `pc1` and `pc2`. Not much practical use, but good for demonstrating how the APIs work.
 
-在这个例子中,两个RTCPeerConnection对象在同一页:`pc1`和`pc2`。没有什么实际用途,但有利于展示这些api是如何工作的。
+在此示例程序中, 两个 RTCPeerConnection 对象在同一个页面中: `pc1` 和 `pc2`。 所以并没有什么实际使用价值, 只是用来展示怎样使用这些 api。
 
 Setting up a call between WebRTC peers involves three tasks:
 
-设置一个叫WebRTC同行之间涉及三个任务:
+在 WebRTC 客户端之间创建视频通话, 需要执行三个任务:
 
 - Create a RTCPeerConnection for each end of the call and, at each end, add the local stream from `getUserMedia()`.
 - Get and share network information: potential connection endpoints are known as [ICE](http://en.wikipedia.org/wiki/Interactive_Connectivity_Establishment) candidates.
 - Get and share local and remote descriptions: metadata about local media in [SDP](http://en.wikipedia.org/wiki/Session_Description_Protocol) format.
 
-- 为每个结束调用创建一个RTCPeerConnection,两端,加上当地的流`getUserMedia()`。
-- 获取和共享网络信息:潜在连接端点被称为(冰)(http://en.wikipedia.org/wiki/Interactive_Connectivity_Establishment)候选人。
-- 获取和分享本地和远程描述:关于当地媒体在元数据(SDP)(http://en.wikipedia.org/wiki/Session_Description_Protocol)格式。
+- 为每个客户端创建 RTCPeerConnection 实例, 并且在每个端点都通过 `getUserMedia()` 获取本地媒体流。
+- 获取并共享网络信息: 潜在的连接端点, 被称为 [ICE](https://en.wikipedia.org/wiki/Interactive_Connectivity_Establishment) 候选。
+- 获取并分享本地和远程的描述信息: [SDP](http://en.wikipedia.org/wiki/Session_Description_Protocol) 格式的本地 media 元数据。
 
 Imagine that Alice and Bob want to use RTCPeerConnection to set up a video chat.
 
-假设Alice和Bob想用RTCPeerConnection建立一个视频聊天。
+假设 Alice 和 Bob 想通过 RTCPeerConnection 进行视频聊天。
 
 First up, Alice and Bob exchange network information. The expression 'finding candidates' refers to the process of finding network interfaces and ports using the [ICE](http://en.wikipedia.org/wiki/Interactive_Connectivity_Establishment) framework.
 
-首先,Alice和Bob交换网络信息。表达“寻找候选人”是指的过程中发现网络接口和端口使用(冰)(http://en.wikipedia.org/wiki/Interactive_Connectivity_Establishment)框架。
+首先, Alice 和 Bob 需要交换双方的网络信息。 “寻找候选” 指的是通过 [ICE](http://en.wikipedia.org/wiki/Interactive_Connectivity_Establishment) 框架来查找可用网络和端口信息的过程。
 
 1. Alice creates an RTCPeerConnection object with an `onicecandidate (addEventListener('icecandidate'))` handler. This corresponds to the following code from **main.js**:
 
-1. 爱丽丝将创建一个RTCPeerConnection对象的`onicecandidate (addEventListener('icecandidate'))`处理程序。这对应于从* * main.js * *下面的代码:
+1. Alice 创建一个 RTCPeerConnection 实例, 设置好 `onicecandidate (addEventListener('icecandidate'))` 回调函数。 **main.js**中对应的代码为:
 
 ```
 let localPeerConnection;
 ```
 
+以及,
 
 
 ```
@@ -213,23 +214,23 @@ localPeerConnection.addEventListener(
 
 The `servers` argument to RTCPeerConnection isn't used in this example.
 
-的`servers`参数RTCPeerConnection不是本例中使用。
+在本例中, RTCPeerConnection 构造函数的参数 `servers` 是 null。
 
 This is where you could specify STUN and TURN servers.
 
-在这里您可以指定击晕,把服务器。
+在 `servers` 参数中可以指定 STUN 和 TURN 服务器相关的信息。
 
 WebRTC is designed to work peer-to-peer, so users can connect by the most direct route possible. However, WebRTC is built to cope with real-world networking: client applications need to traverse [NAT gateways](http://en.wikipedia.org/wiki/NAT_traversal) and firewalls, and peer to peer networking needs fallbacks in case direct connection fails.
 
-WebRTC设计点对点工作,所以用户可以连接的最直接的路线.然而,WebRTC构建应对现实世界网络:客户机应用程序需要穿越NAT网关(http://en.wikipedia.org/wiki/NAT_traversal)和防火墙,和点对点网络需要回退,以防直接连接失败。
+WebRTC 是为 peer-to-peer 网络设计的, 所以用户可以在大部分直连的网络中使用. 但现实情况很复杂, WebRTC需要面对的是: 客户端程序需要穿透 [NAT网关](http://en.wikipedia.org/wiki/NAT_traversal) 以及各种防火墙, 在直连失败的情况下, peer-to-peer 网络需要回退策略。
 
 As part of this process, the WebRTC APIs use STUN servers to get the IP address of your computer, and TURN servers to function as relay servers in case peer-to-peer communication fails. [WebRTC in the real world](http://www.html5rocks.com/en/tutorials/webrtc/infrastructure/) explains in more detail.
 
-作为这个过程的一部分,WebRTC api使用眩晕服务器计算机的IP地址,并将服务器作为中继服务器的对等通信失败.(WebRTC在现实世界中)(http://www.html5rocks.com/en/tutorials/webrtc/infrastructure/)更详细地解释道。
+为了解决 peer-to-peer 通信失败的问题,WebRTC API 通过 STUN 服务来获取客户端的公网IP, 使用 TURN 作为中继服务器。更详细的信息请参考: [WebRTC in the real world](http://www.html5rocks.com/en/tutorials/webrtc/infrastructure/) 。
 
 1. Alice calls `getUserMedia()` and adds the stream passed to that:
 
-1. 爱丽丝的电话`getUserMedia()`并添加流传递给:
+1. Alice 调用 `getUserMedia()`, 并将获取到的 stream 传递给 localPeerConnection:
 
 ```
 navigator.mediaDevices.getUserMedia(mediaStreamConstraints).
@@ -261,9 +262,9 @@ trace('Added local stream to localPeerConnection.');
 2. Alice sends serialized candidate data to Bob. In a real application, this process (known as **signaling**) takes place via a messaging service – you'll learn how to do that in a later step. Of course, in this step, the two RTCPeerConnection objects are on the same page and can communicate directly with no need for external messaging.
 3. When Bob gets a candidate message from Alice, he calls `addIceCandidate()`, to add the candidate to the remote peer description:
 
-1. 的`onicecandidate`处理程序从步骤1。时调用网络候选人变得可用。
-2. 爱丽丝将序列化候选人数据发送给鲍勃。在真实的应用程序中,这个过程(称为* *信号* *)发生通过消息传递服务,您将学习如何在以后的步骤.当然,在这一步中,两个RTCPeerConnection对象在同一页面,可以直接沟通,不需要外部消息传递。
-3. 当鲍勃从爱丽丝获得候选人的信息,他的电话`addIceCandidate()`候选人添加到远程对等描述:
+1. 在 **step 1** 之中引入的 `onicecandidate` 处理函数, 在网络候选者变得可用时会被调用。
+2. Alice 将序列化之后的候选者数据发送给 Bob。这个过程被称为 **signaling**(信令), 在实际应用中, 是通过消息服务来传递的。 在后面的教程中我们会学到. 当然,在本节中, 因为两个 RTCPeerConnection 实例在同一页面中, 所以可以直接通信, 而不再需要外部的消息服务。
+3. Bob从Alice获得候选者信息之后, 他调用 `addIceCandidate()`, 将候选信息传递给 remote peer description:
 
 ```
 function handleConnection(event) {
@@ -295,27 +296,29 @@ WebRTC同行还需要发现和交换本地和远程音频和视频媒体信息,�
 
 1. Alice runs the RTCPeerConnection `createOffer()` method. The promise returned provides an RTCSessionDescription: Alice's local session description:
 
-1. 爱丽丝运行RTCPeerConnection`createOffer()`方法。提供了一个返回的承诺RTCSessionDescription:爱丽丝的本地会话描述:
+1. Alice 执行 RTCPeerConnection 的 `createOffer()` 方法。返回的 promise 中提供了一个 RTCSessionDescription: 即 Alice 的本地会话描述:
 
-```
+
+  ```
 trace('localPeerConnection createOffer start.');
 localPeerConnection.createOffer(offerOptions)
   .then(createdOffer).catch(setSessionDescriptionError);
-```
+  ```
 
 
 
-1. If successful, Alice sets the local description using `setLocalDescription()` and then sends this session description to Bob via their signaling channel.
-2. Bob sets the description Alice sent him as the remote description using `setRemoteDescription()`.
-3. Bob runs the RTCPeerConnection `createAnswer()` method, passing it the remote description he got from Alice, so a local session can be generated that is compatible with hers. The `createAnswer()` promise passes on an RTCSessionDescription: Bob sets that as the local description and sends it to Alice.
-4. When Alice gets Bob's session description, she sets that as the remote description with `setRemoteDescription()`. 
+2. If successful, Alice sets the local description using `setLocalDescription()` and then sends this session description to Bob via their signaling channel.
+3. Bob sets the description Alice sent him as the remote description using `setRemoteDescription()`.
+4. Bob runs the RTCPeerConnection `createAnswer()` method, passing it the remote description he got from Alice, so a local session can be generated that is compatible with hers. The `createAnswer()` promise passes on an RTCSessionDescription: Bob sets that as the local description and sends it to Alice.
+5. When Alice gets Bob's session description, she sets that as the remote description with `setRemoteDescription()`. 
 
-1. 如果成功,爱丽丝集使用当地的描述`setLocalDescription()`然后发送这个会话描述鲍勃通过信号通道。
-2. 鲍勃集描述爱丽丝送给他作为远程描述使用`setRemoteDescription()`。
-3. 鲍勃运行RTCPeerConnection`createAnswer()`方法,通过远程描述他从爱丽丝,所以可以生成本地会话是兼容的。的`createAnswer()`承诺通过一个RTCSessionDescription:鲍勃,随着当地描述并将其发送给爱丽丝。
-4. 当爱丽丝鲍勃的会话描述,她集远程描述`setRemoteDescription()`。
+2. 如果成功, Alice 使用 `setLocalDescription()` 来设置本地会话信息, 然后通过信令通道, 将这些信息发送给Bob。
+3. Bob使用RTCPeerConnection的`setRemoteDescription()`方法, 将Alice传过来的远端会话信息填进去。
+4. Bob执行RTCPeerConnection的`createAnswer()`方法, 传入获取到的远端会话信息, 然后就会生成一个和Alice适配的本地会话。`createAnswer()` 方法返回的 promise 会传入一个 RTCSessionDescription 对象: 然后将它设置为本地描述, 并发送给Alice。
+5. 当Alice获取到Bob的会话描述信息, 则使用 `setRemoteDescription()` 方法填入远端会话信息。
 
-```
+
+  ```
 // Logs offer creation and sets peer connection session descriptions.
 function createdOffer(description) {
   trace(`Offer from localPeerConnection:\n${description.sdp}`);
@@ -354,13 +357,13 @@ function createdAnswer(description) {
       setRemoteDescriptionSuccess(localPeerConnection);
     }).catch(setSessionDescriptionError);
 }
-```
+  ```
 
 
 
-1. Ping!
+6. Ping!
 
-1. 平!
+6. Ping!
 
 ## Bonus points
 
