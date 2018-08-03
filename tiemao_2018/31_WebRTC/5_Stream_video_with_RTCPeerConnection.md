@@ -36,7 +36,7 @@ This example sets up a connection between two RTCPeerConnection objects (known a
 
 Not much practical use, but good for understanding how RTCPeerConnection works.
 
-虽然没什么实际的作用, 但主要目的是为了理解 RTCPeerConnection 的工作原理。
+虽然这个示例本身没有什么生产使用价值, 但我们的目的是为了理解 RTCPeerConnection 的工作原理。
 
 ## Add video elements and control buttons
 
@@ -133,8 +133,7 @@ Replace **main.js** with the version in the **step-02** folder.
 
 It's not ideal doing cut-and-paste with large chunks of code in a codelab, but in order to get RTCPeerConnection up and running, there's no alternative but to go the whole hog.
 
-在 demo 教程的一个步骤中, 替换大量的代码可能学习起来有点麻烦, 但没有什么更好的办法, 因为 RTCPeerConnection 要跑起来是一个环环相扣的过程。
-
+在 demo 教程中, 这种大量粘贴代码的方式并不是理想的做法, 但没有办法, 因为 RTCPeerConnection 要跑起来就需要依赖这么多东西
 
 You'll learn how the code works in a moment.
 
