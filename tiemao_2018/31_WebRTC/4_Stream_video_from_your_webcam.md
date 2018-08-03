@@ -4,7 +4,7 @@
 
 ## What you'll learn
 
-## 本节要点
+## 本节内容
 
 In this step you'll find out how to:
 

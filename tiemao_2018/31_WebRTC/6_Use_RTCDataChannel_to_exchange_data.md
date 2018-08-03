@@ -4,7 +4,7 @@
 
 ## What you'll learn
 
-## 本节知识点
+## 本节内容
 
 - How to exchange data between WebRTC endpoints (peers).
 
