@@ -1,6 +1,6 @@
 # Real time communication with WebRTC
 
-# WebRTC 实时通信技术
+# WebRTC实时通信技术
 
 ## [1.WebRTC简介](1_Introduction.md)
 
@@ -12,9 +12,9 @@
 
 ## [5.通过RTCPeerConnection传输视频流](5_Stream_video_with_RTCPeerConnection.md)
 
-## [6.Use RTCDataChannel to exchange data](6_Use_RTCDataChannel_to_exchange_data.md)
+## [6.通过RTCDataChannel传输数据](6_Use_RTCDataChannel_to_exchange_data.md)
 
-## [7.Set up a signaling service to exchange messages](7_Set_up_signaling_service.md)
+## [7.配置信令服务器](7_Set_up_signaling_service.md)
 
 ## [8.Combine peer connection and signaling](8_Combine_peer_connection_and_signaling.md)
 

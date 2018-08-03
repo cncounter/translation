@@ -1,6 +1,6 @@
 ## 6. Use RTCDataChannel to exchange data
 
-## 6. RTCDataChannel传输任意数据
+## 6. 通过RTCDataChannel传输数据
 
 ## What you'll learn
 
