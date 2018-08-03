@@ -20,7 +20,7 @@ In this step you'll find out how to:
 
 A complete version of this step is in the **step-2** folder.
 
-本节的完整版代码位于 **step-2** 文件夹中。
+本节的完整版代码位于 `step-02` 文件夹中。
 
 ## What is RTCPeerConnection?
 

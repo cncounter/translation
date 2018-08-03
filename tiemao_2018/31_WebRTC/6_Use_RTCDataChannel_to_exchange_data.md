@@ -8,11 +8,11 @@
 
 - How to exchange data between WebRTC endpoints (peers).
 
-- WebRTC端点之间如何交换数据(同行)。
+- 在WebRTC端点(peers)间如何传输数据。
 
 A complete version of this step is in the **step-03** folder.
 
-一个完整版的这一步是* * step-03 * *文件夹。
+本节的完整版代码位于 `step-03` 文件夹中。
 
 ## Update your HTML
 
