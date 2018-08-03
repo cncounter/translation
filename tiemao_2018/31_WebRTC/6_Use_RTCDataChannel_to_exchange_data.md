@@ -8,7 +8,7 @@
 
 - How to exchange data between WebRTC endpoints (peers).
 
-- 在WebRTC端点(peers)间如何传输数据。
+- 怎样在WebRTC端点(peers)间传输数据。
 
 A complete version of this step is in the **step-03** folder.
 
@@ -16,25 +16,25 @@ A complete version of this step is in the **step-03** folder.
 
 ## Update your HTML
 
-## 更新你的HTML
+## 更新HTML代码
 
 For this step, you'll use WebRTC data channels to send text between two `textarea` elements on the same page. That's not very useful, but does demonstrate how WebRTC can be used to share data as well as streaming video.
 
-在这个步骤中,您将使用WebRTC数据通道发送文本之间的两个`textarea`在相同的页面上的元素。这不是很有用,但展示如何使用WebRTC共享数据以及视频。
+在本节中, 将会使用WebRTC的数据通道(data channel), 在同一个页面上的两个 `textarea` 元素中传递文本。虽然这个示例本身没有什么生产使用价值, 但我们的目的是为了展示如何使用WebRTC来共享数据和视频。
 
 Remove the video and button elements from **index.html** and replace them with the following HTML:
 
-把视频和按钮元素从* *指数。html * *,代之以以下html:
+从上一节的代码中, 将 **index.html** 文件中的 `video` 和 `button` 元素移除, 并替换为以下代码:
 
 ```
 <textarea id="dataChannelSend" disabled
-    placeholder="Press Start, enter some text, then press Send."></textarea>
+    placeholder="先点击[开始]按钮, 然后输入任意文字, 再点击[发送]按钮."></textarea>
 <textarea id="dataChannelReceive" disabled></textarea>
 
 <div id="buttons">
-  <button id="startButton">Start</button>
-  <button id="sendButton">Send</button>
-  <button id="closeButton">Stop</button>
+  <button id="startButton">开始</button>
+  <button id="sendButton">发送</button>
+  <button id="closeButton">停止</button>
 </div>
 ```
 
@@ -42,11 +42,11 @@ Remove the video and button elements from **index.html** and replace them with t
 
 One textarea will be for entering text, the other will display the text as streamed between peers.
 
-textarea将输入文本,另一个将显示同行之间的文本流。
+第一个 `textarea` 用来接收输入文本, 而另一个则用来展示端点之间传送过来的数据。
 
 **index.html** should now look like this:
 
-* *指数。html * *现在看起来应该像这样:
+现在, **index.html** 的内容应该是这样的:
 
 ```
 <!DOCTYPE html>
@@ -65,13 +65,13 @@ textarea将输入文本,另一个将显示同行之间的文本流。
   <h1>Realtime communication with WebRTC</h1>
 
   <textarea id="dataChannelSend" disabled
-    placeholder="Press Start, enter some text, then press Send."></textarea>
+      placeholder="先点击[开始]按钮, 然后输入任意文字, 再点击[发送]按钮."></textarea>
   <textarea id="dataChannelReceive" disabled></textarea>
 
   <div id="buttons">
-    <button id="startButton">Start</button>
-    <button id="sendButton">Send</button>
-    <button id="closeButton">Stop</button>
+    <button id="startButton">开始</button>
+    <button id="sendButton">发送</button>
+    <button id="closeButton">停止</button>
   </div>
 
   <script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
@@ -86,35 +86,35 @@ textarea将输入文本,另一个将显示同行之间的文本流。
 
 Update your JavaScript
 
-更新您的JavaScript
+更新 JavaScript 代码
 
 Replace **main.js** with the contents of **step-03/js/main.js**.
 
-溶入在望。* *js * * with the高兴of step-03 * * * * js / main.js /。
+将 `step-03/js/main.js` 的内容复制到 `main.js` 文件中。
 
 As with the previous step, it's not ideal doing cut-and-paste with large chunks of code in a codelab, but (as with RTCPeerConnection) there's no alternative.
 
-和前面的步骤一样,它不是理想做codelab剪切和粘贴大量代码,但(如RTCPeerConnection)没有选择。
+前面的小节也说过, 这种大量粘贴代码的方式并不是理想的做法, 特别是在示例教程之中, 但没有办法, 因为 RTCPeerConnection 要跑起来就需要依赖这么多东西。
 
 Try out streaming data between peers: open **index.html**, press **Start** to set up the peer connection, enter some text in the `textarea` on the left, then click **Send** to transfer the text using WebRTC data channels.
 
-尝试同行之间的流数据:开放* *指数。html * *,按* * * *开始建立对等连接,输入一些文本`textarea`在左边,然后单击* * * *发送到文本使用的WebRTC数据传输通道。
+在端点之间传输数据: 打开 **index.html**, 点击 **Start** 按钮, 以建立对等连接, 然后在左边的文本框之中输入一些字符, 点击 **Send** 按钮, 将文本通过 WebRTC 的数据通道传送出去。
 
 ## How it works
 
-## 它是如何工作的
+## 工作原理
 
 This code uses RTCPeerConnection and RTCDataChannel to enable exchange of text messages.
 
-这段代码使用RTCPeerConnection和RTCDataChannel启用短信交流。
+这段代码使用 RTCPeerConnection 和 RTCDataChannel 来传输文本消息。
 
 Much of the code in this step is the same as for the RTCPeerConnection example.
 
-大部分的代码在这一步RTCPeerConnection例子是一样的。
+本节中的大部分代码, 和上一节中的 RTCPeerConnection 示例是相同的。
 
 The `sendData()` and `createConnection()` functions have most of the new code:
 
-的`sendData()`和`createConnection()`函数的大部分新代码:
+新增的代码主要集中在 `sendData()` 和 `createConnection()` 函数中:
 
 ```
 function createConnection() {
@@ -166,65 +166,62 @@ function sendData() {
 
 The syntax of RTCDataChannel is deliberately similar to WebSocket, with a `send()` method and a `message` event.
 
-RTCDataChannel故意的语法类似于WebSocket,用`send()`方法和`message`事件。
+RTCDataChannel 的使用类似于 WebSocket, 提供了 `send()` 方法和 `message` 事件。
 
 Notice the use of `dataConstraint`. Data channels can be configured to enable different types of data sharing — for example, prioritizing reliable delivery over performance. You can find out more information about options at [Mozilla Developer Network](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/createDataChannel).
 
-请注意使用`dataConstraint`。数据通道可以使不同类型的配置数据共享——例如,优先在性能可靠传递.你可以找到更多的信息关于选项(Mozilla开发人员网络)(https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/createDataChannel)。
+请注意 `dataConstraint` 的使用。数据通道可以配置为不同类型的数据共享 —— 如, 可靠性优先于性能等. 更多的信息请参考MDN上的文档: <https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/createDataChannel> 。
 
 **Three types of constraints**
 
-* * * *三种类型的约束
+**三种约束类型**
 
 It's confusing!
 
-这是困惑!
+这是容易造成困扰的地方!
 
 Different types of WebRTC call setup options are all often referred to as 'constraints'.
 
-不同类型的WebRTC调用设置选项都是通常被称为“约束”。
+WebRTC中不同类型的配置选项都被称为是“约束”(constraints)。
 
 Find out more about constraints and options:
 
-找到更多关于约束和选择:
+更多关于约束和配置选项的信息, 请参考:
 
 - [RTCPeerConnection](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/RTCPeerConnection)
 - [RTCDataChannel](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/createDataChannel)
 - [getUserMedia()](https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia)
 
-- (RTCPeerConnection)(https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/RTCPeerConnection)
-- (RTCDataChannel)(https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/createDataChannel)
-- [getUserMedia()](https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia)
 
 ## Bonus points
 
-## 加分
+## 练习与实践
 
 1. With [SCTP](https://bloggeek.me/sctp-data-channel/), the protocol used by WebRTC data channels, reliable and ordered data delivery is on by default. When might RTCDataChannel need to provide reliable delivery of data, and when might performance be more important — even if that means losing some data?
 2. Use CSS to improve page layout, and add a placeholder attribute to the "dataChannelReceive" textarea.
 3. Test the page on a mobile device.
 
-1. 与(SCTP)(https://bloggeek.me/sctp-data-channel/),WebRTC协议使用的数据通道,可靠和命令数据交付是在默认情况下.当RTCDataChannel可能需要提供可靠的交付的数据,当可能性能更重要——即使这意味着失去了一些数据?
-2. 使用CSS来改善页面布局,添加一个占位符属性“dataChannelReceive”文本区域。
-3. 测试页面在一个移动设备。
+1. WebRTC数据通道使用的协议: [SCTP](https://bloggeek.me/sctp-data-channel/), 默认情况下, 具备了可靠/顺序的消息传输功能. 如果 RTCDataChannel 更需要可靠性, 或者更需要传输性能的时候怎么处理呢? —— 有时候即使丢点数据也无所谓, 比如视频聊天。
+2. 使用CSS来美化页面布局, 为 "dataChannelReceive" 对应的 textarea 添加 placeholder 属性。
+3. 在移动设备上进行测试。
 
 ## What you learned
 
-## 你学到了什么
+## 知识点回顾
 
 In this step you learned how to:
 
-在这个步骤中,您了解了如何:
+在本节课程中, 我们学习了:
 
 - Establish a connection between two WebRTC peers.
 - Exchange text data between the peers.
 
-- 两个WebRTC同行之间建立连接。
-- 同行之间的交换文本数据。
+- 在两个WebRTC端点之间建立连接。
+- 在端点之间传输文本数据。
 
 A complete version of this step is in the **step-03** folder.
 
-一个完整版的这一步是* * step-03 * *文件夹。
+本节的完整版代码位于 `step-03` 文件夹中。
 
 ## Find out more
 
@@ -233,8 +230,6 @@ A complete version of this step is in the **step-03** folder.
 - [WebRTC data channels](http://www.html5rocks.com/en/tutorials/webrtc/datachannels/) (a couple of years old, but still worth reading)
 - [Why was SCTP Selected for WebRTC's Data Channel?](https://bloggeek.me/sctp-data-channel/)
 
-- [WebRTC数据通道](http://www.html5rocks.com/en/tutorials/webrtc/datachannels/)(几岁,但是仍然值得一读)
-- (为什么选择SCTP WebRTC数据通道的?)(https://bloggeek.me/sctp-data-channel/)
 
 ## Next up
 
@@ -242,5 +237,5 @@ A complete version of this step is in the **step-03** folder.
 
 You've learned how to exchange data between peers on the same page, but how do you do this between different machines? First, you need to set up a signaling channel to exchange metadata messages. Find out how in the next step!
 
-您已经了解了如何同行之间交换数据在同一页面,但是如何在不同的机器之间的呢?首先,您需要设置一个信号通道交换元数据信息.找出在下一步!
+我们学习了在同一页面中的WebRTC端点之间如何进行数据传输, 但在不同的设备之间怎么进行数据传输呢? 前提是, 需要建立信令通道来交换元数据. 我们在下一节进行讲解!
 
