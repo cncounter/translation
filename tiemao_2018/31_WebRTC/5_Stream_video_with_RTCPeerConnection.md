@@ -366,7 +366,7 @@ WebRTC同行还需要发现和交换本地和远程音频和视频媒体信息,�
 
 ## Bonus points
 
-## 加分
+## 练习与实践
 
 1. Take a look at **chrome://webrtc-internals**. This provides WebRTC stats and debugging data. (A full list of Chrome URLs is at **chrome://about**.)
 2. Style the page with CSS:
