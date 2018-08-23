@@ -1,74 +1,75 @@
 ## 7. Set up a signaling service to exchange messages
 
-## 7. 配置信令服务器
+## 7. 配置信令服务
 
 ## What you'll learn
 
-## 你将学习
+## 本节内容
 
 In this step, you'll find out how to:
 
-在这个步骤中,您将了解如何:
+在本节课程中, 将学习以下内容:
 
 - Use `npm` to install project dependencies as specified in **package.json**
 - Run a Node.js server and use node-static to serve static files.
 - Set up a messaging service on Node.js using Socket.IO.
 - Use that to create 'rooms' and exchange messages.
 
-- 使用`npm`安装项目依赖项中指定* * package.json * *
-- 一个节点运行。js服务器并使用node-static为静态文件。
-- 建立一个消息传递服务节点。js使用socket . io。
-- 用它来创建“房间”和交换消息。
+- 通过 `npm` 安装 `package.json` 文件中指定的项目依赖
+- 运行Node.js服务器, 通过 node-static 提供静态文件服务。
+- 用Socket.IO创建消息传递服务
+- 创建聊天室以及发送聊天消息。
 
 A complete version of this step is in the **step-04** folder.
 
-一个完整版的这一步是* * step-04 * *文件夹。
+本节的完整版代码位于 `step-04` 文件夹中。
 
 ## Concepts
 
-## 概念
+## 基本概念
 
 In order to set up and maintain a WebRTC call, WebRTC clients (peers) need to exchange metadata:
 
-为了建立和维护一个WebRTC调用,WebRTC客户(同行)需要交换元数据:
+要创建并维持WebRTC调用, 客户端之间需要交换元数据:
 
 - Candidate (network) information.
 - **Offer** and **answer** messages providing information about media, such as resolution and codecs.
 
-- 候选人信息(网络)。
-- * * * *和* * * *回答信息提供的信息媒体,比如分辨率和编解码器。
+- 候选网络信息
+- **Offer**(提供) 并且 **answer**(回应) 媒体相关的信息, 比如分辨率(resolution)和编解码器(codecs)。
 
 In other words, an exchange of metadata is required before peer-to-peer streaming of audio, video, or data can take place. This process is called **signaling**.
 
-换句话说,交换元数据需要在p2p流媒体音频、视频或数据。这个过程称为* *信号* *。
+换句话说, 在传输流媒体音频、视频或数据之前, 需要先交换元数据信息。这个过程称之为 **signaling**(信令)。
 
 In the previous steps, the sender and receiver RTCPeerConnection objects are on the same page, so 'signaling' is simply a matter of passing metadata between objects.
 
-在前面的步骤中,发送方和接收方RTCPeerConnection对象在同一页,所以“信号”只是一个元数据对象之间传递的问题。
+在前面的小节中, 发送方和接收方的 RTCPeerConnection 对象都在同一个页, 所以传递信令的过程特别简单, 在对象间直接传递就行。
 
 In a real world application, the sender and receiver RTCPeerConnections run in web pages on different devices, and you need a way for them to communicate metadata.
 
-在真实的应用程序中,发送方和接收方RTCPeerConnections在网页在不同的设备上运行,您需要一种方法,他们交流的元数据。
+在现实世界中, 发送方和接收方是不同的设备, 所以需要具备交换元数据的通道。
 
 For this, you use a **signaling server**: a server that can pass messages between WebRTC clients (peers). The actual messages are plain text: stringified JavaScript objects.
 
-为此,您使用一个服务器* *:* *信号的服务器之间可以通过消息WebRTC客户(同行)。实际的纯文本消息:stringified JavaScript对象。
+为此, 我们需要 **signaling server**(信令服务器): 为WebRTC客户端(peers)之间通信传递消息的服务器。 实际上这些消息都是纯文本格式的: 字符串形式的JavaScript对象。
 
 ## Prerequisite: Install Node.js
 
-## 先决条件:安装node . js
+## 环境准备: 安装Node.js
 
 In order to run the next steps of this codelab (folders **step-04** to **step-06**) you will need to run a server on localhost using Node.js.
 
-为了运行的下一步codelab(文件夹* * step-04 * * * * step-06 * *)你需要在本地主机上运行一个服务器使用node . js。
+要运行本节和接下来的实例代码(**step-04** 到 **step-06**), 需要在本机安装并运行 Node.js 服务器。
 
 You can download and install Node.js from [this link](https://nodejs.org/en/download/) or via your preferred [package manager](https://nodejs.org/en/download/package-manager/).
 
-你可以下载并安装节点。js(这个链接)(https://nodejs.org/en/download/)或通过你喜欢的包管理器(https://nodejs.org/en/download/package-manager/)。
+Node.js中文网下载链接: <http://nodejs.cn/download/>; 当然也可以直接Node.js官网下载: <https://nodejs.org/en/download/>。 另外, 某些平台上也可以通过包管理器进行安装, 参考: <https://nodejs.org/en/download/package-manager/>。
 
 Once installed, you will be able to import the dependencies required for the next steps (running `npm install`), as well as running a small localhost server to execute the codelab (running `node index.js`). These commands will be indicated later, when they are required.
 
-安装完成后,您将能够导入下一个步骤(运行所需的依赖关系`npm install`),以及运行一个小localhost服务器执行codelab(运行`node index.js`)。这些命令将显示后,当他们需要。
+安装完成后, 可以通过 `npm install` 来安装相关的依赖, 并通过 `node index.js` 命令来启动本地服务器。后面会在必要时介绍这些命令。
+
 
 ## About the app
 
