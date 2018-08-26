@@ -247,11 +247,11 @@ video {
 
 ## What you learned
 
-## 你学到了什么
+## 知识点回顾
 
 In this step you learned how to:
 
-在这个步骤中,您了解了如何:
+在本节课程中, 我们学到了:
 
 *   Get video from your webcam.
 *   Set media constraints.
@@ -295,7 +295,7 @@ video {
 
 ## Next up
 
-## 下一步做什么呢?
+## 后续内容
 
 You've got video, but how do you stream it? Find out in the next step!
 

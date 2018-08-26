@@ -433,7 +433,7 @@ A complete version of this step is in the **step-2** folder.
 
 ## Next up
 
-## 接下来
+## 后续内容
 
 This step shows how to use WebRTC to stream video between peers — but this codelab is also about data!
 
