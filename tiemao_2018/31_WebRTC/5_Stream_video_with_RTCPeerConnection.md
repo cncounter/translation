@@ -441,5 +441,5 @@ This step shows how to use WebRTC to stream video between peers — but this cod
 
 In the next step find out how to stream arbitrary data using RTCDataChannel.
 
-下一小节, 我们将学习如何使用 RTCDataChannel 来传输任意数据。
+接下来, 我们将学习如何使用 RTCDataChannel 来传输任意数据。
 

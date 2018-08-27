@@ -88,7 +88,7 @@ Now visit your work site in your web browser by clicking on the highlighted Web 
 
 在 **Web Server URL(s)** 下面会出现相应的打开链接。点击其中一个,  默认打开的就是 **`work/index.html`**
 
-如下所示:
+如下图所示:
 
 ![](03_07_index_page.png)
 

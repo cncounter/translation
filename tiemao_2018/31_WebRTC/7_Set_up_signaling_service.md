@@ -442,5 +442,5 @@ A complete version of this step is in the **step-04** folder.
 
 Find out how to use signaling to enable two users to make a peer connection.
 
-使用信令, 让两个客户端建立对等连接。
+接下来, 我们将学习如何使用信令, 让两个客户端建立对等连接。
 

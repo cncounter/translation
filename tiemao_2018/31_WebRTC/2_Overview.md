@@ -26,7 +26,7 @@ Build an app to get video and take snapshots with your webcam and share them pee
 
 ## What you'll need
 
-## 环境与准备
+## 环境准备
 
 *   Chrome 47 or above
 *   [Web Server for Chrome](https://chrome.google.com/webstore/detail/web-server-for-chrome/ofhbbkphhbklhfoeikjpcbhemlocgigb), or use your own web server of choice.
