@@ -93,11 +93,11 @@ Open **localhost:8080** again, in a new tab or window. One video element will di
 
 You'll need to restart your Node.js server each time you close a client tab or window.
 
-如果重新打开了客户端标签页, 则需要重启 Node.js服务器。
+因为程序功能比较简单, 如果重新打开了客户端标签页, 则需要重启 Node.js服务器。
 
 View logging in the browser console.
 
-请在浏览器的控制台中查看相关的日志信息。
+相关的日志信息, 请在浏览器的控制台中查看。
 
 ### **Bonus points**
 
@@ -108,10 +108,10 @@ View logging in the browser console.
 3. How would users share the room name? Try to build an alternative to sharing room names.
 4. How could you change the app
 
-1. 这个应用程序只支持一对一的视频聊天。如何改变你的设计让多个人共享相同的视频聊天室?
-2. 这个例子有房间名称* foo *硬编码。什么是最好的办法让其他房间的名字吗?
-3. 用户如何分享房间的名字吗?试图建立一个替代分享房间的名字。
-4. 你怎么能改变这个程序吗
+1. 这个应用只支持一对一的视频聊天。修改设计方案, 让多人使用同一个聊天室。
+2. 示例程序中的房间号硬编码为 *cnc*。有什么好方法可以使用其他房间号呢?
+3. 用户怎样分享他的房间号? 请尝试一种分享房间号的办法。
+4. 尝试改进这个应用
 
 ## What you learned
 
@@ -144,12 +144,12 @@ A complete version of this step is in the **step-05** folder.
 - Restart the browser
 - Run `npm cache clean` from the command line.
 
-- WebRTC统计数据和调试数据可从* * chrome:/ / webrtc-internals * *。
-- [test.webrtc.org](https://test.webrtc.org/)可以用来检查你的当地环境和测试你的摄像头和麦克风。
-- 如果你有奇怪的问题与缓存,试试以下:
-- 做一个硬按住ctrl并单击刷新的* *重载* *按钮
+- WebRTC的统计数据和调试信息请访问: <chrome://webrtc-internals>。
+- 可以访问 <https://test.webrtc.org/> 来检查本地环境, 以及测试摄像头和麦克风。
+- 如果碰到奇怪的缓存问题, 可以尝试以下方案:
+- 强制刷新, 比如按住 ctrl键并单击刷新按钮。
 - 重启浏览器
-- 运行`npm cache clean`从命令行。
+- 执行命令: `npm cache clean`。
 
 ## Next up
 
@@ -157,5 +157,5 @@ A complete version of this step is in the **step-05** folder.
 
 Find out how to take a photo, get the image data, and share that between remote peers.
 
-找出如何拍照,获得图像数据,以及远程同行之间分享。
+接下来, 我们将学习如何拍照并分享给另一个客户端。
 
