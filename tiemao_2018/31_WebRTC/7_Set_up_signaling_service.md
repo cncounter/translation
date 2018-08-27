@@ -176,7 +176,7 @@ You won't see anything on the page in this step: all logging is done to the brow
 
 Replace **js/main.js** with the following:
 
-替换 **js/main.js** 的内容:
+替换 **js/main.js** 文件的内容:
 
 ```
 'use strict';
