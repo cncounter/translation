@@ -4,15 +4,15 @@
 
 You built an app to do realtime video streaming and data exchange!
 
-我们创建了一个可以进行实时视频聊天的APP, 当然也可以传输文件或其他数据!
+我们创建了一个实时视频聊天的APP, 当然也可以传输文件或其他数据啦!
 
 ## What you learned
 
-## 知识点回顾
+## 内容回顾
 
 In this codelab you learned how to:
 
-在本教程中, 我们学习了以下知识点:
+在本教程中, 我们学习了以下内容:
 
 - Get video from your webcam.
 - Stream video with RTCPeerConnection.
