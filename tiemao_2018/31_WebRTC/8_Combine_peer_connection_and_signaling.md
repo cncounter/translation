@@ -13,12 +13,12 @@ In this step you'll find out how to:
 - Run a WebRTC signaling service using Socket.IO running on Node.js
 - Use that service to exchange WebRTC metadata between peers.
 
-- 运行一个WebRTC使用套接字信号服务。IO上运行node . js
-- 使用该服务来交换WebRTC同行之间的元数据。
+- 使用Node.js平台, 通过Socket.IO启动信令服务。
+- 使用信令服务来交换WebRTC客户端之间的元数据。
 
 A complete version of this step is in the **step-05** folder.
 
-一个完整版的这一步是* * step-05 * *文件夹。
+本节的完整版代码位于 `step-05` 文件夹中。
 
 ## Replace HTML and JavaScript
 
@@ -26,51 +26,42 @@ A complete version of this step is in the **step-05** folder.
 
 Replace the contents of **index.html** with the following:
 
-替换的内容* *指数。html与下面的* *:
+更新 **index.html** 文件, 内容如下:
 
 ```
 <!DOCTYPE html>
 <html>
 
 <head>
-
   <title>Realtime communication with WebRTC</title>
-
   <link rel="stylesheet" href="/css/main.css" />
-
 </head>
 
 <body>
-
   <h1>Realtime communication with WebRTC</h1>
-
   <div id="videos">
     <video id="localVideo" autoplay muted></video>
     <video id="remoteVideo" autoplay></video>
   </div>
-
   <script src="/socket.io/socket.io.js"></script>
   <script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
   <script src="js/main.js"></script>
-  
 </body>
-
 </html>
 ```
 
 
-
 Replace **js/main.js** with the contents of **step-05/js/main.js**.
 
-溶入js /手。* *js * * with the高兴of step-05 * * * * js / main.js /。
+使用 **step-05/js/main.js** 文件替换 **js/main.js** 文件:
 
 ## Run the Node.js server
 
-## 运行的节点。js服务器
+## 启动Node.js服务器
 
 If you are not following this codelab from your **work** directory, you may need to install the dependencies for the **step-05**folder or your current working folder. Run the following command from your working directory:
 
-若不codelab this下列工作的你* * * *指南》,特别是需要to the you dependencies for the * * * * step-05 folder但是你current folder工作组.Run from your下列命令:working目录
+如果没有照着本教程的步骤执行, 则需要安装**step-05**目录下的依赖项, 或者在当前工作目录下安装也行。 安装依赖的命令如下:
 
 ```
 npm install
@@ -80,7 +71,7 @@ npm install
 
 Once installed, if your Node.js server is not running, start it by calling the following command in the **work** directory:
 
-安装完成后,如果你的节点。js服务器没有运行,启动它通过调用下面的命令在* * * *工作目录:
+安装完成后, 如果还没启动 Node.js 服务器, 可以在**work**目录下执行命令:
 
 ```
 node index.js
@@ -90,23 +81,23 @@ node index.js
 
 Make sure you're using the version of **index.js** from the previous step that implements Socket.IO. For more information on Node and Socket IO, review the section "Set up a signaling service to exchange messages".
 
-确保你使用的版本* *指数。js实现socket . io * *从上一步.在节点和套接字IO的更多信息,审核部分“建立一个信号服务交换消息”。
+请确认**index.js**文件的内容中包含了 Socket.IO 相关的内容, 参考前一小节。更多关于 Node 和Socket.IO的内容, 请参考 [7_Set_up_signaling_service.md](./7_Set_up_signaling_service.md)。
 
 From your browser, open **localhost:8080**.
 
-从您的浏览器,打开* * localhost:8080 * *。
+打开浏览器, 输入地址: <http://localhost:8080>。
 
 Open **localhost:8080** again, in a new tab or window. One video element will display the local stream from `getUserMedia()`and the other will show the 'remote' video streamed via RTCPeerconnection.
 
-开放localhost * * * * 8080:a new in again tab黄金机会。One审讯室湾流到地方构成will共同一致的`getUserMedia()`and the other will’remote’其他streamed审讯室RTCPeerconnection途经。
+再打开第二个标签页或者新窗口, 输入地址: <http://localhost:8080>。 一个video元素 将展示`getUserMedia()`获取到的本地视频流, 另一个则展示通过 RTCPeerconnection 读取到的远程视频流。
 
 You'll need to restart your Node.js server each time you close a client tab or window.
 
-你需要重新启动节点。js服务器每次关闭客户标签或窗口。
+如果重新打开了客户端标签页, 则需要重启 Node.js服务器。
 
 View logging in the browser console.
 
-在浏览器中查看日志控制台。
+请在浏览器的控制台中查看相关的日志信息。
 
 ### **Bonus points**
 
@@ -133,12 +124,14 @@ In this step you learned how to:
 - Run a WebRTC signaling service using Socket.IO running on Node.js.
 - Use that service to exchange WebRTC metadata between peers.
 
-- 运行一个WebRTC使用套接字信号服务。IO上运行node . js。
-- 使用该服务来交换WebRTC同行之间的元数据。
+
+- 使用Node.js平台, 通过Socket.IO启动信令服务。
+- 使用信令服务来交换WebRTC客户端之间的元数据。
 
 A complete version of this step is in the **step-05** folder.
 
-一个完整版的这一步是* * step-05 * *文件夹。
+本节的完整版代码位于 `step-05` 文件夹中。
+
 
 ## Tips
 
