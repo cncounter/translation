@@ -99,9 +99,9 @@ View logging in the browser console.
 
 相关的日志信息, 请在浏览器的控制台中查看。
 
-### **Bonus points**
+## **Bonus points**
 
-### 练习与实践
+## 练习与实践
 
 1. This application supports only one-to-one video chat. How might you change the design to enable more than one person to share the same video chat room?
 2. The example has the room name *foo* hard coded. What would be the best way to enable other room names?
@@ -115,7 +115,7 @@ View logging in the browser console.
 
 ## What you learned
 
-## 知识点回顾
+## 内容回顾
 
 In this step you learned how to:
 
