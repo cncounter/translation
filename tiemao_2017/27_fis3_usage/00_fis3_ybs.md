@@ -134,15 +134,15 @@ fis.set('project.ignore', [
 
 // 配置不同环境的CDN资源前缀
 fis.media('prod').match('*.{js,css,png,gif,jpg}', {
-  domain: 'http://res.online.ybscdn.com/online'
+  domain: 'http://res.online.yyy.com/online'
 });
 
 fis.media('demo').match('*.{js,css,png,gif,jpg}', {
-  domain: 'http://demo.res.online.yiboshi.com/online'
+  domain: 'http://demo.res.online.yyy.com/online'
 });
 
 fis.media('beta').match('*.{js,css,png,gif,jpg}', {
-  domain: 'http://beta.res.online.yiboshi.com/online'
+  domain: 'http://beta.res.online.yyy.com/online'
 });
 
 fis.media('dev').match('*.{js,css,png,gif,jpg}', {
