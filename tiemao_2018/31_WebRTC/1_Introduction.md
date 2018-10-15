@@ -1,6 +1,6 @@
 # 1. Introduction
 
-# 1. WebRTC简介
+# WebRTC基础实践 - 1. WebRTC简介
 
 WebRTC is an open source project to enable realtime communication of audio, video and data in Web and native apps.
 
@@ -57,7 +57,7 @@ Looking for more? Check out the resources at [webrtc.org/start](http://webrtc.or
 更多信息和资源, 请参考: <http://webrtc.org/start>
 
 
-相关词汇对照:
+## 相关词汇对照:
 
 - `capture` : 获取、抓取
 - `audio` : 音频
