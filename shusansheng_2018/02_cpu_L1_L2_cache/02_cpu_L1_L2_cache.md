@@ -2,26 +2,26 @@
 
 # CPU缓存-L1和L2的工作原理
 
-> L1, 即 Level 1 Cache, 1级缓存; L2, 即2级缓存。
+> 说明: L1, 即 Level 1 Cache, 1级缓存; L2, 即2级缓存。
 
 ![漂亮的 Pentium M 处理器晶粒](02_01_Pentium_M-die.jpg)
 
-> 漂亮的 Pentium M 处理器晶粒(die), 可以看到, 其中的缓存颗粒非常多。
+> 漂亮的 Pentium M 处理器晶粒(Pentium_M-die), 可以看到其中排列着大量的缓存颗粒。
 
 
 The development of caches and caching is one of the most significant events in the history of computing. Virtually every modern CPU core from ultra-low power chips like the ARM Cortex-A5 to the highest-end Intel Core i7 use caches. Even higher-end microcontrollers often have small caches or offer them as options — the performance benefits are too large to ignore, even in ultra low-power designs.
 
-缓存及其发展是计算机历史上最重要的事件之一. 
+缓存的出现和发展是计算机历史上最重要的事件之一. 
 
-几乎所有的现代CPU核心, 从最低端的 ARM Cortex-A5 架构、到 Intel Core i7 这种顶级处理器, 都使用了缓存. 即使是高端的微控制器中, 通常也会集成少量的缓存, 或者是成为可选组件 —— 因为缓存对CPU的性能提升非常明显, 即便是超低功耗的芯片, 在设计时也会加入必要的缓存。
+几乎所有的现代CPU核心, 从超低功耗的 ARM Cortex-A5 架构, 到 Intel Core i7 这种顶级处理器, 都使用了缓存。 即使是更高端的微控制器中, 通常也会集成少量的缓存, 或是提供可选项 —— 因为缓存对CPU的性能提升实在是太明显了, 即便是超低功耗的芯片, 在设计时也会加入必要的缓存。
 
 Caching was invented to solve a significant problem. In the early decades of computing, main memory was extremely slow and incredibly expensive — but CPUs weren’t particularly fast, either. Starting in the 1980s, the gap began to widen quickly. Microprocessor clock speeds took off, but memory access times improved far less dramatically. As this gap grew, it became increasingly clear that a new type of fast memory was needed to bridge the gap.
 
-缓存的发明主要是为了解决一件重要的事情。 
+发明缓存主要是为了解决一件非常重要的事情。 
 
-在最初的那些年代, 内存的速度非常缓慢, 而且价格极其昂贵, 当然cpu也不是很快. 但从1980年代开始, 两者之间的差距迅速扩大。
+在计算机出现后的最初几十年, 内存的速度非常慢, 价格也非常昂贵, 当然, cpu也同样很慢. 但从1980年代开始, 两者之间的频率差距就迅速扩大了。
 
-处理器的时钟频率迅猛发展, 但内存访问的速度却跟不上了. 随着这种差距越来越大, 急需一种新型的存储模块来解决这种代沟。
+处理器的时钟频率迅猛发展, 内存的发展速度却跟不上了. 随着这种差距越来越大, 业界急需一种新型的存储模块来填平这道鸿沟。
 
 ![CPU vs DRAM clocks](02_02_CPU-DRAM.png)
 
@@ -29,7 +29,7 @@ Caching was invented to solve a significant problem. In the early decades of com
 
 > While it only runs up to 2000, the growing discrepancies of the 1980s led to the development of the first CPU caches
 
-> 到了2000年, 这种差异导致了第一代CPU缓存的出现
+> 到2000年左右, 第一代CPU缓存开始出现
 
 ## How caching works
 
