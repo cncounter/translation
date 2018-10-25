@@ -66,11 +66,11 @@ This chart shows the relationship between an L1 cache with a constant hit rate, 
 
 The next important topic is the set-associativity. Every CPU contains a specific type of RAM called tag RAM. The tag RAM is a record of all the memory locations that can map to any given block of cache. If a cache is fully associative, it means that any block of RAM data can be stored in any block of cache. The advantage of such a system is that the hit rate is high, but the search time is extremely long — the CPU has to look through its entire cache to find out if the data is present before searching main memory.
 
-下一个重要的主题是set-associativity。每个CPU都包含一个特定类型的RAM叫标签内存.The tag RAM is a记录所有的内存,map to任何计划可以给予block of cache。如果缓存is fully associative,it means that任何block of RAM存储地可以在data in any of缓存块.这种系统的优点是,命中率高,但搜索时间非常长,CPU必须浏览整个缓存之前找出如果数据存在搜索主内存。
+另一个重要的主题是关联映射关系(set-associativity)。CPU中集成了一种特殊类型的 RAM, 称为 标记随机存储器(tag RAM). tag RAM 用于记录所有可以指向 cache 块的内存。如果缓存是完全关联的, 则意味着内存数据块可以存储到任意一个 cache 块中. 这种系统的优点是, 命中率非常高, 但检索时间比较长, CPU在检索内存之前, 为了确定缓存中是否存在需要的数据, 必须遍历整个cache。
 
 At the opposite end of the spectrum we have direct-mapped caches. A direct-mapped cache is a cache where each cache block can contain one and only one block of main memory. This type of cache can be searched extremely quickly, but since it maps 1:1 to memory locations, it has a low hit rate. In between these two extremes are *n-*way associative caches. A 2-way associative cache (Piledriver’s L1 is 2-way) means that each main memory block can map to one of two cache blocks. An eight-way associative cache means that each block of main memory could be in one of eight cache blocks.
 
-在光谱的另一端,我们有direct-mapped缓存。direct-mapped缓存是一个缓存,每个缓存块可以包含一个且只有一个内存块.这种类型的缓存可以搜索非常迅速,但由于它1:1映射到内存位置,它有一个低的命中率。在这两个极端之间* n - *联想缓存.双向关联的缓存(大力士的L1出入境)意味着每个内存块可以映射到两个缓存块之一.一个八路联想缓存意味着每个块内存缓存可以在八块。
+另一种方式, 我们称之为直接映射缓存(direct-mapped cache)。直接映射方式的缓存, 每个缓存块只可以映射到一个内存块. 这种类型的缓存, 检索速度非常快, 但由于它是 1:1 的方式映射到内存地址, 所以命中率就很低。在这两种极端之间, 存在一种多路关联缓存(*n-*way associative cache). 双路关联缓存(如 Piledriver’s L1 is 2-way), 就是说每个内存块可以映射到两个缓存块之中的一个. 而八路关联缓存则是说每个内存内存可以加载到8个缓存块里面的一块。
 
 The next two slides show how hit rate improves with set associativity. Keep in mind that things like hit rate are highly particular — different applications will have different hit rates.
 
@@ -164,7 +164,12 @@ Check out our [ExtremeTech Explains](http://www.extremetech.com/tag/extremetech-
 
 看看我们(ExtremeTech解释)(http://www.extremetech.com/tag/extremetech-explains)系列更深入的报道今天最热门的技术主题。
 
-<https://www.extremetech.com/extreme/188776-how-l1-and-l2-cpu-caches-work-and-why-theyre-an-essential-part-of-modern-chips>
+参考: 
+- <https://www.ibm.com/developerworks/cn/linux/l-cn-perf1/index.html>
+
+原文链接:
+
+- <https://www.extremetech.com/extreme/188776-how-l1-and-l2-cpu-caches-work-and-why-theyre-an-essential-part-of-modern-chips>
 
 
 
