@@ -1,5 +1,6 @@
 # Java中的finally与return示例
 
+finally 语句块主要用于回收资源或者进行某些清理操作。
 
 Java中, try-finally 语句块的基本语法如下:
 
