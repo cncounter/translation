@@ -11,7 +11,7 @@
 
 The development of caches and caching is one of the most significant events in the history of computing. Virtually every modern CPU core from ultra-low power chips like the ARM Cortex-A5 to the highest-end Intel Core i7 use caches. Even higher-end microcontrollers often have small caches or offer them as options — the performance benefits are too large to ignore, even in ultra low-power designs.
 
-缓存的出现和发展是计算机历史上最重要的事件之一. 
+CPU高速缓存的出现是计算机发展史上的一件大事. 
 
 几乎所有的现代CPU核心, 从超低功耗的 ARM Cortex-A5 架构, 到 Intel Core i7 这种顶级处理器, 都使用了缓存。 即使是更高端的微控制器中, 通常也会集成少量的缓存, 或是提供可选项 —— 因为缓存对CPU的性能提升实在是太明显了, 即便是超低功耗的芯片, 在设计时也会加入必要的缓存。
 
@@ -165,7 +165,9 @@ Check out our [ExtremeTech Explains](http://www.extremetech.com/tag/extremetech-
 看看我们(ExtremeTech解释)(http://www.extremetech.com/tag/extremetech-explains)系列更深入的报道今天最热门的技术主题。
 
 参考: 
+
 - <https://www.ibm.com/developerworks/cn/linux/l-cn-perf1/index.html>
+- <http://opass.logdown.com/posts/249025-discussion-on-memory-cache>
 
 原文链接:
 
