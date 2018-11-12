@@ -1,6 +1,6 @@
 ## 4. Stream video from your webcam
 
-## 4. 从摄像头获取视频
+## WebRTC基础实践 - 4. 获取摄像头的视频流
 
 ## What you'll learn
 
@@ -8,15 +8,15 @@
 
 In this step you'll find out how to:
 
-在本节的课程中, 我们将学习以下知识点:
+在本节课程中, 我们将学习以下知识点:
 
 *   Get a video stream from your webcam.
 *   Manipulate stream playback.
 *   Use CSS and SVG to manipulate video.
 
 * 从摄像头(webcam)获取视频流(video stream)
-* 操纵视频流的展示
-* 通过CSS和SVG来处理视频。
+* 控制视频内容的回显
+* 通过CSS和SVG处理视频内容。
 
 A complete version of this step is in the `step-01` folder.
 
@@ -58,7 +58,7 @@ Add a `video` element and a `script` element to `index.html` in your `work` dire
 
 Add the following to **main.js** in your **js** folder:
 
-在 `js` 目录下的 `main.js` 文件中, 加上下面的代码:
+在 `js` 目录下的 `main.js` 文件中, 加入以下的代码:
 
 
 ```
@@ -96,15 +96,15 @@ navigator.mediaDevices.getUserMedia(mediaStreamConstraints)
 
 > All the JavaScript examples here use `'use strict';` to avoid common coding gotchas.
 
-> 本教程中的 JavaScript 代码, 都在起始处加上 `'use strict';` 这样做可以避免很多新手常犯的编程错误。
+> 本教程中的 JavaScript 代码, 都在起始处加上 `'use strict';` ,这样可以避免很多新手经常碰到的编程错误。
 
 > Find out more about what that means in [ECMAScript 5 Strict Mode, JSON, and More](http://ejohn.org/blog/ecmascript-5-strict-mode-json-and-more/).
 
-> 关于严格模式的更多信息, 可以参考 [ECMAScript 5 Strict Mode, JSON, and More](http://ejohn.org/blog/ecmascript-5-strict-mode-json-and-more/)。
+> 关于严格模式的更多信息, 请参考 [ECMAScript 5 Strict Mode, JSON, and More](http://ejohn.org/blog/ecmascript-5-strict-mode-json-and-more/)。
 
 ## Try it out
 
-## 运行起来试试
+## 运行示例
 
 Open `index.html` in your browser and you should see something like this (featuring the view from your webcam, of course!):
 
@@ -112,7 +112,7 @@ Open `index.html` in your browser and you should see something like this (featur
 
 ![](04_01_demo.png)
 
-当然, 页面中展示的是摄像头实时拍摄的内容。
+当然, 页面中展示的你本地摄像头实时拍摄到的内容。
 
 
 ## How it works
@@ -130,12 +130,12 @@ navigator.mediaDevices.getUserMedia(mediaStreamConstraints)
 
 Following the `getUserMedia()` call, the browser requests permission from the user to access their camera (if this is the first time camera access has been requested for the current origin). If successful, a [MediaStream](https://developer.mozilla.org/en/docs/Web/API/MediaStream) is returned, which can be used by a media element via the `srcObject` attribute:
 
-调用 `getUserMedia()` 方法之后, 浏览器会判断该 domain 是否具有读取摄像头的权限, 假如是第一次请求, 则会弹出对话框让用户决定是否允许。 如下图所示:
+调用 `getUserMedia()` 方法之后, 浏览器会判断当前域名(domain)是否具有调用摄像头的权限, 如果是第一次请求授权, 则会弹出对话框, 要求用户手动选择允许。 如下图所示:
 
 ![](04_02_allow_use_webcam.png)
 
 
-如果权限验证通过, 则返回 [MediaStream](https://developer.mozilla.org/en/docs/Web/API/MediaStream) 对象, 该对象可以赋值给 media 元素的 `srcObject` 属性:
+如果权限验证通过, 则返回 [MediaStream](https://developer.mozilla.org/en/docs/Web/API/MediaStream) 对象, 可以将该对象赋值给 media 元素的 `srcObject` 属性:
 
 
 
@@ -149,7 +149,7 @@ function gotLocalMediaStream(mediaStream) {
 
 The `constraints` argument allows you to specify what media to get. In this example, video only, since audio is disabled by default:
 
-约束参数 `constraints` 可以指定获取哪些 media 信息。因为声音(audio)的默认值是禁用的, 所以这里只获取了 video 流:
+参数 `constraints` 可以指定要获取哪些 media 信息。如果不指定, 声音(audio) 默认配置是禁用的, 所以此处实际上只获取了 video 流:
 
 ```
 const mediaStreamConstraints = {
@@ -197,7 +197,7 @@ The [MediaTrackConstraints specification](https://w3c.github.io/mediacapture-mai
 
 If `getUserMedia()` is successful, the video stream from the webcam is set as the source of the video element:
 
-如果 `getUserMedia()` 调用成功, 则将摄像头传过来的视频流, 赋给 video 标签:
+如果 `getUserMedia()` 调用成功, 则将摄像头传过来的视频流, 作为 video 的来源:
 
 ```
 function gotLocalMediaStream(mediaStream) {
@@ -218,10 +218,10 @@ function gotLocalMediaStream(mediaStream) {
 *   What size is the video element? How can you get the video's natural size from JavaScript, as opposed to display size? Use the Chrome Dev Tools to check.
 *   Try adding CSS filters to the video element. For example:
 
-* `localStream` 是一个全局变量, 所以可以从 console 中查看: 打开浏览器控制台, 输入 `localStream` 并按回车。 (打开控制台的方式: Windows下按F12并选择; 或者组合快捷键: `Ctrl-Shift-J`;  Mac则是 `Command-Option-J`)。
+* 此处 `localStream` 是一个全局变量, 所以可以通过 console 来查看: 打开浏览器控制台, 输入 `localStream` 并按回车。 (打开控制台的方式: Windows系统按F12并选择; 或者组合快捷键: `Ctrl-Shift-J`;  Mac系统则是 `Command-Option-J`)。
 * `localStream.getVideoTracks()` 返回的是什么值呢?
 * 查看 constraints 对象: 如果设置为 `{audio: true, video: true}`, 有什么效果呢?
-* video 元素的大小是多少? 如何通过JavaScript获得视频的原生尺寸呢? 而不是仅仅获取显示出来的尺寸? 试着用 Chrome开发工具来查看相关的API。
+* video 元素的大小是多少? 如何通过JavaScript获得视频的原生尺寸? 而不是仅仅获取显示出来的尺寸? 尝试使用 Chrome开发工具来查看相关API。
 * 尝试对 video 元素添加 CSS 过滤器。例如:
 
 
@@ -257,14 +257,14 @@ In this step you learned how to:
 *   Set media constraints.
 *   Mess with the video element.
 
-* 从网络摄像头获取视频。
-* 设置媒体约束(media constraint)。
-* 放置视频元素。
+* 如何从网络摄像头获取视频。
+* 设置媒体约束条件(media constraint)。
+* 混合视频元素。
 
 
 A complete version of this step is in the **step-01** folder.
 
-本节的完整版代码位于 **step-01** 文件夹下。
+本节的完整版代码位于 `step-01` 文件夹中。
 
 ## Tips
 
@@ -273,8 +273,8 @@ A complete version of this step is in the **step-01** folder.
 *   Don't forget the `autoplay` attribute on the `video` element. Without that, you'll only see a single frame!
 *   There are lots more options for `getUserMedia()` constraints. Take a look at the demo at [webrtc.github.io/samples/src/content/peerconnection/constraints](https://webrtc.github.io/samples/src/content/peerconnection/constraints/). As you'll see, there are lots of interesting WebRTC samples on that site.
 
-*   不要忘记 `video` 元素的 `autoplay` 属性。如果没有设置, 则只能看到第一帧画面!
-*   `getUserMedia()`方法提供了很多选项, 请参考 <https://webrtc.github.io/samples/src/content/peerconnection/constraints/>. 当然, 其中也提供了很多有趣的 WebRTC 示例。
+* 记得设置 `video` 元素的 `autoplay` 属性。如果没有设置, 则只能看到第一帧画面!
+* `getUserMedia()`方法提供了很多可选参数, 请参考 <https://webrtc.github.io/samples/src/content/peerconnection/constraints/>. 当然, 其中也有一些有趣的 WebRTC 示例。
 
 ## Best practice
 
@@ -282,7 +282,7 @@ A complete version of this step is in the **step-01** folder.
 
 *   Make sure your video element doesn't overflow its container. We've added `width` and `max-width` to set a preferred size and a maximum size for the video. The browser will calculate the height automatically:
 
-* 请确保 video 元素的内容不会溢出包裹他的容器。可以通过 `width` 和 `max-width` 样式来设置 video 的默认尺寸、以及最大尺寸。 浏览器自动计算对应的 height 属性:
+* 请确保 video 元素的内容不会溢出包裹容器。通过 `width` 和 `max-width` 样式可以设置 video 的默认尺寸、最大尺寸。 浏览器会自动计算对应的 height 属性:
 
 ```
 video {
@@ -299,5 +299,13 @@ video {
 
 You've got video, but how do you stream it? Find out in the next step!
 
-既然获取到了 video 信息, 那如何使用呢? 我们将在下一小节讨论!
+既然获取到了 video, 那要如何使用呢? 我们将在下一小节讲解!
 
+
+
+
+原文链接: <https://codelabs.developers.google.com/codelabs/webrtc-web/#3>
+
+翻译人员: 铁锚 - <https://blog.csdn.net/renfufei>
+
+翻译日期: 2018年07月04日
