@@ -113,7 +113,7 @@ From this point forward, all testing and verification should be performed using 
 
 
 
-原文链接: <https://codelabs.developers.google.com/codelabs/webrtc-web/#0>
+原文链接: <https://codelabs.developers.google.com/codelabs/webrtc-web/#2>
 
 翻译人员: 铁锚 - <https://blog.csdn.net/renfufei>
 
