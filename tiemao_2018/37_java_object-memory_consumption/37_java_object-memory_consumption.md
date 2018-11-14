@@ -134,6 +134,36 @@ A naïve sum would suggest that an instance of `X` would use 17 bytes. However, 
 新手可能会认为, 一个`X`类的实例占用17个字节的空间。但由于需要对齐(也称为补齐), JVM分配的内存的8个字节的整数倍, 所以不是17字节而是24字节。
 
 
+# JOL使用示例
 
-参考: <https://stackoverflow.com/questions/258120/what-is-the-memory-consumption-of-an-object-in-java/258150>
+JOL (Java Object Layout) is the tiny toolbox to analyze object layout schemes in JVMs. These tools are using Unsafe, JVMTI, and Serviceability Agent (SA) heavily to decoder the actual object layout, footprint, and references. This makes JOL much more accurate than other tools relying on heap dumps, specification assumptions, etc.
 
+
+JOL的官网地址为: <http://openjdk.java.net/projects/code-tools/jol/>
+
+从中可以看到:
+
+- JOL支持命令行方式的调用, 即 jol-cli, 下载页面请参考 Maven中央仓库: <http://central.maven.org/maven2/org/openjdk/jol/jol-cli/>; 比如下载其中的 `jol-cli-0.9-full.jar` 文件。
+
+- 也可以通过代码方式, 在程序中调用, 示例下载页面: <http://hg.openjdk.java.net/code-tools/jol/file/tip/jol-samples/src/main/java/org/openjdk/jol/samples/>;
+
+  相关的依赖也可以在Maven中央仓库找到:
+
+  ```
+  <dependency>
+      <groupId>org.openjdk.jol</groupId>
+      <artifactId>jol-core</artifactId>
+      <version>0.9</version>
+  </dependency>
+  ```
+
+  搜索页面: <https://mvnrepository.com/search?q=jol-core>
+
+
+
+
+参考: 
+
+- <https://stackoverflow.com/questions/258120/what-is-the-memory-consumption-of-an-object-in-java/258150>
+
+- <http://openjdk.java.net/projects/code-tools/jol/>
