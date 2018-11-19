@@ -268,5 +268,14 @@ JDK与Hotspot源代码链接:
 - OpenJDK网站: <https://openjdk.java.net>
 - 源码仓库: <https://hg.openjdk.java.net/>
 - JDK8源码目录: <https://hg.openjdk.java.net/jdk8>
-- `Object.c`文件地址: <https://hg.openjdk.java.net/jdk8/jdk8/jdk/file/687fd7c7986d/src/share/native/java/lang/Object.c>
+
+
+`Object.c` 文件在线预览地址: <https://hg.openjdk.java.net/jdk8/jdk8/jdk/file/687fd7c7986d/src/share/native/java/lang/Object.c>
+
+
+其中, HashCode等方法的实现, 位于JVM的实现代码中, 参考: <https://hg.openjdk.java.net/jdk8/jdk8/hotspot/file/87ee5ee27509/src/share/vm/prims/jvm.cpp#l505>
+
+FastHashCode 的实现代码: <https://hg.openjdk.java.net/jdk8/jdk8/hotspot/file/87ee5ee27509/src/share/vm/runtime/synchronizer.cpp#l601>
+
+
 
