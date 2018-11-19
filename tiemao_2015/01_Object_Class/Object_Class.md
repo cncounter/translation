@@ -262,5 +262,10 @@ Object类源码中总共有12个方法,没有属性域. 这样的设计保证了
  `finalize()`.
 
 
-JDK与Hotspot的源代码: <https://hg.openjdk.java.net/jdk8>
+
+JDK与Hotspot源代码链接: 
+
+- OpenJDK网站: <https://openjdk.java.net>
+- 源码仓库: <https://hg.openjdk.java.net/>
+- JDK8源码目录: <https://hg.openjdk.java.net/jdk8>
 
