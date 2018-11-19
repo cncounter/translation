@@ -268,4 +268,5 @@ JDK与Hotspot源代码链接:
 - OpenJDK网站: <https://openjdk.java.net>
 - 源码仓库: <https://hg.openjdk.java.net/>
 - JDK8源码目录: <https://hg.openjdk.java.net/jdk8>
+- `Object.c`文件地址: <https://hg.openjdk.java.net/jdk8/jdk8/jdk/file/687fd7c7986d/src/share/native/java/lang/Object.c>
 
