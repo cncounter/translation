@@ -1,0 +1,42 @@
+
+ num     #instances         #bytes  class name
+----------------------------------------------
+   1:       7136946      633792432  [C
+   2:       2270596      345130592  com.****.domain.po.home.sign.FamilyMemberService
+   3:      11146835      267524040  java.lang.Long
+   4:       4026491      186644464  [B
+   5:       7134162      171219888  java.lang.String
+   6:       2270600      127153600  org.apache.ibatis.mapping.ParameterMapping
+   7:       2281792      109526016  java.util.HashMap
+   8:       2384251       76296032  java.util.HashMap$Node
+   9:         57691       42643840  [Ljava.lang.Object;
+  10:       1745807       41899368  com.alibaba.druid.proxy.jdbc.JdbcParameterLong
+  11:       2283459       36535344  java.lang.Integer
+  12:          8534       20548120  [I
+  13:         16722       18910560  [Ljava.util.HashMap$Node;
+  14:            45       18167856  [[B
+  15:             3       10511152  [Lcom.alibaba.druid.proxy.jdbc.JdbcParameter;
+  16:             2        9082432  [Ljava.io.InputStream;
+  17:           596        4581320  [Z
+  18:         49915        4392520  java.lang.reflect.Method
+  19:         39507        3792672  java.util.jar.JarFile$JarFileEntry
+  20:         43013        1720520  java.util.LinkedHashMap$Entry
+  21:         52621        1683872  java.util.concurrent.ConcurrentHashMap$Node
+  22:         13566        1548536  java.lang.Class
+  23:         55173        1324152  java.util.ArrayList
+  24:         30313        1212520  com.sun.org.apache.xerces.internal.dom.DeferredTextImpl
+  25:         18886        1057616  java.util.LinkedHashMap
+  26:         22779         911160  com.sun.org.apache.xerces.internal.dom.DeferredAttrImpl
+  27:         15737         881272  com.sun.org.apache.xerces.internal.dom.DeferredElementImpl
+  28:         26555         849760  java.lang.ref.WeakReference
+  29:         11534         738176  java.net.URL
+  30:         10080         645120  com.mysql.jdbc.ConnectionPropertiesImpl$BooleanConnectionProperty
+  31:         20037         641184  java.util.Hashtable$Entry
+  32:         13939         557560  java.lang.ref.SoftReference
+  33:         16619         538216  [Ljava.lang.String;
+  34:           372         516528  [Ljava.util.concurrent.ConcurrentHashMap$Node;
+  35:         24491         505688  [Ljava.lang.Class;
+  36:         26440         423040  org.apache.ibatis.scripting.xmltags.TextSqlNode
+  37:          4946         395680  java.lang.reflect.Constructor
+  38:          7991         383568  org.apache.catalina.loader.ResourceEntry
+  39:         15737         377688  com.sun.org.apache.xerces.internal.dom.AttributeMap
