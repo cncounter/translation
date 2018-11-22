@@ -1,23 +1,25 @@
-# JSON 序列化与反序列化
+# JSON.parse()与JSON.stringify()简介
+
+- [reviver, 转换,更新,重生]
 
 
-### JSON.parse() 方法
+## JSON.parse()简介
 
 The JSON.parse() method parses a JSON string, constructing the JavaScript value or object described by the string. An optional reviver function can be provided to perform a transformation on the resulting object before it is returned.
 
-`JSON.parse()`方法, 可以将JSON字符串解析为JavaScript对象或对应的值。
+`JSON.parse()`方法, 用来将字符串解析为对应的JavaScript对象/值。
 
-在使用时, 第二个参数可以传一个 reviver 函数, 在返回之前调用, 可以将生成的对象进行某些转换操作。
+使用时, 可选传入一个function, 作为转换函数(reviver function), 会在`JSON.parse()`返回之前调用, 可以对解析生成的 object, 进行某些转换操作。
 
 ```
 var json = '{"result":true, "count":42}';
 obj = JSON.parse(json);
 
+// 输出: 42
 console.log(obj.count);
-// 预期输出: 42
 
+// 输出: true
 console.log(obj.result);
-// 预期输出: true
 
 ```
 
@@ -25,7 +27,7 @@ console.log(obj.result);
 
 Syntax
 
-#### 参数格式
+### JSON.parse()语法声明
 
 ```
 JSON.parse(text[, reviver])
@@ -37,43 +39,45 @@ Parameters
 
 #### 参数说明
 
-text
 
-- `text`
+- `text` 参数
+
   The string to parse as JSON. See the JSON object for a description of JSON syntax.
-  要解析的JSON字符串。看到JSON对象的JSON的语法的描述。
+  需要要解析的JSON格式字符串。关于JSON的语法, 请参考: [JSON](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/JSON)。
 
-reviver Optional
+- reviver Optional
 
-兴奋剂可选
+- `reviver`, 可选参数, 转换器
 
 If a function, this prescribes how the value originally produced by parsing is transformed, before being returned.
 
-如果一个函数,这个规定产生的最初价值如何解析转换,之前返回。
+可以传入一个转换函数, 将最初生成的对象, 进行某些转换, 然后再返回。
 
-Return value
+#### Return value
 
-返回值
+#### 返回值
 
 The Object corresponding to the given JSON text.
 
-对象对应于给定的JSON文本。
+返回给定字符串对应的 [Object](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Object)。
 
-Exceptions
+#### Exceptions
 
-异常
+#### 异常说明
 
 Throws a SyntaxError exception if the string to parse is not valid JSON.
 
-抛出一个SyntaxError异常如果字符串解析JSON是无效的。
+如果传入的JSON字符串无效的, 则会抛出 [SyntaxError](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/SyntaxError) 异常。
 
-Examples
+### Examples
 
-例子
+### JSON.parse()示例
 
 Using JSON.parse()
 
-使用JSON.parse()
+#### 简单示例
+
+`JSON.parse()` 使用示例如下:
 
 ```
 JSON.parse('{}');              // {}
@@ -87,11 +91,11 @@ JSON.parse('null');            // null
 
 Using the reviver parameter
 
-使用兴奋剂参数
+#### 使用转换函数
 
 If a reviver is specified, the value computed by parsing is transformed before being returned. Specifically, the computed value and all its properties (beginning with the most nested properties and proceeding to the original value itself) are individually run through the reviver. Then it is called, with the object containing the property being processed as this, and with the property name as a string, and the property value as arguments. If the reviver function returns undefined (or returns no value, for example, if execution falls off the end of the function), the property is deleted from the object. Otherwise, the property is redefined to be the return value.
 
-如果指定一个刺激性饮料,通过解析计算的值被改变之前返回.具体来说,计算值及其所有属性(从最开始嵌套属性和原始值本身进行)通过兴奋剂单独运行.然后,正在处理的对象包含属性,属性名称作为一个字符串,和属性值作为参数.如果兴奋剂函数返回定义(或不返回任何值,例如,如果执行脱落的函数),房地产从对象中删除.否则,属性定义返回值。
+如果指定了转换函数(reviver), 那么, 在返回解析出来的值/对象之前, 会调用转换函数, 在其中可以执行某些转换/修改(transformed). 具体来说, 计算出来的值及其所有属性(从最开始嵌套属性和原始值本身进行)通过兴奋剂单独运行.然后,正在处理的对象包含属性,属性名称作为一个字符串,和属性值作为参数.如果兴奋剂函数返回定义(或不返回任何值,例如,如果执行脱落的函数),房地产从对象中删除.否则,属性定义返回值。
 
 If the reviver only transforms some values and not others, be certain to return all untransformed values as-is, otherwise they will be deleted from the resulting object.
 
@@ -100,51 +104,75 @@ If the reviver only transforms some values and not others, be certain to return 
 ```
 JSON.parse('{"p": 5}', (key, value) =>
   typeof value === 'number'
-    ? value * 2 // return value * 2 for numbers
-    : value     // return everything else unchanged
+    ? value * 2 // 如果是数字, 则返回 value * 2
+    : value     // 其他情况不进行修改
 );
 
-// { p: 10 }
+// 返回值: {p: 10}
+```
 
-JSON.parse('{"1": 1, "2": 2, "3": {"4": 4, "5": {"6": 6}}}', (key, value) => {
-  console.log(key); // log the current property name, the last is "".
+上面使用了箭头函数, 传统的等价代码为:
+
+
+```
+JSON.parse('{"p": 5}', function(key, value){
+  if(typeof value === 'number'){
+    return value * 2; // 如果是数字, 则返回 value * 2
+  } else {
+    return value;     // 其他情况不进行修改
+  }
+});
+
+// 返回值也是: {p: 10}
+```
+
+再看个复杂点的示例:
+
+```
+
+JSON.parse('{"1": "v1", "2": "v2", "3": {"4": "v4", "5": {"6": "v6"}}}', (key, value) => {
+  // 输出对应的属性名称,
+  // 最后一个是整个对象/值自身, key则是空字符串"".
+  console.log(key, '-->', JSON.stringify(value)); 
   return value;     // return the unchanged property value.
 });
 
-// 1
-// 2
-// 4
-// 6
-// 5
-// 3 
-// ""
+/*输出为:
+================================================
+1 --> "v1"
+2 --> "v2"
+4 --> "v4"
+6 --> "v6"
+5 --> {"6":"v6"}
+3 --> {"4":"v4","5":{"6":"v6"}}
+ --> {"1":"v1","2":"v2","3":{"4":"v4","5":{"6":"v6"}}}
+================================================
+*/
 ```
 
 
 
 JSON.parse() does not allow trailing commas
 
-JSON.parse()不允许后面的逗号
+`JSON.parse()`函数不允许在最后面出现逗号, 因为JSON规范就是这样规定的。
 
 ```
-// both will throw a SyntaxError
+// 下面两种方式都会抛出 SyntaxError 异常
 JSON.parse('[1, 2, 3, 4, ]');
 JSON.parse('{"foo" : 1, }');
 ```
 
 
 
-### JSON.stringify()
-
-### JSON.stringify()
+## JSON.stringify()简介
 
 The `JSON.stringify()` method converts a JavaScript value to a JSON string, optionally replacing values if a replacer function is specified, or optionally including only the specified properties if a replacer array is specified.
 
-的`JSON.stringify()`方法将JavaScript值转换为一个JSON字符串,如果指定一个替代者函数选择替换值,或可选地包括只有如果指定一个替代者数组指定的属性。
+`JSON.stringify()`方法, 用来将 JavaScript对象/值 转换为对应的JSON字符串。 如果指定替换函数(replacer function), 则可以替换某些值; 如果指定了替换属性数组(replacer array), 则输出结果中只包含指定的属性。
 
-Syntax
+### Syntax
 
-语法
+### JSON.stringify()语法声明
 
 ```
 JSON.stringify(value[, replacer[, space]])
@@ -152,29 +180,28 @@ JSON.stringify(value[, replacer[, space]])
 
 
 
-Parameters
+#### Parameters
 
-参数
+#### 参数说明
 
-value
+- `value` 参数
 
-价值
 
 The value to convert to a JSON string.
 
-值转换为一个JSON字符串。
+要转换为JSON字符串的值/对象。
 
-replacer Optional
+- replacer Optional
 
-代用品可选
+- `replacer`, 可选参数, 替换器
+
 
 A function that alters the behavior of the stringification process, or an array of String and Number objects that serve as a whitelist for selecting/filtering the properties of the value object to be included in the JSON string. If this value is null or not provided, all properties of the object are included in the resulting JSON string.
 
 一个函数,改变stringification的行为过程,或一个字符串和数字对象数组作为白名单选择/过滤值对象的属性被包括在JSON字符串.如果这个值是null或不提供,对象的所有属性都包含在生成的JSON字符串。
 
-space Optional
+- `space`, 可选参数, 缩进
 
-空间可选
 
 A String or Number object that's used to insert white space into the output JSON string for readability purposes. If this is a Number, it indicates the number of space characters to use as white space; this number is capped at 10 (if it is greater, the value is just 10). Values less than 1 indicate that no space should be used. If this is a String, the string (or the first 10 characters of the string, if it's longer than that) is used as white space. If this parameter is not provided (or is null), no white space is used.
 
