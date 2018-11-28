@@ -1,6 +1,6 @@
 ## 7. Set up a signaling service to exchange messages
 
-## 7. 配置信令服务
+## WebRTC基础实践 - 7. 配置信令服务
 
 ## What you'll learn
 
@@ -8,7 +8,7 @@
 
 In this step, you'll find out how to:
 
-在本节课程中, 将学习以下内容:
+在本节课程中, 我们将学习以下内容:
 
 - Use `npm` to install project dependencies as specified in **package.json**
 - Run a Node.js server and use node-static to serve static files.
@@ -30,29 +30,29 @@ A complete version of this step is in the **step-04** folder.
 
 In order to set up and maintain a WebRTC call, WebRTC clients (peers) need to exchange metadata:
 
-要创建并维持WebRTC调用, 客户端之间需要交换元数据:
+要创建并保持WebRTC通话, 客户端之间需要互相交换元数据信息, 包括:
 
 - Candidate (network) information.
 - **Offer** and **answer** messages providing information about media, such as resolution and codecs.
 
-- 候选网络信息
-- **Offer**(提供) 并且 **answer**(回应) 媒体相关的信息, 比如分辨率(resolution)和编解码器(codecs)。
+- 候选网络信息(Candidate);
+- 媒介相关的邀请信息(Offer)和响应信息(answer), 比如分辨率(resolution), 编解码器(codec)等。
 
 In other words, an exchange of metadata is required before peer-to-peer streaming of audio, video, or data can take place. This process is called **signaling**.
 
-换句话说, 在传输流媒体音频、视频或数据之前, 需要先交换元数据信息。这个过程称之为 **signaling**(信令)。
+换句话说, 想要传输流媒体视频/数据, 必须得先互相交换元数据信息。这个过程被称为信令传输(signaling)。
 
 In the previous steps, the sender and receiver RTCPeerConnection objects are on the same page, so 'signaling' is simply a matter of passing metadata between objects.
 
-在前面的小节中, 发送方和接收方的 RTCPeerConnection 对象都在同一个页, 所以传递信令的过程特别简单, 在对象间直接传递就行。
+在前面的小节中, 发送方和接收方都是同一个页中的 RTCPeerConnection 对象, 所以传递信令只需要在对象间直接拷贝就行, 显得特别简单, 。
 
 In a real world application, the sender and receiver RTCPeerConnections run in web pages on different devices, and you need a way for them to communicate metadata.
 
-在现实世界中, 发送方和接收方是不同的设备, 所以需要具备交换元数据的通道。
+在现实世界中, 发送方和接收方一般是不同的设备, 所以需要具有元数据交换的通道。
 
 For this, you use a **signaling server**: a server that can pass messages between WebRTC clients (peers). The actual messages are plain text: stringified JavaScript objects.
 
-为此, 我们需要 **signaling server**(信令服务器): 为WebRTC客户端(peers)之间通信传递消息的服务器。 实际上这些消息都是纯文本格式的: 字符串形式的JavaScript对象。
+我们可以使用信令服务器(**signaling server**), 来为WebRTC客户端(peers)之间传递消息。实际上这些信令消息都是纯文本格式的, 也就是将JavaScript对象序列化为字符串的形式(stringified)。
 
 ## Prerequisite: Install Node.js
 
@@ -60,15 +60,19 @@ For this, you use a **signaling server**: a server that can pass messages betwee
 
 In order to run the next steps of this codelab (folders **step-04** to **step-06**) you will need to run a server on localhost using Node.js.
 
-要运行本节和接下来的实例代码(**step-04** 到 **step-06**), 需要在本机安装并运行 Node.js 服务器。
+要运行本节和接下来的示例代码(从**step-04** 到 **step-06**), 需要在本机安装 Node.js。
 
 You can download and install Node.js from [this link](https://nodejs.org/en/download/) or via your preferred [package manager](https://nodejs.org/en/download/package-manager/).
 
-Node.js中文网下载链接: <http://nodejs.cn/download/>; 当然也可以直接Node.js官网下载: <https://nodejs.org/en/download/>。 另外, 某些平台上也可以通过包管理器进行安装, 参考: <https://nodejs.org/en/download/package-manager/>。
+Node.js中文网下载链接: <http://nodejs.cn/download/>; 
+
+当然也可以直接从Node.js官网下载: <https://nodejs.org/en/download/>。 
+
+某些平台上可以通过包管理器进行安装, 请参考: <https://nodejs.org/en/download/package-manager/>。
 
 Once installed, you will be able to import the dependencies required for the next steps (running `npm install`), as well as running a small localhost server to execute the codelab (running `node index.js`). These commands will be indicated later, when they are required.
 
-安装完成后, 可以通过 `npm install` 来安装相关的依赖, 并通过 `node index.js` 命令来启动本地服务器。后面会在必要时介绍这些命令。
+安装完成后, 在项目路径下, 执行命令 `npm install` 安装相关的依赖, 然后可以通过命令 `node index.js` 来启动本地服务器。稍后会在必要时介绍这些命令。
 
 
 ## About the app
@@ -77,15 +81,15 @@ Once installed, you will be able to import the dependencies required for the nex
 
 WebRTC uses a client-side JavaScript API, but for real-world usage also requires a signaling (messaging) server, as well as STUN and TURN servers. You can find out more [here](https://www.html5rocks.com/en/tutorials/webrtc/infrastructure/).
 
-WebRTC使用客户端方式的JavaScript API, 但在实际应用中, 还需要有信令服务器(消息服务), 以及 STUN 和 TURN 服务器。 更多信息请参考 <https://www.html5rocks.com/en/tutorials/webrtc/infrastructure/>。
+WebRTC使用客户端方式的JavaScript API, 在实际应用中, 需要有信令服务器(消息服务)的支持, 有时还需要使用 STUN 和 TURN 服务器。 更多信息请参考: <https://www.html5rocks.com/en/tutorials/webrtc/infrastructure/>。
 
 In this step you'll build a simple Node.js signaling server, using the Socket.IO Node.js module and JavaScript library for messaging. Experience with Node.js and Socket.IO will be useful, but not crucial; the messaging components are very simple.
 
-在本节课程中, 我们将构建一个简单的 Node.js 信令服务器, 使用Socket.IO模块以及JavaScript库来传递消息。如果熟悉Node.js和Socket.IO会更容易理解, 不熟悉也没关系;消息组件非常简单易懂。
+在本节课程中, 我们先创建简单的 Node.js 信令服务器, 使用 Socket.IO 模块和JavaScript库来传递消息。 如果你熟悉Node.js和Socket.IO, 会比较容易理解； 如果不熟悉也没关系; 消息组件的使用非常简单。
 
 **Choosing the right signaling server**
 
-**选择正确的信令服务器**
+#### **选择正确的信令服务器**
 
 This codelab uses [Socket.IO](http://socket.io/) for a signaling server.
 
@@ -93,19 +97,19 @@ This codelab uses [Socket.IO](http://socket.io/) for a signaling server.
 
 The design of Socket.IO makes it straightforward to build a service to exchange messages, and Socket.IO is suited to learning about WebRTC signaling because of its built-in concept of 'rooms'.
 
-Socket.IO的设计使得创建消息交换服务非常简单, 而且 Socket.IO 非常适用于学习WebRTC信令, 因为其内置了 “聊天室”(rooms) 的概念。
+基于Socket.IO的设计, 将其用作消息服务简单又直接。 Socket.IO 非常适合用于学习WebRTC信令, 因为其内置了 “聊天室”(rooms) 这个概念。
 
 **However, for a production service, there are better alternatives. **See [How to Select a Signaling Protocol for Your Next WebRTC Project](https://bloggeek.me/siganling-protocol-webrtc/).
 
-但对于生产环境而言, 还有更多更好的选择。 请参考 [How to Select a Signaling Protocol for Your Next WebRTC Project](https://bloggeek.me/siganling-protocol-webrtc/)。
+当然, 对于商用级产品来说, 还有很多更好的选择。 请参考 [How to Select a Signaling Protocol for Your Next WebRTC Project](https://bloggeek.me/siganling-protocol-webrtc/)。
 
 In this example, the server (the Node.js application) is implemented in **index.js**, and the client that runs on it (the web app) is implemented in **index.html**.
 
-在本示例中, Node.js服务器启动的是 **index.js** 文件, 客户端则是打开对应的 **index.html** 文件。
+在本示例中, 通过Node.js服务器启动 **index.js** 文件, 客户端的实现位于 **index.html** 文件中。
 
 The Node.js application in this step has two tasks.
 
-在这一步中,  Node.js程序有两个任务。
+在本节中,  Node.js程序做了两件事情。
 
 First, it acts as a message relay:
 
@@ -141,7 +145,7 @@ if (numClients === 0) {
 
 Our simple WebRTC application will permit a maximum of two peers to share a room.
 
-这个简单的WebRTC应用, 一个房间最多只允许两个人使用。
+这是个简单的WebRTC应用, 每个房间只支持两个客户端。
 
 ## HTML & JavaScript
 
@@ -172,11 +176,11 @@ Update **index.html** so it looks like this:
 
 You won't see anything on the page in this step: all logging is done to the browser console. (To view the console in Chrome, press Ctrl-Shift-J, or Command-Option-J if you're on a Mac.)
 
-页面上没有太多东西: 所有的日志信息都输出到浏览器控制台了。(要打开Chrome控制台, 请点击 `Ctrl-Shift-J`, Mac系统则是 `Command-Option-J`)。
+页面上没有太多东西: 所有的日志信息都在浏览器控制台输出。(要打开Chrome控制台, 可以使用快捷键 `Ctrl-Shift-J`, 或 `F12`, Mac系统则是 `Command-Option-J`)。
 
 Replace **js/main.js** with the following:
 
-替换 **js/main.js** 文件的内容:
+替换 `js/main.js` 文件的内容:
 
 ```
 'use strict';
@@ -217,11 +221,11 @@ socket.on('log', function(array) {
 
 ## Set up Socket.IO to run on Node.js
 
-## 设置Node.js中使用的 Socket.IO
+## 设置 Socket.IO
 
 In the HTML file, you may have seen that you are using a Socket.IO file:
 
-在HTML文件中, 你可能看到了, 我们使用了 Socket.IO 的一个文件:
+在HTML文件中, 可以看到, 我们使用了一个 Socket.IO 的文件:
 
 ```
 <script src="/socket.io/socket.io.js"></script>
@@ -231,7 +235,7 @@ In the HTML file, you may have seen that you are using a Socket.IO file:
 
 At the top level of your **work** directory create a file named **package.json** with the following contents:
 
-在 **work** 目录中创建一个名为 **package.json** 的文件, 内容如下:
+在`work`目录中创建文件: `package.json`, 其内容如下:
 
 ```
 {
@@ -249,25 +253,25 @@ At the top level of your **work** directory create a file named **package.json**
 
 This is an app manifest that tells Node Package Manager (`npm`) what project dependencies to install.
 
-这是一个应用程序清单文件, 告诉Node的包管理器(`npm`)需要安装哪些依赖项。
+这就是一个应用清单文件, 主要是告知Node包管理器(`npm`, Node Package Manager)需要安装的依赖项。
 
 To install dependencies (such as `/socket.io/socket.io.js`), run the following from the command line terminal, in your **work** directory:
 
-要安装依赖, (如 `/socket.io/socket.io.js` ), 可以在命令行中, **work** 目录下执行命令:
+要安装依赖, (比如我们使用的 `/socket.io/socket.io.js` ), 可以在 **work** 目录下执行命令:
 
 ```
 npm install
 ```
 
-如果是在国内, 可以使用以下 cnpm,
+如果是在国内, 可以使用 cnpm,
 
-先全局安装 cnpm:
+首先需要全局安装 cnpm:
 
 ```
 npm install -g cnpm
 ```
 
-再使用cnpm:
+然后才能使用cnpm, cnpm用法和npm完全一致:
 
 ```
 cnpm install
@@ -277,7 +281,7 @@ cnpm install
 
 You should see an installation log that ends something like this:
 
-安装日志类似这样:
+日志信息类似这样:
 
 ![07_01_npm_i_log](07_01_npm_i_log.png)
 
@@ -285,11 +289,13 @@ You should see an installation log that ends something like this:
 
 As you can see, `npm` has installed the dependencies defined in **package.json**.
 
-可以看到, `npm` 安装了 **package.json** 中定义的依赖关系。
+可以看到, `npm` 安装了 **package.json** 中定义的依赖项。
 
 Create a new file **index.js** at the top level of your **work** directory (not in the **js** directory) and add the following code:
 
-在 **work** 目录下创建一个新文件**index.js**(注意服务端脚本不放在 **js** 目录下), 文件内容如下:
+在 `work` 目录下创建一个新的文件**index.js**, 内容如下:
+
+> 注意服务端脚本不放到 **js** 目录中
 
 ```
 'use strict';
@@ -368,7 +374,7 @@ From the command line terminal, run the following command in the **work** direct
 node index.js
 ```
 
-> 当然, 也可以保存为启动脚本, 如 `startup_index.cmd` 文件。
+> 也可以将这个命令保存为启动脚本, 如 `startup_index.cmd` 之类的脚本文件。 创建一个文本文件,输入内容,然后另存为/重命名即可。
 
 
 
@@ -382,15 +388,15 @@ Each time you open this URL, you will be prompted to enter a room name. To join 
 
 Open a new tab page, and open **localhost:8080** again. Choose the same room name.
 
-再打开第二个标签页, 输入地址: <http://localhost:8080>。 输入同样的房间号。
+打开一个新标签页, 输入地址: <http://localhost:8080>。 输入同样的房间号 `cnc`。
 
 Open **localhost:8080** in a third tab or window. Choose the same room name again.
 
-再打开第三个标签页, 输入地址: <http://localhost:8080>。 也输入同样的房间号。
+再打开第三个标签页, 输入地址: <http://localhost:8080>。 也输入同样的房间号 `cnc`。
 
 Check the console in each of the tabs: you should see the logging from the JavaScript above.
 
-然后查看每个选项卡的控制台日志信息, 应该能看到上面的JavaScript中打印的日志信息。
+然后查看每个选项卡对应的控制台日志信息, 应该可以看到JavaScript中打印的日志信息。
 
 ## Bonus points
 
@@ -400,9 +406,9 @@ Check the console in each of the tabs: you should see the logging from the JavaS
 2. What issues might be involved with scaling this application? Can you develop a method for testing thousands or millions of simultaneous room requests?
 3. This app uses a JavaScript prompt to get a room name. Work out a way to get the room name from the URL. For example *localhost:8080/foo* would give the room name `foo`.
 
-1. 有哪些可选的消息传递机制? 如果纯粹使用 WebSocket, 会遇到哪些问题?
-2. 扩展这个应用程序， 会涉及哪些问题? 你能用某种技术来模拟成千上万个并发请求吗?
-3. 这个应用程序使用了一个JavaScript来让用户输入房间号。 试试将房间号放置到URL之中。例如 <http://localhost:8080/cnc> 则对应房间号 `cnc`。
+1. 可以选择哪些消息传递机制? 如果使用纯粹的 WebSocket, 会遇到哪些问题?
+2. 扩展这个应用, 会涉及哪些问题? 你能用某种技术来模拟成千上万个并发请求吗?
+3. 在这个应用中, 使用了一个JavaScript prompt 来让用户输入房间号。 试着修改程序, 将房间号放到URL之中。例如 <http://localhost:8080/cnc>, 则对应房间号为 `cnc`。
 
 ## What you learned
 
@@ -410,7 +416,7 @@ Check the console in each of the tabs: you should see the logging from the JavaS
 
 In this step, you learned how to:
 
-在本节课程中, 我们学到了:
+在本节课程中, 我们学习了:
 
 - Use npm to install project dependencies as specified in package.json
 - Run a Node.js server to server static files.
@@ -418,8 +424,8 @@ In this step, you learned how to:
 - Use that to create 'rooms' and exchange messages.
 
 
-- 通过 `npm` 安装 `package.json` 清单文件中指定的项目依赖
-- 运行Node.js服务器,  提供静态文件服务。
+- 通过 `npm` 安装 `package.json` 文件中指定的项目依赖
+- 运行Node.js服务器, 通过 node-static 提供静态文件服务。
 - 用Socket.IO创建消息传递服务
 - 创建聊天室以及发送聊天消息。
 
@@ -442,5 +448,13 @@ A complete version of this step is in the **step-04** folder.
 
 Find out how to use signaling to enable two users to make a peer connection.
 
-接下来, 我们将学习如何使用信令, 让两个客户端建立对等连接。
+接下来, 我们将学习如何通过信令服务, 让两个客户端建立对等连接。
+
+
+
+原文链接: <https://codelabs.developers.google.com/codelabs/webrtc-web/#6>
+
+翻译人员: 铁锚 - <https://blog.csdn.net/renfufei>
+
+翻译日期: 2018年08月27日
 
