@@ -281,9 +281,7 @@ cnpm install
 
 You should see an installation log that ends something like this:
 
-日志信息类似这样:
-
-![07_01_npm_i_log](07_01_npm_i_log.png)
+然后可以看到相关的日志信息.
 
 
 
