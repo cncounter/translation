@@ -237,7 +237,7 @@ All Symbol-keyed properties will be completely ignored, even when using the repl
 
 Non-enumerable properties will be ignored
 
-不可数的属性将被忽略
+不可枚举的(Non-enumerable)属性会被忽略。
 
 ```
 JSON.stringify({});                  // '{}'
