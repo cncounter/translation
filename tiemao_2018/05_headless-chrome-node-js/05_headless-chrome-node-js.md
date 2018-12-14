@@ -1,71 +1,106 @@
-# NodeJS调用HeadLess-Chrome
+# 将网页转换为图片和PDF
 
-`Headless` 模式是指没有图形化界面(GUI),运行在后台的程序。
+> 通过NodeJS调用HeadLess-Chrome来实现。
 
-本文先简要介绍如何通过命令行调用HeadLess-Chrome, 然后再演示如何通过 NodeJS 来调用HeadLess-Chrome。 至于C++方式的API调用请参考开发者官网。
+`Headless` 模式是指没有图形界面(GUI)的程序。
+
+本文先介绍需要使用到的相关技术, 然后再演示如何如何使用 HeadLess-Chrome；比如通过命令行调用， 以及通过NodeJS来调用HeadLess-Chrome。 至于C++的API调用方式, 请参考官网文档。
 
 使用HeadLess模式-Chrome 的好处是: 
 
-- 不需要显卡支持, 可以在Linux服务器环境中运行。
+- 不需要显卡支持, 所以可以在服务器中运行, 比如Linux环境,以及Windows环境。
 
-- 还可以用于自动化测试环境。 
+- 可以用于自动化测试、其中可以执行自定义的JS，和在控制台执行效果类似。 
 
-- 另外, 加入IP代理池, 拿来刷点击量/投票也是不错的选择, 如蘑菇代理: <http://www.mogumiao.com/>。
+- 如果加入IP代理池, 就拿来刷点击量/投票，能破解大部分高级预防措施，算是不错的选择。好用的IP池，比如蘑菇代理: <http://www.moguproxy.com/>。
 
 
 
 ###  1. 安装 Chrome
 
-最好下载并安装最新版, 至少是 Chrome60+。 请通过搜索引擎来查询和下载。
+最好下载并安装最新版, 至少是 Chrome60+。 还可以通过搜索引擎来查询和下载。
 
 官网地址为: <https://www.google.com/chrome/>
 
 
-### 2. 命令行模式简介
+### 2. 使用命令行方式
 
+安装完成后, 会自动将Chrome程序所在的路径加入系统PATH。 
 
-2.1 生成页面加载后的截图:
+例如在Windows的命令行中执行:
+
+```
+PATH
+```
+
+可以看到, 其中有 `C:\Program Files (x86)\Google\Chrome\Application` 之类的记录。
+
+如果要简单启动 chrome, 则和普通程序一样, 在命令行直接执行 `chrome` 即可.
+
+```
+chrome http://cncounter.com
+```
+
+当然，也直接带上一个网址。
+
+2.1 生成页面截图
+
+使用如下命令:
 
 ```
 chrome --headless --screenshot=C:/cncounter.screenshot.png  --window-size=1024,768 http://cncounter.com
 ```
 
-如果有重定向, 则保存的截图为重定向后的网页界面, 因为是 DOMContentLoaded 事件触发之后才会执行保存操作。
+其中, `--headless` 指明使用后台模式, 不打开图形界面。
 
-如果找不到本地安装的 chrome, 可能需要配置PATH环境变量, 或者设置 alias。请参考本文末尾的相关链接。
+`--screenshot=C:/cncounter.screenshot.png` 说明需要执行界面截图操作, 参数值就是保存的路径,可以是绝对路径或者相对路径。
+
+`--window-size=1024,768` 指定可视窗口的宽高, 如果页面很长,则需要指定很大的高度。
+
+最后的 `http://cncounter.com` 则是网页的地址。
 
 
-2.2 页面打印为PDF文件:
+生成的是网页加载完成后的界面截图。
+
+如果有重定向, 则保存的截图为重定向后的网页界面, 因为在 `DOMContentLoaded` 事件触发之后才会执行截屏操作。
+
+如果找不到本地安装的 chrome, 可能需要手动配置PATH环境变量, 或者设置 alias。请参考本文末尾的相关链接。
+
+
+2.2 将网页保存为PDF文件:
 
 ```
 chrome --headless --print-to-pdf=C:/cncounter.pdf  http://www.cncounter.com
 ```
 
+其中的 `--print-to-pdf` 参数指定了需要打印为PDF, 以及保存路径。
+
+
 2.3 其他命令行参数:
 
 
-- 启动debug监听端口;此模式下不会自动退出。
+- 启动debug监听端口; 在此模式下不会自动退出。
 
 ```
 --remote-debugging-port=9222
 ```
 
-介绍此参数的原因, 是因为 NodeJS版本的API, 本质上就是启动一个监听端口, 然后通过 `chrome-remote-interface` 协议与这个端口进行通信。
+介绍此参数的原因, 是因为NodeJS版本的API, 本质上就是启动一个监听端口, 然后通过 `chrome-remote-interface` 协议与这个端口进行通信。
 
 
-- 自定义 user-agent: 
+- 自定义 user-agent 字符串: 
 
 ```
 --user-agent="Renfufei.Test 02"
 ```
 
-- 指定超时时间, 超过此时间未加载完成, 则会强制触发 DOMContentLoaded 事件。 当前的默认值是 30000 ms。 
+- 指定超时时间, 超过此时间未加载完成, 则会强制触发 DOMContentLoaded 事件。 当前的默认值是 `30000ms`。 
 
 ```
 --timeout=1000
 ```
 
-- 指定 repl 以执行JS脚本:
+- 指定 repl, 启动完成后会接收命令行输入,作为JS脚本执行:
 
 ```
 --repl
@@ -90,11 +125,11 @@ chrome --headless --print-to-pdf=C:/cncounter.pdf  http://www.cncounter.com
 ```
 
 
-这些参数有些是互斥的。 
+这些参数有些是互斥的。而且只在 `headless` 模式下才生效。
 
-Linux 和 MacOSX系统, 用法基本上是相同的, 除了文件路径写法不一样。
+Linux和MacOSX系统下的用法基本上相同, 除了文件路径写法不一样。
 
-总的来说, 命令行参数能传递的信息太少了, 很多配置目前不支持命令行参数, 只能期待以后的版本进行增强。
+总体来说, 命令行参数能传递的信息太少, 而且很多配置也不支持通过命令行参数进行指定, 期待以后的版本进行增强。
 
 更多信息请参考本文末尾的链接。
 
