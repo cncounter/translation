@@ -407,7 +407,7 @@ sudo yum -y update nss
 
 NodeJS 通过 http/https 模块来提供web服务。
 
-### 7.1 测试基本的http服务
+### 7.1 基本的http服务
 
 创建 `demo-server.js` 文件
 
@@ -440,10 +440,12 @@ server.listen(http_port, function(err){
 node demo-server.js
 ```
 
-然后用浏览器访问相应的端口试试: <http://localhost:80/>
+然后用浏览器打开页面试试: <http://localhost:80/>
+
+如果要打断命令行程序, 按 `CTRL+C` 组合键即可。
 
 
-### 7.2 测试 express 框架
+### 7.2 使用express 框架
 
 安装 express 框架:
 
@@ -456,7 +458,7 @@ npm install express-handlebars --save
 
 ```
 
-其中 `--save` 的意思,则是指定将依赖信息写入到 `package.json` 文件中;
+其中 `--save` 选项,指定将依赖信息写入到 `package.json` 文件中;
 
 
 
@@ -474,7 +476,7 @@ const http_port = 80;
 const server = express();
 
 // 请求 Mapping
-// get, post, put, all 等
+// get, post, put, all 等方法
 server.get('/', function(request, response){
     // express 包装的参数
     var params = request.query;
