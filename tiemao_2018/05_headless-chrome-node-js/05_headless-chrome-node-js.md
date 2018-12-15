@@ -92,9 +92,12 @@ chrome --headless --print-to-pdf=C:/cncounter.pdf  http://www.cncounter.com
 
 ```
 --user-agent="Renfufei.Test 02"
+--user-agent="Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36"
 ```
+指定 user-agent 的好处, 是可以模拟各种客户端, 因为某些服务端会对这个Header做出不同的响应。
 
-- 指定超时时间, 超过此时间未加载完成, 则会强制触发 DOMContentLoaded 事件。 当前的默认值是 `30000ms`。 
+
+- 指定超时时间, 超过此时间未加载完成, 则会强制触发 DOMContentLoaded 事件。 目前默认值是 `30000ms`, 即30秒。 
 
 ```
 --timeout=1000
@@ -125,11 +128,11 @@ chrome --headless --print-to-pdf=C:/cncounter.pdf  http://www.cncounter.com
 ```
 
 
-这些参数有些是互斥的。而且只在 `headless` 模式下才生效。
+这些参数有些是互斥的。而且只在 `headless` 模式下生效。
 
-Linux和MacOSX系统下的用法基本上相同, 除了文件路径写法不一样。
+在Linux和MacOSX系统下的用法基本相同, 除了文件路径的写法不一样。
 
-总体来说, 命令行参数能传递的信息太少, 而且很多配置也不支持通过命令行参数进行指定, 期待以后的版本进行增强。
+总体来说, 命令行参数能传递的信息非常少, 不灵活, 而且大部分参数还不支持命令行进行指定, 期待以后的版本会有增强。
 
 更多信息请参考本文末尾的链接。
 
@@ -137,7 +140,7 @@ Linux和MacOSX系统下的用法基本上相同, 除了文件路径写法不一�
 
 ### 3. 安装NodeJS
 
-我们需要先在本地安装 NodeJS。
+我们需要在本地先安装 NodeJS。
 
 NodeJS的中文网站是: <http://nodejs.cn/>, 简介如下:
 
@@ -147,14 +150,14 @@ NodeJS的中文网站是: <http://nodejs.cn/>, 简介如下:
 
 下载地址: <http://nodejs.cn/download/>
 
-NodeJS下载界面如下所示:
+NodeJS的下载界面如下:
 
 ![](02_nodejs_download.jpg)
 
 
-建议下载最新版本,如 NodeJS v8.1.3+ 等。
+建议下载最新版本,如 NodeJS v10.14 等。
 
-安装到默认目录,完成后查看版本号: `node -v`
+下载完成后, 安装到默认目录, 查看版本号的命令是: `node -v`
 
 示例:
 
@@ -166,9 +169,9 @@ npm -v
 5.0.3
 ```
 
-NodeJS安装完成后, 自动安装了node环境, 以及 npm 等工具。
+NodeJS安装完成后, 会自动配置node环境, 以及 npm 等工具。
 
-其中, node 是一个 REPL 环境, 在其中可以执行各种JS脚本, 当然, 也可以直接执行JS文件, 示例如下。
+其中, node 是一个 REPL 环境, 在其中可以执行各种JS脚本, 当然, 也可以直接指定需要执行的JS文件, 示例如下。
 
 ```
 C:\Users\Administrator>node
@@ -179,24 +182,34 @@ C:\Users\Administrator>node
 undefined
 > .exit
 
-C:\Users\Administrator>
 ```
 
-和Chrome的开发者工具-Console控制台很像, 因为都基于V8引擎。
+和Chrome浏览器中的-开发者控制台(Console)很像, 因为都基于V8引擎。
 
 npm 全称是 node package manage, 即NodeJS的软件包管理工具.
 
-如果某些安装包被墙,则可以配置代理, 或者使用淘宝的npm注册中心:
+如果某些安装包被墙, 则可以先安装淘宝的 cnpm 工具, 其使用方式和npm基本上完全一致。
+
+全局安装 cnpm:
 
 ```
-npm config set registry "https://registry.npm.taobao.org" 
+npm install -g cnpm --registry=https://registry.npm.taobao.org
+```
+
+安装完成后, 使用命令 `cnpm -v` 查看版本:
+
+```
+C:\Users\Administrator>cnpm -v
+cnpm@6.0.0 
+......省略部分
+registry=https://registry.npm.taobao.org
 ```
 
 
 ### 4. 安装依赖
 
 
-#### 配置 cnpm 
+#### 安装 cnpm 
 
 因为墙的原因, 用淘宝的 cnpm 来安装会更方便, cnpm 自动使用淘宝提供的镜像源。
 
@@ -204,31 +217,50 @@ npm config set registry "https://registry.npm.taobao.org" 
 npm install -g cnpm --registry=https://registry.npm.taobao.org
 ```
 
+此处和第三步介绍的一致。
 
-#### cnpm 安装 puppeteer
 
-puppeteer, 音[,pʌpɪ'tɪr]; 类似: 帕皮提尔; 意思是 操纵,傀儡师;
+#### 安装puppeteer
+
+> puppeteer, 音[,pʌpɪ'tɪr]; 类似: 帕皮提尔; 意思是 `操纵,傀儡师`;
+
+Puppeteer是一个上层API, 封装了几乎所有可用的操作, 内置了Chrome, 使用起来非常方便。
 
  
-在工作目录下, 创建 puppeteer demo 项目, 初始化, 并安装依赖:
+在工作目录下, 创建 puppeteer的demo项目, 初始化, 并安装依赖:
 
-Puppeteer是一个上层API, 封装了几乎所有可用的操作, 内置Chrome, 使用非常方便。
-
+windows命令行下切换盘符:
 
 ```
-mkdir -p puppeteerdemo
+C:\Users\Administrator>e:
+E:\>
+```
+
+然后创建目录, 当然也可以通过鼠标创建。
+
+```
+mkdir puppeteerdemo
+```
+
+接着执行项目初始化
+
+```
 cd puppeteerdemo
-npm init -y
+cnpm init -y
 cnpm i puppeteer
 ```
 
-如果还不行, 可能需要使用代理,请自行搜索。
+这里, `cnpm i` 中的 `i`, 等价于 `install`, 算是简写。
+
+安装过程中,大约需要下载100多MB的文件, 请耐心等待。
+
+如果出错, 可能需要使用代理, 请到社区咨询或者搜索相关错误信息。
 
 
 ### 5. 使用puppeteer截屏
 
 
-创建 demo-screenshot.js 文件:
+创建一个 `demo-screenshot.js` 文件:
 
 
 ```
