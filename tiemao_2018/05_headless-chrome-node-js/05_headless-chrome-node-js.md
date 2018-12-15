@@ -177,9 +177,11 @@ NodeJS安装完成后, 会自动配置node环境, 以及 npm 等工具。
 C:\Users\Administrator>node
 > Math.pow(2, 8)
 256
+
 > console.log(':'+new Date().getTime())
 :1517903686795
 undefined
+
 > .exit
 
 ```
@@ -246,11 +248,19 @@ mkdir puppeteerdemo
 
 ```
 cd puppeteerdemo
+
 cnpm init -y
-cnpm i puppeteer
+```
+
+然后安装`puppeteer`依赖:
+
+```
+cnpm i puppeteer  --save
 ```
 
 这里, `cnpm i` 中的 `i`, 等价于 `install`, 算是简写。
+
+其中 `--save` 的意思,则是指定将依赖信息写入到 `package.json` 文件中;
 
 安装过程中,大约需要下载100多MB的文件, 请耐心等待。
 
@@ -258,6 +268,8 @@ cnpm i puppeteer
 
 
 ### 5. 使用puppeteer截屏
+
+> 相关的文件在这个目录可以找到:  <https://github.com/cncounter/translation/tree/master/tiemao_2018/05_headless-chrome-node-js/>
 
 
 创建一个 `demo-screenshot.js` 文件:
@@ -283,19 +295,20 @@ const puppeteer = require('puppeteer');
 ```
 
 
-
-然后在命令行执行以下命令:
+然后在命令行中使用node启动:
 
 ```
 node demo-screenshot.js
 ```
 
-稍等片刻, 即可在相对路径下查看到截屏保存的文件 cncounter_home.png。
+稍等片刻, 即可在相对路径中, 看到保存的截屏图片, `cncounter_home.png`。
+
+当然, 在Windows下,将这种命令保存为 `.cmd` 文件, 就可以鼠标双击打开了。 例如先新建文本文件 `XXXX.txt`, 编辑内容, 再另存为, 或者修改文件后缀都可以。
 
 
-### 6. 使用puppeteer 打印PDF
+### 6. 使用puppeteer打印PDF
 
-创建 demo-pdf.js 文件:
+创建一个 `demo-printpdf.js` 文件:
 
 ```
 // 加载依赖库
@@ -330,7 +343,7 @@ const puppeteer = require('puppeteer');
               left   : '10px',
           }
       };
-  // 先设置模拟 screen 媒介样式
+  // 可以设置媒介样式为 screen, 默认则是打印机'print' 
   await page.emulateMedia('screen');
   // 打印PDF
   await page.pdf(pdf_option);
@@ -341,30 +354,56 @@ const puppeteer = require('puppeteer');
 
 ```
 
-然后在命令行执行:
+然后在命令行中使用node启动:
 
 ```
-node demo-pdf.js
+node demo-printpdf.js
 ```
 
-稍等片刻, 执行完成后, 即可在指定的路径下看到保存的文件 cncounter_home.pdf
-
-
+稍等片刻, 执行完成后, 即可在指定路径下看到 `cncounter_home.pdf` 文件, 打开试试?
 
 更多puppeteer相关的API和配置项请参考: <https://github.com/GoogleChrome/puppeteer/blob/master/docs/api.md>
 
 
-#### 6.2 Linux 中文乱码问题:
+#### 6.2 解决乱码问题
 
-请参考: <http://182.92.149.152/python/article_96.html>
+要将HTML中的文字展示出来, 系统需要安装有相应的字体文件, 否则, 系统只能展示为问号 "?" 啦。
+
+
+Linux 中文乱码问题, 请参考: <http://182.92.149.152/python/article_96.html>
+
+首先将Windows下对应的字体文件, 复制到Linux的某个目录中, 然后才能安装。
+
+
+```
+# 进入字体存放目录
+cd /usr/share/fonts/windows
+
+mkfontscale
+
+mkfontdir
+
+fc-cache -fv
+
+source /etc/profile
+
+```
 
 如果是 CentOS7.2/7.3的依赖库问题, 请参考: <https://segmentfault.com/a/1190000011382062>
 
+比如执行:
+
+```
+sudo yum -y install pango.x86_64 libXcomposite.x86_64 libXcursor.x86_64 libXdamage.x86_64 libXext.x86_64 libXi.x86_64 libXtst.x86_64 cups-libs.x86_64 libXScrnSaver.x86_64 libXrandr.x86_64 GConf2.x86_64 alsa-lib.x86_64 atk.x86_64 gtk3.x86_64
+```
+
+```
+sudo yum -y update nss
+```
 
 
 
-
-### 7. 使用 http 服务
+### 7. 使用简单的http服务
 
 NodeJS 通过 http/https 模块来提供web服务。
 
@@ -417,7 +456,7 @@ npm install express-handlebars --save
 
 ```
 
-其中 `--save` 的意思,是同时将依赖信息写入 package.json;
+其中 `--save` 的意思,则是指定将依赖信息写入到 `package.json` 文件中;
 
 
 
@@ -923,6 +962,8 @@ Chrome 的 headless 模式可用于自动化测试，尽管有一些不完善的
 1. [casperjs官网](http://casperjs.org/)
 
 1. [Puppeteer API](https://developers.google.com/web/tools/puppeteer/)
+
+1. [puppeteer相关的API和配置项](https://github.com/GoogleChrome/puppeteer/blob/master/docs/api.md)
 
 1. [MDN: async function 简介](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function)
 
