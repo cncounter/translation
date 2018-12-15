@@ -445,21 +445,20 @@ node demo-server.js
 如果要打断命令行程序, 按 `CTRL+C` 组合键即可。
 
 
-### 7.2 使用express 框架
+### 7.2 使用express框架
 
 安装 express 框架:
 
 ```
-cd pdfprint
+cnpm install express --save
 
-npm install express --save
-
-npm install express-handlebars --save
+cnpm install express-handlebars --save
 
 ```
 
 其中 `--save` 选项,指定将依赖信息写入到 `package.json` 文件中;
 
+此处安装 `express-handlebars` 是因为后面的小节中会使用到。
 
 
 创建 `demo-express.js` 文件:
@@ -499,17 +498,24 @@ server.listen(http_port, function(err){
 node demo-express.js
 ```
 
-启用调试模式:
+然后可以访问地址: <http://localhost:80/?authorName=tiemao>
+
+修改一下附带的参数, 看看结果有什么不同。
+
+我们还可以设置调试模式:
+
+
 ```
 set DEBUG=express*
 node demo-express.js
-
 ```
 
-参考: <https://blog.risingstack.com/your-first-node-js-http-server/>
+继续访问地址: <http://localhost:80/?authorName=tiemao>, 可以看到控制台输出了很多带颜色的日志信息。
+
+参考 Node Hero - Your First Node.js HTTP Server: <https://blog.risingstack.com/your-first-node-js-http-server/>
 
 
-#### 7.3. 用 http 服务来打印PDF
+#### 7.3. 集成http服务与PDF打印
 
 
 创建 printpdf.js 文件/模块:
