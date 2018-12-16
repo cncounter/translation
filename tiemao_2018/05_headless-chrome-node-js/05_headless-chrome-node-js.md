@@ -4,7 +4,9 @@
 
 `Headless` 模式是指没有图形界面(GUI)的程序。
 
-本文先介绍需要使用到的相关技术, 然后再演示如何如何使用 HeadLess-Chrome；比如通过命令行调用， 以及通过NodeJS来调用HeadLess-Chrome。 至于C++的API调用方式, 请参考官网文档。
+本文先介绍需要使用到的相关技术, 然后再演示如何如何使用 HeadLess-Chrome；比如通过命令行调用， 以及通过NodeJS来调用HeadLess-Chrome。 
+
+至于C++的API调用方式, 请参考官网文档。 Python语言的示例项目: <https://github.com/gslin/twitter2facebook>
 
 使用HeadLess模式-Chrome 的好处是: 
 
