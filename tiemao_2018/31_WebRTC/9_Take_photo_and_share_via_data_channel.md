@@ -290,7 +290,7 @@ A complete version of this step is in the **step-06** folder.
 
 
 
-原文链接: <https://codelabs.developers.google.com/codelabs/webrtc-web/#7>
+原文链接: <https://codelabs.developers.google.com/codelabs/webrtc-web/#8>
 
 翻译人员: 铁锚 - <https://blog.csdn.net/renfufei>
 
