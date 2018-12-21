@@ -6,7 +6,7 @@
 >
 >  ---- By : [Brendan Eich](http://hacks.mozilla.org/2012/03/video-mobile-and-the-open-web/), inventor of JavaScript
 
-> JavaScript创始人[Brendan Eich](http://hacks.mozilla.org/2012/03/video-mobile-and-the-open-web/)认为: WebRTC是自由开放网络中的先锋战士!
+> JavaScript之父 [Brendan Eich](http://hacks.mozilla.org/2012/03/video-mobile-and-the-open-web/) 表态: WebRTC在开放和不受限网络中, 是一个远大的新技术前沿!
 
 ## Real-time communication without plugins
 
