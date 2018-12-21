@@ -31,5 +31,9 @@ CNCounter translation - 2018年目录
 1. [**WebRTC基础实践 - 4. 获取摄像头的视频流**](31_WebRTC/4_Stream_video_from_your_webcam.md)
 1. [**WebRTC基础实践 - 5.通过RTCPeerConnection传输流媒体视频**](31_WebRTC/5_Stream_video_with_RTCPeerConnection.md)
 1. [**WebRTC基础实践 - 6. 通过RTCDataChannel传输数据**](31_WebRTC/6_Use_RTCDataChannel_to_exchange_data.md)
+1. [**WebRTC基础实践 - 7. 配置信令服务**](31_WebRTC/7_Set_up_signaling_service.md)
+1. [**WebRTC基础实践 - 8. 集成对等通信和信令服务**](31_WebRTC/8_Combine_peer_connection_and_signaling.md)
+1. [**WebRTC基础实践 - 9. 拍照并传给对方**](31_WebRTC/9_Take_photo_and_share_via_data_channel.md)
+1. [**WebRTC基础实践 - 10. 总结**](31_WebRTC/10_Congratulations.md)
 43. [**CSS高级技巧:自动省略左侧文本**](43_css-ellipsis-left/43_css-ellipsis-left.md)
 
