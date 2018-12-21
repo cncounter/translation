@@ -16,7 +16,7 @@ The CSS `text-overflow: ellipsis` feature is great but is essentially meant to e
 
 Let me show you a trick for ellipsis at the begging of the string!
 
-下面介绍一个小技巧, 让省略号出现在文本左侧!
+下面介绍一个小技巧, 让自动省略出现在左边!
 
 ###The CSS
 
