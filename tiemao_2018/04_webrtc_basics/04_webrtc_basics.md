@@ -10,11 +10,11 @@
 
 ## Real-time communication without plugins
 
-## 无需插件, 在浏览器中视频聊天
+## 无需插件, 在浏览器中视频通话
 
 Imagine a world where your phone, TV and computer could all communicate on a common platform. Imagine it was easy to add video chat and peer-to-peer data sharing to your web application. That's the vision of WebRTC.
 
-想象一下, 手机, 电脑, 电视可以通过平台进行实时的聊天和通信。通过Web应用, 即可远程视频聊天, 传输文件以和数据. 没有监控,不用担心泄密, 蓝天将会变得多么美好! 这就是WebRTC的目标和未来。
+想象一下, 手机, 电脑, 电视可以通过平台进行实时的聊天和通信。通过Web应用, 即可远程视频通话, 传输文件以和数据. 没有监控,不用担心泄密, 蓝天将会变得多么美好! 这就是WebRTC的目标和未来。
 
 Want to try it out? WebRTC is available now in Google Chrome, Opera and Firefox. A good place to start is the simple video chat application at [apprtc.appspot.com](https://apprtc.appspot.com/):
 
@@ -27,7 +27,7 @@ Want to try it out? WebRTC is available now in Google Chrome, Opera and Firefox.
 
 1. 使用新浏览器访问 <https://apprtc.appspot.com/>
 2. 如果有弹框/要求webcam摄像头授权,允许即可
-3. 页面底部显示聊天室URL, 在另一台电脑, 或者新标签页中打开, 确定参与(Join)视频聊天即可。
+3. 页面底部显示聊天室URL, 在另一台电脑, 或者新标签页中打开, 确定参与(Join)视频通话即可。
 
 There is a walkthrough of this application.
 
