@@ -62,7 +62,7 @@ In **index.html** replace the single video element with two video elements and t
 
 One video element will display the stream from `getUserMedia()`and the other will show the same video streamed via RTCPeerconnection. (In a real world application, one video element would display the local stream and the other the remote stream.)
 
-第一个 video 元素(`id="localVideo"`)用于展示通过 `getUserMedia()` 获取到的本地视频流, 第二个 video 元素(`id="remoteVideo"`)则通过RTCPeerconnection, 接收并显示同样的视频。在实际应用中, 页面中一般都有两个 video 元素:  一个用来展示本地视频, 另一个用来播放远程传输过来的视频( 可以参考微信视频聊天界面, 其中有一大一小,两个视频展示窗口 )。
+第一个 video 元素(`id="localVideo"`)用于展示通过 `getUserMedia()` 获取到的本地视频流, 第二个 video 元素(`id="remoteVideo"`)则通过RTCPeerconnection, 接收并显示同样的视频。在实际应用中, 页面中一般都有两个 video 元素:  一个用来展示本地视频, 另一个用来播放远程传输过来的视频( 可以参考微信视频通话界面, 其中有一大一小,两个视频展示窗口 )。
 
 ## Add the adapter.js shim
 
@@ -185,7 +185,7 @@ Setting up a call between WebRTC peers involves three tasks:
 
 Imagine that Alice and Bob want to use RTCPeerConnection to set up a video chat.
 
-假设 Alice 和 Bob 想通过 RTCPeerConnection 进行视频聊天。
+假设 Alice 和 Bob 想通过 RTCPeerConnection 进行视频通话。
 
 First up, Alice and Bob exchange network information. The expression 'finding candidates' refers to the process of finding network interfaces and ports using the [ICE](http://en.wikipedia.org/wiki/Interactive_Connectivity_Establishment) framework.
 
@@ -421,7 +421,7 @@ A complete version of this step is in the **step-2** folder.
 
 - 本节涉及到很多知识点! 关于 RTCPeerConnection 的更多信息, 请参考 [webrtc.org/start](https://webrtc.org/start). 里面有一些对 JavaScript 框架的建议, 如果想使用WebRTC, 也想深入了解API细节的话。
 - 参考 [adapter.js GitHub repo](https://github.com/webrtc/adapter) 仓库, 获取更多信息。
-- 如果想要体验当下最先进的WebRTC视频聊天应用, 可以看看 AppRTC, 这也是WebRTC项目的标准实现:  app访问地址: <https://appr.tc/>, 代码地址 <https://github.com/webrtc/apprtc>。 创建通话的时间可以控制在 500 ms以内。
+- 如果想要体验当下最先进的WebRTC视频通话应用, 可以看看 AppRTC, 这也是WebRTC项目的标准实现:  app访问地址: <https://appr.tc/>, 代码地址 <https://github.com/webrtc/apprtc>。 创建通话的时间可以控制在 500 ms以内。
 
 ## Best practice
 
