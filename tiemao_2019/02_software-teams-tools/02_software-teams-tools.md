@@ -5,20 +5,20 @@
 The effect of poorly performing web applications echoes across various parts of the business. The more breakage there is, the more busy support teams get. There is less traction, and product teams are puzzled about user retention. Engineers are inundated with bug-fixes, leaving no time for feature development. Business stakeholders receive no insight into performance improvements. Engineering managers cannot clearly justify the efforts being taken. The list goes on. 
 
 
-业绩不佳的web应用程序的影响与不同地区的业务。破损越多,越忙碌的支持团队.有更少的牵引,产品团队对用户保留困惑。工程师正在淹没了许多,却没有时间进行功能开发.业务涉众接受不了解性能改进。工程经理不能清楚地证明了努力。的例子不胜枚举。
+Web应用系统的性能不行, 会影响公司的各种业务。系统漏洞越多, 支持团队就会疲于应付. 监控信息太少, 产品团队就会对用户行为困惑不已。开发人员面对改不完的BUG, 就没有时间进行新功能的开发. 业务方接受不了系统性能稀趴烂。项目经理也没有证据表明团队做了哪些努力。这样的例子数不胜数。
 
 What are the available options to keep this risk at bay? The answer lies in providing your development team with the right kind of tools they can use to deal with common problems that arise from each stage in software development.
 
-有哪些可用的选项来限制这种风险吗?答案就在为您的开发团队提供合适的工具可以用来处理从每个阶段在软件开发中出现的常见问题。
+有哪些措施可以控制这些风险呢? 答案就是, 在软件开发的不同阶段, 针对可能出现的各种问题, 为开发团队引入适当的工具来处理。
 
 ## Planning tools
 
-## 计划工具
+## 任务排期工具
 
 The beginning of most software products/projects lies in planning and tracking development. Planning tools are used from the time a project begins until the time a project is under active development. Planning a project is the start of every iteration in cyclical project management followed in most places today. It is justified as helping herd cats, or prevent yak shaving. The most common tool is [Jira](https://www.atlassian.com/software/jira). There are a few alternatives too which engineering teams pick up based on their needs. 
 
 
-大多数软件产品/项目的开始在于发展计划和跟踪。计划工具用于从一个项目开始之前,项目正在积极开发中.规划一个项目是每次迭代的开始在周期性项目管理在今天的大多数地方。它是合理的帮助群猫,或者防止牦牛剃须.最常见的工具(Jira)(https://www.atlassian.com/software/jira)。也有几个备选方案,工程团队根据他们的需求。
+大多数软件产品/项目从一开始就伴随着开发计划的发展变更。计划工具跨越整个项目开发周期, 从项目开始前, 到开发完成. 在大多数时候, 每个项目迭代都需要进行规划。可以是合理的硬核计划, 也可以是为了防止无限期拖延. 最常用的工具是[Jira](https://www.atlassian.com/software/jira)。 当然也有其他的备选方案, 开发团队可以根据需要自己选择。
 
 ## Version control tools
 
@@ -26,7 +26,12 @@ The beginning of most software products/projects lies in planning and tracking d
 
 Gone are the days when the person holding the rubber duck is the only one who can make changes to the source code. Version control is the first tool that every engineering team decides upon before anything else. Even among small teams or hobby projects with a single programmer, version control is employed. Engineering teams have a clear choice among [Git](https://git-scm.com/), Mercurial, and [Apache Subversion](https://subversion.apache.org/)provided by several vendors. There is immense maturity in the realm of version control, as a result of which teams know exactly what they’re getting into.
 
-的日子一去不复返了橡皮鸭是唯一的人谁可以更改源代码.版本控制是第一个工具,每一个工程团队之前决定一切。即使在小团队或者爱好的项目用一个程序员,版本控制工作.工程团队中有一个明确的选择(Git)(https://git-scm.com/),Mercurial,(Apache Subversion)(https://subversion.apache.org/)提供的几个供应商.有巨大的成熟度在版本控制领域,由于团队知道他们进入。
+只准单人进行代码修改的日子一去不复返, 随着软件工程的规模越来越庞大, 版本控制工具是每个团队都必须先确定好的。优先级高于一切! 即便是小团队或者单人开发, 版本控制都是必须的选择, 有句话说: “无版本、不编程！” 
+
+比较成熟的工具包括 Git, SVN, Mercurial 等等。 当然现在Git是最优先的选择。
+
+> 关于Git, 请参考: <https://blog.csdn.net/renfufei/article/details/41647875>
+
 
 ## Testing tools
 
@@ -39,7 +44,7 @@ Nearly every engineering team in the world that does web application development
 
 ## CI/CD tools
 
-## CI / CD工具
+## CI/CD工具
 
 With a change in the way software was developed, it was only natural for the methods of software release to evolve as well. To facilitate faster release cycles, where teams released software more frequently, the CI/CD pipeline was conceived. This stands for the combined practices of continuous integration and continuous delivery. [Jenkins](https://jenkins.io/), [Travis](https://travis-ci.org/), and [CircleCI](https://circleci.com/) are among the most popular tools used by engineering teams to have functional CI/CD pipelines.
 
