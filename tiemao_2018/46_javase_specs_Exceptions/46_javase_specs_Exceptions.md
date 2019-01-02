@@ -4,15 +4,15 @@
 
 When a program violates the semantic constraints of the Java programming language, the Java Virtual Machine signals this error to the program as an *exception*.
 
-当一个程序违反了Java编程语言的语义约束,Java虚拟机信号这个错误异常程序作为一个* *。
+如果程序违反了Java语言的语义约束, 则JVM会以异常(`exception`)的形式, 将这个错误通知程序。
 
 An example of such a violation is an attempt to index outside the bounds of an array. Some programming languages and their implementations react to such errors by peremptorily terminating the program; other programming languages allow an implementation to react in an arbitrary or unpredictable way. Neither of these approaches is compatible with the design goals of the Java SE platform: to provide portability and robustness.
 
-这类违反的一个例子是一个试图索引数组的边界之外.一些编程语言及其实现对此类错误蛮横地终止程序;其他编程语言允许一个实现在任意或反应 不可预知的方式。这些方法都不是兼容Java SE平台的设计目标:提供可移植性和鲁棒性。
+例如, 试图访问数组边界之外的索引(`index`). 某些语言及其实现，如果出现此类错误, 则会直接暴力终止程序; 另一些语言, 则允许以任意的/不确定的方式来响应。 这些处理方法都不符合Java SE平台的设计目标: 可移植性和鲁棒性。
 
 Instead, the Java programming language specifies that an exception will be thrown when semantic constraints are violated and will cause a non-local transfer of control from the point where the exception occurred to a point that can be specified by the programmer.
 
-而不是,Java编程语言指定会抛出一个异常,当语义约束违反,将导致非本地转移控制的例外 想到这一点由程序员可以指定。
+Java语言呢, 规定了这样会抛出一个异常,当语义约束违反,将导致非本地转移控制的例外 想到这一点由程序员可以指定。
 
 An exception is said to be *thrown* from the point where it occurred and is said to be *caught* at the point to which control is transferred.
 
