@@ -107,6 +107,7 @@ $ pwd
 ###  &
 ###  export
 ###  $PATH
+###  lsof
 
 
 
