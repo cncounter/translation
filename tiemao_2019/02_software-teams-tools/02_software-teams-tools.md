@@ -1,19 +1,27 @@
 # Tools For Software Engineering Teams
 
-# 开发团队必备工具集锦
+# Web开发团队必备的软件
 
 The effect of poorly performing web applications echoes across various parts of the business. The more breakage there is, the more busy support teams get. There is less traction, and product teams are puzzled about user retention. Engineers are inundated with bug-fixes, leaving no time for feature development. Business stakeholders receive no insight into performance improvements. Engineering managers cannot clearly justify the efforts being taken. The list goes on. 
 
 
-Web应用系统的性能不行, 会影响公司的各种业务。系统漏洞越多, 支持团队就会疲于应付. 监控信息太少, 产品团队就会对用户行为困惑不已。开发人员面对改不完的BUG, 就没有时间进行新功能的开发. 业务方接受不了系统性能稀趴烂。项目经理也没有证据表明团队做了哪些努力。这样的例子数不胜数。
+如果Web应用的性能不行, 就会影响到相关的各种业务。
+如果系统漏洞很多, 运营团队就会疲于奔命. 
+如果缺少各种监控数据, 产品经理可能会对用户行为困惑。
+
+开发永远改不完的BUG, 自然没时间去进行性能优化. 
+业务方更受不了响应迟钝的系统。
+但项目经理却没有证据来表明整个团队做了哪些努力。
+
+类似这样的情形经常会出现。
 
 What are the available options to keep this risk at bay? The answer lies in providing your development team with the right kind of tools they can use to deal with common problems that arise from each stage in software development.
 
-有哪些措施可以控制这些风险呢? 答案就是, 在软件开发的不同阶段, 针对可能出现的各种问题, 为开发团队引入适当的工具来处理。
+怎样控制和防范这些风险呢? 这就需要开发团队, 在不同的项目阶段, 引入合适的工具。
 
 ## Planning tools
 
-## 任务排期工具
+## 任务计划排期
 
 The beginning of most software products/projects lies in planning and tracking development. Planning tools are used from the time a project begins until the time a project is under active development. Planning a project is the start of every iteration in cyclical project management followed in most places today. It is justified as helping herd cats, or prevent yak shaving. The most common tool is [Jira](https://www.atlassian.com/software/jira). There are a few alternatives too which engineering teams pick up based on their needs. 
 
