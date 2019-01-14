@@ -8,11 +8,20 @@
 
 Java applications run on the JVM, but what do you know about JVM technology? This article, the first in a series, is an overview of how a classic Java virtual machine works such as pros and cons of Java's write-once, run-anywhere engine, garbage collection basics, and a sampling of common GC algorithms and compiler optimizations. Later articles will turn to JVM performance optimization, including newer JVM designs to support the performance and scalability of today's highly concurrent Java applications.
 
-在JVM上运行的Java应用程序,但你知道JVM技术?第一次在一系列,本文概述的一个典型的Java虚拟机是如何工作的利弊等Java写一次,可以到处引擎,垃圾收集基础知识,和共同GC的采样算法和编译器优化.以后的文章将向JVM性能优化,包括新的JVM设计支持当今高度并发Java应用程序的性能和可伸缩性。
+Java程序在JVM上运行, 但你真的了解JVM么? 
+
+本文对Java虚拟机进行整体的讲解, 以及这些技术对应的优缺点. 其中包括: 
+
+- 支持 “一次编写,到处运行” 的JVM引擎;
+- 垃圾收集的基础知识;
+- 通用GC算法;
+- 编译器优化.
+
+后面的小节, 将介绍如何进行JVM性能调优, 以及新版本JVM的特性, 对高并发,扩容支持等方面的提升。
 
 If you are a programmer then you have undoubtedly experienced that special feeling when a light goes on in your thought process, when those neurons finally make a connection, and you open your previous thought pattern to a new perspective. I personally love that feeling of learning something new. I've had those moments many times in my work with Java virtual machine (JVM) technologies, particularly to do with garbage collection and JVM performance optimization. In this new JavaWorld series I hope to share some of that illumination with you. Hopefully you'll be as excited to learn about JVM performance as I am to write about it!
 
-如果你是一个程序员,那么你无疑经历了特殊的感情当光在你的思维过程,当这些神经元最终建立连接,你打开你的以前的思维模式来一个新的视角。我喜欢学习新的东西的感觉.我有这些时刻多次在我的工作与Java虚拟机(JVM)技术,尤其是与垃圾收集和JVM性能优化.在这个新的JavaWorld系列我希望和你分享一些照明。希望你会和我一样兴奋地了解JVM性能写它!
+作为一个程序员,那么你无疑经历了特殊的感情当光在你的思维过程,当这些神经元最终建立连接,你打开你的以前的思维模式来一个新的视角。我喜欢学习新的东西的感觉.我有这些时刻多次在我的工作与Java虚拟机(JVM)技术,尤其是与垃圾收集和JVM性能优化.在这个新的JavaWorld系列我希望和你分享一些照明。希望你会和我一样兴奋地了解JVM性能写它!
 
 This series is written for any Java developer interested in learning more about the underlying layers of the JVM and what a JVM really does. At a high level, I will discuss garbage collection and the never-ending quest to free memory safely and quickly without impacting running applications. You'll learn about the key components of a JVM: garbage collection and GC algorithms, compiler flavors, and some common optimizations. I will also discuss why Java benchmarking is so difficult and offer tips to consider when measuring performance. Finally, I'll touch on some of the newer innovations in JVM and GC technology, including highlights from Azul's Zing JVM, IBM JVM, and Oracle's Garbage First (G1) garbage collector.
 
@@ -233,9 +242,9 @@ I've also briefly discussed memory allocation and garbage collection, and how bo
 
 > 伊娃Andreasson一直参与Java虚拟机技术,SOA、云计算、和其他企业中间件解决方案为10年.她加入了创业吸引虚拟解决方案(后来收购BEA Systems)在2001年作为一个开发者JRockit JVM.Eva has been转交garbage for heuristics收藏two恶劣和算法。政府pioneered Deterministic Garbage productized later which became收藏通过JRockit面向.Eva与太阳和英特尔技术有密切合作的伙伴关系,以及各种集成项目JRockit产品组、WebLogic、一致性(2008年发布Oracle收购).2009年,伊娃加入(Azul Systems)(http://www.azulsystems.com/)为Java平台产品经理为新活力。最近,她改变了立场,开始加入了团队Cloudera(http://www.cloudera.com/company/)高级产品经理Cloudera Hadoop的分布,在那里她从事高度可伸缩的激动人心的未来和创新路径,分布式数据处理框架。
 
-[Learn more about this topic]()["]()
+#### Learn more about this topic
 
-(了解更多关于这个主题)()()(”)
+#### 更多学习资料
 
 - [To Collect or Not To Collect.](https://www.usenix.org/conference/java-vm-02/collect-or-not-collect-machine-learning-memory-management)" (Eva Andreasson, Frank Hoffmann, Olof Lindholm; JVM-02: Proceedings of the Java Virtual Machine Research and Technology Symposium, 2002): Presents the authors' research into an adaptive decision process that determines which garbage collector technique should be invoked and how it should be applied."
 - [Reinforcement Learning for a dynamic JVM](http://www.nada.kth.se/utbildning/grukth/exjobb/rapportlistor/2002/Rapporter02/andreasson_eva_02041.pdf)" (Eva Andreasson, KTH Royal Institute of Technology, 2002): Master thesis report on how to use reinforcement learning to better optimize the decision of when to start concurrent garbage collection for a dynamic workload."
@@ -244,15 +253,6 @@ I've also briefly discussed memory allocation and garbage collection, and how bo
 - [Zing](http://www.azulsystems.com/products/zing/virtual-machine): A fully Java compliant highly scalable software platform that includes an application-aware resource controller and zero overhead, always-on production visibility and diagnostic tools. Zing incorporates industry-leading, proven technology to allow TBs memory heap sizes per instance with sustained throughput under dynamic load and extreme memory allocation rates common for Java applications."
 - [G1: Java's Garbage First Garbage Collector](http://www.drdobbs.com/jvm/g1-javas-garbage-first-garbage-collector/219401061)" (Eric Bruno, Dr. Dobb's, August 2009): A good overview of GC and introduction to the G1 garbage collector.
 - [*Oracle JRockit: The Definitive Guide*](http://www.packtpub.com/oracle-jrockit-definitive-guide/book?tag=) (Marcus Hirt, Marcus Lagergren; Packt Publishing, 2010): A complete guide to the JRockit JVM.
-
-- (收集收集。)(https://www.usenix).org/conference/java-vm-02/collect-or-not-collect-machine-learning-memory-management)”sodra cell纸浆厂弗兰克•霍夫曼(Eva Olof Lindholm;JVM-02:程序的Java虚拟机研究和技术研讨会,2002):介绍了作者的研究自适应决策过程,确定哪些方法应该调用垃圾收集器和如何应用。”
-- (强化学习动态JVM](http://www.nada.kth.se/utbildning/grukth/exjobb/rapportlistor/2002/Rapporter02/andreasson_eva_02041.pdf)”sodra cell纸浆厂k(Eva皇家理工学院,2002):硕士论文报告如何使用强化学习来更好的优化决定何时开始并发垃圾收集动态负载。”
-- [确定性的垃圾收集:释放的力量与甲骨文Java实时JRockit](http://www.oracle.com/us/technologies/java/oracle JRockit -真正的时间——1517310.pdf)”(Oracle白皮书,2008年8月):了解更多的确定性JRockit实时垃圾收集算法。
-- (为什么Java使用JIT和编译成机器代码时更快?)(http://stackoverflow).com/questions/1878696/why-is-java-faster-when-using-a-jit-vs-compiling-to-machine-code)(Stackoverflow,2009年12月):一个线程讨论学习更多关于即时编译器技术。
-- [(http://www.azulsystems酋长国].com/products/zing/virtual-machine):一个完全兼容的Java高度可伸缩的软件平台,包括一个感知应用程序资源控制器和零开销,不间断生产可见性和诊断工具.industry-leading incorporates酋长国,成熟的技术,允许每个实例TBs内存堆大小与持续的吞吐量在动态加载和极端Java应用程序内存分配率普遍。”
-- (G1:Java垃圾收集器的垃圾)(http://www.drdobbs.com/jvm/g1-javas-garbage-first-garbage-collector/219401061)”(博士埃里克·布鲁诺.象,2009年8月):良好的GC的概述和介绍G1垃圾收集器。
-- [JRockit Oracle Definitive:* *](http://www.packtpub指南.com/oracle-jrockit-definitive-guide/book?tag=)(Marcus赫特,马库斯Lagergren;Packt出版,2010):一个完整的指南JRockit JVM。
-
 
 
 
