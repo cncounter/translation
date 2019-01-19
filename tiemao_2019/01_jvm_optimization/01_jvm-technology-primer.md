@@ -1,16 +1,16 @@
 # JVM performance optimization, Part 1: A JVM technology primer
 
-# JVM性能优化系列-(1):JVM入门简介
+# JVM性能优化系列-(1): JVM入门简介
 
 > Java performance for absolute beginners
 
-> 写给初学者的Java性能调优指南
+> 写给初学者的Java性能调优指南 - By: Eva Andreasson
 
 Java applications run on the JVM, but what do you know about JVM technology? This article, the first in a series, is an overview of how a classic Java virtual machine works such as pros and cons of Java's write-once, run-anywhere engine, garbage collection basics, and a sampling of common GC algorithms and compiler optimizations. Later articles will turn to JVM performance optimization, including newer JVM designs to support the performance and scalability of today's highly concurrent Java applications.
 
 Java程序在JVM上运行, 但你真的了解JVM么? 
 
-本文对Java虚拟机进行整体的讲解, 以及这些技术对应的优缺点. 其中包括: 
+本文对Java虚拟机进行整体的讲解, 以及这些技术对应的优缺点. 包括: 
 
 - 支持 “一次编写,到处运行” 的JVM引擎;
 - 垃圾收集的基础知识;
@@ -21,31 +21,32 @@ Java程序在JVM上运行, 但你真的了解JVM么?
 
 If you are a programmer then you have undoubtedly experienced that special feeling when a light goes on in your thought process, when those neurons finally make a connection, and you open your previous thought pattern to a new perspective. I personally love that feeling of learning something new. I've had those moments many times in my work with Java virtual machine (JVM) technologies, particularly to do with garbage collection and JVM performance optimization. In this new JavaWorld series I hope to share some of that illumination with you. Hopefully you'll be as excited to learn about JVM performance as I am to write about it!
 
-作为一个程序员,那么你无疑经历了特殊的感情当光在你的思维过程,当这些神经元最终建立连接,你打开你的以前的思维模式来一个新的视角。我喜欢学习新的东西的感觉.我有这些时刻多次在我的工作与Java虚拟机(JVM)技术,尤其是与垃圾收集和JVM性能优化.在这个新的JavaWorld系列我希望和你分享一些照明。希望你会和我一样兴奋地了解JVM性能写它!
+作为码农, 肯定会有些时刻灵光一闪，思维和知识体系就串联起来，获得许多认知，当然前提是你已经在这个行业积累了相当量的经验和素材。我喜欢学习新知识，享受学习的过程. 在工作中一直和JVM打交道，特别是天天面对GC问题、性能调优问题，在我脑海里有很多想要分享的有价值的Idea, 所以我会尽可能将这些东西写下来，也希望读者能有一些收获与灵感!
 
 This series is written for any Java developer interested in learning more about the underlying layers of the JVM and what a JVM really does. At a high level, I will discuss garbage collection and the never-ending quest to free memory safely and quickly without impacting running applications. You'll learn about the key components of a JVM: garbage collection and GC algorithms, compiler flavors, and some common optimizations. I will also discuss why Java benchmarking is so difficult and offer tips to consider when measuring performance. Finally, I'll touch on some of the newer innovations in JVM and GC technology, including highlights from Azul's Zing JVM, IBM JVM, and Oracle's Garbage First (G1) garbage collector.
 
-.在高级别上,我将讨论垃圾收集和释放内存的永无止境的追求安全、迅速而不影响正在运行的应用程序.您将了解JVM的关键组件:垃圾收集和GC算法,编译器的味道,和一些常见的优化.我还将讨论为什么Java基准测试是如此困难,并提供建议时要考虑测量性能.最后,我将涉及一些较新的JVM和GC技术的创新,包括了从Azul的活力JVM,IBM JVM,甲骨文的垃圾(G1)垃圾收集器。
+本系列文章主要面向的读者，是对JVM底层技术以及JVM工作原理感兴趣的Java开发人员。在较高的层次上，我们将探讨GC相关的问题, 以及如何在不影响程序正在运行的情况, 安全快速地释放内存，当然这是一个永无止境的领域。我会介绍JVM的关键组件: 垃圾收集, 以及GC算法、编译器风格，以及一些常见的优化。还将探讨为何对Java做基准测试是如此的困难，并提供在测量性能时需要考虑的技巧。最后，我将介绍JVM和GC中的一些新技术，包括Azul的Zing JVM、IBM JVM和Oracle的G1垃圾收集器。
 
 I hope you'll walk away from this series with a greater understanding of the factors that limit Java scalability today, as well as how those limitations force us to architect our Java deployments in a non-optimal way. Hopefully, you'll experience some *aha!* moments and be inspired to do something good for Java: stop accepting the limitations and work for change! If you're not already an open source contributor, perhaps this series will encourage you in that direction.
 
-我希望你能离开这个系列有一个更加清晰的认识因素限制Java今天可伸缩性,以及如何这些限制迫使我们建筑师Java部署好不.希望,你会经历一些*啊哈!*时刻和灵感为Java做些好事:停止接受工作的局限性和改变!如果你没有一个开源贡献者,也许这个系列会鼓励你那个方向。
+希望你在读完这个系列之后，会对限制Java可伸缩性的因素有一个清晰的认识，以及这些限制是如何迫使我们在设计架构时考虑一些非最优的解. 希望读者能获得一些思维灵感，通过Java将系统做得完美: 打破局限、拥抱发展! 如果你还不是开源贡献者, 也许读完这个系列会让你朝这个方向前进。
 
 ## JVM performance and the 'one for all' challenge
 
-## JVM性能和“我为人人”的挑战
+## JVM性能与“一次编写,到处运行”面临的挑战
 
 I have news for people who are stuck with the idea that the Java platform is inherently slow. The belief that the JVM is to blame for poor Java performance is decades old -- it started when Java was first being used for enterprise applications, and it's outdated! It *is* true that if you compare the results of running simple static and deterministic tasks on different development platforms, you will most likely see better execution using machine-optimized code over using any virtualized environment, including a JVM. But Java performance has taken major leaps forward over the past 10 years. Market demand and growth in the Java industry have resulted in a handful of garbage-collection algorithms and new compilation innovations, and plenty of heuristics and optimizations have emerged as JVM technology has progressed. I'll introduce some of them later in this series.
 
-我有消息要告诉人坚持认为Java平台本质上是缓慢的.相信JVM负责Java性能差是几十年的老,它始于首次被用于Java企业应用程序,这是过时的!* *是正确的,如果你比较的结果运行简单的静态和确定性的任务在不同的开发平台,你很可能会看到更好的执行使用machine-optimized代码在使用任何虚拟化环境,包括一个JVM.但是Java性能已经采取了重大飞跃过去10年.Java行业的市场需求和经济增长导致了少量的垃圾收集算法和新编译的创新,和大量的启发式和优化已成为JVM技术进展。我将介绍其中一些在后面的文章中。
+曾经很多人的观念是Java平台的性能不行, 但我们可以用数据来打脸, 因为JVM性能很弱是刚出来那几年的事了。
+确实，不管什么平台上，编译为静态机器码的程序, 性能总是会比基于虚拟机的要强一点, JVM也不例外。伴随着Java市场越做越大，GC算法和编译方面的创新,以及大量的启发式优化，让JVM技术飞速发展。我们将会在后面的文章进行介绍。
 
 The beauty of JVM technology is also its biggest challenge: nothing can be assumed with a "write once, run anywhere" application. Rather than optimizing for one use case, one application, and one specific user load, the JVM constantly tracks what is going on in a Java application and dynamically optimizes accordingly. This dynamic runtime leads to a dynamic problem set. Developers working on the JVM can't rely on static compilation and predictable allocation rates when designing innovations, at least not if we want performance in production environments!
 
-美丽的JVM技术也是它最大的挑战:没有任何可以认为“编写一次,随处运行”的应用程序.而不是优化为一个用例中,一个应用程序,和一个特定的用户负载,JVM不断跟踪在一个相应的Java应用程序和动态优化.这种动态运行时导致一组动态问题.开发人员在JVM上不能依靠静态编译和可预测的分配率在设计创新,至少如果我们想要表现在生产环境中!
+JVM技术的美好也是其最大的挑战: “一次编写,到处运行”的应用程序很难实现. JVM不是只为一个用例,一个应用, 和特定的用户并发进行优化, 而是不断跟踪一个Java应用程序并且进行动态优化. 这种动态运行时导致了一系列的动态问题. 在JVM上开发的程序，不能依靠静态编译, 也不能预测具体的内存分配率, 至少在生产环境下高并发场景中的性能并不一定如同我们事先的预测!
 
 > ## A career in JVM performance
 
-> ## 职业生涯的JVM的性能
+> ## JVM性能调优-老司机探险记
 
 > Early in my career I realized that garbage collection is hard to "solve," and I've been fascinated with JVMs and middleware technology ever since. My passion for JVMs started when I worked on the [JRockit](http://www.infoworld.com/d/developer-world/oracle-moving-merge-jrockit-hotspot-jvms-448) team, coding a novel approach to a self-learning, self-tuning garbage collection algorithm (see [Resources](https://www.javaworld.com/article/2078623/core-java/core-java-jvm-performance-optimization-part-1-a-jvm-technology-primer.html#resources)). That project, which turned into an experimental feature of JRockit and laid ground for the [Deterministic Garbage Collection](https://www.javaworld.com/article/2078623/core-java/core-java-jvm-performance-optimization-part-1-a-jvm-technology-primer.html#resources) algorithm, started my journey through JVM technology. I've worked for BEA Systems, partnered with Intel and Sun, and was briefly employed by Oracle following its acquisition of BEA Systems. I later joined the team at Azul Systems to manage the [Zing JVM](http://www.infoworld.com/d/developer-world/azul-systems-searches-managed-runtime-breakthroughs-228), and today I work for [Cloudera](http://www.javaworld.com/javaworld/jw-12-2012/121207-cloudera-lands-big-funding-for-big-data.html).
 
