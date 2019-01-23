@@ -4,13 +4,26 @@
 
 ## 6.1 Driver/Datasource Class Name
 
+## 6.1 Driver/Datasource 对应的类名
+
 The name of the class that implements `java.sql.Driver` in MySQL Connector/J is `com.mysql.cj.jdbc.Driver`.
+
+在MySQL的JDBC驱动,`Connector/J`中, 5.1版本对应的`java.sql.Driver`实现类是 `com.mysql.jdbc.Driver`, 当然, 到8.0版本底层实现改为 `com.mysql.cj.jdbc.Driver`, 通过 extends 实现兼容.
+
+> `com.mysql.jdbc.Driver extends com.mysql.cj.jdbc.Driver`
+
 
 ## 6.2 Connection URL Syntax
 
+## 6.2 连接地址的URL格式
+
 This section explains the syntax of the URLs for connecting to MySQL.
 
+本节主要介绍JDBC连接MySQL数据库的URL语法格式.
+
 This is the generic format of the connection URL:
+
+通用的connection URL格式如下:
 
 ```
 protocol//[hosts][/database][?properties]
@@ -18,65 +31,91 @@ protocol//[hosts][/database][?properties]
 
 The URL consists of the following parts:
 
+包含以下部分:
+
 > #### Important
+> #### 提示
 >
 > Any reserved characters for URLs (for example, /, :, @, (, ), [, ], &, #, =, ?, and space) that appear in any part of the connection URL must be percent encoded.
+>
+> 在连接URL的各部分中, 所有保留字符都必须进行百分号转码(percent encoded), 例如, `/`, `:`, `@`, `(`, `)`, `[`, `]`, `&`, `#`, `=`, `?`, 以及英文空格).
 
 ### `protocol`
 
 There are four possible protocols for a connection:
+
+MySQL-JDBC支持4种协议:
 
 - `jdbc:mysql:` is for ordinary and basic failover connections.
 - `jdbc:mysql:loadbalance:` is for configuring load balancing.
 - `jdbc:mysql:replication:` is for configuring a replication setup.
 - `mysqlx:` is for connections using the X Protocol.
 
+- `jdbc:mysql:` 是最基本连接方式
+- `jdbc:mysql:loadbalance:` 用于配置负载均衡.
+- `jdbc:mysql:replication:` 用于设置主从(replication).
+- `mysqlx:` 对应使用扩展协议(X Protocol)的连接.
+
 ### `hosts`
 
 Depending on the situation, the `hosts` part may consist simply of a host name, or it can be a complex structure consisting of various elements like multiple host names, port numbers, host-specific properties, and user credentials.
 
+根据具体情况确定, `hosts`部分可以是简单的主机名称; 也可能是包含多个元素的组合, 比如多个主机名端口号,特定属性的字符串,以及用户认证信息等。
+
 #### Single host:
 
+#### 单个服务器(host)的情况:
+
 - Single-host connections without adding host-specific properties:
+- 单服务器(Single-host), 且不指定特定属性(host-specific properties)的情况:
 
   - The `hosts` part is written in the format of `host:port`. This is an example of a simple single-host connection URL:
+  - `hosts`部分的格式为 `host:port`. 例如:
 
     ```
     jdbc:mysql://host1:33060/sakila
     ```
 
   - `host` can be an IPv4 or an IPv6 host name string, and in the latter case it must be put inside square brackets, for example “[1000:2000::abcd].” When `host` is not specified, the default value of `localhost` is used.
+  - `host` 可以是域名, IPv4地址; 或者IPv6地址（以方括号括起来,如 `[1000:2000::abcd]`之类.） 如果不指定 `host`, 则使用默认值 `localhost`.
 
   - `port` is a standard port number, i.e., an integer between `1` and `65535`. The default port number for an ordinary MySQL connection is `3306`, and it is `33060` for a connection using the X Protocol. If `port` is not specified, the corresponding default is used.
+  - `port` 部分就是一个TCP端口号, 取值范围从`1` 到 `65535`. 普通MySQL连接的端口号默认值为 `3306`, 如果使用X Protocol, 则默认值为`33060`. 如果不指定端口号, 则使用对应的默认值.
 ​
 
 - Single-host connections adding host-specific properties:
+- 单服务器(Single-host), 并指定特定属性(host-specific properties)的情况:
 
   - In this case, the host is defined as a succession of `key=value` pairs. Keys are used to identify the host, the port, as well as any host-specific properties. There are two alternate formats for specifying keys:
+  - 这种情况下, host部分由多个`key=value`对组成. Key部分指定host, port,以及特定属性. 支持两种格式:
 
     - The “address-equals” form:
+    - “address-equals”方式:
 
       ```
       address=(host=host_or_ip)(port=port)(key1=value1)(key2=value2)...(keyN=valueN)
       ```
 
       Here is a sample URL using the“address-equals” form :
+      “address-equals”示例:
 
       ```
       jdbc:mysql://address=(host=myhost)(port=1111)(key1=value1)/db
       ```
 
     - The “key-value” form:
+    - “key-value” 方式:
 
       ```
       (host=host,port=port,key1=value1,key2=value2,...,keyN=valueN)
       ```
 
-    Here is a sample URL using the “key-value” form :
+      Here is a sample URL using the “key-value” form :
+      “key-value” 示例:
 
-    ```
-    jdbc:mysql://(host=myhost,port=1111,key1=value1)/db
-    ```
+      ```
+      jdbc:mysql://(host=myhost,port=1111,key1=value1)/db
+      ```
 
       ​
 
