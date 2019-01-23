@@ -236,13 +236,20 @@ User credentials can be set outside of the connection URL—for example, as argu
 
 The default database or catalog to open. If the database is not specified, the connection is made with no default database. In this case, either call the `setCatalog()` method on the `Connection` instance, or specify table names using the database name (that is, `SELECT *dbname*.*tablename*.*colname* FROM dbname.tablename...`) in your SQL statements. Opening a connection without specifying the database to use is, in general, only useful when building tools that work with multiple databases, such as GUI database managers.
 
-Note
+指定默认打开的数据库(database)或目录(catalog)。
+如果不指定则没有默认数据库, 这时候, 需要先调用`Connection`对象的`setCatalog()`方法, 或者直接在SQL语句中指定数据库名称(如 `SELECT dbname.tablename.colname FROM dbname.tablename ...`)。 一般来说,只有需要操纵多个数据库的工具才会不指定默认数据库, 比如GUI界面的数据库管理程序。
 
-Always use the `Connection.setCatalog()` method to specify the desired database in JDBC applications, rather than the `USE *database*` statement.
+> #### Note
+> Always use the `Connection.setCatalog()` method to specify the desired database in JDBC applications, rather than the `USE *database*` statement.
+>
+> #### 注意:
+> 在JDBC程序中, 如果要切换数据库, 应该使用 `Connection.setCatalog()`; 而不是 `USE db_xxx` 语句。
 
 ### `properties`
 
-A succession of global properties applying to all hosts, preceded by `?` and written as `*key*=*value*` pairs separated by the symbol “`&.`”Here are some examples:
+A succession of global properties applying to all hosts, preceded by `?` and written as `*key*=*value*` pairs separated by the symbol “`&`”Here are some examples:
+
+应用到所有host的全局属性, 类似于Http的URL参数, 在英文问号 `?` 后面以 `key=value` 对的形式指定, 用 “`&`” 号(读音[`与号`])分隔:
 
 ```
 jdbc:mysql://(host=myhost1,port=1111),(host=myhost2,port=2222)/db?key1=value1&key2=value2&key3=value3
@@ -254,7 +261,19 @@ The following are true for the key-value pairs:
 - *key* is case-sensitive. Two keys differing in case only are considered conflicting, and it is uncertain which one will be used.
 - Any host-specific values specified with key-value pairs as explained in [Single host with host-specific properties](https://dev.mysql.com/doc/connector-j/8.0/en/connector-j-reference-jdbc-url-format.html#connector-j-url-single-host-with-props) and [Multiple hosts](https://dev.mysql.com/doc/connector-j/8.0/en/connector-j-reference-jdbc-url-format.html#connector-j-url-multiple-hosts) above override the global values set here.
 
+下面是一些说明:
+
+- `key`和`value`都是字符串。在Connector/J内部会进行相应的类型转换和验证。
+- `key`区分大小写。如果两个`key`的大小写不同会被认为是冲突, 具体哪个生效并不确定。
+- 针对特定服务器的属性(包括单主机和多主机, 参考上文), 会覆盖此处介绍的全局属性值。
+
+
+
+
+
 See [Section 6.3, “Configuration Properties”]() for details about the configuration properties.
+
+更多配置属性,请参考下一节。
 
 
 
