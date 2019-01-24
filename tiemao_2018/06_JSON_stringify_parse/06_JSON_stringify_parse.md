@@ -1,6 +1,6 @@
 # JSON.parse()与JSON.stringify()简介
 
-- [reviver, 转换,更新,重生]
+- [`reviver`, 转换,更新,重生]
 
 
 ## JSON.parse()简介
@@ -178,6 +178,26 @@ The `JSON.stringify()` method converts a JavaScript value to a JSON string, opti
 JSON.stringify(value[, replacer[, space]])
 ```
 
+#### 示例
+
+如果想要简单的换行输出和2个空格缩进, 可以使用：
+
+```
+// '  ' 表示2个空格
+JSON.stringify(valueObject, null, '  ');
+// 2表示2个空格
+JSON.stringify(valueObject, null, 2);
+```
+
+如果想要简单的拷贝到剪贴板, 可以在Chrome控制台使用`copy()`方法, 注意`copy()`方法是不能在代码中直接使用的, 只准在开发者工具里面使用, 避免各种安全问题。
+
+```
+// 拷贝到剪贴板
+copy( JSON.stringify(valueObject, null, 2) );
+// 如果增加一个中间变量, 则可读性更好。
+var tempStr = JSON.stringify(valueObject, null, 2);
+copy(tempStr);
+```
 
 
 #### Parameters
