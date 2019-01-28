@@ -49,7 +49,7 @@ chrome --headless --repl http://renfufei.com
 --window-size=800,600
 
 
---print-to-pdf=C:/online.yiboshi.pdf
+--print-to-pdf=C:/www.cncounter.pdf
 
 --dump-dom
 

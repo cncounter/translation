@@ -100,7 +100,7 @@ const puppeteer = require('puppeteer');
   // 打开新标签页
   const page = await browser.newPage();
   // 打开页面
-  await page.goto('http://exam.yiboshi.com/manage/login');
+  await page.goto('http://www.cncounter.com');
   // 截屏
   await page.screenshot({path: 'exam_login.png'});
   // 打印PDF
