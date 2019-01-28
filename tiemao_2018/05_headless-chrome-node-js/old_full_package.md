@@ -400,14 +400,13 @@ const puppeteer = require('puppeteer');
   // 打开新标签页
   const page = await browser.newPage();
   // 打开页面
-  await page.goto('http://online.yiboshi.com/online/ysdk/login.html');
-  // await page.goto('http://www.cncounter.com');
+  await page.goto('http://www.cncounter.com');
   // 截屏
-  // await page.screenshot({path: 'online_ysdk_login.png'});
+  // await page.screenshot({path: 'cncounter_login.png'});
   //
   var pdf_option = {
           // 保存路径, 可以为绝对路径
-          path: 'online_ysdk_login.pdf',        
+          path: 'cncounter_login.pdf',        
           // 缩放倍数, 默认 1
           //scale: 1,                        
           // 页眉模板
@@ -758,7 +757,7 @@ node express-pdf.js
 
 在浏览器输入地址,加入参数访问即可查看效果:
 
-<http://localhost/pdf.json?callback=http%3A%2F%2Fwww.cncounter.com%2Ftest%2Fcounter.jsp%3Fformat%3Djson&url=http%3A%2F%2Fonline.yiboshi.com%2Fonline%2Fysdk%2Flogin.html&path=E%3A%2Fonline.yiboshi.com_login.pdf>
+<http://localhost/pdf.json?callback=http%3A%2F%2Fwww.cncounter.com%2Ftest%2Fcounter.jsp%3Fformat%3Djson&url=http%3A%2F%2Fcncounter.com%2Flogin.html&path=E%3A%2Fcncounter_login.pdf>
 
 
 ### 11. 截屏并保存
@@ -940,7 +939,7 @@ node express-screenshot.js
 
 在浏览器输入地址,加入参数访问即可查看效果:
 
-<http://localhost/screenshot.json?callback=http%3A%2F%2Fwww.cncounter.com%2Ftest%2Fcounter.jsp%3Fformat%3Djson&url=https%3A%2F%2Fraw.githubusercontent.com%2Fcncounter%2Fcncounter-web%2Fmaster%2Fsrc%2Fmain%2Fwebapp%2FWEB-INF%2Fweb.xml&path=E%3A%2Fonline.yiboshi.com_login.png>
+<http://localhost/screenshot.json?callback=http%3A%2F%2Fwww.cncounter.com%2Ftest%2Fcounter.jsp%3Fformat%3Djson&url=https%3A%2F%2Fraw.githubusercontent.com%2Fcncounter%2Fcncounter-web%2Fmaster%2Fsrc%2Fmain%2Fwebapp%2FWEB-INF%2Fweb.xml&path=E%3A%2Fcncounter_login.png>
 
 
 
