@@ -7,7 +7,7 @@ const puppeteer = require('puppeteer');
   // 打开新标签页
   const page = await browser.newPage();
   // 打开页面
-  await page.goto('http://online.yiboshi.com/online/ysdk/login.html');
+  await page.goto('http://www.cncounter.com/favorite/list/0.php');
   // await page.goto('http://www.cncounter.com');
   // 截屏
   // await page.screenshot({path: 'online_ysdk_login.png'});
