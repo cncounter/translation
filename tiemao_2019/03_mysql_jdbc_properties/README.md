@@ -6,10 +6,15 @@
 
 
 
+
+- [6.1 Driver/Datasource Class Name](./6.1_Driver_Datasource_Class_Name.md)
+- [6.2 Connection URL Syntax](./6.2_Connection_URL_Syntax.md)
+- [6.3 Configuration Properties](./6.3_Configuration_Properties.md)
+
+
+
 ```
--- 6.1 Driver/Datasource Class Name
--- 6.2 Connection URL Syntax
-6.3 Configuration Properties
+
 6.4 JDBC API Implementation Notes
 6.5 Java, JDBC, and MySQL Types
 6.6 Using Character Sets and Unicode
