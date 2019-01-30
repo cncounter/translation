@@ -369,3 +369,8 @@ The implementation of all these examples and code snippets **can be found in** [
 
 Last modified: November 6, 2018
 
+
+
+<http://www.technicalkeeda.com/mongodb-tutorial/mongodb-document-count-for-matched-query-using-spring-data>
+
+
