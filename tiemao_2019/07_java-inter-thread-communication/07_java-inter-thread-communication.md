@@ -4,19 +4,19 @@
 
 Though normally each child thread just need to complete its own task, sometimes we may want multiple threads to work together to fulfil a task, which involves the inter-thread communication.
 
-虽然通常情况下,每个子线程只需要完成自己的任务,有时我们可能需要多个线程一起工作来完成一个任务,其中包括inter-thread通信。
+大部分情况下, 每个子线程都只需要执行自身的任务即可。 但在某些情况下, 可能需要多个线程一起来完成某个任务, 这时候可能会涉及到线程之间的通信(inter-thread communication)。
 
 The methods and classes covered in this article are: `thread.join()`, `object.wait()`, `object.notify()`, `CountdownLatch`, `CyclicBarrier`, `FutureTask`, `Callable`, etc.
 
-本文介绍的方法和类有:`thread.join()`,`object.wait()`,`object.notify()`,`CountdownLatch`,`CyclicBarrier`,`FutureTask`,`Callable`等等。
+本文介绍的主要内容包括: `thread.join()`, `object.wait()`, `object.notify()`, `CountdownLatch`, `CyclicBarrier`, `FutureTask`, 以及 `Callable`。
 
 [Here](https://github.com/wingjay/HelloJava/blob/master/multi-thread/src/ForArticle.java) is the code covered in this article
 
-(这里)(https://github.com/wingjay/HelloJava/blob/master/multi-thread/src/ForArticle.java)是本文介绍的代码
+所有的代码可以参考: <https://github.com/wingjay/HelloJava/blob/master/multi-thread/src/ForArticle.java>
 
 I'll use several examples to explain how to implement inter-thread communication in Java.
 
-我将用几个例子来说明如何用Java实现inter-thread沟通。
+下文通过示例来讲解如何实现Java线程间的通信。
 
 > - How to make two threads execute in sequence?
 > - How to make two threads intersect orderly in a specified manner?
@@ -24,44 +24,21 @@ I'll use several examples to explain how to implement inter-thread communication
 > - Three athletes prepare themselves apart, and then they start to run at the same time after each of them is ready.
 > - After the child thread completes a task, it returns the result to the main thread.
 
-> ——如何让两个线程按顺序执行?
-> ——如何让两个线程相交以指定的方式有序?
-> -有四个线程:A,B,C,D(D才被执行,B和C都执行完毕,和A,B和C是同步执行。)。
-> ——三个运动员做好准备,然后他们开始同时运行后每个人都准备好了。
-> ——子线程完成后一个任务,它将处理的结果返回给主线程。
+> - 如何让两个线程顺序执行?
+> - 如何让两个线程交替执行?
+> - 假设有四个线程: A,B,C,D, 如何实现ABC同步执行, 全部完成后才执行D线程。
+> - 运动员短跑赛跑,怎样在所有人都准备好之后, 再按下发令枪, 让他们同时起跑。
+> - 子线程完成任务之后, 如何将处理结果返回给主线程。
 
 ## How To Make Two Threads Execute In Sequence?
 
-## 如何让两个线程执行顺序?
-
-Suppose there are two threads: thread A and thread B. Both of the two threads can print three numbers (1-3) in sequence. Let's take a look at the code:
-
-假设有两个线程:线程和线程b两个线程可以打印三个数字(1 - 3)序列。让我们来看看代码:
-
-```java
-private static void demo1() {
-    Thread A = new Thread(new Runnable() {
-        @Override
-        public void run() {
-            printNumber("A");
-        }
-    });
-    Thread B = new Thread(new Runnable() {
-        @Override
-        public void run() {
-            printNumber("B");
-        }
-    });
-    A.start();
-    B.start();
-}
-```
+## 如何让两个线程顺序执行?
 
 
 
 The implementation for `printNumber(String)` is as follows, which is used to print the three numbers of 1, 2 and 3 in sequence:
 
-的实现`printNumber(String)`如下,用于打印的三个数字1、2和3的序列:
+先看看基本方法 `printNumber(String)` 的实现, 用于按顺序打印出三个数字 1、2、3:
 
 ```java
 private static void printNumber(String threadName) {
@@ -77,11 +54,35 @@ private static void printNumber(String threadName) {
 }
 ```
 
+Suppose there are two threads: thread A and thread B. Both of the two threads can print three numbers (1-3) in sequence. Let's take a look at the code:
+
+假设有两个线程: 线程A和线程B. 先来看看代码:
+
+```java
+private static void demo1() {
+    Thread A = new Thread(new Runnable() {
+        @Override
+        public void run() {
+            printNumber("A");
+        }
+    });
+    Thread B = new Thread(new Runnable() {
+        @Override
+        public void run() {
+            printNumber("B");
+        }
+    });
+    B.start();
+    A.start();
+}
+```
+
+每个线程都会执行按顺序打印3个数字的方法。
 
 
 And the result we get is:
 
-和我们得到的结果是:
+执行的结果为:
 
 ```bash
 B print: 1
@@ -96,11 +97,11 @@ A print: 3
 
 You can see that A and B print numbers at the same time.
 
-你可以看到,A和B同时打印数字。
+可以看到,A和B会同时执行。
 
 So, what if we want B to start printing after A has printed over? We can use the `thread.join()` method, and the code is as follows:
 
-所以,如果我们想要的东西后开始印刷印刷了吗?我们可以使用`thread.join()`方法,代码如下:
+如果需求发生变化, 需要线程A打印完成之后，线程B才能执行打印。 那么我们可以使用 `thread.join()` 方法,代码如下:
 
 ```java
 private static void demo2() {
@@ -115,7 +116,7 @@ private static void demo2() {
         public void run() {
             System.out.println("B starts waiting for A");
             try {
-                A.join();
+                A.join(); // 等待线程A执行完成之后与当前线程“会师”
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -131,7 +132,7 @@ private static void demo2() {
 
 Now the result obtained is:
 
-现在的结果是:
+执行结果应该是这样:
 
 ```bash
 B starts waiting for A
@@ -148,7 +149,7 @@ B print: 3
 
 So we can see that the `A.join()` method will make B wait until A finishes printing.
 
-所以我们可以看到`A.join()`方法将使B等到完成印刷。
+可以看到， B线程之后调用了 `A.join()` 方法, 等待A先完成打印任务。
 
 ## How To Make Two Threads Intersect Orderly In a Specified Manner?
 
