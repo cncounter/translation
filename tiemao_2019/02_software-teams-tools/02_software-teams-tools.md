@@ -1,11 +1,11 @@
 # Tools For Software Engineering Teams
 
-# Web开发团队必备软件
+# Web开发团队常用软件介绍
 
 The effect of poorly performing web applications echoes across various parts of the business. The more breakage there is, the more busy support teams get. There is less traction, and product teams are puzzled about user retention. Engineers are inundated with bug-fixes, leaving no time for feature development. Business stakeholders receive no insight into performance improvements. Engineering managers cannot clearly justify the efforts being taken. The list goes on. 
 
 
-如果Web应用的性能不行, 就会影响到相关的各种业务。
+如果Web应用的性能不行, 就会影响到各种业务的开展。
 如果系统漏洞很多, 运营团队就会疲于奔命. 
 如果缺少各种监控数据, 产品经理可能会对用户行为困惑。
 
