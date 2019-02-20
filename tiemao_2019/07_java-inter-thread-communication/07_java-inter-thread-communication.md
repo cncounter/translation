@@ -12,7 +12,7 @@ The methods and classes covered in this article are: `thread.join()`, `object.wa
 
 [Here](https://github.com/wingjay/HelloJava/blob/master/multi-thread/src/ForArticle.java) is the code covered in this article
 
-所有的代码可以参考: <https://github.com/wingjay/HelloJava/blob/master/multi-thread/src/ForArticle.java>
+本文中的全部代码可参考: <https://github.com/wingjay/HelloJava/blob/master/multi-thread/src/ForArticle.java>
 
 I'll use several examples to explain how to implement inter-thread communication in Java.
 
@@ -32,7 +32,7 @@ I'll use several examples to explain how to implement inter-thread communication
 
 ## How To Make Two Threads Execute In Sequence?
 
-## 如何让两个线程顺序执行?
+## 让两个线程按顺序执行
 
 
 
@@ -56,9 +56,12 @@ private static void printNumber(String threadName) {
 
 Suppose there are two threads: thread A and thread B. Both of the two threads can print three numbers (1-3) in sequence. Let's take a look at the code:
 
-假设有两个线程: 线程A和线程B. 先来看看代码:
+假设有两个线程: 线程A和线程B. 代码如下:
 
 ```java
+/**
+ * A、B线程启动顺序是随机的, 可多次执行来验证
+ */
 private static void demo1() {
     Thread A = new Thread(new Runnable() {
         @Override
@@ -72,25 +75,26 @@ private static void demo1() {
             printNumber("B");
         }
     });
-    B.start();
+
     A.start();
+    B.start();
 }
 ```
 
-每个线程都会执行按顺序打印3个数字的方法。
+每个线程都会执行`printNumber()`方法。
 
 
 And the result we get is:
 
-执行的结果为:
+AB的执行顺序随机, 结果可能是这样:
 
 ```bash
 B print: 1
 A print: 1
 B print: 2
 A print: 2
-B print: 3
 A print: 3
+B print: 3
 ```
 
 
@@ -104,27 +108,33 @@ So, what if we want B to start printing after A has printed over? We can use the
 如果需求发生变化, 需要线程A打印完成之后，线程B才能执行打印。 那么我们可以使用 `thread.join()` 方法,代码如下:
 
 ```java
+/**
+ * 打印顺序: A 1, A 2, A 3, B 1, B 2, B 3
+ */
 private static void demo2() {
-    Thread A = new Thread(new Runnable() {
+    final Thread A = new Thread(new Runnable() {
         @Override
         public void run() {
             printNumber("A");
         }
     });
+
     Thread B = new Thread(new Runnable() {
         @Override
         public void run() {
-            System.out.println("B starts waiting for A");
+            System.out.println("B线程需要等待A线程执行完成");
             try {
-                A.join(); // 等待线程A执行完成之后与当前线程“会师”
+                A.join(); // 等待线程A执行完成之后与当前线程“汇合”
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+
             printNumber("B");
         }
     });
-    B.start();
+
     A.start();
+    B.start();
 }
 ```
 
@@ -132,14 +142,13 @@ private static void demo2() {
 
 Now the result obtained is:
 
-执行结果应该是这样:
+执行结果为:
 
 ```bash
-B starts waiting for A
+B线程需要等待A线程执行完成
 A print: 1
 A print: 2
 A print: 3
- 
 B print: 1
 B print: 2
 B print: 3
@@ -149,23 +158,24 @@ B print: 3
 
 So we can see that the `A.join()` method will make B wait until A finishes printing.
 
-可以看到， B线程之后调用了 `A.join()` 方法, 等待A先完成打印任务。
+可以看到， B线程的方法中调用了 `A.join()` 方法, 等待A先完成打印任务。
+
 
 ## How To Make Two Threads Intersect Orderly In a Specified Manner?
 
-## 如何让两个线程相交以指定的方式有序?
+## 让两个线程以指定的顺序交互执行
 
 So what if now we want B to start printing 1, 2, 3 just after A has printed 1, and then A continues printing 2, 3? Obviously, we need more fine-grained locks to take the control of the order of execution.
 
-如果现在我们希望B开始印刷1,2,3就后打印1,然后继续打印2、3?显然,我们需要更多的细粒度锁的控制执行的顺序。
+假设需要先让A打印1,、然后B打印1,2,3，再让A打印2、3。 那么, 我们需要使用细粒度的锁来控制执行顺序。
 
 Here, we can take the advantage of the `object.wait()` and `object.notify()` methods. The code is as below:
 
-在这里,我们可以采取的优势`object.wait()`和`object.notify()`方法。下面的代码是:
+使用Java内置的 `object.wait()`和`object.notify()`方法。代码如下:
 
 ```java
 /**
- * A 1, B 1, B 2, B 3, A 2, A 3
+ * 打印顺序: A 1, B 1, B 2, B 3, A 2, A 3
  */
 private static void demo3() {
     Object lock = new Object();
@@ -175,6 +185,7 @@ private static void demo3() {
             synchronized (lock) {
                 System.out.println("A 1");
                 try {
+		    System.out.println("A waiting…");
                     lock.wait();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
@@ -196,6 +207,12 @@ private static void demo3() {
         }
     });
     A.start();
+    //
+    try {
+        TimeUnit.MILLISECONDS.sleep(50L);
+    } catch (InterruptedException e) {
+        e.printStackTrace();
+    }
     B.start();
 }
 ```
@@ -204,7 +221,7 @@ private static void demo3() {
 
 The results are as follows:
 
-结果如下:
+执行结果如下:
 
 ```bash
 A 1
@@ -221,7 +238,7 @@ A 3
 
 That's what we want.
 
-这就是我们想要的。
+这就实现了需要的效果。
 
 > **What happens?**
 >
@@ -231,75 +248,96 @@ That's what we want.
 > 4. B prints 1, 2, 3 after getting the lock, and then calls the `lock.notify()` method to wake up A which is waiting;
 > 5. A continues printing the remaining 2, 3 after it wakes up.
 
-> * *发生了什么? * *
+> **代码说明**
 >
-> 1。首先我们创建一个对象锁由A和B共享:`lock = new Object();`> 2。当一个被锁,它打印1首先,然后调用`lock.wait()`方法将进入等待状态,然后手锁的控制权;
-> 3。B不会执行,直到调用`lock.wait()`释放控制方法和B锁;
-> 4。B打印1、2、3在得到锁,然后调用`lock.notify()`方法醒来,它是等待;
-> 5。继续打印剩余的2、3后醒来。
+> 1. 首先创建一个对象锁: `lock = new Object();`
+> 2. A先获取锁, 得到后先打印1, 然后调用 `lock.wait()` 进入等待状态, 同时移交锁的控制权;
+> 3. B暂时不会执行打印, 需要等A调用`lock.wait()`释放锁之后，B 获得锁才开始执行打印;
+> 4. B打印出1、2、3, 然后调用`lock.notify()`方法来唤醒等待的A线程;
+> 5. A被唤醒之后, 继续打印剩下的2、3。
 
 I add the log to the above code to make it easier to understand.
 
-我将记录添加到上面的代码,让它更容易理解。
+下面加上一些日志, 来帮助我们理解这段代码。
 
 ```java
+    /**
+ * 打印顺序: A 1, B 1, B 2, B 3, A 2, A 3
+ */
 private static void demo3() {
-    Object lock = new Object();
+    final Object lock = new Object();
+
     Thread A = new Thread(new Runnable() {
         @Override
         public void run() {
-            System.out.println("INFO: A is waiting for the lock");
+            System.out.println("====提示: A 等待锁...");
             synchronized (lock) {
-                System.out.println("INFO: A got the lock");
+                System.out.println("====提示: A 得到了锁 lock");
                 System.out.println("A 1");
                 try {
-                    System.out.println("INFO: A is ready to enter the wait state, giving up control of the lock");
+                    System.out.println("====提示: A 调用lock.wait()放弃锁的控制权,并等待...");
                     lock.wait();
+                    System.out.println("====提示: A在lock.wait()之后,再次获得锁的控制权,HAHAHA");
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                System.out.println("INFO: B wakes up A, and A regains the lock");
+                System.out.println("====提示: A线程被唤醒, A 重新获得锁 lock");
                 System.out.println("A 2");
                 System.out.println("A 3");
             }
+
         }
     });
+
     Thread B = new Thread(new Runnable() {
         @Override
         public void run() {
-            System.out.println("INFO: B is waiting for the lock");
+            System.out.println("====提示: B 等待锁...");
             synchronized (lock) {
-                System.out.println("INFO: B got the lock");
+                System.out.println("====提示: B 得到了锁 lock");
                 System.out.println("B 1");
                 System.out.println("B 2");
                 System.out.println("B 3");
-                System.out.println("INFO: B ends printing, and calling the notify method");
+
+                System.out.println("====提示: B 打印完毕，调用 lock.notify() 方法");
                 lock.notify();
+                System.out.println("====提示: B 调用 lock.notify()完成,退出synchronized块");
             }
         }
     });
+
     A.start();
+    //
+    try {
+        TimeUnit.MILLISECONDS.sleep(50L);
+    } catch (InterruptedException e) {
+        e.printStackTrace();
+    }
+    //
     B.start();
+}
 ```
 
 
 
 The result is as follows:
 
-结果如下:
+执行结果如下:
 
 ```bash
-INFO: A is waiting for the lock
-INFO: A got the lock
+====提示: A 等待锁...
+====提示: A 得到了锁 lock
 A 1
-INFO: A is ready to enter the wait state, giving up control of the lock
-INFO: B is waiting for the lock
-INFO: B got the lock
+====提示: A 调用lock.wait()放弃锁的控制权,并等待...
+====提示: B 等待锁...
+====提示: B 得到了锁 lock
 B 1
 B 2
 B 3
-INFO: B ends printing, and calling the notify method
-INFO: B wakes up A, and A regains the lock
+====提示: B 打印完毕，调用 lock.notify() 方法
+====提示: B 调用 lock.notify()完成,退出synchronized块
+====提示: A在lock.wait()之后,再次获得锁的控制权,HAHAHA
+====提示: A线程被唤醒, A 重新获得锁 lock
 A 2
 A 3
 ```
@@ -308,7 +346,7 @@ A 3
 
 ## D Is Executed After A, B and C All Have Finished Executing Synchronously
 
-## B和C D后执行,所有已完成执行同步
+## 要求ABC全部执行完成后才能执行D
 
 The method `thread.join()` introduced earlier allows one thread to continue executing after waiting for another thread to finish running. But if we join A, B, and C orderly into the D thread, it will make A, B, and C execute in turn, while we want them three to run synchronously.
 
