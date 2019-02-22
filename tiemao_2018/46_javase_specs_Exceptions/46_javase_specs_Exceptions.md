@@ -1,38 +1,44 @@
 ## Chapter 11. Exceptions
 
-## JavaSE规范 - 第十一章 异常(Exceptions)
+## Java语言规范 - 第十一章 异常(Exceptions)
+
+> Java Language Specification, 简称JLS, 翻译为: Java语言规范
 
 When a program violates the semantic constraints of the Java programming language, the Java Virtual Machine signals this error to the program as an *exception*.
 
-如果程序违反了Java语言的语义约束, 则JVM会以异常(`exception`)的形式, 将这个错误通知程序。
+如果Java程序违反语义约束(semantic constraints), JVM就会以 `exception`(异常)的形式, 通知程序这个错误。
 
 An example of such a violation is an attempt to index outside the bounds of an array. Some programming languages and their implementations react to such errors by peremptorily terminating the program; other programming languages allow an implementation to react in an arbitrary or unpredictable way. Neither of these approaches is compatible with the design goals of the Java SE platform: to provide portability and robustness.
 
-例如, 试图访问数组边界之外的索引(`index`). 某些语言及其实现，如果出现此类错误, 则会直接暴力终止程序; 另一些语言, 则允许以任意的/不确定的方式来响应。 这些处理方法都不符合Java SE平台的设计目标: 可移植性和鲁棒性。
+例如, 试图访问数组边界之外的索引(`index`)位置。在某些编程语言及其实现中，如果出现此类错误, 则会直接暴力终止程序; 另一些语言, 则没有明确的规定, 允许其实现以任意的/不确定的方式来处理。 这些处理方式都不符合Java SE平台的设计目标: 可移植性和鲁棒性(robustness)。
 
 Instead, the Java programming language specifies that an exception will be thrown when semantic constraints are violated and will cause a non-local transfer of control from the point where the exception occurred to a point that can be specified by the programmer.
 
-Java语言呢, 规定了这样会抛出一个异常,当语义约束违反,将导致非本地转移控制的例外 想到这一点由程序员可以指定。
+Java语言规范明确规定： 如果程序执行时违反语义约束(即碰到了不符合预期的情况),就会抛出异常, 并且将程序执行流程跳转到代码中预设的点。
+
 
 An exception is said to be *thrown* from the point where it occurred and is said to be *caught* at the point to which control is transferred.
 
-例外:_________________________________________________________________ be thrown * * from the阶段发展到了2000 and is it caught * *,said评项目at the control is移交。
+发生错误的那个点, 就叫做抛出(thrown,throw)异常的点; 跳转到预设的那个点, 叫做捕获(caught,catch)异常的点。
+
 
 Programs can also throw exceptions explicitly, using `throw` statements ([§14.18](https://docs.oracle.com/javase/specs/jls/se8/html/jls-14.html#jls-14.18)).
 
-程序也可以显式地抛出异常,使用`throw`语句((§14.18)(https://docs.oracle.com/javase/specs/jls/se8/html/jls html # jls - - 14. - 14.18))。
+代码中可以使用`throw`语句, 直接(explicitly)抛出异常, 参考 <https://docs.oracle.com/javase/specs/jls/se8/html/jls-14.html#jls-14.18>。
 
 Explicit use of `throw` statements provides an alternative to the old-fashioned style of handling error conditions by returning funny values, such as the integer value `-1` where a negative value would not normally be expected. Experience shows that too often such funny values are ignored or not checked for by callers, leading to programs that are not robust, exhibit undesirable behavior, or both.
 
-显式的使用`throw`声明提供了一个替代的老式的风格处理错误条件通过返回有趣的价值观,比如整数值`-1`负面的价值通常不会会在哪里.经验表明,经常这样有趣的值被忽略或不检查调用者,导致程序并不强劲,表现出不良行为,或两者兼而有之。
+直接使用`throw`语句来抛出异常, 可以替代过去那种返回(return)某个特殊值的方式, 比如在不返回负数的情况下, 返回`-1`。 最佳实践表明, 如果这种特殊的返回值没有被调用者处理的话, 经常导致程序出错, 或者出现某些诡异的行为。
 
 Every exception is represented by an instance of the class `Throwable` or one of its subclasses ([§11.1](https://docs.oracle.com/javase/specs/jls/se8/html/jls-11.html#jls-11.1)). Such an object can be used to carry information from the point at which an exception occurs to the handler that catches it. Handlers are established by `catch` clauses of `try` statements ([§14.20](https://docs.oracle.com/javase/specs/jls/se8/html/jls-14.html#jls-14.20)).
 
-每一个例外是由类的实例表示`Throwable`或者它的一个子类((§11.1)(https://docs.oracle.com/javase/specs/jls/se8/html/jls html # jls - - 11. - 11.)).这样一个对象可以被用来携带信息的异常发生时的处理程序捕获它。处理程序是建立了`catch`条款的`try`语句((§14.20)(https://docs.oracle.com/javase/specs/jls/se8/html/jls html # jls - - 14. - 14.20))。
+每个异常对象都是 `Throwable`类或者其子类的一个实例。Exception对象可以持有错误发生时的方法调用栈, 让捕获该异常的处理程序获取到。 异常处理器是通过 `try`语句后的`catch`子句创建的, 参考: <https://docs.oracle.com/javase/specs/jls/se8/html/jls-14.html#jls-14.20>。
 
 During the process of throwing an exception, the Java Virtual Machine abruptly completes, one by one, any expressions, statements, method and constructor invocations, initializers, and field initialization expressions that have begun but not completed execution in the current thread. This process continues until a handler is found that indicates that it handles that particular exception by naming the class of the exception or a superclass of the class of the exception ([§11.2](https://docs.oracle.com/javase/specs/jls/se8/html/jls-11.html#jls-11.2)). If no such handler is found, then the exception may be handled by one of a hierarchy of uncaught exception handlers ([§11.3](https://docs.oracle.com/javase/specs/jls/se8/html/jls-11.html#jls-11.3)) - thus every effort is made to avoid letting an exception go unhandled.
 
-过程中抛出异常,突然Java虚拟机完成后,一个接一个,任何表情,声明,方法和构造函数调用,初始值设定项,和字段初始化表达式,已经开始但不是在当前线程执行完成.这一过程持续进行直到处理程序发现表明它处理特定的异常被命名的类异常或异常的类的父类([§11.2](https://docs.oracle.com/javase/specs/jls/se8/html/jls html # jls - - 11. - 11.2))。如果没有找到这样的处理程序,那么异常可能是由一个未捕获的异常处理程序的层次结构([§11.3](https://docs.oracle.com/javase/specs/jls/se8/html/jls html # jls - - 11. - 11.3)),因此会尽力避免让走了未处理的异常。
+在异常抛出的过程中, JVM会依次放弃当前线程尚未执行的所有代码,一个方法一个方法地往外跳, 直到碰到对应的异常处理器为止。 包块各种表达式、语句、方法调用、构造函数、初始化语句块、属性域初始化赋值等等。
+
+这一过程持续进行直到处理程序发现表明它处理特定的异常被命名的类异常或异常的类的父类([§11.2](https://docs.oracle.com/javase/specs/jls/se8/html/jls html # jls - - 11. - 11.2))。如果没有找到这样的处理程序,那么异常可能是由一个未捕获的异常处理程序的层次结构([§11.3](https://docs.oracle.com/javase/specs/jls/se8/html/jls html # jls - - 11. - 11.3)),因此会尽力避免让走了未处理的异常。
 
 The exception mechanism of the Java SE platform is integrated with its synchronization model ([§17.1](https://docs.oracle.com/javase/specs/jls/se8/html/jls-17.html#jls-17.1)), so that monitors are unlocked as `synchronized` statements ([§14.19](https://docs.oracle.com/javase/specs/jls/se8/html/jls-14.html#jls-14.19)) and invocations of `synchronized` methods ([§8.4.3.6](https://docs.oracle.com/javase/specs/jls/se8/html/jls-8.html#jls-8.4.3.6), [§15.12](https://docs.oracle.com/javase/specs/jls/se8/html/jls-15.html#jls-15.12)) complete abruptly.
 
@@ -566,7 +572,6 @@ Test "not" didn't throw an exception
 [thrower("test") done]
 Test "test" threw a class TestException
     with message: Test message
-
 ```
 
 
