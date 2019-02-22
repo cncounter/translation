@@ -82,7 +82,7 @@ HTTPS比起HTTP有很多好处, 当然, 成本会高一些, 比如证书的价�
 
 ### 部署SSL证书
 
-如果使用阿里云, 可以下载格式的证书, 支持 Nginx, Apache, IIS, Tomcat等等。
+如果使用阿里云, 可以下载各种格式的证书, 支持 Nginx, Apache, IIS, Tomcat等等。
 
 以 Nginx 为例, 参考: <http://www.nginx.cn/doc/optional/ssl.html>
 
@@ -113,7 +113,7 @@ remoteIpHeader="x-forwarded-for" proxiesHeader="x-forwarded-by"
 protocolHeader="x-forwarded-proto" />
 ```
 
-指定 `protocolHeader="x-forwarded-proto"`, 会将HTTP请求头中 `x-forwarded-proto` 的值设置为scheme, 这样 `request.getScheme()`, `request.getRequestURL()` 方法就能正确获取到客户端真实的h协议, 如 https;
+指定 `protocolHeader="x-forwarded-proto"`, 会将HTTP请求头中 `x-forwarded-proto` 的值设置为scheme, 这样 `request.getScheme()`, `request.getRequestURL()` 方法就能正确获取到客户端真实的协议, 如 https;
 
 当然, 这里是因为我们的部署结构为: Nginx + Tomcat, Shiro拦截的时候需要读取这一信息。
 
