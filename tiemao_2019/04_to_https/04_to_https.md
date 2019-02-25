@@ -89,25 +89,25 @@ HTTPS比起HTTP有很多好处, 当然, 成本会高一些, 比如证书的价�
 下载之后的证书文件，最好是修改为站点相关的名称,例如 `cncounter.com.crt` 等。
 
 
-```
+```shell
 server {
     listen              80;
     listen              443 ssl;
     server_name         cncounter.com *.cncounter.com;
-    ssl_certificate     /usr.local/www/cncounter.com.crt;
-    ssl_certificate_key /usr.local/www/cncounter.key;
+    ssl_certificate     /usr/local/www/cncounter.com.crt;
+    ssl_certificate_key /usr/local/www/cncounter.key;
     ...
 
     proxy_set_header X-Forwarded-Proto $scheme;
 }
 ```
 
-可在Nginx中配置请求头 `proxy_set_header`, 将真实的协议传给Tomcat之类的后端服务器。
+可在Nginx中配置请求头 `X-Forwarded-Proto`, 将真实的协议传给Tomcat之类的后端服务器。根据协议, 请求头的名称不区分大小写。
 
 
 在Tomcat的配置文件`server.xml`中增加Valve, 请搜索`RemoteIpValve`, 可大致参考: <https://www.oschina.net/question/12_213459>
 
-```
+```xml
 <Valve className="org.apache.catalina.valves.RemoteIpValve" 
 remoteIpHeader="x-forwarded-for" proxiesHeader="x-forwarded-by" 
 protocolHeader="x-forwarded-proto" />
