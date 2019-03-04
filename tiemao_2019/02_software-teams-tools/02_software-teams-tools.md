@@ -1,6 +1,6 @@
 # Tools For Software Engineering Teams
 
-# Web开发团队常用软件
+# Web开发团队常备工具
 
 The effect of poorly performing web applications echoes across various parts of the business. The more breakage there is, the more busy support teams get. There is less traction, and product teams are puzzled about user retention. Engineers are inundated with bug-fixes, leaving no time for feature development. Business stakeholders receive no insight into performance improvements. Engineering managers cannot clearly justify the efforts being taken. The list goes on. 
 
@@ -17,7 +17,7 @@ Web系统的性能问题会影响企业的各项业务。
 
 What are the available options to keep this risk at bay? The answer lies in providing your development team with the right kind of tools they can use to deal with common problems that arise from each stage in software development.
 
-有什么方法可以避免这种风险? 工欲善其事必先利其器，我们需要引入一些趁手的工具，各个阶段都要具备。
+有什么方法可以避免这些风险呢? 工欲善其事必先利其器，我们需要引入一些趁手的工具，各个阶段都要具备。
 
 ## Planning tools
 
@@ -33,7 +33,7 @@ The beginning of most software products/projects lies in planning and tracking d
 
 ## Version control tools
 
-## 版本控制
+## 版本控制工具
 
 Gone are the days when the person holding the rubber duck is the only one who can make changes to the source code. Version control is the first tool that every engineering team decides upon before anything else. Even among small teams or hobby projects with a single programmer, version control is employed. Engineering teams have a clear choice among [Git](https://git-scm.com/), Mercurial, and [Apache Subversion](https://subversion.apache.org/)provided by several vendors. There is immense maturity in the realm of version control, as a result of which teams know exactly what they’re getting into.
 
