@@ -17,7 +17,7 @@ Web系统的性能问题会影响企业的各项业务。
 
 What are the available options to keep this risk at bay? The answer lies in providing your development team with the right kind of tools they can use to deal with common problems that arise from each stage in software development.
 
-有什么方法可以避免这些风险呢? 工欲善其事必先利其器，我们需要引入一些趁手的工具，各个阶段都要具备。
+有什么方法可以避免这些风险呢? 工欲善其事必先利其器，我们需要引入一些趁手的工具，在项目开发的各个阶段。
 
 ## Planning tools
 
@@ -99,11 +99,10 @@ Simply investing in software will not help you mitigate your performance problem
 
 Please remember – performance is about people. About your users.
 
-请记住 —— 性能问题最关键的点是人, 也就是用户。
+请记住 —— 性能问题的关键点是人, 也就是我们的用户。
 
 We’re all united in our goal to make software faster, and provide a reliable digital user experience. There are many means to achieve this end, [Plumbr](https://www.plumbr.io/) being one among them. Plumbr provides a real-user monitoring system that provides performance insights based on the interactions of your users. [Sign up today for a free trial](http://app.plumbr.io/signup), and stay on top of performance issues faced by your users.
 
-我们全都团结一致，致力于加快软件开发速度，提供可靠的数字用户体验。 有很多方法可以实现这一目标
 
 > 我们致力于更高的系统性能, 提供可靠的数字用户体验。 有很多方法可用于实现这一目标, 比如 [Plumbr](https://www.plumbr.io/) 。 喜欢的朋友可以注册: <http://app.plumbr.io/signup>
 
