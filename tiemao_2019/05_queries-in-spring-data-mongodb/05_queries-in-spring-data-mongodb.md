@@ -1,46 +1,46 @@
 # A Guide to Queries in Spring Data MongoDB
 
-# MongoDB查询指南在春天数据
+# Spring Data MongoDB系列(二): 简单查询
 
 ## **1. Overview**
 
-## * * 1。概览* *
+## 1、概览
 
 This article will focus on building out different **types of queries in Spring Data MongoDB**.
 
-本文将重点构建不同的春天* *类型的查询数据MongoDB * *。
+本文主要介绍 **Spring Data MongoDB** 中的各种查询。
 
 We’re going to be looking at querying documents with *Query* and *Criteria* classes, auto-generated query methods, JSON queries and QueryDSL.
 
-让我们去日本在querying documents to be with * * *和*标准查询,查询的方法,auto-generated classes queries和QueryDSL JSON。
+查询文档可以使用 `Query` 和 `Criteria` 类, 以及自动生成的query方法, JSON查询, 还有 QueryDSL。
 
 For the Maven setup, have a look at our [introductory article](https://www.baeldung.com/spring-data-mongodb-tutorial).
 
-Maven的设置,看一看我们的介绍性文章(https://www.baeldung.com/spring-data-mongodb-tutorial)。
+关于Maven项目的设置, 请参考上一篇文章: <https://www.baeldung.com/spring-data-mongodb-tutorial>。
 
 ## **2. Documents Query**
 
-## * * 2。Query文件* *
+## 2、文档查询
 
 One of the more common ways to query MongoDB with Spring Data is by making use of the *Query* and *Criteria* classes – which very closely mirror native operators.
 
-更常见的方法之一来查询MongoDB的弹簧数据利用查询* *和* *类标准,密切反映本地运营商。
+Spring Data MongoDB 查询，最常用的是 `Query` 和 `Criteria` 类的方法,和MongoDB的原生操作非常类似。
 
 ### **2.1. Is**
 
-### * * 2.1。Is * *
+### 2.1、相等判断(`is`)
 
 This is simply a criterion using equality – let’s see how it works.
 
-这只是一个标准使用平等——让我们看看它是如何工作的。
+`is` 方法是标准的相等(equality)判断。
 
 In the following example – we’re looking for users named *Eric*.
 
-在接下来的例子中,我们正在寻找用户名叫埃里克* *。
+下面我们查询名叫 `Eric` 的User。
 
 Let’s look at our database:
 
-让我们看看我们的数据库:
+假设数据库中存在以下记录:
 
 ```
 [ 
@@ -63,7 +63,7 @@ Let’s look at our database:
 
 Now let’s look at query code:
 
-现在让我们看看查询代码:
+下面是查询代码:
 
 ```
 Query query = new Query();
@@ -76,14 +76,14 @@ List<User> users = mongoTemplate.find(query, User.class);
 
 This logic returns, as expected:
 
-这个逻辑返回,如预期:
+执行这段代码返回的结果为:
 
 ```
 {
- "_id" : ObjectId("55c0e5e5511f0a164a581907"),
- "_class" : "org.baeldung.model.User",
- "name" : "Eric",
- "age" : 45
+  "_id" : ObjectId("55c0e5e5511f0a164a581907"),
+  "_class" : "org.baeldung.model.User",
+  "name" : "Eric",
+  "age" : 45
 }
 ```
 
@@ -91,23 +91,23 @@ This logic returns, as expected:
 
 ### **2.2. Regex**
 
-### * * 2.2。Regex * *
+### 2.2、 正则匹配(regex)
 
-A more flexible and powerful type of query is the regex. This c``reates a criterion using a MongoDB *$regex* that returns all records suitable for this regexp for this field.
+A more flexible and powerful type of query is the regex. This creates a criterion using a MongoDB *$regex* that returns all records suitable for this regexp for this field.
 
-一个更加灵活和强大的正则表达式的查询类型。这个c``列阿特标准使用MongoDB * regex美元*返回所有记录适合这对这一领域的regexp。
+正则表达式，是更强大更灵活的查询方式。 MongoDB 提供了 `$regex` 操作符来匹配正则查询。
 
 It works similar to *startingWith, endingWith* operations – let’s look at an example.
 
-它的工作原理类似于* startingWith endingWith *操作,让我们来看一个例子。
+它的工作原理类似于 startingWith, endingWith 操作, 请看下面的例子。
 
 We’re now looking for all users that have names starting with *A*.
 
-我们现在寻找所有用户名从* *。
+下面查询名字以`A`开始的User。
 
 Here’s the state of the database:
 
-这是数据库的状态:
+假设数据库中的记录为:
 
 ```
 [ 
@@ -136,7 +136,7 @@ Here’s the state of the database:
 
 Let’s now create the query:
 
-现在让我们创建的查询:
+查询代码如下:
 
 ```
 Query query = new Query();
@@ -148,7 +148,7 @@ List<User> users = mongoTemplate.find(query, User.class);
 
 This runs and returns 2 records:
 
-这个运行并返回2记录:
+执行的结果是返回2条记录:
 
 ```
 [
@@ -171,7 +171,7 @@ This runs and returns 2 records:
 
 Here’s another quick example, this time looking for all users that have names ending with *c*:
 
-这是另一个简单的例子,这一次寻找所有用户名称以* c *:
+接下来是另一个简单的示例, 查询名字以 `c` 结尾的所有User:
 
 ```
 Query query = new Query();
@@ -198,19 +198,19 @@ So the result will be:
 
 ### **2.3. Lt and gt**
 
-### * * 2.3。Lt and亿吨。* *
+### 2.3、大于小于判断( `lt` 和 `gt`)
 
 These operators create a criterion using the *$lt* (less than) operator and *$gt* (greater than).
 
-这些操作符创建一个标准使用* $ lt(小于)算子和* $ gt *(大于)。
+这两个操作符对应的是 `$lt` (less than, 小于)和 `$gt` (greater than,大于)操作符。
 
 Let’s have a quick look at an example – we’re looking for all users with age between 20 and 50.
 
-让我们有一个快速浏览一个例子——我们正在寻找所有用户年龄在20到50之间。
+示例, 查询年龄在20到50之间的所有User。
 
 The database is:
 
-数据库:
+数据库中的记录为:
 
 ```
 [
@@ -233,7 +233,7 @@ The database is:
 
 This query code:
 
-这个查询代码:
+查询代码为:
 
 ```
 Query query = new Query();
@@ -245,7 +245,7 @@ List<User> users = mongoTemplate.find(query,User.class);
 
 And the result – all user who with an age of greater than 20 and less than 50:
 
-结果,所有用户的年龄大于20,不到50:
+结果, 列出了年龄大于20,小于50的所有User:
 
 ```
 {
@@ -260,19 +260,19 @@ And the result – all user who with an age of greater than 20 and less than 50:
 
 ### **2.4. Sort**
 
-### * * 2.4。命运* *
+### 2.4、结果排序(`Sort`)
 
 *Sort* is used to specify a sort order for the results.
 
-* *用于指定排序的排序顺序的结果。
+`Sort` 对象用于指定结果集的排序顺序。
 
 The example below returns all users sorted by age in ascending order.
 
-下面的例子返回所有用户按年龄按升序排序。
+下面的示例， 将所有User按年龄升序排序，并返回。
 
 First – here’s the existing data:
 
-第一,现有的数据:
+假设数据中的记录:
 
 ```
 [
@@ -301,7 +301,7 @@ First – here’s the existing data:
 
 After executing *sort*:
 
-后执行* *:
+执行排序:
 
 ```
 Query query = new Query();
@@ -313,7 +313,7 @@ List<User> users = mongoTemplate.find(query,User.class);
 
 And here’s the result of the query – nicely sorted by *age*:
 
-这是查询的结果,很好地按* *岁:
+查询得到的结果, 按年龄排好了序(`age`):
 
 ```
 [
@@ -342,15 +342,15 @@ And here’s the result of the query – nicely sorted by *age*:
 
 ### **2.5. Pageable**
 
-### * * 2.5。Pageable * *
+### 2.5. 分页(`Pageable`)
 
 Let’s look at a quick example using pagination.
 
-让我们看看一个简单的例子使用分页。
+让我们看一个简单的分页(pagination)示例。
 
 Here’s the state of the database:
 
-这是数据库的状态:
+数据库中的记录:
 
 ```
 [
@@ -379,7 +379,7 @@ Here’s the state of the database:
 
 Now, the query logic, simply asking for a page of size 2:
 
-现在,查询逻辑,简单地要求一个页面大小为2:
+设置每页条数为2, 执行查询:
 
 ```
 final Pageable pageableRequest = PageRequest.of(0, 2);
@@ -391,7 +391,7 @@ query.with(pageableRequest);
 
 And the result – the 2 documents, as expected:
 
-和结果- 2文档,如预期的那样:
+返回2条记录:
 
 ```
 [
@@ -414,11 +414,11 @@ And the result – the 2 documents, as expected:
 
 ## **3. Generated Query Methods**
 
-## * * 3。生成的查询方法* *
+## 3、生成查询方法
 
 Let’s now explore the more common type of query that Spring Data usually provides – auto-generated queries out of method names.
 
-现在让我们探索更多的春季常见的查询数据通常提供——自动生成查询的方法名称。
+接下来、一起来看 Spring Data 支持的 —— 自动生成查询方法。
 
 The only thing we need to do to leverage these kinds of queries is to declare the method on the repository interface:
 
@@ -433,12 +433,12 @@ public interface UserRepository
 
 
 
-### **3.1. FindByX**
+### 3.1、 FindByXxx
 
 We’ll start simple, by exploring the findBy type of query – in this case, find by name: 
 
 
-我们将开始简单,将其作为findBy探索类型的查询,在这种情况下,找到的名字:
+先看看简单的例子, `findBy` 这一类的查询, 比如说, 按 name 查找:
 
 ```
 List<User> findByName(String name);
@@ -448,7 +448,7 @@ List<User> findByName(String name);
 
 Same as in the previous section – 2.1 – the query will have the same results, finding all users with the given name:
 
-一样在前一节中- 2.1 -查询会有相同的结果,找到所有用户给定的名称:
+和前一节(2.1)中的一样, 查询结果是相同的, 找到了对应名字的所有 User:
 
 ```
 List<User> users = userRepository.findByName("Eric");
@@ -458,17 +458,17 @@ List<User> users = userRepository.findByName("Eric");
 
 ### **3.2. StartingWith and** ***endingWith.***
 
-### * * 3.2。StartingWith and endingWith * * * * * * * *。
+### 3.2、 StartingWith 与 endingWith
 
 In 2.2, we explored a *regex* based query. Starts and ends with are of course less powerful, but nevertheless quite useful – especially if we don’t have to actually implement them.
 
-在2.2中,我们探讨了一个基于正则表达式* *查询。开始和结尾当然是那么强大,但是非常有用,特别是如果我们没有真正实施。
+在2.2小节中, 我们介绍了基于正则表达式的查询。 开始和结束判断对人不是很强大, 但非常实用, 最好是不需要我们自己来实现这种判断。
 
 
 Here’s a quick example of how the operations would look like: 
 
 
-这是一个简单的例子如何操作的样子:
+下面是一个简单的示例:
 
 ```
 List<User> findByNameStartingWith(String regexp);
@@ -480,27 +480,27 @@ List<User> findByNameEndingWith(String regexp);
 
 The example of actually using this would, of course, be very simple:
 
-实际使用的例子,当然,是非常简单的:
+使用也非常简单:
 
 ```
 List<User> users = userRepository.findByNameStartingWith("A");
 
-List<User> users = userRepository.findByNameEndingWith("c");
+List<User> users2 = userRepository.findByNameEndingWith("c");
 ```
 
 
 
 And the results are exactly the same.
 
-结果是一样的。
+结果也是一样的。
 
 ### **3.3. Between**
 
-### * * 3.3。* *之间
+### 3.3、 Between
 
 Similar to 2.3, this will return all users with age between *ageGT* and *ageLT:*
 
-类似于2.3,这将返回所有用户* ageGT *和* ageLT之间随着年龄:*
+和 2.3 节类似, Between 会返回年龄在 `ageGT` 和 `ageLT` 之间的所有User:
 
 ```
 List<User> findByAgeBetween(int ageGT, int ageLT);
@@ -510,7 +510,7 @@ List<User> findByAgeBetween(int ageGT, int ageLT);
 
 Calling the method will result in exactly the same documents being found:
 
-调用的方法将导致完全相同的文件被发现:
+执行的结果也是一样的:
 
 ```
 List<User> users = userRepository.findByAgeBetween(20, 50);
@@ -520,7 +520,7 @@ List<User> users = userRepository.findByAgeBetween(20, 50);
 
 ### **3.4. Like and OrderBy**
 
-### * * 3.4。喜欢和OrderBy * *
+### 3.4、 Like 与 OrderBy
 
 Let’s have a look at a more advanced example this time – combining two types of modifiers for the generated query.
 
@@ -528,7 +528,7 @@ Let’s have a look at a more advanced example this time – combining two types
 
 We’re going to be looking for all users that have names containing the letter *A* and we’re also going to order the results by age, in ascending order:
 
-我们要寻找所有用户名称包含信* *,我们也将结果按年龄顺序,以升序排序:
+我们要查询所有User名称包含信* *,我们也将结果按年龄顺序,以升序排序:
 
 ```
 List<User> users = userRepository.findByNameLikeOrderByAgeAsc("A");
@@ -588,7 +588,7 @@ List<User> findUsersByName(String name);
 
 This method should return users by name – the placeholder *?0* references the first parameter of the method.
 
-此方法应该返回用户的名字——占位符* ?0 *引用方法的第一个参数。
+此方法应该返回User的名字——占位符* ?0 *引用方法的第一个参数。
 
 ```
 List<User> users = userRepository.findUsersByName("Eric");
@@ -716,7 +716,7 @@ We’re going to use the apt-maven-plugin to do that:
 
 Let’s look at the *User* class – focusing specifically at the *@QueryEntity* annotation:
 
-让我们看看*用户*类——着重* @QueryEntity *注释:
+让我们看看*User*类——着重* @QueryEntity *注释:
 
 ```
 @QueryEntity
@@ -840,7 +840,7 @@ List<User> users = (List<User>) userRepository.findAll(predicate);
 
 Similarly, let’s implement the previous queries – and find users with names that are starting with *A*:
 
-同样,让我们实现前面的查询,找到用户的名字,从* *:
+同样,让我们实现前面的查询,找到User的名字,从* *:
 
 ```
 QUser qUser = new QUser("user");
@@ -872,7 +872,7 @@ The result with same as in 2.2, 3.2 or 4.2.
 
 The next one query will return users with age between 20 and 50 – similar to the previous sections:
 
-下一个查询将返回用户年龄在20到50之间,类似于前面的部分:
+下一个查询将返回User年龄在20到50之间,类似于前面的部分:
 
 ```
 QUser qUser = new QUser("user");
@@ -906,8 +906,9 @@ Last modified: November 6, 2018
 
 最后修改:2018年11月6日
 
+本系列课程对应的代码: <https://github.com/eugenp/tutorials/tree/master/persistence-modules/spring-data-mongodb>
 
-<http://www.technicalkeeda.com/mongodb-tutorial/mongodb-document-count-for-matched-query-using-spring-data>
+count操作: <http://www.technicalkeeda.com/mongodb-tutorial/mongodb-document-count-for-matched-query-using-spring-data>
 
 
 
