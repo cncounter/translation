@@ -524,11 +524,11 @@ List<User> users = userRepository.findByAgeBetween(20, 50);
 
 Let’s have a look at a more advanced example this time – combining two types of modifiers for the generated query.
 
-让我们看一看一个更先进的例子,结合两种类型的修饰符生成的查询。
+让我们看一个高级点的例子, 组合两种类型的查询修饰符。
 
 We’re going to be looking for all users that have names containing the letter *A* and we’re also going to order the results by age, in ascending order:
 
-我们要查询所有User名称包含信* *,我们也将结果按年龄顺序,以升序排序:
+查询所有名字中包含字母`A`的User, 根据age对结果进行升序排列(ascending):
 
 ```
 List<User> users = userRepository.findByNameLikeOrderByAgeAsc("A");
@@ -538,7 +538,7 @@ List<User> users = userRepository.findByNameLikeOrderByAgeAsc("A");
 
 For the database we used in 2.4 – the result will be:
 
-2.4中使用的数据库,结果将是:
+使用2.4节中的数据库,结果将是:
 
 ```
 [
@@ -561,23 +561,23 @@ For the database we used in 2.4 – the result will be:
 
 ## **4. JSON Query Methods**
 
-## * * 4。* * JSON查询方法
+## 4、JSON查询方法
 
 If we can’t represent a query with the help of a method name, or criteria, we can do something more low level – **use the @Query annotation**.
 
-如果我们不能代表一个查询的帮助下一个方法名,或者标准,我们可以做一些更低水平——* *使用@Query注释* *。
+如果不能将查询条件表示为某个方法, 或者标准查询(criteria), 则可以通过底层的API进行操作 —— 比如使用 `@Query` 注解。
 
 With this annotation, we can specify a raw query – as a Mongo JSON query string.
 
-这个注释,我们可以指定一个原始查询——Mongo JSON查询字符串。
+通过 `@Query` 注解, 可以定义原生查询 —— 也就是 Mongo JSON 查询字符串。
 
 ### **4.1. FindBy**
 
-### * * 4.1。FindBy * *
+### 4.1、 FindBy
 
 Let’s start simple and look at how we would represent **a find by type of method** first:
 
-让我们开始简单的看看如何代表* * * *第一:找到类型的方法
+我们先来看看，怎样实现一个简单的 find by 方法
 
 ```
 @Query("{ 'name' : ?0 }")
@@ -588,7 +588,7 @@ List<User> findUsersByName(String name);
 
 This method should return users by name – the placeholder *?0* references the first parameter of the method.
 
-此方法应该返回User的名字——占位符* ?0 *引用方法的第一个参数。
+这个方法根据name返回对应的User —— 占位符 `?0` 表示对应方法的第 0 个参数。
 
 ```
 List<User> users = userRepository.findUsersByName("Eric");
