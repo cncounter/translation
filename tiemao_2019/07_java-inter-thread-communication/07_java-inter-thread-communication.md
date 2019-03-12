@@ -174,7 +174,7 @@ So we can see that the `A.join()` method will make B wait until A finishes print
 
 ## How To Make Two Threads Intersect Orderly In a Specified Manner?
 
-## 怎样让两个线程交替执行以指定的顺序交替执行
+## 怎样让两个线程以指定顺序交替执行
 
 So what if now we want B to start printing 1, 2, 3 just after A has printed 1, and then A continues printing 2, 3? Obviously, we need more fine-grained locks to take the control of the order of execution.
 
@@ -392,7 +392,7 @@ The goal we want to achieve is: The three threads A, B, and C can start to run a
 1. 创建一个计数器(counter), 并设置初始值: `CountdownLatch countDownLatch = new CountDownLatch(3);`
 2. 需要等待的线程, 调用 `countDownLatch.await()` 方法进入等待状态, 直到 count 值变成0为止;
 3. 其他线程调用 `countDownLatch.countDown()` 来将 count 值减小;
-4. 当其他线程调用 `countDown()` 将 count 值减小为到0, 等待线程中的 `countDownLatch.await()` 方法将立即返回, 那么这个线程也就可以继续执行后续的代码. 
+4. 当其他线程调用 `countDown()` 将 count 值减小为0, 等待线程中的 `countDownLatch.await()` 方法将立即返回, 那么这个线程也就可以继续执行后续的代码. 
 
 The implementation code is as follows:
 
@@ -456,7 +456,7 @@ A 线程执行完毕, 调用 countDownLatch.countDown()
 
 In fact, `CountDownLatch` itself is a countdown counter, and we set the initial count value to 3. When D runs, it first call the `countDownLatch.await()` method to check whether the counter value is 0, and it will stay in wait state if the value is not 0. A, B, and C each will use the `countDownLatch.countDown()`method to decrement the countdown counter by 1 after they finish running separately. And when all of them three finish running, the counter will be reduced to 0; then, the `await()` method of D will be triggered to end A, B, and C, and D will start to go on executing.
 
-事实上, `CountDownLatch` 本身是一个倒计数计数器, 我们将初始值设置为3. 当D运行时, 首先调用 `countDownLatch.await()` 方法检查 counter 值是否为0, 如果counter值不是则会等待. A、B和C线程在自身运行完成后, 通过 `countDownLatch.countDown()` 方法将 counter 值减1. 当3个线程都执行完, A, B, C将 counter 值将会减小到0; 然后,D线程中的 `await()` 方法就会返回, D线程将继续执行. 
+事实上, `CountDownLatch` 本身是一个倒数计数器, 我们将初始值设置为3. 当D运行时, 首先调用 `countDownLatch.await()` 方法检查 counter 值是否为0, 如果counter值不是则会等待. A、B和C线程在自身运行完成后, 通过 `countDownLatch.countDown()` 方法将 counter 值减1. 当3个线程都执行完, A, B, C将 counter 值将会减小到0; 然后,D线程中的 `await()` 方法就会返回, D线程将继续执行. 
 
 Therefore, `CountDownLatch` is suitable for the situation where one thread needs to wait for multiple threads.
 
