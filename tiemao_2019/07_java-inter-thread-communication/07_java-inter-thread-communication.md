@@ -1,14 +1,16 @@
 # How To Implement Inter-thread Communication In Java
 
-# Java多线程间的通信
+# Java进阶知识 - 线程间通信
+
+> `CountdownLatch`, `CyclicBarrier` 分别适合什么场景呢?
 
 Though normally each child thread just need to complete its own task, sometimes we may want multiple threads to work together to fulfil a task, which involves the inter-thread communication.
 
-在大部分情况下, 子线程都只需要关心和执行自身的任务。 但总有复杂的情况, 需要多个线程来协同完成某项任务, 这时候就会涉及到线程间通信(inter-thread communication)。
+大部分情况下, 子线程只需要关心自身执行的任务. 但在某些复杂的情况下, 需要使用多个线程来协同完成某个任务, 这就涉及到线程间通信(inter-thread communication)的问题了. 
 
 The methods and classes covered in this article are: `thread.join()`, `object.wait()`, `object.notify()`, `CountdownLatch`, `CyclicBarrier`, `FutureTask`, `Callable`, etc.
 
-本文介绍的内容包括: 
+主要涉及的内容有:
 
 - `thread.join()` 方法
 - `object.wait()` 方法
@@ -20,11 +22,11 @@ The methods and classes covered in this article are: `thread.join()`, `object.wa
 
 [Here](https://github.com/wingjay/HelloJava/blob/master/multi-thread/src/ForArticle.java) is the code covered in this article
 
-文中的代码可参考: <https://github.com/wingjay/HelloJava/blob/master/multi-thread/src/ForArticle.java>
+示例代码可参考: <https://github.com/wingjay/HelloJava/blob/master/multi-thread/src/ForArticle.java>
 
 I'll use several examples to explain how to implement inter-thread communication in Java.
 
-下面通过示例来讲解Java线程间的通信如何实现。
+本文通过示例, 讲解Java语言中, 如何实现线程间通信. 
 
 > - How to make two threads execute in sequence?
 > - How to make two threads intersect orderly in a specified manner?
@@ -32,15 +34,15 @@ I'll use several examples to explain how to implement inter-thread communication
 > - Three athletes prepare themselves apart, and then they start to run at the same time after each of them is ready.
 > - After the child thread completes a task, it returns the result to the main thread.
 
-> - 让两个线程顺序执行
-> - 让两个线程交替执行
-> - 假设有四个线程: A,B,C,D, 如何实现ABC同步执行, 完成后再执行D线程。
-> - 短跑比赛, 在所有运动员都准备好之后, 再按下发令枪, 让他们同时起跑。
-> - 子线程完成任务后, 怎么将处理结果返回给主线程。
+> - 如何让两个线程顺序执行
+> - 怎样让两个线程交替执行
+> - 假设有四个线程: A,B,C,D, 如何实现ABC一起执行, 全部完成后再执行D线程. 
+> - 短跑比赛, 在所有人都准备完成后, 让运动员们同时起跑. 
+> - 子线程执行完成后, 怎么将结果值返回给主线程. 
 
 ## How To Make Two Threads Execute In Sequence?
 
-## 让两个线程按顺序执行
+## 如何让两个线程顺序执行
 
 
 
@@ -89,7 +91,7 @@ private static void demo1() {
 }
 ```
 
-每个线程都会调用 `printNumber()` 方法。
+每个线程都会调用 `printNumber()` 方法. 
 
 
 And the result we get is:
@@ -109,11 +111,11 @@ B print: 3
 
 You can see that A and B print numbers at the same time.
 
-可以看到, A和B会一起执行。
+可以看到, A和B会一起执行. 
 
 So, what if we want B to start printing after A has printed over? We can use the `thread.join()` method, and the code is as follows:
 
-假设需求发生变化, 线程A打印完成之后，线程B才能执行打印。 那么可以使用 `thread.join()` 方法,代码如下:
+假设需求发生变化, 线程A打印完成之后, 线程B才能执行打印. 那么可以使用 `thread.join()` 方法,代码如下:
 
 ```java
 /**
@@ -146,7 +148,7 @@ private static void demo2() {
 }
 ```
 
-> join, 加入，合并，汇合
+> join, 加入, 合并, 汇合
 
 
 Now the result obtained is:
@@ -167,20 +169,20 @@ B print: 3
 
 So we can see that the `A.join()` method will make B wait until A finishes printing.
 
-可以看到， B线程执行的方法中, 调用了 `A.join()` 方法, 会等待A线程执行完成, 再继续往下走。
+可以看到, B线程执行的方法里面, 调用了 `A.join()` 方法, 会等待A线程先执行完成, B再继续往下走. 
 
 
 ## How To Make Two Threads Intersect Orderly In a Specified Manner?
 
-## 两个线程以指定的顺序交替执行
+## 怎样让两个线程交替执行以指定的顺序交替执行
 
 So what if now we want B to start printing 1, 2, 3 just after A has printed 1, and then A continues printing 2, 3? Obviously, we need more fine-grained locks to take the control of the order of execution.
 
-假设需要先让A打印1、然后B打印1,2,3，再让A打印2、3。 那么, 可以使用细粒度的锁(fine-grained locks)来控制执行顺序。
+假设需要先让A打印1、然后B打印1,2,3, 再让A打印2、3. 那么, 可以使用细粒度的锁(fine-grained locks)来控制执行顺序. 
 
 Here, we can take the advantage of the `object.wait()` and `object.notify()` methods. The code is as below:
 
-比如使用Java内置的 `object.wait()` 和 `object.notify()` 方法。代码如下:
+比如使用Java内置的 `object.wait()` 和 `object.notify()` 方法. 代码如下:
 
 ```java
 /**
@@ -194,7 +196,7 @@ private static void demo3() {
             synchronized (lock) {
                 System.out.println("A 1");
                 try {
-		    System.out.println("A waiting…");
+        System.out.println("A waiting…");
                     lock.wait();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
@@ -247,7 +249,7 @@ A 3
 
 That's what we want.
 
-这就实现了需要的效果。
+这就实现了需要的效果. 
 
 > **What happens?**
 >
@@ -261,13 +263,13 @@ That's what we want.
 >
 > 1. 首先创建一个对象锁: `lock = new Object();`
 > 2. A获取锁, 得到后先打印1, 然后调用 `lock.wait()` 进入等待状态, 同时移交锁的控制权;
-> 3. B暂时不会执行打印, 需要等A调用`lock.wait()`释放锁之后，B 获得锁才开始执行打印;
+> 3. B暂时不会执行打印, 需要等A调用`lock.wait()`释放锁之后, B 获得锁才开始执行打印;
 > 4. B打印出1、2、3, 然后调用`lock.notify()`方法来唤醒等待这个锁的线程(A);
-> 5. A被唤醒之后, 等待获得锁, 之后继续打印剩下的2和3。
+> 5. A被唤醒之后, 等待获得锁, 之后继续打印剩下的2和3. 
 
 I add the log to the above code to make it easier to understand.
 
-下面加上一些日志, 来帮助我们理解这段代码。
+下面加上一些日志, 来帮助我们理解这段代码. 
 
 
 ```java
@@ -310,7 +312,7 @@ private static void demo4() {
                 System.out.println("B 2");
                 System.out.println("B 3");
 
-                System.out.println("====提示: B 打印完毕，调用 lock.notify() 方法");
+                System.out.println("====提示: B 打印完毕, 调用 lock.notify() 方法");
                 lock.notify();
                 // 看看A能不能获得锁
                 try {
@@ -340,7 +342,7 @@ private static void demo4() {
 
 The results are as follows:
 
-在其中，我们加入了一些调皮的逻辑, 执行结果如下:
+在其中, 我们加入了一些调皮的逻辑, 执行结果如下:
 
 ```bash
 ====提示: A 等待锁...
@@ -352,7 +354,7 @@ A 1
 B 1
 B 2
 B 3
-====提示: B 打印完毕，调用 lock.notify() 方法
+====提示: B 打印完毕, 调用 lock.notify() 方法
 ====提示: B 调用 lock.notify()完成,睡10秒看看...
 ====提示: B 调用 lock.notify()完成,退出synchronized块
 ====提示: A在lock.wait()之后,再次获得锁的控制权,HAHAHA
@@ -361,11 +363,11 @@ A 2
 A 3
 ```
 
-> 可以看到，虽然B调用了 `lock.notify()`方法唤醒了某个等待的线程(A), 但因为同步代码块还未执行完, 所以没有释放这个锁; 直到睡了10秒钟, 继续执行后面的代码, 退出同步代码块之后, A 才获得执行机会。
+> 可以看到, 虽然B调用了 `lock.notify()`方法唤醒了某个等待的线程(A), 但因为同步代码块还未执行完, 所以没有释放这个锁; 直到睡了10秒钟, 继续执行后面的代码, 退出同步代码块之后, A 才获得执行机会. 
 
-- synchronized代码块结束，会自动释放锁。 
-- `Object#wait()` 则是临时放弃锁, 进入沉睡, 必须有人唤醒(notify), 否则会睡死, 或者被超时打断。
-- `Object#notify()` 只是唤醒某个线程，并没有释放锁。
+- synchronized代码块结束, 会自动释放锁. 
+- `Object#wait()` 则是临时放弃锁, 进入沉睡, 必须有人唤醒(notify), 否则会睡死, 或者被超时打断. 
+- `Object#notify()` 只是唤醒某个线程, 并没有释放锁. 
 
 
 
@@ -376,11 +378,11 @@ A 3
 
 The method `thread.join()` introduced earlier allows one thread to continue executing after waiting for another thread to finish running. But if we join A, B, and C orderly into the D thread, it will make A, B, and C execute in turn, while we want them three to run synchronously.
 
-前面介绍的 `thread.join()` 方法, 等待另一个线程(thread)运行完成后, 当前线程才执行(: 等TA忙完了来汇合)。 但如果我们使用 join 方法来等待A、B和C的话, 它将使A,B,C依次执行, 但我们希望的是他们仨同步运行。
+前面介绍的 `thread.join()` 方法, 等待另一个线程(thread)运行完成后, 当前线程才执行(: 等TA忙完了来汇合). 但如果我们使用 join 方法来等待A、B和C的话, 它将使A,B,C依次执行, 但我们希望的是他们仨同步运行. 
 
 The goal we want to achieve is: The three threads A, B, and C can start to run at the same time, and each will notify D after finishing running independently; D won't start to run until A, B, and C all finish running. So we use `CountdownLatch` to implement this type of communication. Its basic usage is:
 
-想要达成的目标是: A,B,C 三个线程同时运行, 每个线程完成后, 通知D一声; 等A,B,C都运行完成, D才开始运行。我们可以使用`CountdownLatch` 来实现这种类型的通信。其基本用法为:
+想要达成的目标是: A,B,C 三个线程同时运行, 每个线程完成后, 通知D一声; 等A,B,C都运行完成, D才开始运行. 我们可以使用`CountdownLatch` 来实现这种类型的通信. 其基本用法为:
 
 1. Create a counter, and set an initial value, `CountdownLatch countDownLatch = new CountDownLatch(3;`
 2. Call the `countDownLatch.await()` method in the waiting thread and go into the wait state until the count value becomes 0;
@@ -390,7 +392,7 @@ The goal we want to achieve is: The three threads A, B, and C can start to run a
 1. 创建一个计数器(counter), 并设置初始值: `CountdownLatch countDownLatch = new CountDownLatch(3);`
 2. 需要等待的线程, 调用 `countDownLatch.await()` 方法进入等待状态, 直到 count 值变成0为止;
 3. 其他线程调用 `countDownLatch.countDown()` 来将 count 值减小;
-4. 当其他线程调用 `countDown()` 将 count 值减小为到0,  等待线程中的 `countDownLatch.await()` 方法将立即返回, 那么这个线程也就可以继续执行后续的代码。
+4. 当其他线程调用 `countDown()` 将 count 值减小为到0, 等待线程中的 `countDownLatch.await()` 方法将立即返回, 那么这个线程也就可以继续执行后续的代码. 
 
 The implementation code is as follows:
 
@@ -403,7 +405,7 @@ private static void runDAfterABC() {
     Thread D = new Thread(new Runnable() {
         @Override
         public void run() {
-            System.out.println("D 线程即将调用 countDownLatch.await(); 等待其他线程通知。");
+            System.out.println("D 线程即将调用 countDownLatch.await(); 等待其他线程通知. ");
             try {
                 countDownLatch.await();
                 System.out.println("其他线程全部执行完成, D 开始干活...");
@@ -440,7 +442,7 @@ The result is as follows:
 结果如下:
 
 ```bash
-D 线程即将调用 countDownLatch.await(); 等待其他线程通知。
+D 线程即将调用 countDownLatch.await(); 等待其他线程通知. 
 A 线程正在执行...
 B 线程正在执行...
 C 线程正在执行...
@@ -454,11 +456,11 @@ A 线程执行完毕, 调用 countDownLatch.countDown()
 
 In fact, `CountDownLatch` itself is a countdown counter, and we set the initial count value to 3. When D runs, it first call the `countDownLatch.await()` method to check whether the counter value is 0, and it will stay in wait state if the value is not 0. A, B, and C each will use the `countDownLatch.countDown()`method to decrement the countdown counter by 1 after they finish running separately. And when all of them three finish running, the counter will be reduced to 0; then, the `await()` method of D will be triggered to end A, B, and C, and D will start to go on executing.
 
-事实上, `CountDownLatch` 本身是一个倒计数计数器, 我们将初始值设置为3。 当D运行时, 首先调用 `countDownLatch.await()` 方法检查 counter 值是否为0, 如果counter值不是则会等待。 A、B和C线程在自身运行完成后, 通过 `countDownLatch.countDown()` 方法将 counter 值减1。当3个线程都执行完, A, B, C将 counter 值将会减小到0; 然后,D线程中的 `await()` 方法就会返回, D线程将继续执行。
+事实上, `CountDownLatch` 本身是一个倒计数计数器, 我们将初始值设置为3. 当D运行时, 首先调用 `countDownLatch.await()` 方法检查 counter 值是否为0, 如果counter值不是则会等待. A、B和C线程在自身运行完成后, 通过 `countDownLatch.countDown()` 方法将 counter 值减1. 当3个线程都执行完, A, B, C将 counter 值将会减小到0; 然后,D线程中的 `await()` 方法就会返回, D线程将继续执行. 
 
 Therefore, `CountDownLatch` is suitable for the situation where one thread needs to wait for multiple threads.
 
-因此, `CountDownLatch` 适用于一个线程等待多个线程的场景。
+因此, `CountDownLatch` 适用于一个线程等待多个线程的场景. 
 
 ## 3 Runners Preparing To Run
 
@@ -466,15 +468,15 @@ Therefore, `CountDownLatch` is suitable for the situation where one thread needs
 
 Three runners prepare themselves apart, and then they start to run at the same time after each of them is ready.
 
-3个运动员都确定做好准备后, 同时起跑。
+假设3个运动员都确定做好预备, 然后同时起跑. 
 
 This time, each of the three threads A, B, and C need to prepare separately, and then they start to run simultaneously after all of them three are ready. How should we achieve that?
 
-如果用3个线程来模拟， A,B,C线程各自准备, 等全部准备好之后， 同时开始运行。如何实现呢?
+用3个线程来模拟, A,B,C线程各自准备, 等全部准备就绪, 同时开始运行. 如何用代码来实现呢?
 
 The `CountDownLatch` above can be used to count down, but when the count is completed, only one of the threads' `await()` method will get a response, so multiple threads cannot be triggered at the same time.
 
-前面介绍的`CountDownLatch`可以用来计数, 但计数完成后, 只有一个线程的 `await()` 方法会得到响应, 所以多个线程同时等待的情况, 使用 `CountDownLatch` 不太好处理。
+前面介绍的`CountDownLatch`可以用来计数, 但计数完成后, 只会有一个线程的 `await()` 方法得到响应, 所以不太适合多个线程同时等待的情况. 
 
 In order to achieve the effect of threads' waiting for each other, we can use the `CyclicBarrier` data structure, and its basic usage is:
 
@@ -486,11 +488,13 @@ In order to achieve the effect of threads' waiting for each other, we can use th
 
 1. 首先创建一个公开的 `CyclicBarrier` 对象, 并设置同时等待的线程数量, `CyclicBarrier cyclicBarrier = new CyclicBarrier(3);`
 2. 这些线程各自进行准备, 自身准备好之后, 还需要等其他线程准备完毕, 即调用 `cyclicBarrier.await()` 方法来等待;
-3. 当需要同时等待的线程全部调用了 `cyclicBarrier.await()` 方法, 也就意味着这些线程都准备好了, 那么这些线程就可以继续执行。
+3. 当需要同时等待的线程全部调用了 `cyclicBarrier.await()` 方法, 也就意味着这些线程都准备好了, 那么这些线程就可以继续执行. 
+
+> 注意是 `Cyclic`, 不是 *Cycle*.
 
 The implementation code is as follows. Imagine that there are three runners who need to start to run simultaneously, so they need to wait for others until all of them are ready.
 
-实现代码如下。假设有三个运动员同时开始赛跑, 每个人都需要等所有人准备完成。
+实现代码如下. 假设有三个运动员同时开始赛跑, 每个人都需要等其他人准备就绪. 
 
 ```java
 private static void runABCWhenAllReady() {
@@ -510,7 +514,7 @@ private static void runABCWhenAllReady() {
                     e.printStackTrace();
                 }
                 try {
-                    System.out.println(rN + " 准备完毕，等其他人... ");
+                    System.out.println(rN + " 准备完毕, 等其他人... ");
                     cyclicBarrier.await(); // 当前线程准备就绪, 等待其他人的反馈
                 } catch (InterruptedException e) {
                     e.printStackTrace();
@@ -535,9 +539,9 @@ A 需要的准备时间: 4131
 B 需要的准备时间: 6349
 C 需要的准备时间: 8206
  
-A  准备完毕，等其他人... 
-B  准备完毕，等其他人... 
-C  准备完毕，等其他人... 
+A  准备完毕, 等其他人... 
+B  准备完毕, 等其他人... 
+C  准备完毕, 等其他人... 
  
 C 开始跑动~加速~
 A 开始跑动~加速~
@@ -550,15 +554,15 @@ B 开始跑动~加速~
 
 ## 将子线程的执行结果返回给主线程
 
-> 当然，也有简单的办法，比如使用 `ConcurrentHashMap`
+> 当然, 也有简单的办法, 比如使用 `ConcurrentHashMap`
 
 In actual development, often we need to create child threads to do some time-consuming tasks, and then pass the execution results back to the main thread. So how to implement this in Java?
 
-在实际开发中, 经常需要创建子线程来执行一些耗时任务, 然后将执行结果返回给主线程。那么在Java中如何实现呢?
+在实际开发中, 经常需要使用新线程来执行一些耗时任务, 然后将执行结果返回给主线程.
 
 So generally, when creating the thread, we'll pass the Runnable object to Thread for execution. The definition for Runnable is as follows:
 
-一般情况下, 在创建线程时, 我们会将Runnable对象传递给线程来执行。Runnable接口的定义如下:
+一般情况下, 创建新线程时, 我们会将Runnable对象传给线程来执行. Runnable接口的定义如下:
 
 ```java
 public interface Runnable {
@@ -570,7 +574,7 @@ public interface Runnable {
 
 You can see that `run()` method does not return any results after execution. Then what if you want to return the results? Here you can use another similar interface class `Callable`:
 
-可以看到, `run()` 方法不返回任何结果。 那么如果想要返回结果的时候怎么办呢?  可以使用另一个类似的接口 `Callable`:
+`run()` 方法不返回任何结果. 那么如果想要获取返回结果时怎么办呢?  我们可以使用一个类似的接口: `Callable`:
 
 ```java
 @FunctionalInterface
@@ -579,7 +583,7 @@ public interface Callable<V> {
      * 返回执行结果, 如果出错则可以抛出异常.
      *
      * @return 执行结果(computed result)
-     * @throws Exception， 如果不能计算出结果
+     * @throws Exception, 如果不能计算出结果
      */
     V call() throws Exception;
 }
@@ -589,15 +593,15 @@ public interface Callable<V> {
 
 It can be seen that the biggest difference for `Callable` is that it returns the generics.
 
-可以看出, `Callable` 最大的区别在于返回泛型结果(generics, `<V>`)。
+可以看出, `Callable` 最大的区别在于返回泛型结果(generics, `<V>`). 
 
 So the next question is, how to pass the results of the child thread back? Java has a class, `FutureTask`, which can work with `Callable`, but note that the `get` method which is used to get the result will block the main thread.
 
-所以接下来的问题是, 如何将子线程返回的结果传给主线程。 Java提供了 `FutureTask` 类, 可以和 `Callable` 一起使用, 但请注意, 用于获取结果的 `FutureTask#get` 方法会阻塞主线程。
+下面演示如何将子线程返回的结果传给主线程. Java提供了 `FutureTask` 类, 一般和 `Callable` 一起使用, 但请注意, `FutureTask#get()` 方法会阻塞调用的线程. 
 
 For example, we want the child thread to calculate the sum from 1 to 100 and return the result to the main thread.
 
-例如, 用子线程计算金额(从1到100), 并将结果返回给主线程。
+例如, 开新线程来计算金额(从1到100), 并将结果返回给主线程. 
 
 ```java
 private static void doTaskWithResultInWorker() {
@@ -648,11 +652,11 @@ After futureTask.get()
 
 It can be seen that it blocks the main thread when the main thread calls the `futureTask.get()` method; then the `Callable` starts to execute internally and returns the result of the operation; and then the `futureTask.get()` gets the result and the main thread resumes running.
 
-可以看出, 主线程调用 `futureTask.get()` 方法时被阻塞住了; 然后`Callable`开始执行内部操作，并返回结果; 接着 `futureTask.get()` 得到返回结果, 主线程继续运行。
+可以看到, 主线程调用 `futureTask.get()` 方法时被阻塞; 然后开始执行 `Callable` 内部的任务并返回结果; 接着 `futureTask.get()` 获取结果, 主线程才继续运行.
 
 Here we can learn that the `FutureTask` and `Callable` can get the result of the child thread directly in the main thread, but they will block the main thread. Of course, if you don't want to block the main thread, you can consider using `ExecutorService` to put the `FutureTask` into the thread pool to manage execution.
 
-在这里，我们可以看到，使用 `FutureTask` 和 `Callable`, 可以直接在主线程中得到子线程的结果, 但会阻塞主线程。 当然,如果不想阻塞主线程, 可以将 `FutureTask` 交给线程池来执行(使用`ExecutorService`)。
+使用 `FutureTask` 和 `Callable`, 可以直接在主线程得到子线程的执行结果, 但这会阻塞主线程. 如果不想阻塞主线程, 可以将 `FutureTask` 交给线程池来执行(使用`ExecutorService`). 
 
 ## Summary
 
@@ -660,9 +664,13 @@ Here we can learn that the `FutureTask` and `Callable` can get the result of the
 
 Multithreading is a common feature for modern languages, and inter-thread communication, thread synchronization, and thread safety are very important topics.
 
-多线程是现代编程语言的共同特征。线程间通信(inter-thread communication)，线程同步(thread synchronization), 线程安全(thread safety) 都是重量级的课题。
+多线程(Multithreading)是现代编程语言都具有的共同特征. 其中, 线程间通信(inter-thread communication), 线程同步(thread synchronization), 线程安全(thread safety) 都是非常重要的知识. 
 
-<https://www.tutorialdocs.com/article/java-inter-thread-communication.html>
+原文链接: <https://www.tutorialdocs.com/article/java-inter-thread-communication.html>
 
+原文日期: 2019年01月22日
 
+翻译日期: 2019年03月12日
+
+翻译人员: 铁锚 - <https://renfufei.blog.csdn.net/>
 
