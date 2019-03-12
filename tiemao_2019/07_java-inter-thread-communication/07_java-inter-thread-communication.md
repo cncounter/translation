@@ -1,6 +1,6 @@
 # How To Implement Inter-thread Communication In Java
 
-# Java线程间通信与实现
+# Java多线程间的通信
 
 Though normally each child thread just need to complete its own task, sometimes we may want multiple threads to work together to fulfil a task, which involves the inter-thread communication.
 
@@ -8,15 +8,15 @@ Though normally each child thread just need to complete its own task, sometimes 
 
 The methods and classes covered in this article are: `thread.join()`, `object.wait()`, `object.notify()`, `CountdownLatch`, `CyclicBarrier`, `FutureTask`, `Callable`, etc.
 
-本文介绍的方法与类主要包括: 
+本文介绍的内容包括: 
 
-- `thread.join()`
-- `object.wait()`
-- `object.notify()`
-- `CountdownLatch`
-- `CyclicBarrier`
-- `FutureTask`
-- `Callable`
+- `thread.join()` 方法
+- `object.wait()` 方法
+- `object.notify()` 方法
+- `CountdownLatch` 类
+- `CyclicBarrier` 类
+- `FutureTask` 类
+- `Callable` 类
 
 [Here](https://github.com/wingjay/HelloJava/blob/master/multi-thread/src/ForArticle.java) is the code covered in this article
 
@@ -548,15 +548,17 @@ B 开始跑动~加速~
 
 ## Child Thread Returns The Result To The Main Thread
 
-## 子线程将执行结果返回给主线程
+## 将子线程的执行结果返回给主线程
+
+> 当然，也有简单的办法，比如使用 `ConcurrentHashMap`
 
 In actual development, often we need to create child threads to do some time-consuming tasks, and then pass the execution results back to the main thread. So how to implement this in Java?
 
-在实际的开发中,我们经常需要创建子线程来做一些耗时的任务,然后通过执行结果返回给主线程。那么如何在Java实现这个?
+在实际开发中, 经常需要创建子线程来执行一些耗时任务, 然后将执行结果返回给主线程。那么在Java中如何实现呢?
 
 So generally, when creating the thread, we'll pass the Runnable object to Thread for execution. The definition for Runnable is as follows:
 
-所以一般情况下,在创建线程时,我们会将Runnable对象传递给线程来执行。可运行的定义如下:
+一般情况下, 在创建线程时, 我们会将Runnable对象传递给线程来执行。Runnable接口的定义如下:
 
 ```java
 public interface Runnable {
@@ -568,16 +570,16 @@ public interface Runnable {
 
 You can see that `run()` method does not return any results after execution. Then what if you want to return the results? Here you can use another similar interface class `Callable`:
 
-你可以看到,`run()`方法执行后不返回任何结果。那么如果你想返回结果?在这里你可以使用另一个类似的接口类`Callable`:
+可以看到, `run()` 方法不返回任何结果。 那么如果想要返回结果的时候怎么办呢?  可以使用另一个类似的接口 `Callable`:
 
 ```java
 @FunctionalInterface
 public interface Callable<V> {
     /**
-     * Computes a result, or throws an exception if unable to do so.
+     * 返回执行结果, 如果出错则可以抛出异常.
      *
-     * @return computed result
-     * @throws Exception if unable to compute a result
+     * @return 执行结果(computed result)
+     * @throws Exception， 如果不能计算出结果
      */
     V call() throws Exception;
 }
@@ -587,15 +589,15 @@ public interface Callable<V> {
 
 It can be seen that the biggest difference for `Callable` is that it returns the generics.
 
-可以看出,最大的区别`Callable`是,它返回泛型。
+可以看出, `Callable` 最大的区别在于返回泛型结果(generics, `<V>`)。
 
 So the next question is, how to pass the results of the child thread back? Java has a class, `FutureTask`, which can work with `Callable`, but note that the `get` method which is used to get the result will block the main thread.
 
-所以接下来的问题是,如何通过子线程返回的结果吗?Java有一个类,`FutureTask`,可以使用`Callable`,但请注意,`get`方法用于获取结果将阻塞主线程。
+所以接下来的问题是, 如何将子线程返回的结果传给主线程。 Java提供了 `FutureTask` 类, 可以和 `Callable` 一起使用, 但请注意, 用于获取结果的 `FutureTask#get` 方法会阻塞主线程。
 
 For example, we want the child thread to calculate the sum from 1 to 100 and return the result to the main thread.
 
-例如,我们想要的子线程来计算金额从1到100并将结果返回给主线程。
+例如, 用子线程计算金额(从1到100), 并将结果返回给主线程。
 
 ```java
 private static void doTaskWithResultInWorker() {
@@ -646,11 +648,11 @@ After futureTask.get()
 
 It can be seen that it blocks the main thread when the main thread calls the `futureTask.get()` method; then the `Callable` starts to execute internally and returns the result of the operation; and then the `futureTask.get()` gets the result and the main thread resumes running.
 
-可以看出它阻塞主线程,主线程调用`futureTask.get()`方法;然后`Callable`开始执行内部操作并返回结果;然后是`futureTask.get()`得到的结果和主要线程继续运行。
+可以看出, 主线程调用 `futureTask.get()` 方法时被阻塞住了; 然后`Callable`开始执行内部操作，并返回结果; 接着 `futureTask.get()` 得到返回结果, 主线程继续运行。
 
 Here we can learn that the `FutureTask` and `Callable` can get the result of the child thread directly in the main thread, but they will block the main thread. Of course, if you don't want to block the main thread, you can consider using `ExecutorService` to put the `FutureTask` into the thread pool to manage execution.
 
-在这里我们可以了解到`FutureTask`和`Callable`可以得到子线程的结果直接在主线程中,但他们会阻塞主线程。当然,如果你不想阻塞主线程,您可以考虑使用`ExecutorService`把`FutureTask`线程池管理执行。
+在这里，我们可以看到，使用 `FutureTask` 和 `Callable`, 可以直接在主线程中得到子线程的结果, 但会阻塞主线程。 当然,如果不想阻塞主线程, 可以将 `FutureTask` 交给线程池来执行(使用`ExecutorService`)。
 
 ## Summary
 
@@ -658,7 +660,7 @@ Here we can learn that the `FutureTask` and `Callable` can get the result of the
 
 Multithreading is a common feature for modern languages, and inter-thread communication, thread synchronization, and thread safety are very important topics.
 
-多线程是现代语言的共同特征,以及线程间通信都必须与现实当中线程同步,线程安全是非常重要的话题。
+多线程是现代编程语言的共同特征。线程间通信(inter-thread communication)，线程同步(thread synchronization), 线程安全(thread safety) 都是重量级的课题。
 
 <https://www.tutorialdocs.com/article/java-inter-thread-communication.html>
 
