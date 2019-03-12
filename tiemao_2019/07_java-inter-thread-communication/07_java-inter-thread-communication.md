@@ -380,7 +380,7 @@ The method `thread.join()` introduced earlier allows one thread to continue exec
 
 The goal we want to achieve is: The three threads A, B, and C can start to run at the same time, and each will notify D after finishing running independently; D won't start to run until A, B, and C all finish running. So we use `CountdownLatch` to implement this type of communication. Its basic usage is:
 
-想要达成的目标是: A,B,C 三个线程同时运行, 每个线程完成后, 通知D一声; 等A,B,C都运行完成, D才开始运行。我们可以使用`CountdownLatch` 来实现这种类型的通信。其基本用法是:
+想要达成的目标是: A,B,C 三个线程同时运行, 每个线程完成后, 通知D一声; 等A,B,C都运行完成, D才开始运行。我们可以使用`CountdownLatch` 来实现这种类型的通信。其基本用法为:
 
 1. Create a counter, and set an initial value, `CountdownLatch countDownLatch = new CountDownLatch(3;`
 2. Call the `countDownLatch.await()` method in the waiting thread and go into the wait state until the count value becomes 0;
@@ -454,43 +454,43 @@ A 线程执行完毕, 调用 countDownLatch.countDown()
 
 In fact, `CountDownLatch` itself is a countdown counter, and we set the initial count value to 3. When D runs, it first call the `countDownLatch.await()` method to check whether the counter value is 0, and it will stay in wait state if the value is not 0. A, B, and C each will use the `countDownLatch.countDown()`method to decrement the countdown counter by 1 after they finish running separately. And when all of them three finish running, the counter will be reduced to 0; then, the `await()` method of D will be triggered to end A, B, and C, and D will start to go on executing.
 
-事实上,`CountDownLatch`本身就是一个倒计时计数器,我们最初的计算值设置为3。当D运行时,它首先调用`countDownLatch.await()`方法检查是否计数器值为0,它会停留在等待状态,如果值不是0。A、B和C使用`countDownLatch.countDown()`方法减量倒计时计数器1完成后单独运行。他们三个完成运行时,计数器将会减少到0;然后,`await()`D的方法将触发结束,B,C,D将开始执行。
+事实上, `CountDownLatch` 本身是一个倒计数计数器, 我们将初始值设置为3。 当D运行时, 首先调用 `countDownLatch.await()` 方法检查 counter 值是否为0, 如果counter值不是则会等待。 A、B和C线程在自身运行完成后, 通过 `countDownLatch.countDown()` 方法将 counter 值减1。当3个线程都执行完, A, B, C将 counter 值将会减小到0; 然后,D线程中的 `await()` 方法就会返回, D线程将继续执行。
 
 Therefore, `CountDownLatch` is suitable for the situation where one thread needs to wait for multiple threads.
 
-因此,`CountDownLatch`适用于一个线程的情况需要等待多个线程。
+因此, `CountDownLatch` 适用于一个线程等待多个线程的场景。
 
 ## 3 Runners Preparing To Run
 
-## 3选手准备运行
+## 运动员同时起跑的问题
 
 Three runners prepare themselves apart, and then they start to run at the same time after each of them is ready.
 
-三个运动员做好准备,然后他们开始同时运行后每个人都准备好了。
+3个运动员都确定做好准备后, 同时起跑。
 
 This time, each of the three threads A, B, and C need to prepare separately, and then they start to run simultaneously after all of them three are ready. How should we achieve that?
 
-这一次,每个三个线程A,B,C需要准备分开,然后他们开始同时运行后他们三个都准备好了。我们应该如何实现?
+如果用3个线程来模拟， A,B,C线程各自准备, 等全部准备好之后， 同时开始运行。如何实现呢?
 
 The `CountDownLatch` above can be used to count down, but when the count is completed, only one of the threads' `await()` method will get a response, so multiple threads cannot be triggered at the same time.
 
-的`CountDownLatch`上面可以用来倒计时,但当计算完成后,只有一个线程的`await()`方法将得到回复,所以多个线程不能同时被触发。
+前面介绍的`CountDownLatch`可以用来计数, 但计数完成后, 只有一个线程的 `await()` 方法会得到响应, 所以多个线程同时等待的情况, 使用 `CountDownLatch` 不太好处理。
 
 In order to achieve the effect of threads' waiting for each other, we can use the `CyclicBarrier` data structure, and its basic usage is:
 
-为了达到效果的线程互相等待,我们可以使用`CyclicBarrier`数据结构,其基本用法是:
+要达到线程互相等待的效果, 可以使用 `CyclicBarrier`, 其基本用法为:
 
 1. First create a public object `CyclicBarrier`, and set the number of threads waiting at the same time, `CyclicBarrier cyclicBarrier = new CyclicBarrier(3);`
 2. These threads start to prepare simultaneously. After they are ready, they need to wait for others to finish preparing, so call the `cyclicBarrier.await()` method to wait for others;
 3. When the specified threads that need to wait at the same time all call the `cyclicBarrier.await()` method, which means that these threads are ready, then these threads will start to continue executing simultaneously.
 
-1. 首先创建一个公共对象`CyclicBarrier`,并设置数量的线程等待的同时,`CyclicBarrier cyclicBarrier = new CyclicBarrier(3);`
-2. 这些线程同时开始准备。准备好之后,他们需要等待别人完成准备,所以调用`cyclicBarrier.await()`方法等;
-3. 当指定的线程需要同时等待调用`cyclicBarrier.await()`方法,这意味着这些线程都准备好了,那么这些线程将同时开始继续执行。
+1. 首先创建一个公开的 `CyclicBarrier` 对象, 并设置同时等待的线程数量, `CyclicBarrier cyclicBarrier = new CyclicBarrier(3);`
+2. 这些线程各自进行准备, 自身准备好之后, 还需要等其他线程准备完毕, 即调用 `cyclicBarrier.await()` 方法来等待;
+3. 当需要同时等待的线程全部调用了 `cyclicBarrier.await()` 方法, 也就意味着这些线程都准备好了, 那么这些线程就可以继续执行。
 
 The implementation code is as follows. Imagine that there are three runners who need to start to run simultaneously, so they need to wait for others until all of them are ready.
 
-实现代码如下。假设有三个跑步者需要开始同时运行,所以他们需要等待其他人直到他们所有的人都准备好了。
+实现代码如下。假设有三个运动员同时开始赛跑, 每个人都需要等所有人准备完成。
 
 ```java
 private static void runABCWhenAllReady() {
@@ -503,21 +503,21 @@ private static void runABCWhenAllReady() {
             @Override
             public void run() {
                 long prepareTime = random.nextInt(10000) + 100;
-                System.out.println(rN + "is preparing for time:" + prepareTime);
+                System.out.println(rN + " 需要的准备时间:" + prepareTime);
                 try {
                     Thread.sleep(prepareTime);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
                 try {
-                    System.out.println(rN + "is prepared, waiting for others");
-                    cyclicBarrier.await(); // The current runner is ready, waiting for others to be ready
+                    System.out.println(rN + " 准备完毕，等其他人... ");
+                    cyclicBarrier.await(); // 当前线程准备就绪, 等待其他人的反馈
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 } catch (BrokenBarrierException e) {
                     e.printStackTrace();
                 }
-                System.out.println(rN + "starts running"); // All the runners are ready to start running together
+                System.out.println(rN + " 开始跑动~加速~"); // 所有线程一起开始
             }
         }).start();
     }
@@ -531,26 +531,24 @@ The result is as follows:
 结果如下:
 
 ```bash
-A is preparing for time: 4131
-B is preparing for time: 6349
-C is preparing for time: 8206
+A 需要的准备时间: 4131
+B 需要的准备时间: 6349
+C 需要的准备时间: 8206
  
-A is prepared, waiting for others
+A  准备完毕，等其他人... 
+B  准备完毕，等其他人... 
+C  准备完毕，等其他人... 
  
-B is prepared, waiting for others
- 
-C is prepared, waiting for others
- 
-C starts running
-A starts running
-B starts running
+C 开始跑动~加速~
+A 开始跑动~加速~
+B 开始跑动~加速~
 ```
 
 
 
 ## Child Thread Returns The Result To The Main Thread
 
-## 子线程返回结果给主线程
+## 子线程将执行结果返回给主线程
 
 In actual development, often we need to create child threads to do some time-consuming tasks, and then pass the execution results back to the main thread. So how to implement this in Java?
 
