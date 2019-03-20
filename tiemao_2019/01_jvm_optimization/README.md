@@ -1,4 +1,4 @@
-
+# JVM性能调优系列
 
 
 JVM performance optimization: Read the series
@@ -9,6 +9,9 @@ JVM performance optimization: Read the series
 - Part 4: Concurrently compacting GC
 - Part 5: Scalability
 
+
+
+已有大部分中文翻译, 请参考: <http://www.importnew.com/author/caoxudong>
 
 
 
