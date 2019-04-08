@@ -1,14 +1,16 @@
 # noisy neighbor (cloud computing performance)
 
-# 如何避免公有云的坏邻居效应
+# 按量付费？谈谈公有云的坏邻居效应
 
-> noisy neighbor effect, 坏邻居效应, 资源争抢
-
-
+> noisy neighbor effect, 坏邻居效应, 此处指云环境中的资源争抢。
+> 
+> 是不是觉得按量付费很划算？也许是我们太天真了！
+> 
+> 碰到了很多次，阿里云ECS服务器的卡顿和性能问题。所以最终还是要翻译这篇晦涩的文章。
 
 Noisy neighbor is a phrase used to describe a cloud computing infrastructure co-tenant that monopolizes bandwidth, disk I/O, CPU and other resources, and can negatively affect other users' cloud performance. The noisy neighbor effect causes other virtual machines and applications that share the infrastructure to suffer from uneven cloud network performance.
 
-坏邻居(noisy neighbor), 在云计算领域中, 用来描述抢占共有带宽,磁盘I/O、CPU以及其他资源的行为； 坏邻居效应, 对同一环境下的其他虚拟机/应用的性能会造成影响或抖动。一般来说，会对其他用户的性能和体验造成恶劣的影响. 
+吵闹的坏邻居(noisy neighbor), 用于描述云计算领域中, 用来描述抢占共有带宽,磁盘I/O、CPU以及其他资源的行为； 坏邻居效应, 对同一环境下的其他虚拟机/应用的性能会造成影响或抖动。一般来说，会对其他用户的性能和体验造成恶劣的影响. 
 
 
 The cloud is a multi-tenant environment, which means that a single architecture hosts multiple customers' applications and data. The noisy neighbor effect occurs when an application or virtual machine uses the majority of available resources and causes network performance issues for others on the shared infrastructure.
