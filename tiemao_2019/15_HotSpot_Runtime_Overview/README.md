@@ -1,6 +1,10 @@
 ## HotSpot Runtime Overview
 
+## HotSpot虚拟机运行时系统
+
 This section introduces key concepts associated with the major subsystems of the HotSpot runtime system. The following topics are covered:
+
+本文主要介绍HotSpot各个运行时子系统相关的概念。 包含以下内容：
 
 - [Command-Line Argument Processing]()
 - [VM Lifecycle]()
@@ -19,13 +23,27 @@ This section introduces key concepts associated with the major subsystems of the
 
 ### Command-Line Argument Processing
 
+### 命令行参数处理
+
 There are a number of command-line options and environment variables that can affect the performance characteristics of the Java HotSpot Virtual Machine. Some of these options are consumed by the launcher (such as ‘-server’ or ‘-client’), some are processed by the launcher and passed to the JVM, while most are consumed directly by the JVM.
+
+HotSpot虚拟机支持的命令行参数/环境变量非常多。 其中有少部分参数是给引导程序(launcher)使用的（例如 `-server` 或者 `-client`）， 一些选项由启动程序先进行处理, 然后传递给JVM， 总的来说, 绝大部分选项都是给JVM直接使用的。
 
 There are three main categories of options: standard options, non-standard options, and developer options. Standard options are expected to be accepted by all JVM implementations and are stable between releases (though they can be deprecated). Options that begin with -X are non-standard (not guaranteed to be supported on all JVM implementations), and are subject to change without notice in subsequent releases of the Java SDK. Options that begin with -XX are developer options and often have specific system requirements for correct operation and may require privileged access to system configuration parameters; they are not recommended for casual use. These options are also subject to change without notice.
 
+启动参数分为三大类：标准选项（standard options），非标准选项（non-standard options）和开发者选项（developer options）。 标准选项就是所有JVM实现都要支持的部分，并且在各发行版之间保持稳定（当然也可能被废弃）。 
+
+以 `-X` 开头的选项是非标准选项（可能只有某些公司的JVM实现支持这些选项）, 并且JDK厂商可能在后续版本的Java SDK中进行变更。 
+
+以 `-XX` 开头的选项是开发者选项，通常需要一些特殊的权限，这些参数的配置需要专业人员来维护。JDK厂商可能根据需要进行变更。
+
 Command-line flags control the values of internal variables in the JVM, all of which have a type and a default value. For boolean values, the mere presence or lack of presence of a flag on the command-line can control the value of the variables. For-XX boolean flags, a ‘+’ or '-' prefix before the name indicates a true or false value, respectively. For variables that require additional data, there are a number of different mechanisms used to pass that data in. Some flags accept the data passed in directly after the name of the flag without any delineator, while for other flags you have to separate the flag name from the data with a ‘:’ or a ‘=’ character. Unfortunately the method depends on the particular flag and its parsing mechanism. Developer flags (the -XX flags) appear in only three different forms: -XX:+*OptionName*, -XX:-*OptionName*, and -XX:*OptionName*=.
 
+标志类的命令行参数，可以控制JVM内部变量的值，当然这一类变量都具有默认值。 对于布尔值，命令行中仅存在或不存在标志可以控制变量的值。 For-XX布尔标志，名称前面的'+'或' - '前缀分别表示true或false值。 对于需要额外数据的变量，有许多不同的机制用于传递该数据。有些标志接受直接在标志名称之后传入的数据而没有任何描述符，而对于其他标志，您必须分隔标志名称 来自带有'：'或'='字符的数据。 不幸的是，该方法取决于特定标志及其解析机制。 开发人员标志（-XX标志）仅以三种不同的形式出现：-XX：+ * OptionName *， -  XX： -  * OptionName *，和-XX：* OptionName * =。
+
 Most all of the options that take an integer size value will accept ‘k’, ‘m’, or ‘g’ suffixes which are used a kilo-, mega-, or giga- multipliers for the number. These are most often used for arguments that control memory sizes.
+
+采用整数值的选项一般都支持 `k`，`m` 和 `g`作为后缀，用于代表 kilo-, mega-, 和 giga-。 这类参数主要是用于控制内存大小。
 
 ### VM Lifecycle
 
