@@ -2,20 +2,20 @@
 
 This section introduces key concepts associated with the major subsystems of the HotSpot runtime system. The following topics are covered:
 
-- - [Command-Line Argument Processing]()
-- - [VM Lifecycle]()
-- - [VM Class Loading]()
-- - [Bytecode Verifier and Format Checker]()
-- - [Class Data Sharing]()
-- - [Interpreter]()
-- - [Java Exception Handling]()
-- - [Synchronization]()
-- - [Thread Management]()
-- - [C++ Heap Management]()
-- - [Java Native Interface (JNI)]()
-- - [VM Fatal Error Handling]()
-- - [References]()
-- - [Further Reading]()
+- [Command-Line Argument Processing]()
+- [VM Lifecycle]()
+- [VM Class Loading]()
+- [Bytecode Verifier and Format Checker]()
+- [Class Data Sharing]()
+- [Interpreter]()
+- [Java Exception Handling]()
+- [Synchronization]()
+- [Thread Management]()
+- [C++ Heap Management]()
+- [Java Native Interface (JNI)]()
+- [VM Fatal Error Handling]()
+- [References]()
+- [Further Reading]()
 
 ### Command-Line Argument Processing
 
@@ -37,15 +37,15 @@ There are several HotSpot VM launchers in the Java Standard Edition, the general
 
 The launcher operations pertaining to VM startup are:
 
-1. - Parse the command line options, some of the command line options are consumed by the launcher itself, for example -client or -server is used to determine and load the appropriate VM library, others are passed to the VM using JavaVMInitArgs.
-2. - Establish the heap sizes and the compiler type (client or server) if these options are not explicitly specified on the command line.
-3. - Establishes the environment variables such as LD_LIBRARY_PATH and CLASSPATH.
-4. - If the java Main-Class is not specified on the command line it fetches the Main-Class name from the JAR's manifest.
-5. - Creates the VM using JNI_CreateJavaVM in a newly created thread (non primordial thread). Note: creating the VM in the primordial thread greatly reduces the ability to customize the VM, for example the stack size on Windows, and many other limitations
-6. - Once the VM is created and initialized, the Main-Class is loaded, and the launcher gets the main method's attributes from the Main-Class.
-7. - The java main method is then invoked in the VM usingCallStaticVoidMethod, using the marshalled arguments from the command line.
-8. - Once the java main method completes, its very important to check and clear any pending exceptions that may have occurred and also pass back the exit status, the exception is cleared by callingExceptionOccurred, the return value of this method is 0 if successful, any other value otherwise, this value is passed back to the calling process.
-9. - The main thread is detached using DetachCurrentThread, by doing so we decrement the thread count so the DestroyJavaVM can be called safely, also to ensure that the thread is not performing operations in the vm and that there are no active java frames on its stack.
+1. Parse the command line options, some of the command line options are consumed by the launcher itself, for example -client or -server is used to determine and load the appropriate VM library, others are passed to the VM using JavaVMInitArgs.
+2. Establish the heap sizes and the compiler type (client or server) if these options are not explicitly specified on the command line.
+3. Establishes the environment variables such as LD_LIBRARY_PATH and CLASSPATH.
+4. If the java Main-Class is not specified on the command line it fetches the Main-Class name from the JAR's manifest.
+5. Creates the VM using JNI_CreateJavaVM in a newly created thread (non primordial thread). Note: creating the VM in the primordial thread greatly reduces the ability to customize the VM, for example the stack size on Windows, and many other limitations
+6. Once the VM is created and initialized, the Main-Class is loaded, and the launcher gets the main method's attributes from the Main-Class.
+7. The java main method is then invoked in the VM usingCallStaticVoidMethod, using the marshalled arguments from the command line.
+8. Once the java main method completes, its very important to check and clear any pending exceptions that may have occurred and also pass back the exit status, the exception is cleared by callingExceptionOccurred, the return value of this method is 0 if successful, any other value otherwise, this value is passed back to the calling process.
+9. The main thread is detached using DetachCurrentThread, by doing so we decrement the thread count so the DestroyJavaVM can be called safely, also to ensure that the thread is not performing operations in the vm and that there are no active java frames on its stack.
 
 The most important phases are the JNI_CreateJavaVM and DestroyJavaVMthese are described in the next sections.
 
@@ -53,18 +53,18 @@ The most important phases are the JNI_CreateJavaVM and DestroyJavaVMthese are de
 
 The JNI invocation method performs, the following:
 
-1. - Ensures that no two threads call this method at the same time and that no two VM instances are created in the same process. Noting that a VM cannot be created in the same process space once a point in initialization is reached, “point of no return”. This is so because the VM creates static data structures that cannot be re-initialized, at this time.
-2. - Checks to make sure the JNI version is supported, and the ostream is initialized for gc logging. The OS modules are initialized such as the random number generator, the current pid, high-resolution time, memory page sizes, and the guard pages.
-3. - The arguments and properties passed in are parsed and stored away for later use. The standard java system properties are initialized.
-4. - The OS modules are further created and initialized, based on the parsed arguments and properties, are initialized for synchronization, stack, memory, and safepoint pages. At this time other libraries such as libzip, libhpi, libjava, libthread are loaded, signal handlers are initialized and set, and the thread library is initialized.
-5. - The output stream logger is initialized. Any agent libraries (hprof, jdi) required are initialized and started.
-6. - The thread states and the thread local storage (TLS), which holds several thread specific data required for the operation of threads, are initialized.
-7. - The global data is initialized as part of the I phase, such as event log, OS synchronization primitives, perfMemory (performance memory), chunkPool (memory allocator).
-8. - At this point, we can create Threads. The Java version of the main thread is created and attached to the current OS thread. However this thread will not be yet added to the known list of the Threads. The Java level synchronization is initialized and enabled.
-9. - The rest of the global modules are initialized such as theBootClassLoader, CodeCache, Interpreter, Compiler, JNI, SystemDictionary, and Universe. Noting that, we have reached our “point of no return”, ie. We can no longer create another VM in the same process address space.
-10. - The main thread is added to the list, by first locking the Thread_Lock. The Universe, a set of required global data structures, is sanity checked. The VMThread, which performs all the VM's critical functions, is created. At this point the appropriate JVMTI events are posted to notify the current state.
-11. - The following classes java.lang.String, java.lang.System, java.lang.Thread, java.lang.ThreadGroup, java.lang.reflect.Method, java.lang.ref.Finalizer, java.lang.Class, and the rest of the System classes, are loaded and initialized. At this point, the VM is initialized and operational, but not yet fully functional.
-12. - The Signal Handler thread is started, the compilers are initialized and the CompileBroker thread is started. The other helper threads StatSampler and WatcherThreads are started, at this time the VM is fully functional, the JNIEnv is populated and returned to the caller, and the VM is ready to service new JNI requests.
+1. Ensures that no two threads call this method at the same time and that no two VM instances are created in the same process. Noting that a VM cannot be created in the same process space once a point in initialization is reached, “point of no return”. This is so because the VM creates static data structures that cannot be re-initialized, at this time.
+2. Checks to make sure the JNI version is supported, and the ostream is initialized for gc logging. The OS modules are initialized such as the random number generator, the current pid, high-resolution time, memory page sizes, and the guard pages.
+3. The arguments and properties passed in are parsed and stored away for later use. The standard java system properties are initialized.
+4. The OS modules are further created and initialized, based on the parsed arguments and properties, are initialized for synchronization, stack, memory, and safepoint pages. At this time other libraries such as libzip, libhpi, libjava, libthread are loaded, signal handlers are initialized and set, and the thread library is initialized.
+5. The output stream logger is initialized. Any agent libraries (hprof, jdi) required are initialized and started.
+6. The thread states and the thread local storage (TLS), which holds several thread specific data required for the operation of threads, are initialized.
+7. The global data is initialized as part of the I phase, such as event log, OS synchronization primitives, perfMemory (performance memory), chunkPool (memory allocator).
+8. At this point, we can create Threads. The Java version of the main thread is created and attached to the current OS thread. However this thread will not be yet added to the known list of the Threads. The Java level synchronization is initialized and enabled.
+9. The rest of the global modules are initialized such as theBootClassLoader, CodeCache, Interpreter, Compiler, JNI, SystemDictionary, and Universe. Noting that, we have reached our “point of no return”, ie. We can no longer create another VM in the same process address space.
+10. The main thread is added to the list, by first locking the Thread_Lock. The Universe, a set of required global data structures, is sanity checked. The VMThread, which performs all the VM's critical functions, is created. At this point the appropriate JVMTI events are posted to notify the current state.
+11. The following classes java.lang.String, java.lang.System, java.lang.Thread, java.lang.ThreadGroup, java.lang.reflect.Method, java.lang.ref.Finalizer, java.lang.Class, and the rest of the System classes, are loaded and initialized. At this point, the VM is initialized and operational, but not yet fully functional.
+12. The Signal Handler thread is started, the compilers are initialized and the CompileBroker thread is started. The other helper threads StatSampler and WatcherThreads are started, at this time the VM is fully functional, the JNIEnv is populated and returned to the caller, and the VM is ready to service new JNI requests.
 
 #### DestroyJavaVM
 
@@ -72,18 +72,18 @@ This method can be called from the launcher to tear down the VM, it can also be 
 
 The tear down of the VM takes the following steps:
 
-1. - Wait until we are the last non-daemon thread to execute, noting that the VM is still functional.
-2. - Call java.lang.Shutdown.shutdown(), which will invoke Java level shutdown hooks, run finalizers if finalization-on-exit.
+1. Wait until we are the last non-daemon thread to execute, noting that the VM is still functional.
+2. Call java.lang.Shutdown.shutdown(), which will invoke Java level shutdown hooks, run finalizers if finalization-on-exit.
 
-1. - Call before_exit(), prepare for VM exit run VM level shutdown hooks (they are registered through JVM_OnExit()), stop the Profiler,StatSampler, Watcher and GC threads. Post the status events to JVMTI/PI, disable JVMPI, and stop the Signal thread.
+1. Call before_exit(), prepare for VM exit run VM level shutdown hooks (they are registered through JVM_OnExit()), stop the Profiler,StatSampler, Watcher and GC threads. Post the status events to JVMTI/PI, disable JVMPI, and stop the Signal thread.
 
-1. - Call JavaThread::exit(), to release JNI handle blocks, remove stack guard pages, and remove this thread from Threads list. From this point on we cannot execute any more Java code.
-2. - Stop VM thread, it will bring the remaining VM to a safepoint and stop the compiler threads. At a safepoint, care should that we should not use anything that could get blocked by a Safepoint.
-3. - Disable tracing at JNI/JVM/JVMPI barriers.
-4. - Set _vm_exited flag for threads that are still running native code.
-5. - Delete this thread.
-6. - Call exit_globals(), which deletes IO and PerfMemory resources.
-7. - Return to caller.
+1. Call JavaThread::exit(), to release JNI handle blocks, remove stack guard pages, and remove this thread from Threads list. From this point on we cannot execute any more Java code.
+2. Stop VM thread, it will bring the remaining VM to a safepoint and stop the compiler threads. At a safepoint, care should that we should not use anything that could get blocked by a Safepoint.
+3. Disable tracing at JNI/JVM/JVMPI barriers.
+4. Set _vm_exited flag for threads that are still running native code.
+5. Delete this thread.
+6. Call exit_globals(), which deletes IO and PerfMemory resources.
+7. Return to caller.
 
 ### VM Class Loading
 
@@ -203,10 +203,10 @@ In HotSpot, most synchronization is handled through what we call ””fast-path
 
 Per-object synchronization state is encoded in the first word (the so-called *mark word*) of the VM's object representation. For several states, the mark word is multiplexed to point to additional synchronization metadata. (As an aside, in addition, the mark word is also multiplexed to contain GC age data, and the object's identity hashCode value.) The states are:
 
-- - Neutral: Unlocked
-- - Biased: Locked/Unlocked + Unshared
-- - Stack-Locked: Locked + Shared but uncontended The mark points to displaced mark word on the owner thread's stack.
-- - Inflated: Locked/Unlocked + Shared and contended Threads are blocked in monitorenter or wait(). The mark points to heavy-weight "objectmonitor" structure.[8]
+- Neutral: Unlocked
+- Biased: Locked/Unlocked + Unshared
+- Stack-Locked: Locked + Shared but uncontended The mark points to displaced mark word on the owner thread's stack.
+- Inflated: Locked/Unlocked + Shared and contended Threads are blocked in monitorenter or wait(). The mark points to heavy-weight "objectmonitor" structure.[8]
 
 ### Thread Management
 
@@ -224,9 +224,9 @@ There are two basic ways for a thread to be introduced into the VM: execution of
 
 There are a number of objects associated with a given thread in the VM (remembering that Hotspot is written in the C++ object-oriented programming language):
 
-- - The java.lang.Thread instance that represents a thread in Java code
-- - A JavaThread instance that represents the java.lang.Thread instance inside the VM. It contains additional information to track the state of the thread. A JavaThread holds a reference to its associatedjava.lang.Thread object (as an oop), and the java.lang.Thread object also stores a reference to its JavaThread (as a raw int). A JavaThreadalso holds a reference to its associated OSThread instance.
-- - An OSThread instance represents an operating system thread, and contains additional operating-system-level information needed to track thread state. The OSThread then contains a platform specific “handle” to identify the actual thread to the operating system
+- The java.lang.Thread instance that represents a thread in Java code
+- A JavaThread instance that represents the java.lang.Thread instance inside the VM. It contains additional information to track the state of the thread. A JavaThread holds a reference to its associatedjava.lang.Thread object (as an oop), and the java.lang.Thread object also stores a reference to its JavaThread (as a raw int). A JavaThreadalso holds a reference to its associated OSThread instance.
+- An OSThread instance represents an operating system thread, and contains additional operating-system-level information needed to track thread state. The OSThread then contains a platform specific “handle” to identify the actual thread to the operating system
 
 When a java.lang.Thread is started the VM creates the associated JavaThreadand OSThread objects, and ultimately the native thread. After preparing all of the VM state (such as thread-local storage and allocation buffers, synchronization objects and so forth) the native thread is started. The native thread completes initialization and then executes a start-up method that leads to the execution of the java.lang.Thread object's run() method, and then, upon its return, terminates the thread after dealing with any uncaught exceptions, and interacting with the VM to check if termination of this thread requires termination of the whole VM. Thread termination releases all allocated resources, removes the JavaThreadfrom the set of known threads, invokes destructors for the OSThread andJavaThread and ultimately ceases execution when it's initial startup method completes.
 
@@ -240,16 +240,16 @@ The VM uses a number of different internal thread states to characterize what ea
 
 The main thread states from the VM perspective are as follows:
 
-- - _thread_new: a new thread in the process of being initialized
-- - _thread_in_Java: a thread that is executing Java code
-- - _thread_in_vm: a thread that is executing inside the VM
-- - _thread_blocked: the thread is blocked for some reason (acquiring a lock, waiting for a condition, sleeping, performing a blocking I/O operation and so forth)
+- _thread_new: a new thread in the process of being initialized
+- _thread_in_Java: a thread that is executing Java code
+- _thread_in_vm: a thread that is executing inside the VM
+- _thread_blocked: the thread is blocked for some reason (acquiring a lock, waiting for a condition, sleeping, performing a blocking I/O operation and so forth)
 
 For debugging purposes additional state information is also maintained for reporting by tools, in thread dumps, stack traces etc. This is maintained in theOSThreadand some of it has fallen into dis-use, but states reported in thread dumps etc include:
 
-- - MONITOR_WAIT: a thread is waiting to acquire a contended monitor lock
-- - CONDVAR_WAIT: a thread is waiting on an internal condition variable used by the VM (not associated with any Java level object)
-- - OBJECT_WAIT: a thread is performing an Object.wait() call
+- MONITOR_WAIT: a thread is waiting to acquire a contended monitor lock
+- CONDVAR_WAIT: a thread is waiting on an internal condition variable used by the VM (not associated with any Java level object)
+- OBJECT_WAIT: a thread is performing an Object.wait() call
 
 Other subsystems and libraries impose their own state information, such as the JVMTI system and the ThreadStateexposed by the java.lang.Threadclass itself. Such information is generally not accessible to, nor relevant to, the management of threads inside the VM.
 
@@ -257,11 +257,11 @@ Other subsystems and libraries impose their own state information, such as the J
 
 People are often surprised to discover that even executing a simple “Hello World” program can result in the creation of a dozen or more threads in the system. These arise from a combination of internal VM threads, and library related threads (such as reference handler and finalizer threads). The main kinds of VM threads are as follows:
 
-- - VM thread: This singleton instance of VMThread is responsible for executing VM operations, which are discussed below
-- - Periodic task thread: This singleton instance of WatcherThreadsimulates timer interrupts for executing periodic operations within the VM
-- - GC threads: These threads, of different types, support parallel and concurrent garbage collection
-- - Compiler threads: These threads perform runtime compilation of bytecode to native code
-- - Signal dispatcher thread: This thread waits for process directed signals and dispatches them to a Java level signal handling method
+- VM thread: This singleton instance of VMThread is responsible for executing VM operations, which are discussed below
+- Periodic task thread: This singleton instance of WatcherThreadsimulates timer interrupts for executing periodic operations within the VM
+- GC threads: These threads, of different types, support parallel and concurrent garbage collection
+- Compiler threads: These threads perform runtime compilation of bytecode to native code
+- Signal dispatcher thread: This thread waits for process directed signals and dispatches them to a Java level signal handling method
 
 All threads are instances of the Thread class, and all threads that execute Java code are JavaThread instances (a subclass of Thread). The VM keeps track of all threads in a linked-list known as the Threads_list, and which is protected by the Threads_lock – one of the key synchronization locks used within the VM.
 
@@ -315,18 +315,18 @@ It is very important to provide easy ways to handle fatal errors for any softwar
 
 Usually when JVM crashes on a fatal error, it will dump a hotspot error log file called hs_err_pid*<pid>*.log, (where *<pid>* is replaced by the crashed java process id) to the Windows desktop or the current application directory on Solaris/Linux. Several enhancements have been made to improve the diagnosability of this file since JDK 6 and many of them have been back ported to the JDK-1.4.2_09 release. Here are some highlights of these improvements:
 
-- - Memory map is included in the error log file so it is easy to see how memory was laid out during crash.
-- - -XX:ErrorFile= option is provided so that user can set the path name of the error log file.
-- - OutOfMemoryError will trigger the file to be generated as well.
+- Memory map is included in the error log file so it is easy to see how memory was laid out during crash.
+- -XX:ErrorFile= option is provided so that user can set the path name of the error log file.
+- OutOfMemoryError will trigger the file to be generated as well.
 
 Another important feature is you can specify -XX:OnError="*cmd1 args...;com2 ...*" to the java command so that whenever VM crashes, it will execute a list of commands you specified within the quotes shown above. A typical usage of this feature is you can invoke the debugger such as dbx or Windbg to look into the crash when that happens. For the earlier releases, you can specify
 -XX:+ShowMessageBoxOnError as a runtime option so that when VM crashes, you can attach the running Java process to your favorite debugger.
 
 Having said something about HotSpot error log files, here is a brief summary on how JVM internally handles fatal errors.
 
-- - The VMError class was invented for aggregating and dumping the hs_err_pid*<pid>*.log file. It is invoked by the OS-specific code when an unrecognized signal/exception is seen.
-- - The VM uses signals internally for communication. The fatal error handler is invoked when the signal is not recognized. In the unrecognized case, it may come from a fault in application JNI code, OS native libraries, JRE native libraries, or the JVM itself.
-- - The fatal error handler was carefully written to avoid causing faults itself, in the case of StackOverflow or crashes when critical locks are held (like malloc lock).
+- The VMError class was invented for aggregating and dumping the hs_err_pid*<pid>*.log file. It is invoked by the OS-specific code when an unrecognized signal/exception is seen.
+- The VM uses signals internally for communication. The fatal error handler is invoked when the signal is not recognized. In the unrecognized case, it may come from a fault in application JNI code, OS native libraries, JRE native libraries, or the JVM itself.
+- The fatal error handler was carefully written to avoid causing faults itself, in the case of StackOverflow or crashes when critical locks are held (like malloc lock).
 
 Since OutOfMemoryError is so common to some large scale applications, it is critical to provide useful diagnostic message to users so that they could quickly identify a solution, sometimes by just specifying a larger Java heap size. When OutOfMemoryError happens, the error message will indicate which type of memory is problematic. For example, it could be Java heap space or PermGen space etc. Since JDK 6, a stack trace will be included in the error message. Also,
 -XX:OnOutOfMemoryError="*<cmd>*" option was invented so that a command will be run when the first OutOfMemoryError is thrown. Another nice feature that is worth mentioning is a built-in heap dump at OutOfMemoryError. It is enabled by specifying -XX:+HeapDumpOnOutOfMemoryError option and you can also tell the VM where to put the heap dump file by specifying
@@ -342,27 +342,27 @@ We strongly encourage you to check out the “Trouble-Shooting and Diagnostic Gu
 
 ### References
 
-[1] Java Language Specification, Third Edition. Gosling, Joy, Steele, Bracha. <http://java.sun.com/docs/books/jls/third_edition/html/execution.html#12.2>
+- [1] Java Language Specification, Third Edition. Gosling, Joy, Steele, Bracha. <http://java.sun.com/docs/books/jls/third_edition/html/execution.html#12.2>
 
-[2] Java Virtual Machine Specification, Second Edition. Tim Lindholm, Frank Yellin. <http://java.sun.com/docs/books/vmspec/2nd-edition/html/VMSpecTOC.doc.html>
+- [2] Java Virtual Machine Specification, Second Edition. Tim Lindholm, Frank Yellin. <http://java.sun.com/docs/books/vmspec/2nd-edition/html/VMSpecTOC.doc.html>
 
-[3] Amendment to Java Virtual Machine Specification. Chapter 5: Loading, Linking and Initializing. <http://java.sun.com/docs/books/vmspec/2nd-edition/ConstantPool.pdf>
+- [3] Amendment to Java Virtual Machine Specification. Chapter 5: Loading, Linking and Initializing. <http://java.sun.com/docs/books/vmspec/2nd-edition/ConstantPool.pdf>
 
-[4] Dynamic Class Loading in the Java Virtual Machine. Shen Liang, Gilad Bracha. Proc. of the ACM Conf. on Object-Oriented Programming, Systems, Languages and Applications, October 1998 <http://www.bracha.org/classloaders.ps>
+- [4] Dynamic Class Loading in the Java Virtual Machine. Shen Liang, Gilad Bracha. Proc. of the ACM Conf. on Object-Oriented Programming, Systems, Languages and Applications, October 1998 <http://www.bracha.org/classloaders.ps>
 
-[5] “Safe Clsss and Data Evolution in Large and Long-Lived Java Applications”, Mikhail Dmitriev, <http://research.sun.com/techrep/2001/smli_tr-2001-98.pdf>
+- [5] “Safe Clsss and Data Evolution in Large and Long-Lived Java Applications”, Mikhail Dmitriev, <http://research.sun.com/techrep/2001/smli_tr-2001-98.pdf>
 
-[6] Java Language Specification, Third Edition. Gosling, Joy, Steele, Bracha. <http://java.sun.com/docs/books/jls/third_edition/html/exceptions.html>
+- [6] Java Language Specification, Third Edition. Gosling, Joy, Steele, Bracha. <http://java.sun.com/docs/books/jls/third_edition/html/exceptions.html>
 
-[7] “Biased Locking in HotSpot”.<http://blogs.oracle.com/dave/entry/biased_locking_in_hotspot>
+- [7] “Biased Locking in HotSpot”.<http://blogs.oracle.com/dave/entry/biased_locking_in_hotspot>
 
-[8] “Let’s say you’re interested in using HotSpot as a vehicle for synchronization research ...”. <http://blogs.oracle.com/dave/entry/lets_say_you_re_interested>
+- [8] “Let’s say you’re interested in using HotSpot as a vehicle for synchronization research ...”. <http://blogs.oracle.com/dave/entry/lets_say_you_re_interested>
 
-[9] “Java Native Interface Specifications” <http://java.sun.com/javase/6/docs/technotes/guides/jni/spec/jniTOC.html>
+- [9] “Java Native Interface Specifications” <http://java.sun.com/javase/6/docs/technotes/guides/jni/spec/jniTOC.html>
 
-[10] “The Java Native Interface Programmer’s Guide and Specification”, Sheng Liang, <http://java.sun.com/docs/books/jni/html/titlepage.html>
+- [10] “The Java Native Interface Programmer’s Guide and Specification”, Sheng Liang, <http://java.sun.com/docs/books/jni/html/titlepage.html>
 
-[11] “Trouble-Shooting and Diagnostic Guide” <http://java.sun.com/javase/6/webnotes/trouble/>
+- [11] “Trouble-Shooting and Diagnostic Guide” <http://java.sun.com/javase/6/webnotes/trouble/>
 
 
 
