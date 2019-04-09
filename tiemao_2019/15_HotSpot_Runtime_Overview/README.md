@@ -6,12 +6,12 @@ This section introduces key concepts associated with the major subsystems of the
 
 本文主要介绍HotSpot各个运行时子系统相关的概念。 包含以下内容：
 
-- [Command-Line Argument Processing]()
-- [VM Lifecycle]()
+- [命令行参数处理]()
+- [虚拟机的生命周期]()
 - [VM Class Loading]()
 - [Bytecode Verifier and Format Checker]()
 - [Class Data Sharing]()
-- [Interpreter]()
+- [解释器（Interpreter）]()
 - [Java Exception Handling]()
 - [Synchronization]()
 - [Thread Management]()
@@ -59,11 +59,11 @@ Most all of the options that take an integer size value will accept ‘k’, ‘
 
 ### VM Lifecycle
 
-### VM的生命周期
+### 虚拟机的生命周期
 
 The following sections gives an overview of the general purpose java launcher pertaining to the lifecyle of the HotSpot VM.
 
-HotSpot 虚拟机的生命周期, 主要分为3个部分:
+下面介绍HotSpot 虚拟机的生命周期。
 
 #### Launcher
 
@@ -225,7 +225,7 @@ Read-write shared data consists of mutable method objects (methodOops), constant
 
 ### Interpreter
 
-### 翻译器(Interpreter)
+### 解释器（Interpreter）
 
 The current HotSpot interpreter, which is used for executing bytecodes, is a template based interpreter. The HotSpot runtime a.k.a. InterpreterGenerator generates an interpreter in memory at the startup using the information in the TemplateTable (assembly code corresponding to each bytecode). A template is a description of each bytecode. The TemplateTable defines all the templates and provides accessor functions to get the template for a given bytecode. The non-product flag -XX:+PrintInterpretercan be used to view the template table generated in memory during the VM's startup process.
 
@@ -420,7 +420,7 @@ We strongly encourage you to check out the “Trouble-Shooting and Diagnostic Gu
 
 ### References
 
-### 参考
+### 参考文档
 
 - [1] Java Language Specification, Third Edition. Gosling, Joy, Steele, Bracha. <http://java.sun.com/docs/books/jls/third_edition/html/execution.html#12.2>
 
