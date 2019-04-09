@@ -39,21 +39,45 @@ There are three main categories of options: standard options, non-standard optio
 
 Command-line flags control the values of internal variables in the JVM, all of which have a type and a default value. For boolean values, the mere presence or lack of presence of a flag on the command-line can control the value of the variables. For-XX boolean flags, a ‘+’ or '-' prefix before the name indicates a true or false value, respectively. For variables that require additional data, there are a number of different mechanisms used to pass that data in. Some flags accept the data passed in directly after the name of the flag without any delineator, while for other flags you have to separate the flag name from the data with a ‘:’ or a ‘=’ character. Unfortunately the method depends on the particular flag and its parsing mechanism. Developer flags (the -XX flags) appear in only three different forms: -XX:+*OptionName*, -XX:-*OptionName*, and -XX:*OptionName*=.
 
-标志类的命令行参数，可以控制JVM内部变量的值，当然这一类变量都具有默认值。 对于布尔值，命令行中仅存在或不存在标志可以控制变量的值。 For-XX布尔标志，名称前面的'+'或' - '前缀分别表示true或false值。 对于需要额外数据的变量，有许多不同的机制用于传递该数据。有些标志接受直接在标志名称之后传入的数据而没有任何描述符，而对于其他标志，您必须分隔标志名称 来自带有'：'或'='字符的数据。 不幸的是，该方法取决于特定标志及其解析机制。 开发人员标志（-XX标志）仅以三种不同的形式出现：-XX：+ * OptionName *， -  XX： -  * OptionName *，和-XX：* OptionName * =。
+命令行参数可以控制JVM内部一些变量的值，当然这些变量都是具有默认值的。 
+
+对于布尔值，命令行中存在对应的参数就表示true，命令行中不存在对应的参数则表示false。
+
+对于 `-XX` 的布尔参数，在名称前面加上前缀 `+`或`-` 来表示true或false值。
+
+对于需要传入数据的变量，有几种不同的方式。
+
+一部分标志直接在选项名后面带上传入的数据， 其他的则通过分隔符来区分, 比如 `:` 或 `=` 字符。 
+
+可能花样确实很多，但主要是取决于该标志的数据类型和解析机制。 
+
+开发者选项（`-XX`）则只有三种格式： 加减等, `-XX:+OptionName`, `-XX:-OptionName`, 和 `-XX:OptionName=`。
 
 Most all of the options that take an integer size value will accept ‘k’, ‘m’, or ‘g’ suffixes which are used a kilo-, mega-, or giga- multipliers for the number. These are most often used for arguments that control memory sizes.
 
-采用整数值的选项一般都支持 `k`，`m` 和 `g`作为后缀，用于代表 kilo-, mega-, 和 giga-。 这类参数主要是用于控制内存大小。
+接收整形数值的选项,一般都支持 `k`，`m` 和 `g`等简写方式，分别代表 kilo-, mega-, 和 giga-, 主要用于控制内存大小。
 
 ### VM Lifecycle
 
+### VM的生命周期
+
 The following sections gives an overview of the general purpose java launcher pertaining to the lifecyle of the HotSpot VM.
+
+HotSpot 虚拟机的生命周期, 主要分为3个部分:
 
 #### Launcher
 
+#### 启动程序(Launcher)
+
 There are several HotSpot VM launchers in the Java Standard Edition, the general purpose launcher typically used is the java command on Unix and on Windows java and javaw commands, not to be confused with javaws which is a network based launcher.
 
+Java Standard Edition 默认存在多个HotSpot启动程序，在Unix上一般是 `java` 命令， 在Windows上则是`java.exe`和`javaw.exe`程序, javaw 是窗口版无命令行界面的当然不要与Java Web Start(javaws)的启动器相混淆。
+
+> `javaw`命令基本等同于`java`, 只是`javaw`没有关联的控制台窗口. 如果不想看到命令提示符, 可以使用`javaw`命令. 如果启动失败, 则javaw会显示一个错误对话框.
+
 The launcher operations pertaining to VM startup are:
+
+与JVM启动相关的操作包括：
 
 1. Parse the command line options, some of the command line options are consumed by the launcher itself, for example -client or -server is used to determine and load the appropriate VM library, others are passed to the VM using JavaVMInitArgs.
 2. Establish the heap sizes and the compiler type (client or server) if these options are not explicitly specified on the command line.
@@ -65,7 +89,21 @@ The launcher operations pertaining to VM startup are:
 8. Once the java main method completes, its very important to check and clear any pending exceptions that may have occurred and also pass back the exit status, the exception is cleared by callingExceptionOccurred, the return value of this method is 0 if successful, any other value otherwise, this value is passed back to the calling process.
 9. The main thread is detached using DetachCurrentThread, by doing so we decrement the thread count so the DestroyJavaVM can be called safely, also to ensure that the thread is not performing operations in the vm and that there are no active java frames on its stack.
 
+--
+
+1. 解析命令行选项，部分选项是由启动程序自身使用的，例如 `-client`或`-server`用来确定加载哪些VM库，剩下的参数则通过JavaVMInitArgs传递给JVM。
+2. 如果未显式指定堆内存和编译器, 则需要根据当前环境, 确定堆内存的大小,和编译器类型（client/server）。
+3. 确定环境变量，如 `LD_LIBRARY_PATH`和`CLASSPATH`。
+4. 如果命令行中没有指定主类(Main-Class)，则从JAR文件的清单中获取Main-Class信息。
+5. 在一个新创建的线程（非原始线程）中, 通过JNI_CreateJavaVM创建JVM。 请注意：直接在原始线程中创建JVM会大大降低可配置性，比如Windows系统下的栈空间大小(stack size)以及各种限制。
+6. 创建并初始化JVM后，会加载Main-Class，启动程序从Main-Class中获取`main`方法的信息。
+7. 然后JVM通过 `usingCallStaticVoidMethod` 来执行java程序的main方法, 并整理命令行参数作为main方法的参数传进去。
+8. main方法执行完成后，需要检查是否抛出了异常, 并通过 `callingExceptionOccurred` 清除异常， 如果处理成功则返回`0`，否则返回其他值，这个返回值最终会传递给调用进程。
+9. 使用 `DetachCurrentThread` 分离主线程，减少线程的计数，以便安全地调用 `DestroyJavaVM`，同时也确保该线程不再执行操作, 还要确保该线程栈上没有活动的java frame。
+
 The most important phases are the JNI_CreateJavaVM and DestroyJavaVMthese are described in the next sections.
+
+其中最重要的2个阶段是 `JNI_CreateJavaVM` 和 `DestroyJavaVMthese`
 
 #### JNI_CreateJavaVM
 
@@ -104,6 +142,8 @@ The tear down of the VM takes the following steps:
 7. Return to caller.
 
 ### VM Class Loading
+
+### 类加载
 
 The Java Hotspot VM supports class loading as defined by the Java Language Specification, Third Edition [1], the Java Virtual Machine Specification (JVMS), Second Edition [2] and as amended by the updated JVMS chapter 5, Loading, Linking and Initializing [3].
 
@@ -151,6 +191,8 @@ These hash tables are all protected by the SystemDictionary_lock. In general the
 
 ### Bytecode Verifier and Format Checker
 
+### 字节码校验与格式检查
+
 The Java language is a type-safe language, and standard Java compilers produce valid classfiles and type-safe code, but the JVM can't guarantee that the code was produced by a trustworthy compiler, so it must reestablish that type-safety through a process at link-time called bytecode verification.
 
 Bytecode verification is specified in section 4.8 of the Java Virtual Machine Specification. The specification prescribes both static and dynamic constraints on the code which the JVM verifies. If any violations are found, the VM will throw a VerifyError and prevent the class from being linked.
@@ -164,6 +206,8 @@ New in JDK6 is the second method for verification which is called “type verifi
 For all classfiles with a version number less than 50, such as those created prior to JDK6, the JVM will use the traditional type inference method to verify the classfiles. For classfiles greater than or equal to 50, the StackMapTable attributes will be present and the new verifier will be used. Because of the possibility of older external tools that might instrument the bytecode but neglect to update theStackMapTable attribute, certain verification errors that occur during type-checking verification may failover to the type-inference method. Should that pass succeed, the class file will be verified.
 
 ### Class Data Sharing
+
+### Class 的数据共享
 
 Class data sharing (CDS) is a feature introduced in J2SE 5.0 that is intended to reduce the startup time for Java programming language applications, in particular smaller applications, as well as reduce footprint. When the JRE is installed on 32-bit platforms using the Sun provided installer, the installer loads a set of classes from the system jar file into a private internal representation, and dumps that representation to a file, called a “shared archive”. If the Sun JRE installer is not being used, this can be done manually, as explained below. During subsequent JVM invocations, the shared archive is memory-mapped in, saving the cost of loading those classes and allowing much of the JVM's metadata for these classes to be shared among multiple JVM processes.
 
@@ -181,6 +225,8 @@ Read-write shared data consists of mutable method objects (methodOops), constant
 
 ### Interpreter
 
+### 翻译器(Interpreter)
+
 The current HotSpot interpreter, which is used for executing bytecodes, is a template based interpreter. The HotSpot runtime a.k.a. InterpreterGenerator generates an interpreter in memory at the startup using the information in the TemplateTable (assembly code corresponding to each bytecode). A template is a description of each bytecode. The TemplateTable defines all the templates and provides accessor functions to get the template for a given bytecode. The non-product flag -XX:+PrintInterpretercan be used to view the template table generated in memory during the VM's startup process.
 
 The template design performs better than a classic switch-statement loop for several reasons. First, the switch statement performs repeated compare operations, and in the worst case it may be required to compare a given command with all but one bytecodes to locate the required one. Second, it uses a separate software stack to pass Java arguments, while the native C stack is used by the VM itself. A number of JVM internal variables, such as the program counter or the stack pointer for a Java thread, are stored in C variables, which are not guaranteed to be always kept in the hardware registers. Management of these software interpreter structures consumes a considerable share of total execution time.[5]
@@ -193,6 +239,8 @@ The HotSpot interpreter is also a critical part of the overall HotSpot adaptive 
 
 ### Java Exception Handling
 
+### Java 异常处理
+
 Java virtual machines use exceptions to signal that a program has violated the semantic constraints of the Java language. For example, an attempt to index outside the bounds of an array will cause an exception. An exception causes a non-local transfer of control from the point where the exception occurred (or was*thrown*) to a point specified by the programmer (or where the exception is *caught)*.[6]
 
 The HotSpot interpreter, dynamic compilers, and runtime all cooperate to implement exception handling. There are two general cases of exception handling: either the exception is thrown or caught in the same method, or it's caught by a caller. The latter case is more complicated and requires *stack unwinding* to find the appropriate handler.
@@ -202,6 +250,8 @@ Exceptions can be initiated by the *throw* bytecode, a return from a VM-internal
 Once the correct handler is found, the VM execution state is updated, and we jump to the handler as Java code execution is resumed.
 
 ### Synchronization
+
+### 同步(Synchronization)
 
 Broadly, we can define “synchronization” as a mechanism that prevents, avoids or recovers from the inopportune interleavings (commonly called “races”) of concurrent operations. In Java, concurrency is expressed through the thread construct. Mutual exclusion is a special case of synchronization where at most a single thread is permitted access to protected code or data.
 
@@ -227,6 +277,8 @@ Per-object synchronization state is encoded in the first word (the so-called *ma
 - Inflated: Locked/Unlocked + Shared and contended Threads are blocked in monitorenter or wait(). The mark points to heavy-weight "objectmonitor" structure.[8]
 
 ### Thread Management
+
+### 线程管理
 
 Thread management covers all aspects of the thread lifecycle, from creation through to termination, and the coordination of threads within the VM. This involves management of threads created from Java code (whether application code or library code), native threads that attach directly to the VM, or internal VM threads created for a range of purposes. While the broader aspects of thread management are platform independent, the details necessarily vary depending on the underlying operating system.
 
@@ -295,6 +347,8 @@ Safepoints are initiated using a cooperative, polling-based mechanism. In simple
 
 ### C++ Heap Management
 
+### C++ 堆内存管理
+
 In addition to the Java heap, which is maintained by the Java heap manager and garbage collectors, HotSpot also uses the C/C++ heap (also called the malloc heap) for storage of VM-internal objects and data. A set of C++ classes derived from the base class *Arena* is used to manage C++ heap operations.
 
 Arena and its subclasses provide a fast allocation layer that sits on top of malloc/free. Each Arena allocates memory blocks (or *Chunks**)* out of 3 global *ChunkPool**s.* Each ChunkPool satisfies allocation requests for a distinct range of allocation sizes. For example, a request for 1k of memory will be allocated from the “small” ChunkPool, while a 10K allocation will be made from the "medium" ChunkPool. This is done to avoid wasteful memory fragmentation.
@@ -304,6 +358,8 @@ The Arena system also provides better performance than pure malloc/free. The lat
 Arenas are used for thread-local resource management (*ResourceArea*) and handle management (*HandleArea*). They are also used by both the client and server compilers during compilation.
 
 ### Java Native Interface (JNI)
+
+### Java本地接口调用(JNI)
 
 The JNI is a native programming interface. It allows Java code that runs inside a Java virtual machine to interoperate with applications and libraries written in other programming languages, such as C, C++, and assembly.
 
@@ -328,6 +384,8 @@ A command line option, -Xcheck:jni, is provided to aid in debugging problems in 
 HotSpot must take special care to keep track of which threads are currently executing in native methods. During some VM activities, notably some phases of garbage collection, one or more threads must be halted at a *safepoint* in order to guarantee that the Java memory heap is not modified during the sensitive activity. When we wish to bring a thread executing in native code to a safepoint, it is allowed to continue executing native code, but the thread will be stopped when it attempts to return into Java code or make a JNI call.
 
 ### VM Fatal Error Handling
+
+### JVM 致命错误处理
 
 It is very important to provide easy ways to handle fatal errors for any software. Java Virtual Machine, i.e. JVM is not an exception. A typical fatal error would be OutOfMemoryError. Another common fatal error on Windows is called Access Violation error which is equivalent to Segmentation Fault on Solaris/Linux platforms. It is critical to understand the cause of these kind of fatal errors in order to fix them either in your application or sometimes, in JVM itself.
 
@@ -356,9 +414,13 @@ We strongly encourage you to check out the “Trouble-Shooting and Diagnostic Gu
 
 ### Further Reading
 
+### 深入阅读
+
 “Resolving the Mysteries of Java SE Classloader”, Jeff Nisewanger, Karen Kinnear, JavaOne 2006.
 
 ### References
+
+### 参考
 
 - [1] Java Language Specification, Third Edition. Gosling, Joy, Steele, Bracha. <http://java.sun.com/docs/books/jls/third_edition/html/execution.html#12.2>
 
