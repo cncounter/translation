@@ -168,7 +168,7 @@ No properties
 ## 6、 数组去重
 
 ```
-j = [...new Set([1, 2, 3, 3])]
+j = [...new Set([1, 2, 3, 3])]; // ... 剩余参数
 // 结果是 [1, 2, 3]
 ```
 
@@ -182,7 +182,7 @@ person = { name: 'David Walsh', gender: 'Male' };
 tools = { computer: 'Mac', editor: 'Atom' };
 attributes = { handsomeness: 'Extreme', hair: 'Brown', eyes: 'Blue' };
 
-summary = {...person, ...tools, ...attributes};
+summary = {...person, ...tools, ...attributes}; // ... 展开语法
 ```
 
 结果是:
@@ -198,6 +198,11 @@ summary = {...person, ...tools, ...attributes};
   name: "David Walsh"
 }
 ```
+
+其中，我们使用了 [展开语法](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/Spread_syntax);
+
+> 在JS中, 三个点号(`...`) 被称为: 展开语法(spread syntax), 剩余参数(rest parameters), 剩余表达式(rest expression)等
+
 
 ## 8、URL地址栏的请求参数
 
