@@ -1,7 +1,10 @@
 # The Pauseless GC Algorithm
 
+# 无停顿的垃圾收集算法
+
 
 ```
+作者: 
 Cliff Click
 Gil Tene 
 Michael Wolf
@@ -12,28 +15,39 @@ Mountain View, CA 94043
 {cliffc,gil,wolf}@azulsystems.com
 ```
 
-Permission to make digital or hard copies of all or part of this work for
-personal or classroom use is granted without fee provided that copies are
-not made or distributed for profit or commercial advantage and that copies
-bear this notice and the full citation on the first page. To copy otherwise,
-or republish, to post on servers or to redistribute to lists, requires
-prior specific permission and/or a fee.
-VEE’05, June 11–12, 2005, Chicago, Illinois, USA.
-Copyright 2005 ACM 1-59593-047-7/05/0006...$5.00.
+> Permission to make digital or hard copies of all or part of this work for personal or classroom use is granted without fee provided that copies are not made or distributed for profit or commercial advantage and that copies bear this notice and the full citation on the first page. To copy otherwise, or republish, to post on servers or to redistribute to lists, requires prior specific permission and/or a fee.
+
+> 以学习和研究为目的, 免费提供给个人或者教学使用，但不得用于谋取利益或商业利益，且需要在第一页展示本声明。 以其他方式复制、或者重新发布、扩散，则需事先获得许可和/或付费。
+
+> VEE’05, June 11–12, 2005, Chicago, Illinois, USA.
+
+> Copyright 2005 ACM 1-59593-047-7/05/0006...$5.00.
 
 
 ## ABSTRACT
 
+## 摘要
+
 Modern transactional response-time sensitive applications have run into practical limits on the size of garbage collected heaps. The heap can only grow until GC pauses exceed the responsetime limits. Sustainable, scalable concurrent collection has become a feature worth paying for.
+
+当前，有很多对业务响应时间非常敏感的系统, 其堆内存的大小,真切地受到了垃圾收集器的限制。  对这些系统来说，堆内存不能设置得非常大，必须要满足GC的暂停时间小于业务允许的最大响应时间。 业界迫切需要可持续的、可伸缩的并发垃圾收集器。
 
 Azul Systems has built a custom system (CPU, chip, board, and OS) specifically to run garbage collected virtual machines. The custom CPU includes a read barrier instruction. The read barrier enables a highly concurrent (no stop-the-world phases), parallel and compacting GC algorithm. The Pauseless algorithm is designed for uninterrupted application execution and consistent mutator throughput in every GC phase.
 
+Azul Systems 公司专门定制了一套系统(定制内容包括CPU、芯片组、主板以及操作系统)，用来运行支持垃圾收集的虚拟机。定制的CPU支持[读屏障指令]。 读屏障(read barrier)用于支持高并发(不停机)、并行执行、具有内存碎片整理功能的GC算法。 无停顿的垃圾收集算法是为了支持不间断的应用程序执行而专门设计的, 在每个GC阶段保持一致的吞吐量走势。
+
 Beyond the basic requirement of collecting faster than the allocation rate, the Pauseless collector is never in a “rush” to complete any GC phase. No phase places an undue burden on the mutators nor do phases race to complete before the mutators produce more work. Portions of the Pauseless algorithm also feature a “self-healing” behavior which limits mutator overhead and reduces mutator sensitivity to the current GC state.
+
+除了满足垃圾收集的速度要快于内存分配的速度这个基本要求，无停顿的垃圾收集器从不急于完成任何GC阶段。任何阶段都不会给修改器带来不必要的负担，也不需要在修改器产生更多工作前抢着完成某个阶段。无停顿的垃圾收集算法的某些部分还具有“自修复”行为，这种行为限制了修改器的开销，并降低了修改器对当前GC状态的敏感度。
 
 We present the Pauseless GC algorithm, the supporting hardware features that enable it, and data on the overhead, efficiency, and pause times when running a sustained workload.
 
+本文主要介绍无停顿的垃圾收集算法、硬件需要兼容的特性, 以及在持续运行工作负载时的开销、性能情况、以及暂停时间等数据。
+
 
 ## Categories and Subject Descriptors
+
+## 所属分类与主题
 
 D.3.4 [Processors] – Memory management, 
 
@@ -41,11 +55,17 @@ D.3.3 [Language Constructs and Features] – Dynamic storage management,
 
 ## General Terms
 
+## 一般条款
+
 Languages, Performance, Design, Algorithms.
 
 ## Keywords
 
+## 关键字
+
 Read barriers, memory management, garbage collection, concurrent GC, Java, custom hardware
+
+读屏障、内存管理、垃圾收集、并发GC、Java、硬件定制
 
 ## 1. INTRODUCTION
 
