@@ -34,7 +34,7 @@ Modern transactional response-time sensitive applications have run into practica
 
 Azul Systems has built a custom system (CPU, chip, board, and OS) specifically to run garbage collected virtual machines. The custom CPU includes a read barrier instruction. The read barrier enables a highly concurrent (no stop-the-world phases), parallel and compacting GC algorithm. The Pauseless algorithm is designed for uninterrupted application execution and consistent mutator throughput in every GC phase.
 
-Azul Systems 公司专门定制了一套系统(定制内容包括CPU、芯片组、主板以及操作系统)，用来运行支持垃圾收集的虚拟机。定制的CPU支持[读屏障指令]。 读屏障(read barrier)用于支持高并发(不停机)、并行执行、具有内存碎片整理功能的GC算法。 无停顿的垃圾收集算法是为了支持不间断的应用程序执行而专门设计的, 在每个GC阶段保持一致的吞吐量走势。
+Azul Systems 公司专门定制了一套系统(定制内容包括CPU、芯片组、主板以及操作系统)，用来运行支持垃圾收集的虚拟机。定制的CPU支持[读屏障指令]。 读屏障(read barrier)用于支持高并发(不停机)、并行执行、具有内存碎片整理功能的GC算法。 无停顿的垃圾收集算法是为了支持不间断的应用程序执行而专门设计的, 在各个GC阶段保持一致的吞吐量走势。
 
 Beyond the basic requirement of collecting faster than the allocation rate, the Pauseless collector is never in a “rush” to complete any GC phase. No phase places an undue burden on the mutators nor do phases race to complete before the mutators produce more work. Portions of the Pauseless algorithm also feature a “self-healing” behavior which limits mutator overhead and reduces mutator sensitivity to the current GC state.
 
@@ -69,15 +69,29 @@ Read barriers, memory management, garbage collection, concurrent GC, Java, custo
 
 ## 1. INTRODUCTION
 
+## 1. 简介
+
 Many of today's enterprise applications are based on garbage collected virtual machine environments such as Java and .NET.
+
+现如今，有很多企业应用基于虚拟机环境而开发, 例如Java和.net应用, 当然也依赖虚拟机提供的自动垃圾回收机制。
 
 Most have response time sensitive components – for example, a person may be waiting for a web page to load, or a credit-card swipe needs to complete. Stopping for an inopportune GC pause can lead to unacceptable response times. For these applications it is unacceptable for collectors to drive high average throughput numbers at the expense of occasional poor response times.
 
+有一部分系统对响应时间非常敏感 —— 例如, 正在等待网页加载的用户, 或者在等待信用卡刷卡完成的消费者.一次不合时宜的GC暂停可能导致不可接受的响应时间. 对这部分系统来说, 仅仅是提高平均吞吐量、却影响到响应时间，这是完全不能接受的。
+
 These enterprise applications need a low-pause time collector (pauses on the order of human reflexes, 10-100ms) that can handle very large Java programs (heap sizes from 100MB to 100GB) and highly concurrent workloads (100s of concurrent mutator threads). Such a collector needs to perform consistently and predictably over long periods of time, rather than simply excel at short time-bursts of workload.
+
+这类企业应用程序需要非常低的GC暂停时间(相对于人类的反应, 需要控制在10-100ms以内), 同时能应对非常庞大的Java程序(堆内存大小为 100MB到100GB这个范围), 以及高并发环境(上百个并发修改线程).
 
 Many modern garbage collectors rely on write barriers imposed on mutator heap writes, to keep track of references between different heap regions. This enables an efficient generational or region-based GC and is widely used in many garbage-collected languages including most production Java implementations. Read barriers, on the other hand, are rarely used in production systems despite a wealth of academic research because of the high mutator cost they usually incur.
 
+当前许多先进的垃圾收集器, 都依赖于对修改器强制增加写屏障(write barrier),控制堆内存写入, 来跟踪跨域不同堆区之间的引用. 基于分代/分区的GC算法具有非常优越的性能, 广泛应用于各种产品级虚拟机实现, 包括JVM. 换句话说，在生产环境中很少使用读屏障, 尽管有很多的学术研究, 主要还是因为修改器的成本太高。
+
 Azul Systems has built a custom system (CPU, chip, board, and OS) specifically to run garbage collected virtual machines. The custom CPU includes a read barrier instruction. The read barrier enables a highly concurrent, parallel and compacting GC algorithm. The Pauseless GC algorithm is simple, efficient (low mutator overhead), and has no Stop-The-World pauses.
+
+Azul Systems 公司构建了一套专门定制的系统(包括CPU、芯片组、主板以及操作系统)，用来运行支持垃圾收集的虚拟机。定制的CPU支持[读屏障指令]。 读屏障(read barrier)用于支持高并发、并行化、具有内存碎片整理功能的GC算法。 无停顿的GC算法非常简洁、高效(突变开销很小), 没有STW停顿(Stop-The-World pauses)。
+
+
 
 ## 2. RELATED WORK
 
