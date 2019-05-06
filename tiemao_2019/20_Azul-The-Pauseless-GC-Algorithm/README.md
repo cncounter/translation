@@ -130,13 +130,23 @@ Concurrent GCs are available in most modern production JVMs; BEA's JRockit [7], 
 
 ## 3. HARDWARE SUPPORT
 
+## 3. 硬件支持
+
 ### 3.1 Background
+
+### 3.1 项目背景
 
 Azul Systems has built a custom system (CPU, chip, board, and OS) specifically to run garbage collected virtual machines such as Java; the JVM is based on SUN's HotSpot [28]. We describe actual production hardware, which had real costs to design, develop and debug. Thus we were strongly motivated to design simple and cost-effective hardware. In the end, the custom GC hardware we built was quite minor.
 
+Azul Systems 公司专门构建了一套定制系统（CPU，芯片组，电路板和操作系统），用于运行像Java这样支持垃圾收集的虚拟机; 其中JVM基于SUN公司的HotSpot([28])。我们描述了实际的生产级硬件，在设计，开发和调试过程中都会产生很多实际的成本。因此，我们非常需要设计出一种既简单又要有性价比的硬件设备。最终的结果是，我们构建并定制出来一款非常精巧的GC硬件。
+
 The basic CPU core is a 64-bit RISC optimized to run modern managed languages like Java. It makes an excellent JIT target but does not directly execute Java bytecodes. Each chip contains 24 CPUs, and up to 16 such chips can be made cache-coherent; the maximum sized system has 384 CPU cores and 256G of memory in a flat, symmetric memory space. The box runs a custom OS and can run as many JVMs as memory allows. A single JVM can dynamically scale to use all CPUs and all available memory.
 
+使用经过优化的64位RISC架构CPU核心，可在上面运行像Java这样的现代托管语言。 可以编译出一套卓越的JIT目标代码，并不直接执行Java字节码。 每个芯片组包含24个CPU，实现缓存一致的前提下, 最多可升级到16个这样的芯片组级联; 所以系统的最大容量为384个CPU内核, 256G内存的对称内存空间。 这套系统运行定制的操作系统，只要内存允许，可以同时运行很多个JVM。单个JVM可以根据需要、使用所有的CPU和可用内存。
+
 The hardware supports a number of fast user-mode trap handlers. These trap handlers can be entered and left in a handful of clock cycles (4-10, depending) and are frequently used by the GC algorithm; fast traps are key. The hardware also supports a fast cooperative preemption mechanism via interrupts that are taken only on user-selected instructions.
+
+硬件支持多个快速用户模式的陷阱处理程序。这些陷阱处理程序可以输入并保留一些时钟周期（4-10，取决于），并且经常被GC算法使用;快速陷阱是关键。硬件还通过仅在用户选择的指令上执行的中断支持快速协作抢占机制。
 
 ### 3.2 OS-level Support
 
