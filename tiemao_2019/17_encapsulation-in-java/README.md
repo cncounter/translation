@@ -116,5 +116,6 @@ This article is contributed by [**Harsh Agarwal**](https://www.facebook.com/hars
 Please write comments if you find anything incorrect, or you want to share more information about the topic discussed above.
 
 
+- Java工程师成神之路: <https://github.com/hollischuang/toBeTopJavaer>
 
 <https://www.geeksforgeeks.org/encapsulation-in-java/>
