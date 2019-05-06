@@ -5,6 +5,8 @@ CNCounter translation
 
 欢迎加入我们. 
 
+GitHub地址: <https://github.com/cncounter/translation>
+
 # 目录 #
 
 
