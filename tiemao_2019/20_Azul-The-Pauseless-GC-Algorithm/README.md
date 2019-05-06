@@ -108,7 +108,7 @@ GCÔİÍ£¼°Æä²»¿ÉÔ¤ÖªĞÔ, ¶ÔĞŞ¸ÄÆ÷µÄÓ°ÏìÍÆ¶¯ÁËÔçÆÚ²¢·¢GCµÄ·¢Õ¹(¼û[26][5]). Ê¹ÓÃÌØÊâµ
 
 The idea of using common page-protection hardware to support GC has also been around awhile [2]. Both Appel [2][3] and Ossia [25] protect pages that may contain objects with non-forwarded pointers (initially all pages). Accessing a protected page causes an OS trap which the GC handles by forwarding all pointers on that page, then clearing the page protection. Appel does the forwarding in kernel-mode, Ossia maps the physical memory with a second unprotected virtual address for use by GC. Our Pauseless collector protects pages that contain objects being moved, instead of protecting pages that contain pointers to moved objects. This is a much smaller page set, and the pages can be incrementally protected. Our read-barrier allows us to intercept and correct individual stale references, and avoids blocking the mutator to fix up entire pages. We also support a special GC protection mode to allow fast, non-kernel-mode trap handlers that can access protected pages.
 
-Ê¹ÓÃÍ¨ÓÃµÄÒ³±£»¤Éè±¸À´Ö§³ÖGCµÄÏë·¨Ò²ÔÚÒ»¶ÎÊ±¼äÄÚÌá³ö(¼û[2]).Appel¹«Ë¾(¼û[2][3])ºÍOssia¹«Ë¾(¼û[25])Í¨¹ı·ÇÇ°ÏòÖ¸Õë()À´±£»¤¿ÉÄÜ°üº¬¶ÔÏóµÄÄÚ´æÒ³Ãæ(³õÊ¼»¯ËùÓĞÒ³Ãæ). ·ÃÎÊÒ»¸öÊÜ±£»¤µÄÒ³Ãæ,»áµ¼ÖÂ²Ù×÷ÏµÍ³ÏŞÖÆGC´¦Àí,¸ÃÒ³ÃæÉÏµÄËùÓĞ×ª·¢Ö¸Õë, È»ºóÈ¥³ıÒ³Ãæ±£»¤. AppelÔÚÄÚºËÄ£Ê½×ª·¢, Ossia ½«ÎïÀíÄÚ´æÓ³Éäµ½Ò»¸ö¹©GCÊ¹ÓÃµÄ²»ÊÜ±£»¤µÄĞéÄâµØÖ·. ¶øÎÒÃÇÊµÏÖµÄÎŞÍ£¶ÙÀ¬»øÊÕ¼¯Æ÷»á±£»¤°üº¬ĞèÒªÒÆ¶¯¶ÔÏóµÄÒ³Ãæ,¶ø²»ÊÇÈ¥±£»¤°üº¬Ö¸ÕëÒÆ¶¯¶ÔÏóµÄÒ³Ãæ. ÕâÑùµÄ»° page set ¾Í»áĞ¡µÃ¶à£¬¶øÇÒÒ³Ãæ¿ÉÒÔÖğ²½µÃµ½±£»¤. Ê¹ÓÃ¶ÁÆÁÕÏÔÊĞíÎÒÃÇÀ¹½ØºÍ¾ÀÕı¸ö±ğ³Â¾ÉµÄÒıÓÃ, ²¢±ÜÃâ×èÈûĞŞ¸ÄÆ÷À´ĞŞ¸´Õû¸öÒ³Ãæ. ÎÒÃÇÒ²Ö§³ÖÌØÊâµÄGC±£»¤Ä£Ê½, ÔÊĞí¿ìËÙµÄ¡¢·ÇÄÚºËÄ£Ê½µÄÏİÚå´¦Àí³ÌĞòÀ´·ÃÎÊÊÜ±£»¤µÄÒ³Ãæ¡£
+Ê¹ÓÃÍ¨ÓÃµÄÒ³±£»¤Éè±¸À´Ö§³ÖGCµÄÏë·¨Ò²ÔÚÒ»¶ÎÊ±¼äÄÚÌá³ö(¼û[2]).Appel¹«Ë¾(¼û[2][3])ºÍOssia¹«Ë¾(¼û[25])Í¨¹ı·ÇÇ°ÏòÖ¸Õë()À´±£»¤¿ÉÄÜ°üº¬¶ÔÏóµÄÄÚ´æÒ³Ãæ(³õÊ¼»¯ËùÓĞÒ³Ãæ). ·ÃÎÊÒ»¸öÊÜ±£»¤µÄÒ³Ãæ,»áµ¼ÖÂ²Ù×÷ÏµÍ³ÏŞÖÆGC´¦Àí,¸ÃÒ³ÃæÉÏµÄËùÓĞ×ª·¢Ö¸Õë, È»ºóÈ¥³ıÒ³Ãæ±£»¤. AppelÔÚÄÚºËÄ£Ê½×ª·¢, Ossia ½«ÎïÀíÄÚ´æÓ³Éäµ½Ò»¸ö¹©GCÊ¹ÓÃµÄ²»ÊÜ±£»¤µÄĞéÄâµØÖ·. ¶øÎÒÃÇÊµÏÖµÄÎŞÍ£¶ÙÀ¬»øÊÕ¼¯Æ÷»á±£»¤°üº¬ĞèÒªÒÆ¶¯¶ÔÏóµÄÒ³Ãæ,¶ø²»ÊÇÈ¥±£»¤°üº¬Ö¸ÕëÒÆ¶¯¶ÔÏóµÄÒ³Ãæ. ÕâÑùµÄ»° page set ¾Í»áĞ¡µÃ¶à£¬¶øÇÒÒ³Ãæ¿ÉÒÔÖğ²½µÃµ½±£»¤. Ê¹ÓÃ¶ÁÆÁÕÏÔÊĞíÎÒÃÇÀ¹½ØºÍ¾ÀÕı¸ö±ğ³Â¾ÉµÄÒıÓÃ, ²¢±ÜÃâ×èÈûĞŞ¸ÄÆ÷À´ĞŞ¸´Õû¸öÒ³Ãæ. ÎÒÃÇÒ²Ö§³ÖÌØÊâµÄGC±£»¤Ä£Ê½, ÔÊĞí¿ìËÙµÄ¡¢·ÇÄÚºËÄ£Ê½µÄÏİÚå´¦ÀíÆ÷À´·ÃÎÊÊÜ±£»¤µÄÒ³Ãæ¡£
 
 The idea of an incremental collector (via reference counting) is not new either [15]. Incremental collection seeks to reduce pause time by spreading the collection work out in time, finely interleaving GC work with mutator work. Because reference counting is expensive, and indeed all barriers (reference counting typically involves a write barrier) impose some mutator cost there is considerable research in reducing barrier costs [6][21][8] [9]. Having the read-barrier implemented in hardware greatly reduces costs. In our case the typical cost is roughly that of a single cycle ALU instruction.
 
@@ -134,7 +134,7 @@ Concurrent GCs are available in most modern production JVMs; BEA's JRockit [7], 
 
 ### 3.1 Background
 
-### 3.1 ÏîÄ¿±³¾°
+### 3.1 ±³¾°
 
 Azul Systems has built a custom system (CPU, chip, board, and OS) specifically to run garbage collected virtual machines such as Java; the JVM is based on SUN's HotSpot [28]. We describe actual production hardware, which had real costs to design, develop and debug. Thus we were strongly motivated to design simple and cost-effective hardware. In the end, the custom GC hardware we built was quite minor.
 
@@ -146,7 +146,7 @@ The basic CPU core is a 64-bit RISC optimized to run modern managed languages li
 
 The hardware supports a number of fast user-mode trap handlers. These trap handlers can be entered and left in a handful of clock cycles (4-10, depending) and are frequently used by the GC algorithm; fast traps are key. The hardware also supports a fast cooperative preemption mechanism via interrupts that are taken only on user-selected instructions.
 
-Ó²¼şÖ§³Ö¶à¸ö¿ìËÙÓÃ»§Ä£Ê½µÄÏİÚå´¦Àí³ÌĞò¡£ÕâĞ©ÏİÚå´¦Àí³ÌĞò¿ÉÒÔÊäÈë²¢±£ÁôÒ»Ğ©Ê±ÖÓÖÜÆÚ£¨4-10£¬È¡¾öÓÚ£©£¬²¢ÇÒ¾­³£±»GCËã·¨Ê¹ÓÃ;¿ìËÙÏİÚåÊÇ¹Ø¼ü¡£Ó²¼ş»¹Í¨¹ı½öÔÚÓÃ»§Ñ¡ÔñµÄÖ¸ÁîÉÏÖ´ĞĞµÄÖĞ¶ÏÖ§³Ö¿ìËÙĞ­×÷ÇÀÕ¼»úÖÆ¡£
+Ó²¼şÖ§³Ö¶à¸ö¿ìËÙÓÃ»§Ä£Ê½µÄÏİÚå´¦ÀíÆ÷¡£ÕâĞ©ÏİÚå´¦ÀíÆ÷¿ÉÒÔÔÚ½øÈëºó±£ÁôÒ»¶¨µÄÊ±ÖÓÖÜÆÚ£¨4-10¸ö£©£¬²¢ÇÒ»á¾­³£±»GCËã·¨Ê¹ÓÃ; ¿ìËÙÏİÚåÊÇÆäÖĞµÄ¹Ø¼ü¡£Í¨¹ı½öÔÚÓÃ»§Ñ¡ÔñµÄÖ¸ÁîÖĞ¶Ï, ÕâÌ×Ó²¼ş»¹Ö§³Ö¿ìËÙĞ­×÷ÇÀÕ¼»úÖÆ¡£
 
 ### 3.2 OS-level Support
 
