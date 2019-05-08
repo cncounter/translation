@@ -2,7 +2,7 @@
 
 # Pauseless GC 算法
 
-> 译者注: Pauseless GC, 无停顿的垃圾收集; mutator, 修改器, 可理解为修改堆内存数据的操作(如 this.xxx=XXXX;);
+> 译者注: Pauseless GC, 无停顿的垃圾收集; mutator, 修改器, 可理解为修改堆内存数据的操作(如 this.xxx=XXXX;)。
 
 ```
 作者: 
@@ -150,17 +150,32 @@ The hardware supports a number of fast user-mode trap handlers. These trap handl
 
 ### 3.2 OS-level Support
 
+### 3.2 操作系统调整与支持
+
 The hardware TLB supports an additional privilege level, the GC-mode, between the usual user- and kernel-modes. Usage of this GC-mode is explained in the GC algorithm section. Several of the fast user-mode traps start the trap handler in GC-mode instead of user-mode. The TLB also supports 1 megabyte pages; the 1M page thus becomes the standard unit of work for the Pauseless GC algorithm and appears frequently below.
+
+硬件TLB支持额外的权限级别, 即用户模式和内核模式之间多了一个GC模式(GC-mode)。 在这里GC模式用于GC算法部分。 有一些快速用户模式陷阱将会在GC模式下启动陷阱处理程序,而不是用户模式。 TLB还支持1MB的内存页; 并且1MB的内存页是Pauseless GC算法的标准工作单元，下文会经常提到。
+
 
 The TLB is managed by the OS in the usual ways, with normal kernel-level TLB trap handlers being invoked when normal loads and stores fail an address translation. Setting the GC privilege mode bit is done by the JVM via calls into the OS. TLB violations on GC-protected pages generate fast user-level traps instead of OS level exceptions.
 
+TLB由操作系统以常规方式管理，当正常的加载和存储失败导致需要进行地址转换时，调用正常的内核级TLB陷阱处理程序。GC权限模式标志位的设置由JVM调用操作系统API来完成。受GC保护的内存页上的违规TLB访问, 会生成快速用户级陷阱，而不是操作系统级异常。
+
 HotSpot supports a notion of GC safepoints, code locations where we have precise knowledge about register and stack locations [1]. The hardware supports a fast cooperative preemption mechanism via interrupts that are taken only on user-selected instructions, allowing us to rapidly stop individual threads only at safepoints. Variants of some common instructions (e.g., backwards branches, function entries) are flagged as safepoints and will check for a pending per-CPU safepoint interrupt. If a safepoint interrupt is pending the CPU will take an exception and the OS will call into a user-mode safepoint-trap handler. The running thread, being at a known safepoint, will then save its state in some convenient format and call the OS to yield. When the OS wants to preempt a normal Java thread, it sets this bit and briefly waits for the thread to yield. If the thread doesn't report back in a timely fashion it gets preempted as normal.
+
+HotSpot支持GC安全点(safepoint)的概念，也就是对寄存器和堆栈位置有明确了解的代码位置(见[1])。硬件支持快速协作抢占机制, 只需要在用户选择的指令上执行中断，允许我们只在安全点位置快速停止某个线程。 一些常见的指令（例如，向后分支，函数入口）被标记为安全点，并将检查每个CPU的待处理的安全点中断。 如果安全点中断挂起，CPU将发生异常，操作系统就会调用用户模式的安全点陷阱处理程序。 正在运行的, 处于已知安全点的线程, 将以某种方便的格式保存其状态, 并调用操作系统以yield。当操作系统想要取代正常的Java线程时，它会设置此标志位, 并暂时等待线程 yield。 如果线程没有及时报告，它将被正常抢占。
 
 The result of this behavior is that nearly all stopped threads are at GC safepoints already. Achieving a global safepoint, a Stop- The-World (STW) pause, is much faster than patch-and-roll-forward schemes [1] and is without the runtime cost normally associated with software polling schemes. While the algorithm we present has no STW pauses, our current implementation does. Hence it's still useful to have a fast stopping mechanism.
 
+这种行为的结果, 是几乎所有已停止的线程都已处于GC安全点。 实现全局的安全点， Stop-The-World（STW）暂停，比补丁和前滚方案要快得多(见[1])，而且通常没有软件轮询方案方面的运行时开销。虽然我们提出的算法理论上没有STW暂停，但当前的实现却会存在。因此，拥有快速停止机制仍然非常有用。
+
 We also make use of Checkpoints, points where we cannot proceed until all mutator threads have performed some action. In a Checkpoint each mutator reaches a GC safepoint, does a small amount of GC-related work and then carries on. Blocked threads are already at GC safepoints; GC threads perform the action on their behalf. In a STW pause, all mutators must reach a GC safepoint before any of them can proceed; the pause time is governed by the slowest thread. In a Checkpoint, running threads are never idled and the GC work is spread out in time. The same hardware and OS support is used for both STW pauses and Checkpoints.
 
+我们还使用了检查点(Checkpoint)，碰到检查点时,程序无法继续执行, 需要等待所有的mutator线程执行完某些操作才能继续。 在检查点中，每个mutator都会到达GC安全点，执行少量GC相关的工作，然后接着执行。 被阻塞的线程都已经处于GC安全点; GC线程代替这些线程执行操作。在STW暂停中，必须等所有的mutator都到达GC安全点才能继续执行;暂停时间由最慢的线程决定。 在检查点中，运行的线程永远不会空闲，并且GC操作会及时分散。 STW暂停和检查点使用相同的硬件和操作系统。
+
 ### 3.3 Hardware Read Barrier
+
+### 3.3 硬件实现读屏障
 
 In addition to the standard RISC load/store instruction set, the CPUs have a few custom instructions to aid in object allocation and collection. In this paper we focus on the hardware read barrier. It is instructive to note that this barrier strongly resemble those from 20 years ago [23].
 
@@ -174,6 +189,8 @@ Note that the read barrier behavior can be emulated on standard hardware at some
 
 ## 4. THE PAUSELESS GC ALGORITHM
 
+## 4. Pauseless GC 算法
+
 The Pauseless GC Algorithm is divided into three main phases: Mark, Relocate and Remap. Each phase is fully parallel and concurrent. Mark bits go stale; objects die over time and the mark bits do not reflect the changes. The Mark phase is responsible for periodically refreshing the mark bits. The Relocate phase uses the most recently available mark bits to find pages with little live data, to relocate and compact those pages and to free the backing physical memory. The Remap phase updates every relocated pointer in the heap.
 
 **There is no “rush” to finish any given phase.** 
@@ -186,11 +203,15 @@ The algorithm we present has no Stop-The-World (STW) pauses, no places where all
 
 ### 4.1 Mark Phase
 
+### 4.1 标记阶段(Mark Phase)
+
 The Mark phase is a parallel and concurrent incremental update (not SATB) marking algorithm [17], augmented with the read barrier. The Mark phase is responsible for marking all live objects, tagging live objects in some fashion to distinguish them from dead objects. In addition, each ref has it's NMT bit set to the expected value. The Mark phase also gathers per-1M-page liveness totals. These totals give a conservative estimate of live data on a page (hence a guaranteed amount of reclaimable space) and are used in the Relocate phase.
 
 The basic idea is straightforward: the Marker starts from some root set (generally static global variables and mutator stack contents) and begins marking reachable objects. After marking an object (and setting the NMT bit), the Marker then marksthrough the object – recursively marking all refs it finds inside the marked object. Extensions to make this algorithm parallel have been previously published [17]. Making marking fully concurrent is a little harder and the issues are described further below.
 
 ### 4.2 Relocate Phase
+
+### 4.2 重分配阶段(Relocate Phase)
 
 The Relocate phase is where objects are relocated and pages are reclaimed. A page with mostly dead objects is made wholly unused by relocating the remaining live objects to other pages. The Relocate phase starts by selecting a set of pages that are above a given threshold of sparseness. Each page in this set is protected from mutator access, and then live objects are copied out. Forwarding information tracking the location of relocated objects is maintained outside the page.
 
@@ -201,6 +222,8 @@ After the page contents have been relocated, the Relocate phase frees the **phys
 As hinted at in Figure 1, a Relocate phase runs constantly freeing memory to keep pace with the mutators' allocations. Sometimes it runs alone and sometimes concurrent with the next Mark phase.
 
 ### 4.3 Remap Phase
+
+### 4.3 重映射阶段(Remap Phase)
 
 During the Remap phase, GC threads traverse the object graph executing a read barrier against every ref in the heap. If the ref refers to a protected page it is stale and needs to be forwarded, just as if a mutator trapped on the ref. Once the Remap phase completes no live heap ref can refer to pages protected by the previous Relocate phase. At this point the virtual memory for those pages is freed.
 
@@ -213,6 +236,8 @@ Since both the Remap and Mark phases need to touch all live objects, we fold the
 The Remap phase is also running concurrently with the 2nd half of the Relocate phase. The Relocate phase is creating new stale pointers that can only be fixed by a complete run of the Remap phase, so stale pointers created during the 2nd half of this Relocate phase are only cleaned out at the end of the next Remap phase. The next few sections will discuss each phase in more depth.
 
 ## 5. MARK PHASE
+
+## 5. 标记阶段详解
 
 The Mark phase begins by initializing any internal data structures (e.g., marking worklists) and clearing this phase's mark-bits. Each object has two mark-bits, one indicating whether the ref is reachable (hence live) in this GC cycle, and one for it's state in the prior cycle. <sup>1</sup>
 
@@ -250,6 +275,8 @@ Note that it is not possible for a single thread to hold the same ref twice in i
 When the marking threads run out of work, Marking is nearly done. The marking threads need to close the narrow race where a mutator may have loaded an unmarked ref (hence has the wrong NMT bit) but not yet executed the read-barrier. Read-barriers never span a GC safepoint, so it suffices to require the mutators cross a GC safepoint without trapping. The Marking pass requests a Checkpoint, but requires no other mutator work. Any refs discovered before the Checkpoint ends will be concurrently marked as normal. When all mutators complete the Checkpoint with none of them reporting any new refs, the Mark phase is complete. If new refs are reported the Marker threads will exhaust them and the Checkpoint will repeat. Since no refs can be created with the “wrong” NMT-bit value the process will eventually complete.
 
 ## 6. RELOCATE AND REMAP PHASES
+
+## 6. 重分配与重映射详解
 
 The Relocate phase is where objects get relocated and compacted, and unused pages get freed. Recall that the Mark phase computed the amount of live data per 1M page. A page with zero live data can obviously be reclaimed. A page with only a little live data can be made wholly unused by relocating the live objects out to other pages.
 
@@ -304,6 +331,8 @@ At the end of the Remap phase, all pages that were protected before the start of
 
 ## 7. REALITY CHECK
 
+## 7. 现状核查
+
 Our implementation is a rapidly moving work-in-progress. As of this writing it suffers from a few STW pauses not required by the Pauseless GC algorithm. Over time we hope to remove these STWs or engineer their maximum time below an OS time-slice quanta. We have proposed solutions for each one, and report pauses experienced by the current implementation on the 8- warehouse 20-minute pseudo-JBB run described in Section 8.
 
 ### 7.1 At the Mark Phase Start
@@ -334,7 +363,11 @@ Right now we have not implemented a second set of mark bits to allow the Relocat
 
 ## 8. EXPERIMENTS
 
+## 8. 实验验证
+
 ### 8.1 Methodology
+
+### 8.1 方法论
 
 The Pauseless algorithm is intended to lower pause times in large transaction-oriented programs running business logic. There are a limited number of representative Java benchmarks for this class of program. The most realistic and widely accepted is SpecJApp-Server '02 and '04. This benchmark is extremely difficult to setup, tune, or get reliable numbers out of. It is also very hard to normalize across different hardware. The much more simplistic SpecJBB benchmark has very well-structured (and unrealistic!) object lifetimes and is ideally suited for a generational collector.
 
@@ -353,6 +386,8 @@ We ran the IBM and SUN JVMs on a 2-way 3.2Ghz hyperthreaded Xeon with 2G of phys
 We decided to NOT report SpecJBB score, which is reported in units of transactions/second, both because our run is not Speccompliant and because of the wide variation in hardware and JIT quality. Even on the same hardware, the JITs from different vendors produce code of substantially different quality. For the same 20 minute run, we saw JVMs execute between 15 million and 30 million transactions. While transaction throughput is an important metric, this paper is focused on removing the biggest reason for transaction time variability. We report transaction times instead.
 
 ### 8.2 Transaction Times
+
+### 8.2 执行业务
 
 We measured both transaction times and GC pause times reported with “-verbose:gc”. We feel that transaction times represent a more realistic measure than direct GC pauses as they more closely correspond to “user wait time”.
 
@@ -403,6 +438,8 @@ Table 1 shows the worse-case transaction times. The Pauseless algorithm's worse-
 
 ### 8.3 Reported Pause Times
 
+### 8.3 暂停时间报告
+
 We collected GC pause times reported with “-verbose:gc”. We summed all reported times and present a histogram of cumulative pause times vs. pause duration. Figure 8 shows the reported pauses. Most of the concurrent collectors consistently report pause times in the 40-50ms range; IBM's concurrent collector has 150ms as it's common (mode) pause time. As expected, the parallel collectors all do worse with the bulk of time spent in pauses ranging from 150ms to several seconds.
 
 Table 1 also shows the ratio of worst-case transaction time and worst-case reported pause times. Note that JBB transactions are highly regular, doing a fixed amount of work per transaction. Changes in transaction time can be directly attributed to GC.<sup>4</sup> 
@@ -424,6 +461,8 @@ We also attempted to gather Minimum Mutator Utilization figures [12], especially
 
 ## 9. Conclusions
 
+## 9. 总结
+
 Azul Systems has taken the rare opportunity to produce custom hardware for running a garbage collected language in a shipping product. This custom hardware enables a very potent garbage collection algorithm. Even though the individual Azul CPUs are slower than the high-clocking X86 P4's compared against, worse-case transaction times are over 45 times better and average transaction times are comparable.
 
 Azul's Pauseless GC algorithm is a fully parallel and concurrent algorithm engineered for large multi-processor systems. It does not need any Stop-The-World pauses, no places where all mutator threads must be simultaneously stopped. Dead object space can be reclaimed at any point during a GC cycle; there are no phases where the GC algorithm has to “race” to finish some phase before the mutators run out of free space. Also there are no phases where the mutators pay a continuous high cost while running. There are brief “trap storms” at some phase shifts, but due to the “self-healing” property of the algorithm these storms appear to be low cost.
@@ -435,6 +474,8 @@ Section 7, Reality Check, includes ongoing and future work. Another obvious and 
 On a final note, we were quite surprised at the difference between reported pause times and the “user experience” delays seen by the transactions. We strongly encourage GC researchers and the production JVM providers to pay close attention to full GC algorithm costs, not just those costs that can easily have a timerstart/ timer-stop wrapped around them.
 
 ## 10. REFERENCES
+
+## 10. 参考文献
 
 - [1] Agesen, O. GC Points in a Threaded Environment. SMLI TR-98-70. Sun Microsystems, Palo Alto, CA. December 1998.
 
@@ -497,3 +538,9 @@ On a final note, we were quite surprised at the difference between reported paus
 - [30] Wilson, P. Uniprocessor Garbage Collection Techniques. In 1992 Proceedings of the International Workshop on Memory Management (IWMM 92). Saint-Malo (France), 1992
 
 - [31] Wilson, P., Johnstone, M., Neely, M., Boles, D., Dynamic Storage Allocation: A Survey and Critical Review. In Proceedings of the International Workshop on Memory Management (IWMM 95), 1995 
+
+> 相关论文请搜索 [`Azul-The-Pauseless-GC-Algorithm`]
+
+翻译时间: 2019年05月06日
+
+翻译人员: 铁锚 <https://renfufei.blog.csdn.net/>
