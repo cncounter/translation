@@ -222,12 +222,55 @@ console.log(urlParams.has('name')); // true
 console.log(urlParams.get('action')); // "list"
 console.log(urlParams.getAll('action')); // ["list"]
 console.log(urlParams.toString()); // "name=tiemao&action=list"
-//
+// 追加参数;可同名
 urlParams.append('active', '1')
 console.log(urlParams.toString()); // "name=tiemao&action=list&active=1"
 urlParams.append('active', '2')
 console.log(urlParams.toString()); // "name=tiemao&action=list&active=1&active=2"
 console.log(urlParams.getAll('active')); // ["1", "2"]
+// set 是覆盖设置
+urlParams.set("_ts", (new Date()).getTime());
+```
+
+再来看一个自动刷新的示例:
+
+```
+// 自动刷新示例; 将当前页面地址用内置iframe来自动刷新
+function refreshNext(){
+    // 时间戳
+    var ts = ""+(new Date()).getTime();
+    // 增加参数
+    var newUrl = replaceParam(location.href, "_ts", ts);
+    // iframe
+    var iframe1 = getIframe("iframe1");
+    iframe1.src = newUrl;
+    // 设置下次自动刷新
+    window.setTimeout(refreshNext, 5000);
+
+    // 替换或新增参数
+    function replaceParam(href, paramName, paramValue){
+        var url = new URL(href); // window.location 也是一个 URL对象
+        var urlParams = url.searchParams;
+        // set 是覆盖设置
+        urlParams.set(paramName, paramValue);
+        //
+        var newUrl = url.origin + url.pathname + "?" + urlParams.toString(); 
+        return newUrl;
+    };
+    // 获取iframe
+    function getIframe(id){
+        var iframe1 = document.getElementById(id);
+        if(!iframe1){
+            iframe1 = document.createElement("iframe");
+            iframe1.setAttribute("id", id);
+            iframe1.setAttribute("width", "650px");
+            document.body.appendChild(iframe1);
+        }
+        return iframe1;
+    };
+};
+refreshNext();
+
 ```
 
 可以看到， URLSearchParams 还是很方便的。
