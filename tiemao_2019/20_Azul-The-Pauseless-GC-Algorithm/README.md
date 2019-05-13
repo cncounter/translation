@@ -2,7 +2,8 @@
 
 # Pauseless GC 算法
 
-> 译者注: Pauseless GC, 无停顿的垃圾收集; mutator, 修改器, 可理解为修改堆内存数据的操作(如 this.xxx=XXXX;)。
+> 译者注: Pauseless GC, 无停顿的垃圾收集; 
+> mutator, 修改器, 可理解为修改堆内存数据的操作(如 this.xxx=XXXX;)。mutator线程可理解为业务线程,与GC线程区分。
 
 ```
 作者: 
@@ -203,13 +204,19 @@ Note that the read barrier behavior can be emulated on standard hardware at some
 
 The Pauseless GC Algorithm is divided into three main phases: Mark, Relocate and Remap. Each phase is fully parallel and concurrent. Mark bits go stale; objects die over time and the mark bits do not reflect the changes. The Mark phase is responsible for periodically refreshing the mark bits. The Relocate phase uses the most recently available mark bits to find pages with little live data, to relocate and compact those pages and to free the backing physical memory. The Remap phase updates every relocated pointer in the heap.
 
-**There is no “rush” to finish any given phase.** 
-No phase places a substantial burden on the mutators that needs to be relieved by ending the phase quickly. There is no “race” to finish some phase before collection can begin again – Relocation runs continuously and can immediately free memory at any point. Since all phases are parallel, GC can keep up with any number of mutator threads simply by adding more GC threads. Unlike other incremental update algorithms, there is no re-Mark or final- Mark phase; the concurrent Mark phase will complete in a single pass despite the mutators busily modifying the heap. GC threads do compete with mutator threads for CPU time. On Azul's hardware there are generally spare CPUs available to do GC work. However, “at the limit” some fraction of CPUs will be doing GC and will not be available to the mutators.
+Pauseless GC算法分为三个主要阶段：Mark（标记），Relocate(重定位)和Remap(重映射)。每个阶段都是完全并行和并发的。标记位变得陈旧;对象随时间死亡，标记位不反映变更。标记阶段负责定期刷新标记位。重定位阶段使用最近可用的标记位来查找具有少量存活对象的页面，以重新定位和压缩这些页面, 释放物理内存。 重映射阶段更新堆中的每个重定位指针。
 
-**Each of the phases involves a “self-healing” aspect,**
-where the mutators immediately correct the cause of each read barrier trap by updating the ref in memory. This assures the same ref will not trigger another trap. The work involved varies by trap type and is detailed below. Once the mutators' working sets have been handled they can execute at full speed with no more traps. During certain phase shifts mutators suffer through a “trap storm”, a high volume of traps that amount to a pause smeared out in time. We measured the trap storms using Minimum Mutator Utilization, and they cost around 20ms spread out over a few hundred milliseconds.
+**There is no “rush” to finish any given phase.** No phase places a substantial burden on the mutators that needs to be relieved by ending the phase quickly. There is no “race” to finish some phase before collection can begin again – Relocation runs continuously and can immediately free memory at any point. Since all phases are parallel, GC can keep up with any number of mutator threads simply by adding more GC threads. Unlike other incremental update algorithms, there is no re-Mark or final- Mark phase; the concurrent Mark phase will complete in a single pass despite the mutators busily modifying the heap. GC threads do compete with mutator threads for CPU time. On Azul's hardware there are generally spare CPUs available to do GC work. However, “at the limit” some fraction of CPUs will be doing GC and will not be available to the mutators.
+
+**任何特定阶段都不需要“匆忙”完成**。 没有哪个阶段需要快速完成，缓解了给修改器带来的沉重负担。在垃圾收集再次开始之前没有“抢着”完成某个阶段 - 重定位会连续运行，可以在任何时刻立即释放内存。由于所有阶段都是并行的，因此只需添加更多GC线程，GC就可以跟上任意数量的mutator线程。与其他增量更新算法不同， 这里没有重新标记或最终标记阶段; 尽管mutator忙于修改堆内存，但并发标记阶段将在一次传递中完成。 GC线程确实与mutator线程争枪CPU时间。在Azul的硬件上，通常有备用CPU来进行GC工作。 而且，“在极限情况下”某些CPU只执行GC操作, 不会让业务线程使用。
+
+**Each of the phases involves a “self-healing” aspect,** where the mutators immediately correct the cause of each read barrier trap by updating the ref in memory. This assures the same ref will not trigger another trap. The work involved varies by trap type and is detailed below. Once the mutators' working sets have been handled they can execute at full speed with no more traps. During certain phase shifts mutators suffer through a “trap storm”, a high volume of traps that amount to a pause smeared out in time. We measured the trap storms using Minimum Mutator Utilization, and they cost around 20ms spread out over a few hundred milliseconds.
+
+**每个阶段都涉及“自我修复”**， mutator 线程通过更新内存中的引用, 来立即纠正每个读屏障陷阱。这确保了同一个引用不会触发另一个陷阱。所涉及的工作因陷阱类型而异，具体情况是: 一旦处理了mutator的工作集，它们就可以全速执行而不再有陷阱。 在某些阶段，修改器遭受了“陷阱风暴”，大量的陷阱相当于实际上的暂停。我们使用 Minimum Mutator Utilization 来测量陷阱风暴，在几百ms内的开销大约是20ms。
 
 The algorithm we present has no Stop-The-World (STW) pauses, no places where all threads must be simultaneously stopped. However, for ease of engineering into the existing HotSpot JVM our implementation includes some STWs. We feel these STWs can be readily engineered to have pause times below standard OS context- switch times, where a GC pause will be indistinguishable from being context switched by the OS. We will mention where the implementation differs from theory as the phases are described.
+
+我们提出的算法没有Stop-The-World（STW）暂停，没有必须同时停止所有线程的地方。但是，为了与现有的HotSpot JVM兼容，我们的实现包括了一些STW。我们认为这些STW可以很容易地设计为低于标准OS上下文切换消耗的暂停时间，其中GC暂停的时间将与OS的上下文切换时间差别不大。我们将在描述时提及理论与实现的不同之处。
 
 ### 4.1 Mark Phase
 
