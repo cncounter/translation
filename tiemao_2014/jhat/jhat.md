@@ -1,5 +1,7 @@
-Java Heap dump文件分析工具jhat简介
+JDK内置故障排查工具: jhat 简介
 ==
+
+> 更详细的校对版-请转到Windows版本系列: <https://github.com/cncounter/java-tools-cn/blob/master/15_Troubleshooting/jhat.md>
 
 jhat 是Java堆分析工具(Java heap Analyzes Tool). 在JDK6u7之后成为JDK标配. 使用该命令需要有一定的Java开发经验,官方不对此工具提供技术支持和客户服务。
 
@@ -16,30 +18,35 @@ jhat 是Java堆分析工具(Java heap Analyzes Tool). 在JDK6u7之后成为JDK�
 
 ## 示例 ##
 
-jmap转储可以使用如下方式: 
+使用jmap工具转储堆内存、可以使用如下方式: 
 
-	jmap -dump:file=DumpFileName.txt,format=b pid
+```
+jmap -dump:file=DumpFileName.txt,format=b <pid>
+```
 	
 例如: 
 
-	C:\Users\Administrator\Desktop>jmap -dump:file=D:/javaDump.hprof,format=b 3614
-	Dumping heap to D:\javaDump.hprof ...
-	Heap dump file created
+```
+jmap -dump:file=D:/javaDump.hprof,format=b 3614
+Dumping heap to D:\javaDump.hprof ...
+Heap dump file created
+```
 
-其中, 3614 是此次启动Tomcat后,通过tasklist,或任务管理器查看到的 java进程的ID,一般来说, jmap 需要和 java的版本一致或者兼容,才能成功导出. 如果不知道如何使用,直接输入 `jmap`, 或者 `jmap -h` 则可以看到提示信息.
+其中, 3614 是java进程的ID,一般来说, jmap 需要和目标JVM的版本一致或者兼容,才能成功导出. 如果不知道如何使用,直接输入 `jmap`, 或者 `jmap -h` 可看到提示信息.
 
 然后分析时使用jhat命令,如下所示:
 
-	jhat -J-Xmx1024m D:/javaDump.hprof
-	...... 一堆信息 ...
-	Snapshot resolved.
-	Started HTTP server on port 7000
-	Server is ready.
+```
+jhat -J-Xmx1024m D:/javaDump.hprof
+...... 其他信息 ...
+Snapshot resolved.
+Started HTTP server on port 7000
+Server is ready.
+```
 
+使用参数 `-J-Xmx1024m` 是因为默认JVM的堆内存可能不足以加载整个dump 文件. 可根据需要进行调整. 根据提示知道端口号是 7000,
 
-而 jhat 的 -J 参数是因为默认JVM的堆内存可能不足以加载整个dump 文件. 根据需要进行调整. 根据提示知道端口号是 7000,
-
-接着使用浏览器访问 [http://localhost:7000/](http://localhost:7000/) 即可看到相关信息.
+接着使用浏览器访问 <http://localhost:7000/> 即可看到相关信息.
 
 ## 详细说明 ##
 
@@ -107,10 +114,12 @@ Java生成堆转储的方式有多种:
 
 
 
-原文链接: [https://docs.oracle.com/javase/jp/8/technotes/tools/unix/jhat.html](https://docs.oracle.com/javase/jp/8/technotes/tools/unix/jhat.html)
+原文链接:  <https://docs.oracle.com/javase/8/docs/technotes/tools/unix/jhat.html>
 
 原文日期: 2014-05-04
 
 翻译日期: 2014-11-21
 
 翻译人员: [铁锚](http://blog.csdn.net/renfufei)
+
+> 更详细的校对版-请转到Windows版本系列: <https://github.com/cncounter/java-tools-cn/blob/master/15_Troubleshooting/jhat.md>
