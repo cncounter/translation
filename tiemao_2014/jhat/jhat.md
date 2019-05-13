@@ -57,7 +57,7 @@ Java生成堆转储的方式有多种:
 - 使用 `jmap  -dump` 选项可以在JVM运行时获取 heap dump. (可以参考上面的示例)详情参见: [jmap(1)](https://docs.oracle.com/javase/jp/8/technotes/tools/unix/jmap.html#CEGBCFBC)
 - 使用 `jconsole` 选项通过 HotSpotDiagnosticMXBean 从运行时获得堆转储。 请参考: [jconsole(1)](https://docs.oracle.com/javase/jp/8/technotes/tools/unix/jconsole.html#CACDDJCH) 以及 `HotSpotDiagnosticMXBean` 的接口描述: [http://docs.oracle.com/javase/8/docs/jre/api/management/extension/com/sun/management/HotSpotDiagnosticMXBean.html](http://docs.oracle.com/javase/8/docs/jre/api/management/extension/com/sun/management/HotSpotDiagnosticMXBean.html).  
 - 在虚拟机启动时如果指定了 `-XX:+HeapDumpOnOutOfMemoryError` 选项, 则抛出 **OutOfMemoryError** 时, 会自动执行堆转储。
-- 使用 `hprof` 命令。 请参考 A Heap/CPU Profiling Tool:  [http://docs.oracle.com/javase/8/docs/technotes/samples/hprof.html](http://docs.oracle.com/javase/8/docs/technotes/samples/hprof.html)
+- 使用 `hprof` 命令。 请参考: 性能分析工具-HPROF简介, <https://github.com/cncounter/translation/blob/master/tiemao_2017/20_hprof/20_hprof.md>
 
 
 ##<a name="Options">Options</a>
@@ -106,7 +106,7 @@ Java生成堆转储的方式有多种:
 
 * [jmap(1)](https://docs.oracle.com/javase/jp/8/technotes/tools/unix/jmap.html#CEGBCFBC)
 * [jconsole(1)](https://docs.oracle.com/javase/jp/8/technotes/tools/unix/jconsole.html#CACDDJCH)
-* [一个 Heap/CPU 性能分析工具](http://docs.oracle.com/javase/8/docs/technotes/samples/hprof.html)
+* 性能分析工具-HPROF简介, <https://github.com/cncounter/translation/blob/master/tiemao_2017/20_hprof/20_hprof.md>
 
 
 
