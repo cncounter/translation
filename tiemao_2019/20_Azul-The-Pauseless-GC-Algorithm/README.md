@@ -224,7 +224,11 @@ The algorithm we present has no Stop-The-World (STW) pauses, no places where all
 
 The Mark phase is a parallel and concurrent incremental update (not SATB) marking algorithm [17], augmented with the read barrier. The Mark phase is responsible for marking all live objects, tagging live objects in some fashion to distinguish them from dead objects. In addition, each ref has it's NMT bit set to the expected value. The Mark phase also gathers per-1M-page liveness totals. These totals give a conservative estimate of live data on a page (hence a guaranteed amount of reclaimable space) and are used in the Relocate phase.
 
+标记阶段是并行的，而且使用的是并发增量更新标记算法（而不是SATB）(见[17])，增加了读屏障。 标记阶段负责标记所有存活的对象，以某种方式打上标签，将存活对象与死亡对象区分开来。 此外，将每个引用都设置对应的NMT位预期值。 标记阶段还收集每个1M页的存活对象总数。这些总数对页面上的存活数据进行保守估计（以保证可回收空间量），并在重定位阶段使用。
+
 The basic idea is straightforward: the Marker starts from some root set (generally static global variables and mutator stack contents) and begins marking reachable objects. After marking an object (and setting the NMT bit), the Marker then marksthrough the object – recursively marking all refs it finds inside the marked object. Extensions to make this algorithm parallel have been previously published [17]. Making marking fully concurrent is a little harder and the issues are described further below.
+
+基本思想很简单：标记程序从GC根（通常是静态全局变量和mutator线程的栈空间）开始， 标记可达的对象。 标记某个对象（并设置NMT位）之后，标记程序会遍历该对象 - 递归地标记该对象中的所有引用。使该算法并行执行的扩展已经发表(见[17])。 使标记完全并发有点困难，下面将进一步描述这些问题。
 
 ### 4.2 Relocate Phase
 
