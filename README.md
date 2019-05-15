@@ -25,7 +25,7 @@ GitHub地址: <https://github.com/cncounter/translation>
 * [02.Web开发团队常备工具](./tiemao_2019/02_software-teams-tools/02_software-teams-tools.md)
 * [03.MySQL-JDBC驱动-连接参数说明](./tiemao_2019/03_mysql_jdbc_properties/README.md)
 * [04.升级https - 解决系统被网络运营商植入广告等问题](./tiemao_2019/04_to_https/04_to_https.md)
-* [05.Spring Data MongoDB系列(二): 简单查询](./tiemao_2019/05_queries-in-spring-data-mongodb/05_queries-in-spring-data-mongodb.md)
+* [05.MongoDB教程系列](./tiemao_2019/05_queries-in-spring-data-mongodb/README.md)
 * [06.elasticsearch 入门实战](./tiemao_2019/06_elasticsearch/06_elasticsearch.md)
 * [07.Java进阶知识 - 线程间通信](./tiemao_2019/07_java-inter-thread-communication/07_java-inter-thread-communication.md)
 * [08.获取JS中的调用栈](./tiemao_2019/08_js_call_stack/08_js_call_stack.md)
