@@ -16,7 +16,7 @@ We’re going to be looking at querying documents with *Query* and *Criteria* cl
 
 For the Maven setup, have a look at our [introductory article](https://www.baeldung.com/spring-data-mongodb-tutorial).
 
-关于Maven项目的设置, 请参考前文: <https://www.baeldung.com/spring-data-mongodb-tutorial>。
+关于Maven项目的设置, 请参考前文: <./05_01_spring-data-mongodb-tutorial.md>。
 
 ## **2. Documents Query**
 
@@ -903,8 +903,9 @@ The implementation of all these examples and code snippets **can be found in** [
 
 相关链接:
 
-
-count操作: <http://www.technicalkeeda.com/mongodb-tutorial/mongodb-document-count-for-matched-query-using-spring-data>
+- Spring Data MongoDB系列(一): 简介: <./05_01_spring-data-mongodb-tutorial.md>
+- Spring Data MongoDB系列(二): 简单查询: <./05_02_queries-in-spring-data-mongodb.md>
+- Spring Data MongoDB系列(八): 映射与聚合: <05_08_spring-data-mongodb-projections-aggregations>
 
 
 原文日期: 2018年11月6日
