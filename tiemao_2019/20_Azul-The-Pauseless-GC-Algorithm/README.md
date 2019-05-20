@@ -20,7 +20,7 @@ Mountain View, CA 94043
 
 > Permission to make digital or hard copies of all or part of this work for personal or classroom use is granted without fee provided that copies are not made or distributed for profit or commercial advantage and that copies bear this notice and the full citation on the first page. To copy otherwise, or republish, to post on servers or to redistribute to lists, requires prior specific permission and/or a fee.
 
-> ÒÔÑ§Ï°ºÍÑĞ¾¿ÎªÄ¿µÄ, Ãâ·ÑÌá¹©¸ø¸öÈË»òÕß½ÌÑ§Ê¹ÓÃ£¬µ«²»µÃÓÃÓÚÄ±È¡ÀûÒæ»òÉÌÒµÀûÒæ£¬ÇÒĞèÒªÔÚµÚÒ»Ò³Õ¹Ê¾±¾ÉùÃ÷¡£ ÒÔÆäËû·½Ê½¸´ÖÆ¡¢»òÕßÖØĞÂ·¢²¼¡¢À©É¢£¬ÔòĞèÊÂÏÈ»ñµÃĞí¿ÉºÍ/»ò¸¶·Ñ¡£
+> ÒÔÑ§Ï°ºÍÑĞ¾¿ÎªÄ¿µÄ, Ãâ·ÑÌá¹©¸ø¸öÈË»òÕß½ÌÑ§Ê¹ÓÃ£¬µ«²»µÃÓÃÓÚÄ±È¡ÀûÒæ»òÉÌÒµÀûÒæ£¬ÇÒĞèÒªÔÚµÚÒ»Ò³Õ¹Ê¾±¾ÉùÃ÷¡£ÒÔÆäËû·½Ê½¸´ÖÆ¡¢»òÕßÖØĞÂ·¢²¼¡¢À©É¢£¬ÔòĞèÊÂÏÈ»ñµÃĞí¿ÉºÍ/»ò¸¶·Ñ¡£
 
 > VEE¡¯05, June 11¨C12, 2005, Chicago, Illinois, USA.
 
@@ -33,11 +33,11 @@ Mountain View, CA 94043
 
 Modern transactional response-time sensitive applications have run into practical limits on the size of garbage collected heaps. The heap can only grow until GC pauses exceed the responsetime limits. Sustainable, scalable concurrent collection has become a feature worth paying for.
 
-µ±Ç°£¬ÓĞºÜ¶à¶ÔÒµÎñÏìÓ¦Ê±¼ä·Ç³£Ãô¸ĞµÄÏµÍ³, Æä¶ÑÄÚ´æµÄ´óĞ¡,ÕæÇĞµØÊÜµ½ÁËÀ¬»øÊÕ¼¯Æ÷µÄÏŞÖÆ¡£  ¶ÔÕâĞ©ÏµÍ³À´Ëµ£¬¶ÑÄÚ´æ²»ÄÜÉèÖÃµÃ·Ç³£´ó£¬±ØĞëÒªÂú×ãGCµÄÔİÍ£Ê±¼äĞ¡ÓÚÒµÎñÔÊĞíµÄ×î´óÏìÓ¦Ê±¼ä¡£ Òµ½çÆÈÇĞĞèÒª¿É³ÖĞøµÄ¡¢¿ÉÉìËõµÄ²¢·¢À¬»øÊÕ¼¯Æ÷¡£
+µ±Ç°£¬ÓĞºÜ¶à¶ÔÒµÎñÏìÓ¦Ê±¼ä·Ç³£Ãô¸ĞµÄÏµÍ³, Æä¶ÑÄÚ´æµÄ´óĞ¡,ÕæÇĞµØÊÜµ½ÁËÀ¬»øÊÕ¼¯Æ÷µÄÏŞÖÆ¡£ ¶ÔÕâĞ©ÏµÍ³À´Ëµ£¬¶ÑÄÚ´æ²»ÄÜÉèÖÃµÃ·Ç³£´ó£¬±ØĞëÒªÂú×ãGCµÄÔİÍ£Ê±¼äĞ¡ÓÚÒµÎñÔÊĞíµÄ×î´óÏìÓ¦Ê±¼ä¡£Òµ½çÆÈÇĞĞèÒª¿É³ÖĞøµÄ¡¢¿ÉÉìËõµÄ²¢·¢À¬»øÊÕ¼¯Æ÷¡£
 
 Azul Systems has built a custom system (CPU, chip, board, and OS) specifically to run garbage collected virtual machines. The custom CPU includes a read barrier instruction. The read barrier enables a highly concurrent (no stop-the-world phases), parallel and compacting GC algorithm. The Pauseless algorithm is designed for uninterrupted application execution and consistent mutator throughput in every GC phase.
 
-Azul Systems ¹«Ë¾×¨ÃÅ¶¨ÖÆÁËÒ»Ì×ÏµÍ³(¶¨ÖÆÄÚÈİ°üÀ¨CPU¡¢Ğ¾Æ¬×é¡¢Ö÷°åÒÔ¼°²Ù×÷ÏµÍ³)£¬ÓÃÀ´ÔËĞĞÖ§³ÖÀ¬»øÊÕ¼¯µÄĞéÄâ»ú¡£¶¨ÖÆµÄCPUÖ§³Ö[¶ÁÆÁÕÏÖ¸Áî]¡£ ¶ÁÆÁÕÏ(read barrier)ÓÃÓÚÖ§³Ö¸ß²¢·¢(²»Í£»ú)¡¢²¢ĞĞÖ´ĞĞ¡¢¾ßÓĞÄÚ´æËéÆ¬ÕûÀí¹¦ÄÜµÄGCËã·¨¡£ ÎŞÍ£¶ÙµÄÀ¬»øÊÕ¼¯Ëã·¨ÊÇÎªÁËÖ§³Ö²»¼ä¶ÏµÄÓ¦ÓÃ³ÌĞòÖ´ĞĞ¶ø×¨ÃÅÉè¼ÆµÄ, ÔÚ¸÷¸öGC½×¶Î±£³ÖÒ»ÖÂµÄĞŞ¸ÄÆ÷ÍÌÍÂÁ¿¡£
+Azul Systems ¹«Ë¾×¨ÃÅ¶¨ÖÆÁËÒ»Ì×ÏµÍ³(¶¨ÖÆÄÚÈİ°üÀ¨CPU¡¢Ğ¾Æ¬×é¡¢Ö÷°åÒÔ¼°²Ù×÷ÏµÍ³)£¬ÓÃÀ´ÔËĞĞÖ§³ÖÀ¬»øÊÕ¼¯µÄĞéÄâ»ú¡£¶¨ÖÆµÄCPUÖ§³Ö[¶ÁÆÁÕÏÖ¸Áî]¡£¶ÁÆÁÕÏ(read barrier)ÓÃÓÚÖ§³Ö¸ß²¢·¢(²»Í£»ú)¡¢²¢ĞĞÖ´ĞĞ¡¢¾ßÓĞÄÚ´æËéÆ¬ÕûÀí¹¦ÄÜµÄGCËã·¨¡£ÎŞÍ£¶ÙµÄÀ¬»øÊÕ¼¯Ëã·¨ÊÇÎªÁËÖ§³Ö²»¼ä¶ÏµÄÓ¦ÓÃ³ÌĞòÖ´ĞĞ¶ø×¨ÃÅÉè¼ÆµÄ, ÔÚ¸÷¸öGC½×¶Î±£³ÖÒ»ÖÂµÄĞŞ¸ÄÆ÷ÍÌÍÂÁ¿¡£
 
 Beyond the basic requirement of collecting faster than the allocation rate, the Pauseless collector is never in a ¡°rush¡± to complete any GC phase. No phase places an undue burden on the mutators nor do phases race to complete before the mutators produce more work. Portions of the Pauseless algorithm also feature a ¡°self-healing¡± behavior which limits mutator overhead and reduces mutator sensitivity to the current GC state.
 
@@ -92,7 +92,7 @@ Many modern garbage collectors rely on write barriers imposed on mutator heap wr
 
 Azul Systems has built a custom system (CPU, chip, board, and OS) specifically to run garbage collected virtual machines. The custom CPU includes a read barrier instruction. The read barrier enables a highly concurrent, parallel and compacting GC algorithm. The Pauseless GC algorithm is simple, efficient (low mutator overhead), and has no Stop-The-World pauses.
 
-Azul Systems ¹«Ë¾¹¹½¨ÁËÒ»Ì××¨ÃÅ¶¨ÖÆµÄÏµÍ³(°üÀ¨CPU¡¢Ğ¾Æ¬×é¡¢Ö÷°åÒÔ¼°²Ù×÷ÏµÍ³)£¬ÓÃÀ´ÔËĞĞÖ§³ÖÀ¬»øÊÕ¼¯µÄĞéÄâ»ú¡£¶¨ÖÆµÄCPUÖ§³Ö[¶ÁÆÁÕÏÖ¸Áî]¡£ ¶ÁÆÁÕÏ(read barrier)ÓÃÓÚÖ§³Ö¸ß²¢·¢¡¢²¢ĞĞ»¯¡¢¾ßÓĞÄÚ´æËéÆ¬ÕûÀí¹¦ÄÜµÄGCËã·¨¡£ ÎŞÍ£¶ÙµÄGCËã·¨·Ç³£¼ò½à¡¢¸ßĞ§(Í»±ä¿ªÏúºÜĞ¡), Ã»ÓĞSTWÍ£¶Ù(Stop-The-World pauses)¡£
+Azul Systems ¹«Ë¾¹¹½¨ÁËÒ»Ì××¨ÃÅ¶¨ÖÆµÄÏµÍ³(°üÀ¨CPU¡¢Ğ¾Æ¬×é¡¢Ö÷°åÒÔ¼°²Ù×÷ÏµÍ³)£¬ÓÃÀ´ÔËĞĞÖ§³ÖÀ¬»øÊÕ¼¯µÄĞéÄâ»ú¡£¶¨ÖÆµÄCPUÖ§³Ö[¶ÁÆÁÕÏÖ¸Áî]¡£¶ÁÆÁÕÏ(read barrier)ÓÃÓÚÖ§³Ö¸ß²¢·¢¡¢²¢ĞĞ»¯¡¢¾ßÓĞÄÚ´æËéÆ¬ÕûÀí¹¦ÄÜµÄGCËã·¨¡£ÎŞÍ£¶ÙµÄGCËã·¨·Ç³£¼ò½à¡¢¸ßĞ§(Í»±ä¿ªÏúºÜĞ¡), Ã»ÓĞSTWÍ£¶Ù(Stop-The-World pauses)¡£
 
 
 
@@ -106,7 +106,7 @@ The idea of garbage collection has been around for a long time [22][13][16][11].
 
 GC pauses and their unpredictable impact on mutators was the driving force behind the early work on concurrent collectors [26][5]. The expectation of the time was that special GC hardware would shortly be feasible and commonplace. This early work required such extensive fine-grained synchronization that it would only be feasible on dedicated hardware. GC hardware continues to be proposed to this day [23][29][24][18][20].
 
-GCÔİÍ£¼°Æä²»¿ÉÔ¤ÖªĞÔ, ¶ÔĞŞ¸ÄÆ÷µÄÓ°ÏìÍÆ¶¯ÁËÔçÆÚ²¢·¢GCµÄ·¢Õ¹(¼û[26][5]). Ê¹ÓÃÌØÊâµÄÓ²¼şÀ´Ö§³Å¿ÉÔ¤ÆÚµÄGCÊ±¼ä, ±»Ö¤Ã÷ÊÇ¿ÉĞĞµÄ¡¢¶øÇÒÊÇºÜ³£¼ûµÄ½â¾ö·½°¸. ÕâĞ©ÔçÆÚµÄ×÷Æ·ĞèÒª´óÁ¿Ï¸Á£¶ÈµÄÍ¬²½, ËùÒÔĞèÒª×¨ÃÅµÄÓ²¼şÖ§³Ö¡£ ÕâÊ±ºòGCÓ²¼ş·´¸´±»Ìá³ö(¼û[23][29][24][18][20])¡£
+GCÔİÍ£¼°Æä²»¿ÉÔ¤ÖªĞÔ, ¶ÔĞŞ¸ÄÆ÷µÄÓ°ÏìÍÆ¶¯ÁËÔçÆÚ²¢·¢GCµÄ·¢Õ¹(¼û[26][5]). Ê¹ÓÃÌØÊâµÄÓ²¼şÀ´Ö§³Å¿ÉÔ¤ÆÚµÄGCÊ±¼ä, ±»Ö¤Ã÷ÊÇ¿ÉĞĞµÄ¡¢¶øÇÒÊÇºÜ³£¼ûµÄ½â¾ö·½°¸. ÕâĞ©ÔçÆÚµÄ×÷Æ·ĞèÒª´óÁ¿Ï¸Á£¶ÈµÄÍ¬²½, ËùÒÔĞèÒª×¨ÃÅµÄÓ²¼şÖ§³Ö¡£ÕâÊ±ºòGCÓ²¼ş·´¸´±»Ìá³ö(¼û[23][29][24][18][20])¡£
 
 The idea of using common page-protection hardware to support GC has also been around awhile [2]. Both Appel [2][3] and Ossia [25] protect pages that may contain objects with non-forwarded pointers (initially all pages). Accessing a protected page causes an OS trap which the GC handles by forwarding all pointers on that page, then clearing the page protection. Appel does the forwarding in kernel-mode, Ossia maps the physical memory with a second unprotected virtual address for use by GC. Our Pauseless collector protects pages that contain objects being moved, instead of protecting pages that contain pointers to moved objects. This is a much smaller page set, and the pages can be incrementally protected. Our read-barrier allows us to intercept and correct individual stale references, and avoids blocking the mutator to fix up entire pages. We also support a special GC protection mode to allow fast, non-kernel-mode trap handlers that can access protected pages.
 
@@ -114,19 +114,19 @@ The idea of using common page-protection hardware to support GC has also been ar
 
 The idea of an incremental collector (via reference counting) is not new either [15]. Incremental collection seeks to reduce pause time by spreading the collection work out in time, finely interleaving GC work with mutator work. Because reference counting is expensive, and indeed all barriers (reference counting typically involves a write barrier) impose some mutator cost there is considerable research in reducing barrier costs [6][21][8] [9]. Having the read-barrier implemented in hardware greatly reduces costs. In our case the typical cost is roughly that of a single cycle ALU instruction.
 
-ÔöÁ¿ÊÕ¼¯Æ÷(Í¨¹ıÒıÓÃ¼ÆÊı)µÄÏë·¨Ò²²»ÊÇĞÂÌá³öµÄ(¼û[15]). ÔöÁ¿ÊÕ¼¯µÄÄ¿µÄÊÇÎªÁË¼õÉÙÍ£¶ÙÊ±¼ä, Í¨¹ıÊµÊ±µÄGC¹¤×÷, ¾«Ï¸½»´íGCÈÎÎñÓëĞŞ¸ÄÆ÷µÄÖ´ĞĞ. ÒòÎªÒıÓÃ¼ÆÊıµÄ´ú¼ÛºÜ¸ß, ÊÂÊµÉÏËùÓĞµÄÆÁÕÏ(ÒıÓÃ¼ÆÊıÍ¨³£Éæ¼°Ğ´ÕÏ°­)¶¼»áÇ¿¼ÓÒ»Ğ©ĞŞ¸Ä³É±¾, ÓĞºÜ¶àÑĞ¾¿ÖÂÁ¦ÓÚ½µµÍÆÁÕÏ¿ªÏú(¼û[6][21][8][9]). ÔÚÓ²¼şÄÚÊµÏÖµÄ¶ÁÆÁÕÏ´ó´ó½µµÍÁË¿ªÏú¡£ ÔÚÎÒÃÇµÄÊµÏÖÖĞ, Ò»°ãÖ»ĞèÒªµ¥¸öALUÖ¸ÁîµÄÊ±ÖÓÖÜÆÚ¡£
+ÔöÁ¿ÊÕ¼¯Æ÷(Í¨¹ıÒıÓÃ¼ÆÊı)µÄÏë·¨Ò²²»ÊÇĞÂÌá³öµÄ(¼û[15]). ÔöÁ¿ÊÕ¼¯µÄÄ¿µÄÊÇÎªÁË¼õÉÙÍ£¶ÙÊ±¼ä, Í¨¹ıÊµÊ±µÄGC¹¤×÷, ¾«Ï¸½»´íGCÈÎÎñÓëĞŞ¸ÄÆ÷µÄÖ´ĞĞ. ÒòÎªÒıÓÃ¼ÆÊıµÄ´ú¼ÛºÜ¸ß, ÊÂÊµÉÏËùÓĞµÄÆÁÕÏ(ÒıÓÃ¼ÆÊıÍ¨³£Éæ¼°Ğ´ÕÏ°­)¶¼»áÇ¿¼ÓÒ»Ğ©ĞŞ¸Ä³É±¾, ÓĞºÜ¶àÑĞ¾¿ÖÂÁ¦ÓÚ½µµÍÆÁÕÏ¿ªÏú(¼û[6][21][8][9]). ÔÚÓ²¼şÄÚÊµÏÖµÄ¶ÁÆÁÕÏ´ó´ó½µµÍÁË¿ªÏú¡£ÔÚÎÒÃÇµÄÊµÏÖÖĞ, Ò»°ãÖ»ĞèÒªµ¥¸öALUÖ¸ÁîµÄÊ±ÖÓÖÜÆÚ¡£
 
 Incremental and low-pause-time collectors are becoming very popular again ¨C partly because embedded devices have grown in compute power to the point where it's feasible to run a garbage collected language on them [19]. Metronome is an example of a modern low-pause time collector for a uniprocessor embedded system, and the pause times reported for Metronome are indeed smaller than those reported here [4]. However, Metronome as currently described is single-threaded and large business-class applications have enough mutators to overwhelm any singlethreaded collector. Pauseless is fully parallel and can add GC worker threads at any time. Metronome requires an oracle to predict the future GC needs of running applications; this oracle is easily supplied in embedded systems with a fixed application set (the engineer runs the finite application set and measures GC consumption). Servers typically do not have a fixed application set and GC requirements are highly unpredictable. Metronome mutator utilization is around 50%. In contrast our mutator utilization is closer to 98%, we use extra CPUs to do the collection work. In exchange, Metronome provides hard real-time guarantees while we provide only soft real-time guarantees.
 
-ÔöÁ¿ºÍµÍÍ£¶ÙÊ±¼äµÄÀ¬»øÊÕ¼¯Æ÷ÔÙ´Î±äµÃÁ÷ĞĞÆğÀ´ ¡ª¡ª ²¿·ÖÔ­ÒòÊÇÇ¶ÈëÊ½Éè±¸µÄÔËËãÄÜÁ¦Ñ¸ËÙÔö³¤, ÒÑ¾­¿ÉÒÔÔÚÉÏÃæÔËĞĞÀ¬»øÊÕ¼¯ÓïÑÔÁË(¼û[19]).MetronomeÊÇÒ»¿îÔËĞĞÔÚµ¥´¦ÀíÆ÷Ç¶ÈëÊ½Éè±¸ÖĞµÄGC, ËûµÄÔİÍ£Ê±¼ä¾İ±¨µÀÈ·Êµ±ÈÆäËûµÄGCÒªºÃ(¼û[4]). µ«ÊÇÄØ, Metronome Ä¿Ç°»¹ÊÇÒ»¿îµ¥Ïß³ÌµÄÀ¬»øÊÕ¼¯Æ÷, ¶ø´óĞÍµÄÉÌÒµÓ¦ÓÃ»áÓĞ·Ç³£¶àµÄĞŞ¸ÄÆ÷, ºÜÇáÒ×¾ÍÄÜÑ¹¿åËùÓĞµ¥Ïß³ÌµÄGC. ÎŞÍ£¶ÙGCÊÇÍêÈ«²¢ĞĞµÄ,¿ÉÒÔÔÚÈÎºÎÊ±ºòÔö¼ÓGC¹¤×÷Ïß³Ì. MetronomeĞèÒªÒ»¸ö´«ÚÍÕß(oracle)À´Ô¤²âÎ´À´GCÔËĞĞµÄĞèÇó; ÔÚÇ¶ÈëÊ½ÏµÍ³ÖĞÕâ¸ö´«ÚÍÕßºÜÈİÒ×Ìá¹©£¬ ÒòÎªĞèÒªÔËĞĞµÄ³ÌĞò»ù±¾ÉÏ¾ÍÄÇĞ©(¹¤³ÌÊ¦±àĞ´µÄÓ¦ÓÃ³ÌĞòÊÇÓĞÏŞµÄ,¶øÇÒ¿ÉÒÔ²ÉÈ¡Ò»Ğ©GCÏûºÄµÄ´ëÊ©)¡£ ¶ø·şÎñÆ÷»·¾³ÒªÖ´ĞĞµÄ³ÌĞòº£ÁËÈ¥ÁË, ¶øÇÒGCµÄĞèÇó»ù±¾ÉÏÊÇ²»¿ÉÔ¤²âµÄ¡£ MetronomeµÄĞŞ¸ÄÆ÷ÀûÓÃÂÊ´óÔ¼ÊÇ50%. Ïà±ÈÖ®ÏÂÎÒÃÇµÄmutatorÀûÓÃÂÊ½Ó½ü98%, ÎÒÃÇÊ¹ÓÃ¶îÍâµÄcpuÀ´Íê³ÉÀ¬»øÊÕ¼¯¹¤×÷. ¼òµ¥¶Ô±È, MetronomeÌá¹©ÁËÓ²ÊµÊ±±£Ö¤, ¶øÎÒÃÇÖ»Ìá¹©ÈíÊµÊ±±£Ö¤¡£
+ÔöÁ¿ºÍµÍÍ£¶ÙÊ±¼äµÄÀ¬»øÊÕ¼¯Æ÷ÔÙ´Î±äµÃÁ÷ĞĞÆğÀ´ ¡ª¡ª ²¿·ÖÔ­ÒòÊÇÇ¶ÈëÊ½Éè±¸µÄÔËËãÄÜÁ¦Ñ¸ËÙÔö³¤, ÒÑ¾­¿ÉÒÔÔÚÉÏÃæÔËĞĞÀ¬»øÊÕ¼¯ÓïÑÔÁË(¼û[19]).MetronomeÊÇÒ»¿îÔËĞĞÔÚµ¥´¦ÀíÆ÷Ç¶ÈëÊ½Éè±¸ÖĞµÄGC, ËûµÄÔİÍ£Ê±¼ä¾İ±¨µÀÈ·Êµ±ÈÆäËûµÄGCÒªºÃ(¼û[4]). µ«ÊÇÄØ, Metronome Ä¿Ç°»¹ÊÇÒ»¿îµ¥Ïß³ÌµÄÀ¬»øÊÕ¼¯Æ÷, ¶ø´óĞÍµÄÉÌÒµÓ¦ÓÃ»áÓĞ·Ç³£¶àµÄĞŞ¸ÄÆ÷, ºÜÇáÒ×¾ÍÄÜÑ¹¿åËùÓĞµ¥Ïß³ÌµÄGC. ÎŞÍ£¶ÙGCÊÇÍêÈ«²¢ĞĞµÄ,¿ÉÒÔÔÚÈÎºÎÊ±ºòÔö¼ÓGC¹¤×÷Ïß³Ì. MetronomeĞèÒªÒ»¸ö´«ÚÍÕß(oracle)À´Ô¤²âÎ´À´GCÔËĞĞµÄĞèÇó; ÔÚÇ¶ÈëÊ½ÏµÍ³ÖĞÕâ¸ö´«ÚÍÕßºÜÈİÒ×Ìá¹©£¬ÒòÎªĞèÒªÔËĞĞµÄ³ÌĞò»ù±¾ÉÏ¾ÍÄÇĞ©(¹¤³ÌÊ¦±àĞ´µÄÓ¦ÓÃ³ÌĞòÊÇÓĞÏŞµÄ,¶øÇÒ¿ÉÒÔ²ÉÈ¡Ò»Ğ©GCÏûºÄµÄ´ëÊ©)¡£¶ø·şÎñÆ÷»·¾³ÒªÖ´ĞĞµÄ³ÌĞòº£ÁËÈ¥ÁË, ¶øÇÒGCµÄĞèÇó»ù±¾ÉÏÊÇ²»¿ÉÔ¤²âµÄ¡£MetronomeµÄĞŞ¸ÄÆ÷ÀûÓÃÂÊ´óÔ¼ÊÇ50%. Ïà±ÈÖ®ÏÂÎÒÃÇµÄmutatorÀûÓÃÂÊ½Ó½ü98%, ÎÒÃÇÊ¹ÓÃ¶îÍâµÄcpuÀ´Íê³ÉÀ¬»øÊÕ¼¯¹¤×÷. ¼òµ¥¶Ô±È, MetronomeÌá¹©ÁËÓ²ÊµÊ±±£Ö¤, ¶øÎÒÃÇÖ»Ìá¹©ÈíÊµÊ±±£Ö¤¡£
 
 Our read-barrier is used for Baker-style relocation [5][23], where the loaded value is corrected before the mutator is allowed to use it. We focus collection efforts on regions which are known to be mostly dead, similar to Garbage-First [14]. Our mark phase uses an incremental update style instead of Snapshot-At-The-Beginning (SATB) style [30]. SATB requires a modestly expensive write-barrier which first does a read (and generally a series of dependent tests). The Pauseless collector does not require a write barrier.
 
-ÎÒÃÇ½«¶ÁÆÁÕÏÓÃÓÚ Baker-style µÄÇ¨ÒÆ[5][23], ÔÚĞŞ¸ÄÆ÷Ê¹ÓÃÖ®Ç°, ¼ÓÔØÖµ»á±»¾ÀÕı. ÎÒÃÇ½«ÊÕ¼¯µÄÄ¿±ê¼¯ÖĞÓÚÄÇĞ©´ó²¿·Ö¶ÔÏóÒÑËÀÍöµÄÇøÓò, ÕâÒ»µãÀàËÆÓÚG1(¼û[14]), ÔÚ±ê¼Ç½×¶ÎÊ¹ÓÃÔöÁ¿¸üĞÂµÄ·½Ê½, ¶ø²»ÊÇ¿ìÕÕ·½Ê½(Snapshot-At-The-Beginning,SATB),¼û[30]. SATBĞèÒªÊ¹ÓÃÒ»Ğ©°º¹óµÄĞ´ÆÁÕÏ, Ê×ÏÈÒª¶ÁÈ¡(Í¨³£°éËæÒ»ÏµÁĞµÄÏà¹Ø²âÊÔ)¡£ Pauseless ÊÕ¼¯Æ÷²»ĞèÒªÊ¹ÓÃĞ´ÆÁÕÏ¡£
+ÎÒÃÇ½«¶ÁÆÁÕÏÓÃÓÚ Baker-style µÄÇ¨ÒÆ[5][23], ÔÚĞŞ¸ÄÆ÷Ê¹ÓÃÖ®Ç°, ¼ÓÔØÖµ»á±»¾ÀÕı. ÎÒÃÇ½«ÊÕ¼¯µÄÄ¿±ê¼¯ÖĞÓÚÄÇĞ©´ó²¿·Ö¶ÔÏóÒÑËÀÍöµÄÇøÓò, ÕâÒ»µãÀàËÆÓÚG1(¼û[14]), ÔÚ±ê¼Ç½×¶ÎÊ¹ÓÃÔöÁ¿¸üĞÂµÄ·½Ê½, ¶ø²»ÊÇ¿ìÕÕ·½Ê½(Snapshot-At-The-Beginning,SATB),¼û[30]. SATBĞèÒªÊ¹ÓÃÒ»Ğ©°º¹óµÄĞ´ÆÁÕÏ, Ê×ÏÈÒª¶ÁÈ¡(Í¨³£°éËæÒ»ÏµÁĞµÄÏà¹Ø²âÊÔ)¡£Pauseless ÊÕ¼¯Æ÷²»ĞèÒªÊ¹ÓÃĞ´ÆÁÕÏ¡£
 
 Concurrent GCs are available in most modern production JVMs; BEA's JRockit [7], SUN's HotSpot [28] and IBM's production JVM [27] all have concurrent collectors and we tested with the latest available versions of Java 1.4 from each vendor. However, in all cases these collectors are not the defaults. They appear to not be as stable as the parallel collectors and they sometimes put high overheads on mutator threads. For some of these collectors, worse-case transaction times were no better than the default collectors.
 
-²¢·¢GCÔÚÈç½ñµÄ´ó²¿·ÖÉú²ú¼¶JVMÖĞ¶¼¿ÉÒÔÊ¹ÓÃ; BEAµÄJRockit(¼û[7]), SUN¹«Ë¾µÄHotSpot(¼û[28])£¬ÒÔ¼°IBMµÄ production JVM([27]) ¶¼×Ô´øÁËconcurrentÊÕ¼¯Æ÷, ÎÒÃÇ²âÊÔÁË¸÷¼Ò¹«Ë¾Ìá¹©µÄ Java 1.4°æ±¾µÄ×îĞÂÊÕ¼¯Æ÷. È»¶ø,ÕâĞ©ÊÕ¼¯Æ÷¶¼²»ÊÇÄ¬ÈÏÊÕ¼¯Æ÷¡£ ËûÃÇËÆºõÃ»ÓĞ²¢ĞĞÀ¬»øÊÕ¼¯Æ÷ÎÈ¶¨, ÓĞÊ±ºò»áµ¼ÖÂmutatorÏß³Ì·Ç³£¸ßµÄ¿ªÏú. ÕâĞ©ÊÕ¼¯Æ÷, ÔÚ×î»µÇé¿öÏÂ, ÊÂÎñµÄÏìÓ¦²¢²»±ÈÄ¬ÈÏµÄÊÕ¼¯Æ÷ºÃ¡£
+²¢·¢GCÔÚÈç½ñµÄ´ó²¿·ÖÉú²ú¼¶JVMÖĞ¶¼¿ÉÒÔÊ¹ÓÃ; BEAµÄJRockit(¼û[7]), SUN¹«Ë¾µÄHotSpot(¼û[28])£¬ÒÔ¼°IBMµÄ production JVM([27]) ¶¼×Ô´øÁËconcurrentÊÕ¼¯Æ÷, ÎÒÃÇ²âÊÔÁË¸÷¼Ò¹«Ë¾Ìá¹©µÄ Java 1.4°æ±¾µÄ×îĞÂÊÕ¼¯Æ÷. È»¶ø,ÕâĞ©ÊÕ¼¯Æ÷¶¼²»ÊÇÄ¬ÈÏÊÕ¼¯Æ÷¡£ËûÃÇËÆºõÃ»ÓĞ²¢ĞĞÀ¬»øÊÕ¼¯Æ÷ÎÈ¶¨, ÓĞÊ±ºò»áµ¼ÖÂmutatorÏß³Ì·Ç³£¸ßµÄ¿ªÏú. ÕâĞ©ÊÕ¼¯Æ÷, ÔÚ×î»µÇé¿öÏÂ, ÊÂÎñµÄÏìÓ¦²¢²»±ÈÄ¬ÈÏµÄÊÕ¼¯Æ÷ºÃ¡£
 
 
 
@@ -144,7 +144,7 @@ Azul Systems ¹«Ë¾×¨ÃÅ¹¹½¨ÁËÒ»Ì×¶¨ÖÆÏµÍ³£¨CPU£¬Ğ¾Æ¬×é£¬µçÂ·°åºÍ²Ù×÷ÏµÍ³£©£¬ÓÃÓÚÔË
 
 The basic CPU core is a 64-bit RISC optimized to run modern managed languages like Java. It makes an excellent JIT target but does not directly execute Java bytecodes. Each chip contains 24 CPUs, and up to 16 such chips can be made cache-coherent; the maximum sized system has 384 CPU cores and 256G of memory in a flat, symmetric memory space. The box runs a custom OS and can run as many JVMs as memory allows. A single JVM can dynamically scale to use all CPUs and all available memory.
 
-Ê¹ÓÃ¾­¹ıÓÅ»¯µÄ64Î»RISC¼Ü¹¹CPUºËĞÄ£¬¿ÉÔÚÉÏÃæÔËĞĞÏñJavaÕâÑùµÄÏÖ´úÍĞ¹ÜÓïÑÔ¡£ ¿ÉÒÔ±àÒë³öÒ»Ì××¿Ô½µÄJITÄ¿±ê´úÂë£¬²¢²»Ö±½ÓÖ´ĞĞJava×Ö½ÚÂë¡£ Ã¿¸öĞ¾Æ¬×é°üº¬24¸öCPU£¬ÊµÏÖ»º´æÒ»ÖÂµÄÇ°ÌáÏÂ, ×î¶à¿ÉÉı¼¶µ½16¸öÕâÑùµÄĞ¾Æ¬×é¼¶Áª; ËùÒÔÏµÍ³µÄ×î´óÈİÁ¿Îª384¸öCPUÄÚºË, 256GÄÚ´æµÄ¶Ô³ÆÄÚ´æ¿Õ¼ä¡£ ÕâÌ×ÏµÍ³ÔËĞĞ¶¨ÖÆµÄ²Ù×÷ÏµÍ³£¬Ö»ÒªÄÚ´æÔÊĞí£¬¿ÉÒÔÍ¬Ê±ÔËĞĞºÜ¶à¸öJVM¡£µ¥¸öJVM¿ÉÒÔ¸ù¾İĞèÒª¡¢Ê¹ÓÃËùÓĞµÄCPUºÍ¿ÉÓÃÄÚ´æ¡£
+Ê¹ÓÃ¾­¹ıÓÅ»¯µÄ64Î»RISC¼Ü¹¹CPUºËĞÄ£¬¿ÉÔÚÉÏÃæÔËĞĞÏñJavaÕâÑùµÄÏÖ´úÍĞ¹ÜÓïÑÔ¡£¿ÉÒÔ±àÒë³öÒ»Ì××¿Ô½µÄJITÄ¿±ê´úÂë£¬²¢²»Ö±½ÓÖ´ĞĞJava×Ö½ÚÂë¡£Ã¿¸öĞ¾Æ¬×é°üº¬24¸öCPU£¬ÊµÏÖ»º´æÒ»ÖÂµÄÇ°ÌáÏÂ, ×î¶à¿ÉÉı¼¶µ½16¸öÕâÑùµÄĞ¾Æ¬×é¼¶Áª; ËùÒÔÏµÍ³µÄ×î´óÈİÁ¿Îª384¸öCPUÄÚºË, 256GÄÚ´æµÄ¶Ô³ÆÄÚ´æ¿Õ¼ä¡£ÕâÌ×ÏµÍ³ÔËĞĞ¶¨ÖÆµÄ²Ù×÷ÏµÍ³£¬Ö»ÒªÄÚ´æÔÊĞí£¬¿ÉÒÔÍ¬Ê±ÔËĞĞºÜ¶à¸öJVM¡£µ¥¸öJVM¿ÉÒÔ¸ù¾İĞèÒª¡¢Ê¹ÓÃËùÓĞµÄCPUºÍ¿ÉÓÃÄÚ´æ¡£
 
 The hardware supports a number of fast user-mode trap handlers. These trap handlers can be entered and left in a handful of clock cycles (4-10, depending) and are frequently used by the GC algorithm; fast traps are key. The hardware also supports a fast cooperative preemption mechanism via interrupts that are taken only on user-selected instructions.
 
@@ -156,7 +156,7 @@ The hardware supports a number of fast user-mode trap handlers. These trap handl
 
 The hardware TLB supports an additional privilege level, the GC-mode, between the usual user- and kernel-modes. Usage of this GC-mode is explained in the GC algorithm section. Several of the fast user-mode traps start the trap handler in GC-mode instead of user-mode. The TLB also supports 1 megabyte pages; the 1M page thus becomes the standard unit of work for the Pauseless GC algorithm and appears frequently below.
 
-Ó²¼şTLBÖ§³Ö¶îÍâµÄÈ¨ÏŞ¼¶±ğ, ¼´ÓÃ»§Ä£Ê½ºÍÄÚºËÄ£Ê½Ö®¼ä¶àÁËÒ»¸öGCÄ£Ê½(GC-mode)¡£ ÔÚÕâÀïGCÄ£Ê½ÓÃÓÚGCËã·¨²¿·Ö¡£ ÓĞÒ»Ğ©¿ìËÙÓÃ»§Ä£Ê½ÏİÚå½«»áÔÚGCÄ£Ê½ÏÂÆô¶¯ÏİÚå´¦Àí³ÌĞò,¶ø²»ÊÇÓÃ»§Ä£Ê½¡£ TLB»¹Ö§³Ö1MBµÄÄÚ´æÒ³; ²¢ÇÒ1MBµÄÄÚ´æÒ³ÊÇPauseless GCËã·¨µÄ±ê×¼¹¤×÷µ¥Ôª£¬ÏÂÎÄ»á¾­³£Ìáµ½¡£
+Ó²¼şTLBÖ§³Ö¶îÍâµÄÈ¨ÏŞ¼¶±ğ, ¼´ÓÃ»§Ä£Ê½ºÍÄÚºËÄ£Ê½Ö®¼ä¶àÁËÒ»¸öGCÄ£Ê½(GC-mode)¡£ÔÚÕâÀïGCÄ£Ê½ÓÃÓÚGCËã·¨²¿·Ö¡£ÓĞÒ»Ğ©¿ìËÙÓÃ»§Ä£Ê½ÏİÚå½«»áÔÚGCÄ£Ê½ÏÂÆô¶¯ÏİÚå´¦Àí³ÌĞò,¶ø²»ÊÇÓÃ»§Ä£Ê½¡£TLB»¹Ö§³Ö1MBµÄÄÚ´æÒ³; ²¢ÇÒ1MBµÄÄÚ´æÒ³ÊÇPauseless GCËã·¨µÄ±ê×¼¹¤×÷µ¥Ôª£¬ÏÂÎÄ»á¾­³£Ìáµ½¡£
 
 
 The TLB is managed by the OS in the usual ways, with normal kernel-level TLB trap handlers being invoked when normal loads and stores fail an address translation. Setting the GC privilege mode bit is done by the JVM via calls into the OS. TLB violations on GC-protected pages generate fast user-level traps instead of OS level exceptions.
@@ -165,15 +165,15 @@ TLBÓÉ²Ù×÷ÏµÍ³ÒÔ³£¹æ·½Ê½¹ÜÀí£¬µ±Õı³£µÄ¼ÓÔØºÍ´æ´¢Ê§°Üµ¼ÖÂĞèÒª½øĞĞµØÖ·×ª»»Ê±£¬µ÷ÓÃÕ
 
 HotSpot supports a notion of GC safepoints, code locations where we have precise knowledge about register and stack locations [1]. The hardware supports a fast cooperative preemption mechanism via interrupts that are taken only on user-selected instructions, allowing us to rapidly stop individual threads only at safepoints. Variants of some common instructions (e.g., backwards branches, function entries) are flagged as safepoints and will check for a pending per-CPU safepoint interrupt. If a safepoint interrupt is pending the CPU will take an exception and the OS will call into a user-mode safepoint-trap handler. The running thread, being at a known safepoint, will then save its state in some convenient format and call the OS to yield. When the OS wants to preempt a normal Java thread, it sets this bit and briefly waits for the thread to yield. If the thread doesn't report back in a timely fashion it gets preempted as normal.
 
-HotSpotÖ§³ÖGC°²È«µã(safepoint)µÄ¸ÅÄî£¬Ò²¾ÍÊÇ¶Ô¼Ä´æÆ÷ºÍ¶ÑÕ»Î»ÖÃÓĞÃ÷È·ÁË½âµÄ´úÂëÎ»ÖÃ(¼û[1])¡£Ó²¼şÖ§³Ö¿ìËÙĞ­×÷ÇÀÕ¼»úÖÆ, Ö»ĞèÒªÔÚÓÃ»§Ñ¡ÔñµÄÖ¸ÁîÉÏÖ´ĞĞÖĞ¶Ï£¬ÔÊĞíÎÒÃÇÖ»ÔÚ°²È«µãÎ»ÖÃ¿ìËÙÍ£Ö¹Ä³¸öÏß³Ì¡£ Ò»Ğ©³£¼ûµÄÖ¸Áî£¨ÀıÈç£¬Ïòºó·ÖÖ§£¬º¯ÊıÈë¿Ú£©±»±ê¼ÇÎª°²È«µã£¬²¢½«¼ì²éÃ¿¸öCPUµÄ´ı´¦ÀíµÄ°²È«µãÖĞ¶Ï¡£ Èç¹û°²È«µãÖĞ¶Ï¹ÒÆğ£¬CPU½«·¢ÉúÒì³££¬²Ù×÷ÏµÍ³¾Í»áµ÷ÓÃÓÃ»§Ä£Ê½µÄ°²È«µãÏİÚå´¦Àí³ÌĞò¡£ ÕıÔÚÔËĞĞµÄ, ´¦ÓÚÒÑÖª°²È«µãµÄÏß³Ì, ½«ÒÔÄ³ÖÖ·½±ãµÄ¸ñÊ½±£´æÆä×´Ì¬, ²¢µ÷ÓÃ²Ù×÷ÏµÍ³ÒÔyield¡£µ±²Ù×÷ÏµÍ³ÏëÒªÈ¡´úÕı³£µÄJavaÏß³ÌÊ±£¬Ëü»áÉèÖÃ´Ë±êÖ¾Î», ²¢ÔİÊ±µÈ´ıÏß³Ì yield¡£ Èç¹ûÏß³ÌÃ»ÓĞ¼°Ê±±¨¸æ£¬Ëü½«±»Õı³£ÇÀÕ¼¡£
+HotSpotÖ§³ÖGC°²È«µã(safepoint)µÄ¸ÅÄî£¬Ò²¾ÍÊÇ¶Ô¼Ä´æÆ÷ºÍ¶ÑÕ»Î»ÖÃÓĞÃ÷È·ÁË½âµÄ´úÂëÎ»ÖÃ(¼û[1])¡£Ó²¼şÖ§³Ö¿ìËÙĞ­×÷ÇÀÕ¼»úÖÆ, Ö»ĞèÒªÔÚÓÃ»§Ñ¡ÔñµÄÖ¸ÁîÉÏÖ´ĞĞÖĞ¶Ï£¬ÔÊĞíÎÒÃÇÖ»ÔÚ°²È«µãÎ»ÖÃ¿ìËÙÍ£Ö¹Ä³¸öÏß³Ì¡£Ò»Ğ©³£¼ûµÄÖ¸Áî£¨ÀıÈç£¬Ïòºó·ÖÖ§£¬º¯ÊıÈë¿Ú£©±»±ê¼ÇÎª°²È«µã£¬²¢½«¼ì²éÃ¿¸öCPUµÄ´ı´¦ÀíµÄ°²È«µãÖĞ¶Ï¡£Èç¹û°²È«µãÖĞ¶Ï¹ÒÆğ£¬CPU½«·¢ÉúÒì³££¬²Ù×÷ÏµÍ³¾Í»áµ÷ÓÃÓÃ»§Ä£Ê½µÄ°²È«µãÏİÚå´¦Àí³ÌĞò¡£ÕıÔÚÔËĞĞµÄ, ´¦ÓÚÒÑÖª°²È«µãµÄÏß³Ì, ½«ÒÔÄ³ÖÖ·½±ãµÄ¸ñÊ½±£´æÆä×´Ì¬, ²¢µ÷ÓÃ²Ù×÷ÏµÍ³ÒÔyield¡£µ±²Ù×÷ÏµÍ³ÏëÒªÈ¡´úÕı³£µÄJavaÏß³ÌÊ±£¬Ëü»áÉèÖÃ´Ë±êÖ¾Î», ²¢ÔİÊ±µÈ´ıÏß³Ì yield¡£Èç¹ûÏß³ÌÃ»ÓĞ¼°Ê±±¨¸æ£¬Ëü½«±»Õı³£ÇÀÕ¼¡£
 
 The result of this behavior is that nearly all stopped threads are at GC safepoints already. Achieving a global safepoint, a Stop- The-World (STW) pause, is much faster than patch-and-roll-forward schemes [1] and is without the runtime cost normally associated with software polling schemes. While the algorithm we present has no STW pauses, our current implementation does. Hence it's still useful to have a fast stopping mechanism.
 
-ÕâÖÖĞĞÎªµÄ½á¹û, ÊÇ¼¸ºõËùÓĞÒÑÍ£Ö¹µÄÏß³Ì¶¼ÒÑ´¦ÓÚGC°²È«µã¡£ ÊµÏÖÈ«¾ÖµÄ°²È«µã£¬ Stop-The-World£¨STW£©ÔİÍ££¬±È²¹¶¡ºÍÇ°¹ö·½°¸Òª¿ìµÃ¶à(¼û[1])£¬¶øÇÒÍ¨³£Ã»ÓĞÈí¼şÂÖÑ¯·½°¸·½ÃæµÄÔËĞĞÊ±¿ªÏú¡£ËäÈ»ÎÒÃÇÌá³öµÄËã·¨ÀíÂÛÉÏÃ»ÓĞSTWÔİÍ££¬µ«µ±Ç°µÄÊµÏÖÈ´»á´æÔÚ¡£Òò´Ë£¬ÓµÓĞ¿ìËÙÍ£Ö¹»úÖÆÈÔÈ»·Ç³£ÓĞÓÃ¡£
+ÕâÖÖĞĞÎªµÄ½á¹û, ÊÇ¼¸ºõËùÓĞÒÑÍ£Ö¹µÄÏß³Ì¶¼ÒÑ´¦ÓÚGC°²È«µã¡£ÊµÏÖÈ«¾ÖµÄ°²È«µã£¬Stop-The-World£¨STW£©ÔİÍ££¬±È²¹¶¡ºÍÇ°¹ö·½°¸Òª¿ìµÃ¶à(¼û[1])£¬¶øÇÒÍ¨³£Ã»ÓĞÈí¼şÂÖÑ¯·½°¸·½ÃæµÄÔËĞĞÊ±¿ªÏú¡£ËäÈ»ÎÒÃÇÌá³öµÄËã·¨ÀíÂÛÉÏÃ»ÓĞSTWÔİÍ££¬µ«µ±Ç°µÄÊµÏÖÈ´»á´æÔÚ¡£Òò´Ë£¬ÓµÓĞ¿ìËÙÍ£Ö¹»úÖÆÈÔÈ»·Ç³£ÓĞÓÃ¡£
 
 We also make use of Checkpoints, points where we cannot proceed until all mutator threads have performed some action. In a Checkpoint each mutator reaches a GC safepoint, does a small amount of GC-related work and then carries on. Blocked threads are already at GC safepoints; GC threads perform the action on their behalf. In a STW pause, all mutators must reach a GC safepoint before any of them can proceed; the pause time is governed by the slowest thread. In a Checkpoint, running threads are never idled and the GC work is spread out in time. The same hardware and OS support is used for both STW pauses and Checkpoints.
 
-ÎÒÃÇ»¹Ê¹ÓÃÁË¼ì²éµã(Checkpoint)£¬Åöµ½¼ì²éµãÊ±,³ÌĞòÎŞ·¨¼ÌĞøÖ´ĞĞ, ĞèÒªµÈ´ıËùÓĞµÄmutatorÏß³ÌÖ´ĞĞÍêÄ³Ğ©²Ù×÷²ÅÄÜ¼ÌĞø¡£ ÔÚ¼ì²éµãÖĞ£¬Ã¿¸ömutator¶¼»áµ½´ïGC°²È«µã£¬Ö´ĞĞÉÙÁ¿GCÏà¹ØµÄ¹¤×÷£¬È»ºó½Ó×ÅÖ´ĞĞ¡£ ±»×èÈûµÄÏß³Ì¶¼ÒÑ¾­´¦ÓÚGC°²È«µã; GCÏß³Ì´úÌæÕâĞ©Ïß³ÌÖ´ĞĞ²Ù×÷¡£ÔÚSTWÔİÍ£ÖĞ£¬±ØĞëµÈËùÓĞµÄmutator¶¼µ½´ïGC°²È«µã²ÅÄÜ¼ÌĞøÖ´ĞĞ;ÔİÍ£Ê±¼äÓÉ×îÂıµÄÏß³Ì¾ö¶¨¡£ ÔÚ¼ì²éµãÖĞ£¬ÔËĞĞµÄÏß³ÌÓÀÔ¶²»»á¿ÕÏĞ£¬²¢ÇÒGC²Ù×÷»á¼°Ê±·ÖÉ¢¡£ STWÔİÍ£ºÍ¼ì²éµãÊ¹ÓÃÏàÍ¬µÄÓ²¼şºÍ²Ù×÷ÏµÍ³¡£
+ÎÒÃÇ»¹Ê¹ÓÃÁË¼ì²éµã(Checkpoint)£¬Åöµ½¼ì²éµãÊ±,³ÌĞòÎŞ·¨¼ÌĞøÖ´ĞĞ, ĞèÒªµÈ´ıËùÓĞµÄmutatorÏß³ÌÖ´ĞĞÍêÄ³Ğ©²Ù×÷²ÅÄÜ¼ÌĞø¡£ÔÚ¼ì²éµãÖĞ£¬Ã¿¸ömutator¶¼»áµ½´ïGC°²È«µã£¬Ö´ĞĞÉÙÁ¿GCÏà¹ØµÄ¹¤×÷£¬È»ºó½Ó×ÅÖ´ĞĞ¡£±»×èÈûµÄÏß³Ì¶¼ÒÑ¾­´¦ÓÚGC°²È«µã; GCÏß³Ì´úÌæÕâĞ©Ïß³ÌÖ´ĞĞ²Ù×÷¡£ÔÚSTWÔİÍ£ÖĞ£¬±ØĞëµÈËùÓĞµÄmutator¶¼µ½´ïGC°²È«µã²ÅÄÜ¼ÌĞøÖ´ĞĞ;ÔİÍ£Ê±¼äÓÉ×îÂıµÄÏß³Ì¾ö¶¨¡£ÔÚ¼ì²éµãÖĞ£¬ÔËĞĞµÄÏß³ÌÓÀÔ¶²»»á¿ÕÏĞ£¬²¢ÇÒGC²Ù×÷»á¼°Ê±·ÖÉ¢¡£STWÔİÍ£ºÍ¼ì²éµãÊ¹ÓÃÏàÍ¬µÄÓ²¼şºÍ²Ù×÷ÏµÍ³¡£
 
 ### 3.3 Hardware Read Barrier
 
@@ -181,15 +181,15 @@ We also make use of Checkpoints, points where we cannot proceed until all mutato
 
 In addition to the standard RISC load/store instruction set, the CPUs have a few custom instructions to aid in object allocation and collection. In this paper we focus on the hardware read barrier. It is instructive to note that this barrier strongly resemble those from 20 years ago [23].
 
-³ıÁË±ê×¼RISCµÄ load/storeÖ¸Áî¼¯Ö®Íâ£¬CPU»¹Ö§³ÖÒ»Ğ©×Ô¶¨ÒåÖ¸Áî, ÒÔ¸¨Öú¶ÔÏó·ÖÅäºÍÊÕ¼¯¡£ ÔÚ±¾ÎÄÖĞ£¬ÎÒÃÇ½«ÖØµã½éÉÜÓ²¼ş¶ÁÆÁÕÏ¡£ ÖµµÃÒ»ÌáµÄÊÇ£¬ ÕâÖÖ¶ÁÆÁÕÏºÍ20ÄêÇ°µÄ¼«ÎªÏàËÆ(¼û[23])¡£
+³ıÁË±ê×¼RISCµÄ load/storeÖ¸Áî¼¯Ö®Íâ£¬CPU»¹Ö§³ÖÒ»Ğ©×Ô¶¨ÒåÖ¸Áî, ÒÔ¸¨Öú¶ÔÏó·ÖÅäºÍÊÕ¼¯¡£ÔÚ±¾ÎÄÖĞ£¬ÎÒÃÇ½«ÖØµã½éÉÜÓ²¼ş¶ÁÆÁÕÏ¡£ÖµµÃÒ»ÌáµÄÊÇ£¬ÕâÖÖ¶ÁÆÁÕÏºÍ20ÄêÇ°µÄ¼«ÎªÏàËÆ(¼û[23])¡£
 
 The read barrier performs a number of checks and is used in different ways during different GC phases. Its behavior is described briefly here, and then again in greater depth in the context of the GC algorithm in the next section. The read barrier is issued after a load instruction and executes in 1 clock. There is a standard load-use penalty which the compiler attempts to schedule around.
 
-¶ÁÆÁÕÏÖ´ĞĞÒ»ÏµÁĞµÄ¼ì²é£¬ÔÚ²»Í¬µÄGC½×¶Î¶¼ÒÔ²»Í¬µÄ·½Ê½Ê¹ÓÃ¡£ ±¾½Ú¼òÒª½éÉÜËüµÄĞĞÎª£¬ ÏÂÒ»½Ú»á¼ÌĞøÔÚGCËã·¨µÄÉÏÏÂÎÄÖĞÉîÈëµØ½âÊÍËüµÄĞĞÎª¡£¶ÁÆÁÕÏÔÚloadÖ¸ÁîÖ®ºó·¢³ö£¬²¢ÔÚ1¸öÊ±ÖÓÖÜÆÚÄÚÖ´ĞĞ¡£ ±àÒëÆ÷ÔÚ³¢ÊÔ°²ÅÅÊ±»á´æÔÚ±ê×¼µÄ load-use ³Í·£¡£
+¶ÁÆÁÕÏÖ´ĞĞÒ»ÏµÁĞµÄ¼ì²é£¬ÔÚ²»Í¬µÄGC½×¶Î¶¼ÒÔ²»Í¬µÄ·½Ê½Ê¹ÓÃ¡£±¾½Ú¼òÒª½éÉÜËüµÄĞĞÎª£¬ÏÂÒ»½Ú»á¼ÌĞøÔÚGCËã·¨µÄÉÏÏÂÎÄÖĞÉîÈëµØ½âÊÍËüµÄĞĞÎª¡£¶ÁÆÁÕÏÔÚloadÖ¸ÁîÖ®ºó·¢³ö£¬²¢ÔÚ1¸öÊ±ÖÓÖÜÆÚÄÚÖ´ĞĞ¡£±àÒëÆ÷ÔÚ³¢ÊÔ°²ÅÅÊ±»á´æÔÚ±ê×¼µÄ load-use ³Í·£¡£
 
 The read barrier ¡°looks like¡± a standard load instruction, in that it has a base register, an offset and a value register. The base and offset are not used by the barrier checks but are presented to the trap handler and are used in ¡°self healing¡±. The value in the value register is assumed to be a freshly loaded ref, a heap pointer, and is cycled through the TLB just like a base address would be. If the ref refers to a GC-protected page a fast usermode trap handler is invoked, hereafter called the GC-trap. The read barrier ignores null refs. Unlike a Brooks-style [10] indirection barrier there is no null check, no memory access, no loaduse penalty, no extra word in the object header and no cache footprint. This behavior is used during the concurrent Relocate phase.
 
-¶ÁÆÁÕÏ¡°¿´ÆğÀ´Ïñ¡±Ò»¸ö±ê×¼µÄloadÖ¸Áî£¬ÒòÎªËü¾ßÓĞ»ùÖ·¼Ä´æÆ÷(base register)£¬Æ«ÒÆÁ¿(offset)ºÍÖµ¼Ä´æÆ÷(value register)¡£»ùÖ·¼Ä´æÆ÷ºÍÆ«ÒÆÁ¿²¢²»ÊÇÕÏ°­¼ì²éÊ¹ÓÃ£¬¶øÊÇÌá¹©¸øÏİÚå´¦Àí³ÌĞò£¬ÒÔ¼°ÓÃÓÚ¡°×ÔÎÒĞŞ¸´¡±¡£Öµ¼Ä´æÆ÷ÖĞµÄÖµ¼Ù¶¨ÎªĞÂ¼ÓÔØµÄÒıÓÃ£¬Ò²¾ÍÊÇ¶ÑÄÚ´æÖ¸Õë£¬²¢ÇÒÏñ»ùµØÖ·Ò»ÑùÑ­»·Í¨¹ıTLB¡£Èç¹ûÒıÓÃÖ¸ÏòÁËÊÜGC±£»¤µÄÒ³Ãæ£¬Ôòµ÷ÓÃ¿ìËÙÓÃ»§Ä£Ê½ÏİÚå´¦Àí³ÌĞò£¬ÏÂÎÄ³ÆÎªGCÏİÚå¡£ ¶ÁÆÁÕÏºöÂÔnullÒıÓÃ¡£ÓëBrooks·ç¸ñµÄ¼ä½ÓÆÁÕÏ²»Í¬(¼û[10])£¬¶ÁÆÁÕÏÃ»ÓĞnull¼ì²é£¬Ã»ÓĞÄÚ´æ·ÃÎÊ£¬Ã»ÓĞloaduse³Í·££¬¶ÔÏóÍ·ÖĞÒ²Ã»ÓĞ¶îÍâµÄ×Ö£¬Ò²Ã»ÓĞ»º´æÕ¼ÓÃ¿Õ¼ä¡£ ´ËĞĞÎªÔÚ²¢·¢ÖØ·ÖÅä½×¶Î£¨concurrent Relocate phase£©Ê¹ÓÃ¡£
+¶ÁÆÁÕÏ¡°¿´ÆğÀ´Ïñ¡±Ò»¸ö±ê×¼µÄloadÖ¸Áî£¬ÒòÎªËü¾ßÓĞ»ùÖ·¼Ä´æÆ÷(base register)£¬Æ«ÒÆÁ¿(offset)ºÍÖµ¼Ä´æÆ÷(value register)¡£»ùÖ·¼Ä´æÆ÷ºÍÆ«ÒÆÁ¿²¢²»ÊÇÕÏ°­¼ì²éÊ¹ÓÃ£¬¶øÊÇÌá¹©¸øÏİÚå´¦Àí³ÌĞò£¬ÒÔ¼°ÓÃÓÚ¡°×ÔÎÒĞŞ¸´¡±¡£Öµ¼Ä´æÆ÷ÖĞµÄÖµ¼Ù¶¨ÎªĞÂ¼ÓÔØµÄÒıÓÃ£¬Ò²¾ÍÊÇ¶ÑÄÚ´æÖ¸Õë£¬²¢ÇÒÏñ»ùµØÖ·Ò»ÑùÑ­»·Í¨¹ıTLB¡£Èç¹ûÒıÓÃÖ¸ÏòÁËÊÜGC±£»¤µÄÒ³Ãæ£¬Ôòµ÷ÓÃ¿ìËÙÓÃ»§Ä£Ê½ÏİÚå´¦Àí³ÌĞò£¬ÏÂÎÄ³ÆÎªGCÏİÚå¡£¶ÁÆÁÕÏºöÂÔnullÒıÓÃ¡£ÓëBrooks·ç¸ñµÄ¼ä½ÓÆÁÕÏ²»Í¬(¼û[10])£¬¶ÁÆÁÕÏÃ»ÓĞnull¼ì²é£¬Ã»ÓĞÄÚ´æ·ÃÎÊ£¬Ã»ÓĞloaduse³Í·££¬¶ÔÏóÍ·ÖĞÒ²Ã»ÓĞ¶îÍâµÄ×Ö£¬Ò²Ã»ÓĞ»º´æÕ¼ÓÃ¿Õ¼ä¡£´ËĞĞÎªÔÚ²¢·¢ÖØ·ÖÅä½×¶Î£¨concurrent Relocate phase£©Ê¹ÓÃ¡£
 
 We also steal 1 address bit from the 64-bit address space; the hardware ignores this bit (masks it off). This bit is called the Not-Marked-Through (NMT) bit and is used during the concurrent Marking phase. The hardware maintains a desired value for this bit and will trap to the NMT-trap if the ref has the wrong flavor. Null refs are ignored here as well.
 
@@ -197,7 +197,7 @@ We also steal 1 address bit from the 64-bit address space; the hardware ignores 
 
 Note that the read barrier behavior can be emulated on standard hardware at some cost. The GC protection check can be emulated with standard page protection and the read barrier emulated with a dead load instruction. The NMT check can be emulated by double-mapping memory and changing page protections to reflect the expected NMT bit value. However, using the TLB to check ref privileges means that a failure will trigger a kernellevel TLB trap instead of a fast user-mode trap. Turning this into a user-mode trap will generally have some substantial cost and may require altering the OS. Our read barrier instruction will not trap on a null ref, and null refs are quite common. Emulating this on standard hardware will require a conditional test in the barrier code or mapping page 0. This in turn precludes using normal memory operations from doubling as null-pointer checks, a common optimization in modern JVMs.
 
-Çë×¢Òâ£¬ÔÚ±ê×¼µÄÓ²¼şÆ½Ì¨ÉÏ£¬Ò²¿ÉÒÔÄ£Äâ¶ÁÆÁÕÏĞĞÎª£¬µ«»áÓĞÒ»¶¨µÄ¿ªÏú¡£ GC±£»¤¼ì²é¿ÉÒÔÊ¹ÓÃ±ê×¼µÄÒ³±£»¤¼¼ÊõÀ´Ä£Äâ£¬¶ÁÆÁÕÏÔòÊ¹ÓÃ¾²Ì¬¼ÓÔØÖ¸Áî(dead load instruction)À´Ä£Äâ¡£ NMT¼ì²éµÄÄ£Äâ£¬¿ÉÒÔÍ¨¹ıË«Ó³ÉäÄÚ´æ£¬¼ÓÉÏ¸ü¸ÄÒ³±£»¤ÒÔ·´Ó³Ô¤ÆÚµÄNMTÎ»À´ÊµÏÖ¡£ µ«ÊÇ£¬Ê¹ÓÃTLB¼ì²éÒıÓÃÈ¨ÏŞ£¬Ê§°ÜÔò»á´¥·¢ÄÚºË¼¶µÄTLBÏİÚå£¬¶ø²»ÊÇ¿ìËÙÓÃ»§Ä£Ê½ÏİÚå¡£ ½«Æä×ª»»ÎªÓÃ»§Ä£Ê½ÏİÚåÍ¨³£»á²úÉúÒ»Ğ©ÊµÖÊĞÔµÄ¿ªÏú£¬¿ÉÄÜ»¹ĞèÒªĞŞ¸Ä²Ù×÷ÏµÍ³´úÂë¡£ÎÒÃÇµÄ¶ÁÆÁÕÏÖ¸Áî²»»áÏİÈë¿ÕÒıÓÃ£¬¶ø¿ÕÒıÓÃÈ´ºÜ³£¼û£»ÔÚ±ê×¼Ó²¼şÉÏÄ£ÄâÕâÒ»µã, ĞèÒªÔÚÆÁÕÏ´úÂë»òÕß0ºÅÓ³ÉäÒ³ÃæÉÏ½øĞĞÌõ¼ş²âÊÔ¡£Õâ·´¹ıÀ´×èÖ¹ÁËË«±¶µÄ¿ÕÖ¸Õë¼ì²é, ÕâÊÇÏÖ´úJVMÖĞ³£¼ûµÄÓÅ»¯¡£
+Çë×¢Òâ£¬ÔÚ±ê×¼µÄÓ²¼şÆ½Ì¨ÉÏ£¬Ò²¿ÉÒÔÄ£Äâ¶ÁÆÁÕÏĞĞÎª£¬µ«»áÓĞÒ»¶¨µÄ¿ªÏú¡£GC±£»¤¼ì²é¿ÉÒÔÊ¹ÓÃ±ê×¼µÄÒ³±£»¤¼¼ÊõÀ´Ä£Äâ£¬¶ÁÆÁÕÏÔòÊ¹ÓÃ¾²Ì¬¼ÓÔØÖ¸Áî(dead load instruction)À´Ä£Äâ¡£NMT¼ì²éµÄÄ£Äâ£¬¿ÉÒÔÍ¨¹ıË«Ó³ÉäÄÚ´æ£¬¼ÓÉÏ¸ü¸ÄÒ³±£»¤ÒÔ·´Ó³Ô¤ÆÚµÄNMTÎ»À´ÊµÏÖ¡£µ«ÊÇ£¬Ê¹ÓÃTLB¼ì²éÒıÓÃÈ¨ÏŞ£¬Ê§°ÜÔò»á´¥·¢ÄÚºË¼¶µÄTLBÏİÚå£¬¶ø²»ÊÇ¿ìËÙÓÃ»§Ä£Ê½ÏİÚå¡£½«Æä×ª»»ÎªÓÃ»§Ä£Ê½ÏİÚåÍ¨³£»á²úÉúÒ»Ğ©ÊµÖÊĞÔµÄ¿ªÏú£¬¿ÉÄÜ»¹ĞèÒªĞŞ¸Ä²Ù×÷ÏµÍ³´úÂë¡£ÎÒÃÇµÄ¶ÁÆÁÕÏÖ¸Áî²»»áÏİÈë¿ÕÒıÓÃ£¬¶ø¿ÕÒıÓÃÈ´ºÜ³£¼û£»ÔÚ±ê×¼Ó²¼şÉÏÄ£ÄâÕâÒ»µã, ĞèÒªÔÚÆÁÕÏ´úÂë»òÕß0ºÅÓ³ÉäÒ³ÃæÉÏ½øĞĞÌõ¼ş²âÊÔ¡£Õâ·´¹ıÀ´×èÖ¹ÁËË«±¶µÄ¿ÕÖ¸Õë¼ì²é, ÕâÊÇÏÖ´úJVMÖĞ³£¼ûµÄÓÅ»¯¡£
 
 ## 4. THE PAUSELESS GC ALGORITHM
 
@@ -205,15 +205,15 @@ Note that the read barrier behavior can be emulated on standard hardware at some
 
 The Pauseless GC Algorithm is divided into three main phases: Mark, Relocate and Remap. Each phase is fully parallel and concurrent. Mark bits go stale; objects die over time and the mark bits do not reflect the changes. The Mark phase is responsible for periodically refreshing the mark bits. The Relocate phase uses the most recently available mark bits to find pages with little live data, to relocate and compact those pages and to free the backing physical memory. The Remap phase updates every relocated pointer in the heap.
 
-Pauseless GCËã·¨·ÖÎªÈı¸öÖ÷Òª½×¶Î£ºMark£¨±ê¼Ç£©£¬Relocate(ÖØ·ÖÅä)ºÍRemap(ÖØÓ³Éä)¡£Ã¿¸ö½×¶Î¶¼ÊÇÍêÈ«²¢ĞĞºÍ²¢·¢µÄ¡£±ê¼ÇÎ»±äµÃ³Â¾É;¶ÔÏóËæÊ±¼äËÀÍö£¬±ê¼ÇÎ»²»·´Ó³±ä¸ü¡£±ê¼Ç½×¶Î¸ºÔğ¶¨ÆÚË¢ĞÂ±ê¼ÇÎ»¡£Relocate ½×¶ÎÊ¹ÓÃ×î½ü¿ÉÓÃµÄ±ê¼ÇÎ»À´²éÕÒ¾ßÓĞÉÙÁ¿´æ»î¶ÔÏóµÄÒ³Ãæ£¬ÒÔÖØĞÂ¶¨Î»ºÍÑ¹ËõÕâĞ©Ò³Ãæ, ÊÍ·ÅÎïÀíÄÚ´æ¡£ ÖØÓ³Éä½×¶Î¸üĞÂ¶ÑÖĞµÄÃ¿¸öÖØ·ÖÅäÖ¸Õë¡£
+Pauseless GCËã·¨·ÖÎªÈı¸öÖ÷Òª½×¶Î£ºMark£¨±ê¼Ç£©£¬Relocate(ÖØ·ÖÅä)ºÍRemap(ÖØÓ³Éä)¡£Ã¿¸ö½×¶Î¶¼ÊÇÍêÈ«²¢ĞĞºÍ²¢·¢µÄ¡£±ê¼ÇÎ»±äµÃ³Â¾É;¶ÔÏóËæÊ±¼äËÀÍö£¬±ê¼ÇÎ»²»·´Ó³±ä¸ü¡£±ê¼Ç½×¶Î¸ºÔğ¶¨ÆÚË¢ĞÂ±ê¼ÇÎ»¡£Relocate ½×¶ÎÊ¹ÓÃ×î½ü¿ÉÓÃµÄ±ê¼ÇÎ»À´²éÕÒ¾ßÓĞÉÙÁ¿´æ»î¶ÔÏóµÄÒ³Ãæ£¬ÒÔÖØĞÂ¶¨Î»ºÍÑ¹ËõÕâĞ©Ò³Ãæ, ÊÍ·ÅÎïÀíÄÚ´æ¡£ÖØÓ³Éä½×¶Î¸üĞÂ¶ÑÖĞµÄÃ¿¸öÖØ·ÖÅäÖ¸Õë¡£
 
 **There is no ¡°rush¡± to finish any given phase.** No phase places a substantial burden on the mutators that needs to be relieved by ending the phase quickly. There is no ¡°race¡± to finish some phase before collection can begin again ¨C Relocation runs continuously and can immediately free memory at any point. Since all phases are parallel, GC can keep up with any number of mutator threads simply by adding more GC threads. Unlike other incremental update algorithms, there is no re-Mark or final- Mark phase; the concurrent Mark phase will complete in a single pass despite the mutators busily modifying the heap. GC threads do compete with mutator threads for CPU time. On Azul's hardware there are generally spare CPUs available to do GC work. However, ¡°at the limit¡± some fraction of CPUs will be doing GC and will not be available to the mutators.
 
-**ÈÎºÎÌØ¶¨½×¶Î¶¼²»ĞèÒª¡°´ÒÃ¦¡±Íê³É**¡£ Ã»ÓĞÄÄ¸ö½×¶ÎĞèÒª¿ìËÙÍê³É£¬»º½âÁË¸øĞŞ¸ÄÆ÷´øÀ´µÄ³ÁÖØ¸ºµ£¡£ÔÚÀ¬»øÊÕ¼¯ÔÙ´Î¿ªÊ¼Ö®Ç°Ã»ÓĞ¡°ÇÀ×Å¡±Íê³ÉÄ³¸ö½×¶Î - ÖØ·ÖÅä»áÁ¬ĞøÔËĞĞ£¬¿ÉÒÔÔÚÈÎºÎÊ±¿ÌÁ¢¼´ÊÍ·ÅÄÚ´æ¡£ÓÉÓÚËùÓĞ½×¶Î¶¼ÊÇ²¢ĞĞµÄ£¬Òò´ËÖ»ĞèÌí¼Ó¸ü¶àGCÏß³Ì£¬GC¾Í¿ÉÒÔ¸úÉÏÈÎÒâÊıÁ¿µÄmutatorÏß³Ì¡£ÓëÆäËûÔöÁ¿¸üĞÂËã·¨²»Í¬£¬ ÕâÀïÃ»ÓĞÖØĞÂ±ê¼Ç»ò×îÖÕ±ê¼Ç½×¶Î; ¾¡¹ÜmutatorÃ¦ÓÚĞŞ¸Ä¶ÑÄÚ´æ£¬µ«²¢·¢±ê¼Ç½×¶Î½«ÔÚÒ»´Î´«µİÖĞÍê³É¡£ GCÏß³ÌÈ·ÊµÓëmutatorÏß³ÌÕùÇ¹CPUÊ±¼ä¡£ÔÚAzulµÄÓ²¼şÉÏ£¬Í¨³£ÓĞ±¸ÓÃCPUÀ´½øĞĞGC¹¤×÷¡£ ¶øÇÒ£¬¡°ÔÚ¼«ÏŞÇé¿öÏÂ¡±Ä³Ğ©CPUÖ»Ö´ĞĞGC²Ù×÷, ²»»áÈÃÒµÎñÏß³ÌÊ¹ÓÃ¡£
+**ÈÎºÎÌØ¶¨½×¶Î¶¼²»ĞèÒª¡°´ÒÃ¦¡±Íê³É**¡£Ã»ÓĞÄÄ¸ö½×¶ÎĞèÒª¿ìËÙÍê³É£¬»º½âÁË¸øĞŞ¸ÄÆ÷´øÀ´µÄ³ÁÖØ¸ºµ£¡£ÔÚÀ¬»øÊÕ¼¯ÔÙ´Î¿ªÊ¼Ö®Ç°Ã»ÓĞ¡°ÇÀ×Å¡±Íê³ÉÄ³¸ö½×¶Î - ÖØ·ÖÅä»áÁ¬ĞøÔËĞĞ£¬¿ÉÒÔÔÚÈÎºÎÊ±¿ÌÁ¢¼´ÊÍ·ÅÄÚ´æ¡£ÓÉÓÚËùÓĞ½×¶Î¶¼ÊÇ²¢ĞĞµÄ£¬Òò´ËÖ»ĞèÌí¼Ó¸ü¶àGCÏß³Ì£¬GC¾Í¿ÉÒÔ¸úÉÏÈÎÒâÊıÁ¿µÄmutatorÏß³Ì¡£ÓëÆäËûÔöÁ¿¸üĞÂËã·¨²»Í¬£¬ÕâÀïÃ»ÓĞÖØĞÂ±ê¼Ç»ò×îÖÕ±ê¼Ç½×¶Î; ¾¡¹ÜmutatorÃ¦ÓÚĞŞ¸Ä¶ÑÄÚ´æ£¬µ«²¢·¢±ê¼Ç½×¶Î½«ÔÚÒ»´Î´«µİÖĞÍê³É¡£GCÏß³ÌÈ·ÊµÓëmutatorÏß³ÌÕùÇ¹CPUÊ±¼ä¡£ÔÚAzulµÄÓ²¼şÉÏ£¬Í¨³£ÓĞ±¸ÓÃCPUÀ´½øĞĞGC¹¤×÷¡£¶øÇÒ£¬¡°ÔÚ¼«ÏŞÇé¿öÏÂ¡±Ä³Ğ©CPUÖ»Ö´ĞĞGC²Ù×÷, ²»»áÈÃÒµÎñÏß³ÌÊ¹ÓÃ¡£
 
 **Each of the phases involves a ¡°self-healing¡± aspect,** where the mutators immediately correct the cause of each read barrier trap by updating the ref in memory. This assures the same ref will not trigger another trap. The work involved varies by trap type and is detailed below. Once the mutators' working sets have been handled they can execute at full speed with no more traps. During certain phase shifts mutators suffer through a ¡°trap storm¡±, a high volume of traps that amount to a pause smeared out in time. We measured the trap storms using Minimum Mutator Utilization, and they cost around 20ms spread out over a few hundred milliseconds.
 
-**Ã¿¸ö½×¶Î¶¼Éæ¼°¡°×ÔÎÒĞŞ¸´¡±**£¬ mutator Ïß³ÌÍ¨¹ı¸üĞÂÄÚ´æÖĞµÄÒıÓÃ, À´Á¢¼´¾ÀÕıÃ¿¸ö¶ÁÆÁÕÏÏİÚå¡£ÕâÈ·±£ÁËÍ¬Ò»¸öÒıÓÃ²»»á´¥·¢ÁíÒ»¸öÏİÚå¡£ËùÉæ¼°µÄ¹¤×÷ÒòÏİÚåÀàĞÍ¶øÒì£¬¾ßÌåÇé¿öÊÇ: Ò»µ©´¦ÀíÁËmutatorµÄ¹¤×÷¼¯£¬ËüÃÇ¾Í¿ÉÒÔÈ«ËÙÖ´ĞĞ¶ø²»ÔÙÓĞÏİÚå¡£ ÔÚÄ³Ğ©½×¶Î£¬ĞŞ¸ÄÆ÷ÔâÊÜÁË¡°ÏİÚå·ç±©¡±£¬´óÁ¿µÄÏİÚåÏàµ±ÓÚÊµ¼ÊÉÏµÄÔİÍ£¡£ÎÒÃÇÊ¹ÓÃ Minimum Mutator Utilization À´²âÁ¿ÏİÚå·ç±©£¬ÔÚ¼¸°ÙmsÄÚµÄ¿ªÏú´óÔ¼ÊÇ20ms¡£
+**Ã¿¸ö½×¶Î¶¼Éæ¼°¡°×ÔÎÒĞŞ¸´¡±**£¬mutator Ïß³ÌÍ¨¹ı¸üĞÂÄÚ´æÖĞµÄÒıÓÃ, À´Á¢¼´¾ÀÕıÃ¿¸ö¶ÁÆÁÕÏÏİÚå¡£ÕâÈ·±£ÁËÍ¬Ò»¸öÒıÓÃ²»»á´¥·¢ÁíÒ»¸öÏİÚå¡£ËùÉæ¼°µÄ¹¤×÷ÒòÏİÚåÀàĞÍ¶øÒì£¬¾ßÌåÇé¿öÊÇ: Ò»µ©´¦ÀíÁËmutatorµÄ¹¤×÷¼¯£¬ËüÃÇ¾Í¿ÉÒÔÈ«ËÙÖ´ĞĞ¶ø²»ÔÙÓĞÏİÚå¡£ÔÚÄ³Ğ©½×¶Î£¬ĞŞ¸ÄÆ÷ÔâÊÜÁË¡°ÏİÚå·ç±©¡±£¬´óÁ¿µÄÏİÚåÏàµ±ÓÚÊµ¼ÊÉÏµÄÔİÍ£¡£ÎÒÃÇÊ¹ÓÃ Minimum Mutator Utilization À´²âÁ¿ÏİÚå·ç±©£¬ÔÚ¼¸°ÙmsÄÚµÄ¿ªÏú´óÔ¼ÊÇ20ms¡£
 
 The algorithm we present has no Stop-The-World (STW) pauses, no places where all threads must be simultaneously stopped. However, for ease of engineering into the existing HotSpot JVM our implementation includes some STWs. We feel these STWs can be readily engineered to have pause times below standard OS context- switch times, where a GC pause will be indistinguishable from being context switched by the OS. We will mention where the implementation differs from theory as the phases are described.
 
@@ -225,11 +225,11 @@ The algorithm we present has no Stop-The-World (STW) pauses, no places where all
 
 The Mark phase is a parallel and concurrent incremental update (not SATB) marking algorithm [17], augmented with the read barrier. The Mark phase is responsible for marking all live objects, tagging live objects in some fashion to distinguish them from dead objects. In addition, each ref has it's NMT bit set to the expected value. The Mark phase also gathers per-1M-page liveness totals. These totals give a conservative estimate of live data on a page (hence a guaranteed amount of reclaimable space) and are used in the Relocate phase.
 
-±ê¼Ç½×¶ÎÊÇ²¢ĞĞµÄ£¬¶øÇÒÊ¹ÓÃµÄÊÇ²¢·¢ÔöÁ¿¸üĞÂ±ê¼ÇËã·¨£¨¶ø²»ÊÇSATB£©(¼û[17])£¬Ôö¼ÓÁË¶ÁÆÁÕÏ¡£ ±ê¼Ç½×¶Î¸ºÔğ±ê¼ÇËùÓĞ´æ»îµÄ¶ÔÏó£¬ÒÔÄ³ÖÖ·½Ê½´òÉÏ±êÇ©£¬½«´æ»î¶ÔÏóÓëËÀÍö¶ÔÏóÇø·Ö¿ªÀ´¡£ ´ËÍâ£¬½«Ã¿¸öÒıÓÃ¶¼ÉèÖÃ¶ÔÓ¦µÄNMTÎ»Ô¤ÆÚÖµ¡£ ±ê¼Ç½×¶Î»¹ÊÕ¼¯Ã¿¸ö1MÒ³µÄ´æ»î¶ÔÏó×ÜÊı¡£ÕâĞ©×ÜÊı¶ÔÒ³ÃæÉÏµÄ´æ»îÊı¾İ½øĞĞ±£ÊØ¹À¼Æ£¨ÒÔ±£Ö¤¿É»ØÊÕ¿Õ¼äÁ¿£©£¬²¢ÔÚRelocate ½×¶ÎÊ¹ÓÃ¡£
+±ê¼Ç½×¶ÎÊÇ²¢ĞĞµÄ£¬¶øÇÒÊ¹ÓÃµÄÊÇ²¢·¢ÔöÁ¿¸üĞÂ±ê¼ÇËã·¨£¨¶ø²»ÊÇSATB£©(¼û[17])£¬Ôö¼ÓÁË¶ÁÆÁÕÏ¡£±ê¼Ç½×¶Î¸ºÔğ±ê¼ÇËùÓĞ´æ»îµÄ¶ÔÏó£¬ÒÔÄ³ÖÖ·½Ê½´òÉÏ±êÇ©£¬½«´æ»î¶ÔÏóÓëËÀÍö¶ÔÏóÇø·Ö¿ªÀ´¡£´ËÍâ£¬½«Ã¿¸öÒıÓÃ¶¼ÉèÖÃ¶ÔÓ¦µÄNMTÎ»Ô¤ÆÚÖµ¡£±ê¼Ç½×¶Î»¹ÊÕ¼¯Ã¿¸ö1MÒ³µÄ´æ»î¶ÔÏó×ÜÊı¡£ÕâĞ©×ÜÊı¶ÔÒ³ÃæÉÏµÄ´æ»îÊı¾İ½øĞĞ±£ÊØ¹À¼Æ£¨ÒÔ±£Ö¤¿É»ØÊÕ¿Õ¼äÁ¿£©£¬²¢ÔÚRelocate ½×¶ÎÊ¹ÓÃ¡£
 
 The basic idea is straightforward: the Marker starts from some root set (generally static global variables and mutator stack contents) and begins marking reachable objects. After marking an object (and setting the NMT bit), the Marker then marksthrough the object ¨C recursively marking all refs it finds inside the marked object. Extensions to make this algorithm parallel have been previously published [17]. Making marking fully concurrent is a little harder and the issues are described further below.
 
-»ù±¾Ë¼ÏëºÜ¼òµ¥£º±ê¼Ç³ÌĞò´ÓGC¸ù£¨Í¨³£ÊÇ¾²Ì¬È«¾Ö±äÁ¿ºÍmutatorÏß³ÌµÄÕ»¿Õ¼ä£©¿ªÊ¼£¬ ±ê¼Ç¿É´ïµÄ¶ÔÏó¡£ ±ê¼ÇÄ³¸ö¶ÔÏó£¨²¢ÉèÖÃNMTÎ»£©Ö®ºó£¬±ê¼Ç³ÌĞò»á±éÀú¸Ã¶ÔÏó - µİ¹éµØ±ê¼Ç¸Ã¶ÔÏóÖĞµÄËùÓĞÒıÓÃ¡£Ê¹¸ÃËã·¨²¢ĞĞÖ´ĞĞµÄÀ©Õ¹ÒÑ¾­·¢±í(¼û[17])¡£ Ê¹±ê¼ÇÍêÈ«²¢·¢ÓĞµãÀ§ÄÑ£¬ÏÂÃæ½«½øÒ»²½ÃèÊöÕâĞ©ÎÊÌâ¡£
+»ù±¾Ë¼ÏëºÜ¼òµ¥£º±ê¼Ç³ÌĞò´ÓGC¸ù£¨Í¨³£ÊÇ¾²Ì¬È«¾Ö±äÁ¿ºÍmutatorÏß³ÌµÄÕ»¿Õ¼ä£©¿ªÊ¼£¬±ê¼Ç¿É´ïµÄ¶ÔÏó¡£±ê¼ÇÄ³¸ö¶ÔÏó£¨²¢ÉèÖÃNMTÎ»£©Ö®ºó£¬±ê¼Ç³ÌĞò»á±éÀú¸Ã¶ÔÏó - µİ¹éµØ±ê¼Ç¸Ã¶ÔÏóÖĞµÄËùÓĞÒıÓÃ¡£Ê¹¸ÃËã·¨²¢ĞĞÖ´ĞĞµÄÀ©Õ¹ÒÑ¾­·¢±í(¼û[17])¡£Ê¹±ê¼ÇÍêÈ«²¢·¢ÓĞµãÀ§ÄÑ£¬ÏÂÃæ½«½øÒ»²½ÃèÊöÕâĞ©ÎÊÌâ¡£
 
 ### 4.2 Relocate Phase
 
@@ -237,15 +237,15 @@ The basic idea is straightforward: the Marker starts from some root set (general
 
 The Relocate phase is where objects are relocated and pages are reclaimed. A page with mostly dead objects is made wholly unused by relocating the remaining live objects to other pages. The Relocate phase starts by selecting a set of pages that are above a given threshold of sparseness. Each page in this set is protected from mutator access, and then live objects are copied out. Forwarding information tracking the location of relocated objects is maintained outside the page.
 
-Relocate ½×¶Î½øĞĞ¶ÔÏóÖØĞÂ·ÖÅä²¢»ØÊÕÄÚ´æÒ³¡£ Èç¹ûÄ³¸öÒ³ÃæÖĞ´ó²¿·ÖÊÇËÀÍö¶ÔÏó£¬Ôò¿ÉÒÔ½«Ê£ÏÂµÄ´æ»î¶ÔÏóÖØĞÂ·ÖÅäµ½ÆäËûÒ³Ãæ£¬´ËÒ³ÃæÔòÍêÈ«²»Ê¹ÓÃ¡£ Relocate ½×¶ÎÊ×ÏÈÑ¡ÔñÒ»×éÏ¡ÊèÖµ(sparseness)¸ßÓÚ¸ø¶¨ãĞÖµµÄÒ³Ãæ¡£ ±»Ñ¡ÖĞµÄÃ¿¸öÒ³Ãæ¶¼ÊÜµ½±£»¤£¬×èÖ¹ÒµÎñÏß³Ì·ÃÎÊ£¬ È»ºó½«´æ»î¶ÔÏó¿½±´³öÈ¥¡£¸ú×ÙÖØ·ÖÅä¶ÔÏóµÄÎ»ÖÃ×ª·¢ĞÅÏ¢ÔÚÒ³ÃæÍâ²¿Î¬»¤¡£
+Relocate ½×¶Î½øĞĞ¶ÔÏóÖØĞÂ·ÖÅä²¢»ØÊÕÄÚ´æÒ³¡£Èç¹ûÄ³¸öÒ³ÃæÖĞ´ó²¿·ÖÊÇËÀÍö¶ÔÏó£¬Ôò¿ÉÒÔ½«Ê£ÏÂµÄ´æ»î¶ÔÏóÖØĞÂ·ÖÅäµ½ÆäËûÒ³Ãæ£¬´ËÒ³ÃæÔòÍêÈ«²»Ê¹ÓÃ¡£Relocate ½×¶ÎÊ×ÏÈÑ¡ÔñÒ»×éÏ¡ÊèÖµ(sparseness)¸ßÓÚ¸ø¶¨ãĞÖµµÄÒ³Ãæ¡£±»Ñ¡ÖĞµÄÃ¿¸öÒ³Ãæ¶¼ÊÜµ½±£»¤£¬×èÖ¹ÒµÎñÏß³Ì·ÃÎÊ£¬È»ºó½«´æ»î¶ÔÏó¿½±´³öÈ¥¡£¸ú×ÙÖØ·ÖÅä¶ÔÏóµÄÎ»ÖÃ×ª·¢ĞÅÏ¢ÔÚÒ³ÃæÍâ²¿Î¬»¤¡£
 
 If a mutator loads a reference to a protected page, the read-barrier instruction will trigger a GC-trap. The mutator is never allowed to use the protected-page reference in a language-visible way. The GC-trap handler is responsible for changing the stale protected-page reference to the correctly forwarded reference.
 
-Èç¹û mutator ĞèÒª¼ÓÔØÊÜ±£»¤Ò³ÃæÖĞµÄÒıÓÃ£¬Ôò¶ÁÆÁÕÏÖ¸Áî½«»á´¥·¢Ò»´ÎGCÏİÚå¡£ÔÚÓïÑÔ¿É¼ûµÄ²ãÃæÓÀÔ¶²»ÔÊĞímutatorÊ¹ÓÃÊÜ±£»¤Ò³ÃæµÄÒıÓÃ¡£ GCÏİÚå´¦Àí³ÌĞò¸ºÔğ½«ÊÜ±£»¤Ò³ÃæÖĞ³Â¾ÉµÄÒıÓÃ¸ü¸ÄÎªÕıÈ·µÄ×ª·¢ÒıÓÃ¡£
+Èç¹û mutator ĞèÒª¼ÓÔØÊÜ±£»¤Ò³ÃæÖĞµÄÒıÓÃ£¬Ôò¶ÁÆÁÕÏÖ¸Áî½«»á´¥·¢Ò»´ÎGCÏİÚå¡£ÔÚÓïÑÔ¿É¼ûµÄ²ãÃæÓÀÔ¶²»ÔÊĞímutatorÊ¹ÓÃÊÜ±£»¤Ò³ÃæµÄÒıÓÃ¡£GCÏİÚå´¦Àí³ÌĞò¸ºÔğ½«ÊÜ±£»¤Ò³ÃæÖĞ³Â¾ÉµÄÒıÓÃ¸ü¸ÄÎªÕıÈ·µÄ×ª·¢ÒıÓÃ¡£
 
 After the page contents have been relocated, the Relocate phase frees the **physical** memory; it's contents are never needed again. The physical memory is recycled by the OS and can immediately be used for new allocations. **Virtual** memory cannot be freed until no more stale references to that page remain in the heap, and that is the job of the Remap phase.
 
-Ò³ÃæÖĞµÄÄÚÈİÈ«²¿ÖØĞÂ·ÖÅäºó£¬Relocate ½×¶ÎÊÍ·Å **ÎïÀíÄÚ´æ**; Ò²¾ÍÊÇÆäÖĞµÄÄÚÈİÓÀÔ¶²»ÔÙĞèÒªÁË¡£ ÎïÀíÄÚ´æÓÉ²Ù×÷ÏµÍ³»ØÊÕ£¬¿ÉÁ¢¼´ÓÃÓÚĞÂµÄÄÚ´æ·ÖÅä¡£ **ĞéÄâÄÚ´æ** µØÖ·²»»áÁ¢¼´ÊÍ·Å£¬Ö±µ½¶ÑÄÚ´æÖĞ²»ÔÙÓĞ¶Ô¸ÃÒ³ÃæµÄ³Â¾ÉÒıÓÃ£¬ÄÇ¾ÍÊÇRemap½×¶ÎµÄ¹¤×÷ÁË¡£
+Ò³ÃæÖĞµÄÄÚÈİÈ«²¿ÖØĞÂ·ÖÅäºó£¬Relocate ½×¶ÎÊÍ·Å **ÎïÀíÄÚ´æ**; Ò²¾ÍÊÇÆäÖĞµÄÄÚÈİÓÀÔ¶²»ÔÙĞèÒªÁË¡£ÎïÀíÄÚ´æÓÉ²Ù×÷ÏµÍ³»ØÊÕ£¬¿ÉÁ¢¼´ÓÃÓÚĞÂµÄÄÚ´æ·ÖÅä¡£**ĞéÄâÄÚ´æ** µØÖ·²»»áÁ¢¼´ÊÍ·Å£¬Ö±µ½¶ÑÄÚ´æÖĞ²»ÔÙÓĞ¶Ô¸ÃÒ³ÃæµÄ³Â¾ÉÒıÓÃ£¬ÄÇ¾ÍÊÇRemap½×¶ÎµÄ¹¤×÷ÁË¡£
 
 As hinted at in Figure 1, a Relocate phase runs constantly freeing memory to keep pace with the mutators' allocations. Sometimes it runs alone and sometimes concurrent with the next Mark phase.
 
@@ -258,7 +258,7 @@ As hinted at in Figure 1, a Relocate phase runs constantly freeing memory to kee
 
 During the Remap phase, GC threads traverse the object graph executing a read barrier against every ref in the heap. If the ref refers to a protected page it is stale and needs to be forwarded, just as if a mutator trapped on the ref. Once the Remap phase completes no live heap ref can refer to pages protected by the previous Relocate phase. At this point the virtual memory for those pages is freed.
 
-ÔÚRemap½×¶Î£¬GCÏß³Ì±éÀú¶ÔÏóÍ¼£¬¶Ô¶ÑÄÚ´æÖĞµÄÃ¿¸öÒıÓÃÖ´ĞĞ¶ÁÆÁÕÏ¡£ Èç¹ûÒıÓÃÖ¸ÏòÁËÊÜ±£»¤µÄÒ³Ãæ£¬ÄÇÃ´ËüµÄÖ¸ÕëÊÇ³Â¾ÉµÄ,ĞèÒª×ª·¢£¬¾ÍÏñÊÇÒµÎñÏß³Ìµô½øÁËÕâ¸öÒıÓÃÉÏµÄÏİÚå¡£ Remap½×¶ÎÍê³Éºó£¬²»ÔÙÓĞ´æ»îµÄ¶ÑÄÚ´æÒıÓÃÖ¸ÏòÊÜÏÈÇ°Relocate½×¶Î±£»¤µÄÒ³Ãæ¡£ ´ËÊ±£¬ÕâĞ©Ò³ÃæµÄĞéÄâÄÚ´æÒ²±»ÊÍ·ÅÁË¡£
+ÔÚRemap½×¶Î£¬GCÏß³Ì±éÀú¶ÔÏóÍ¼£¬¶Ô¶ÑÄÚ´æÖĞµÄÃ¿¸öÒıÓÃÖ´ĞĞ¶ÁÆÁÕÏ¡£Èç¹ûÒıÓÃÖ¸ÏòÁËÊÜ±£»¤µÄÒ³Ãæ£¬ÄÇÃ´ËüµÄÖ¸ÕëÊÇ³Â¾ÉµÄ,ĞèÒª×ª·¢£¬¾ÍÏñÊÇÒµÎñÏß³Ìµô½øÁËÕâ¸öÒıÓÃÉÏµÄÏİÚå¡£Remap½×¶ÎÍê³Éºó£¬²»ÔÙÓĞ´æ»îµÄ¶ÑÄÚ´æÒıÓÃÖ¸ÏòÊÜÏÈÇ°Relocate½×¶Î±£»¤µÄÒ³Ãæ¡£´ËÊ±£¬ÕâĞ©Ò³ÃæµÄĞéÄâÄÚ´æÒ²±»ÊÍ·ÅÁË¡£
 
 ![](01_complete_gc_cycle.jpg)
 
@@ -268,15 +268,15 @@ During the Remap phase, GC threads traverse the object graph executing a read ba
 
 Since both the Remap and Mark phases need to touch all live objects, we fold them together. The Remap phase for the current GC cycle is run concurrently with the Mark phase for the next GC cycle, as shown in Figure 1.
 
-ÓÉÓÚRemapºÍMark½×¶Î¶¼ĞèÒª½Ó´¥ËùÓĞ´æ»îµÄ¶ÔÏó£¬Òò´Ë½«ËüÃÇ·ÅÔÚÒ»Æğ¡£ µ±Ç°GCÖÜÆÚµÄRemap½×¶Î, ÓëÏÂÒ»¸öGCÖÜÆÚµÄMark½×¶Î²¢·¢ÔËĞĞ£¬ÈçÍ¼1ËùÊ¾¡£
+ÓÉÓÚRemapºÍMark½×¶Î¶¼ĞèÒª½Ó´¥ËùÓĞ´æ»îµÄ¶ÔÏó£¬Òò´Ë½«ËüÃÇ·ÅÔÚÒ»Æğ¡£µ±Ç°GCÖÜÆÚµÄRemap½×¶Î, ÓëÏÂÒ»¸öGCÖÜÆÚµÄMark½×¶Î²¢·¢ÔËĞĞ£¬ÈçÍ¼1ËùÊ¾¡£
 
 The Remap phase is also running concurrently with the 2nd half of the Relocate phase. The Relocate phase is creating new stale pointers that can only be fixed by a complete run of the Remap phase, so stale pointers created during the 2nd half of this Relocate phase are only cleaned out at the end of the next Remap phase. The next few sections will discuss each phase in more depth.
 
-Remap½×¶ÎÒ²ºÍRelocateµÄºó°ë²¿·Ö²¢·¢ÔËĞĞ¡£ Relocate½×¶Î»á´´½¨ĞÂµÄ¹ıÊ±Ö¸Õë£¬Ö»»áÔÚÍêÕûÔËĞĞµÄRemap½×¶ÎÀ´ĞŞ¸´£¬Òò´ËÔÚRelocate½×¶ÎµÄÏÂ°ë²¿·Ö´´½¨µÄ¹ıÊ±Ö¸Õë½öÔÚÏÂÒ»¸öRemap½×¶Î½áÊøÊ±Çå³ı¡£ ½ÓÏÂÀ´µÄ¼¸½Ú½«ÉîÈëµØÌÖÂÛÃ¿¸ö½×¶Î¡£
+Remap½×¶ÎÒ²ºÍRelocateµÄºó°ë²¿·Ö²¢·¢ÔËĞĞ¡£Relocate½×¶Î»á´´½¨ĞÂµÄ¹ıÊ±Ö¸Õë£¬Ö»»áÔÚÍêÕûÔËĞĞµÄRemap½×¶ÎÀ´ĞŞ¸´£¬Òò´ËÔÚRelocate½×¶ÎµÄÏÂ°ë²¿·Ö´´½¨µÄ¹ıÊ±Ö¸Õë½öÔÚÏÂÒ»¸öRemap½×¶Î½áÊøÊ±Çå³ı¡£½ÓÏÂÀ´µÄ¼¸½Ú½«ÉîÈëµØÌÖÂÛÃ¿¸ö½×¶Î¡£
 
 ## 5. MARK PHASE
 
-## 5. ±ê¼Ç½×¶ÎÏê½â
+## 5. Mark ½×¶ÎÏê½â
 
 The Mark phase begins by initializing any internal data structures (e.g., marking worklists) and clearing this phase's mark-bits. Each object has two mark-bits, one indicating whether the ref is reachable (hence live) in this GC cycle, and one for it's state in the prior cycle. <sup>1</sup>
 
@@ -315,7 +315,7 @@ When the marking threads run out of work, Marking is nearly done. The marking th
 
 ## 6. RELOCATE AND REMAP PHASES
 
-## 6. ÖØ·ÖÅäÓëÖØÓ³ÉäÏê½â
+## 6. Relocate Óë Remap ½×¶ÎÏê½â
 
 The Relocate phase is where objects get relocated and compacted, and unused pages get freed. Recall that the Mark phase computed the amount of live data per 1M page. A page with zero live data can obviously be reclaimed. A page with only a little live data can be made wholly unused by relocating the live objects out to other pages.
 
@@ -370,7 +370,7 @@ At the end of the Remap phase, all pages that were protected before the start of
 
 ## 7. REALITY CHECK
 
-## 7. ÏÖ×´ºË²é
+## 7. ÏÖÊµ×´¿ö
 
 Our implementation is a rapidly moving work-in-progress. As of this writing it suffers from a few STW pauses not required by the Pauseless GC algorithm. Over time we hope to remove these STWs or engineer their maximum time below an OS time-slice quanta. We have proposed solutions for each one, and report pauses experienced by the current implementation on the 8- warehouse 20-minute pseudo-JBB run described in Section 8.
 
@@ -504,13 +504,24 @@ We also attempted to gather Minimum Mutator Utilization figures [12], especially
 
 Azul Systems has taken the rare opportunity to produce custom hardware for running a garbage collected language in a shipping product. This custom hardware enables a very potent garbage collection algorithm. Even though the individual Azul CPUs are slower than the high-clocking X86 P4's compared against, worse-case transaction times are over 45 times better and average transaction times are comparable.
 
+Azul Systems ÀûÓÃÄÑµÃµÄ»ú»á, ¶¨ÖÆ»¯Éú²úÁËÓ²¼şÉè±¸À´ÔËĞĞÀ¬»øÊÕ¼¯ÓïÑÔ, ²¢ÓÃÔÚ×°ÔË²úÆ·ÖĞ(shipping product)¡£ÕâÖÖ¶¨ÖÆµÄÓ²¼şÊµÏÖÁË·Ç³£¸ßĞ§µÄÀ¬»øÊÕ¼¯Ëã·¨¡£¾¡¹Üµ¥¸öµÄ Azul CPU Ö÷Æµ±È¸ßÆµµÄ X86 P4 µÍÒ»Ğ©£¬µ«×î»µÇé¿öÏÂµÄÒµÎñ´¦ÀíÊ±¼äÈ´±È P4 ¿ìÁË45±¶£¬¶øÆ½¾ùÒµÎñ´¦ÀíÊ±¼äÁ½ÕßÏà²î²»¶à¡£
+
 Azul's Pauseless GC algorithm is a fully parallel and concurrent algorithm engineered for large multi-processor systems. It does not need any Stop-The-World pauses, no places where all mutator threads must be simultaneously stopped. Dead object space can be reclaimed at any point during a GC cycle; there are no phases where the GC algorithm has to ¡°race¡± to finish some phase before the mutators run out of free space. Also there are no phases where the mutators pay a continuous high cost while running. There are brief ¡°trap storms¡± at some phase shifts, but due to the ¡°self-healing¡± property of the algorithm these storms appear to be low cost.
+
+AzulµÄPauseless GCËã·¨£¬ÊÇÎª´óĞÍ¶à´¦ÀíÆ÷ÏµÍ³Éè¼ÆµÄ£¬Ö§³Ö²¢·¢£¬ÍêÈ«²¢ĞĞµÄGCËã·¨¡£Ëü²»ĞèÒªÈÎºÎµÄStop-The-WorldÔİÍ££¬Ã»ÓĞÊ²Ã´µØ·½ĞèÒªÍ£Ö¹ËùÓĞµÄ mutatorÏß³Ì¡£ÔÚGCÑ­»·ÆÚ¼äµÄÈÎÒâÊ±¿Ì£¬¶¼¿ÉÒÔ»ØÊÕËÀÍö¶ÔÏóÕ¼ÓÃµÄ¿Õ¼ä; ÔÚÒµÎñÏß³ÌºÄ¾¡ËùÓĞ¿ÉÓÃ¿Õ¼äÖ®Ç°, Ò²Ã»ÓĞÄÄ¸ö½×¶ÎÊÇGCËã·¨±ØĞë¡°ÅÜ×Å¡±È¥Íê³ÉµÄ¡£µ±È»Ò²Ã»ÓĞÄÄ¸ö½×¶ÎĞèÒªÒµÎñÏß³ÌÁ¬Ğø¸¶³ö¸ß°ºµÄ³É±¾¡£ÔÚÄ³Ğ©½×¶Î±ä»»Ê±»á´æÔÚ¶ÌÔİµÄ¡°ÏİÚå·ç±©¡±£¬µ«ÓÉÓÚËã·¨µÄ¡°×ÔÎÒĞŞ¸´¡±ÌØĞÔ£¬ÕâĞ©·ç±©µÄ´¦ÀíÒ²ÊÇµÍ³É±¾µÄ¡£
 
 Azul's custom hardware includes a read-barrier, an instruction executed against every ref loaded from the heap. The read-barrier allows global GC invariants to be cheaply maintained. It checks for loading of potentially unmarked objects, preventing the spread of unmarked objects into previously marked regions of the heap. This allows the concurrent incremental update Mark phase to terminate cleanly without needing a final STW pause. The read-barrier also checks for loading stale refs to relocated objects and it does it cheaper than a Brooks' style indirection barrier.
 
+Azul ¶¨ÖÆµÄÓ²¼ş°üÀ¨Ò»¸ö¶ÁÆÁÕÏ£¬Ò»¸öÕë¶Ô´Ó¶ÑÄÚ´æ¼ÓÔØÒıÓÃÊ±Ö´ĞĞµÄÖ¸Áî¡£¶ÁÆÁÕÏÔÊĞíÇáËÉÎ¬»¤È«¾ÖµÄGC²»±äÁ¿¡£Ëü¼ì²â¿ÉÄÜÊÇÎ´±ê¼Ç¶ÔÏóµÄ¼ÓÔØ£¬·ÀÖ¹Î´±ê¼Ç¶ÔÏóÀ©É¢µ½ÏÈÇ°±ê¼ÇµÄÇøÓòÖĞ¡£ÕâÔÊĞí²¢·¢ÔöÁ¿¸üĞÂ±ê¼Ç½×¶Î¸É´àµØÍ£Ö¹£¬¶ø²»ĞèÒªÔÚ×îºóÀ´Ò»ÏÂSTWÔİÍ£¡£¶ÁÆÁÕÏ»¹»á¼ì²é³Â¾ÉµÄÖ¸Õë£¬µ½ÖØĞÂ¶¨Î»µÄ¶ÔÏó£¬±ÈÆğ Brooks ·ç¸ñµÄ¼ä½ÓÆÁÕÏ´ú¼Û¸üµÍ¡£
+
 Section 7, Reality Check, includes ongoing and future work. Another obvious and desirable feature is a generational variation of Pauseless. As presented, Pauseless is a single-generation algorithm. The entire heap is scanned in each Mark/Remap cycle. Because the algorithm is parallel and concurrent, and we have plentiful CPUs the cost is fairly well hidden. On a fully loaded system the GC threads will steal cycles from mutator threads, so we'd like the GC to be as efficient as possible. A generational version will only need to scan the young generation most of the time. The necessary hardware barriers already exists.
 
+ÔÚ¡¾µÚ7½Ú ÏÖÊµ×´¿ö¡¿ÖĞ£¬½éÉÜÁËÕıÔÚ½øĞĞµÄºÍĞèÒª´¦ÀíµÄ¹¤×÷¡£ÁíÒ»¸öÃ÷ÏÔÁîÈËã¿ã½µÄÌØÕ÷ÊÇ·Ö´ú»¯µÄPauseless¡£¸ù¾İÇ°ÎÄÎÒÃÇÖªµÀ Pauseless ÊÇÒ»ÖÖ²»·Ö´úµÄGCËã·¨¡£Ã¿´Î Mark/Remap Ñ­»·¶¼»áÉ¨ÃèÕû¸ö¶Ñ¡£ÒòÎªËã·¨ÊÇ²¢ĞĞºÍ²¢·¢µÄ£¬¶øÇÒÎÒÃÇÓµÓĞ³ä×ãµÄCPU×ÊÔ´£¬ËùÒÔ¿ªÏúÏàµ±²»Ã÷ÏÔ¡£µ«ÔÚÂú¸ºÔØµÄÏµÍ³ÉÏ£¬GCÏß³Ì»áÓëmutatorÏß³ÌÕùÇÀCPUÊ±ÖÓ£¬Òò´ËÎÒÃÇÏ£ÍûGC¾¡¿ÉÄÜµØ¸ßĞ§¡£Èç¹û¿ª·¢³ö·Ö´ú°æ±¾£¬Ôò´ó²¿·ÖÊ±¼äÖ»ĞèÒªÉ¨ÃèÄêÇá´ú¾ÍĞĞÁË¡£¶øÏà¹ØµÄÓ²¼şÆÁÕÏÒ²ÒÑ¾­ÓĞÁË¡£
+
 On a final note, we were quite surprised at the difference between reported pause times and the ¡°user experience¡± delays seen by the transactions. We strongly encourage GC researchers and the production JVM providers to pay close attention to full GC algorithm costs, not just those costs that can easily have a timerstart/ timer-stop wrapped around them.
+
+×îºó£¬ÎÒÃÇ¶Ô±¨¸æµÄÔİÍ£Ê±¼ä, ÓëÊµ¼ÊÒµÎñµÄ¡°ÓÃ»§ÌåÑé¡±ÑÓ³ÙÖ®¼äµÄ²îÒì¸Ğµ½·Ç³£¾ªÑÈ¡£Ç¿ÁÒºôÓõGCÑĞ¾¿ÈËÔ±ºÍ²úÆ·¼¶JVMÌá¹©ÉÌ½ôÃÜ¹Ø×¢ÍêÕûµÄGCËã·¨³É±¾£¬¶ø²»½ö½öÊÇÓÃ timerstart/timer-stop ¾Í¿ÉÒÔÇáËÉÄÒÀ¨ÆğÀ´µÄ²¿·Ö¡£
+
 
 ## 10. REFERENCES
 
