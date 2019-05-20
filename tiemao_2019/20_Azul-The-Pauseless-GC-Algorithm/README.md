@@ -188,7 +188,7 @@ The read barrier performs a number of checks and is used in different ways durin
 
 The read barrier “looks like” a standard load instruction, in that it has a base register, an offset and a value register. The base and offset are not used by the barrier checks but are presented to the trap handler and are used in “self healing”. The value in the value register is assumed to be a freshly loaded ref, a heap pointer, and is cycled through the TLB just like a base address would be. If the ref refers to a GC-protected page a fast usermode trap handler is invoked, hereafter called the GC-trap. The read barrier ignores null refs. Unlike a Brooks-style [10] indirection barrier there is no null check, no memory access, no loaduse penalty, no extra word in the object header and no cache footprint. This behavior is used during the concurrent Relocate phase.
 
-读屏障“看起来像”一个标准的load指令，因为它具有基址寄存器(base register)，偏移量(offset)和值寄存器(value register)。基址寄存器和偏移量并不是障碍检查使用，而是提供给陷阱处理程序，以及用于“自我修复”。值寄存器中的值假定为新加载的引用，也就是堆内存指针，并且像基地址一样循环通过TLB。如果引用指向了受GC保护的页面，则调用快速用户模式陷阱处理程序，下文称为GC陷阱。 读屏障忽略null引用。与Brooks风格的间接屏障不同(见[10])，读屏障没有null检查，没有内存访问，没有loaduse惩罚，对象头中也没有额外的字，也没有缓存占用空间。 此行为在并发重定位阶段（concurrent Relocate phase）使用。
+读屏障“看起来像”一个标准的load指令，因为它具有基址寄存器(base register)，偏移量(offset)和值寄存器(value register)。基址寄存器和偏移量并不是障碍检查使用，而是提供给陷阱处理程序，以及用于“自我修复”。值寄存器中的值假定为新加载的引用，也就是堆内存指针，并且像基地址一样循环通过TLB。如果引用指向了受GC保护的页面，则调用快速用户模式陷阱处理程序，下文称为GC陷阱。 读屏障忽略null引用。与Brooks风格的间接屏障不同(见[10])，读屏障没有null检查，没有内存访问，没有loaduse惩罚，对象头中也没有额外的字，也没有缓存占用空间。 此行为在并发重分配阶段（concurrent Relocate phase）使用。
 
 We also steal 1 address bit from the 64-bit address space; the hardware ignores this bit (masks it off). This bit is called the Not-Marked-Through (NMT) bit and is used during the concurrent Marking phase. The hardware maintains a desired value for this bit and will trap to the NMT-trap if the ref has the wrong flavor. Null refs are ignored here as well.
 
@@ -204,11 +204,11 @@ Note that the read barrier behavior can be emulated on standard hardware at some
 
 The Pauseless GC Algorithm is divided into three main phases: Mark, Relocate and Remap. Each phase is fully parallel and concurrent. Mark bits go stale; objects die over time and the mark bits do not reflect the changes. The Mark phase is responsible for periodically refreshing the mark bits. The Relocate phase uses the most recently available mark bits to find pages with little live data, to relocate and compact those pages and to free the backing physical memory. The Remap phase updates every relocated pointer in the heap.
 
-Pauseless GC算法分为三个主要阶段：Mark（标记），Relocate(重定位)和Remap(重映射)。每个阶段都是完全并行和并发的。标记位变得陈旧;对象随时间死亡，标记位不反映变更。标记阶段负责定期刷新标记位。重定位阶段使用最近可用的标记位来查找具有少量存活对象的页面，以重新定位和压缩这些页面, 释放物理内存。 重映射阶段更新堆中的每个重定位指针。
+Pauseless GC算法分为三个主要阶段：Mark（标记），Relocate(重分配)和Remap(重映射)。每个阶段都是完全并行和并发的。标记位变得陈旧;对象随时间死亡，标记位不反映变更。标记阶段负责定期刷新标记位。Relocate 阶段使用最近可用的标记位来查找具有少量存活对象的页面，以重新定位和压缩这些页面, 释放物理内存。 重映射阶段更新堆中的每个重分配指针。
 
 **There is no “rush” to finish any given phase.** No phase places a substantial burden on the mutators that needs to be relieved by ending the phase quickly. There is no “race” to finish some phase before collection can begin again – Relocation runs continuously and can immediately free memory at any point. Since all phases are parallel, GC can keep up with any number of mutator threads simply by adding more GC threads. Unlike other incremental update algorithms, there is no re-Mark or final- Mark phase; the concurrent Mark phase will complete in a single pass despite the mutators busily modifying the heap. GC threads do compete with mutator threads for CPU time. On Azul's hardware there are generally spare CPUs available to do GC work. However, “at the limit” some fraction of CPUs will be doing GC and will not be available to the mutators.
 
-**任何特定阶段都不需要“匆忙”完成**。 没有哪个阶段需要快速完成，缓解了给修改器带来的沉重负担。在垃圾收集再次开始之前没有“抢着”完成某个阶段 - 重定位会连续运行，可以在任何时刻立即释放内存。由于所有阶段都是并行的，因此只需添加更多GC线程，GC就可以跟上任意数量的mutator线程。与其他增量更新算法不同， 这里没有重新标记或最终标记阶段; 尽管mutator忙于修改堆内存，但并发标记阶段将在一次传递中完成。 GC线程确实与mutator线程争枪CPU时间。在Azul的硬件上，通常有备用CPU来进行GC工作。 而且，“在极限情况下”某些CPU只执行GC操作, 不会让业务线程使用。
+**任何特定阶段都不需要“匆忙”完成**。 没有哪个阶段需要快速完成，缓解了给修改器带来的沉重负担。在垃圾收集再次开始之前没有“抢着”完成某个阶段 - 重分配会连续运行，可以在任何时刻立即释放内存。由于所有阶段都是并行的，因此只需添加更多GC线程，GC就可以跟上任意数量的mutator线程。与其他增量更新算法不同， 这里没有重新标记或最终标记阶段; 尽管mutator忙于修改堆内存，但并发标记阶段将在一次传递中完成。 GC线程确实与mutator线程争枪CPU时间。在Azul的硬件上，通常有备用CPU来进行GC工作。 而且，“在极限情况下”某些CPU只执行GC操作, 不会让业务线程使用。
 
 **Each of the phases involves a “self-healing” aspect,** where the mutators immediately correct the cause of each read barrier trap by updating the ref in memory. This assures the same ref will not trigger another trap. The work involved varies by trap type and is detailed below. Once the mutators' working sets have been handled they can execute at full speed with no more traps. During certain phase shifts mutators suffer through a “trap storm”, a high volume of traps that amount to a pause smeared out in time. We measured the trap storms using Minimum Mutator Utilization, and they cost around 20ms spread out over a few hundred milliseconds.
 
@@ -220,11 +220,11 @@ The algorithm we present has no Stop-The-World (STW) pauses, no places where all
 
 ### 4.1 Mark Phase
 
-### 4.1 标记阶段(Mark Phase)
+### 4.1 Mark Phase(标记阶段)
 
 The Mark phase is a parallel and concurrent incremental update (not SATB) marking algorithm [17], augmented with the read barrier. The Mark phase is responsible for marking all live objects, tagging live objects in some fashion to distinguish them from dead objects. In addition, each ref has it's NMT bit set to the expected value. The Mark phase also gathers per-1M-page liveness totals. These totals give a conservative estimate of live data on a page (hence a guaranteed amount of reclaimable space) and are used in the Relocate phase.
 
-标记阶段是并行的，而且使用的是并发增量更新标记算法（而不是SATB）(见[17])，增加了读屏障。 标记阶段负责标记所有存活的对象，以某种方式打上标签，将存活对象与死亡对象区分开来。 此外，将每个引用都设置对应的NMT位预期值。 标记阶段还收集每个1M页的存活对象总数。这些总数对页面上的存活数据进行保守估计（以保证可回收空间量），并在重定位阶段使用。
+标记阶段是并行的，而且使用的是并发增量更新标记算法（而不是SATB）(见[17])，增加了读屏障。 标记阶段负责标记所有存活的对象，以某种方式打上标签，将存活对象与死亡对象区分开来。 此外，将每个引用都设置对应的NMT位预期值。 标记阶段还收集每个1M页的存活对象总数。这些总数对页面上的存活数据进行保守估计（以保证可回收空间量），并在Relocate 阶段使用。
 
 The basic idea is straightforward: the Marker starts from some root set (generally static global variables and mutator stack contents) and begins marking reachable objects. After marking an object (and setting the NMT bit), the Marker then marksthrough the object – recursively marking all refs it finds inside the marked object. Extensions to make this algorithm parallel have been previously published [17]. Making marking fully concurrent is a little harder and the issues are described further below.
 
@@ -232,29 +232,46 @@ The basic idea is straightforward: the Marker starts from some root set (general
 
 ### 4.2 Relocate Phase
 
-### 4.2 重分配阶段(Relocate Phase)
+### 4.2 Relocate Phase(重分配阶段)
 
 The Relocate phase is where objects are relocated and pages are reclaimed. A page with mostly dead objects is made wholly unused by relocating the remaining live objects to other pages. The Relocate phase starts by selecting a set of pages that are above a given threshold of sparseness. Each page in this set is protected from mutator access, and then live objects are copied out. Forwarding information tracking the location of relocated objects is maintained outside the page.
 
+Relocate 阶段进行对象重新分配并回收内存页。 如果某个页面中大部分是死亡对象，则可以将剩下的存活对象重新分配到其他页面，此页面则完全不使用。 Relocate 阶段首先选择一组稀疏值(sparseness)高于给定阈值的页面。 被选中的每个页面都受到保护，阻止业务线程访问， 然后将存活对象拷贝出去。跟踪重分配对象的位置转发信息在页面外部维护。
+
 If a mutator loads a reference to a protected page, the read-barrier instruction will trigger a GC-trap. The mutator is never allowed to use the protected-page reference in a language-visible way. The GC-trap handler is responsible for changing the stale protected-page reference to the correctly forwarded reference.
+
+如果 mutator 需要加载受保护页面中的引用，则读屏障指令将会触发一次GC陷阱。在语言可见的层面永远不允许mutator使用受保护页面的引用。 GC陷阱处理程序负责将受保护页面中陈旧的引用更改为正确的转发引用。
 
 After the page contents have been relocated, the Relocate phase frees the **physical** memory; it's contents are never needed again. The physical memory is recycled by the OS and can immediately be used for new allocations. **Virtual** memory cannot be freed until no more stale references to that page remain in the heap, and that is the job of the Remap phase.
 
+页面中的内容全部重新分配后，Relocate 阶段释放 **物理内存**; 也就是其中的内容永远不再需要了。 物理内存由操作系统回收，可立即用于新的内存分配。 **虚拟内存** 地址不会立即释放，直到堆内存中不再有对该页面的陈旧引用，那就是Remap阶段的工作了。
+
 As hinted at in Figure 1, a Relocate phase runs constantly freeing memory to keep pace with the mutators' allocations. Sometimes it runs alone and sometimes concurrent with the next Mark phase.
+
+如图1所示，Relocate 阶段不断释放内存以跟上mutator的分配。有时候单独运行，有时也会和下一次Mark阶段并发运行。
+
 
 ### 4.3 Remap Phase
 
-### 4.3 重映射阶段(Remap Phase)
+### 4.3 Remap Phase(重映射阶段)
 
 During the Remap phase, GC threads traverse the object graph executing a read barrier against every ref in the heap. If the ref refers to a protected page it is stale and needs to be forwarded, just as if a mutator trapped on the ref. Once the Remap phase completes no live heap ref can refer to pages protected by the previous Relocate phase. At this point the virtual memory for those pages is freed.
+
+在Remap阶段，GC线程遍历对象图，对堆内存中的每个引用执行读屏障。 如果引用指向了受保护的页面，那么它的指针是陈旧的,需要转发，就像是业务线程掉进了这个引用上的陷阱。 Remap阶段完成后，不再有存活的堆内存引用指向受先前Relocate阶段保护的页面。 此时，这些页面的虚拟内存也被释放了。
 
 ![](01_complete_gc_cycle.jpg)
 
 > Figure 1: The Complete GC Cycle
 
+> 图片1: 完整的GC周期
+
 Since both the Remap and Mark phases need to touch all live objects, we fold them together. The Remap phase for the current GC cycle is run concurrently with the Mark phase for the next GC cycle, as shown in Figure 1.
 
+由于Remap和Mark阶段都需要接触所有存活的对象，因此将它们放在一起。 当前GC周期的Remap阶段, 与下一个GC周期的Mark阶段并发运行，如图1所示。
+
 The Remap phase is also running concurrently with the 2nd half of the Relocate phase. The Relocate phase is creating new stale pointers that can only be fixed by a complete run of the Remap phase, so stale pointers created during the 2nd half of this Relocate phase are only cleaned out at the end of the next Remap phase. The next few sections will discuss each phase in more depth.
+
+Remap阶段也和Relocate的后半部分并发运行。 Relocate阶段会创建新的过时指针，只会在完整运行的Remap阶段来修复，因此在Relocate阶段的下半部分创建的过时指针仅在下一个Remap阶段结束时清除。 接下来的几节将深入地讨论每个阶段。
 
 ## 5. MARK PHASE
 
