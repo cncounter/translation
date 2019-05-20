@@ -2,8 +2,9 @@
 
 # Pauseless GC 算法
 
-> 译者注: Pauseless GC, 无停顿的垃圾收集; 
-> mutator, 修改器, 可理解为修改堆内存数据的操作(如 this.xxx=XXXX;)。mutator线程可理解为业务线程,与GC线程区分。
+> ##### 译者注: 
+> Pauseless GC Algorithm, 无停顿的垃圾收集算法; 算法本身是无STW停顿的，但兼容 HotSpot JVM 的实现有少量的STW停顿。
+> mutator, 修改器, 可理解为业务线程, 与GC线程区分。
 
 ```
 作者: 
