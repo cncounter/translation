@@ -280,13 +280,23 @@ Remap½×¶ÎÒ²ºÍRelocateµÄºó°ë²¿·Ö²¢·¢ÔËĞĞ¡£Relocate½×¶Î»á´´½¨ĞÂµÄ¹ıÊ±Ö¸Õë£¬Ö»»áÔÚÍ
 
 The Mark phase begins by initializing any internal data structures (e.g., marking worklists) and clearing this phase's mark-bits. Each object has two mark-bits, one indicating whether the ref is reachable (hence live) in this GC cycle, and one for it's state in the prior cycle. <sup>1</sup>
 
+Ê×ÏÈ, Mark ½×¶Î³õÊ¼»¯ËùÓĞµÄÄÚ²¿Êı¾İ½á¹¹£¨ÀıÈç£¬±ê¼Ç¹¤×÷ÁĞ±í£©£¬²¢Çå³ı´Ë½×¶ÎµÄ±ê¼ÇÎ»¡£ Ã¿¸ö¶ÔÏó¶¼ÓĞÁ½¸ö±ê¼ÇÎ»£¬ Ò»¸ö±êÖ¾Î»Ö¸Ê¾ÔÚ´ËGCÑ­»·ÖĞ¸Ã¶ÔÏóÊÇ·ñ¿É´ï£¨¿É´ï¼´´æ»î£©£¬Ò»¸ö±êÖ¾Î»ÓÃÓÚÉÏ´ÎGCÑ­»·ÖĞµÄ×´Ì¬¡£<sup>{×¢1}</sup>
+
 > <sup>1</sup> We use bitmaps for the marks, they're cheap to clear and scan.
+
+> <sup>{×¢1}</sup> Ê¹ÓÃbitmapÀ´½øĞĞ±ê¼Ç£¬±ãÓÚÇå³ıºÍÉ¨Ãè¡£
 
 The Mark phase then marks all global refs, scans each threads' root-set, and flips the per-thread expected NMT value. The root-set generally includes all refs in CPU registers and on the threads' stacks. Running threads cooperate by marking their own root-set. Blocked (or stalled) threads get marked in parallel by Mark-phase threads. This is a Checkpoint; each thread can immediately proceed after it's root set has been marked (and expected- NMT flipped) but the Mark phase cannot proceed until all threads have crossed the Checkpoint.
 
+È»ºó, Mark½×¶Î±ê¼ÇËùÓĞµÄÈ«¾ÖÒıÓÃ£¬É¨ÃèÃ¿¸öÏß³ÌµÄ root-set(GC¸ù¼¯ºÏ)£¬²¢·­×ª¸÷¸öÏß³ÌÔ¤ÆÚµÄNMTÖµ¡£ root-set Í¨³£°üÀ¨: CPU¼Ä´æÆ÷ºÍÏß³ÌÕ»ÖĞµÄËùÓĞÒıÓÃ¡£ÔËĞĞÖĞµÄÏß³ÌÍ¨¹ı±ê¼Ç×ÔÉíµÄ¸ù¼¯ºÏÀ´²ÎÓëĞ­×÷£»×èÈû£¨»òÍ£ÖÍ£©×´Ì¬µÄÏß³ÌÓÉMark-phaseÏß³Ì²¢ĞĞµØ±ê¼Ç¡£ÕâÊÇÒ»¸ö¼ì²éµã; Ã¿¸öÒµÎñÏß³ÌÔÚ±ê¼ÇÁË¸ù¼¯£¨ÒÔ¼°Ô¤ÆÚNMT·­×ª£©Ö®ºó¾Í¿ÉÒÔÁ¢¼´¼ÌĞø£¬µ«ÊÇMark½×¶ÎµÄGCÏß³Ì±ØĞëµÈËùÓĞÒµÎñÏß³Ì´ïµ½¼ì²éµãºó£¬²ÅÄÜ¼ÌĞøÔËĞĞ¡£
+
 After the root-sets are all marked we proceed with a parallel and concurrent marking phase [17]. Live refs are pulled from the worklists, their target objects marked live and their internal refs are recursively worked on. Note that the markers ignore the NMT bit, it is only used by the mutators. When an object is marked live, its size is added to the amount of live data in it's 1M page (only large objects are allowed to span a page boundary and they are handled separately, so the live data calculation is exact). This phase continues until the worklists run dry and all live objects have been marked.
 
+ÔÚ¸ù¼¯È«²¿±»±ê¼Çºó£¬¼ÌĞø½øĞĞ²¢ĞĞµÄ²¢·¢±ê¼Ç½×¶Î(¼û[17])¡£´Ó¹¤×÷ÁĞ±íÖĞÌáÈ¡´æ»îµÄÒıÓÃ£¬½«ÆäÒıÓÃµÄÄ¿±ê¶ÔÏó±ê¼ÇÎª´æ»î×´Ì¬£¬µİ¹é´¦Àí¶ÔÏóÄÚ²¿µÄÒıÓÃ¡£ Çë×¢Òâ£¬±ê¼ÇÏß³Ì»áºöÂÔNMTÎ»£¬ ½öÓÉmutatorÏß³ÌÊ¹ÓÃ¡£ µ±Ä³¸ö¶ÔÏó±»±ê¼ÇÎª´æ»îÊ±£¬ ËüµÄ´óĞ¡½«»á¼Óµ½ËùÔÚ1MÒ³ÃæµÄÊµÊ±Êı¾İÁ¿ÉÏ£¨Ö»ÔÊĞí´ó¶ÔÏó¿çÔ½Ò³Ãæ±ß½ç´æÔÚ£¬²¢ÇÒµ¥¶À´¦Àí£¬Òò´ËÊµÊ±Êı¾İ¼ÆËãÊÇ¾«È·µÄ£©¡£´Ë½×¶ÎÒ»Ö±³ÖĞø£¬Ö±µ½¹¤×÷Çåµ¥´¦ÀíÍê£¬ËùÓĞ´æ»î¶ÔÏó¶¼±ê¼ÇÍê³ÉÎªÖ¹¡£
+
 New objects created by concurrent mutators are allocated in pages which will not be relocated in this GC cycle, hence the state of their live bits is not consulted by the Relocate phase. All refs being stored into new objects (or any object for that matter) have either already been marked or are queued in the Mark phase's worklists. Hence the initial state of the live bit for new objects doesn't matter for the Mark phase.
+
+²¢·¢µÄÒµÎñÏß³Ì´´½¨µÄĞÂ¶ÔÏóÖ»ÄÜÔÚÆäËûÒ³ÃæÖĞ·ÖÅä£¬ÕâĞ©Ò³Ãæ²»»áÔÚ´ËGCÖÜÆÚÖĞ±»ÖØĞÂ¶¨Î»£¬Òò´Ë Relocate ½×¶Î²»»áÉæ¼°µ½ÕâĞ©ĞÂ¶ÔÏóµÄ´æ»î×´Ì¬±êÖ¾Î»¡£ĞÂ¶ÔÏó£¨»òÈÎºÎ¶ÔÏó£©ÖĞµÄËùÓĞÒıÓÃ£¬ÒªÃ´ÒÑ¾­±»±ê¼Ç£¬ÒªÃ´»¹ÔÚMark½×¶ÎµÄ¹¤×÷ÁĞ±íÖĞµÈ×Å´¦Àí¡£Òò´Ë£¬¶ÔÓÚMark½×¶ÎÀ´Ëµ£¬ĞÂ¶ÔÏóµÄ´æ»î±êÖ¾Î»µÄ³õÊ¼ÖµÊÇÎŞ¹Ø½ôÒªµÄ¡£
 
 ### 5.1 The NMT Bit
 
