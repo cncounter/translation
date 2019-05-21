@@ -341,7 +341,12 @@ Note that it is not possible for a single thread to hold the same ref twice in i
 
 ### 5.3 Finishing Marking
 
+### 5.3 Finishing Marking(完成标记)
+
 When the marking threads run out of work, Marking is nearly done. The marking threads need to close the narrow race where a mutator may have loaded an unmarked ref (hence has the wrong NMT bit) but not yet executed the read-barrier. Read-barriers never span a GC safepoint, so it suffices to require the mutators cross a GC safepoint without trapping. The Marking pass requests a Checkpoint, but requires no other mutator work. Any refs discovered before the Checkpoint ends will be concurrently marked as normal. When all mutators complete the Checkpoint with none of them reporting any new refs, the Mark phase is complete. If new refs are reported the Marker threads will exhaust them and the Checkpoint will repeat. Since no refs can be created with the “wrong” NMT-bit value the process will eventually complete.
+
+当标记线程停止工作时，标记阶段即将完成。 标记线程需要快速处理一些事情，比如业务线程可能加载了未标记的引用（因此NMT位是错误的）但尚未执行读屏障。 读障碍永远不会跨越GC安全点，因此只需要业务线程通过GC安全点而不需陷进陷阱就够了。 标记传递需要一个检查点，但不需要其他业务线程参与处理。 在Checkpoint结束之前发现的任何引用都被并发标记为正常。 当所有mutators都完成Checkpoint，却没有报告任何新的引用，那么Mark阶段就完成了。 如果报告了新的引用，那么Marker线程将其处理掉并且重复执行Checkpoint。 因为创建的引用不再有“错误的”NMT位值，所以标记过程最终就完成了。
+
 
 ## 6. RELOCATE AND REMAP PHASES
 
