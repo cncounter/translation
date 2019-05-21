@@ -6,25 +6,25 @@
 
 When a program violates the semantic constraints of the Java programming language, the Java Virtual Machine signals this error to the program as an *exception*.
 
-如果Java程序违反语义约束(semantic constraints), JVM就会以 `exception`(异常)的形式, 通知程序这个错误。
+如果Java程序违反语义约束(semantic constraints), JVM就会以一个异常通知程序: “你出错了”。
 
 An example of such a violation is an attempt to index outside the bounds of an array. Some programming languages and their implementations react to such errors by peremptorily terminating the program; other programming languages allow an implementation to react in an arbitrary or unpredictable way. Neither of these approaches is compatible with the design goals of the Java SE platform: to provide portability and robustness.
 
-例如, 试图访问数组边界之外的索引(`index`)位置。在某些编程语言及其实现中，如果出现此类错误, 则会直接暴力终止程序; 另一些语言, 则没有明确的规定, 允许其实现以任意的/不确定的方式来处理。 这些处理方式都不符合Java SE平台的设计目标: 可移植性和鲁棒性(robustness)。
+一个示例是程序代码试图访问数组边界外的索引(`index`)位置。 在某些编程语言及其实现中，如果出现此类错误, 直接会暴力终止程序; 另一些语言则没有做出明确规定, 允许运行时(实现)以任意(不确定的)方式处理。 这些处理方式都不符合Java SE平台的设计目标: 可移植性和鲁棒性(robustness)。
 
 Instead, the Java programming language specifies that an exception will be thrown when semantic constraints are violated and will cause a non-local transfer of control from the point where the exception occurred to a point that can be specified by the programmer.
 
-Java语言规范明确规定： 如果程序执行时违反语义约束(即碰到了不符合预期的情况),就会抛出异常, 并且将程序执行流程跳转到代码中预设的点。
+Java语言规范明确规定： 如果程序执行时违反语义约束, 就会抛出异常, 程序的执行流程会被跳到代码中预设的点。
 
 
 An exception is said to be *thrown* from the point where it occurred and is said to be *caught* at the point to which control is transferred.
 
-发生错误的那个点, 就叫做抛出(thrown,throw)异常的点; 跳转到预设的那个点, 叫做捕获(caught,catch)异常的点。
+异常从发生错误的那个点被抛出(thrown); 跳转到预设的那个点叫做捕获(caught)。
 
 
 Programs can also throw exceptions explicitly, using `throw` statements ([§14.18](https://docs.oracle.com/javase/specs/jls/se8/html/jls-14.html#jls-14.18)).
 
-代码中可以使用`throw`语句, 直接(explicitly)抛出异常, 参考 <https://docs.oracle.com/javase/specs/jls/se8/html/jls-14.html#jls-14.18>。
+代码中也可以显式抛出异常，即使用`throw`语句, 参考第14章: <https://docs.oracle.com/javase/specs/jls/se8/html/jls-14.html#jls-14.18>。
 
 Explicit use of `throw` statements provides an alternative to the old-fashioned style of handling error conditions by returning funny values, such as the integer value `-1` where a negative value would not normally be expected. Experience shows that too often such funny values are ignored or not checked for by callers, leading to programs that are not robust, exhibit undesirable behavior, or both.
 
@@ -44,9 +44,12 @@ The exception mechanism of the Java SE platform is integrated with its synchroni
 
 Java SE平台集成的异常机制的同步模型((§17.1)(https://docs.oracle.com/javase/specs/jls/se8/html/jls - 17. # jls-17 html.1)),所以,显示器是解锁`synchronized`语句((§14.19)(https://docs.oracle.com/javase/specs/jls/se8/html/jls html # jls - - 14. - 14.19))和调用`synchronized`方法((§8.4.3.6](https://docs.oracle.com/javase/specs/jls/se8/html/jls - 8. - html # jls-8.4.3.6),(§15.12)(https://docs.oracle.com/javase/specs/jls/se8/html/jls html # jls - - 15. - 15.))完整的突然。
 
+
+<a name="The_Kinds_of_Exceptions"></a>
+
 ## 11.1. The Kinds and Causes of Exceptions
 
-## 11.1。异常的类型和原因
+## 11.1. 异常的类型和原因
 
 ### 11.1.1. The Kinds of Exceptions
 
@@ -492,13 +495,14 @@ The exact rules for abrupt completion and for the catching of exceptions are spe
 
 突然的规则完成和捕获的异常详细指定每个语句的规范(§14(*块和语句*))(https://docs.oracle).com/javase/specs/jls/se8/html/jls - 14. - html)和表达式(§15表达式(* *))(https://docs.oracle.com/javase/specs/jls/se8/html/jls - 15. - html)(特别是(§15.6)(https://docs.oracle.com/javase/specs/jls/se8/html/jls html # jls - - 15. - 15.6))。
 
+
 **Example 11.3-1. Throwing and Catching Exceptions**
 
-* * 11.3 - 1。抛出和捕获异常* *
+** 示例 11.3-1. 抛出异常和捕获异常**
 
 The following program declares an exception class `TestException`. The `main` method of class `Test` invokes the `thrower` method four times, causing exceptions to be thrown three of the four times. The `try` statement in method `main` catches each exception that the thrower throws. Whether the invocation of `thrower` completes normally or abruptly, a message is printed describing what happened.
 
-下面的程序声明了一个异常类`TestException`。的`main`方法的类`Test`调用`thrower`方法四倍,导致异常被抛出三个四次。的`try`声明方法`main`抓住每一个喷射器抛出的异常。的调用是否`thrower`正常完成或突然,打印一条消息描述发生了什么。
+下面的代码声明了一个异常类 `TestException`。 `Test`类的`main`方法中调用了`thrower`方法, 其中有3种情形会导致异常被抛出。 `main`方法中的 `try` 语句会捕捉 `thrower` 抛出的所有异常。 不论 `thrower` 是正常完成还是被中断, 都会打印一条消息来描述发生了什么。
 
 ```
 class TestException extends Exception {
@@ -544,21 +548,17 @@ class Test {
 ```
 
 
-
 If we execute the program, passing it the arguments:
 
-如果我们执行程序,通过它的参数:
+如果执行程序时输入的命令行启动参数为:
 
 ```
 divide null not test
-
 ```
-
-
 
 it produces the output:
 
-它生成的输出:
+则输出内容是:
 
 ```
 [thrower("divide") done]
@@ -574,30 +574,14 @@ Test "test" threw a class TestException
     with message: Test message
 ```
 
-
-
 The declaration of the method `thrower` must have a `throws` clause because it can throw instances of `TestException`, which is a checked exception class ([§11.1.1](https://docs.oracle.com/javase/specs/jls/se8/html/jls-11.html#jls-11.1.1)). A compile-time error would occur if the `throws` clause were omitted.
 
-
-
-方法的声明`thrower`必须有一个`throws`的条款,因为它可以把实例`TestException`检查,这是一个异常类([§11.1.1](https://docs.oracle.com/javase/specs/jls/se8/html/jls - 11. - html # jls-11.1.1))。而发生编译时错误`throws`条款中被省略了。
+`thrower` 方法的声明中必须指定 `throws` 子句, 因为会抛出 `TestException` 异常, 而且这是一个受检查的异常(<#The_Kinds_of_Exceptions>)。 如果没有指定 `throws` 子句则会发生编译时错误。
 
 Notice that the `finally` clause is executed on every invocation of `thrower`, whether or not an exception occurs, as shown by the "`[thrower(...) done]`" output that occurs for each invocation.
 
+请注意，每次调用 `throws` 时都会执行 `finally` 语句块，不管有没有发生异常, 从上面的输出可以看到、每次都会打印输出 `[thrower(...) done]`。
 
 
-
-通知,`finally`在每个调用执行条款`thrower`是否发生异常,如“`[thrower(...) done]`发生的“输出为每个调用。
-
-
-
-
-
-
-
-
-
-
-
-<https://docs.oracle.com/javase/specs/jls/se8/html/jls-11.html>
+原文链接: <https://docs.oracle.com/javase/specs/jls/se8/html/jls-11.html>
 
