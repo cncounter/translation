@@ -354,9 +354,18 @@ When the marking threads run out of work, Marking is nearly done. The marking th
 
 The Relocate phase is where objects get relocated and compacted, and unused pages get freed. Recall that the Mark phase computed the amount of live data per 1M page. A page with zero live data can obviously be reclaimed. A page with only a little live data can be made wholly unused by relocating the live objects out to other pages.
 
+Relocate 阶段进行对象重定位和内存整理，并释放不使用的页面。 回想一下，Mark阶段计算每个1M页面中的存活数据量。很明显存活数据为0的页面是可以被回收的。 仅有少量存活数据的页面，可以通过将存活对象重新定位到其他页面，使得此页面整个不再被使用。
+
 As hinted at in Figure 1, a Relocate phase is constantly running, continuously freeing memory at a pace to stay ahead of the mutators. Relocation uses the current GC-cycle's mark bits. A cycle's Relocate phase will overlap with the next cycle's mark phase. When the next cycle's Mark phase starts it uses a new set of marking bits, leaving the current cycle's mark bits untouched. The Relocate phase starts by finding unused or mostly unused pages. In theory full or mostly full pages can be relocated as well but there's little to be gained. Figure 2 shows a series of 1M heap pages; live object space is shown textured. There is a ref coming from a fully live page into a nearly empty page. We want to relocate the few remaining objects in the “Mostly Dead” page and compact them into a “New, Free” page, then reclaim the “Mostly Dead” page.
 
+从图1中可以看到，Relocate 阶段不断运行，不断释放内存，以保持领先于业务线程。重定位时会使用当前GC周期的标记位。
+每次GC循环的Relocate阶段和下一周期的Mark阶段有部分重叠。当下一周期的Mark阶段开始时，会使用一组新的标记位，保持前一周期的标记位不变。
+Relocate 阶段首先排查未使用或者大部分空间未使用的页面。理论上，用满或者基本用满的页面也能进行重新定位，但没多少意义。
+图2显示了一些1M堆内存页面; 存活对象占用的部分使用条纹表示。在图2中，全是存活对象的页面中有个引用，指向了一个几乎是空的页面。我们想要将“Mostly Dead”页面中的少量存活对象重新定位，将它们整理到“New，Free”页面，然后回收“Mostly Dead”页面。
+
 Next the Relocate phase builds side arrays to hold forwarding pointers. The forwarding pointers cannot be kept in the old copy of the objects because we will reclaim the physical storage immediately after copying and long before all refs are remapped.
+
+接下来，Relocate阶段构建 side arrays 来保存转发指针。转发指针不能保存在对象的旧副本中，因为在复制后会立即回收物理内存，而且在所有引用重新映射之前还有很长一段时间。
 
 ![](02_Finding_sparsely_populated_pages.jpg)
 
