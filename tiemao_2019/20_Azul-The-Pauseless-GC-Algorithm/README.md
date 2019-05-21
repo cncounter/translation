@@ -329,9 +329,15 @@ Changing the ref in memory amounts to a store, even if the stored value is Java-
 
 ### 5.2 The NMT Bit and The Initial Stack-Scan
 
+### 5.2 NMT标志位与初始栈扫描(Initial Stack-Scan)
+
 Refs in mutators' root-set have already passed any chance for running a read-barrier. Hence the initial root-set stack-scan also flips the NMT bits in the root-set. Since the flipping is done with a Checkpoint instead of a STW pause, for a brief time different threads will have different settings for the NMT desired value. It is possible for two threads to throb, to constantly compete over a single ref's desired value NMT value via trapping and updating in memory. This situation can only last a short period of time, until the unflipped thread passes the next GC safepoint where it will trap, flip its stack, and cross the Checkpoint.
 
+业务线程 root-set 中的引用已经放过任何执行读屏障的机会。 因此，初始 root-set 栈扫描也会翻转其中引用的NMT位。由于翻转是通过检查点而不是STW暂停完成的，因此在短时间内，不同的线程对NMT期望值并不相同。 两个线程可能会不断地通过陷阱来更新单个引用的NMT值。 这种情况只会持续很短的时间，只要未翻转的线程也通过下一个GC安全点，就会触发陷阱，翻转其栈内的引用，并越过检查点。
+
 Note that it is not possible for a single thread to hold the same ref twice in its root-set with different NMT settings. Hence we do not suffer from the pointer-equality problem; if two refs compare as bitwise not-equal, then they are truly unequal.
+
+请注意，单个线程 root-set 中不可能存在两个引用的地址相等，NMT值却不同的情况。 因此，我们不会遇到指针相等问题(pointer-equality problem); 如果两个引用按位比较不相等，那么它们就不是等同的。
 
 ### 5.3 Finishing Marking
 
