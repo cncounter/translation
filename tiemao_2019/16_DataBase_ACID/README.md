@@ -45,7 +45,11 @@ The ACID concept is described in ISO/IEC 10026-1:1992 Section 4. Each of these a
 
 
 
+CAP
 
+Consistency, 一致性
+Availability, 可用性
+Partition tolerance, 分区容错
 
 
 
@@ -58,3 +62,4 @@ The ACID concept is described in ISO/IEC 10026-1:1992 Section 4. Each of these a
 - Java Tutorials: <https://howtodoinjava.com/>
 - ISO/IEC 10026-1:1998: <https://www.iso.org/obp/ui/#iso:std:iso-iec:10026:-1:ed-2:v1:en>
 - ISO/IEC 9804:1998: <https://www.iso.org/obp/ui/#iso:std:iso-iec:9804:ed-3:v1:en>
+- CAP定理的含义: <http://www.ruanyifeng.com/blog/2018/07/cap.html>
