@@ -427,15 +427,15 @@ catch (Bar | SubclassOfFoo e) { ... }
 
 ## 11.3. Run-Time Handling of an Exception
 
-## 11.3。运行时异常的处理
+## 11.3. 异常的运行时处理
 
 When an exception is thrown ([§14.18](https://docs.oracle.com/javase/specs/jls/se8/html/jls-14.html#jls-14.18)), control is transferred from the code that caused the exception to the nearest dynamically enclosing `catch` clause, if any, of a `try` statement ([§14.20](https://docs.oracle.com/javase/specs/jls/se8/html/jls-14.html#jls-14.20)) that can handle the exception.
 
-当一个异常((§14.18)(https://docs.oracle.com/javase/specs/jls/se8/html/jls - 14. # jls-14 html.18)),控制从引起异常的代码转移到最近的动态封闭`catch`条款(如果有的话)`try`语句((§14.20)(https://docs.oracle.com/javase/specs/jls/se8/html/jls html # jls - - 14. - 14.))可以处理例外。
+在抛出异常时, 控制流就从引起异常的代码处，跳转到可以处理此异常的，最近的`try`语句对应的 `catch` 语句中(如果有的话)。
 
 A statement or expression is *dynamically enclosed* by a `catch` clause if it appears within the `try` block of the `try` statement of which the `catch` clause is a part, or if the caller of the statement or expression is dynamically enclosed by the `catch` clause.
 
-一个语句或表达式由一个*动态封闭*`catch`如果它出现在条款`try`块的`try`声明的`catch`条款是一个部分,或者调用者的声明或者表达式是动态地包围`catch`条款。
+语句或表达式可以有 `catch` *动态封闭*, 如果它出现在条款`try`块的`try`声明的`catch`条款是一个部分,或者调用者的声明或者表达式是动态地包围`catch`条款。
 
 The caller of a statement or expression depends on where it occurs:
 
