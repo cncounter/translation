@@ -386,11 +386,21 @@ Next the Relocate phase builds side arrays to hold forwarding pointers. The forw
 
 The side array data isn't large because we relocate sparse pages. We implement it as a straightforward hash table. Figure 3 shows the side array.
 
+side array 的数据量并不大，因为重定位的是稀疏页面。我们使用一个简单的哈希表来实现这种映射。side array 如图3所示。
+
+
 The Relocate phase then GC-protects the “Mostly Dead” page, shown in gray, from the mutators. Objects in this page are now considered stale; no more modifications of these objects are allowed. If a mutator loads a ref into the protected page, it's readbarrier will now take a GC-trap.
+
+然后 Relocate 保护 “Mostly Dead”页面，阻止业务线程修改,图中以灰色显示。 现在将此页面中的对象当做是陈旧的; 不允许对这些对象进行修改。 如果mutator将引用加载到受保护的页面，则对应的读屏障就会陷入到GC陷阱中。
+
 
 Next the live objects are copied out and the forwarding table is modified to reflect the objects' new locations as shown in Figure 4. Copying is done concurrently with the mutators; the readbarrier keeps the mutators from seeing a stale object before it has finished moving. Live objects are found using the most recent mark-bits available and sweeping the page.
 
+接下来，把存活对象拷贝出去, 并修改转发表，以反映对象的新位置，如图4所示。 拷贝操作和业务线程并发进行; 移动完成之前，读屏障使得业务线程不会看到陈旧的对象。使用最新的标记位和扫描页面可以找到存活对象。
+
 Once copying has completed, the **physical** memory behind the page is freed. Virtual memory cannot be reclaimed until there are no more stale refs pointing into the freed page. Stale refs are left in the heap to be lazily discovered by running mutators using the read-barrier, and will be completely updated in the next Remap phase. Freed physical memory is immediately recycled by the OS and may be handed out to this or another process. After freeing memory, the GC threads are idled until the next need to relocate and free memory, or until the next Mark and Remap phase begins.
+
+复制完成后，底层的 **物理内存** 将被释放。 直到没有陈旧引用指向已释放的页面，虚拟内存地址才会被回收。 堆内存中的陈旧引用，使用懒发现策略，依靠的是业务线程的读屏障，且在下一次Remap阶段会完全更新。 释放的物理内存可以立即被操作系统回收，并分配给某个进程。释放内存后，GC线程将处于空闲状态，直到下一次需要重新定位和释放内存，或者直到下一次 Mark 和 Remap 阶段开始。
 
 ### 6.1 Read-Barrier Trap Handling
 
