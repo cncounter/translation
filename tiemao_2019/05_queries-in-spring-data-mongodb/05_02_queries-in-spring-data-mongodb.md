@@ -903,9 +903,9 @@ The implementation of all these examples and code snippets **can be found in** [
 
 相关链接:
 
-- Spring Data MongoDB系列(一): 简介: <./05_01_spring-data-mongodb-tutorial.md>
-- Spring Data MongoDB系列(二): 简单查询: <./05_02_queries-in-spring-data-mongodb.md>
-- Spring Data MongoDB系列(八): 映射与聚合: <05_08_spring-data-mongodb-projections-aggregations>
+- [Spring Data MongoDB系列(一): 简介](05_01_spring-data-mongodb-tutorial.md)
+- [Spring Data MongoDB系列(二): 简单查询](05_02_queries-in-spring-data-mongodb.md)
+- [Spring Data MongoDB系列(八): 映射与聚合](05_08_spring-data-mongodb-projections-aggregations.md)
 
 
 原文日期: 2018年11月6日

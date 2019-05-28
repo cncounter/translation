@@ -301,3 +301,10 @@ We also learned about the MongoDB aggregation framework support in Spring Data. 
 还学习了 MongoDB 和 Spring Data 框架的聚合函数. 通过示例介绍了主要的聚合阶段, group, project, sort, limit, 和 match. 完整的代码请参考: <https://github.com/eugenp/tutorials/tree/master/persistence-modules/spring-data-mongodb>。
 
 原文链接: <https://www.baeldung.com/spring-data-mongodb-projections-aggregations>
+
+
+相关链接:
+
+- [Spring Data MongoDB系列(一): 简介](05_01_spring-data-mongodb-tutorial.md)
+- [Spring Data MongoDB系列(二): 简单查询](05_02_queries-in-spring-data-mongodb.md)
+- [Spring Data MongoDB系列(八): 映射与聚合](05_08_spring-data-mongodb-projections-aggregations.md)
