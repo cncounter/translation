@@ -110,7 +110,7 @@ GCÔİÍ£¼°Æä²»¿ÉÔ¤ÖªĞÔ, ¶ÔĞŞ¸ÄÆ÷µÄÓ°ÏìÍÆ¶¯ÁËÔçÆÚ²¢·¢GCµÄ·¢Õ¹(¼û[26][5]). Ê¹ÓÃÌØÊâµ
 
 The idea of using common page-protection hardware to support GC has also been around awhile [2]. Both Appel [2][3] and Ossia [25] protect pages that may contain objects with non-forwarded pointers (initially all pages). Accessing a protected page causes an OS trap which the GC handles by forwarding all pointers on that page, then clearing the page protection. Appel does the forwarding in kernel-mode, Ossia maps the physical memory with a second unprotected virtual address for use by GC. Our Pauseless collector protects pages that contain objects being moved, instead of protecting pages that contain pointers to moved objects. This is a much smaller page set, and the pages can be incrementally protected. Our read-barrier allows us to intercept and correct individual stale references, and avoids blocking the mutator to fix up entire pages. We also support a special GC protection mode to allow fast, non-kernel-mode trap handlers that can access protected pages.
 
-Ê¹ÓÃÍ¨ÓÃµÄÒ³±£»¤Éè±¸À´Ö§³ÖGCµÄÏë·¨Ò²ÔÚÒ»¶ÎÊ±¼äÄÚÌá³ö(¼û[2]).Appel¹«Ë¾(¼û[2][3])ºÍOssia¹«Ë¾(¼û[25])Í¨¹ı·ÇÇ°ÏòÖ¸Õë()À´±£»¤¿ÉÄÜ°üº¬¶ÔÏóµÄÄÚ´æÒ³Ãæ(³õÊ¼»¯ËùÓĞÒ³Ãæ). ·ÃÎÊÒ»¸öÊÜ±£»¤µÄÒ³Ãæ,»áµ¼ÖÂ²Ù×÷ÏµÍ³ÏŞÖÆGC´¦Àí,¸ÃÒ³ÃæÉÏµÄËùÓĞ×ª·¢Ö¸Õë, È»ºóÈ¥³ıÒ³Ãæ±£»¤. AppelÔÚÄÚºËÄ£Ê½×ª·¢, Ossia ½«ÎïÀíÄÚ´æÓ³Éäµ½Ò»¸ö¹©GCÊ¹ÓÃµÄ²»ÊÜ±£»¤µÄĞéÄâµØÖ·. ¶øÎÒÃÇÊµÏÖµÄÎŞÍ£¶ÙÀ¬»øÊÕ¼¯Æ÷»á±£»¤°üº¬ĞèÒªÒÆ¶¯¶ÔÏóµÄÒ³Ãæ,¶ø²»ÊÇÈ¥±£»¤°üº¬Ö¸ÕëÒÆ¶¯¶ÔÏóµÄÒ³Ãæ. ÕâÑùµÄ»° page set ¾Í»áĞ¡µÃ¶à£¬¶øÇÒÒ³Ãæ¿ÉÒÔÖğ²½µÃµ½±£»¤. Ê¹ÓÃ¶ÁÆÁÕÏÔÊĞíÎÒÃÇÀ¹½ØºÍ¾ÀÕı¸ö±ğ³Â¾ÉµÄÒıÓÃ, ²¢±ÜÃâ×èÈûĞŞ¸ÄÆ÷À´ĞŞ¸´Õû¸öÒ³Ãæ. ÎÒÃÇÒ²Ö§³ÖÌØÊâµÄGC±£»¤Ä£Ê½, ÔÊĞí¿ìËÙµÄ¡¢·ÇÄÚºËÄ£Ê½µÄÏİÚå´¦ÀíÆ÷À´·ÃÎÊÊÜ±£»¤µÄÒ³Ãæ¡£
+Ê¹ÓÃÍ¨ÓÃµÄÒ³±£»¤Éè±¸À´Ö§³ÖGCµÄÏë·¨Ò²ÔÚÒ»¶ÎÊ±¼äÄÚÌá³ö(¼û[2]).Appel¹«Ë¾(¼û[2][3])ºÍOssia¹«Ë¾(¼û[25])Í¨¹ı·ÇÇ°ÏòÖ¸Õë()À´±£»¤¿ÉÄÜ°üº¬¶ÔÏóµÄÄÚ´æÒ³Ãæ(³õÊ¼»¯ËùÓĞÒ³Ãæ). ·ÃÎÊÒ»¸öÊÜ±£»¤µÄÒ³Ãæ,»áµ¼ÖÂ²Ù×÷ÏµÍ³ÏŞÖÆGC´¦Àí,¸ÃÒ³ÃæÉÏµÄËùÓĞ×ª·¢Ö¸Õë, È»ºóÈ¥³ıÒ³Ãæ±£»¤. AppelÔÚÄÚºËÄ£Ê½×ª·¢, Ossia ½«ÎïÀíÄÚ´æÓ³Éäµ½Ò»¸ö¹©GCÊ¹ÓÃµÄ²»ÊÜ±£»¤µÄĞéÄâµØÖ·. ¶øÎÒÃÇÊµÏÖµÄÎŞÍ£¶ÙÀ¬»øÊÕ¼¯Æ÷»á±£»¤°üº¬ĞèÒªÒÆ¶¯¶ÔÏóµÄÒ³Ãæ,¶ø²»ÊÇÈ¥±£»¤°üº¬Ö¸ÕëÒÆ¶¯¶ÔÏóµÄÒ³Ãæ. ÕâÑùµÄ»° page set ¾Í»áĞ¡µÃ¶à£¬¶øÇÒÒ³Ãæ¿ÉÒÔÖğ²½µÃµ½±£»¤. Ê¹ÓÃ¶ÁÆÁÕÏÔÊĞíÎÒÃÇÀ¹½ØºÍ¾ÀÕı¸ö±ğ¹ıÊ±ÒıÓÃ, ²¢±ÜÃâ×èÈûĞŞ¸ÄÆ÷À´ĞŞ¸´Õû¸öÒ³Ãæ. ÎÒÃÇÒ²Ö§³ÖÌØÊâµÄGC±£»¤Ä£Ê½, ÔÊĞí¿ìËÙµÄ¡¢·ÇÄÚºËÄ£Ê½µÄÏİÚå´¦ÀíÆ÷À´·ÃÎÊÊÜ±£»¤µÄÒ³Ãæ¡£
 
 The idea of an incremental collector (via reference counting) is not new either [15]. Incremental collection seeks to reduce pause time by spreading the collection work out in time, finely interleaving GC work with mutator work. Because reference counting is expensive, and indeed all barriers (reference counting typically involves a write barrier) impose some mutator cost there is considerable research in reducing barrier costs [6][21][8] [9]. Having the read-barrier implemented in hardware greatly reduces costs. In our case the typical cost is roughly that of a single cycle ALU instruction.
 
@@ -241,11 +241,11 @@ Relocate ½×¶Î½øĞĞ¶ÔÏóÖØĞÂ·ÖÅä²¢»ØÊÕÄÚ´æÒ³¡£Èç¹ûÄ³¸öÒ³ÃæÖĞ´ó²¿·ÖÊÇËÀÍö¶ÔÏó£¬Ôò¿ÉÒ
 
 If a mutator loads a reference to a protected page, the read-barrier instruction will trigger a GC-trap. The mutator is never allowed to use the protected-page reference in a language-visible way. The GC-trap handler is responsible for changing the stale protected-page reference to the correctly forwarded reference.
 
-Èç¹û mutator ĞèÒª¼ÓÔØÊÜ±£»¤Ò³ÃæÖĞµÄÒıÓÃ£¬Ôò¶ÁÆÁÕÏÖ¸Áî½«»á´¥·¢Ò»´ÎGCÏİÚå¡£ÔÚÓïÑÔ¿É¼ûµÄ²ãÃæÓÀÔ¶²»ÔÊĞímutatorÊ¹ÓÃÊÜ±£»¤Ò³ÃæµÄÒıÓÃ¡£GCÏİÚå´¦Àí³ÌĞò¸ºÔğ½«ÊÜ±£»¤Ò³ÃæÖĞ³Â¾ÉµÄÒıÓÃ¸ü¸ÄÎªÕıÈ·µÄ×ª·¢ÒıÓÃ¡£
+Èç¹û mutator ĞèÒª¼ÓÔØÊÜ±£»¤Ò³ÃæÖĞµÄÒıÓÃ£¬Ôò¶ÁÆÁÕÏÖ¸Áî½«»á´¥·¢Ò»´ÎGCÏİÚå¡£ÔÚÓïÑÔ¿É¼ûµÄ²ãÃæÓÀÔ¶²»ÔÊĞímutatorÊ¹ÓÃÊÜ±£»¤Ò³ÃæµÄÒıÓÃ¡£GCÏİÚå´¦Àí³ÌĞò¸ºÔğ½«ÊÜ±£»¤Ò³ÃæÖĞ¹ıÊ±ÒıÓÃ¸ü¸ÄÎªÕıÈ·µÄ×ª·¢ÒıÓÃ¡£
 
 After the page contents have been relocated, the Relocate phase frees the **physical** memory; it's contents are never needed again. The physical memory is recycled by the OS and can immediately be used for new allocations. **Virtual** memory cannot be freed until no more stale references to that page remain in the heap, and that is the job of the Remap phase.
 
-Ò³ÃæÖĞµÄÄÚÈİÈ«²¿ÖØĞÂ·ÖÅäºó£¬Relocate ½×¶ÎÊÍ·Å **ÎïÀíÄÚ´æ**; Ò²¾ÍÊÇÆäÖĞµÄÄÚÈİÓÀÔ¶²»ÔÙĞèÒªÁË¡£ÎïÀíÄÚ´æÓÉ²Ù×÷ÏµÍ³»ØÊÕ£¬¿ÉÁ¢¼´ÓÃÓÚĞÂµÄÄÚ´æ·ÖÅä¡£**ĞéÄâÄÚ´æ** µØÖ·²»»áÁ¢¼´ÊÍ·Å£¬Ö±µ½¶ÑÄÚ´æÖĞ²»ÔÙÓĞ¶Ô¸ÃÒ³ÃæµÄ³Â¾ÉÒıÓÃ£¬ÄÇ¾ÍÊÇRemap½×¶ÎµÄ¹¤×÷ÁË¡£
+Ò³ÃæÖĞµÄÄÚÈİÈ«²¿ÖØĞÂ·ÖÅäºó£¬Relocate ½×¶ÎÊÍ·Å **ÎïÀíÄÚ´æ**; Ò²¾ÍÊÇÆäÖĞµÄÄÚÈİÓÀÔ¶²»ÔÙĞèÒªÁË¡£ÎïÀíÄÚ´æÓÉ²Ù×÷ÏµÍ³»ØÊÕ£¬¿ÉÁ¢¼´ÓÃÓÚĞÂµÄÄÚ´æ·ÖÅä¡£**ĞéÄâÄÚ´æ** µØÖ·²»»áÁ¢¼´ÊÍ·Å£¬Ö±µ½¶ÑÄÚ´æÖĞ²»ÔÙÓĞ¶Ô¸ÃÒ³ÃæµÄ¹ıÊ±ÒıÓÃ£¬ÄÇ¾ÍÊÇRemap½×¶ÎµÄ¹¤×÷ÁË¡£
 
 As hinted at in Figure 1, a Relocate phase runs constantly freeing memory to keep pace with the mutators' allocations. Sometimes it runs alone and sometimes concurrent with the next Mark phase.
 
@@ -400,13 +400,19 @@ Next the live objects are copied out and the forwarding table is modified to ref
 
 Once copying has completed, the **physical** memory behind the page is freed. Virtual memory cannot be reclaimed until there are no more stale refs pointing into the freed page. Stale refs are left in the heap to be lazily discovered by running mutators using the read-barrier, and will be completely updated in the next Remap phase. Freed physical memory is immediately recycled by the OS and may be handed out to this or another process. After freeing memory, the GC threads are idled until the next need to relocate and free memory, or until the next Mark and Remap phase begins.
 
-¸´ÖÆÍê³Éºó£¬µ×²ãµÄ **ÎïÀíÄÚ´æ** ½«±»ÊÍ·Å¡£ Ö±µ½Ã»ÓĞ³Â¾ÉÒıÓÃÖ¸ÏòÒÑÊÍ·ÅµÄÒ³Ãæ£¬ĞéÄâÄÚ´æµØÖ·²Å»á±»»ØÊÕ¡£ ¶ÑÄÚ´æÖĞµÄ³Â¾ÉÒıÓÃ£¬Ê¹ÓÃÀÁ·¢ÏÖ²ßÂÔ£¬ÒÀ¿¿µÄÊÇÒµÎñÏß³ÌµÄ¶ÁÆÁÕÏ£¬ÇÒÔÚÏÂÒ»´ÎRemap½×¶Î»áÍêÈ«¸üĞÂ¡£ ÊÍ·ÅµÄÎïÀíÄÚ´æ¿ÉÒÔÁ¢¼´±»²Ù×÷ÏµÍ³»ØÊÕ£¬²¢·ÖÅä¸øÄ³¸ö½ø³Ì¡£ÊÍ·ÅÄÚ´æºó£¬GCÏß³Ì½«´¦ÓÚ¿ÕÏĞ×´Ì¬£¬Ö±µ½ÏÂÒ»´ÎĞèÒªÖØĞÂ¶¨Î»ºÍÊÍ·ÅÄÚ´æ£¬»òÕßÖ±µ½ÏÂÒ»´Î Mark ºÍ Remap ½×¶Î¿ªÊ¼¡£
+¸´ÖÆÍê³Éºó£¬µ×²ãµÄ **ÎïÀíÄÚ´æ** ½«±»ÊÍ·Å¡£ Ö±µ½Ã»ÓĞ¹ıÊ±ÒıÓÃÖ¸ÏòÒÑÊÍ·ÅµÄÒ³Ãæ£¬ĞéÄâÄÚ´æµØÖ·²Å»á±»»ØÊÕ¡£ ¶ÑÄÚ´æÖĞµÄ¹ıÊ±ÒıÓÃ£¬Ê¹ÓÃÀÁ·¢ÏÖ²ßÂÔ£¬ÒÀ¿¿µÄÊÇÒµÎñÏß³ÌµÄ¶ÁÆÁÕÏ£¬ÇÒÔÚÏÂÒ»´ÎRemap½×¶Î»áÍêÈ«¸üĞÂ¡£ ÊÍ·ÅµÄÎïÀíÄÚ´æ¿ÉÒÔÁ¢¼´±»²Ù×÷ÏµÍ³»ØÊÕ£¬²¢·ÖÅä¸øÄ³¸ö½ø³Ì¡£ÊÍ·ÅÄÚ´æºó£¬GCÏß³Ì½«´¦ÓÚ¿ÕÏĞ×´Ì¬£¬Ö±µ½ÏÂÒ»´ÎĞèÒªÖØĞÂ¶¨Î»ºÍÊÍ·ÅÄÚ´æ£¬»òÕßÖ±µ½ÏÂÒ»´Î Mark ºÍ Remap ½×¶Î¿ªÊ¼¡£
 
 ### 6.1 Read-Barrier Trap Handling
 
+### 6.1 ¶ÁÆÁÕÏÏİÚå´¦Àí
+
 If a mutator's read-barrier GC-traps, then the mutator has loaded a stale ref. The GC-trap handler looks up the forwarding pointer from the side arrays and places the correct value both in the register and in memory, as shown in Figure 5. Similarly to the NMT trap handler's ¡°self-healing¡± behavior, updating the ref in memory is crucial to performance: it keeps the same stale ref from trapping again. As before, the memory update is done with a CAS to avoid stomping a racing store from another thread.
 
-It is also possible that the needed object has not yet been copied. In this case the mutator will do the copy on behalf of the GC thread ¨C since the mutator is otherwise blocked from forward progress. The mutator can read the GC-protected page because the trap handler runs in the elevated GC-protection mode. If the mutator must copy a large object, it may be stalled for a long time. This normally isn't an issue: pages with a lot of live data are not relocated and a ?-page sized object (512K) can be copied in about 1ms.
+Èç¹ûÄ³¸öÏß³ÌµÄ¶ÁÆÁÕÏ½øÈëGCÏİÚå£¬ÄÇÃ´¾ÍÊÇÒòÎªÕâ¸öÏß³Ì¼ÓÔØµ½ÁËÒ»¸ö¹ıÊ±ÒıÓÃ¡£ GC-trap´¦ÀíÆ÷´Óside arraysÖĞ²éÕÒ×ª·¢Ö¸Õë£¬²¢½«ÕıÈ·µÄÖµ·Åµ½¼Ä´æÆ÷ºÍÄÚ´æÖĞ£¬ÈçÍ¼5ËùÊ¾¡£ÓëNMTÏİÚå´¦Àí³ÌĞòµÄ¡°×ÔÎÒĞŞ¸´¡±ĞĞÎªÀàËÆ£¬¸üĞÂÄÚ´æÖĞµÄÒıÓÃ¶ÔĞÔÄÜÖÁ¹ØÖØÒª£ºËü»á×èÖ¹ÏàÍ¬µÄ¹ıÊ±ÒıÓÃÔÙ´ÎÏİÈëÏİÚå¡£ºÍÇ°ÃæÒ»Ñù£¬Ê¹ÓÃCASÀ´Íê³ÉÄÚ´æ¸üĞÂ£¬ÒÔ±ÜÃâÁíÒ»¸öÏß³ÌÀ´ÕùÇÀstore²Ù×÷¡£
+
+It is also possible that the needed object has not yet been copied. In this case the mutator will do the copy on behalf of the GC thread ¨C since the mutator is otherwise blocked from forward progress. The mutator can read the GC-protected page because the trap handler runs in the elevated GC-protection mode. If the mutator must copy a large object, it may be stalled for a long time. This normally isn't an issue: pages with a lot of live data are not relocated and a `1/2`-page sized object (512K) can be copied in about 1ms.
+
+»¹ÓĞ¿ÉÄÜËùĞèµÄ¶ÔÏóÉĞÎ´¸´ÖÆÍê³É¡£ÔÚÕâÖÖÇé¿öÏÂ£¬ÒµÎñÏß³Ì½«´ú±íGCÏß³ÌÖ´ĞĞ¸´ÖÆ - ·´ÕıÒµÎñÏß³ÌÒÑ¾­±»×èÈûÁËÊÇ°É¡£ mutatorÕâÊ±ºò¿ÉÒÔ¶ÁÈ¡ÊÜGC±£»¤µÄÒ³Ãæ£¬ÒòÎªÏİÚå´¦Àí³ÌĞò±»ÌáÉıµ½GC±£»¤Ä£Ê½ÏÂÔËĞĞ¡£Èç¹ûmutator±ØĞë¸´ÖÆÒ»¸ö´ó¶ÔÏó£¬¿ÉÄÜ»á³¤Ê±¼äÍ£ÖÍ¡£ÕâÍ¨³£²»ÊÇÊ²Ã´´óÎÊÌâ£º¾ßÓĞ´óÁ¿´æ»îÊı¾İµÄÒ³Ãæ²»»áÖØĞÂ¶¨Î»£¬²¢ÇÒ¸´ÖÆ `1/2` Ò³Ãæ´óĞ¡µÄ¶ÔÏó£¨512K£©Ö»ĞèÒª²»µ½1msµÄÊ±¼ä¡£
 
 ### 6.2 Other Relocate Phase Actions
 
