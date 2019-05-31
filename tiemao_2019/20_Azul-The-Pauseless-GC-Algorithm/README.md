@@ -448,6 +448,8 @@ At the end of the Remap phase, all pages that were protected before the start of
 
 Our implementation is a rapidly moving work-in-progress. As of this writing it suffers from a few STW pauses not required by the Pauseless GC algorithm. Over time we hope to remove these STWs or engineer their maximum time below an OS time-slice quanta. We have proposed solutions for each one, and report pauses experienced by the current implementation on the 8- warehouse 20-minute pseudo-JBB run described in Section 8.
 
+我们的具体实现属于边做边改。 在撰写本文时，还需要一些STW暂停来支持、当然 Pauseless GC 算法本身是没有STW的。 随着时间的推移，我们希望能去除所有的STW，或者让最大暂停时间小于操作系统的最小时间片。 我们为每种方式都提供了解决方案，在第8节中，通过20分钟的8仓伪JBB运行，来测试当前实现，并统计所遇到的暂停情况。
+
 ### 7.1 At the Mark Phase Start
 
 At the start of the Mark phase we stop all threads to flip the desired NMT state. We could flip the NMT bits via a Checkpoint; the cost would be some amount of NMT-bit throbbing (repeated NMT traps) on shared objects until all threads flip. Also, global shared resources (e.g., the SystemDictionary, JNI handles, locked objects) are marked in this STW. Engineering these to use a Checkpoint is straightforward.
