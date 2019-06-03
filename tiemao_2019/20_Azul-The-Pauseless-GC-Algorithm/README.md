@@ -249,7 +249,7 @@ After the page contents have been relocated, the Relocate phase frees the **phys
 
 As hinted at in Figure 1, a Relocate phase runs constantly freeing memory to keep pace with the mutators' allocations. Sometimes it runs alone and sometimes concurrent with the next Mark phase.
 
-如图1所示，Relocate 阶段不断释放内存以跟上mutator的分配。有时候单独运行，有时也会和下一次Mark阶段并发运行。
+如图1所示，Relocate 阶段不断释放内存以跟上mutator的分配。有时候单独运行，有时也会和下一次标记阶段并发运行。
 
 
 ### 4.3 Remap Phase
@@ -268,7 +268,7 @@ During the Remap phase, GC threads traverse the object graph executing a read ba
 
 Since both the Remap and Mark phases need to touch all live objects, we fold them together. The Remap phase for the current GC cycle is run concurrently with the Mark phase for the next GC cycle, as shown in Figure 1.
 
-由于Remap和Mark阶段都需要接触所有存活的对象，因此将它们放在一起。当前GC周期的Remap阶段, 与下一个GC周期的Mark阶段并发运行，如图1所示。
+由于Remap和标记阶段都需要接触所有存活的对象，因此将它们放在一起。当前GC周期的Remap阶段, 与下一个GC周期的标记阶段并发运行，如图1所示。
 
 The Remap phase is also running concurrently with the 2nd half of the Relocate phase. The Relocate phase is creating new stale pointers that can only be fixed by a complete run of the Remap phase, so stale pointers created during the 2nd half of this Relocate phase are only cleaned out at the end of the next Remap phase. The next few sections will discuss each phase in more depth.
 
@@ -288,7 +288,7 @@ The Mark phase begins by initializing any internal data structures (e.g., markin
 
 The Mark phase then marks all global refs, scans each threads' root-set, and flips the per-thread expected NMT value. The root-set generally includes all refs in CPU registers and on the threads' stacks. Running threads cooperate by marking their own root-set. Blocked (or stalled) threads get marked in parallel by Mark-phase threads. This is a Checkpoint; each thread can immediately proceed after it's root set has been marked (and expected- NMT flipped) but the Mark phase cannot proceed until all threads have crossed the Checkpoint.
 
-然后, Mark阶段标记所有的全局引用，扫描每个线程的 root-set(GCroot-set合)，并翻转各个线程预期的NMT值。 root-set 通常包括: CPU寄存器和线程栈中的所有引用。运行中的线程通过标记自身的root-set合来参与协作；阻塞（或停滞）状态的线程由Mark-phase线程并行地标记。这是一个检查点; 每个业务线程在标记了root-set（以及预期NMT翻转）之后就可以立即继续，但是Mark阶段的GC线程必须等所有业务线程达到检查点后，才能继续运行。
+然后, 标记阶段标记所有的全局引用，扫描每个线程的 root-set(GCroot-set合)，并翻转各个线程预期的NMT值。 root-set 通常包括: CPU寄存器和线程栈中的所有引用。运行中的线程通过标记自身的root-set合来参与协作；阻塞（或停滞）状态的线程由Mark-phase线程并行地标记。这是一个检查点; 每个业务线程在标记了root-set（以及预期NMT翻转）之后就可以立即继续，但是标记阶段的GC线程必须等所有业务线程达到检查点后，才能继续运行。
 
 After the root-sets are all marked we proceed with a parallel and concurrent marking phase [17]. Live refs are pulled from the worklists, their target objects marked live and their internal refs are recursively worked on. Note that the markers ignore the NMT bit, it is only used by the mutators. When an object is marked live, its size is added to the amount of live data in it's 1M page (only large objects are allowed to span a page boundary and they are handled separately, so the live data calculation is exact). This phase continues until the worklists run dry and all live objects have been marked.
 
@@ -296,7 +296,7 @@ After the root-sets are all marked we proceed with a parallel and concurrent mar
 
 New objects created by concurrent mutators are allocated in pages which will not be relocated in this GC cycle, hence the state of their live bits is not consulted by the Relocate phase. All refs being stored into new objects (or any object for that matter) have either already been marked or are queued in the Mark phase's worklists. Hence the initial state of the live bit for new objects doesn't matter for the Mark phase.
 
-并发的业务线程创建的新对象只能在其他页面中分配，这些页面不会在此GC周期中被重定位，因此 Relocate 阶段不会涉及到这些新对象的存活状态标志位。新对象（或任何对象）中的所有引用，要么已经被标记，要么还在Mark阶段的工作列表中等着处理。因此，对于Mark阶段来说，新对象的存活标志位的初始值是无关紧要的。
+并发的业务线程创建的新对象只能在其他页面中分配，这些页面不会在此GC周期中被重定位，因此 Relocate 阶段不会涉及到这些新对象的存活状态标志位。新对象（或任何对象）中的所有引用，要么已经被标记，要么还在标记阶段的工作列表中等着处理。因此，对于标记阶段来说，新对象的存活标志位的初始值是无关紧要的。
 
 ### 5.1 The NMT Bit
 
@@ -312,7 +312,7 @@ Instead of a STW pause or write-barrier we use a read barrier and require the mu
 
 If a mutator thread loads and read-barriers a ref with the NMT bit set wrong, it has found a potentially unvisited ref. The mutator jumps to the NMT-trap handler. In the NMT-trap handler the loaded value has it's NMT bit set correctly. The ref is recorded with the Mark phase logic. <sup>2</sup>  Then the corrected ref is stored back into memory. Since the ref is changed in memory, that particular ref will not cause a trap in the future. 
 
-如果一个mutator线程加载一个NMT位错误的引用，有读屏障存在的话，就会找到一个不可访问的引用。 mutator跳转到NMT陷阱处理程序。在NMT陷阱处理程序中，加载的值正确设置了NMT位。引用是在Mark阶段逻辑中记录的。 <sup>{注2}</sup> 然后将更正的引用存回内存。由于在内存中引用发生了变更， 因此之后这个引用就不会再触发陷阱。
+如果一个mutator线程加载一个NMT位错误的引用，有读屏障存在的话，就会找到一个不可访问的引用。 mutator跳转到NMT陷阱处理程序。在NMT陷阱处理程序中，加载的值正确设置了NMT位。引用是在标记阶段逻辑中记录的。 <sup>{注2}</sup> 然后将更正的引用存回内存。由于在内存中引用发生了变更， 因此之后这个引用就不会再触发陷阱。
 
 > <sup>2</sup> Actually, they are batched for efficiency.
 
@@ -320,7 +320,7 @@ If a mutator thread loads and read-barriers a ref with the NMT bit set wrong, it
 
 This “self-healing” idea is key: without it a phase-change would cause all the mutators to take continuous NMT traps until the Marker threads can get around to flipping the NMT bits in the mutators' working sets. Instead, each mutator flips its own working set as it runs. After a short period of high-intensity trapping (a “trap storm”) the working set is converted and the mutator proceeds at its normal pace. During the steady-state portion of the Mark phase, mutators take only rare traps as their working set slowly migrates.
 
-关键点在于这种“自我修复”的构想： 如果没有自修复，在各个阶段中发生的改变，会导致所有业务线程连续触发NMT陷阱，直到标记线程翻转业务线程工作集中的NMT位为止。而使用自修复之后，每个mutator在运行时都会翻转自己的工作集。经历短时间的高强度捕捉（“陷阱风暴”）之后，工作集被转换、业务线程则以正常速度执行。在Mark阶段的稳态期间，mutators只碰到极少量的陷阱，因为它们的工作集迁移缓慢。
+关键点在于这种“自我修复”的构想： 如果没有自修复，在各个阶段中发生的改变，会导致所有业务线程连续触发NMT陷阱，直到标记线程翻转业务线程工作集中的NMT位为止。而使用自修复之后，每个mutator在运行时都会翻转自己的工作集。经历短时间的高强度捕捉（“陷阱风暴”）之后，工作集被转换、业务线程则以正常速度执行。在标记阶段的稳态期间，mutators只碰到极少量的陷阱，因为它们的工作集迁移缓慢。
 
 Changing the ref in memory amounts to a store, even if the stored value is Java-language-equivalent to the original value. The store is transparent to the Java semantics of the running thread, but the store is visible to other threads: without some care it might stomp over another thread's store effectively reversing it. Instead of unconditionally storing, the trap handler uses a compare-and-swap (CAS) instruction to only update the memory if it hasn't changed since the trap. If the CAS fails the handler returns the value currently in memory (not the value originally loaded) and the read barrier is repeated.
 
@@ -345,7 +345,7 @@ Note that it is not possible for a single thread to hold the same ref twice in i
 
 When the marking threads run out of work, Marking is nearly done. The marking threads need to close the narrow race where a mutator may have loaded an unmarked ref (hence has the wrong NMT bit) but not yet executed the read-barrier. Read-barriers never span a GC safepoint, so it suffices to require the mutators cross a GC safepoint without trapping. The Marking pass requests a Checkpoint, but requires no other mutator work. Any refs discovered before the Checkpoint ends will be concurrently marked as normal. When all mutators complete the Checkpoint with none of them reporting any new refs, the Mark phase is complete. If new refs are reported the Marker threads will exhaust them and the Checkpoint will repeat. Since no refs can be created with the “wrong” NMT-bit value the process will eventually complete.
 
-当标记线程停止工作时，标记阶段即将完成。 标记线程需要快速处理一些事情，比如业务线程可能加载了未标记的引用（因此NMT位是错误的）但尚未执行读屏障。 读障碍永远不会跨越GC安全点，因此只需要业务线程通过GC安全点而不需陷进陷阱就够了。 标记传递需要一个检查点，但不需要其他业务线程参与处理。 在Checkpoint结束之前发现的任何引用都被并发标记为正常。 当所有mutators都完成Checkpoint，却没有报告任何新的引用，那么Mark阶段就完成了。 如果报告了新的引用，那么Marker线程将其处理掉并且重复执行Checkpoint。 因为创建的引用不再有“错误的”NMT位值，所以标记过程最终就完成了。
+当标记线程停止工作时，标记阶段即将完成。 标记线程需要快速处理一些事情，比如业务线程可能加载了未标记的引用（因此NMT位是错误的）但尚未执行读屏障。 读障碍永远不会跨越GC安全点，因此只需要业务线程通过GC安全点而不需陷进陷阱就够了。 标记传递需要一个检查点，但不需要其他业务线程参与处理。 在Checkpoint结束之前发现的任何引用都被并发标记为正常。 当所有mutators都完成Checkpoint，却没有报告任何新的引用，那么标记阶段就完成了。 如果报告了新的引用，那么Marker线程将其处理掉并且重复执行Checkpoint。 因为创建的引用不再有“错误的”NMT位值，所以标记过程最终就完成了。
 
 
 ## 6. RELOCATE AND REMAP PHASES
@@ -354,12 +354,12 @@ When the marking threads run out of work, Marking is nearly done. The marking th
 
 The Relocate phase is where objects get relocated and compacted, and unused pages get freed. Recall that the Mark phase computed the amount of live data per 1M page. A page with zero live data can obviously be reclaimed. A page with only a little live data can be made wholly unused by relocating the live objects out to other pages.
 
-Relocate 阶段进行对象重定位和内存整理，并释放不使用的页面。 回想一下，Mark阶段计算每个1M页面中的存活数据量。很明显存活数据为0的页面是可以被回收的。 仅有少量存活数据的页面，可以通过将存活对象重定位到其他页面，使得此页面整个不再被使用。
+Relocate 阶段进行对象重定位和内存整理，并释放不使用的页面。 回想一下，标记阶段计算每个1M页面中的存活数据量。很明显存活数据为0的页面是可以被回收的。 仅有少量存活数据的页面，可以通过将存活对象重定位到其他页面，使得此页面整个不再被使用。
 
 As hinted at in Figure 1, a Relocate phase is constantly running, continuously freeing memory at a pace to stay ahead of the mutators. Relocation uses the current GC-cycle's mark bits. A cycle's Relocate phase will overlap with the next cycle's mark phase. When the next cycle's Mark phase starts it uses a new set of marking bits, leaving the current cycle's mark bits untouched. The Relocate phase starts by finding unused or mostly unused pages. In theory full or mostly full pages can be relocated as well but there's little to be gained. Figure 2 shows a series of 1M heap pages; live object space is shown textured. There is a ref coming from a fully live page into a nearly empty page. We want to relocate the few remaining objects in the “Mostly Dead” page and compact them into a “New, Free” page, then reclaim the “Mostly Dead” page.
 
 从图1中可以看到，Relocate 阶段不断运行，不断释放内存，以保持领先于业务线程。重定位时会使用当前GC周期的标记位。
-每次GC循环的Relocate阶段和下一周期的Mark阶段有部分重叠。当下一周期的Mark阶段开始时，会使用一组新的标记位，保持前一周期的标记位不变。
+每次GC循环的Relocate阶段和下一周期的标记阶段有部分重叠。当下一周期的标记阶段开始时，会使用一组新的标记位，保持前一周期的标记位不变。
 Relocate 阶段首先排查未使用或者大部分空间未使用的页面。理论上，用满或者基本用满的页面也能进行重定位，但没多少意义。
 图2显示了一些1M堆内存页面; 存活对象占用的部分使用条纹表示。在图2中，全是存活对象的页面中有个引用，指向了一个几乎是空的页面。我们想要将“Mostly Dead”页面中的少量存活对象重定位，将它们整理到“New，Free”页面，然后回收“Mostly Dead”页面。
 
@@ -436,7 +436,7 @@ Notice that there is no “rush” to finish the Relocation phase; we need only re
 
 The Remap phase updates all stale refs with their proper forwarded pointers. It must visit every ref in the heap to find all the stale ones. As mentioned before it runs in lockstep with the next GC cycle's Mark phase; the one piece of visitor logic does both the stale ref check and NMT check.
 
-Remap阶段更新所有过时的引用，使用正确的转发指针。 必须遍历堆内存，才能找到所有过时的引用。 如前所述，它与后续GC循环的Mark阶段同步运行; 遍历器的一个逻辑是执行过时引用的检查以及NMT检查。
+Remap阶段更新所有过时的引用，使用正确的转发指针。 必须遍历堆内存，才能找到所有过时的引用。 如前所述，它与后续GC循环的标记阶段同步运行; 遍历器的一个逻辑是执行过时引用的检查以及NMT检查。
 
 At the end of the Remap phase, all pages that were protected before the start of the Remap phase have now been completely scrubbed. No more stale refs to those pages remain so those virtual memory pages can now be reclaimed. We also free the side arrays at this time, and a GC cycle is complete.
 
@@ -444,7 +444,7 @@ At the end of the Remap phase, all pages that were protected before the start of
 
 ## 7. REALITY CHECK
 
-## 7. 现实状况
+## 7. 当前的实现
 
 Our implementation is a rapidly moving work-in-progress. As of this writing it suffers from a few STW pauses not required by the Pauseless GC algorithm. Over time we hope to remove these STWs or engineer their maximum time below an OS time-slice quanta. We have proposed solutions for each one, and report pauses experienced by the current implementation on the 8- warehouse 20-minute pseudo-JBB run described in Section 8.
 
@@ -452,17 +452,31 @@ Our implementation is a rapidly moving work-in-progress. As of this writing it s
 
 ### 7.1 At the Mark Phase Start
 
+### 7.1 标记阶段的开头
+
 At the start of the Mark phase we stop all threads to flip the desired NMT state. We could flip the NMT bits via a Checkpoint; the cost would be some amount of NMT-bit throbbing (repeated NMT traps) on shared objects until all threads flip. Also, global shared resources (e.g., the SystemDictionary, JNI handles, locked objects) are marked in this STW. Engineering these to use a Checkpoint is straightforward.
+
+在标记阶段的开始，会停止所有线程以翻转NMT状态位。可以通过检查点来翻转NMT位; 代价是在共享对象上会有一定量的NMT位跳动(重复进入NMT陷阱)，直到所有线程都翻转为止。此外，全局共享资源(例如，SystemDictionary、JNI句柄、锁对象)走在这次STW中标记。使用检查点在工程中是直接又简单的。
 
 The worse pause reported was 21ms and the average was 16ms.
 
+在测试中，最坏情况下消耗的时间是 21ms，平均时间为 16ms。
+
 ### 7.2 At the Mark Phase End
+
+### 7.2 标记阶段的结束
 
 At the end of the Mark phase we stop all threads and do (in parallel but not concurrent) soft ref processing, weak ref processing, and finalization. Java's soft and weak refs present a race between the collector nullifying a ref and the mutator “strengthening” the ref. We could process the refs concurrently by having the collector CAS down a null only when the ref remains notmarked- through. The NMT-trap handler already has the proper CAS'ing behavior – both the collector and the mutator race to CAS down a new value. If the mutator wins the ref is strengthened (and the collector knows it), and if the collector wins the ref is nullified (and the mutator only sees the null).
 
+在标记阶段结束时，会停止所有线程，(并行但不并发)执行软引用处理(soft ref)、弱引用处理（weak ref）和终结(finalization)。Java中的软引用和弱引用，在GC释放引用、与业务线程将其变回强引用之间存在竞争。 我们可以并发地处理引用，通过让收集器只在引用未标记时通过CAS将其设置为null值。对应的 NMT-trap 处理程序已经具有正确的CAS行为 —— 收集器和mutator都争着让CAS变为一个新值。如果mutator成功，ref就会增强(收集器能感知到)，如果收集器成功，引用就会置空(而mutator会看到null)。
+
 There are a number of other items handled at this STW that could be engineered to be concurrent, including class unloading and code-cache unloading. Again engineering these will be straightforward but tedious.
 
+在STW中的很多处理项是可以设计为并发的，比如类卸载和代码缓存卸载。同样，设计这些程序虽然简单但也消耗时间。
+
 The worse pause reported was 16ms and the average was 7ms.
+
+在测试中，最坏情况下消耗的时间是 16ms，平均时间为 7ms。
 
 ### 7.3 At the Relocation Phase Start
 
@@ -471,6 +485,8 @@ The mutators' root-sets need scrubbing when GC-protecting a page. There are two 
 We could use a Checkpoint to update the TLBs and scrub the root-sets. To maintain concurrency until all threads have passed the relocation Checkpoint, the read barrier's TLB trap handler is modified to wait for the Checkpoint to complete before proceeding with relocation or remapping and propagating a corrected ref in the mutator. Mutator threads that actually access refs in protected pages will then “bunch up” at the Checkpoint with other threads continuing concurrent execution past the Checkpoint. This effect is mitigated by the fact that we preferentially relocate sparse pages.
 
 The worse pause reported was 19ms and the average was 5ms.
+
+在测试中，最坏情况下消耗的时间是 19ms，平均时间为 5ms。
 
 ### 7.4 Relocate doesn't run during Mark/Remap
 
