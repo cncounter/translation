@@ -25,6 +25,7 @@
 * [18.Java多线程与并发教程](./18_java-concurrency/README.md)
 * [19.mybatis-foreach问题](./19_mybatis_foreach_item/README.md)
 * [20.Pauseless-GC算法](./20_Azul-The-Pauseless-GC-Algorithm/README.md)
+* [21.Spring MVC找不到xsd文件等错误的原因分析](./21_spring-beans-error/README.md)
 
 
 </details>
