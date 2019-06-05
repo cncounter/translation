@@ -480,9 +480,15 @@ The worse pause reported was 16ms and the average was 7ms.
 
 ### 7.3 At the Relocation Phase Start
 
+### 7.3 Relocation阶段开始时
+
 The mutators' root-sets need scrubbing when GC-protecting a page. There are two problems here: the TLB shoot-down isn't atomic and there are stale refs in the root-set. Since the TLB shoot-down is not atomic, for a brief period some mutators can be protected and not others. Unprotected mutators would continue to read and write the object directly, so protected mutators need to as well. However, reading and writing the protected object forces a GC-protection trap. Our current implementation stops all threads and performs a bulk TLB shoot-down and mutator root-set scrubbing under STW. This can be engineered to be concurrent and incremental in a straightforward manner.
 
+当GC保护某个页面时，业务线程的root-sets需要清理。 存在两个问题: TLB卸载不是原子操作，在root-sets中还有陈旧的引用。由于TLB卸载不是原子性的，在极短的时间内，可能有一部分业务线程受到保护，而另一部分不受保护。不受保护的业务线程将继续直接读写对象，因此受保护的业务线程也需要这样做。然而，读取和写入受保护对象会强制进入GC保护陷阱。我们当前的实现是停止所有线程，并在STW下执行批量TLB删除和线程的root-set清理。也可以直接将其设计为并发的，支持增量的方式。
+
 We could use a Checkpoint to update the TLBs and scrub the root-sets. To maintain concurrency until all threads have passed the relocation Checkpoint, the read barrier's TLB trap handler is modified to wait for the Checkpoint to complete before proceeding with relocation or remapping and propagating a corrected ref in the mutator. Mutator threads that actually access refs in protected pages will then “bunch up” at the Checkpoint with other threads continuing concurrent execution past the Checkpoint. This effect is mitigated by the fact that we preferentially relocate sparse pages.
+
+我们可以使用Checkpoint来更新TLB并擦除root-sets。 为了保持并发, 在所有线程都通过重定位检查点之前，读屏障的TLB陷阱处理程序需要等待检查点完成，然后继续重定位或重映射，并在mutator中传播更正后的引用。 实际访问受保护页面中的引用的Mutator线程将在检查点“聚集”，其他线程则通过检查点继续并发执行。 我们优先重定位稀疏页面，也就减轻了这种影响。
 
 The worse pause reported was 19ms and the average was 5ms.
 
@@ -490,7 +496,11 @@ The worse pause reported was 19ms and the average was 5ms.
 
 ### 7.4 Relocate doesn't run during Mark/Remap
 
+### 7.4 在 Mark/Remap 期间还不能执行 Relocate
+
 Right now we have not implemented a second set of mark bits to allow the Relocate phase to run concurrently with the next Mark/Remap phase [14]. This means we cannot free memory during the Mark/Remap phase. We have heuristics which predict how many pages the mutator will need during marking and we free that many (plus some pad) before marking begins. If we predict low, as can happen if the mutators suddenly “accelerate”, the mutators will block until marking is complete. Engineering the overlapped Relocate/Mark phases will be straightforward. Additionally, we currently do not add threads dynamically in response to mutator acceleration. Each phase completes with a number of threads decided on at the phase start.
+
+截止论文发表时，还未使用第二组标记位来实现，以允许Relocate阶段与下一次GC周期的Mark/Remap阶段(见[14])并发执行。 也就是说在具体实现中暂时还不能在Mark/Remap阶段释放内存。 我们使用启发式算法，来预测业务线程在标记期间需要多少页面，并在标记开始前释放足够的页面（加上一些填充）。 如果预测低了，碰到业务线程突然“加速”，则业务线程会阻塞、直到标记完成。 将 Relocate/Mark 阶段设计为并发执行非常简单。 此外，目前也不能在业务突然增加时动态添加GC线程。 每个阶段的线程数在该阶段开始时就确定了。
 
 ## 8. EXPERIMENTS
 
