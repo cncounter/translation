@@ -1,19 +1,7 @@
 # Spring MVC找不到xsd文件等错误的原因分析
 
 
-新搭建的框架, 访问SpringMVC的Controller时报 404 错误：
-
-```
-
-```
-
-经排查发现映射了 `/*`: 
-
-```
-<mvc:resources mapping="/*" location="/" cache-period="86400"/>
-```
-
-注释掉之后,重新启动, 报500错误:
+新搭建的框架, 访问SpringMVC的Controller时报500错误:
 
 ```
 HTTP Status 500 - Servlet.init() for servlet mvc-dispatcher threw exception
@@ -51,9 +39,9 @@ Caused by: java.net.ConnectException: Connection timed out: connect
 
 ```
 
-这就诡异了, 居然去线上下载了 xsd 文档。
+这就诡异了, 居然去网上下载了 xsd 文档。
 
-从idea中点击 XML 声明中的xsd, 看到的目录居然是 plugins 中的:
+在idea中点击 XML 声明中的xsd, 看到的目录是 plugins 中的:
 
 ```
 ... IntelliJ IDEA\plugins\Spring\lib\spring.jar!\resources\schemas\beans\spring-beans-4.1.xsd
@@ -99,7 +87,7 @@ spring-util-3.2.xsd
 spring-util-4.0.xsd
 ```
 
-可以看到, spring-beans-4.0.7 内置了最高 4.0版本的xsd。
+可以看到, spring-beans-4.0.7 内置的xsd最高为 4.0版本。
 
 再看 spring-beans-4.2.5 中附带的文件:
 
@@ -134,7 +122,7 @@ spring-util-4.2.xsd
 ```
 
 
-可以看到, spring-beans-4.2.5 内置了最高 4.2版本的xsd。
+可以看到, spring-beans-4.2.5 内置的xsd最高版本为 4.2。
 
 问题原因找到了, Spring的版本过低，升级 Spring依赖的版本号, 或者降低 xsd 版本号都可以。
 
