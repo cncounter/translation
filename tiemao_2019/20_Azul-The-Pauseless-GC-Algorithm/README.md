@@ -4,7 +4,7 @@
 
 > ##### 译者注: 
 > Pauseless GC Algorithm, 无停顿的垃圾收集算法; 算法本身是无STW停顿的，但兼容 HotSpot JVM 的实现有少量的STW停顿。
-> mutator, 修改器, 可理解为业务线程, 与GC线程区分。
+> mutator, 修改器，对内存读读写写的线程, 可理解为业务线程, 与GC线程做区分。
 
 ```
 作者: 
@@ -292,7 +292,7 @@ The Mark phase then marks all global refs, scans each threads' root-set, and fli
 
 After the root-sets are all marked we proceed with a parallel and concurrent marking phase [17]. Live refs are pulled from the worklists, their target objects marked live and their internal refs are recursively worked on. Note that the markers ignore the NMT bit, it is only used by the mutators. When an object is marked live, its size is added to the amount of live data in it's 1M page (only large objects are allowed to span a page boundary and they are handled separately, so the live data calculation is exact). This phase continues until the worklists run dry and all live objects have been marked.
 
-在root-set全部被标记后，继续进行并行的并发标记阶段(见[17])。从工作列表中提取存活的引用，将其引用的目标对象标记为存活状态，递归处理对象内部的引用。 请注意，标记线程会忽略NMT位， 仅由mutator线程使用。 当某个对象被标记为存活时， 它的大小将会加到所在1M页面的实时数据量上（只允许大对象跨越页面边界存在，并且单独处理，因此实时数据计算是精确的）。此阶段一直持续，直到工作清单处理完，所有存活对象都标记完成为止。
+在root-set全部被标记后，继续进行并行的并发标记阶段(见[17])。从工作列表中提取存活的引用，将其引用的目标对象标记为存活状态，递归处理对象内部的引用。 请注意，标记线程会忽略NMT位， 仅由mutator线程使用。 当某个对象被标记为存活时， 它的大小将会加到所在1M页面的存活数据量上（只允许大对象跨越页面边界存在，并且单独处理，因此存活数据计算是精确的）。此阶段一直持续，直到工作清单处理完，所有存活对象都标记完成为止。
 
 New objects created by concurrent mutators are allocated in pages which will not be relocated in this GC cycle, hence the state of their live bits is not consulted by the Relocate phase. All refs being stored into new objects (or any object for that matter) have either already been marked or are queued in the Mark phase's worklists. Hence the initial state of the live bit for new objects doesn't matter for the Mark phase.
 
@@ -512,19 +512,36 @@ Right now we have not implemented a second set of mark bits to allow the Relocat
 
 The Pauseless algorithm is intended to lower pause times in large transaction-oriented programs running business logic. There are a limited number of representative Java benchmarks for this class of program. The most realistic and widely accepted is SpecJApp-Server '02 and '04. This benchmark is extremely difficult to setup, tune, or get reliable numbers out of. It is also very hard to normalize across different hardware. The much more simplistic SpecJBB benchmark has very well-structured (and unrealistic!) object lifetimes and is ideally suited for a generational collector.
 
+Pauseless算法旨在降低面向事务的大型业务系统的暂停时间。这一类系统可以使用的Java基准工具很少。最真实和使用最广泛的是 SpecJApp-Server '02 和 '04。 但这个基准测试非常难以设置，调整或获得可靠的数字。 跨平台也非常困难。还有个更简单的 SpecJBB 基准测试，具有结构良好的对象生命周期（但并不符合实际应用场景），非常适合分代垃圾收集器。
+
 In an effort to have both a reliable, understandable benchmark and one that is more representative of transactional programs, we added a large object cache to the standard SpecJBB benchmark. This cache represents, e.g., a Java bean cache, or an HTML request cache. For each transaction, 400 bytes were added to the cache and the oldest cached object was freed. This level of extra objects is enough to easily defeat targeted tuning of generational collectors to JBB.
+
+为了获得可靠，可理解的基准测试，还要能代表实际的业务处理程序， 我们在标准的SpecJBB基准测试中添加了一个大对象缓存。该缓存可以表示，Java bean 缓存、或者HTML请求缓存。对于每个事务，将400字节添加到缓存中，并释放最老的缓存对象。 这种额外的对象足以轻易地阻止针对JBB的分代垃圾收集器的有针对性的调整。
 
 We also removed the forced System.gc() between runs and increased the JBB run times from 2 minutes to 20 minutes. <sup>3</sup>
 In the standard benchmark it's common to never need a full collection during the timed portion of the run. In practice, these large business applications must run in a steady-state mode without an untimed window every 2 minutes for a System.gc().
 
+我们还移除了各个run之间的 `System.gc()`，并将JBB的运行时间从2分钟增加到20分钟。<sup>3</sup>
+在标准基准测试中，通常在运行的特定期间并不需要完整的垃圾收集。但在生产环境中，这些大型业务系统必须平稳运行，不可能每隔2分钟就有一次GC窗口。
+
 > <sup>3</sup> Except for IBM's concurrent collector which was unable to run the full 20 minutes; we used a 10 minute run for it.
+
+> <sup>3</sup> 但IBM的并发收集器除外，它无法运行整整的20分钟; 我们只能将其运行时间缩短为10分钟。
 
 
 All runs were done with 8 warehouses, i.e. 8 concurrent threads doing benchmark work. We added “-Xmx1536m”, allowing a maximum heap size of 1.5G, which is about twice the average size of the live data. We added “-server” to the SUN JVMs. For the concurrent GC timing runs, we added whatever flag was appropriate to trigger using the concurrent collector for that JVM. For the IBM JVM, it was “-Xgcpolicy:optavgpause”. For the BEA JVM, it was “-Xgcprio:pausetime”. For the SUN JVM, it was “-XX:+UseConcMarkSweepGC -XX:+UseParNewGC”. For the Azul JVM, concurrent collection is the default and no flags are needed. For the non-concurrent GC timing runs we used the best parallel (throughput-oriented) collector available. This is the default for the IBM and BEA JVMs, for the SUN JVM we added “-XX:+UseParallelGC”. We used no other flags.
 
+所有的run都由8个仓库完成，即8个并发线程进行基准测试。我们添加了 “-Xmx1536m”，设置最大堆内存为1.5G，大约是平均存活数据量的两倍。我们在SUN JVM中添加了“-server”参数。对于并发GC的run，我们添加了适合该JVM的并发收集器触发标志。对于IBM JVM来说是“-Xgcpolicy:optavgpause”。对于BEA JVM，是“-Xgcprio:pausetime”。对于SUN JVM，是“-XX:+UseConcMarkSweepGC -XX:+UseParNewGC”。对于Azul JVM，并发收集是默认设置，不需要指定。对于非并发GC的run，我们使用（面向吞吐量的）最好的并行收集器。这是IBM和BEA JVM的默认设置，对于SUN JVM我们添加了“-XX:+UseParallelGC”。其他参数我们并没有指定。
+
+################################
+
 We ran the IBM and SUN JVMs on a 2-way 3.2Ghz hyperthreaded Xeon with 2G of physical memory, running a Red Hat Linux 2.6 kernel. Unfortunately, the BEA JVM didn't run on this version of Linux so it was run on a 1-way 2.4Ghz hyperthreaded P4 with 512M of physical memory running Windows 2000. The BEA JVM heap was limited to 425M to avoid paging. The simulated object cache added about 40M of long-lived live data per warehouse; 425M isn't a large enough heap to run with 8 warehouses. We limited the BEA JVM to 3 warehouses, keeping the proportion of heap devoted to long-lived data about the same. We also ran the SUN JVM in 64-bit mode on a 2-way 1.2Ghz US3 with 4G of physical memory running Solaris 9. We attempted to run on an older 24-CPU Sparc (450Mhz US2). Here we hoped the Sparc would use the spare CPUs to good effect. However, the single-threaded concurrent collector could not keep up with the mutators and the benchmark suffered numerous 12-second full-GC pauses. On the 2-CPU Sparc, a single concurrent collector thread could use up to half the total CPU resources in order to keep up. We report the superior 2-CPU Sparc scores, although we would like to have reported scores from another high-CPU count machine. The Azul JVM is a 64- bit JVM running on a 16-chip (384-CPU) Azul appliance with 128G of physical memory. As before, we limited heap size to 1.5G. Only 8 CPUs are used to run the actual benchmark, with a handful more running the Pauseless collection and doing background JIT compiles.
 
+我们在具有2G物理内存的2路3.2Ghz超线程Xeon上运行IBM和SUN JVM，运行Red Hat Linux 2.6内核。不幸的是，BEA JVM没有在这个版本的Linux上运行，因此它运行在单向2.4Ghz超线程P4上，512M物理内存运行Windows 2000. BEA JVM堆限制为425M以避免分页。模拟对象缓存为每个仓库增加了大约40M的长寿命存活数据; 425M不是一个足够大的堆来运行8个仓库。我们将BEA JVM限制为3个仓库，保持用于长期数据的堆的比例大致相同。我们还在2路1.2Ghz US3上以64位模式运行SUN JVM，其中4G物理内存运行Solaris 9.我们尝试在较旧的24-CPU Sparc（450Mhz US2）上运行。在这里，我们希望Sparc能够使用备用CPU来达到良好的效果。但是，单线程并发收集器无法跟上mutator并且基准测试遭受了大量的12秒全GC暂停。在2-CPU Sparc上，单个并发收集器线程最多可占用总CPU资源的一半，以便跟上。我们报告了优秀的2-CPU Sparc分数，尽管我们希望报告来自另一台高CPU数量机器的分数。 Azul JVM是一个运行在16芯片（384-CPU）Azul设备上的64位JVM，具有128G的物理内存。和以前一样，我们将堆大小限制为1.5G。只有8个CPU用于运行实际基准测试，少数运行Pauseless集合并进行后台JIT编译。
+
 We decided to NOT report SpecJBB score, which is reported in units of transactions/second, both because our run is not Speccompliant and because of the wide variation in hardware and JIT quality. Even on the same hardware, the JITs from different vendors produce code of substantially different quality. For the same 20 minute run, we saw JVMs execute between 15 million and 30 million transactions. While transaction throughput is an important metric, this paper is focused on removing the biggest reason for transaction time variability. We report transaction times instead.
+
+我们决定不报告SpecJBB得分，这是以事务/秒为单位报告的，因为我们的运行不是Speccompliant，而且因为硬件和JIT质量的差异很大。即使在相同的硬件上，来自不同供应商的JIT也会产生质量差异很大的代码。在相同的20分钟运行中，我们看到JVM执行了1500万到3000万次交易。虽然交易吞吐量是一个重要指标，但本文的重点是消除交易时间变化的最大原因。我们报告交易时间。
 
 ### 8.2 Transaction Times
 
