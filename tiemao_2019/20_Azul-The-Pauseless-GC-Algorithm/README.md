@@ -539,27 +539,43 @@ We ran the IBM and SUN JVMs on a 2-way 3.2Ghz hyperthreaded Xeon with 2G of phys
 
 We decided to NOT report SpecJBB score, which is reported in units of transactions/second, both because our run is not Speccompliant and because of the wide variation in hardware and JIT quality. Even on the same hardware, the JITs from different vendors produce code of substantially different quality. For the same 20 minute run, we saw JVMs execute between 15 million and 30 million transactions. While transaction throughput is an important metric, this paper is focused on removing the biggest reason for transaction time variability. We report transaction times instead.
 
-我们决定不报告SpecJBB得分，他的单位是 TPS（transactions/second），因为我们的运行不是Speccompliant，而且因为硬件和JIT的差异很大。即使在相同的硬件上，来自不同供应商的JIT也会生成质量差异很大的代码。 在相同的20分钟运行中，我们看到JVM执行了1500万到3000万次业务。虽然吞吐量是一个重要的指标，但本文的重点是消除各次请求之间的时间变化。所以报告了交易时间。
+我们决定不报告SpecJBB得分，他的单位是 TPS（transactions/second），因为我们的运行不是Speccompliant，而且因为硬件和JIT的差异很大。即使在相同的硬件上，来自不同供应商的JIT也会生成质量差异很大的代码。 在相同的20分钟运行中，我们看到JVM执行了1500万到3000万次业务。虽然吞吐量是一个重要的指标，但本文的重点是消除各次请求之间的时间变化。所以报告了业务响应时间。
 
 ### 8.2 Transaction Times
 
-### 8.2 执行业务
+### 8.2 业务响应时间
 
 We measured both transaction times and GC pause times reported with “-verbose:gc”. We feel that transaction times represent a more realistic measure than direct GC pauses as they more closely correspond to “user wait time”.
 
+使用 “-verbose:gc” 选项来测量业务响应时间和GC暂停时间。 我们认为业务响应时间比直接的GC暂停更符合实际情况，因为更接近于“用户等待时间”。
+
 Transaction times were gathered into buckets by duration, building a histogram. Duration was measured with Java's current- TimeMillis() and so is limited to millisecond resolution. Most transactions take 0 or 1 milliseconds, so we did not gather accurate times for these fast transactions. However, we are more interested in the slow transactions. All the collectors except Pauseless had a significant fraction of transactions take 100- 300ms (100 times slower than the fast transactions), with spikes to 1-4 seconds. We kept per-millisecond buckets from 0ms to 31ms. After that we grew the buckets by powers-of-2 with halves: 32-47ms, 48-63ms, 64-95ms, 96-127ms, and so on up to 16sec. This allowed us to compute the bucket index with a few shifts. Buckets were replicated per thread to avoid coherency costs then totaled together at the end of the run.
+
+业务响应时间按持续时间收集到桶中，构建直方图。使用Java的 `currentTimeMillis()` 方法测量持续时间，因此精度也就限制为毫秒级。大多数业务只需要0-1毫秒，因此我们没有收集这些快速事务的准确时间。但是，我们对慢响应的业务更感兴趣。除Pauseless之外的所有垃圾收集器都有相当一部分的业务需要耗费100-300ms（比快速的业务要慢100倍以上），峰值为1-4秒。我们将每毫秒的桶保持在0ms-31ms之间。在那之后，我们用2的2次幂增加了桶：32-47ms，48-63ms，64-95ms，96-127ms，依此类推，最长16秒。这允许我们用几个班次来计算桶索引。每个线程复制存储桶以避免一致性开销，然后在运行结束时汇总。
 
 A transaction that reports as taking 0ms clearly takes some finite time. The 0ms bucket's average transaction time is assumed to be 0.33ms, and the 1ms bucket's average transaction time is assumed to be 1.33ms. This is the largest source of measurement error we have. Almost no transactions landed in the 3ms to 30ms buckets, so a measurement error of up to 1ms in those buckets will not alter the data in any substantial way.
 
+报告为0ms的业务显然也是需要一定处理时间的。假设0ms桶的平均事务时间为0.33ms，假设1ms桶的平均事务时间为1.33ms。这是我们测量误差的最大来源。几乎没有任何事务落在3ms-30ms的桶中，因此这些桶中的测量误差即便高达1ms也不会实质性地改变数据。
+
 For all other buckets we simply totaled time for that bucket. We summed the total transaction times (time per bucket by transactions in the bucket), and report the percentage of total transaction time spent on transactions of each duration.
+
+对于其他桶，我们简单地汇总了每个桶的时间总和。（桶中每个事务的总和），并报告了每个时间段的事务所花费的总响应时间的百分比。
 
 Figure 6 shows how many transactions the various JVMs kept in the 0ms and 1ms range (0ms is the low bar, 1ms is the middle bar). The Pauseless algorithm keeps 87% (99.5%) of total transaction time spent in transactions of 1ms (2ms) or less; the other JVMs vary between 80% down to 50%. The concurrent version from each vendor faired slightly worse than the parallel collectors, showing a slightly higher percentage of total time spent in slow transactions.
 
+图6显示了在0ms和1ms范围内各种JVM跑出的事务数量（0ms是下方的条，1ms是中间的条）。 Pauseless算法在1ms（2ms）或更短的时间内完成事务的比例高达87％（99.5％）;其他JVM在80％到50％之间变化。每个厂商的并发版本都比并行版本略差一些，显示在图中就是慢速事务所占的比例略高。
+
 Figure 7 shows cumulative transaction times (not wall-clock time, which was 20 minutes) vs. transaction duration. Times are cumulative, reaching 1.00 (100% of total transaction time) at the top edge. Transaction duration runs across the bottom in a log scale. Lines that approach 1.00 quicker are better, representing a greater percentage of processing time spent in fast transactions.
+
+图7显示了累计的业务处理时间（不是挂钟时间，即20分钟）与交易持续时间的关系。时间是累积的，在最高达到1.00（总业务响应时间的100％）。交易持续时间以对数比例跨越底部。越快接近1.00的越好，表示在快速交易中花费的时间比例更大。
 
 We can see a couple of trends in this chart. Pauseless again does quite well, with essential 100% of time spent in fast transactions and a worst-case transaction time of 26 milliseconds. The other JVMs are roughly grouped into pairs with the parallel throughput collector line being slightly higher than the concurrent collector line for most of the chart. The lines cross as we near 100% of time and the slowest transactions; the concurrent collectors generally have smaller worst-cast times than the throughput collectors.
 
+我们可以在此图表中看到几个趋势。 Pauseless 表现相当不错，其中100％的时间花在快速交易上，最坏情况下的业务响应时间为26毫秒。其他JVM大致成对分组，大多数图表中，并行收集器的吞吐量略高于并发收集器。当接近100％的时间和最慢的交易时，这些线发生交叉; 并发收集器在最坏情况下通常比吞吐量收集器的暂停时间要小一些。
+
 Table 1 shows the worse-case transaction times. The Pauseless algorithm's worse-case transaction time of 26ms is over 45 times better than the next JVM, BEA's parallel collector. Average transaction times are remarkable similar given the wide variation in hardware used.
+
+表1显示了最坏情况下的业务响应时间。 Pauseless算法在最差情况下消耗26ms，比下一款JVM（BEA的并行收集器）好了45倍。考虑到所用硬件并不一样，平均业务响应时间更能代表真实情况。
 
 ![](06_01_Worst-case_and_average_times.jpg)
 
