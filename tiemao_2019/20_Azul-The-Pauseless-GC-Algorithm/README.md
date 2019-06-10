@@ -614,18 +614,31 @@ Table 1 shows the worse-case transaction times. The Pauseless algorithm's worse-
 
 We collected GC pause times reported with “-verbose:gc”. We summed all reported times and present a histogram of cumulative pause times vs. pause duration. Figure 8 shows the reported pauses. Most of the concurrent collectors consistently report pause times in the 40-50ms range; IBM's concurrent collector has 150ms as it's common (mode) pause time. As expected, the parallel collectors all do worse with the bulk of time spent in pauses ranging from 150ms to several seconds.
 
+我们使用“-verbose：gc”来收集GC暂停时间的报告。 将所有暂停时间相加，汇总为一张 累积暂停时间VS.暂停持续时间的直方图。 图8显示了暂停报告。 大多数并发收集器的暂停时间一直在40-50ms范围内; IBM的并发收集器因为常见（模式）暂停时间而达到150毫秒左右。 正如预期的那样，并行收集器在停顿时间方面表现很糟糕，从大于150ms直到几秒之间都有。
+
 Table 1 also shows the ratio of worst-case transaction time and worst-case reported pause times. Note that JBB transactions are highly regular, doing a fixed amount of work per transaction. Changes in transaction time can be directly attributed to GC.<sup>4</sup> 
 Several of the worse-case transactions are a full second longer than the worse-case pauses. We have some guesses as to why this is so:
 
-> <sup>4</sup> We tested; all transactions are fast until the heap runs out. For
-the 64-bit JVMs we were able to test with a 64G heap.
+表1还显示了最坏情况交易时间与最坏情况暂停时间的比率。 请注意，JBB事务是非常正规的，每个事务都执行固定数量的工作。 交易时间的变化可以直接归因于GC。<sup>4</sup>
+某些较糟糕的交易比最坏情况的暂停时间长一整秒。 我们有一些猜测，为什么会这样：
+
+> <sup>4</sup> We tested; all transactions are fast until the heap runs out. For the 64-bit JVMs we were able to test with a 64G heap.
+
+> <sup>4</sup> 我们测试了; 在堆耗尽之前，所有事务都很快。 64位JVM支持使用64G的堆内存来进行测试。
 
 It is possible that the concurrent collectors did not keep up with the allocation rate, stalling mutators until they caught up. Unfortunately, this information was not obvious from the “-verbose: gc” output. Also, during some phases of some concurrent GCs, the mutators pay a heavy cost while making forward progress. This amounts to an unreported pause smeared out in time. Sometimes the GC pauses come in rapid succession so that the same transaction will get paused several times. Perhaps the underlying OS timesliced the 8 mutator threads very poorly across the 4 hyper-threaded CPUs.
+
+有可能是并发收集器的速度跟不上分配速度，拖慢了业务线程。不幸的是，这个信息在“-verbose: gc”的输出中并不明显。此外，在某些并发GC的部分阶段中，业务线程在并发执行时会付出沉重的代价。这相当于有一部分未报告的暂停时间被涂抹了。有时会快速连续地触发GC暂停，因此同一个事务可能会被暂停好几次。还有可能是底层只有4个超线程CPU内核，操作系统对8个业务线程分配了非常短的时间片。
 
 In any case, **reported pause times can be highly misleading**. 
 The concurrent collectors other than Pauseless under-report their effects by 2x to 6x! The parallel collectors also under- report, but only by 30% to 100%. Based on this data, we encourage the GC research community to test the end-to-end effects of GC algorithms carefully.
 
+无论如何，**暂停时间报告可能会产生很大的误导**。
+除了Pauseless之外的其他并发收集器可能会少报告2x到6x倍的影响！并行收集者也会少报告，但只有30％到100％。基于这些数据，我们鼓励GC研究团队仔细测试GC算法的端到端效果。
+
 We also attempted to gather Minimum Mutator Utilization figures [12], especially to track the “trap storm” effects. MMU reports the smallest amount of time available to the mutators in a continuous rolling interval. Since our largest pause was over 20ms there exists a 20ms interval where the mutators make no progress, so MMU@20ms is 0. Preliminary figures are in Table 2, and represent MMU figures for the entire 20 minute run worst case across all threads. Looking at the MMU@50ms figure, we see about 40ms of pause out of 50ms. We know that about 20ms of that is reported as an STW pause, so we assume the remaining 20ms is due to the trap storm.
+
+我们还尝试收集 Minimum Mutator Utilization 数据（见[12]），特别是追踪“陷阱风暴”效应。 MMU报告在连续滚动间隔中业务线程可用的最小时间量。由于我们的最大停顿超过20ms，因此存在20ms的间隔，其中业务线程没有进展，因此 MMU@20ms 值为0. 初步数字在表2中，并且MMU数值代表所有线程在整个20分钟运行中的最坏情况。 再看 MMU@50ms 数值，可以发现在50ms内大约有40ms的暂停。我们知道其中大约 20ms 被报告为STW暂停，所以我们假定剩下的20ms是由陷阱风暴引起的。
 
 ![](08_05_Minimum_Mutator_Utilization.jpg)
 
