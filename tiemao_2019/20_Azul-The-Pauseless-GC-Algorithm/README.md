@@ -1,26 +1,23 @@
 # The Pauseless GC Algorithm
 
-# Pauseless GC 算法
+# 无停顿的垃圾收集算法
 
 > ##### 译者注: 
-> Pauseless GC Algorithm, 无停顿的垃圾收集算法; 算法本身是无STW停顿的，但兼容 HotSpot JVM 的实现有少量的STW停顿。
-> mutator, 修改器，对内存读读写写的线程, 可理解为业务线程, 与GC线程做区分。
+> Pauseless GC Algorithm, 无停顿的垃圾收集算法; 算法本身是无STW停顿的，但兼容 HotSpot JVM 的实现还有少量的STW停顿。
+> mutator, 修改器，对内存进行读写的线程, 可理解为业务线程, 与GC线程做区分。
 
 ```
 作者: 
-Cliff Click
-Gil Tene 
-Michael Wolf
+Cliff Click ;  Gil Tene ; Michael Wolf ; {cliffc,gil,wolf}@azulsystems.com
 
 Azul Systems, Inc.
 1600 Plymouth Street
 Mountain View, CA 94043
-{cliffc,gil,wolf}@azulsystems.com
 ```
 
 > Permission to make digital or hard copies of all or part of this work for personal or classroom use is granted without fee provided that copies are not made or distributed for profit or commercial advantage and that copies bear this notice and the full citation on the first page. To copy otherwise, or republish, to post on servers or to redistribute to lists, requires prior specific permission and/or a fee.
 
-> 以学习和研究为目的, 免费提供给个人或者教学使用，但不得用于谋取利益或商业利益，且需要在第一页展示本声明。以其他方式复制、或者重新发布、扩散，则需事先获得许可和/或付费。
+> 以个人学习或教学研究为目的, 可以免费使用本论文，但不得用于谋取利益或商业利益。 需要在第一页中展示本声明。以其他方式拷贝、发布、传播本文档，则需要获得许可/付费。
 
 > VEE’05, June 11–12, 2005, Chicago, Illinois, USA.
 
@@ -735,7 +732,7 @@ On a final note, we were quite surprised at the difference between reported paus
 
 - [31] Wilson, P., Johnstone, M., Neely, M., Boles, D., Dynamic Storage Allocation: A Survey and Critical Review. In Proceedings of the International Workshop on Memory Management (IWMM 95), 1995 
 
-> 相关论文请搜索 [`Azul-The-Pauseless-GC-Algorithm`]
+> 相关论文请搜索 [`Azul-The-Pauseless-GC-Algorithm`](http://yuledanao.com/dl/Azul-The-Pauseless-GC-Algorithm.pdf)
 
 翻译时间: 2019年05月06日
 
