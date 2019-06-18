@@ -99,15 +99,17 @@ Azul Systems 公司构建了一套专门定制的系统(包括CPU、芯片组、主板以及操作系统)，用
 
 The idea of garbage collection has been around for a long time [22][13][16][11]. We do not attempt to summarize all relevant GC work and instead we refer the reader to several GC surveys [30][31], and highlight a few papers.
 
-垃圾收集这种思想已经存在很长一段时间了(见[22][13][16][11]). 我们不是要汇总所有的相关GC理论, 只是参考其中的一部分GC调查(见 [30][31]),并着重强调其中的一部分论文。
+垃圾收集这种想法已经存很长的时间了(见[22][13][16][11]). 本文并不是汇总所有的GC理论, 只是参考其中的部分GC研究(见[30][31]),并着重强调一部分重要的内容。
 
 GC pauses and their unpredictable impact on mutators was the driving force behind the early work on concurrent collectors [26][5]. The expectation of the time was that special GC hardware would shortly be feasible and commonplace. This early work required such extensive fine-grained synchronization that it would only be feasible on dedicated hardware. GC hardware continues to be proposed to this day [23][29][24][18][20].
 
-GC暂停及其不可预知性, 对业务线程的影响推动了早期并发GC的发展(见[26][5]). 使用特殊的硬件来支撑可预期的GC时间, 被证明是可行的、而且是很常见的解决方案. 这些早期的作品需要大量细粒度的同步, 所以需要专门的硬件支持。这时候GC硬件反复被提出(见[23][29][24][18][20])。
+GC暂停及其对业务性能的影响具有不可预测性, 推动了并发GC的早期发展(见[26][5]). 通过特殊的硬件设备来支撑可预期的短暂的GC时间, 被证明是可行的、是很普遍的解决方案.  这些早期产品使用了很多细粒度的同步, 所以要有专门的硬件支持。这时候GC专用的硬件持续被讨论(见[23][29][24][18][20])。
 
 The idea of using common page-protection hardware to support GC has also been around awhile [2]. Both Appel [2][3] and Ossia [25] protect pages that may contain objects with non-forwarded pointers (initially all pages). Accessing a protected page causes an OS trap which the GC handles by forwarding all pointers on that page, then clearing the page protection. Appel does the forwarding in kernel-mode, Ossia maps the physical memory with a second unprotected virtual address for use by GC. Our Pauseless collector protects pages that contain objects being moved, instead of protecting pages that contain pointers to moved objects. This is a much smaller page set, and the pages can be incrementally protected. Our read-barrier allows us to intercept and correct individual stale references, and avoids blocking the mutator to fix up entire pages. We also support a special GC protection mode to allow fast, non-kernel-mode trap handlers that can access protected pages.
 
-使用通用的页保护设备来支持GC的想法也在一段时间内提出(见[2]).Appel公司(见[2][3])和Ossia公司(见[25])通过非前向指针()来保护可能包含对象的内存页面(初始化所有页面). 访问一个受保护的页面,会导致操作系统限制GC处理,该页面上的所有转发指针, 然后去除页面保护. Appel在内核模式转发, Ossia 将物理内存映射到一个供GC使用的不受保护的虚拟地址. 而我们实现的无停顿垃圾收集器会保护包含需要移动对象的页面,而不是去保护包含指针移动对象的页面. 这样的话 page set 就会小得多，而且页面可以逐步得到保护. 使用读屏障允许我们拦截和纠正个别过时引用, 并避免阻塞业务线程来修复整个页面. 我们也支持特殊的GC保护模式, 允许快速的、非内核模式的陷阱处理器来访问受保护的页面。
+使用通用页保护设备来支持GC的想法也在这时候提出(见[2]). Appel公司(见[2][3])和Ossia公司(见[25])使用非前向指针(non-forwarded pointers)来保护可能包含对象的内存页(初始化所有页面). 如果访问一个受保护的页面, 则会让操作系统使用陷阱来处理GC指针, 将该页面上的所有指针进行转发, 然后再去除页面保护.  Appel公司在内核模式执行指针转发, Ossia公司则是将物理内存映射到一个供GC使用的不受保护的虚拟地址.  而我们公司实现的Pauseless垃圾收集器会保护正在移动对象的页面,而不是去保护指向被移动对象的那些页面. 这种处理方式下 page set 会小得多，而且各个页面可以增量地受到保护. 使用读屏障可以让我们拦截并纠正极个别的过期引用, 避免修复整个页面，进而阻塞业务线程. 我们也支持一个特殊的GC保护模式, 在业务线程访问受保护的页面时, 以非内核模式调用快速陷阱处理程序。
+
+-----------
 
 The idea of an incremental collector (via reference counting) is not new either [15]. Incremental collection seeks to reduce pause time by spreading the collection work out in time, finely interleaving GC work with mutator work. Because reference counting is expensive, and indeed all barriers (reference counting typically involves a write barrier) impose some mutator cost there is considerable research in reducing barrier costs [6][21][8] [9]. Having the read-barrier implemented in hardware greatly reduces costs. In our case the typical cost is roughly that of a single cycle ALU instruction.
 
