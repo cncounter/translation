@@ -125,7 +125,7 @@ The msa option only applies to Solaris and causes the Solaris Micro State Accoun
 
 The interval, msa, and force options are new HPROF options in J2SE 1.5.
 
-`interval`, `msa,` 以及 `force` 都是在 J2SE 1.5 后增加的HPROF选项。
+`interval`, `msa,` 以及 `force` 都是 J2SE 1.5 后增加的HPROF选项。
 
 
 ## Example Usage
@@ -135,12 +135,12 @@ The interval, msa, and force options are new HPROF options in J2SE 1.5.
 
 We could create an application, but let's instead pick on an existing Java application in the J2SE, `javac`. With `javac` I need to pass Java options in with -J. If you were running Java directly, you would not use the -J prefix.
 
-可以创建新程序, 当然也可以直接使用Java平台现有的程序: `javac`。 通过  `-J` 选项将某些标识传给运行 `javac` 的底层JVM。 如果运行普通的Java程序, 则不需要 `-J ` 前缀。
+可以创建新程序, 也可以直接使用Java平台现有的程序: 如 `javac`。 通过  `-J` 选项可以将某些标识传给运行 `javac` 程序的底层JVM。 如果运行普通的Java应用, 则不需要 `-J ` 前缀。
 
 
 There is also a way to pass in J2SE 5.0 Java options with an environment variable JAVA_TOOL_OPTIONS, but with all environment variables you need to be careful that you don't impact more VMs than you intend.
 
-J2SE 5.0 中还有一种方法，即设置环境变量 `JAVA_TOOL_OPTIONS`, 但最好小心一点、不要设置全局环境变量, 以免影响到其他 JVM/实例。
+J2SE 5.0 中还可以设置环境变量 `JAVA_TOOL_OPTIONS`, 但要小心，不要设置全局环境变量, 以免影响其他 JVM/实例。
 
 
 ## Heap Allocation Profiles (heap=sites)
@@ -175,12 +175,12 @@ SITES BEGIN (ordered by live bytes) Fri Oct 22 11:52:24 2004
 
 A crucial piece of information in heap profile is the amount of allocation that occurs in various parts of the program. The `SITES` record above tells us that 44.73% of the total space was allocated for `java.util.zip.ZipEntry` objects at a particular SITE (a unique stack trace of a fixed depth). Note that the amount of live data matches the total allocated numbers, which means that a garbage collection may have happened shortly before HPROF iterated over the heap. Normally the amount of live data will be less than or equal to the total allocation that has occurred at a given site.
 
-heap profile 中的关键信息是 allocation 的总量。上面的文件中, `SITES` 记录显示有  44.73%  的总空间是在一个特定的位置(SITE, 一个唯一的固定深度的调用栈)为 `java.util.zip.ZipEntry` 对象分配的。请注意, 上面列出的所有分配总量, 等于存活数据的总量, 也就是说在 HPROF 遍历整个 heap 之前发生了一次GC. 通常来说, 实时数据量小于或等于在一个给定的site所分配的总量。
+heap profile 文件中最关键的信息是 allocation 总量。在上面的文件中, `SITES` 记录展示出有  44.73%  的总空间是在一个特定的位置(SITE, 唯一的固定深度的调用栈)分配的 `java.util.zip.ZipEntry` 对象。请注意, 上面列出的所有分配总量, 等于存活数据的总量, 也就是说在 HPROF 遍历整个堆之前可能发生了一次GC. 通常来说, 存活数据量要小于等于在某个给定site所分配的内存总量。
 
 
 A good way to relate allocation sites to the source code is to record the dynamic stack traces that led to the heap allocation. Following is another part of the `java.hprof.txt` file that illustrates the stack traces referred to by the top two allocation sites in the output shown above.
 
-将 allocation site 与源代码联系起来的方法, 是将导致堆分配的动态调用栈(dynamic stack traces) 记下来。下面是 `java.hprof.txt` 的另一部分, 展示了最靠前的两个分配点的 stack traces。
+将 allocation site 与源代码关联起来的一种方法, 是记录导致堆分配的动态调用栈(dynamic stack traces) 。下面是 `java.hprof.txt` 文件的另一部分, 展示了最前面两个分配点的 stack traces。
 
 
 
@@ -201,32 +201,32 @@ TRACE 302033:
 
 Each frame in the stack trace contains class name, method name, source file name, and the line number. The user can set the maximum number of frames collected by the HPROF agent (depth option). The default depth is 4. Stack traces reveal not only which methods performed heap allocation, but also which methods were ultimately responsible for making calls that resulted in memory allocation.
 
-调用栈中的每一帧(frame)都包含类名,方法名,源文件名以及行号。用户可以通过 depth 选项设置HPROF收集的最大帧数. 默认的 `depth=4`。栈跟踪不仅显示哪些方法执行了堆分配, 以及最初是由哪些方法在调用。
+调用栈中的每一帧(frame)都包含了 类名,方法名,源文件名称和行号。我们可以指定 `depth` 选项来设置HPROF采集的最大帧数. 默认 `depth=4`。Stack trace不仅展示哪个方法执行了堆内存分配, 还展示这个方法的调用链。
 
 
 The above stack traces are shared with all the running threads, if it was necessary to separate the stack traces of different threads the thread option would need to be used. This will increase the space used and the number of stack traces in the output file.
 
-上面的 stack traces 是由所有正在运行的线程所共享的, 如果要将不同线程的 stack traces 分别记录, 可以使用 `thread=y` 选项. 但这会输出文件的大小,以及 stack traces 的数量。
+上面的 stack traces 由所有正在运行的线程共用, 如果要将每个线程的 stack traces 分别记录, 请使用 `thread=y` 选项. 但这样会增加输出文件的大小, 以及 stack traces 的记录数。
 
 
 If the depth of the stacks wasn't deep enough, the depth option could be used to increase the stack depth. Currently, recursion is not treated specially, so getting the caller information on very deep recursion stacks can be difficult. The larger the depth, the more space is needed to save the stack traces.
 
-如果显示的栈深度不够, 可以用 `depth` 选项来增加调用栈的深度. 目前, 递归不会被特殊对待,所以很深的递归调用栈信息,那就很难展示了. 深度越大, 就需要越多的空间来保存stack traces。
+如果显示的栈深度不够, 请使用 `depth` 选项来增加调用栈的深度. 目前, 递归不会被特殊对待,所以如果有很深的递归调用,那就很难展示调用栈信息了.  设置的栈深度越大, 需要的空间也就越大。
 
 
 So what does the above information tell us? For `javac`, having lots of `ZipEntry` and `List` class instances makes sense, so other than the fact that `javac` relies heavily on these classes there isn't much else to say. Normally you want to watch out for large accumulations of objects, allocated at the same location, that seem excessive.
 
-以上片段展示了哪些信息? 对于 `javac` 的操作, 其中有很多 `ZipEntry` 和 `List` 类实例被创建了, 简单点说, `javac` 严重依赖于这些类。如果看到有大量的对象堆积, 并且在同一位置分配的, 那很可能就是过度分配了。
+从以上片段可以提取哪些信息? 可以看到, `javac` 工具, 创建了大量的 `ZipEntry` 和 `List` 类对象, 直观点说, `javac` 严重依赖于这些类。一般来说，需要重点关注在某个位置分配的大量对象,  很可能就是过度分配的特征。
 
 
 Don't expect the above information to reproduce on identical runs with applications that are highly multi-threaded.
 
-在多线程的应用程序中, 以上信息会很难再现。
+在多线程的复杂系统中, 这些信息会很难再现。
 
 
 This option can impact the application performance due to the data gathering (stack traces) on object allocation and garbage collection.
 
-这个选项会显著影响应用程序的性能, 因为在对象分配和垃圾收集时需要采集数据(stack traces)。
+这个选项会明显影响应用程序的性能, 因为在分配对象和垃圾收集时需要采集 stack traces 信息。
 
 
 ## Heap Dump (heap=dump)
@@ -489,3 +489,6 @@ Brave C/JNI programmers could even take the source to HPROF (it's available in t
 
 原文链接: <http://docs.oracle.com/javase/8/docs/technotes/samples/hprof.html>
 
+
+
+<java.lang.NoClassDefFoundError: java/lang/invoke/LambdaForm$MH>
