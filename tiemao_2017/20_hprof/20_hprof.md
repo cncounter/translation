@@ -2,59 +2,56 @@
 
 # 性能分析工具-HPROF简介
 
-
 The Java 2 Platform Standard Edition (J2SE) has always provided a simple command line profiling tool called HPROF for heap and cpu profiling. HPROF is actually a JVM native agent library which is dynamically loaded through a command line option, at JVM startup, and becomes part of the JVM process. By supplying HPROF options at startup, users can request various types of heap and/or cpu profiling features from HPROF. The data generated can be in textual or binary format, and can be used to track down and isolate performance problems involving memory usage and inefficient code. The binary format file from HPROF can be used with tools such as [jhat](https://hat.dev.java.net/) to browse the allocated objects in the heap.
 
-HPROF是Java 平台提供的一款命令行分析工具 , 用来分析堆内存分配情况以及CPU抽样.  本质是一个JVM native agent 库, 在JVM启动时通过命令行选项进行加载,  然后就附加到JVM进程中. 有多个选项可以控制 HPROF 的功能特征. 其生成的数据可能是文本格式，也可能是二进制格式的, 这些生成的数据可以用来跟踪内存使用量, 以及分离出造成性能问题的低效代码.  HPROF生成的二进制文件可以用其他工具来解析, 例如用 [jhat](https://hat.dev.java.net/) 来查看堆内存中分配的对象。
+JDK始终提供一款名为`HPROF`的简单命令行分析工具，用于堆内存和cpu分析。 HPROF实际上是JVM中的一个本地agent，通过命令行参数可以在JVM启动时动态加载，并成为JVM进程的一部分。 
+
+通过在启动时指定不同的HPROF选项，可以让HPROF执行各种类型的堆/cpu分析功能。 生成的数据可能是文本或二进制格式，用于跟踪和鉴别到底是内存问题还是低效代码的性能问题。 HPROF生成的二进制文件可以用 [jhat](https://hat.dev.java.net/) 等工具来查看堆内存中的对象。
 
 
 In J2SE Version 5.0, HPROF has been implemented on the new Java Virtual Machine Tool Interface ([JVM TI](http://docs.oracle.com/javase/8/docs/technotes/tools/unix/jhat.html)).
 
-从 J2SE 5.0开始, HPROF 已经的实现采用了新的 Java Virtual Machine Tool Interface ([JVM TI](http://docs.oracle.com/javase/8/docs/technotes/tools/unix/jhat.html)) 。
+从 J2SE 5.0开始, HPROF 已经实现了新的 Java Virtual Machine Tool Interface ([JVM TI](http://docs.oracle.com/javase/8/docs/technotes/tools/unix/jhat.html)) 。
 
 
 ## HPROF Startup
 
 ## 启动 HPROF
 
-
 HPROF is capable of presenting CPU usage, heap allocation statistics, and monitor contention profiles. In addition, it can also report complete heap dumps and states of all the monitors and threads in the Java virtual machine. HPROF can be invoked by:
 
+HPROF能够提供的数据包括:  CPU使用率，堆内存分配情况统计，以及监视锁的争用情况分析。 此外，还可以执行完整的堆转储，列出JVM中所有的 monitor 和 thread。调用HPROF的方法如下:
 
-HPROF能够提供的数据包括: CPU使用情况统计, 堆分配情况统计, 以及资源争用的监控. 此外,还可以执行完整的堆转储, 列出JVM中所有的 monitor 和 thread。 调用HPROF的方法如下:
-
-
-
-```
-java -agentlib:hprof[=options] ToBeProfiledClass
+```shell
+java -agentlib:hprof[=options] XXXXXXXXClass
 ```
 
 -OR-
 
-```
-java -Xrunhprof[:options] ToBeProfiledClass
+```shell
+java -Xrunhprof[:options] XXXXXXXXClass
 ```
 
 Depending on the type of profiling requested, HPROF instructs the virtual machine to send it the relevant JVM TI events and processes the event data into profiling information. For example, the following command obtains the heap allocation profile:
 
-根据指定的各种分析类型, HPROF 让虚拟机发送不同的 JVM TI 事件, 并处理事件消息, 形成 profiling 信息. 例如,以下命令分析的是堆分配信息:
+根据参数指定的分析类型，HPROF 让虚拟机向其发送相关的JVM TI事件，并将事件数据处理为 profiling 信息。 例如，以下命令是进行堆分配分析：
 
 
-```
+```shell
 java -agentlib:hprof=heap=sites XXXXXXXXClass
 ```
 
 Following is the complete list of options that can be passed to HPROF:
 
-使用以下命令查看 HPROF 支持的所有配置项:
+使用 help 参数可以查看 HPROF 支持的所有配置项:
 
-```
+```shell
 java -agentlib:hprof=help
 ```
 
-可以看到很多帮助信息( **多个option之间使用逗号分隔**):
+可以看到有很多帮助信息( **多个option之间使用逗号分隔**):
 
-```
+```shell
      HPROF: Heap and CPU Profiling Agent (JVM TI Demonstration Code)
 
 hprof usage: java -agentlib:hprof=[help]|[<option>=<value>, ...]
@@ -63,19 +60,19 @@ Option名称/值           说明                            默认值
 ---------------------  -----------                    -------
 heap=dump|sites|all    堆内存分析(profiling)           all
 cpu=samples|times|old  CPU 使用情况                    off
-monitor=y|n            监视锁(monitor)争用情况         n
-format=a|b             输出文本/a;还是二进制/b;         a
-file=<file>            输出到文件                      java.hprof[.txt]
-net=<host>:<port>      send data over a socket        off
+monitor=y|n            监视锁(monitor)争用情况          n
+format=a|b             输出文本/a;还是二进制/b;          a
+file=<file>            指定输出文件                    java.hprof[.txt]
+net=<host>:<port>      将输出数据通过socket发送         off
 depth=<size>           打印的调用栈深度                 4
 interval=<ms>          抽样周期(单位 ms)               10
-cutoff=<value>         output cutoff point            0.0001
-lineno=y|n             显示跟踪行号?                   y
-thread=y|n             thread in traces?              n
-doe=y|n                退出时转储(dump on exit)?       y
-msa=y|n                Solaris micro state accounting n
-force=y|n              force output to <file>         y
-verbose=y|n            print messages about dumps     y
+cutoff=<value>         输出截断点                      0.0001
+lineno=y|n             traces信息显示行号?             y
+thread=y|n             traces信息显示thread            n
+doe=y|n                退出时转储(dump on exit)?        y
+msa=y|n                Solaris micro state accounting  n
+force=y|n              是否强制输出到指定的文件 <file>      y
+verbose=y|n            是否打印关于dumps的消息             y
 
 Obsolete Options
 ----------------
@@ -106,30 +103,29 @@ Warnings
     in a future release.
 ```
 
-
 By default, heap profiling information (sites and dump) is written out to `java.hprof.txt` (ascii). The output in most cases will contain ID's for traces, threads,and objects. Each type of ID will typically start with a different number than the other ID's. For example, traces might start with 300000.
 
-默认情况下,堆分析信息(sites and dump)被写入到 `java.hprof.txt` 文件中(采用ascii编码)。在大多数情况下, 输出的信息都会包括这些ID: traces ID, threads ID, 以及 objects ID。每种类型的ID 和其他类型都很容易区分. 例如, traces ID 可能从 300000 开始。
+默认情况下，堆分析信息（`sites` 和 `dump`）将被写入到 `java.hprof.txt` 文件中(采用ascii编码)。 在大多数情况下，输出内容包含 traces ID, threads ID, 以及 objects ID。 每种ID的起始值一般不同。 例如，traces 可能以300000开始。
 
 
 Normally the default (`force=y`) will clobber any existing information in the output file, so if you have multiple VMs running with HPROF enabled, you should use `force=n`, which will append additional characters to the output filename as needed.
 
-默认选项 (`force=y`) 将擦写现有输出文件中的所有内容, 所以如果有多个VM启用了HPROF, 应该使用 `force=n` 选项, 这会根据需要在输出文件名上增加额外的字符。
+默认选项 (`force=y`) 会清除输出文件中的所有内容,  所以如果有多个VM启用了HPROF, 应该使用 `force=n` 选项, 在需要时会将输出文件名加上额外的字符。
 
 
 The interval option only applies to `cpu=samples` and controls the time that the sampling thread sleeps between samples of the thread stacks.
 
-interval 选项只适用于 `cpu=samples` 的情况, 用来控制两次 thread stacks 采样之间的 sampling 线程睡眠时间。
+`interval` 选项只适用于 `cpu=samples` 的情况, 用来控制抽样(sampling)线程睡眠的时间, 以决定两次 thread stacks 采样的间隔 。
 
 
 The msa option only applies to Solaris and causes the Solaris Micro State Accounting to be used.
 
-msa 选项只适用于Solaris, 会使用 Solaris Micro State Accounting。
+`msa` 选项只适用于Solaris, 会使用 Solaris Micro State Accounting。
 
 
 The interval, msa, and force options are new HPROF options in J2SE 1.5.
 
-interval, msa, 以及 force 都是在 J2SE 1.5 以后新增加的HPROF选项。
+`interval`, `msa,` 以及 `force` 都是在 J2SE 1.5 后增加的HPROF选项。
 
 
 ## Example Usage
@@ -139,12 +135,12 @@ interval, msa, 以及 force 都是在 J2SE 1.5 以后新增加的HPROF选项。
 
 We could create an application, but let's instead pick on an existing Java application in the J2SE, `javac`. With `javac` I need to pass Java options in with -J. If you were running Java directly, you would not use the -J prefix.
 
-可以创建示例程序, 当然我们也可以直接选择一个Java平台现有的程序: `javac`。 通过  `-J` 选项可以直接将某些标识传递给运行 `javac` 的底层JVM。 如果运行普通的Java程序, 就不需要 `-J ` 前缀。
+可以创建新程序, 当然也可以直接使用Java平台现有的程序: `javac`。 通过  `-J` 选项将某些标识传给运行 `javac` 的底层JVM。 如果运行普通的Java程序, 则不需要 `-J ` 前缀。
 
 
 There is also a way to pass in J2SE 5.0 Java options with an environment variable JAVA_TOOL_OPTIONS, but with all environment variables you need to be careful that you don't impact more VMs than you intend.
 
-还有一种方法是设置环境变量 `JAVA_TOOL_OPTIONS`, 但最好不要设置全局变量, 以免影响到其他 JVM/实例。
+J2SE 5.0 中还有一种方法，即设置环境变量 `JAVA_TOOL_OPTIONS`, 但最好小心一点、不要设置全局环境变量, 以免影响到其他 JVM/实例。
 
 
 ## Heap Allocation Profiles (heap=sites)
@@ -154,9 +150,7 @@ There is also a way to pass in J2SE 5.0 Java options with an environment variabl
 
 Following is the heap allocation profile generated by running the Java compiler (`javac`) on a set of input files. Only parts of the profiler output file (java.hprof.txt) are shown here.
 
-以下是通过 `javac` 来编译文件时所生成的 heap allocation profile。当然这里只是输出文件 (java.hprof.txt) 中的一部分。
-
-
+以下是通过 `javac` 来编译文件时所生成的 heap allocation profile。当然这里只展示了  `java.hprof.txt` 文件的一部分。
 
 使用的命令为: 
 
