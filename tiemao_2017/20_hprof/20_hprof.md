@@ -261,7 +261,7 @@ This option causes the greatest amount of memory to be used because it stores de
 HPROF can collect CPU usage information by sampling threads. Following is part of the output collected from a run of the `javac` compiler.
 
 
-HPROF可以通过采样线程收集CPU的使用率。下面是从 `javac` 编译器采集的一部分输出。
+HPROF可以通过采样线程收集CPU的使用率。下面是从 `javac` 编译器的一次运行过程中采集的输出。
 
 
 使用的命令为: 
@@ -293,50 +293,42 @@ rank   self  accum   count trace method
 
 The HPROF agent periodically samples the stack of all running threads to record the most frequently active stack traces. The `count` field above indicates how many times a particular stack trace was found to be active (not how many times a method was called). These stack traces correspond to the CPU usage hot spots in the application. This option does not require BCI or modifications of the classes loaded and of all the options causes the least disturbance of the application being profiled.
 
-HPROF agent 定期采样所有正在运行的线程的stack, 记录最频繁活跃的 stack traces 。 上面的 `count` 显示了一个特定的stack trace被采样到多少次(并不是这个方法被调用多少次)。 这些 stack traces 对应了应用程序中的CPU使用热点. 这个选项不需要 BCI 或者修改的类加载, 在所有的选项中, 对被分析程序的干扰最小。
-
-
-
-
+HPROF agent 定期采样运行状态中的所有线程调用栈, 记录最活跃的 stack traces 。 上面的 `count` 列显示了某个特定 stack trace 被采样到的次数(并不是这个方法被调用的具体次数)。 这些 stack traces 对应了程序中的CPU使用热点. 这个选项不需要 BCI 或者修改加载的类, 在HPROF支持的所有选项中,  `cpu=samples`对程序的性能影响最小。
 
 The interval option can be used to adjust the sampling time or the time that the sampling thread sleeps between samples.
 
-interval 选项可以用来调整采样周期， 或者说 sampling thread 休眠的时间。
+`interval` 选项可以用来调整采样周期， 即采样线程(sampling thread) 每次sleep的时间。
 
 
 So what does the above information tell us? First, statistically it's a pretty poor sample, only 126 samples, compiling a larger Java source file would probably yield better information, or better yet a large batch of Java sources. Second, this data pretty much matches the heap=sites data in that we know that `javac` relies heavily on the `ZipFile` class, which makes sense. It appears that any performance improvements in `ZipFile` will probably improve the performance of `javac`. The stack traces of interest here are:
 
-以上信息告诉我们什么? 首先,在统计上这是一个非常少量的采样, 只有126个样本, 编译一个更大的Java源文件,或者是一大批Java源文件, 可能会产生更好的信息. 其次, 这次的数据和 `heap=sites` 示例中的非常匹配, 我们知道`javac`严重依赖`ZipFile`类, 它在其中有很大作用。看来, `ZipFile`类的任何性能优化都可能会提高`javac`的性能。有趣的是这部分 stack traces:
+以上信息告诉我们什么信息? 
+
+首先, 汇总来看这只是一个很少量的抽样, 只有126个样本, 编译一个很大的Java源文件,或者是一批Java源文件, 可能会生成更漂亮的展示信息. 
+
+其次, 这次的数据和 `heap=sites` 示例的数据能互相对照, 我们知道`javac`严重依赖`ZipFile`类, 因为它在其中有很大作用。嗯、对 `ZipFile`类进行性能调优的话，可能会提高`javac`的性能。有趣的是 stack traces 部分:
 
 
 
 
-```
+```java
 TRACE 300027:
-
 java.util.zip.ZipFile.getEntry(ZipFile.java:Unknown line)
-
 java.util.zip.ZipFile.getEntry(ZipFile.java:253)
-
 java.util.jar.JarFile.getEntry(JarFile.java:197)
-
 java.util.jar.JarFile.getJarEntry(JarFile.java:180)
 
 TRACE 300135:
-
 java.util.zip.ZipFile.getNextEntry(ZipFile.java:Unknown line)
-
 java.util.zip.ZipFile.access$700(ZipFile.java:35)
-
 java.util.zip.ZipFile$3.nextElement(ZipFile.java:419)
-
 java.util.zip.ZipFile$3.nextElement(ZipFile.java:413)
 
 ```
 
 Don't expect the above information to reproduce on identical runs with highly multi-threaded applications, especially when the sample count is low.
 
-不要指望上面的信息能够在多线程应用程序中重现, 尤其是样本数量很低的时候。
+不要指望这样简单的信息会在多线程高并发的应用系统中出现, 尤其是样本数量这么少。
 
 
 
@@ -344,6 +336,8 @@ Don't expect the above information to reproduce on identical runs with highly mu
 ## CPU Usage Times Profile (cpu=times)
 
 ## CPU使用量分析(cpu=times)
+
+> `cpu=times` 选项在Mac版的JDK8中会出Lambda相关BUG。可以搜索 `java.lang.NoClassDefFoundError: java/lang/invoke/LambdaForm$MH`。 官方的回复是不予修复。
 
 
 HPROF can collect CPU usage information by injecting code into every method entry and exit, keeping track of exact method call counts and the time spent in each method. This uses Byte Code Injection (BCI) and runs considerably slower than cpu=samples. Following is part of the output collected from a run of the `javac` compiler.
@@ -435,7 +429,7 @@ Previous releases of J2SE (1.2 through 1.4) contained an HPROF agent built on th
 
 ## How Does HPROF Work?
 
-## HPROF是如何工作的呢?
+## HPROF的工作原理
 
 
 HPROF is a dynamically-linked native library that uses JVM TI and writes out profiling information either to a file descriptor or to a socket in ascii or binary format. This information can be further processed by a profiler front-end tool or dumped to a file. It generates this information through calls to JVM TI, event callbacks from JVM TI, and through Byte Code Insertion (BCI) on all class file images loaded into the VM. JVM TI has an event called `JVMTI_EVENT_CLASS_FILE_LOAD_HOOK` which gives HPROF access to the class file image and an opportunity to modify that class file image before the VM actually loads it. Sound scary? It is, don't take BCI lightly. In the case of HPROF the BCI operations only instrument and don't change the behavior of the bytecodes. Use of JVM TI was pretty critical here for HPROF to do BCI because we needed to do BCI on ALL the classes, including early classes like `java.lang.Object`. Of course, the instrumentation code needs to be made inoperable until the VM has reached a stage where this inserted code can be executed, normally the event `JVMTI_EVENT_VM_INIT`.
@@ -489,4 +483,3 @@ Brave C/JNI programmers could even take the source to HPROF (it's available in t
 
 
 
-<java.lang.NoClassDefFoundError: java/lang/invoke/LambdaForm$MH>
