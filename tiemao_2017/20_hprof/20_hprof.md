@@ -236,10 +236,7 @@ This option can impact the application performance due to the data gathering (st
 
 A complete dump of the current live objects in the heap can be obtained with:
 
-当前存活对象的完整堆转储可以通过下面的命令得到:
-
-
-使用的命令为: 
+可以通过下面的命令得到当前存活对象的完整堆转储:
 
 ```
 javac -J-agentlib:hprof=heap=dump Hello.java
@@ -248,12 +245,12 @@ javac -J-agentlib:hprof=heap=dump Hello.java
 
 This is a very large output file, but can be viewed and searched in any editor. But a better way to look at this kind of detail is with [HAT](http://docs.oracle.com/javase/8/docs/technotes/samples/hprof.html#HAT). All the information of the above `heap=sites` option is included, plus the specific details on every object allocated and the references to all objects.
 
-这会生成一个非常大的输出文件, 但可以通过任何文本编辑器查看。但更好的方法是通过 [HAT](http://docs.oracle.com/javase/8/docs/technotes/samples/hprof.html#HAT) 工具来解析。包含了 `heap=sites` 中的所有信息, 加上分配的每一次对象分配的特定信息, 以及所有对象的引用。
+生成的输出文件可能会很大, 但可以使用文本编辑器来查看。 最好是使用 [HAT](#hat_sample) 工具来解析。 除了包含 `heap=sites` 选项所展示的全部信息, `heap=dump` 还展示了每次对象分配的相关信息, 以及对所有对象的引用。
 
 
 This option causes the greatest amount of memory to be used because it stores details on every object allocated, it can also impact the application performance due to the data gathering (stack traces) on object allocation and garbage collection.
 
-这个选项会导致最大的内存使用量, 因为会保存每次对象分配的细节, 也会因为在对象分配和垃圾收集时采集数据(stack traces), 影响应用程序的性能。
+因为需要保存每次对象分配的细节, `heap=dump` 选项会使用大量的内存, 在对象分配和垃圾收集时还会采集调用栈信息(stack traces), 会严重影响程序的性能（只适合在排查某些特定问题的场景使用）。
 
 
 ## CPU Usage Sampling Profiles (cpu=samples)
@@ -412,6 +409,7 @@ Looking at the above data, it appears that even though some of the ZipFile$3 cla
 看着上面的数据, 尽管 `ZipFile$3` 的一些方法被调用了 14000 次, 但并没有消耗大量的CPU时间. 既然这样, 这个 sample 可能就没有太多意义, 我也不会花太多时间来分析上述的信息。
 
 
+<a name="hat_sample"></a>
 
 ## Using HAT with HPROF
 
