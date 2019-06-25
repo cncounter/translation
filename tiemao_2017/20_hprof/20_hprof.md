@@ -293,7 +293,7 @@ rank   self  accum   count trace method
 
 The HPROF agent periodically samples the stack of all running threads to record the most frequently active stack traces. The `count` field above indicates how many times a particular stack trace was found to be active (not how many times a method was called). These stack traces correspond to the CPU usage hot spots in the application. This option does not require BCI or modifications of the classes loaded and of all the options causes the least disturbance of the application being profiled.
 
-HPROF agent 定期采样运行状态中的所有线程调用栈, 记录最活跃的 stack traces 。 上面的 `count` 列显示了某个特定 stack trace 被采样到的次数(并不是这个方法被调用的具体次数)。 这些 stack traces 对应了程序中的CPU使用热点. 这个选项不需要 BCI 或者修改加载的类, 在HPROF支持的所有选项中,  `cpu=samples`对程序的性能影响最小。
+HPROF agent 定期采样运行状态中的所有线程调用栈, 记录最活跃的 stack traces 。 上面的 `count` 列显示了某个特定 stack trace 被采样到的次数(并不是这个方法被调用的具体次数)。 这些 stack traces 对应了程序中的CPU使用热点. 这个选项不需要 BCI (Byte Code Injection )或者修改加载的类, 在HPROF支持的所有选项中,  `cpu=samples`对程序的性能影响最小。
 
 The interval option can be used to adjust the sampling time or the time that the sampling thread sleeps between samples.
 
@@ -335,7 +335,7 @@ Don't expect the above information to reproduce on identical runs with highly mu
 
 ## CPU Usage Times Profile (cpu=times)
 
-## CPU使用量分析(cpu=times)
+## CPU使用时间分析(cpu=times)
 
 > `cpu=times` 选项在Mac版的JDK8中会出Lambda相关BUG。可以搜索 `java.lang.NoClassDefFoundError: java/lang/invoke/LambdaForm$MH`。 官方的回复是不予修复。
 
@@ -343,9 +343,7 @@ Don't expect the above information to reproduce on identical runs with highly mu
 HPROF can collect CPU usage information by injecting code into every method entry and exit, keeping track of exact method call counts and the time spent in each method. This uses Byte Code Injection (BCI) and runs considerably slower than cpu=samples. Following is part of the output collected from a run of the `javac` compiler.
 
 
-HPROF可以将代码注入到每一个方法进入和退出的代码中,以收集CPU使用率信息, 跟踪每个方法调用的次数, 每个方法花费的时间. 这使用的是 Byte Code Injection (BCI) 技术, 字节码注入(BCI)比起 `cpu=samples` 来说执行速度很慢。下面是`javac`执行过程中输出的一部分。
-
-
+HPROF可以在每个方法的入口和出口处注入代码, 跟踪每个方法被调用的次数和消耗的时间, 以汇总收集CPU使用时间信息.  这个选项使用了字节码注入技术(Byte Code Injection, BCI) , 比 `cpu=samples` 选项的执行速度慢了很多。下面是`javac` 执行过程中的一部分输出。
 
 
 使用的命令为: 
@@ -390,7 +388,7 @@ rank   self  accum   count trace method
 
 Here the count represents the true count of the times this method was entered, and the percentages represent a measure of thread time spent in those method.
 
-其中 count 代表的是此方法真正进入的次数, 百分比则表示此方法消耗的时间/线程总执行时间。
+其中 `count` 表示真正进入此方法的次数, 百分比值则表示各个线程在此方法中消耗的总时间的比例。
 
 
 The traces normally don't include line numbers but can be added with the `lineno` option.
@@ -400,7 +398,7 @@ trace 通常不包括行号, 但也可以通过 `lineno` 选项添加。
 
 Looking at the above data, it appears that even though some of the ZipFile$3 class methods are called over 14,000 times, they don't seem to be consuming vast amounts of CPU time. Again, this is probably represents a poor sample and I would not put much time into analyzing the above information.
 
-看着上面的数据, 尽管 `ZipFile$3` 的一些方法被调用了 14000 次, 但并没有消耗大量的CPU时间. 既然这样, 这个 sample 可能就没有太多意义, 我也不会花太多时间来分析上述的信息。
+审查上面的数据, 虽然类 `ZipFile$3` 中的一部分方法被调用了 14000 多次, 但并没有消耗太多的CPU时间. 既然这样看了, 这个样本可能没有什么意义, 我们也就不花时间来分析这些信息了。
 
 
 <a name="hat_sample"></a>
@@ -412,12 +410,12 @@ Looking at the above data, it appears that even though some of the ZipFile$3 cla
 
 [HAT](https://hat.dev.java.net/) (Heap Analysis Tool) is a browser based tool that uses the HPROF binary format to construct web pages so you can browse all the objects in the heap, and see all the references to and from objects.
 
-[HAT](https://hat.dev.java.net/) (Heap Analysis Tool,堆分析工具) 是一款基于浏览器的工具,使用HPROF二进制格式来构建web页面, 可以浏览堆中的所有对象, 以及每个对象中的所有引用。
+[HAT](https://hat.dev.java.net/) (Heap Analysis Tool,堆内存分析工具) 是一款基于浏览器的工具, 利用HPROF二进制格式来构建web页面, 然后就可以查看堆中的所有对象, 以及各个对象中相关的引用，引用的谁，被谁引用的记录都有。
 
 
 ## A Bit of HPROF History
 
-## HPROF的历史
+## HPROF的历史简介
 
 
 Previous releases of J2SE (1.2 through 1.4) contained an HPROF agent built on the experimental JVMPI. JVMPI worked fairly reliably in the old 1.2 Classic VM, but it was unreliable and difficult to maintain with the newer HotSpot VM and the different garbage collectors in the 1.3 and 1.4 releases. The newer JVM TI in J2SE 5.0 replaces both JVMDI and JVMPI. In the 5.0 release, JVMPI is still available, and the older HPROF JVMPI based agent from 1.4.2 can actually be used with 5.0, but it isn't recommended. The new HPROF, in J2SE 5.0, is (with minor exceptions) a fully functional replacement for the old HPROF but source wise was close to being a complete rewrite. All the old options are available, and the output format is basically the same. So if you are used to the old HPROF output, or you have tools that read any HPROF format, you won't see many differences and hopefully you will see fewer problems that you have seen in the past with the JVMPI-based HPROF. The source to HPROF is available with the full JDK download in the `demo/jvmti/hprof` installation directory.
