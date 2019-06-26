@@ -420,7 +420,9 @@ Looking at the above data, it appears that even though some of the ZipFile$3 cla
 
 Previous releases of J2SE (1.2 through 1.4) contained an HPROF agent built on the experimental JVMPI. JVMPI worked fairly reliably in the old 1.2 Classic VM, but it was unreliable and difficult to maintain with the newer HotSpot VM and the different garbage collectors in the 1.3 and 1.4 releases. The newer JVM TI in J2SE 5.0 replaces both JVMDI and JVMPI. In the 5.0 release, JVMPI is still available, and the older HPROF JVMPI based agent from 1.4.2 can actually be used with 5.0, but it isn't recommended. The new HPROF, in J2SE 5.0, is (with minor exceptions) a fully functional replacement for the old HPROF but source wise was close to being a complete rewrite. All the old options are available, and the output format is basically the same. So if you are used to the old HPROF output, or you have tools that read any HPROF format, you won't see many differences and hopefully you will see fewer problems that you have seen in the past with the JVMPI-based HPROF. The source to HPROF is available with the full JDK download in the `demo/jvmti/hprof` installation directory.
 
-在 1.2~1.4版本的JDK中, 由一个构建在 experimental JVMPI 上的 HPROF。 但JVMPI 只在 1.2版本的 Classic VM 上工作良好, 而在 HotSpot VM  中以及 1.3~1.4版本中的其他GC上变得不可靠的, 并且难以维护。从 JDK5.0 开始使用新的 JVM TI 来取代 JVMDI 和 JVMPI。 新的 HPROF 是一个接近完全重写的全功能替代产品. 所有的选项依旧可用, 输出格式基本上兼容. HPROF的源码在安装目录 `demo/jvmti/hprof` 下面。
+早期的Java版本中(1.2~1.4),  基于实验性质的JVMPI构建了一套 HPROF agent。 但JVMPI 只兼容 1.2 版本的 Classic VM, 而在1.3~1.4版本的 HotSpot VM  和GC上非常不稳定, 很难维护。从 `Java 5.0` 开始推出了新的 `JVM TI` 来取代 `JVMDI` 和 `JVMPI`。  JVMPI在5.0版本中依然可用,  基于 JVMPI的老版本HPROF agent， 只要兼容1.4.2就兼容5.0, 但已经不推荐使用了。 
+
+J2SE 5.0版本的新 HPROF 依然存在小BUG，基本上属于一款完全重写的全功能替代产品。 所有的配置选项完全兼容, 输出格式大体上也保持一致，所以如果你有什么分析工具基于旧的HPROF格式, 并不会有太多的不同，而且BUG会比老版本的要少.  HPROF的源码在JDK安装目录的 `demo/jvmti/hprof` 路径下。
 
 
 
