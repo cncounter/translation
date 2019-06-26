@@ -497,5 +497,5 @@ Brave C/JNI programmers could even take the source to HPROF (it's available in t
 
 原文链接: <http://docs.oracle.com/javase/8/docs/technotes/samples/hprof.html>
 
-
+最新版英汉对照地址: <https://github.com/cncounter/translation/blob/master/tiemao_2017/20_hprof/20_hprof.md>
 
