@@ -27,7 +27,7 @@ This section introduces key concepts associated with the major subsystems of the
 
 There are a number of command-line options and environment variables that can affect the performance characteristics of the Java HotSpot Virtual Machine. Some of these options are consumed by the launcher (such as ‘-server’ or ‘-client’), some are processed by the launcher and passed to the JVM, while most are consumed directly by the JVM.
 
-HotSpot虚拟机支持的命令行参数/环境变量非常多。 其中有少部分参数是给引导程序(launcher)使用的（例如 `-server` 或者 `-client`）， 一些选项由启动程序先进行处理, 然后传递给JVM， 总的来说, 绝大部分选项都是给JVM直接使用的。
+HotSpot虚拟机支持的命令行参数/环境变量非常多。 其中有少部分参数是给引导程序(launcher)使用的（例如 `-server` 或者 `-client`）， 一些选项由引导程序先进行处理, 然后传递给JVM， 总的来说, 绝大部分选项都是给JVM直接使用的。
 
 There are three main categories of options: standard options, non-standard options, and developer options. Standard options are expected to be accepted by all JVM implementations and are stable between releases (though they can be deprecated). Options that begin with -X are non-standard (not guaranteed to be supported on all JVM implementations), and are subject to change without notice in subsequent releases of the Java SDK. Options that begin with -XX are developer options and often have specific system requirements for correct operation and may require privileged access to system configuration parameters; they are not recommended for casual use. These options are also subject to change without notice.
 
@@ -67,17 +67,17 @@ The following sections gives an overview of the general purpose java launcher pe
 
 #### Launcher
 
-#### 启动程序(Launcher)
+#### 引导程序(Launcher)
 
 There are several HotSpot VM launchers in the Java Standard Edition, the general purpose launcher typically used is the java command on Unix and on Windows java and javaw commands, not to be confused with javaws which is a network based launcher.
 
-Java Standard Edition 默认存在多个HotSpot启动程序，在Unix上一般是 `java` 命令， 在Windows上则是`java.exe`和`javaw.exe`程序, javaw 是窗口版无命令行界面的当然不要与Java Web Start(javaws)的启动器相混淆。
+Java Standard Edition 默认存在多个HotSpot引导程序，在Unix上一般是 `java` 命令， 在Windows上则是`java.exe`和`javaw.exe`程序, javaw 是窗口版无命令行界面，不要与Java Web Start(javaws)混淆就行。
 
-> `javaw`命令基本等同于`java`, 只是`javaw`没有关联的控制台窗口. 如果不想看到命令提示符, 可以使用`javaw`命令. 如果启动失败, 则javaw会显示一个错误对话框.
+> `javaw`命令基本等同于`java`, 只是`javaw`没有关联的控制台窗口. 如果不想看到命令提示符, 可以使用`javaw`命令. 如果启动失败, 则会弹出一个错误提示框.
 
 The launcher operations pertaining to VM startup are:
 
-与JVM启动相关的操作包括：
+JVM启动相关的操作包括：
 
 1. Parse the command line options, some of the command line options are consumed by the launcher itself, for example -client or -server is used to determine and load the appropriate VM library, others are passed to the VM using JavaVMInitArgs.
 2. Establish the heap sizes and the compiler type (client or server) if these options are not explicitly specified on the command line.
@@ -91,19 +91,29 @@ The launcher operations pertaining to VM startup are:
 
 --
 
-1. 解析命令行选项，部分选项是由启动程序自身使用的，例如 `-client`或`-server`用来确定加载哪些VM库，剩下的参数则通过JavaVMInitArgs传递给JVM。
-2. 如果未显式指定堆内存和编译器, 则需要根据当前环境, 确定堆内存的大小,和编译器类型（client/server）。
+1. 解析命令行选项，部分选项是由引导程序自身使用，例如 `-client`或`-server`用来确定加载哪些VM组件库，其余的选项通过`JavaVMInitArgs`传递给JVM。
+
+2. 如果未显式指定堆内存大小（heap sizes）和编译器类型（client/server）, 需要根据当前环境来确定。
+
 3. 确定环境变量，如 `LD_LIBRARY_PATH`和`CLASSPATH`。
+
 4. 如果命令行中没有指定主类(Main-Class)，则从JAR文件的清单中获取Main-Class信息。
-5. 在一个新创建的线程（非原始线程）中, 通过JNI_CreateJavaVM创建JVM。 请注意：直接在原始线程中创建JVM会大大降低可配置性，比如Windows系统下的栈空间大小(stack size)以及各种限制。
-6. 创建并初始化JVM后，会加载Main-Class，启动程序从Main-Class中获取`main`方法的信息。
-7. 然后JVM通过 `usingCallStaticVoidMethod` 来执行java程序的main方法, 并整理命令行参数作为main方法的参数传进去。
-8. main方法执行完成后，需要检查是否抛出了异常, 并通过 `callingExceptionOccurred` 清除异常， 如果处理成功则返回`0`，否则返回其他值，这个返回值最终会传递给调用进程。
-9. 使用 `DetachCurrentThread` 分离主线程，减少线程的计数，以便安全地调用 `DestroyJavaVM`，同时也确保该线程不再执行操作, 还要确保该线程栈上没有活动的java frame。
 
-The most important phases are the JNI_CreateJavaVM and DestroyJavaVMthese are described in the next sections.
+5. 在一个新创建的线程（非原始线程）中, 通过 `JNI_CreateJavaVM`创建 VM 实例。 
 
-其中最重要的2个阶段是 `JNI_CreateJavaVM` 和 `DestroyJavaVMthese`
+   原因是：如果直接在原始线程中创建VM实例会严重降低可配置性，比如在Windows系统中的栈空间大小(stack size)，以及受到其他限制。
+
+6. 创建VM并初始化之后，会加载Main-Class，引导程序从Main-Class中获取`main`方法的信息。
+
+7. 接着VM通过 `usingCallStaticVoidMethod` 来执行java程序的main方法,  同时会整理命令行选项，形成 main方法的参数传进去。
+
+8. 在 main 方法执行完成后，需要检查是否抛出了异常, 并通过 `callingExceptionOccurred` 清除异常， 如果处理成功则返回`0`，否则返回其他值，这个返回值最终会传递给调用进程。
+
+9. 使用 `DetachCurrentThread` 分离主线程，并减少前台线程的总数(count)，以便安全地调用 `DestroyJavaVM`，同时也确保该线程不再由其他操作, 还要确保线程栈上没有存活的帧(java frame)。
+
+The most important phases are the JNI_CreateJavaVM and DestroyJavaVM these are described in the next sections.
+
+其中最重要的2个阶段是 `JNI_CreateJavaVM` 和 `DestroyJavaVM`
 
 #### JNI_CreateJavaVM
 
