@@ -127,10 +127,40 @@ The JNI invocation method performs, the following:
 6. The thread states and the thread local storage (TLS), which holds several thread specific data required for the operation of threads, are initialized.
 7. The global data is initialized as part of the I phase, such as event log, OS synchronization primitives, perfMemory (performance memory), chunkPool (memory allocator).
 8. At this point, we can create Threads. The Java version of the main thread is created and attached to the current OS thread. However this thread will not be yet added to the known list of the Threads. The Java level synchronization is initialized and enabled.
-9. The rest of the global modules are initialized such as theBootClassLoader, CodeCache, Interpreter, Compiler, JNI, SystemDictionary, and Universe. Noting that, we have reached our “point of no return”, ie. We can no longer create another VM in the same process address space.
+9. The rest of the global modules are initialized such as the BootClassLoader, CodeCache, Interpreter, Compiler, JNI, SystemDictionary, and Universe. Noting that, we have reached our “point of no return”, ie. We can no longer create another VM in the same process address space.
 10. The main thread is added to the list, by first locking the Thread_Lock. The Universe, a set of required global data structures, is sanity checked. The VMThread, which performs all the VM's critical functions, is created. At this point the appropriate JVMTI events are posted to notify the current state.
 11. The following classes java.lang.String, java.lang.System, java.lang.Thread, java.lang.ThreadGroup, java.lang.reflect.Method, java.lang.ref.Finalizer, java.lang.Class, and the rest of the System classes, are loaded and initialized. At this point, the VM is initialized and operational, but not yet fully functional.
 12. The Signal Handler thread is started, the compilers are initialized and the CompileBroker thread is started. The other helper threads StatSampler and WatcherThreads are started, at this time the VM is fully functional, the JNIEnv is populated and returned to the caller, and the VM is ready to service new JNI requests.
+
+--
+
+根据名称可知，这个JNI方法就是创建 JVM 实例, 会执行以下操作：
+
+1. 确保没有两个线程同时调用此方法，并且确保同一个进程中不会创建两个VM实例。
+
+   注意： 一旦到达初始化点（point of no return，不可返回点）就无法在此进程空间中创建VM实例了。因为VM在这个时间点创建了静态数据结构，这些数据结构不能被重新初始化。
+
+2. 检查JNI版本是否兼容，检查是否为gc日志记录初始化了输出流(ostream)。初始化OS模块，例如随机数生成器，当前进程的 pid，时间精度，内存页大小和保护页面。
+
+3. 传入的参数和属性将被解析并保存起来，供以后使用。初始化标准java系统属性。
+
+4. 基于解析得到的参数和属性，进一步创建和初始化OS模块，例如 同步，栈，内存和安全点页面初始化。此时其他库已经加载进来了，如 libzip，libhpi，libjava，libthread，初始化并设置信号处理程序，并初始化线程库。
+
+5. 初始化输出流logger。初始化并启动指定的所有agent（如 hprof，jdi 等等）。
+
+6. 初始化线程状态和线程本地存储（TLS），其中保存了线程操作所需的一些特定数据。
+
+7. 此时，一阶段的全局数据初始化部分完成，例如事件日志，OS同步原语，perfMemory（performance memory），chunkPool（内存分配器）。
+
+8. 然后就可以创建线程了。Java版本的主线程被创建并附加到当前OS线程上。但是，这个线程尚未添加到已知的线程列表中。初始化并启用Java级别的同步。
+
+9. 初始化其余的全局模块，例如  BootClassLoader，CodeCache，Interpreter，Compiler，JNI，SystemDictionary和Universe。注意到，此时已经到达了“不可返回点”，也就是不能再在同一进程地址空间中创建另一个VM了。
+
+10. 首先锁定Thread_Lock，将主线程添加到列表中。 Universe是一组必需的全局数据结构，可以进行健全性检查。创建执行VM所有关键功能的VMThread。此时，将发布相应的 JVMTI 事件以通知当前状态。
+
+11. 以下类java.lang.String，java.lang.System，java.lang.Thread，java.lang.ThreadGroup，java.lang.reflect.Method，java.lang.ref.Finalizer，java.lang.Class ，以及其余的系统类，都进行加载并初始化。此时，VM已初始化并可运行，但尚未完全正常运行。
+
+12. 启动Signal Handler线程，初始化编译器并启动CompileBroker线程。启动其他辅助线程StatSampler和WatcherThreads，此时VM完全正常运行，JNIEnv 被填充并返回给调用者，VM已准备好为新的JNI请求提供服务。
 
 #### DestroyJavaVM
 
