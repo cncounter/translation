@@ -3,9 +3,15 @@
 1. Chat 分享的主题 — JVM问题诊断入门
 2. Chat 内容简介和大纲
    - 环境准备与配置
+   
+     版本兼容、环境变量、
+   
    - JDK内置工具与使用
+   
    - GC日志分析与解读
+   
    - 内存dump与分析
+   
    - 高级工具简介
 3. 分享嘉宾个人简介
   参考美团案例：https://gitbook.cn/gitchat/activity/5b91078c41c7575ca0d6441a 
@@ -15,9 +21,36 @@
 
 
 
-JVisualVM
+```
+java -version
+javac -version
+
+-showversion
+-XX+PrintCommandLineFlags
+
+```
+
+
+
+
+
+
+
+JPS
+
+JSTAT
+
+jstatd
+
+visualgc
+
+jstack
+
+JVisualVM 
 
 JMC
+
+JMAP
 
 JHat
 
@@ -25,15 +58,114 @@ BTrace
 
 MAT
 
+jdb
+
+JINFO
+
+
+
+JDWP
+
+
+
+jconsole, jcmd, jshell
+
+
+
+选项:
 
 
 
 
-付费工具: **JProfiler**, Plumbr,  
+
+```
+-Xmx4g
+-Xms4g
+
+
+```
+
+
+
+```
+-Dcom.sun.management.jmxremote 
+-Dcom.sun.management.jmxremote.port=10990 
+-Dcom.sun.management.jmxremote.ssl=false 
+-Dcom.sun.management.jmxremote.authenticate=false 
+
+```
+
+
+
+
+
+## 随机数熵源(Entropy Source)
+
+```
+-Djava.security.egd=file:/dev/./urandom
+```
+
+
+
+<https://github.com/cncounter/translation/blob/master/tiemao_2017/07_FasterStartUp_Tomcat/07_FasterStartUp_Tomcat.md#%E9%9A%8F%E6%9C%BA%E6%95%B0%E7%86%B5%E6%BA%90entropy-source>
+
+
+
+
+
+GC:
+
+
+
+```
+
+-verbosegc
+-XX:+UseG1GC
+-XX:MaxGCPauseMillis=200
+-XX:+HeapDumpOnOutOfMemoryError
+UseGClogFileRotation
+NumberOfGCLogFiles
+```
+
+
+
+
+
+
+
+暂停时间超标, 释放的内存量持续减小。
+
+
+
+付费工具: **JProfiler**, Plumbr,  Java Flight Recorder (JFR，市场),
 
 Pinpoint, Datadog, Zabbix
 
+gdb
 
+HPROF
+
+
+
+
+
+深入问题不讲
+
+崩溃、死锁
+
+
+
+- [he `JAVA_HOME` Environment Variable](https://docs.oracle.com/javase/8/docs/technotes/guides/troubleshoot/envvars001.html#CIHEEHEI)
+- [The `JAVA_TOOL_OPTIONS` Environment Variable](https://docs.oracle.com/javase/8/docs/technotes/guides/troubleshoot/envvars002.html#CIHDGJHI)
+- [The `java.security.debug` System Property](https://docs.oracle.com/javase/8/docs/technotes/guides/troubleshoot/envvars003.html#CIHDAFDD)
+
+
+
+https://docs.oracle.com/javase/8/docs/technotes/guides/troubleshoot/clopts001.html
+
+
+
+HotSpot VM Options: <https://www.oracle.com/technetwork/java/javase/tech/vmoptions-jsp-140102.html>
 
 JMX 配置: <https://docs.oracle.com/javase/8/docs/technotes/guides/management/agent.html>
 
