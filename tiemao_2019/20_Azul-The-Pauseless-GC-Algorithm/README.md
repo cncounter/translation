@@ -121,7 +121,7 @@ Incremental and low-pause-time collectors are becoming very popular again ¨C par
 
 Our read-barrier is used for Baker-style relocation [5][23], where the loaded value is corrected before the mutator is allowed to use it. We focus collection efforts on regions which are known to be mostly dead, similar to Garbage-First [14]. Our mark phase uses an incremental update style instead of Snapshot-At-The-Beginning (SATB) style [30]. SATB requires a modestly expensive write-barrier which first does a read (and generally a series of dependent tests). The Pauseless collector does not require a write barrier.
 
-ÎÒÃÇ½«¶ÁÆÁÕÏÓÃÓÚ Baker-style µÄÇ¨ÒÆ[5][23], ÔÚÒµÎñÏß³ÌÊ¹ÓÃÖ®Ç°, ¼ÓÔØÖµ»á±»¾ÀÕı. ÎÒÃÇ½«ÊÕ¼¯µÄÄ¿±ê¼¯ÖĞÓÚÄÇĞ©´ó²¿·Ö¶ÔÏóÒÑËÀÍöµÄÇøÓò, ÕâÒ»µãÀàËÆÓÚG1(¼û[14]), ÔÚ±ê¼Ç½×¶ÎÊ¹ÓÃÔöÁ¿¸üĞÂµÄ·½Ê½, ¶ø²»ÊÇ¿ìÕÕ·½Ê½(Snapshot-At-The-Beginning,SATB),¼û[30]. SATBĞèÒªÊ¹ÓÃÒ»Ğ©°º¹óµÄĞ´ÆÁÕÏ, Ê×ÏÈÒª¶ÁÈ¡(Í¨³£°éËæÒ»ÏµÁĞµÄÏà¹Ø²âÊÔ)¡£Pauseless ÊÕ¼¯Æ÷²»ĞèÒªÊ¹ÓÃĞ´ÆÁÕÏ¡£
+ÎÒÃÇ½«¶ÁÆÁÕÏÓÃÓÚ Baker-style µÄÖØ¶¨Î»[5][23], ÔÚÒµÎñÏß³ÌÊ¹ÓÃÖ®Ç°, ¼ÓÔØÖµ»á±»¾ÀÕı. ÎÒÃÇ½«ÊÕ¼¯µÄÄ¿±ê¼¯ÖĞÓÚÄÇĞ©´ó²¿·Ö¶ÔÏóÒÑËÀÍöµÄÇøÓò, ÕâÒ»µãÀàËÆÓÚG1(¼û[14]), ÔÚ±ê¼Ç½×¶ÎÊ¹ÓÃÔöÁ¿¸üĞÂµÄ·½Ê½, ¶ø²»ÊÇ¿ìÕÕ·½Ê½(Snapshot-At-The-Beginning,SATB),¼û[30]. SATBĞèÒªÊ¹ÓÃÒ»Ğ©°º¹óµÄĞ´ÆÁÕÏ, Ê×ÏÈÒª¶ÁÈ¡(Í¨³£°éËæÒ»ÏµÁĞµÄÏà¹Ø²âÊÔ)¡£Pauseless ÊÕ¼¯Æ÷²»ĞèÒªÊ¹ÓÃĞ´ÆÁÕÏ¡£
 
 Concurrent GCs are available in most modern production JVMs; BEA's JRockit [7], SUN's HotSpot [28] and IBM's production JVM [27] all have concurrent collectors and we tested with the latest available versions of Java 1.4 from each vendor. However, in all cases these collectors are not the defaults. They appear to not be as stable as the parallel collectors and they sometimes put high overheads on mutator threads. For some of these collectors, worse-case transaction times were no better than the default collectors.
 
@@ -188,7 +188,7 @@ The read barrier performs a number of checks and is used in different ways durin
 
 The read barrier ¡°looks like¡± a standard load instruction, in that it has a base register, an offset and a value register. The base and offset are not used by the barrier checks but are presented to the trap handler and are used in ¡°self healing¡±. The value in the value register is assumed to be a freshly loaded ref, a heap pointer, and is cycled through the TLB just like a base address would be. If the ref refers to a GC-protected page a fast usermode trap handler is invoked, hereafter called the GC-trap. The read barrier ignores null refs. Unlike a Brooks-style [10] indirection barrier there is no null check, no memory access, no loaduse penalty, no extra word in the object header and no cache footprint. This behavior is used during the concurrent Relocate phase.
 
-¶ÁÆÁÕÏ¡°¿´ÆğÀ´Ïñ¡±Ò»¸ö±ê×¼µÄloadÖ¸Áî£¬ÒòÎªËü¾ßÓĞ»ùÖ·¼Ä´æÆ÷(base register)£¬Æ«ÒÆÁ¿(offset)ºÍÖµ¼Ä´æÆ÷(value register)¡£»ùÖ·¼Ä´æÆ÷ºÍÆ«ÒÆÁ¿²¢²»ÊÇÕÏ°­¼ì²éÊ¹ÓÃ£¬¶øÊÇÌá¹©¸øÏİÚå´¦Àí³ÌĞò£¬ÒÔ¼°ÓÃÓÚ¡°×ÔÎÒĞŞ¸´¡±¡£Öµ¼Ä´æÆ÷ÖĞµÄÖµ¼Ù¶¨ÎªĞÂ¼ÓÔØµÄÒıÓÃ£¬Ò²¾ÍÊÇ¶ÑÄÚ´æÖ¸Õë£¬²¢ÇÒÏñ»ùµØÖ·Ò»ÑùÑ­»·Í¨¹ıTLB¡£Èç¹ûÒıÓÃÖ¸ÏòÁËÊÜGC±£»¤µÄÒ³Ãæ£¬Ôòµ÷ÓÃ¿ìËÙÓÃ»§Ä£Ê½ÏİÚå´¦Àí³ÌĞò£¬ÏÂÎÄ³ÆÎªGCÏİÚå¡£¶ÁÆÁÕÏºöÂÔnullÒıÓÃ¡£ÓëBrooks·ç¸ñµÄ¼ä½ÓÆÁÕÏ²»Í¬(¼û[10])£¬¶ÁÆÁÕÏÃ»ÓĞnull¼ì²é£¬Ã»ÓĞÄÚ´æ·ÃÎÊ£¬Ã»ÓĞloaduse³Í·££¬¶ÔÏóÍ·ÖĞÒ²Ã»ÓĞ¶îÍâµÄ×Ö£¬Ò²Ã»ÓĞ»º´æÕ¼ÓÃ¿Õ¼ä¡£´ËĞĞÎªÔÚ²¢·¢ÖØ·ÖÅä½×¶Î£¨concurrent Relocate phase£©Ê¹ÓÃ¡£
+¶ÁÆÁÕÏ¡°¿´ÆğÀ´Ïñ¡±Ò»¸ö±ê×¼µÄloadÖ¸Áî£¬ÒòÎªËü¾ßÓĞ»ùÖ·¼Ä´æÆ÷(base register)£¬Æ«ÒÆÁ¿(offset)ºÍÖµ¼Ä´æÆ÷(value register)¡£»ùÖ·¼Ä´æÆ÷ºÍÆ«ÒÆÁ¿²¢²»ÊÇÕÏ°­¼ì²éÊ¹ÓÃ£¬¶øÊÇÌá¹©¸øÏİÚå´¦Àí³ÌĞò£¬ÒÔ¼°ÓÃÓÚ¡°×ÔÎÒĞŞ¸´¡±¡£Öµ¼Ä´æÆ÷ÖĞµÄÖµ¼Ù¶¨ÎªĞÂ¼ÓÔØµÄÒıÓÃ£¬Ò²¾ÍÊÇ¶ÑÄÚ´æÖ¸Õë£¬²¢ÇÒÏñ»ùµØÖ·Ò»ÑùÑ­»·Í¨¹ıTLB¡£Èç¹ûÒıÓÃÖ¸ÏòÁËÊÜGC±£»¤µÄÒ³Ãæ£¬Ôòµ÷ÓÃ¿ìËÙÓÃ»§Ä£Ê½ÏİÚå´¦Àí³ÌĞò£¬ÏÂÎÄ³ÆÎªGCÏİÚå¡£¶ÁÆÁÕÏºöÂÔnullÒıÓÃ¡£ÓëBrooks·ç¸ñµÄ¼ä½ÓÆÁÕÏ²»Í¬(¼û[10])£¬¶ÁÆÁÕÏÃ»ÓĞnull¼ì²é£¬Ã»ÓĞÄÚ´æ·ÃÎÊ£¬Ã»ÓĞloaduse³Í·££¬¶ÔÏóÍ·ÖĞÒ²Ã»ÓĞ¶îÍâµÄ×Ö£¬Ò²Ã»ÓĞ»º´æÕ¼ÓÃ¿Õ¼ä¡£´ËĞĞÎªÔÚ²¢·¢ÖØ¶¨Î»½×¶Î£¨concurrent Relocate phase£©Ê¹ÓÃ¡£
 
 We also steal 1 address bit from the 64-bit address space; the hardware ignores this bit (masks it off). This bit is called the Not-Marked-Through (NMT) bit and is used during the concurrent Marking phase. The hardware maintains a desired value for this bit and will trap to the NMT-trap if the ref has the wrong flavor. Null refs are ignored here as well.
 
@@ -204,11 +204,11 @@ Note that the read barrier behavior can be emulated on standard hardware at some
 
 The Pauseless GC Algorithm is divided into three main phases: Mark, Relocate and Remap. Each phase is fully parallel and concurrent. Mark bits go stale; objects die over time and the mark bits do not reflect the changes. The Mark phase is responsible for periodically refreshing the mark bits. The Relocate phase uses the most recently available mark bits to find pages with little live data, to relocate and compact those pages and to free the backing physical memory. The Remap phase updates every relocated pointer in the heap.
 
-Pauseless GCËã·¨·ÖÎªÈı¸öÖ÷Òª½×¶Î£ºMark£¨±ê¼Ç£©£¬Relocate(ÖØ·ÖÅä)ºÍRemap(ÖØÓ³Éä)¡£Ã¿¸ö½×¶Î¶¼ÊÇÍêÈ«²¢ĞĞºÍ²¢·¢µÄ¡£±ê¼ÇÎ»±äµÃ³Â¾É;¶ÔÏóËæÊ±¼äËÀÍö£¬±ê¼ÇÎ»²»·´Ó³±ä¸ü¡£±ê¼Ç½×¶Î¸ºÔğ¶¨ÆÚË¢ĞÂ±ê¼ÇÎ»¡£Relocate ½×¶ÎÊ¹ÓÃ×î½ü¿ÉÓÃµÄ±ê¼ÇÎ»À´²éÕÒ¾ßÓĞÉÙÁ¿´æ»î¶ÔÏóµÄÒ³Ãæ£¬ÒÔÖØ¶¨Î»ºÍÑ¹ËõÕâĞ©Ò³Ãæ, ÊÍ·ÅÎïÀíÄÚ´æ¡£ÖØÓ³Éä½×¶Î¸üĞÂ¶ÑÖĞµÄÃ¿¸öÖØ·ÖÅäÖ¸Õë¡£
+Pauseless GCËã·¨·ÖÎªÈı¸öÖ÷Òª½×¶Î£ºMark£¨±ê¼Ç£©£¬Relocate(ÖØ¶¨Î»)ºÍRemap(ÖØÓ³Éä)¡£Ã¿¸ö½×¶Î¶¼ÊÇÍêÈ«²¢ĞĞºÍ²¢·¢µÄ¡£±ê¼ÇÎ»±äµÃ³Â¾É;¶ÔÏóËæÊ±¼äËÀÍö£¬±ê¼ÇÎ»²»·´Ó³±ä¸ü¡£±ê¼Ç½×¶Î¸ºÔğ¶¨ÆÚË¢ĞÂ±ê¼ÇÎ»¡£ÖØ¶¨Î»½×¶ÎÊ¹ÓÃ×î½ü¿ÉÓÃµÄ±ê¼ÇÎ»À´²éÕÒ¾ßÓĞÉÙÁ¿´æ»î¶ÔÏóµÄÒ³Ãæ£¬ÒÔÖØ¶¨Î»ºÍÑ¹ËõÕâĞ©Ò³Ãæ, ÊÍ·ÅÎïÀíÄÚ´æ¡£ÖØÓ³Éä½×¶Î¸üĞÂ¶ÑÖĞµÄÃ¿¸öÖØ¶¨Î»Ö¸Õë¡£
 
 **There is no ¡°rush¡± to finish any given phase.** No phase places a substantial burden on the mutators that needs to be relieved by ending the phase quickly. There is no ¡°race¡± to finish some phase before collection can begin again ¨C Relocation runs continuously and can immediately free memory at any point. Since all phases are parallel, GC can keep up with any number of mutator threads simply by adding more GC threads. Unlike other incremental update algorithms, there is no re-Mark or final- Mark phase; the concurrent Mark phase will complete in a single pass despite the mutators busily modifying the heap. GC threads do compete with mutator threads for CPU time. On Azul's hardware there are generally spare CPUs available to do GC work. However, ¡°at the limit¡± some fraction of CPUs will be doing GC and will not be available to the mutators.
 
-**ÈÎºÎÌØ¶¨½×¶Î¶¼²»ĞèÒª¡°´ÒÃ¦¡±Íê³É**¡£Ã»ÓĞÄÄ¸ö½×¶ÎĞèÒª¿ìËÙÍê³É£¬»º½âÁË¸øÒµÎñÏß³Ì´øÀ´µÄ³ÁÖØ¸ºµ£¡£ÔÚÀ¬»øÊÕ¼¯ÔÙ´Î¿ªÊ¼Ö®Ç°Ã»ÓĞ¡°ÇÀ×Å¡±Íê³ÉÄ³¸ö½×¶Î - ÖØ·ÖÅä»áÁ¬ĞøÔËĞĞ£¬¿ÉÒÔÔÚÈÎºÎÊ±¿ÌÁ¢¼´ÊÍ·ÅÄÚ´æ¡£ÓÉÓÚËùÓĞ½×¶Î¶¼ÊÇ²¢ĞĞµÄ£¬Òò´ËÖ»ĞèÌí¼Ó¸ü¶àGCÏß³Ì£¬GC¾Í¿ÉÒÔ¸úÉÏÈÎÒâÊıÁ¿µÄmutatorÏß³Ì¡£ÓëÆäËûÔöÁ¿¸üĞÂËã·¨²»Í¬£¬ÕâÀïÃ»ÓĞÖØĞÂ±ê¼Ç»ò×îÖÕ±ê¼Ç½×¶Î; ¾¡¹ÜmutatorÃ¦ÓÚĞŞ¸Ä¶ÑÄÚ´æ£¬µ«²¢·¢±ê¼Ç½×¶Î½«ÔÚÒ»´Î´«µİÖĞÍê³É¡£GCÏß³ÌÈ·ÊµÓëmutatorÏß³ÌÕùÇ¹CPUÊ±¼ä¡£ÔÚAzulµÄÓ²¼şÉÏ£¬Í¨³£ÓĞ±¸ÓÃCPUÀ´½øĞĞGC¹¤×÷¡£¶øÇÒ£¬¡°ÔÚ¼«ÏŞÇé¿öÏÂ¡±Ä³Ğ©CPUÖ»Ö´ĞĞGC²Ù×÷, ²»»áÈÃÒµÎñÏß³ÌÊ¹ÓÃ¡£
+**ÈÎºÎÌØ¶¨½×¶Î¶¼²»ĞèÒª¡°´ÒÃ¦¡±Íê³É**¡£Ã»ÓĞÄÄ¸ö½×¶ÎĞèÒª¿ìËÙÍê³É£¬»º½âÁË¸øÒµÎñÏß³Ì´øÀ´µÄ³ÁÖØ¸ºµ£¡£ÔÚÀ¬»øÊÕ¼¯ÔÙ´Î¿ªÊ¼Ö®Ç°Ã»ÓĞ¡°ÇÀ×Å¡±Íê³ÉÄ³¸ö½×¶Î - ÖØ¶¨Î»»áÁ¬ĞøÔËĞĞ£¬¿ÉÒÔÔÚÈÎºÎÊ±¿ÌÁ¢¼´ÊÍ·ÅÄÚ´æ¡£ÓÉÓÚËùÓĞ½×¶Î¶¼ÊÇ²¢ĞĞµÄ£¬Òò´ËÖ»ĞèÌí¼Ó¸ü¶àGCÏß³Ì£¬GC¾Í¿ÉÒÔ¸úÉÏÈÎÒâÊıÁ¿µÄmutatorÏß³Ì¡£ÓëÆäËûÔöÁ¿¸üĞÂËã·¨²»Í¬£¬ÕâÀïÃ»ÓĞÖØĞÂ±ê¼Ç»ò×îÖÕ±ê¼Ç½×¶Î; ¾¡¹ÜmutatorÃ¦ÓÚĞŞ¸Ä¶ÑÄÚ´æ£¬µ«²¢·¢±ê¼Ç½×¶Î½«ÔÚÒ»´Î´«µİÖĞÍê³É¡£GCÏß³ÌÈ·ÊµÓëmutatorÏß³ÌÕùÇ¹CPUÊ±¼ä¡£ÔÚAzulµÄÓ²¼şÉÏ£¬Í¨³£ÓĞ±¸ÓÃCPUÀ´½øĞĞGC¹¤×÷¡£¶øÇÒ£¬¡°ÔÚ¼«ÏŞÇé¿öÏÂ¡±Ä³Ğ©CPUÖ»Ö´ĞĞGC²Ù×÷, ²»»áÈÃÒµÎñÏß³ÌÊ¹ÓÃ¡£
 
 **Each of the phases involves a ¡°self-healing¡± aspect,** where the mutators immediately correct the cause of each read barrier trap by updating the ref in memory. This assures the same ref will not trigger another trap. The work involved varies by trap type and is detailed below. Once the mutators' working sets have been handled they can execute at full speed with no more traps. During certain phase shifts mutators suffer through a ¡°trap storm¡±, a high volume of traps that amount to a pause smeared out in time. We measured the trap storms using Minimum Mutator Utilization, and they cost around 20ms spread out over a few hundred milliseconds.
 
@@ -224,7 +224,7 @@ The algorithm we present has no Stop-The-World (STW) pauses, no places where all
 
 The Mark phase is a parallel and concurrent incremental update (not SATB) marking algorithm [17], augmented with the read barrier. The Mark phase is responsible for marking all live objects, tagging live objects in some fashion to distinguish them from dead objects. In addition, each ref has it's NMT bit set to the expected value. The Mark phase also gathers per-1M-page liveness totals. These totals give a conservative estimate of live data on a page (hence a guaranteed amount of reclaimable space) and are used in the Relocate phase.
 
-±ê¼Ç½×¶ÎÊÇ²¢ĞĞµÄ£¬¶øÇÒÊ¹ÓÃµÄÊÇ²¢·¢ÔöÁ¿¸üĞÂ±ê¼ÇËã·¨£¨¶ø²»ÊÇSATB£©(¼û[17])£¬Ôö¼ÓÁË¶ÁÆÁÕÏ¡£±ê¼Ç½×¶Î¸ºÔğ±ê¼ÇËùÓĞ´æ»îµÄ¶ÔÏó£¬ÒÔÄ³ÖÖ·½Ê½´òÉÏ±êÇ©£¬½«´æ»î¶ÔÏóÓëËÀÍö¶ÔÏóÇø·Ö¿ªÀ´¡£´ËÍâ£¬½«Ã¿¸öÒıÓÃ¶¼ÉèÖÃ¶ÔÓ¦µÄNMTÎ»Ô¤ÆÚÖµ¡£±ê¼Ç½×¶Î»¹ÊÕ¼¯Ã¿¸ö1MÒ³µÄ´æ»î¶ÔÏó×ÜÊı¡£ÕâĞ©×ÜÊı¶ÔÒ³ÃæÉÏµÄ´æ»îÊı¾İ½øĞĞ±£ÊØ¹À¼Æ£¨ÒÔ±£Ö¤¿É»ØÊÕ¿Õ¼äÁ¿£©£¬²¢ÔÚRelocate ½×¶ÎÊ¹ÓÃ¡£
+±ê¼Ç½×¶ÎÊÇ²¢ĞĞµÄ£¬¶øÇÒÊ¹ÓÃµÄÊÇ²¢·¢ÔöÁ¿¸üĞÂ±ê¼ÇËã·¨£¨¶ø²»ÊÇSATB£©(¼û[17])£¬Ôö¼ÓÁË¶ÁÆÁÕÏ¡£±ê¼Ç½×¶Î¸ºÔğ±ê¼ÇËùÓĞ´æ»îµÄ¶ÔÏó£¬ÒÔÄ³ÖÖ·½Ê½´òÉÏ±êÇ©£¬½«´æ»î¶ÔÏóÓëËÀÍö¶ÔÏóÇø·Ö¿ªÀ´¡£´ËÍâ£¬½«Ã¿¸öÒıÓÃ¶¼ÉèÖÃ¶ÔÓ¦µÄNMTÎ»Ô¤ÆÚÖµ¡£±ê¼Ç½×¶Î»¹ÊÕ¼¯Ã¿¸ö1MÒ³µÄ´æ»î¶ÔÏó×ÜÊı¡£ÕâĞ©×ÜÊı¶ÔÒ³ÃæÉÏµÄ´æ»îÊı¾İ½øĞĞ±£ÊØ¹À¼Æ£¨ÒÔ±£Ö¤¿É»ØÊÕ¿Õ¼äÁ¿£©£¬²¢ÔÚÖØ¶¨Î»½×¶ÎÊ¹ÓÃ¡£
 
 The basic idea is straightforward: the Marker starts from some root set (generally static global variables and mutator stack contents) and begins marking reachable objects. After marking an object (and setting the NMT bit), the Marker then marksthrough the object ¨C recursively marking all refs it finds inside the marked object. Extensions to make this algorithm parallel have been previously published [17]. Making marking fully concurrent is a little harder and the issues are described further below.
 
@@ -232,11 +232,11 @@ The basic idea is straightforward: the Marker starts from some root set (general
 
 ### 4.2 Relocate Phase
 
-### 4.2 Relocate Phase(ÖØ·ÖÅä½×¶Î)
+### 4.2 Relocate Phase(ÖØ¶¨Î»½×¶Î)
 
 The Relocate phase is where objects are relocated and pages are reclaimed. A page with mostly dead objects is made wholly unused by relocating the remaining live objects to other pages. The Relocate phase starts by selecting a set of pages that are above a given threshold of sparseness. Each page in this set is protected from mutator access, and then live objects are copied out. Forwarding information tracking the location of relocated objects is maintained outside the page.
 
-Relocate ½×¶Î½øĞĞ¶ÔÏóÖØĞÂ·ÖÅä²¢»ØÊÕÄÚ´æÒ³¡£Èç¹ûÄ³¸öÒ³ÃæÖĞ´ó²¿·ÖÊÇËÀÍö¶ÔÏó£¬Ôò¿ÉÒÔ½«Ê£ÏÂµÄ´æ»î¶ÔÏóÖØĞÂ·ÖÅäµ½ÆäËûÒ³Ãæ£¬´ËÒ³ÃæÔòÍêÈ«²»Ê¹ÓÃ¡£Relocate ½×¶ÎÊ×ÏÈÑ¡ÔñÒ»×éÏ¡ÊèÖµ(sparseness)¸ßÓÚ¸ø¶¨ãĞÖµµÄÒ³Ãæ¡£±»Ñ¡ÖĞµÄÃ¿¸öÒ³Ãæ¶¼ÊÜµ½±£»¤£¬×èÖ¹ÒµÎñÏß³Ì·ÃÎÊ£¬È»ºó½«´æ»î¶ÔÏó¿½±´³öÈ¥¡£¸ú×ÙÖØ·ÖÅä¶ÔÏóµÄÎ»ÖÃ×ª·¢ĞÅÏ¢ÔÚÒ³ÃæÍâ²¿Î¬»¤¡£
+ÖØ¶¨Î»½×¶Î½øĞĞ¶ÔÏóÖØĞÂ¶¨Î»²¢»ØÊÕÄÚ´æÒ³¡£Èç¹ûÄ³¸öÒ³ÃæÖĞ´ó²¿·ÖÊÇËÀÍö¶ÔÏó£¬Ôò¿ÉÒÔ½«Ê£ÏÂµÄ´æ»î¶ÔÏóÖØĞÂ¶¨Î»µ½ÆäËûÒ³Ãæ£¬´ËÒ³ÃæÔòÍêÈ«²»Ê¹ÓÃ¡£ÖØ¶¨Î»½×¶ÎÊ×ÏÈÑ¡ÔñÒ»×éÏ¡ÊèÖµ(sparseness)¸ßÓÚ¸ø¶¨ãĞÖµµÄÒ³Ãæ¡£±»Ñ¡ÖĞµÄÃ¿¸öÒ³Ãæ¶¼ÊÜµ½±£»¤£¬×èÖ¹ÒµÎñÏß³Ì·ÃÎÊ£¬È»ºó½«´æ»î¶ÔÏó¿½±´³öÈ¥¡£¸ú×ÙÖØ¶¨Î»¶ÔÏóµÄÎ»ÖÃ×ª·¢ĞÅÏ¢ÔÚÒ³ÃæÍâ²¿Î¬»¤¡£
 
 If a mutator loads a reference to a protected page, the read-barrier instruction will trigger a GC-trap. The mutator is never allowed to use the protected-page reference in a language-visible way. The GC-trap handler is responsible for changing the stale protected-page reference to the correctly forwarded reference.
 
@@ -244,11 +244,11 @@ If a mutator loads a reference to a protected page, the read-barrier instruction
 
 After the page contents have been relocated, the Relocate phase frees the **physical** memory; it's contents are never needed again. The physical memory is recycled by the OS and can immediately be used for new allocations. **Virtual** memory cannot be freed until no more stale references to that page remain in the heap, and that is the job of the Remap phase.
 
-Ò³ÃæÖĞµÄÄÚÈİÈ«²¿ÖØĞÂ·ÖÅäºó£¬Relocate ½×¶ÎÊÍ·Å **ÎïÀíÄÚ´æ**; Ò²¾ÍÊÇÆäÖĞµÄÄÚÈİÓÀÔ¶²»ÔÙĞèÒªÁË¡£ÎïÀíÄÚ´æÓÉ²Ù×÷ÏµÍ³»ØÊÕ£¬¿ÉÁ¢¼´ÓÃÓÚĞÂµÄÄÚ´æ·ÖÅä¡£**ĞéÄâÄÚ´æ** µØÖ·²»»áÁ¢¼´ÊÍ·Å£¬Ö±µ½¶ÑÄÚ´æÖĞ²»ÔÙÓĞ¶Ô¸ÃÒ³ÃæµÄ¹ıÊ±ÒıÓÃ£¬ÄÇ¾ÍÊÇRemap½×¶ÎµÄ¹¤×÷ÁË¡£
+Ò³ÃæÖĞµÄÄÚÈİÈ«²¿ÖØĞÂ¶¨Î»ºó£¬ÖØ¶¨Î»½×¶ÎÊÍ·Å **ÎïÀíÄÚ´æ**; Ò²¾ÍÊÇÆäÖĞµÄÄÚÈİÓÀÔ¶²»ÔÙĞèÒªÁË¡£ÎïÀíÄÚ´æÓÉ²Ù×÷ÏµÍ³»ØÊÕ£¬¿ÉÁ¢¼´ÓÃÓÚĞÂµÄÄÚ´æ·ÖÅä¡£**ĞéÄâÄÚ´æ** µØÖ·²»»áÁ¢¼´ÊÍ·Å£¬Ö±µ½¶ÑÄÚ´æÖĞ²»ÔÙÓĞ¶Ô¸ÃÒ³ÃæµÄ¹ıÊ±ÒıÓÃ£¬ÄÇ¾ÍÊÇRemap½×¶ÎµÄ¹¤×÷ÁË¡£
 
 As hinted at in Figure 1, a Relocate phase runs constantly freeing memory to keep pace with the mutators' allocations. Sometimes it runs alone and sometimes concurrent with the next Mark phase.
 
-ÈçÍ¼1ËùÊ¾£¬Relocate ½×¶Î²»¶ÏÊÍ·ÅÄÚ´æÒÔ¸úÉÏmutatorµÄ·ÖÅä¡£ÓĞÊ±ºòµ¥¶ÀÔËĞĞ£¬ÓĞÊ±Ò²»áºÍÏÂÒ»´Î±ê¼Ç½×¶Î²¢·¢ÔËĞĞ¡£
+ÈçÍ¼1ËùÊ¾£¬ÖØ¶¨Î»½×¶Î²»¶ÏÊÍ·ÅÄÚ´æÒÔ¸úÉÏmutatorµÄ·ÖÅä¡£ÓĞÊ±ºòµ¥¶ÀÔËĞĞ£¬ÓĞÊ±Ò²»áºÍÏÂÒ»´Î±ê¼Ç½×¶Î²¢·¢ÔËĞĞ¡£
 
 
 ### 4.3 Remap Phase
@@ -257,7 +257,7 @@ As hinted at in Figure 1, a Relocate phase runs constantly freeing memory to kee
 
 During the Remap phase, GC threads traverse the object graph executing a read barrier against every ref in the heap. If the ref refers to a protected page it is stale and needs to be forwarded, just as if a mutator trapped on the ref. Once the Remap phase completes no live heap ref can refer to pages protected by the previous Relocate phase. At this point the virtual memory for those pages is freed.
 
-ÔÚRemap½×¶Î£¬GCÏß³Ì±éÀú¶ÔÏóÍ¼£¬¶Ô¶ÑÄÚ´æÖĞµÄÃ¿¸öÒıÓÃÖ´ĞĞ¶ÁÆÁÕÏ¡£Èç¹ûÒıÓÃÖ¸ÏòÁËÊÜ±£»¤µÄÒ³Ãæ£¬ÄÇÃ´ËüµÄÖ¸ÕëÊÇ³Â¾ÉµÄ,ĞèÒª×ª·¢£¬¾ÍÏñÊÇÒµÎñÏß³Ìµô½øÁËÕâ¸öÒıÓÃÉÏµÄÏİÚå¡£Remap½×¶ÎÍê³Éºó£¬²»ÔÙÓĞ´æ»îµÄ¶ÑÄÚ´æÒıÓÃÖ¸ÏòÊÜÏÈÇ°Relocate½×¶Î±£»¤µÄÒ³Ãæ¡£´ËÊ±£¬ÕâĞ©Ò³ÃæµÄĞéÄâÄÚ´æÒ²±»ÊÍ·ÅÁË¡£
+ÔÚRemap½×¶Î£¬GCÏß³Ì±éÀú¶ÔÏóÍ¼£¬¶Ô¶ÑÄÚ´æÖĞµÄÃ¿¸öÒıÓÃÖ´ĞĞ¶ÁÆÁÕÏ¡£Èç¹ûÒıÓÃÖ¸ÏòÁËÊÜ±£»¤µÄÒ³Ãæ£¬ÄÇÃ´ËüµÄÖ¸ÕëÊÇ³Â¾ÉµÄ,ĞèÒª×ª·¢£¬¾ÍÏñÊÇÒµÎñÏß³Ìµô½øÁËÕâ¸öÒıÓÃÉÏµÄÏİÚå¡£Remap½×¶ÎÍê³Éºó£¬²»ÔÙÓĞ´æ»îµÄ¶ÑÄÚ´æÒıÓÃÖ¸ÏòÊÜÏÈÇ°ÖØ¶¨Î»½×¶Î±£»¤µÄÒ³Ãæ¡£´ËÊ±£¬ÕâĞ©Ò³ÃæµÄĞéÄâÄÚ´æÒ²±»ÊÍ·ÅÁË¡£
 
 ![](01_complete_gc_cycle.jpg)
 
@@ -271,7 +271,7 @@ Since both the Remap and Mark phases need to touch all live objects, we fold the
 
 The Remap phase is also running concurrently with the 2nd half of the Relocate phase. The Relocate phase is creating new stale pointers that can only be fixed by a complete run of the Remap phase, so stale pointers created during the 2nd half of this Relocate phase are only cleaned out at the end of the next Remap phase. The next few sections will discuss each phase in more depth.
 
-Remap½×¶ÎÒ²ºÍRelocateµÄºó°ë²¿·Ö²¢·¢ÔËĞĞ¡£Relocate½×¶Î»á´´½¨ĞÂµÄ¹ıÊ±Ö¸Õë£¬Ö»»áÔÚÍêÕûÔËĞĞµÄRemap½×¶ÎÀ´ĞŞ¸´£¬Òò´ËÔÚRelocate½×¶ÎµÄÏÂ°ë²¿·Ö´´½¨µÄ¹ıÊ±Ö¸Õë½öÔÚÏÂÒ»¸öRemap½×¶Î½áÊøÊ±Çå³ı¡£½ÓÏÂÀ´µÄ¼¸½Ú½«ÉîÈëµØÌÖÂÛÃ¿¸ö½×¶Î¡£
+Remap½×¶ÎÒ²ºÍÖØ¶¨Î»½×¶ÎµÄºó°ë²¿·Ö²¢·¢ÔËĞĞ¡£ÖØ¶¨Î»½×¶Î»á´´½¨ĞÂµÄ¹ıÊ±Ö¸Õë£¬Ö»»áÔÚÍêÕûÔËĞĞµÄRemap½×¶ÎÀ´ĞŞ¸´£¬Òò´ËÔÚÖØ¶¨Î»½×¶ÎµÄÏÂ°ë²¿·Ö´´½¨µÄ¹ıÊ±Ö¸Õë½öÔÚÏÂÒ»¸öRemap½×¶Î½áÊøÊ±Çå³ı¡£½ÓÏÂÀ´µÄ¼¸½Ú½«ÉîÈëµØÌÖÂÛÃ¿¸ö½×¶Î¡£
 
 ## 5. MARK PHASE
 
@@ -295,7 +295,7 @@ After the root-sets are all marked we proceed with a parallel and concurrent mar
 
 New objects created by concurrent mutators are allocated in pages which will not be relocated in this GC cycle, hence the state of their live bits is not consulted by the Relocate phase. All refs being stored into new objects (or any object for that matter) have either already been marked or are queued in the Mark phase's worklists. Hence the initial state of the live bit for new objects doesn't matter for the Mark phase.
 
-²¢·¢µÄÒµÎñÏß³Ì´´½¨µÄĞÂ¶ÔÏóÖ»ÄÜÔÚÆäËûÒ³ÃæÖĞ·ÖÅä£¬ÕâĞ©Ò³Ãæ²»»áÔÚ´ËGCÖÜÆÚÖĞ±»ÖØ¶¨Î»£¬Òò´Ë Relocate ½×¶Î²»»áÉæ¼°µ½ÕâĞ©ĞÂ¶ÔÏóµÄ´æ»î×´Ì¬±êÖ¾Î»¡£ĞÂ¶ÔÏó£¨»òÈÎºÎ¶ÔÏó£©ÖĞµÄËùÓĞÒıÓÃ£¬ÒªÃ´ÒÑ¾­±»±ê¼Ç£¬ÒªÃ´»¹ÔÚ±ê¼Ç½×¶ÎµÄ¹¤×÷ÁĞ±íÖĞµÈ×Å´¦Àí¡£Òò´Ë£¬¶ÔÓÚ±ê¼Ç½×¶ÎÀ´Ëµ£¬ĞÂ¶ÔÏóµÄ´æ»î±êÖ¾Î»µÄ³õÊ¼ÖµÊÇÎŞ¹Ø½ôÒªµÄ¡£
+²¢·¢µÄÒµÎñÏß³Ì´´½¨µÄĞÂ¶ÔÏóÖ»ÄÜÔÚÆäËûÒ³ÃæÖĞ·ÖÅä£¬ÕâĞ©Ò³Ãæ²»»áÔÚ´ËGCÖÜÆÚÖĞ±»ÖØ¶¨Î»£¬Òò´Ë ÖØ¶¨Î»½×¶Î²»»áÉæ¼°µ½ÕâĞ©ĞÂ¶ÔÏóµÄ´æ»î×´Ì¬±êÖ¾Î»¡£ĞÂ¶ÔÏó£¨»òÈÎºÎ¶ÔÏó£©ÖĞµÄËùÓĞÒıÓÃ£¬ÒªÃ´ÒÑ¾­±»±ê¼Ç£¬ÒªÃ´»¹ÔÚ±ê¼Ç½×¶ÎµÄ¹¤×÷ÁĞ±íÖĞµÈ×Å´¦Àí¡£Òò´Ë£¬¶ÔÓÚ±ê¼Ç½×¶ÎÀ´Ëµ£¬ĞÂ¶ÔÏóµÄ´æ»î±êÖ¾Î»µÄ³õÊ¼ÖµÊÇÎŞ¹Ø½ôÒªµÄ¡£
 
 ### 5.1 The NMT Bit
 
@@ -349,22 +349,22 @@ When the marking threads run out of work, Marking is nearly done. The marking th
 
 ## 6. RELOCATE AND REMAP PHASES
 
-## 6. Relocate Óë Remap ½×¶ÎÏê½â
+## 6. ÖØ¶¨Î»½×¶Î Óë Remap ½×¶ÎÏê½â
 
 The Relocate phase is where objects get relocated and compacted, and unused pages get freed. Recall that the Mark phase computed the amount of live data per 1M page. A page with zero live data can obviously be reclaimed. A page with only a little live data can be made wholly unused by relocating the live objects out to other pages.
 
-Relocate ½×¶Î½øĞĞ¶ÔÏóÖØ¶¨Î»ºÍÄÚ´æÕûÀí£¬²¢ÊÍ·Å²»Ê¹ÓÃµÄÒ³Ãæ¡£ »ØÏëÒ»ÏÂ£¬±ê¼Ç½×¶Î¼ÆËãÃ¿¸ö1MÒ³ÃæÖĞµÄ´æ»îÊı¾İÁ¿¡£ºÜÃ÷ÏÔ´æ»îÊı¾İÎª0µÄÒ³ÃæÊÇ¿ÉÒÔ±»»ØÊÕµÄ¡£ ½öÓĞÉÙÁ¿´æ»îÊı¾İµÄÒ³Ãæ£¬¿ÉÒÔÍ¨¹ı½«´æ»î¶ÔÏóÖØ¶¨Î»µ½ÆäËûÒ³Ãæ£¬Ê¹µÃ´ËÒ³ÃæÕû¸ö²»ÔÙ±»Ê¹ÓÃ¡£
+ÖØ¶¨Î»½×¶Î½øĞĞ¶ÔÏóÖØ¶¨Î»ºÍÄÚ´æÕûÀí£¬²¢ÊÍ·Å²»Ê¹ÓÃµÄÒ³Ãæ¡£ »ØÏëÒ»ÏÂ£¬±ê¼Ç½×¶Î¼ÆËãÃ¿¸ö1MÒ³ÃæÖĞµÄ´æ»îÊı¾İÁ¿¡£ºÜÃ÷ÏÔ´æ»îÊı¾İÎª0µÄÒ³ÃæÊÇ¿ÉÒÔ±»»ØÊÕµÄ¡£ ½öÓĞÉÙÁ¿´æ»îÊı¾İµÄÒ³Ãæ£¬¿ÉÒÔÍ¨¹ı½«´æ»î¶ÔÏóÖØ¶¨Î»µ½ÆäËûÒ³Ãæ£¬Ê¹µÃ´ËÒ³ÃæÕû¸ö²»ÔÙ±»Ê¹ÓÃ¡£
 
 As hinted at in Figure 1, a Relocate phase is constantly running, continuously freeing memory at a pace to stay ahead of the mutators. Relocation uses the current GC-cycle's mark bits. A cycle's Relocate phase will overlap with the next cycle's mark phase. When the next cycle's Mark phase starts it uses a new set of marking bits, leaving the current cycle's mark bits untouched. The Relocate phase starts by finding unused or mostly unused pages. In theory full or mostly full pages can be relocated as well but there's little to be gained. Figure 2 shows a series of 1M heap pages; live object space is shown textured. There is a ref coming from a fully live page into a nearly empty page. We want to relocate the few remaining objects in the ¡°Mostly Dead¡± page and compact them into a ¡°New, Free¡± page, then reclaim the ¡°Mostly Dead¡± page.
 
-´ÓÍ¼1ÖĞ¿ÉÒÔ¿´µ½£¬Relocate ½×¶Î²»¶ÏÔËĞĞ£¬²»¶ÏÊÍ·ÅÄÚ´æ£¬ÒÔ±£³ÖÁìÏÈÓÚÒµÎñÏß³Ì¡£ÖØ¶¨Î»Ê±»áÊ¹ÓÃµ±Ç°GCÖÜÆÚµÄ±ê¼ÇÎ»¡£
-Ã¿´ÎGCÑ­»·µÄRelocate½×¶ÎºÍÏÂÒ»ÖÜÆÚµÄ±ê¼Ç½×¶ÎÓĞ²¿·ÖÖØµş¡£µ±ÏÂÒ»ÖÜÆÚµÄ±ê¼Ç½×¶Î¿ªÊ¼Ê±£¬»áÊ¹ÓÃÒ»×éĞÂµÄ±ê¼ÇÎ»£¬±£³ÖÇ°Ò»ÖÜÆÚµÄ±ê¼ÇÎ»²»±ä¡£
-Relocate ½×¶ÎÊ×ÏÈÅÅ²éÎ´Ê¹ÓÃ»òÕß´ó²¿·Ö¿Õ¼äÎ´Ê¹ÓÃµÄÒ³Ãæ¡£ÀíÂÛÉÏ£¬ÓÃÂú»òÕß»ù±¾ÓÃÂúµÄÒ³ÃæÒ²ÄÜ½øĞĞÖØ¶¨Î»£¬µ«Ã»¶àÉÙÒâÒå¡£
+´ÓÍ¼1ÖĞ¿ÉÒÔ¿´µ½£¬ÖØ¶¨Î»½×¶Î²»¶ÏÔËĞĞ£¬²»¶ÏÊÍ·ÅÄÚ´æ£¬ÒÔ±£³ÖÁìÏÈÓÚÒµÎñÏß³Ì¡£ÖØ¶¨Î»Ê±»áÊ¹ÓÃµ±Ç°GCÖÜÆÚµÄ±ê¼ÇÎ»¡£
+Ã¿´ÎGCÑ­»·µÄÖØ¶¨Î»½×¶ÎºÍÏÂÒ»ÖÜÆÚµÄ±ê¼Ç½×¶ÎÓĞ²¿·ÖÖØµş¡£µ±ÏÂÒ»ÖÜÆÚµÄ±ê¼Ç½×¶Î¿ªÊ¼Ê±£¬»áÊ¹ÓÃÒ»×éĞÂµÄ±ê¼ÇÎ»£¬±£³ÖÇ°Ò»ÖÜÆÚµÄ±ê¼ÇÎ»²»±ä¡£
+ÖØ¶¨Î»½×¶ÎÊ×ÏÈÅÅ²éÎ´Ê¹ÓÃ»òÕß´ó²¿·Ö¿Õ¼äÎ´Ê¹ÓÃµÄÒ³Ãæ¡£ÀíÂÛÉÏ£¬ÓÃÂú»òÕß»ù±¾ÓÃÂúµÄÒ³ÃæÒ²ÄÜ½øĞĞÖØ¶¨Î»£¬µ«Ã»¶àÉÙÒâÒå¡£
 Í¼2ÏÔÊ¾ÁËÒ»Ğ©1M¶ÑÄÚ´æÒ³Ãæ; ´æ»î¶ÔÏóÕ¼ÓÃµÄ²¿·ÖÊ¹ÓÃÌõÎÆ±íÊ¾¡£ÔÚÍ¼2ÖĞ£¬È«ÊÇ´æ»î¶ÔÏóµÄÒ³ÃæÖĞÓĞ¸öÒıÓÃ£¬Ö¸ÏòÁËÒ»¸ö¼¸ºõÊÇ¿ÕµÄÒ³Ãæ¡£ÎÒÃÇÏëÒª½«¡°Mostly Dead¡±Ò³ÃæÖĞµÄÉÙÁ¿´æ»î¶ÔÏóÖØ¶¨Î»£¬½«ËüÃÇÕûÀíµ½¡°New£¬Free¡±Ò³Ãæ£¬È»ºó»ØÊÕ¡°Mostly Dead¡±Ò³Ãæ¡£
 
 Next the Relocate phase builds side arrays to hold forwarding pointers. The forwarding pointers cannot be kept in the old copy of the objects because we will reclaim the physical storage immediately after copying and long before all refs are remapped.
 
-½ÓÏÂÀ´£¬Relocate½×¶Î¹¹½¨ side arrays À´±£´æ×ª·¢Ö¸Õë¡£×ª·¢Ö¸Õë²»ÄÜ±£´æÔÚ¶ÔÏóµÄ¾É¸±±¾ÖĞ£¬ÒòÎªÔÚ¸´ÖÆºó»áÁ¢¼´»ØÊÕÎïÀíÄÚ´æ£¬¶øÇÒÔÚËùÓĞÒıÓÃÖØĞÂÓ³ÉäÖ®Ç°»¹ÓĞºÜ³¤Ò»¶ÎÊ±¼ä¡£
+½ÓÏÂÀ´£¬ÖØ¶¨Î»½×¶Î¹¹½¨ side arrays À´±£´æ×ª·¢Ö¸Õë¡£×ª·¢Ö¸Õë²»ÄÜ±£´æÔÚ¶ÔÏóµÄ¾É¸±±¾ÖĞ£¬ÒòÎªÔÚ¸´ÖÆºó»áÁ¢¼´»ØÊÕÎïÀíÄÚ´æ£¬¶øÇÒÔÚËùÓĞÒıÓÃÖØĞÂÓ³ÉäÖ®Ç°»¹ÓĞºÜ³¤Ò»¶ÎÊ±¼ä¡£
 
 ![](02_Finding_sparsely_populated_pages.jpg)
 
@@ -390,7 +390,7 @@ side array µÄÊı¾İÁ¿²¢²»´ó£¬ÒòÎªÖØ¶¨Î»µÄÊÇÏ¡ÊèÒ³Ãæ¡£ÎÒÃÇÊ¹ÓÃÒ»¸ö¼òµ¥µÄ¹şÏ£±íÀ´ÊµÏ
 
 The Relocate phase then GC-protects the ¡°Mostly Dead¡± page, shown in gray, from the mutators. Objects in this page are now considered stale; no more modifications of these objects are allowed. If a mutator loads a ref into the protected page, it's readbarrier will now take a GC-trap.
 
-È»ºó Relocate ±£»¤ ¡°Mostly Dead¡±Ò³Ãæ£¬×èÖ¹ÒµÎñÏß³ÌĞŞ¸Ä,Í¼ÖĞÒÔ»ÒÉ«ÏÔÊ¾¡£ ÏÖÔÚ½«´ËÒ³ÃæÖĞµÄ¶ÔÏóµ±×öÊÇ³Â¾ÉµÄ; ²»ÔÊĞí¶ÔÕâĞ©¶ÔÏó½øĞĞĞŞ¸Ä¡£ Èç¹ûmutator½«ÒıÓÃ¼ÓÔØµ½ÊÜ±£»¤µÄÒ³Ãæ£¬Ôò¶ÔÓ¦µÄ¶ÁÆÁÕÏ¾Í»áÏİÈëµ½GCÏİÚåÖĞ¡£
+È»ºó ÖØ¶¨Î»½×¶Î ±£»¤ ¡°Mostly Dead¡±Ò³Ãæ£¬×èÖ¹ÒµÎñÏß³ÌĞŞ¸Ä,Í¼ÖĞÒÔ»ÒÉ«ÏÔÊ¾¡£ ÏÖÔÚ½«´ËÒ³ÃæÖĞµÄ¶ÔÏóµ±×öÊÇ³Â¾ÉµÄ; ²»ÔÊĞí¶ÔÕâĞ©¶ÔÏó½øĞĞĞŞ¸Ä¡£ Èç¹ûmutator½«ÒıÓÃ¼ÓÔØµ½ÊÜ±£»¤µÄÒ³Ãæ£¬Ôò¶ÔÓ¦µÄ¶ÁÆÁÕÏ¾Í»áÏİÈëµ½GCÏİÚåÖĞ¡£
 
 
 Next the live objects are copied out and the forwarding table is modified to reflect the objects' new locations as shown in Figure 4. Copying is done concurrently with the mutators; the readbarrier keeps the mutators from seeing a stale object before it has finished moving. Live objects are found using the most recent mark-bits available and sweeping the page.
@@ -415,11 +415,11 @@ It is also possible that the needed object has not yet been copied. In this case
 
 ### 6.2 Other Relocate Phase Actions
 
-### 6.2 Relocate½×¶ÎµÄÆäËû²Ù×÷
+### 6.2 ÖØ¶¨Î»½×¶ÎµÄÆäËû²Ù×÷
 
 At the time we protected pages, running mutators might have stale refs in their root-set. These are already past their read-barrier and thus won't get directly caught. The mutators scrub any existing stale refs from their root-set with a Checkpoint. Relocation can start when the Checkpoint completes.
 
-ÔÚ±£»¤Ò³ÃæÊ±£¬ÔËĞĞÖĞµÄmutatorsÔÚÆäroot-setÖĞ¿ÉÄÜÓĞ¹ıÊ±µÄÒıÓÃ¡£ ÒòÎªroot-setÖĞµÄÒıÓÃÖ±½ÓÌø¹ıÁË¶ÁÆÁÕÏ£¬ËùÒÔ²»»á±»Ö±½Ó»ñÈ¡µ½¡£ mutatorsÊ¹ÓÃÒ»¸öCheckpointÀ´½«root-setÖĞµÄ³Â¾ÉÒıÓÃ²Á³ı¡£¼ì²éµãÍê³Éºó£¬¿ÉÒÔ¼ÌĞøRelocation¡£
+ÔÚ±£»¤Ò³ÃæÊ±£¬ÔËĞĞÖĞµÄmutatorsÔÚÆäroot-setÖĞ¿ÉÄÜÓĞ¹ıÊ±µÄÒıÓÃ¡£ ÒòÎªroot-setÖĞµÄÒıÓÃÖ±½ÓÌø¹ıÁË¶ÁÆÁÕÏ£¬ËùÒÔ²»»á±»Ö±½Ó»ñÈ¡µ½¡£ mutatorsÊ¹ÓÃÒ»¸öCheckpointÀ´½«root-setÖĞµÄ³Â¾ÉÒıÓÃ²Á³ı¡£¼ì²éµãÍê³Éºó£¬¿ÉÒÔ¼ÌĞøÖØ¶¨Î»¡£
 
 The cost to modify the TLB protections (a kernel call and a system- wide TLB shoot-down) and scrubbing the mutators' stacks is the same for one page as it is for many. We batch up these operations to lower costs, and typically protect (and relocate and free) a few gigabytes at a time.
 
@@ -479,7 +479,7 @@ The worse pause reported was 16ms and the average was 7ms.
 
 ### 7.3 At the Relocation Phase Start
 
-### 7.3 Relocation½×¶Î¿ªÊ¼Ê±
+### 7.3 ÖØ¶¨Î»½×¶Î¿ªÊ¼Ê±
 
 The mutators' root-sets need scrubbing when GC-protecting a page. There are two problems here: the TLB shoot-down isn't atomic and there are stale refs in the root-set. Since the TLB shoot-down is not atomic, for a brief period some mutators can be protected and not others. Unprotected mutators would continue to read and write the object directly, so protected mutators need to as well. However, reading and writing the protected object forces a GC-protection trap. Our current implementation stops all threads and performs a bulk TLB shoot-down and mutator root-set scrubbing under STW. This can be engineered to be concurrent and incremental in a straightforward manner.
 
@@ -495,11 +495,11 @@ The worse pause reported was 19ms and the average was 5ms.
 
 ### 7.4 Relocate doesn't run during Mark/Remap
 
-### 7.4 ÔÚ Mark/Remap ÆÚ¼ä»¹²»ÄÜÖ´ĞĞ Relocate
+### 7.4 ÔÚ Mark/Remap ÆÚ¼ä»¹²»ÄÜÖ´ĞĞÖØ¶¨Î»
 
 Right now we have not implemented a second set of mark bits to allow the Relocate phase to run concurrently with the next Mark/Remap phase [14]. This means we cannot free memory during the Mark/Remap phase. We have heuristics which predict how many pages the mutator will need during marking and we free that many (plus some pad) before marking begins. If we predict low, as can happen if the mutators suddenly ¡°accelerate¡±, the mutators will block until marking is complete. Engineering the overlapped Relocate/Mark phases will be straightforward. Additionally, we currently do not add threads dynamically in response to mutator acceleration. Each phase completes with a number of threads decided on at the phase start.
 
-½ØÖ¹ÂÛÎÄ·¢±íÊ±£¬»¹Î´Ê¹ÓÃµÚ¶ş×é±ê¼ÇÎ»À´ÊµÏÖ£¬ÒÔÔÊĞíRelocate½×¶ÎÓëÏÂÒ»´ÎGCÖÜÆÚµÄMark/Remap½×¶Î(¼û[14])²¢·¢Ö´ĞĞ¡£ Ò²¾ÍÊÇËµÔÚ¾ßÌåÊµÏÖÖĞÔİÊ±»¹²»ÄÜÔÚMark/Remap½×¶ÎÊÍ·ÅÄÚ´æ¡£ ÎÒÃÇÊ¹ÓÃÆô·¢Ê½Ëã·¨£¬À´Ô¤²âÒµÎñÏß³ÌÔÚ±ê¼ÇÆÚ¼äĞèÒª¶àÉÙÒ³Ãæ£¬²¢ÔÚ±ê¼Ç¿ªÊ¼Ç°ÊÍ·Å×ã¹»µÄÒ³Ãæ£¨¼ÓÉÏÒ»Ğ©Ìî³ä£©¡£ Èç¹ûÔ¤²âµÍÁË£¬Åöµ½ÒµÎñÏß³ÌÍ»È»¡°¼ÓËÙ¡±£¬ÔòÒµÎñÏß³Ì»á×èÈû¡¢Ö±µ½±ê¼ÇÍê³É¡£ ½« Relocate/Mark ½×¶ÎÉè¼ÆÎª²¢·¢Ö´ĞĞ·Ç³£¼òµ¥¡£ ´ËÍâ£¬Ä¿Ç°Ò²²»ÄÜÔÚÒµÎñÍ»È»Ôö¼ÓÊ±¶¯Ì¬Ìí¼ÓGCÏß³Ì¡£ Ã¿¸ö½×¶ÎµÄÏß³ÌÊıÔÚ¸Ã½×¶Î¿ªÊ¼Ê±¾ÍÈ·¶¨ÁË¡£
+½ØÖ¹ÂÛÎÄ·¢±íÊ±£¬»¹Î´Ê¹ÓÃµÚ¶ş×é±ê¼ÇÎ»À´ÊµÏÖ£¬ÒÔÔÊĞíÖØ¶¨Î»½×¶ÎÓëÏÂÒ»´ÎGCÖÜÆÚµÄMark/Remap½×¶Î(¼û[14])²¢·¢Ö´ĞĞ¡£ Ò²¾ÍÊÇËµÔÚ¾ßÌåÊµÏÖÖĞÔİÊ±»¹²»ÄÜÔÚMark/Remap½×¶ÎÊÍ·ÅÄÚ´æ¡£ ÎÒÃÇÊ¹ÓÃÆô·¢Ê½Ëã·¨£¬À´Ô¤²âÒµÎñÏß³ÌÔÚ±ê¼ÇÆÚ¼äĞèÒª¶àÉÙÒ³Ãæ£¬²¢ÔÚ±ê¼Ç¿ªÊ¼Ç°ÊÍ·Å×ã¹»µÄÒ³Ãæ£¨¼ÓÉÏÒ»Ğ©Ìî³ä£©¡£ Èç¹ûÔ¤²âµÍÁË£¬Åöµ½ÒµÎñÏß³ÌÍ»È»¡°¼ÓËÙ¡±£¬ÔòÒµÎñÏß³Ì»á×èÈû¡¢Ö±µ½±ê¼ÇÍê³É¡£ ½« ÖØ¶¨Î»/Mark ½×¶ÎÉè¼ÆÎª²¢·¢Ö´ĞĞ·Ç³£¼òµ¥¡£ ´ËÍâ£¬Ä¿Ç°Ò²²»ÄÜÔÚÒµÎñÍ»È»Ôö¼ÓÊ±¶¯Ì¬Ìí¼ÓGCÏß³Ì¡£ Ã¿¸ö½×¶ÎµÄÏß³ÌÊıÔÚ¸Ã½×¶Î¿ªÊ¼Ê±¾ÍÈ·¶¨ÁË¡£
 
 ## 8. EXPERIMENTS
 
