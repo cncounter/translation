@@ -103,7 +103,7 @@ JVM选项大致可以分为以下几类:
 			<td>-XX:-UseSerialGC</td><td>使用串行垃圾收集(serial garbage collection). (开始引入: 5.0.)</td>
 		</tr>
 		<tr valign="top">
-			<td>-XX:-UseSpinning</td><td>进入操作系统线程同步代码之前,在Java监视器锁(monitor)上启用自旋锁优化(naive spinning). (只适用于 1.4.2 以及 5.0.) [1.4.2, multi-processor Windows platforms: true]</td>
+			<td>-XX:-UseSpinning</td><td>进入操作系统线程同步代码之前,在Java的管程(Monitor)上启用自旋锁优化(naive spinning). (只适用于 1.4.2 以及 5.0.) [1.4.2, multi-processor Windows platforms: true]</td>
 		</tr>
 		<tr valign="top">
 			<td>-XX:+UseTLAB</td><td>使用 thread-local 对象分配 (从 1.4.0 开始引入, 使用的是 UseTLE 优先.) [1.4.2 及更早版本, x86架构或者带 -client 选项时为: false]</td>

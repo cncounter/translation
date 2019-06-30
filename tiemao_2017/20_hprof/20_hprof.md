@@ -20,7 +20,7 @@ In J2SE Version 5.0, HPROF has been implemented on the new Java Virtual Machine 
 
 HPROF is capable of presenting CPU usage, heap allocation statistics, and monitor contention profiles. In addition, it can also report complete heap dumps and states of all the monitors and threads in the Java virtual machine. HPROF can be invoked by:
 
-HPROF能够提供的数据包括:  CPU使用率，堆内存分配情况统计，以及监视锁的争用情况分析。 此外，还可以执行完整的堆转储，列出JVM中所有的 monitor 和 thread。调用HPROF的方法如下:
+HPROF能够提供的数据包括:  CPU使用率，堆内存分配情况统计，以及管程(Monitor)的争用情况分析。 此外，还可以执行完整的堆转储，列出JVM中所有的 管程(Monitor) 和 线程(thread)。调用HPROF的方法如下:
 
 ```shell
 java -agentlib:hprof[=options] XXXXXXXXClass
@@ -60,7 +60,7 @@ Option名称/值           说明                            默认值
 ---------------------  -----------                    -------
 heap=dump|sites|all    堆内存分析(profiling)           all
 cpu=samples|times|old  CPU 使用情况                    off
-monitor=y|n            监视锁(monitor)争用情况          n
+monitor=y|n            管程(Monitor)争用情况          n
 format=a|b             输出文本/a;还是二进制/b;          a
 file=<file>            指定输出文件                    java.hprof[.txt]
 net=<host>:<port>      将输出数据通过socket发送         off

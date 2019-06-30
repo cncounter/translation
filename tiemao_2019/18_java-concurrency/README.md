@@ -133,7 +133,7 @@ Typical problems in Java concurrency:
 - 死锁
 - 死锁预防
 - 饥饿和公平
-- 嵌套监控锁定
+- 嵌套管程闭锁(Monitor Lockout)
 - 了条件
 
 Java concurrency constructs that help against the issues above:
