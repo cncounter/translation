@@ -21,6 +21,8 @@
 
 
 
+主题 — JVM问题诊断入门
+
 本次分享主要介绍JVM问题排查过程中可以使用的各种工具, 基于示例进行简单的讲解, 并简单引入一些相关的基础知识和调优建议。
 
 内容涉及：
@@ -182,7 +184,7 @@ HPROF
 
 
 
-- [he `JAVA_HOME` Environment Variable](https://docs.oracle.com/javase/8/docs/technotes/guides/troubleshoot/envvars001.html#CIHEEHEI)
+- [the `JAVA_HOME` Environment Variable](https://docs.oracle.com/javase/8/docs/technotes/guides/troubleshoot/envvars001.html#CIHEEHEI)
 - [The `JAVA_TOOL_OPTIONS` Environment Variable](https://docs.oracle.com/javase/8/docs/technotes/guides/troubleshoot/envvars002.html#CIHDGJHI)
 - [The `java.security.debug` System Property](https://docs.oracle.com/javase/8/docs/technotes/guides/troubleshoot/envvars003.html#CIHDAFDD)
 
@@ -206,5 +208,7 @@ CAPACITY TUNING: <https://access.redhat.com/documentation/en-us/red_hat_enterpri
 
 memory-leak: <https://www.programcreek.com/2013/10/the-introduction-of-memory-leak-what-why-and-how/>
 
-JVMInternals : <[http://blog.jamesdbloom.com/JVMInternals.html](http://blog.jamesdbloom.com/JVMInternals.html)>
+MemoryUsage: <https://docs.oracle.com/javase/8/docs/api/java/lang/management/MemoryUsage.html>
+
+JVMInternals : <http://blog.jamesdbloom.com/JVMInternals.html>
 
