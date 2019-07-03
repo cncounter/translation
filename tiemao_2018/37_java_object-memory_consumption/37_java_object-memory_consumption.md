@@ -1,6 +1,6 @@
 # What is the memory consumption of an object in Java?
 
-# 一个Java对象占用多少内存空间
+# 解析一个Java对象占用多少内存空间
 
 > **说明**: alignment, 对齐, 比如8字节的数据, 起始地址必须是8的整数倍。
 > 
@@ -105,22 +105,22 @@ Other containers are costly too:
 >   For a nonempty `String` of size 10 characters or less, the added overhead cost relative to useful payload (2 bytes for each char plus 4 bytes for the length), ranges from 100 to 400 percent.
 
 > - **多维数组**: 这是另一个惊喜。
->   开发人员在编码时, 通常使用 `int[dim1][dim2]` 这种构造方式。
+>   在进行数值或科学计算时, 开发人员经常会使用 `int[dim1][dim2]` 这种构造方式。
 >
->   在二维数组 `int[dim1][dim2]` 中, 每个嵌套的 `int[dim2]` 数组都是一个单独的 `Object`。每个都会增加16字节的开销。某些情况下，这种开销就是一种浪费, 属于纯开销。当数组维度差距很大时，这种开销就特别明显。
->   例如, `int[128][2]` 实例占用`3600字节`。 而 `int[256]` 实例则只占用`1040字节`。存储空间是相同的, 3600比起1040来说是246%的额外开销。在极端情况下`byte[256][1]`, 额外开销比例是19倍! 而在 C/C++ 中,  同样的语法却不增加任何额外的存储开销。
+>   在二维数组 `int[dim1][dim2]` 中, 每个嵌套的数组 `int[dim2]` 都是一个单独的 `Object`, 会额外占用16字节的空间。某些情况下，这种开销是一种浪费。当数组维度更大时，这种开销特别明显。
+>   例如, `int[128][2]` 实例占用`3600字节`。 而 `int[256]` 实例则只占用`1040字节`。里面的有效存储空间是一样的, 3600比起1040多了246%的额外开销。在极端情况下, `byte[256][1]`, 额外开销的比例是19倍! 而在 C/C++ 中,  同样的语法却不增加额外的存储开销。
 >
-> - **String**: 一个 `String` 对象的空间占用，随着内部字符数组的增长而增长。当然, `String`类增加了额外24个字节的开销。
+> - **String**:  `String` 对象的空间随着内部字符数组的增长而增长。当然, `String` 类的对象有24个字节的额外开销。
 >
->   对于10字符以内的非空的`String`, 增加的额外开销相对于有效载荷(每个字符2个字节 + 4个字节的length), 其比例在100%到400%之间。
+>   对于10字符以内的非空 `String`, 增加的开销比起有效载荷(每个字符2字节 + 4个字节的length), 多占用了100%到400%的内存。
 
 ## Alignment
 
-## 对齐
+## 对齐(Alignment)
 
 Consider this [example object](https://plumbr.eu/blog/memory-leaks/how-much-memory-do-i-need-part-2-what-is-shallow-heap):
 
-看这个 [示例对象](https://plumbr.eu/blog/memory-leaks/how-much-memory-do-i-need-part-2-what-is-shallow-heap):
+看下面的 [示例对象](https://plumbr.eu/blog/memory-leaks/how-much-memory-do-i-need-part-2-what-is-shallow-heap):
 
 
 ```
@@ -135,23 +135,26 @@ class X {                      // 8 字节-指向class定义的引用
 
 A naïve sum would suggest that an instance of `X` would use 17 bytes. However, due to alignment (also called padding), the JVM allocates the memory in multiples of 8 bytes, so instead of 17 bytes it would allocate 24 bytes.
 
-新手可能会认为, 一个`X`类的实例占用17个字节的空间。但由于需要对齐(也称为补齐), JVM分配的内存的8个字节的整数倍, 所以不是17字节而是24字节。
+新手可能会认为, 一个`X`类的实例占用17字节的空间。 但由于需要对齐,也可称为补齐(padding), JVM分配的内存是8字节的整数倍, 所以占用的空间不是17字节,而是24字节。
 
 
 # JOL使用示例
 
 JOL (Java Object Layout) is the tiny toolbox to analyze object layout schemes in JVMs. These tools are using Unsafe, JVMTI, and Serviceability Agent (SA) heavily to decoder the actual object layout, footprint, and references. This makes JOL much more accurate than other tools relying on heap dumps, specification assumptions, etc.
 
+JOL (Java Object Layout) 是分析JVM中内存布局的小工具, 通过 `Unsafe`, `JVMTI`, 以及 Serviceability Agent (SA) 来解码实际的对象布局,占用,引用。 所以 JOL 比起基于 heap dump, 或者基于规范的工具来得准确。
 
 JOL的官网地址为: <http://openjdk.java.net/projects/code-tools/jol/>
 
 从中可以看到:
 
-- JOL支持命令行方式的调用, 即 jol-cli, 下载页面请参考 Maven中央仓库: <http://central.maven.org/maven2/org/openjdk/jol/jol-cli/>; 比如下载其中的 `jol-cli-0.9-full.jar` 文件。
+- JOL支持命令行方式的调用, 即 jol-cli。
 
-- 也可以通过代码方式, 在程序中调用, 示例下载页面: <http://hg.openjdk.java.net/code-tools/jol/file/tip/jol-samples/src/main/java/org/openjdk/jol/samples/>;
+  下载页面请参考 Maven中央仓库: <http://central.maven.org/maven2/org/openjdk/jol/jol-cli/>; 比如下载其中的 `jol-cli-0.9-full.jar` 文件。
 
-  相关的依赖也可以在Maven中央仓库找到:
+- JOL还支持代码方式调用, 示例下载页面: <http://hg.openjdk.java.net/code-tools/jol/file/tip/jol-samples/src/main/java/org/openjdk/jol/samples/>;
+
+  相关的依赖可以在Maven中央仓库找到:
 
   ```
   <dependency>
@@ -171,3 +174,10 @@ JOL的官网地址为: <http://openjdk.java.net/projects/code-tools/jol/>
 - <https://stackoverflow.com/questions/258120/what-is-the-memory-consumption-of-an-object-in-java/258150>
 
 - <http://openjdk.java.net/projects/code-tools/jol/>
+
+本文最新翻译地址: <https://github.com/cncounter/translation/blob/master/tiemao_2018/37_java_object-memory_consumption/37_java_object-memory_consumption.md>
+
+翻译日期: 019年7月4日
+
+翻译人员: 铁锚 <https://renfufei.blog.csdn.net/>
+
