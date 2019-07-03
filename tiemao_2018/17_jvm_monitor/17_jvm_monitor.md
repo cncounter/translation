@@ -1,5 +1,11 @@
 # JVM监控与内存调优
 
+
+
+参见: <https://github.com/cncounter/translation/tree/master/tiemao_2019/22_chat_jvm_troubleshoot>
+
+
+
 参考: [JVM_MONITOR] 部分
 
 

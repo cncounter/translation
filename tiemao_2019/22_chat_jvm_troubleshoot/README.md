@@ -55,6 +55,34 @@ javac -version
 
 
 
+JVM配置参数 
+
+-???
+
+-X???
+
+-X???:???
+
+-XX:+-???
+
+-XX:???=???
+
+-Dxxx
+
+
+
+命令行监控、GUI图形界面监控。
+
+本地实时监控。
+
+远程实时监控。
+
+离线监控。/日志/history。
+
+错误恢复/诊断。
+
+
+
 
 
 JPS
@@ -90,6 +118,14 @@ JDWP
 
 
 jconsole, jcmd, jshell
+
+
+
+
+
+注册中心
+
+gcviewer
 
 
 
