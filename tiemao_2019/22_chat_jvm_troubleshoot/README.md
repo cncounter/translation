@@ -1,15 +1,4 @@
-一、准备chat分享主题（具体内容见下文准备内容）——1个周的准备时间
-准备内容：
-1. Chat 分享的主题 — JVM问题诊断入门
-2. Chat 内容简介和大纲
-
-3. 分享嘉宾个人简介
-  参考美团案例：https://gitbook.cn/gitchat/activity/5b91078c41c7575ca0d6441a 
-  二、准备正文——在主题发布后，2个周的准备时间
-  三、线上微信群答疑——正文发布后，1个周的准备时间，在线答疑1个小时
-4. 分享主题给我Word格式就好，正文需要给我Word文档和MD格式的文档以及图片包，其他没有了
-
-
+## 标题
 
 1.题目: JVM问题诊断入门
 
@@ -33,7 +22,13 @@ JMX与相关工具
 面临复杂问题时可选的高级工具
 应对容器时代面临的挑战
 
+## 正文
 
+JVM全称是Java Virtual Machine, 翻译为中文是"Java虚拟机"。
+
+本次分享基于 Oracle公司/SUN公司的 HotSpot JVM。
+
+> 目前，最多的Java虚拟机实例位于Android设备中，绝大部分的Linux系统也运行在Android设备上。
 
 
 
@@ -85,7 +80,9 @@ JVM配置参数
 
 
 
-JPS
+jps
+
+jstat
 
 JSTAT
 
@@ -95,9 +92,11 @@ visualgc
 
 jstack
 
-JVisualVM 
 
-JMC
+
+图形化工具
+
+jconsole —>  jvisualvm  —> jmc
 
 JMAP
 
@@ -240,3 +239,4 @@ MemoryUsage: <https://docs.oracle.com/javase/8/docs/api/java/lang/management/Mem
 
 JVMInternals : <http://blog.jamesdbloom.com/JVMInternals.html>
 
+JVMTI 和 Agent 实现: <https://www.ibm.com/developerworks/cn/java/j-lo-jpda2/index.html>
