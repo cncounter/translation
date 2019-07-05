@@ -105,6 +105,7 @@ echo $JAVA_HOME
 查找的方式很多，比如，可以使用 `whereis` 和 `ls -l` 来跟踪软连接, 或者 `find` 命令全局查找(可能需要sudo权限), 例如:
 
 ```shell
+jps -v
 whereis javac
 ls -l /usr/bin/javac
 sudo find / -name javac
@@ -162,31 +163,17 @@ WIndows系统，安装在哪就是哪，通过任务管理器也可以查看某�
 
 
 
+### 3. JVM基础知识和启动参数
 
 
 
-
-JVM诊断可用的方式:
-
-- 状态监控
-- 性能分析器
-- Dump分析
-- 本地/远程调试
-- 通过参数改变JVM行为
+内存逻辑概念图:
 
 
 
 
 
-
-```
-java -version
-javac -version
-
--showversion
--XX+PrintCommandLineFlags
-
-```
+Java和JDK内置的工具，指定参数时都是一个 `-`，不管是长参数还是短参数。
 
 
 
@@ -208,6 +195,101 @@ JVM配置参数
 
 
 
+
+
+```
+-Xmx4g -Xms4g
+
+```
+
+
+
+```
+java -version
+javac -version
+
+-showversion
+-XX+PrintCommandLineFlags
+
+```
+
+
+
+
+
+
+
+
+
+
+
+JVM诊断可用的方式:
+
+- 状态监控
+- 性能分析器
+- Dump分析
+- 本地/远程调试
+- 通过参数改变JVM行为
+
+
+
+
+
+### 4. JDK内置工具介绍和使用示例
+
+本节介绍JDK内置的各种工具, 包括
+
+- 命令行工具
+- GUI工具
+- 服务端工具
+
+下面先介绍命令行工具。
+
+#### 4.1 `jps` 工具简介
+
+我们知道，操作系统提供一个工具叫做 `ps`, 用于显示进程状态(process status)。
+
+Java也提供了类似的命令行工具，叫做 `jps`,  用于展示java进程信息(列表)。需要注意的是
+
+查看帮助信息:
+
+```shell
+jps -help
+
+usage: jps [-help]
+       jps [-q] [-mlvV] [<hostid>]
+
+Definitions:
+    <hostid>:      <hostname>[:<port>]
+```
+
+可以看到， 这些参数分为了多个组， `-help`，`-q`，`-mlvV`， 同一组可以共用一个 `-`。 
+
+常用的参数是小写的 `-v`,  显示传递给JVM的启动参数.
+
+```
+sudo jps -v
+
+30929 Jps -Dapplication.home=/Library/jdk1.8.0/Contents/Home -Xms8m
+```
+
+看看输出的内容，其中最重要的是进程ID, 
+
+其他参数不太常用:
+
+- `-q`  只显示进程号。
+- `-m`  显示传给 main 方法的参数信息
+- `-l`  显示启动 class 的完整类名, 或者启动 jar 的完整路径
+- `-V`  大写的V，这个参数有问题, 相当于没传一样。官方说的跟 `-q` 差不多。
+
+- `<hostid>` 部分是远程主机的标识符，需要远程主机启动 `jstatd` 服务器, 一般不怎么使用。
+
+  可以看到, 格式为 `<hostname>[:<port>]`, 不能用IP, 示例: `jps -v sample.com:1099`。
+
+#### 4.2 `jstat` 工具简介
+
+
+
 命令行监控、GUI图形界面监控。
 
 本地实时监控。
@@ -222,11 +304,9 @@ JVM配置参数
 
 
 
-jps
 
-jstat
 
-JSTAT
+
 
 jstatd
 
@@ -276,12 +356,23 @@ gcviewer
 
 
 
-```
--Xmx4g
--Xms4g
 
 
-```
+### 5. JDWP简介
+
+Java 平台调试体系（Java Platform Debugger Architecture，JPDA），由三个相对独立的层次共同组成。这三个层次由低到高分别是 Java 虚拟机工具接口（JVMTI），Java 调试线协议（JDWP）以及 Java 调试接口（JDI）。
+
+> 详细介绍请参考或搜索: [JPDA 体系概览](https://www.ibm.com/developerworks/cn/java/j-lo-jpda1/index.html)
+
+JDWP 是 Java Debug Wire Protocol 的缩写，翻译为 "Java调试线协议"，它定义了调试器（debugger）和被调试的 Java 虚拟机（target vm）之间的通信协议。
+
+本节主要讲解如何配置 JDWP，以供远程调试。
+
+
+
+
+
+### 6. JMX与相关工具
 
 
 
