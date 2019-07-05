@@ -114,6 +114,34 @@ sudo find / -name javac
 
 WIndows系统，安装在哪就是哪，通过任务管理器也可以查看某个程序的路径，注意 `JAVA_HOME` 不可能是 `C:/Windows/System32` 目录。
 
+按照官方文档的说法，在诊断问题之前，可以做这些准备：
+
+- 设置core文件上限
+
+  `ulimit -c unlimited` , 这属于高级操作，可以使用 `gdb` 或者其他工具进行调试。
+
+- 开启自动内存Dump选项
+
+  增加启动参数 `-XX:+HeapDumpOnOutOfMemoryError`, 在内存溢出时自动转储，下文会进行介绍。
+
+- 可以生成 JFR 记录
+
+  这是JDK内置工具 jmc 提供的功能, Oracle 试图用jmc来取代 JVisualVM。而且在商业环境使用JFR需要付费获取授权，所以这也是个鸡肋功能。
+
+- 开启GC日志
+
+  这是标配。比如设置 `-verbose:gc` 等选项，请参考下文。
+
+- 确定JVM版本以及启动参数
+
+  有多种手段获取, 最简单的是 `java -version`，请参考下文。
+
+- 允许 JMX 监控信息
+
+  JMX支持远程监控，通过设置属性来启用。监控本机的JVM并不需要额外配置，还可以使用 jstatd 工具暴露部分信息给远程JMX客户端。
+
+
+
 ### 2. 常用性能指标介绍
 
 
