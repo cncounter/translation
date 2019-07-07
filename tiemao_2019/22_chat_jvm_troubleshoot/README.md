@@ -323,10 +323,15 @@ Definitions:
 ```
 jps -v
 
-30929 Jps -Dapplication.home=/Library/jdk1.8.0/Contents/Home -Xms8m
+15883 Jps -Dapplication.home=/usr/local/jdk1.8.0_74 -Xms8m
+6446 Jstatd -Dapplication.home=/usr/local/jdk1.8.0_74 -Xms8m 
+        -Djava.security.policy=/etc/java/jstatd.all.policy
+32383 Bootstrap -Xmx4096m -XX:+UseG1GC -verbose:gc 
+        -XX:+PrintGCDateStamps -XX:+PrintGCDetails -Xloggc:/xxx-tomcat/logs/gc.log
+        -Dcatalina.base=/xxx-tomcat -Dcatalina.home=/data/tomcat
 ```
 
-看看输出的内容，其中最重要的是进程ID(PID), 
+看看输出的内容，其中最重要的信息是前面的进程ID(PID), 
 
 其他参数不太常用:
 
