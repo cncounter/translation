@@ -466,22 +466,86 @@ jstat -gc -t -h 10 864 1s 15
 - `EC`: Eden区，新生代的当前容量, 单位 kB.
 - `EU`: Eden区，新生代的使用量, 单位 kB.
 - `OC`: Old区, 老年代的当前容量, 单位 kB.
-- `OU`: Old区, 老年代的使用量, 单位 kB.
+- `OU`: Old区, 老年代的使用量, 单位 kB. （!需要关注）
 - `MC`: 元数据区的容量, 单位 kB.
 - `MU`: 元数据区的使用量, 单位 kB.
 - `CCSC`: 压缩的class空间容量, 单位 kB.
 - `CCSU`: 压缩的class空间使用量, 单位 kB.
 - `YGC`: 年轻代GC的次数。
-- `YGCT`: 年轻代GC消耗的总时间。
+- `YGCT`: 年轻代GC消耗的总时间。 （!重点关注）
 - `FGC`: Full GC 的次数
-- `FGCT`: Full GC 消耗的时间.
+- `FGCT`: Full GC 消耗的时间. （!重点关注）
 - `GCT`: 垃圾收集消耗的总时间。
 
+最重要的信息是GC的次数和总消耗时间，其次是老年代的使用量。
 
 在没有其他监控工具的情况下， jstat 可以简单查看各个内存池和GC的信息，可用于判别原因是否是GC或者内存溢出。
 
 
-### 4.3 
+
+### 4.3 `jmap` 工具
+
+面试最常问的可能就是 `jmap` 工具了。
+
+
+
+### 4.4 `jstack` 工具
+
+
+
+
+### 4.5 `jinfo` 工具
+
+`jinfo` 可用来查看具体生效的配置信息，以及系统熟悉等。
+
+
+看看帮助信息:
+
+```
+jinfo -help
+
+Usage:
+    jinfo [option] <pid>
+        (to connect to running process)
+    jinfo [option] <executable <core>
+        (to connect to a core file)
+    jinfo [option] [server_id@]<remote-IP-hostname>
+        (to connect to remote debug server)
+
+where <option> is one of:
+    -flag <name>         to print the value of the named VM flag
+    -flag [+|-]<name>    to enable or disable the named VM flag
+    -flag <name>=<value> to set the named VM flag to the given value
+    -flags               to print VM flags
+    -sysprops            to print Java system properties
+    <no option>          to print both of the above
+    -h | -help           to print this help message
+```
+
+使用示例：
+
+```
+jinfo 4524
+jinfo -flags 4524
+```
+
+不加参数过滤，则打印所有信息。
+
+`jinfo`在Windows上比较稳定, 笔者在Mac和Linux系统上使用一直报错。
+
+可能是目标JVM版本和 jinfo 版本不一致的原因。
+
+```
+Error attaching to process: 
+  sun.jvm.hotspot.runtime.VMVersionMismatchException: 
+    Supported versions are 25.74-b02. Target VM is 25.66-b17
+```
+
+而这些性能诊断工具官方并不提供技术支持，所以如果碰到报错信息，请不要着急，可以试试其他工具。不行就换JDK版本。
+
+
+
+
  
 命令行监控、GUI图形界面监控。
 
