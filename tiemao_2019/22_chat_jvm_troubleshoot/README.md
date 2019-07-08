@@ -202,18 +202,27 @@ WIndows系统，安装在哪就是哪，通过任务管理器也可以查看某�
 
 
 
+JVM诊断可用的方式:
+
+- 状态监控/健康检测
+- 性能分析器/分析CPU
+- Dump分析/内存分析
+- 本地/远程调试
+- 设置参数改变JVM行为/延迟/吞吐量
+
+
 
 
 ### 3. JVM基础知识和启动参数
 
 
+#### JVM基础知识
 
 
 [Java语言规范和JVM规范](https://docs.oracle.com/javase/specs/index.html)
 
 
 内存逻辑概念图:
-
 
 
 
@@ -228,51 +237,70 @@ java [options] -jar filename [args]
 
 其中:
 
-- `[options]` 部分称为JVM启动参数,对应IDE中的 VM options, 可用 `jps -v` 查看。
--  `[args]` 部分是指传给main函数的参数,对应IDE中的 Program arguments, 可用 `jps -m` 查看。
+- `[options]` 部分称为 "JVM选项",对应IDE中的 VM options, 可用 `jps -v` 查看。
+-  `[args]` 部分是指 "传给main函数的参数", 对应IDE中的 Program arguments, 可用 `jps -m` 查看。
 
 Java和JDK内置的工具，指定参数时都是一个 `-`，不管是长参数还是短参数。
 
 
 
-JVM启动参数分类
+#### JVM启动参数
+
+有时候，JVM启动参数和Java程序启动参数，并没必要严格区分，大致知道都是一个概念即可。
+
+JVM的启动参数, 从形式上可以简单分为：
+
+`-???` 标准选项, java中各种参数都是一个横线 `-` 开头, 很少有两个横线 `--`;
+`-X`  非标准选项， 基本都是传给JVM的。
+`-XX:` 高级扩展选项, 专门用于控制JVM的行为。
+  * `-XX:+-Flags` 形式, `+-` 是对布尔值进行开关。
+  * `-XX:key=value` 形式, 指定某个选项的值。
 
 
-`-???` 常规参数, java中各种参数都是一个横线 `-` 开头, 很少有两个横线 `--`;
+1. 设置系统属性
 
-`-X`  非标准参数， 基本上都是传给JVM的。
-
-`-XX:` 高级扩展参数, 用于控制JVM的行为。
-
-  `-XX:+-Flags` 扩展参数, 可以发现, `+-` 就是对布尔值进行开关。
-  `-XX:???=???` 扩展参数, 前缀是 `-XX:`, key=value形式。
-
-`-Dproperty=value` 设置系统属性。
-
-
-
-
-
-```
--Xmx4g -Xms4g
-
--Xmn
-
--Xss
-
-```
+使用 `-Dproperty=value` 这种形式, 例如 `-Djava.security.egd=file:/dev/./urandom` 指定随机数熵源(Entropy Source)。
 
 
 
-```
-java -version
-javac -version
+2. agent相关的选项:
 
--showversion
--XX+PrintCommandLineFlags
+agent是JVM中的一项黑科技, 可以通过无侵入方式来做很多事情，比如注入AOP代码，执行统计等等，权限非常大。
 
-```
+设置 agent 的语法如下:
 
+- `-agentlib:libname[=options]`  启用native方式的agent, 参考 `LD_LIBRARY_PATH` 路径。
+- `-agentpath:pathname[=options]` 启用native方式的agent
+- `-javaagent:jarpath[=options]` 启用外部的agent库, 比如 `pinpoint.jar` 等等。
+- `-Xnoagent` 则是禁用所有 agent。
+
+3. JVM运行模式:
+
+`-server` 指定服务器模式, 这是默认值了, 以前还有一个 `-client` 选项, 主要原因是很久以前JIT编译器占内存，可能还有点慢。
+
+
+4. 设置堆内存
+
+JVM总内存=堆+栈+非堆+堆外内存。。。
+
+参数:
+
+- `-Xmx`, 指定最大堆内存。 如 `-Xmx4g`. 这只是指定了 Heap 部分的最大值为4g。
+- `-Xms`, 指定堆内存空间的起始值。 如 `-Xms4g`。 并不是操作系统实际分配的初始值，而是GC先规划好，用到才分配。
+  专用服务器上让 `-Xms`和`-Xmx`一致, GC日志会比较好看，不然刚启动可能就有好几个FullGCC。
+  据说不一致时，堆内存扩容会有性能抖动。
+- `-Xmn`, 等价于 `-XX:NewSize`, 使用G1垃圾收集器 **不应该** 设置该选项，在某些业务场景下可以设置。官方建议设置为 `-Xmx` 的 `1/2 ~ 1/4`.
+- `-XX:MaxPermSize=size`, 这是JDK1.7之前使用的。Java8默认允许的Meta空间无限大。
+
+
+5. 设置栈内存
+
+- `-Xss`, 设置每个线程栈的字节数。 例如 `-Xss1m` 指定线程栈为1MB。
+- `-XX:ThreadStackSize=1m`, 和 `-Xss1m` 等价
+
+
+
+6. GC日志相关
 
 
 - `-verbose:gc` 参数
@@ -282,25 +310,70 @@ javac -version
 此参数支持在运行过程中动态开关。比如使用 jcmd, jinfo， 以及使用JMX技术的其他客户端。
 
 
+- `-XX:+PrintGCDetails` 和 `-XX:+PrintGCTimeStamps`, 打印GC细节与发生时间。参考GC部分。
+
+PrintGC
+
+PrintGCDetails
+
+PrintGCTimeStamps
+
+PrintClassHistogram
+
+PrintConcurrentLocks
 
 
+
+示例:
 
 ```
--verbose:gc
+export JAVA_OPTS="-Xms28g -Xmx28g -Xss1m \
+-verbosegc -XX:+UseG1GC -XX:MaxGCPauseMillis=200 \
+-XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/usr/local/ \
+
 ```
 
 
 
+7. 指定垃圾收集器
+
+指定使用的垃圾收集器。
+
+- `-XX:+UseG1GC`
+- `-XX:+UseConcMarkSweepGC`
+- `-XX:+UseSerialGC`
+- `-XX:+UseParallelGC`
 
 
 
-JVM诊断可用的方式:
+8. 极端情况之下脚本
 
-- 状态监控
-- 性能分析器
-- Dump分析
-- 本地/远程调试
-- 通过参数改变JVM行为
+
+
+- `-XX:+-HeapDumpOnOutOfMemoryError` 选项, 当 `OutOfMemoryError` 产生，即内存溢出(堆内存或持久代)时，自动Dump堆内存。
+  因为在运行时并没有什么开销, 所以在生产机器上是可以使用的。
+  示例用法: `java -XX:+HeapDumpOnOutOfMemoryError -Xmx256m ConsumeHeap`
+  ```
+  java.lang.OutOfMemoryError: Java heap space
+  Dumping heap to java_pid2262.hprof ...
+  ......
+  ```
+
+- `-XX:HeapDumpPath` 选项, 与`HeapDumpOnOutOfMemoryError`搭配使用, 指定内存溢出时Dump文件的目录。
+  如果没有指定则默认为启动Java程序的工作目录。
+  示例用法: `java -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/usr/local/ ConsumeHeap`
+  自动Dump的hprof文件会存储到 `/usr/local/` 目录下。 
+
+- `-XX:OnError` 选项, 发生致命错误时(fatal error)执行的脚本。
+  例如, 写一个脚本来记录出错时间, 执行一些命令, 或者 curl 一下某个在线报警的url.
+  示例用法: `java -XX:OnError="gdb - %p" MyApp`
+  可以发现有一个 `%p` 的格式化字符串，表示进程PID。
+
+- `-XX:OnOutOfMemoryError` 选项,  抛出 OutOfMemoryError 错误时执行的脚本。
+
+- `-XX:ErrorFile=filename` 选项, 致命错误的日志文件名,绝对路径或者相对路径。
+
+
 
 
 
@@ -537,7 +610,7 @@ Usage:
 where <option> is one of:
     <none>               等同于 Solaris 的 pmap 命令
     -heap                打印Java堆内存汇总信息
-    -histo[:live]        打印Java堆内存对象的柱状图统计信息;
+    -histo[:live]        打印Java堆内存对象的直方图统计信息;
                          如果指定了 "live" 选项则只统计存活对象,强制触发一次GC
     -clstats             打印class loader 统计信息
     -finalizerinfo       打印等待 finalization 的对象信息
@@ -571,7 +644,6 @@ jmap -heap 4524
 输出信息:
 
 ```
-
 Attaching to process ID 4524, please wait...
 Debugger attached successfully.
 Server compiler detected.
@@ -622,7 +694,7 @@ PS Old Generation
 
 可以看到堆内存和内存池的相关信息。
 
-当然，这些属性多种方式可以得到，比如 JMX。
+当然，这些信息有多种方式可以得到，比如 JMX。
 
 
 看看直方图
@@ -992,33 +1064,12 @@ JDWP 是 Java Debug Wire Protocol 的缩写，翻译为 "Java调试线协议"，
 
 
 
-## 随机数熵源(Entropy Source)
-
-```
--Djava.security.egd=file:/dev/./urandom
-```
-
 
 
 <https://github.com/cncounter/translation/blob/master/tiemao_2017/07_FasterStartUp_Tomcat/07_FasterStartUp_Tomcat.md#%E9%9A%8F%E6%9C%BA%E6%95%B0%E7%86%B5%E6%BA%90entropy-source>
 
 
 
-
-
-GC:
-
-
-
-```
-
--verbosegc
--XX:+UseG1GC
--XX:MaxGCPauseMillis=200
--XX:+HeapDumpOnOutOfMemoryError
-UseGClogFileRotation
-NumberOfGCLogFiles
-```
 
 
 
@@ -1050,9 +1101,6 @@ HPROF
 
 troubleshoot: <https://docs.oracle.com/javase/8/docs/technotes/guides/troubleshoot/toc.html>
 
-- [the `JAVA_HOME` Environment Variable](https://docs.oracle.com/javase/8/docs/technotes/guides/troubleshoot/envvars001.html#CIHEEHEI)
-- [The `JAVA_TOOL_OPTIONS` Environment Variable](https://docs.oracle.com/javase/8/docs/technotes/guides/troubleshoot/envvars002.html#CIHDGJHI)
-- [The `java.security.debug` System Property](https://docs.oracle.com/javase/8/docs/technotes/guides/troubleshoot/envvars003.html#CIHDAFDD)
 - [Java Command-Line Options](https://docs.oracle.com/javase/8/docs/technotes/guides/troubleshoot/clopts001.html)
 
 
