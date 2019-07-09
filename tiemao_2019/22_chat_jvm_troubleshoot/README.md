@@ -71,7 +71,7 @@ JVM是Java程序的底层执行环境，是用C++语言开发出来的，所以�
 - 安装JDK
 - 设置环境变量
 
-JDK通常是从 [Oracle官网](https://www.oracle.com/) 下载，翻到底部，找 `Java for Developers` 即可。
+JDK通常是从 [Oracle官网](https://www.oracle.com/)，翻到底部，找 `Java for Developers`, 下载对应的x64版本即可。
 
 > 现在流行将下载链接放到页面底部，很多工具都这样。本文推荐下载 JDK8。以后JDK11是LTS版本，但还需要一些年，而且两个版本的结构不太兼容。
 
@@ -960,6 +960,17 @@ Error attaching to process:
 ```
 
 而这些性能诊断工具官方并不提供技术支持，所以如果碰到报错信息，请不要着急，可以试试其他工具。不行就换JDK版本。
+
+
+
+
+# `jvisualvm` 图形工具
+
+JDK8需要安装较高版本(如Java SE 8u211)，才能安装插件。 
+
+如果看不到可用插件，请安装最新版本，或者下载插件到本地安装。
+
+请排除网络问题，或者检查更新，重新启动试试。
 
 
 
