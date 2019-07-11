@@ -33,15 +33,23 @@
 
 ## 正文
 
+#### JVM背景知识
+
 JVM全称是Java Virtual Machine, 翻译为中文是"Java虚拟机"。
 
 下文讨论的JVM主要指 Oracle公司的 HotSpot JVM, 版本为Java8(JDK8,JDK1.8可以认为是同样的意思)。
 
-JVM是Java程序的底层执行环境，是用C++语言开发出来的，所以如果想深入探索JVM，那么就需要掌握C++语言，至少也要看得懂源代码。
+JVM是Java程序的底层执行环境，主要用C++语言开发，如果想深入探索JVM，那么就需要掌握一定的C++语言知识，至少也应该看得懂源代码。
 
-看起来很难入门的样子。 就像很多神书一样，讲JVM开篇就讲怎么编译JVM。讲JMM就引入CPU寄存器怎么同步。
+看起来很难的样子。 就像很多神书一样，讲JVM开篇就讲怎么编译JVM。讲JMM一来就引入CPU寄存器怎么同步。
 
-那么什么才算入门?
+ 即使没有这么深的技术栈，也是可以排查JVM问题的。
+
+
+
+#### 怎样才算入门?
+
+JVM问题诊断入门、就是知道JVM的一些基本概念，能借助一些工具和指标确定Java程序的运行是否正常，以及出问题了要怎么搜索解决方案。
 
 不入门就是门外汉，门外汉就是只知道这里有一个庞然大物，云里雾里，不了解里面有什么, 需要注意些什么。
 
@@ -964,6 +972,16 @@ Error attaching to process:
 
 
 
+
+图形化工具
+
+jconsole —>  jvisualvm  —> jmc
+
+
+
+
+
+
 # `jvisualvm` 图形工具
 
 JDK8需要安装较高版本(如Java SE 8u211)，才能安装插件。 
@@ -976,64 +994,29 @@ JDK8需要安装较高版本(如Java SE 8u211)，才能安装插件。
 
 
 
-命令行监控、GUI图形界面监控。
-
 本地实时监控。
 
 远程实时监控。
 
-离线监控。/日志/history。
-
-错误恢复/诊断。
 
 
 
 
+# `jmc` 图形工具
 
+jmc 和 jvisualvm 功能类似。
 
-
-
-
-jstatd
-
-visualgc
-
-jstack
-
-
-
-JMAP
-
-JHat
-
-BTrace
-
-MAT
-
-jdb
-
-JINFO
-
-
-图形化工具
-
-jconsole —>  jvisualvm  —> jmc
-
-
-
-JDWP
-
-
-
-jconsole, jcmd, jshell
+Oracle 试图用jmc来取代 JVisualVM，但jmc和jinfo一样，都需要比较高的权限（去操纵其他JVM进程），可能会被Mac系统的安全限制拦截。在商业环境使用JFR需要付费获取授权。
 
 
 
 
 
-注册中心
 
-gcviewer
+
+
+
+
 
 
 
@@ -1075,6 +1058,8 @@ JDWP 是 Java Debug Wire Protocol 的缩写，翻译为 "Java调试线协议"，
 
 
 
+### 7. GC日志解读与分析
+
 
 
 <https://github.com/cncounter/translation/blob/master/tiemao_2017/07_FasterStartUp_Tomcat/07_FasterStartUp_Tomcat.md#%E9%9A%8F%E6%9C%BA%E6%95%B0%E7%86%B5%E6%BA%90entropy-source>
@@ -1082,6 +1067,8 @@ JDWP 是 Java Debug Wire Protocol 的缩写，翻译为 "Java调试线协议"，
 
 
 
+
+gcviewer
 
 
 
@@ -1092,7 +1079,65 @@ JDWP 是 Java Debug Wire Protocol 的缩写，翻译为 "Java调试线协议"，
 
 
 
-付费工具: **JProfiler**, Plumbr,  Java Flight Recorder (JFR，市场),
+
+
+### 8. 内存dump和内存分析工具介绍
+
+
+
+主动:
+
+jcmd
+
+jmap
+
+被动:
+
+hprof
+
+dumponerror
+
+
+
+分析工具:
+
+jhat
+
+MAT
+
+
+
+### 9. 面临复杂问题时可选的高级工具
+
+
+
+
+
+远程支持:
+
+
+
+jstatd
+
+JHat
+
+JDWP
+
+
+
+
+
+分析手段与工具
+
+BTrace
+
+jdb
+
+
+
+RMI注册中心
+
+
 
 Pinpoint, Datadog, Zabbix
 
@@ -1103,6 +1148,14 @@ HPROF
 
 
 
+
+### 10. 应对容器时代面临的挑战
+
+
+
+离线监控。/日志/history。
+
+错误恢复/诊断。
 
 深入问题不讲
 
