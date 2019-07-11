@@ -254,6 +254,16 @@ JVM诊断可用的方式:
 
 
 
+
+
+
+> [Metaspace解密](http://lovestblog.cn/blog/2016/10/29/metaspace/)
+
+
+
+
+
+
 启动Java程序的格式为:
 
 ```shell
@@ -1075,13 +1085,83 @@ Review代码
 
 
 
+在 Java SE 5 之前，虽然JVM提供了一些底层的API，比如 JVMPI 和 JVMTI ，但这些API是面向 C 语言的，需要通过 JNI 等方式才能调用，要监控JVM 和系统资源非常不方便。
+
+ Java SE 5 版本中引入了JMX技术（Java Management Extensions， Java 管理扩展），用来暴露一些相关信息，甚至支持远程动态设置某些参数。
+
+JMX 让 JDK 中开发自检测程序成为可能，也提供了大量轻量级的检测 JVM 和运行中对象 / 线程的方式，从而提高了 Java 语言自己的管理监测能力。
+
+如果你是框架开发者，或者连接池的开发者，还可以注册MBean到JVM，随着其他JMX的Bean一起暴露出去，比如某些监控信息，此处不讲解，可以上网搜索。
+
+客户端使用JMX大约支持两种方式：
+
+- 程序代码手动获取MXBean。
+- 通过网络远程获取MBean。
+
+
+
+#### 6.1 程序中获取JMX信息
+
+相关的MXBean类位于 `rt.jar` 文件的 `java.lang.management` 包中，JDK中默认就提供了。
+
+代码获取JVM相关的MXBean信息：
+
+```java
+// import java.lang.management.*
+// 1. 操作系统信息
+OperatingSystemMXBean operatingSystemMXBean = ManagementFactory.getOperatingSystemMXBean();
+// 2. 运行时
+RuntimeMXBean runtimeMXBean = ManagementFactory.getRuntimeMXBean();
+// 3.1 JVM内存信息
+MemoryMXBean memoryMXBean = ManagementFactory.getMemoryMXBean();
+// 3.2 JVM内存池-列表
+List<MemoryPoolMXBean> memoryPoolMXBeans = ManagementFactory.getMemoryPoolMXBeans();
+// 3.3 内存管理器-列表
+List<MemoryManagerMXBean> memoryManagerMXBeans = ManagementFactory.getMemoryManagerMXBeans();
+
+// 4. class加载统计信息
+ClassLoadingMXBean classLoadingMXBean = ManagementFactory.getClassLoadingMXBean();
+// 5. 编译统计信息
+CompilationMXBean compilationMXBean = ManagementFactory.getCompilationMXBean();
+// 6. 线程
+ThreadMXBean threadMXBean = ManagementFactory.getThreadMXBean();
+
+// 7.GC
+List<GarbageCollectorMXBean> garbageCollectorMXBeans = ManagementFactory.getGarbageCollectorMXBeans();
 ```
+
+取得这些MXBean之后，就可以获取对应的Java运行时信息，可以定时上报给某个系统，那么一个简单的监控就创建了。
+
+当然，这么简单的事情，肯定有现成的轮子啦。比如 Spring Boot Actuator, 以及后面介绍的Micrometer等。 各种监控服务提供的 Agent-lib.jar 中也会采集对应的数据。
+
+
+
+#### 6.2 JMX远程连接
+
+远程连接肯定是需要通过TCP端口通信。 
+
+常用的JMX客户端是 JVisualVM。当然像 jconsole, jmc 等工具也是支持的，或者也可以自己开发。
+
+想要支持JMX客户端连接服务端JVM实例，则Java启动脚本中需要加上相关的配置参数：
+
+```shell
 -Dcom.sun.management.jmxremote
 -Dcom.sun.management.jmxremote.port=10990
 -Dcom.sun.management.jmxremote.ssl=false
 -Dcom.sun.management.jmxremote.authenticate=false
-
 ```
+
+如果服务器具有多张网卡(多个IP)，由于安全限制，必须明确指定 hostname， 一般是IP。
+
+```shell
+-Djava.rmi.server.hostname=47.57.227.67
+```
+
+这样启动之后，JMX客户端(如 JVisualVM)就可以通过 `<IP:端口>` 连接。(参考 JVisualVM 的示例)。
+
+如这里对应的就类似于： `47.57.227.67:10990`
+
+> 如果想要远程查看VIsualGC，则服务端需要开启 jstatd 来支持, jvisualvm先连jstatd远程主机，接着在远程主机上连 jmx。
 
 
 
@@ -1205,6 +1285,24 @@ HPROF
 
 
 ### 10. 应对容器时代面临的挑战
+
+
+
+集群环境，应用性能指标采集。
+
+APM 采样
+
+
+
+协力： 平台架构、开发人员、运维、
+
+
+
+SpringBoot应用指标收集器:Micrometer 
+
+- 直接支持数据上报给 Elasticsearch, Datadog, InfluxData等。
+- 最大延迟，平均延迟，95%线， 吞吐量, 内存使用量 等信息。
+- 详情请参考官方文档: <https://micrometer.io/docs>
 
 
 
