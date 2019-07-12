@@ -51,7 +51,29 @@ JVM的操作对象是class文件，而不是源码
 
 #### 怎样才算入门?
 
-JVM问题诊断入门、就是知道JVM的一些基本概念，能借助一些工具和指标确定Java程序的运行是否正常，以及出问题了要怎么搜索解决方案。
+- JVM基础知识
+
+  内存划分
+
+  常用参数配置
+
+- 程序运行有没有问题
+
+  借助工具和日志
+
+  监控
+
+  常用内存指标
+
+  是否正常
+
+- 确定是什么问题
+
+  怎么搜?
+
+  搜索/咨询解决方案
+
+  自己搞定
 
 
 
@@ -296,7 +318,13 @@ JVM的启动参数, 从形式上可以简单分为：
 
 1. 设置系统属性
 
-使用 `-Dproperty=value` 这种形式, 例如 `-Djava.security.egd=file:/dev/./urandom` 指定随机数熵源(Entropy Source)。
+使用 `-Dproperty=value` 这种形式。
+
+例如指定随机数熵源(Entropy Source), 示例:
+
+```shell
+JAVA_OPTS="-Djava.security.egd=file:/dev/./urandom"
+```
 
 
 
@@ -311,9 +339,27 @@ agent是JVM中的一项黑科技, 可以通过无侵入方式来做很多事情�
 - `-javaagent:jarpath[=options]` 启用外部的agent库, 比如 `pinpoint.jar` 等等。
 - `-Xnoagent` 则是禁用所有 agent。
 
+示例, 开启CPU使用时间抽样分析:
+
+```shell
+JAVA_OPTS="-agentlib:hprof=cpu=samples,file=cpu.samples.log"
+```
+
+hprof是JDK内置的一个性能分析器。`cpu=samples` 会抽样在各个方法消耗的时间占比, Java进程退出后会输出到文件。
+
 3. JVM运行模式:
 
-`-server` 指定服务器模式, 这是默认值了, 以前还有一个 `-client` 选项, 主要原因是很久以前JIT编译器占内存，可能还有点慢。
+`-server` 指定服务器模式, 64位JDK只支持该选项，是否设置都是这个值。
+
+JDK1.7 之前x86.32位的默认值是 `-client` 选项, 主要原因是以前JIT编译器占内存，可能还有点慢。
+
+示例:
+
+```shell
+JAVA_OPTS="-server"
+```
+
+
 
 
 4. 设置堆内存
@@ -328,6 +374,15 @@ JVM总内存=堆+栈+非堆+堆外内存。。。
   据说不一致时，堆内存扩容会有性能抖动。
 - `-Xmn`, 等价于 `-XX:NewSize`, 使用G1垃圾收集器 **不应该** 设置该选项，在某些业务场景下可以设置。官方建议设置为 `-Xmx` 的 `1/2 ~ 1/4`.
 - `-XX:MaxPermSize=size`, 这是JDK1.7之前使用的。Java8默认允许的Meta空间无限大。
+- `-XX:MaxMetaspaceSize=size`,  Java8默认不限制Meta空间, 一般不允许设置该选项。
+
+示例:
+
+```shell
+JAVA_OPTS="-Xms28g -Xmx28g"
+```
+
+
 
 
 5. 设置栈内存
@@ -335,9 +390,15 @@ JVM总内存=堆+栈+非堆+堆外内存。。。
 - `-Xss`, 设置每个线程栈的字节数。 例如 `-Xss1m` 指定线程栈为1MB。
 - `-XX:ThreadStackSize=1m`, 和 `-Xss1m` 等价
 
+示例:
+
+```shell
+JAVA_OPTS="-Xss1m"
+```
 
 
-6. GC日志相关
+
+6. GC相关
 
 
 - `-verbose:gc` 参数
@@ -363,10 +424,12 @@ PrintConcurrentLocks
 
 示例:
 
-```
+```shell
 export JAVA_OPTS="-Xms28g -Xmx28g -Xss1m \
 -verbosegc -XX:+UseG1GC -XX:MaxGCPauseMillis=200 \
 -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/usr/local/ \
+
+"
 
 ```
 
@@ -390,12 +453,13 @@ export JAVA_OPTS="-Xms28g -Xmx28g -Xss1m \
 - `-XX:+-HeapDumpOnOutOfMemoryError` 选项, 当 `OutOfMemoryError` 产生，即内存溢出(堆内存或持久代)时，自动Dump堆内存。
   因为在运行时并没有什么开销, 所以在生产机器上是可以使用的。
   示例用法: `java -XX:+HeapDumpOnOutOfMemoryError -Xmx256m ConsumeHeap`
+  
   ```
   java.lang.OutOfMemoryError: Java heap space
   Dumping heap to java_pid2262.hprof ...
   ......
-  ```
-
+```
+  
 - `-XX:HeapDumpPath` 选项, 与`HeapDumpOnOutOfMemoryError`搭配使用, 指定内存溢出时Dump文件的目录。
   如果没有指定则默认为启动Java程序的工作目录。
   示例用法: `java -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/usr/local/ ConsumeHeap`
@@ -895,10 +959,9 @@ GC相关的命令,
 
 统计每个类的实例占用字节数。
 
-```shell
-jcmd 11155 GC.class_histogram
-11155:
+> $ `jcmd 11155 GC.class_histogram`
 
+```shell
  num     #instances         #bytes  class name
 ----------------------------------------------
    1:         11613        1420944  [C
@@ -913,9 +976,9 @@ jcmd 11155 GC.class_histogram
 
 Dump堆内存：
 
-```shell
-jcmd 11155 help GC.heap_dump
+> $`jcmd 11155 help GC.heap_dump`
 
+```shell
 Syntax : GC.heap_dump [options] <filename>
 Arguments: filename :  Name of the dump file (STRING, no default value)
 Options:  -all=true 或者 -all=false (默认)
@@ -932,15 +995,54 @@ jcmd 坑的地方在于, 必须指定绝对路径, 否则导出的hprof文件就
 
 
 
-
-
-
-
 ### 4.5 `jstack` 工具
 
-> 诊断工具
+> 命令行工具、诊断工具
+
+`jstack` 工具可以打印出Java线程的调用栈信息(stack trace)。
+
+一般用来查看存在哪些线程，诊断是否存在死锁等。
+
+这时候就看出来给线程(池)命名的必要性了，【开发不规范，整个项目都是坑】，具体可参考阿里巴巴的Java开发规范。
+
+看看帮助信息:
+
+> $`jstack -help`
+
+```shell
+Usage:
+    jstack [-l] <pid>
+        (to connect to running process)
+    jstack -F [-m] [-l] <pid>
+        (to connect to a hung process)
+    jstack [-m] [-l] <executable> <core>
+        (to connect to a core file)
+    jstack [-m] [-l] [server_id@]<remote server IP or hostname>
+        (to connect to a remote debug server)
+
+Options:
+    -F  to force a thread dump. Use when jstack <pid> does not respond (process is hung)
+    -m  to print both java and native frames (mixed mode)
+    -l  long listing. Prints additional information about locks
+    -h or -help to print this help message
+```
 
 
+
+选项说明:
+
+- `-F`  强制执行thread dump. 可在Java进程卡死(hung住)时使用, 此选项可能需要系统权限。
+- `-m`  混合模式(mixed mode),将Java帧和native帧一起输出, 此选项可能需要系统权限。
+- `-l`  长列表模式. 将线程相关的locks信息一起输出，比如持有的锁，等待的锁。
+
+常用的选项是 `-l`, 示例用法。
+
+```shell
+jstack 4524
+jstack -l 4524
+```
+
+死锁的原因一般是锁定多个资源的顺序出了问题【交叉依赖】， 网上示例代码很多，比如搜索 `Java 死锁 示例`。
 
 
 
@@ -953,12 +1055,11 @@ jcmd 坑的地方在于, 必须指定绝对路径, 否则导出的hprof文件就
 
 
 
-
 看看帮助信息:
 
-```
-jinfo -help
+> $ `jinfo -help`
 
+```
 Usage:
     jinfo [option] <pid>
         (to connect to running process)
@@ -1011,7 +1112,11 @@ jconsole —>  jvisualvm  —> jmc
 
 
 
-# `jvisualvm` 图形工具
+### 4.7 `jvisualvm` 图形界面监控工具
+
+
+
+
 
 JDK8需要安装较高版本(如Java SE 8u211)，才能安装插件。 
 
@@ -1031,7 +1136,7 @@ JDK8需要安装较高版本(如Java SE 8u211)，才能安装插件。
 
 
 
-# `jmc` 图形工具
+### 4.8 `jmc` 图形界面客户端
 
 jmc 和 jvisualvm 功能类似。
 
@@ -1046,6 +1151,18 @@ Oracle 试图用jmc来取代 JVisualVM，但jmc和jinfo一样，都需要比较�
 
 
 
+
+### 4.9 jsadebugd 服务端支持工具
+
+
+
+
+
+### 4.10 jstatd服务端工具
+
+
+
+### 4.11 jhat 服务端工具
 
 
 
@@ -1316,28 +1433,26 @@ SpringBoot应用指标收集器:Micrometer
 
 
 
-troubleshoot: <https://docs.oracle.com/javase/8/docs/technotes/guides/troubleshoot/toc.html>
-
-- [Java Command-Line Options](https://docs.oracle.com/javase/8/docs/technotes/guides/troubleshoot/clopts001.html)
 
 
+#### 相关链接
 
-HotSpot VM Options: <https://www.oracle.com/technetwork/java/javase/tech/vmoptions-jsp-140102.html>
+官方troubleshoot指南: <https://docs.oracle.com/javase/8/docs/technotes/guides/troubleshoot/toc.html>
 
-JMX 配置: <https://docs.oracle.com/javase/8/docs/technotes/guides/management/agent.html>
+JDK辅助工具参考文档 : <https://docs.oracle.com/javase/8/docs/technotes/tools/unix/index.html>
 
-GC Tuning Guide: <https://docs.oracle.com/javase/8/docs/technotes/guides/vm/gctuning/index.html>
+HotSpot VM选项: <https://www.oracle.com/technetwork/java/javase/tech/vmoptions-jsp-140102.html>
 
-Latency: <https://bravenewgeek.com/everything-you-know-about-latency-is-wrong/>
+JMX 配置指南: <https://docs.oracle.com/javase/8/docs/technotes/guides/management/agent.html>
+
+GC性能优化系列: <https://renfufei.blog.csdn.net/column/info/14851/>
+
+GC调优指南: <https://docs.oracle.com/javase/8/docs/technotes/guides/vm/gctuning/>
+
+延迟(Latency): <https://bravenewgeek.com/everything-you-know-about-latency-is-wrong/>
 
 CAPACITY TUNING: <https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/6/html/performance_tuning_guide/s-memory-captun>
 
-memory-leak: <https://www.programcreek.com/2013/10/the-introduction-of-memory-leak-what-why-and-how/>
-
-MemoryUsage: <https://docs.oracle.com/javase/8/docs/api/java/lang/management/MemoryUsage.html>
-
-<https://docs.oracle.com/javase/8/docs/technotes/guides/troubleshoot/toc.html>
-
 JVMInternals : <http://blog.jamesdbloom.com/JVMInternals.html>
 
-JVMTI 和 Agent 实现: <https://www.ibm.com/developerworks/cn/java/j-lo-jpda2/index.html>
+JDWP 协议及实现: <https://www.ibm.com/developerworks/cn/java/j-lo-jpda3/>
