@@ -33,11 +33,179 @@
 
 ## 正文
 
+
+JVM全称为 Java Virtual Machine, 翻译为中文 "Java虚拟机"。
+
+文中的JVM主要指 Oracle 公司的 HotSpot VM, 版本是Java8(JDK8,JDK1.8是同样的版本)。
+
+关于JVM的文章，书籍有很多。 有基础的，也有深入的。
+
+本文主要介绍各种简单工具的使用，穿插一些基本的知识点。 目的是为了让初学者快速上手，先入个门。
+
+入门的意思，按我的理解就是： 会描述问题，知道怎么去搜索，怎么去找路子深入学习。
+
+
+### 1. 环境准备与相关设置
+
+
+#### 1.1 安装JDK，以及设置环境变量.
+
+JDK通常是从 [Oracle官网](https://www.oracle.com/)下载， 打开页面翻到底部，找 `Java for Developers`, 下载对应的x64版本即可。
+
+> 现在流行将下载链接放到页面底部，很多工具都这样。当前推荐下载 JDK8。 今后JDK11可能成为主流版本，因为Java11是LTS长期支持版本，但可能还需要一些年才会普及，而且两个版本的结构不太兼容。
+
+有的操作系统提供了自动安装工具，直接使用也可以，比如 yum, brew, apt 等等。这部分比较基础，有问题直接搜索即可。
+
+安装完成后，Java环境一般来说就可以使用了。 验证的脚本命令为:
+
+```shell
+javac -version
+java -version
+```
+
+如果找不到命令，需要设置环境变量： `JAVA_HOME`  和  `PATH` 。
+
+>  `JAVA_HOME`  环境变量表示JDK的安装目录，通过修改 `JAVA_HOME` ，可以快速切换JDK版本 。很多工具依赖此环境变量。
+>
+> 另外, 建议不要设置 `CLASS_PATH` 环境变量，新手没必要设置，容易造成一些困扰。
+
+Windows系统,  系统属性 - 高级 - 设置系统环境变量。 如果没权限也可以设置用户环境变量。
+
+Linux和MacOSX系统, 需要配置脚本。 例如:
+
+```shell
+cat ~/.bash_profile
+
+# JAVA ENV
+export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.8.0_162.jdk/Contents/Home
+export PATH=$PATH:$JAVA_HOME/bin
+```
+
+让环境配置立即生效:
+
+```shell
+source ~/.bash_profile
+```
+
+查看环境变量:
+
+```shell
+export
+echo $PATH
+echo $JAVA_HOME
+```
+
+一般来说，`.bash_profile` 之类的脚本只用于设置环境变量。 不设置随机器自启动的程序。
+
+如果不知道自动安装/别人安装的JDK在哪个目录怎么办?
+
+> 最简单/最麻烦的查询方式是询问相关人员。
+
+查找的方式很多，比如，可以使用 `which`， `whereis`， `ls -l` 跟踪软连接, 或者 `find` 命令全局查找(可能需要sudo权限), 例如:
+
+```shell
+jps -v
+whereis javac
+ls -l /usr/bin/javac
+find / -name javac
+```
+
+找到满足  `$JAVA_HOME/bin/javac`  的路径即可。
+
+WIndows系统，安装在哪就是哪，通过任务管理器也可以查看某个程序的路径，注意 `JAVA_HOME` 不可能是 `C:/Windows/System32` 目录。
+
+
+#### 1.2 其他可选准备
+
+按照官方文档的说法，在诊断问题之前，可以做这些准备：
+
+- 取消core文件限制
+
+  `ulimit -c unlimited` , 这属于高级操作，可以使用 `kill -6 <pid>` 杀进程来生成core文件, 然后用 `gdb` 或者其他工具进行调试。 本文不介绍，只是列出这个知识点。
+
+- 开启自动内存Dump选项
+
+  增加启动参数 `-XX:+HeapDumpOnOutOfMemoryError`, 在内存溢出时自动转储，下文会进行介绍。
+
+- 可以生成 JFR 记录
+
+  这是JDK内置工具 jmc 提供的功能, Oracle 试图用jmc来取代 JVisualVM。而且在商业环境使用JFR需要付费授权，我认为这是个鸡肋功能，如果想学习也可以试试。
+
+- 开启GC日志
+
+  这是标配。比如设置 `-verbose:gc` 等选项，请参考下文。
+
+- 确定JVM版本以及启动参数
+
+  有多种手段获取, 最简单的是 `java -version`，但某些环境下有多个JDK版本，请参考下文。
+
+- 允许 JMX 监控信息
+
+  JMX支持远程监控，通过设置属性来启用，请参考下文。
+
+
+
+### 2. 常用性能指标介绍
+
+
+计算机系统中可以度量的资源，主要分为这几类:
+
+- CPU
+- 内存
+- 存储/IO
+- 网络/IO
+
+如果需要估算系统容量， 或者系统出了问题，一般套路就是看这几项资源是否可用，是否满足需求，是否告警/报错。
+
+> 至于 GPU 、主板、芯片组之类的资源则不太好衡量，通用计算系统很少会涉及到他们。
+
+与JVM有关的系统资源，主要是 `CPU` 和 `内存` 这两部分。
+
+
+一般衡量系统性能的维度有3个:
+
+- 响应时间/延迟
+- 吞吐量/TPS
+- 系统容量/硬件配置
+
+> 例如： "配置2核4GB，每秒可以响应200个请求，95%线是20ms，最大响应时间40ms。"
+> 从中可以解读出基本的性能信息: 响应时间(RS<40ms;), 吞吐量(200TPS), 系统配置信息(2C4G)。
+> 隐含的条件可能是 "并发请求数不超过200 "，这也是系统设计容量的一部分。
+
+
+每个系统关注的重点并不一样。 但一般会有个极限值，那就是性能约束。
+
+批处理/流处理 系统更关注吞吐量, 延迟可以适当放宽，硬件资源不会差，但也不是无限的。
+
+高可用Web系统，更关注高并发/常规并发下的系统响应时间，当然，吞吐量太差肯定也会拖后腿。
+
+
+这也是性能优化中的套路
+
+
+
+- **业务指标**：如吞吐量(QPS、TPS)、响应时间(RT)、并发数、业务成功率等
+- **资源指标**：如CPU、内存、Disk I/O、Network I/O等资源的消耗情况
+
+> 详情请参考: [性能测试中服务器关键性能指标浅析](https://www.jianshu.com/p/62cf2690e6eb)
+
+
+
+JVM诊断可用的方式:
+
+- 状态监控/健康检测
+- 性能分析器/分析CPU
+- Dump分析/内存分析
+- 本地/远程调试
+- 设置参数改变JVM行为/延迟/吞吐量
+
+
+
+
+### 3. JVM基础知识和启动参数
+
+
 #### JVM背景知识
-
-JVM全称是Java Virtual Machine, 翻译为中文是"Java虚拟机"。
-
-下文讨论的JVM主要指 Oracle公司的 HotSpot JVM, 版本为Java8(JDK8,JDK1.8可以认为是同样的意思)。
 
 JVM是Java程序的底层执行环境，主要用C++语言开发，如果想深入探索JVM，那么就需要掌握一定的C++语言知识，至少也应该看得懂C++代码。
 
@@ -108,181 +276,69 @@ Java程序哪里有问题?
 先来看看需要进行哪些基本的设置，有相关基础的读者大致过一眼即可。
 
 
-### 1. 环境准备与相关设置
+#### JVM内存结构
 
-- 安装JDK
-- 设置环境变量
+Java体系中有很多规范， 其中最基本的2个:
 
-JDK通常是从 [Oracle官网](https://www.oracle.com/)，翻到底部，找 `Java for Developers`, 下载对应的x64版本即可。
+[`Java语言规范` 和 `Java虚拟机规范`](https://docs.oracle.com/javase/specs/index.html)
 
-> 现在流行将下载链接放到页面底部，很多工具都这样。本文推荐下载 JDK8。以后JDK11是LTS版本，但还需要一些年，而且两个版本的结构不太兼容。
+> 各个领域的神级人物，一般都通读或掌握各种规范。
 
-有的操作系统提供了自动安装工具，也可以使用，比如 yum, brew, apt 等等。这部分比较基础，有问题直接搜索即可。
 
-自动安装完成后，一般来说Java环境就可以使用了。 验证的脚本命令为:
+根据对JVM内存划分的理解，制作了几张逻辑概念图。大家可以参考一下。
 
-```shell
-javac -version
-java -version
-```
+先看看栈内存(Stack)的大体结构：
 
-如果找不到命令，需要设置环境变量： `JAVA_HOME`  和  `PATH` 。
+![栈内存](01_01_jvm_stack.jpg)
 
->  `JAVA_HOME`  环境变量表示JDK的安装目录，通过修改 `JAVA_HOME` ，可以快速切换JDK版本 。很多工具依赖此环境变量。
->
-> 另外, 建议不要设置 `CLASS_PATH` 环境变量，一般没必要，还容易造成一些困扰。
+每启动一个线程，JVM就会在栈空间栈分配对应的 **线程栈**, 比如 1MB 的空间（`-Xss1m`）。
 
-Windows系统,  系统属性 - 高级 - 设置系统环境变量。如果没权限也可以设置用户环境变量。
+线程栈也叫做Java方法栈。 如果使用了JNI方法，则会分配一个单独的本地方法栈(Native Stack).
 
-Linux和MacOSX系统, 需要配置脚本。
 
-```shell
-cat ~/.bash_profile
+线程执行过程中，一般会有多个方法组成调用栈(Stack Trace), 比如A调用B，B调用C。。。每执行到一个方法，就会创建对应的 **栈帧**(Frame).
 
-# JAVA ENV
-export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.8.0_162.jdk/Contents/Home
-export PATH=$PATH:$JAVA_HOME/bin
-```
+![栈帧](01_02_jvm_stack_frame.jpg)
 
-让环境配置立即生效:
+栈帧只是一个逻辑上的概念，具体的大小，在一个方法编写完成后基本上就能确定。
 
-```shell
-source ~/.bash_profile
-```
+比如返回值需要有一个空间存放吧，每个局部变量都需要对应的地址空间，此外还有操作数栈，以及方法指针(标识这个栈帧对应的是哪个类的哪个方法,指向常量池中的字符串常量）。
 
-查看环境变量:
 
-```shell
-export
-echo $PATH
-echo $JAVA_HOME
-```
+Java程序除了栈内存之外，最主要内存区域就是堆内存了。
 
-一般来说，`.bash_profile` 之类的脚本只用于设置环境变量。 随机器自启动的程序在其他脚本中设置。
+![Java堆](01_03_jvm_heap.jpg)
 
-如果不知道自动安装/别人安装的JDK在哪个目录怎么办?
+堆内存是所有线程共用的内存空间，理论上大家都可以访问里面的内容。
 
-> 最简单/最麻烦的查询方式是询问相关人员。
+但JVM的具体实现一般会有各种优化。
 
-查找的方式很多，比如，可以使用 `whereis` 和 `ls -l` 来跟踪软连接, 或者 `find` 命令全局查找(可能需要sudo权限), 例如:
+比如将逻辑上的Java堆,划分为堆(Heap)和非堆(Non-Heap)两个部分.  这种划分的依据在于，我们编写的Java代码，基本上只能使用Heap这部分空间，发生内存分配和回收的主要区域也在这部分，所以有一种说法，这里的Heap也叫GC管理的堆(GC Heap)。
 
-```shell
-jps -v
-whereis javac
-ls -l /usr/bin/javac
-find / -name javac
-```
+GC理论中有一个重要的思想，叫做分代。 经过研究发现，程序中分配的对象，要么用过就扔，要么就能存活很久很久。
 
-找到满足  `$JAVA_HOME/bin/javac`  的路径即可。
+JVM将Heap内存分为年轻代（Young generation）和老年代（Old generation, 也叫 Tenured）两部分。
 
-WIndows系统，安装在哪就是哪，通过任务管理器也可以查看某个程序的路径，注意 `JAVA_HOME` 不可能是 `C:/Windows/System32` 目录。
+年轻代还划分为3个内存池，新生代(Eden space)和存活区(Survivor space), 存活区在大部分GC算法中有2个(S0, S1)，S0和S1总有一个是空的,但一般较小，也不浪费多少空间。
 
-按照官方文档的说法，在诊断问题之前，可以做这些准备：
+具体实现对新生代还有优化，那就是TLAB(Thread Local Allocation Buffer), 给每个线程先划定一小片空间，你创建的对象先在这里分配，满了再换。这能极大降低并发资源锁定的开销。
 
-- 设置core文件上限
 
-  `ulimit -c unlimited` , 这属于高级操作，可以使用 `kill -6 <pid>` 杀进程来生成core文件, 然后用 `gdb` 或者其他工具进行调试。 下面不涉及这种操作。
+Non-Heap本质上还是Heap，只是一般不归GC管理，里面划分为3个内存池。
 
-- 开启自动内存Dump选项
+- Metaspace, 以前叫持久代(永久代, Permanent generation), Java8换了个名字叫 Metaspace.
+  Java8将方法区移动到了Meta区里面，而方法又是class的一部分。。。和CCS交叉了?
+- CCS, Compressed Class Space, 存放class信息的，和 Metaspace 有交叉。
+- Code Cache, 存放 JIT 编译器编译后的本地机器代码。
 
-  增加启动参数 `-XX:+HeapDumpOnOutOfMemoryError`, 在内存溢出时自动转储，下文会进行介绍。
 
-- 可以生成 JFR 记录
+JVM的内存结构大致如此。
 
-  这是JDK内置工具 jmc 提供的功能, Oracle 试图用jmc来取代 JVisualVM。而且在商业环境使用JFR需要付费获取授权，所以这也是个鸡肋功能。
+还可以参考 [Metaspace解密](http://lovestblog.cn/blog/2016/10/29/metaspace/)
 
-- 开启GC日志
 
-  这是标配。比如设置 `-verbose:gc` 等选项，请参考下文。
 
-- 确定JVM版本以及启动参数
-
-  有多种手段获取, 最简单的是 `java -version`，请参考下文。
-
-- 允许 JMX 监控信息
-
-  JMX支持远程监控，通过设置属性来启用。监控本机的JVM并不需要额外配置，还可以使用 jstatd 工具暴露部分信息给远程JMX客户端。
-
-
-
-### 2. 常用性能指标介绍
-
-
-计算机系统中可以度量的资源，主要分为这几类:
-
-- CPU
-- 内存
-- 存储/IO
-- 网络/IO
-
-如果需要估算系统容量， 或者系统出了问题，一般套路就是看这几项资源是否可用，是否满足需求，是否告警/报错。
-
-> 至于 GPU 、主板、芯片组之类的资源则不太好衡量，通用计算系统很少会涉及到他们。
-
-与JVM有关的系统资源，主要是 `CPU` 和 `内存` 这两部分。
-
-
-一般衡量系统性能的维度有3个:
-
-- 响应时间/延迟
-- 吞吐量/TPS
-- 系统容量/硬件配置
-
-> 例如： "配置2核4GB，每秒可以响应200个请求，95%线是20ms，最大响应时间40ms。"
-> 从中可以解读出基本的性能信息: 响应时间(RS<40ms;), 吞吐量(200TPS), 系统配置信息(2C4G)。
-> 隐含的条件可能是 "并发请求数不超过200 "，这也是系统设计容量的一部分。
-
-
-每个系统关注的重点并不一样。 但一般会有个极限值，那就是性能约束。
-
-批处理/流处理 系统更关注吞吐量, 延迟可以适当放宽，硬件资源不会差，但也不是无限的。
-
-高可用Web系统，更关注高并发/常规并发下的系统响应时间，当然，吞吐量太差肯定也会拖后腿。
-
-
-这也是性能优化中的套路
-
-
-
-- **业务指标**：如吞吐量(QPS、TPS)、响应时间(RT)、并发数、业务成功率等
-- **资源指标**：如CPU、内存、Disk I/O、Network I/O等资源的消耗情况
-
-> 详情请参考: [性能测试中服务器关键性能指标浅析](https://www.jianshu.com/p/62cf2690e6eb)
-
-
-
-JVM诊断可用的方式:
-
-- 状态监控/健康检测
-- 性能分析器/分析CPU
-- Dump分析/内存分析
-- 本地/远程调试
-- 设置参数改变JVM行为/延迟/吞吐量
-
-
-
-
-### 3. JVM基础知识和启动参数
-
-
-#### JVM基础知识
-
-
-[Java语言规范和JVM规范](https://docs.oracle.com/javase/specs/index.html)
-
-
-内存逻辑概念图:
-
-
-
-
-
-
-
-> [Metaspace解密](http://lovestblog.cn/blog/2016/10/29/metaspace/)
-
-
-
+#### 启动参数
 
 
 
@@ -453,17 +509,17 @@ export JAVA_OPTS="-Xms28g -Xmx28g -Xss1m \
 - `-XX:+-HeapDumpOnOutOfMemoryError` 选项, 当 `OutOfMemoryError` 产生，即内存溢出(堆内存或持久代)时，自动Dump堆内存。
   因为在运行时并没有什么开销, 所以在生产机器上是可以使用的。
   示例用法: `java -XX:+HeapDumpOnOutOfMemoryError -Xmx256m ConsumeHeap`
-  
+
   ```
   java.lang.OutOfMemoryError: Java heap space
   Dumping heap to java_pid2262.hprof ...
   ......
 ```
-  
+
 - `-XX:HeapDumpPath` 选项, 与`HeapDumpOnOutOfMemoryError`搭配使用, 指定内存溢出时Dump文件的目录。
   如果没有指定则默认为启动Java程序的工作目录。
   示例用法: `java -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/usr/local/ ConsumeHeap`
-  自动Dump的hprof文件会存储到 `/usr/local/` 目录下。 
+  自动Dump的hprof文件会存储到 `/usr/local/` 目录下。
 
 - `-XX:OnError` 选项, 发生致命错误时(fatal error)执行的脚本。
   例如, 写一个脚本来记录出错时间, 执行一些命令, 或者 curl 一下某个在线报警的url.
@@ -489,6 +545,8 @@ export JAVA_OPTS="-Xms28g -Xmx28g -Xss1m \
 - 服务端工具
 
 很多情况下, JVM运行环境中并没有趁手的工具， 这时候可以先用命令行工具快速查看JVM实例的基本情况。
+
+> MacOSX，Windows系统的某些账户权限不够，有些工具可能会报错/失败，假如出问题了请排除这个因素。
 
 下面先介绍命令行工具。
 
@@ -850,13 +908,13 @@ jcmd -help
 Usage: jcmd <pid | main class> <command ...|PerfCounter.print|-f file>
    or: jcmd -l                                                    
    or: jcmd -h                                                    
-                                                                  
+
   command 必须是指定JVM可用的有效 jcmd 命令.      
   可以使用 "help" 命令查看该JVM支持哪些命令.   
   如果指定 pid 部分的值为 0, 则会将 commands 发送给所有可见的 Java 进程.   
   指定 main class 则用来匹配启动类。可以部分匹配。（适用同一个类启动多实例）.                         
   If no options are given, lists Java processes (same as -p).     
-                                                                  
+
   PerfCounter.print 命令可以展示该进程暴露的各种计数器
   -f  从文件读取可执行命令                  
   -l  列出(list)本机上可见的 JVM 进程                     
@@ -929,16 +987,16 @@ JDK 8.0_76
 # JVM实际生效的配置参数
 jcmd 11155 VM.flags
 11155:
--XX:CICompilerCount=4 -XX:InitialHeapSize=268435456 
--XX:MaxHeapSize=536870912 -XX:MaxNewSize=178782208 
--XX:MinHeapDeltaBytes=524288 -XX:NewSize=89128960 
+-XX:CICompilerCount=4 -XX:InitialHeapSize=268435456
+-XX:MaxHeapSize=536870912 -XX:MaxNewSize=178782208
+-XX:MinHeapDeltaBytes=524288 -XX:NewSize=89128960
 -XX:OldSize=179306496 -XX:+UseCompressedClassPointers
--XX:+UseCompressedOops -XX:+UseParallelGC 
+-XX:+UseCompressedOops -XX:+UseParallelGC
 
 # 查看命令行参数
 jcmd 11155 VM.command_line
 VM Arguments:
-jvm_args: -Xmx512m -Dfile.encoding=UTF-8 
+jvm_args: -Xmx512m -Dfile.encoding=UTF-8
 java_command: org.jetbrains.idea.maven.server.RemoteMavenServer
 java_class_path (initial): ...(xxx省略)...
 Launcher Type: SUN_STANDARD
@@ -1118,7 +1176,7 @@ jconsole —>  jvisualvm  —> jmc
 
 
 
-JDK8需要安装较高版本(如Java SE 8u211)，才能安装插件。 
+JDK8需要安装较高版本(如Java SE 8u211)，才能安装插件。
 
 如果看不到可用插件，请安装最新版本，或者下载插件到本地安装。
 
@@ -1201,6 +1259,9 @@ Review代码
 ### 6. JMX与相关工具
 
 
+监控本地的JVM并不需要额外配置，还可以使用 jstatd 工具暴露部分信息给远程JMX客户端。
+
+
 
 在 Java SE 5 之前，虽然JVM提供了一些底层的API，比如 JVMPI 和 JVMTI ，但这些API是面向 C 语言的，需要通过 JNI 等方式才能调用，要监控JVM 和系统资源非常不方便。
 
@@ -1255,7 +1316,7 @@ List<GarbageCollectorMXBean> garbageCollectorMXBeans = ManagementFactory.getGarb
 
 #### 6.2 JMX远程连接
 
-远程连接肯定是需要通过TCP端口通信。 
+远程连接肯定是需要通过TCP端口通信。
 
 常用的JMX客户端是 JVisualVM。当然像 jconsole, jmc 等工具也是支持的，或者也可以自己开发。
 
@@ -1415,7 +1476,7 @@ APM 采样
 
 
 
-SpringBoot应用指标收集器:Micrometer 
+SpringBoot应用指标收集器:Micrometer
 
 - 直接支持数据上报给 Elasticsearch, Datadog, InfluxData等。
 - 最大延迟，平均延迟，95%线， 吞吐量, 内存使用量 等信息。
