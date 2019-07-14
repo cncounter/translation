@@ -1627,70 +1627,59 @@ java -jar gcviewer_1.3.4.jar gc.log
 
 ## 8. 内存dump和内存分析工具介绍
 
+内存Dump分为2种方式： 主动Dump和被动Dump。
+
+主动Dump的工具包括: jcmd,  jmap, JVisualVM等等。具体使用请参考相关工具部分。
+
+被动Dump主要是: hprof, 以及 `-XX:+HeapDumpOnOutOfMemoryError` 等参数。
 
 
-主动:
+常用的分析工具有:
 
-jcmd
+- jhat 
+  jhat用来支持分析dump文件, 是一个HTTP/HTML服务器，能将dump文件生成在线的HTML文件，通过浏览器查看，一般很少使用。
 
-jmap
-
-被动:
-
-hprof
-
-dumponerror
-
-
-
-分析工具:
-
-jhat
-
-MAT
+- MAT
 
 
 
 ## 9. 面临复杂问题时可选的高级工具
 
 
+### OOM Killer
+
+
+内存溢出(Out of Memory,OOM), 是指计算机的所有可用内存(包括交换空间, swap space), 都被使用满了。 
+
+这种情况下, 默认配置会导致系统报警, 并停止正常运行. 当然, 将 /proc/sys/vm/panic_on_oom 参数设置为 0, 则告诉系统内核, 如果系统发生内存溢出, 就可以调用 oom_killer(OOM终结者)功能, 来杀掉最胖的那头进程(rogue processes, 流氓进程), 这样系统又可以继续工作了。
+
+
+假如物理内存不足, Linux 会找出一头比较壮的进程来杀掉。查看OOM终结者日志:
+
+Linux系统的OOM终结者, Out of memory killer。
+
+```
+sudo cat /var/log/messages | grep killer -A 2 -B 2
+```
+
+
+### BTrace
+
+BTrace是基于Java语言的一个安全的、可提供动态追踪服务的工具。
+
+BTrace基于ASM、Java Attach Api、Instruments开发，为用户提供了很多注解。依靠这些注解，我们可以编写BTrace脚本（简单的Java代码）达到我们想要的效果(只读监控)，而不必深陷于ASM对字节码的操作中不可自拔。
+
+
+细心的同学可能已经发现，在介绍 JVisualVM 的插件时, 截图中有相关的插件 “BTrace Workbench”。 安装插件之后，在对应的JVM实例上点右键，很容易就进入操作界面了。
+
+BTrace 提供了很多示例，简单的监控照着改一改就行。
+
+
+> 可参考: [Java动态追踪技术探究](https://tech.meituan.com/2019/02/28/java-dynamic-trace.html)
 
 
 
-远程支持:
-
-
-
-jstatd
-
-JHat
-
-
-
-
-
-
-
-分析手段与工具
-
-
-
-
-
-
-
-
-
-BTrace
-
-jdb
-
-
-
-> [Java动态追踪技术探究](https://tech.meituan.com/2019/02/28/java-dynamic-trace.html)
-
-BTrace是基于Java语言的一个安全的、可提供动态追踪服务的工具。BTrace基于ASM、Java Attach Api、Instruments开发，为用户提供了很多注解。依靠这些注解，我们可以编写BTrace脚本（简单的Java代码）达到我们想要的效果(只读监控)，而不必深陷于ASM对字节码的操作中不可自拔。
-
+###  Arthas
 
 Arthas（阿尔萨斯）是Alibaba开源的Java诊断工具，深受开发者喜爱。
 
@@ -1705,22 +1694,12 @@ Arthas（阿尔萨斯）是Alibaba开源的Java诊断工具，深受开发者喜
 
 `Arthas`支持JDK 6+，支持Linux/Mac/Winodws，采用命令行交互模式，同时提供丰富的 `Tab` 自动补全功能，进一步方便进行问题的定位和诊断。
 
-RMI注册中心
-
-
-
-Pinpoint, Datadog, Zabbix
-
-gdb
-
-HPROF
 
 
 
 
 
 ## 10. 应对容器时代面临的挑战
-
 
 
 集群环境，应用性能指标采集。
@@ -1748,6 +1727,12 @@ SpringBoot应用指标收集器:Micrometer
 深入问题不讲
 
 崩溃、死锁
+
+
+大数据采集。
+
+Pinpoint, Datadog, Zabbix
+
 
 
 
