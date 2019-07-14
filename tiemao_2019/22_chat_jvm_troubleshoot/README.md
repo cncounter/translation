@@ -1274,11 +1274,6 @@ jdb -attach 8888
 
 ## 6. JMX与相关工具
 
-
-监控本地的JVM并不需要额外配置，还可以使用 jstatd 工具暴露部分信息给远程JMX客户端。
-
-
-
 在 Java SE 5 之前，虽然JVM提供了一些底层的API，比如 JVMPI 和 JVMTI ，但这些API是面向 C 语言的，需要通过 JNI 等方式才能调用，要监控JVM 和系统资源非常不方便。
 
  Java SE 5 版本中引入了JMX技术（Java Management Extensions， Java 管理扩展），用来暴露一些相关信息，甚至支持远程动态设置某些参数。
@@ -1287,14 +1282,17 @@ JMX 让 JDK 中开发自检测程序成为可能，也提供了大量轻量级�
 
 如果你是框架开发者，或者连接池的开发者，还可以注册MBean到JVM，随着其他JMX的Bean一起暴露出去，比如某些监控信息，此处不讲解，可以上网搜索。
 
+
 客户端使用JMX大约支持两种方式：
 
 - 程序代码手动获取MXBean。
 - 通过网络远程获取MBean。
 
+从 JVM 运行时获取GC行为数据, 最简单的办法是使用标准 JMX API 接口. JMX是获取 JVM内部运行时状态信息 的标准API. 可以编写程序代码, 通过 JMX API 来访问本程序所在的JVM，也可以通过JMX客户端执行(远程)访问。
 
 
 ### 6.1 程序中获取JMX信息
+
 
 相关的MXBean类位于 `rt.jar` 文件的 `java.lang.management` 包中，JDK中默认就提供了。
 
@@ -1331,11 +1329,14 @@ List<GarbageCollectorMXBean> garbageCollectorMXBeans
 
 ### 6.2 JMX远程连接
 
-远程连接肯定是需要通过TCP端口通信。
 
-常用的JMX客户端是 JVisualVM。当然像 jconsole, jmc 等工具也是支持的，或者也可以自己开发。
+最常见的 JMX客户端是 JConsole 和 JVisualVM (可以安装各种插件,十分强大)。两个工具都是标准JDK的一部分, 而且很容易使用. 如果使用的是 JDK7u40 及更高版本, 还可以使用另一个工具: Java Mission Control(jmc,大致翻译为 Java控制中心)。
 
-想要支持JMX客户端连接服务端JVM实例，则Java启动脚本中需要加上相关的配置参数：
+监控本地的JVM并不需要额外配置，如果是远程监控，还可以在服务端部署 jstatd 工具暴露部分信息给JMX客户端。
+
+所有 JMX客户端都是独立的程序,可以连接到目标JVM上。目标JVM可以在本机, 也可能是远端JVM。
+
+想要支持JMX客户端连接服务端JVM实例，则Java启动脚本中需要加上相关的配置参数，示例如下：
 
 ```shell
 -Dcom.sun.management.jmxremote
@@ -1356,6 +1357,7 @@ List<GarbageCollectorMXBean> garbageCollectorMXBeans
 
 > 如果想要远程查看VisualGC，则服务端需要开启 jstatd 来支持, jvisualvm先连jstatd远程主机，接着在远程主机上点右键添加jmx连接。
 
+关于 JVisualVM 的使用，请参考前面的小节。
 
 
 ## 7. GC日志解读与分析
