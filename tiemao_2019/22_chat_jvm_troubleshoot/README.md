@@ -1216,7 +1216,6 @@ java -Xdebug -Xrunjdwp:transport=dt_shmem,address=debug,server=y,suspend=y com.x
 java -Xdebug -Xrunjdwp:transport=dt_socket,address=8888,server=y,suspend=y com.xxx.Test
 ```
 
-```
 
 其实, `-Xdebug` 这个选项什么用都没有，官方说是为了历史兼容性, 避免报错才没有删除。
 
