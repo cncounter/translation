@@ -1119,32 +1119,99 @@ Error attaching to process:
 
 
 
+### 4.7 `jvisualvm` 图形界面监控工具
+
 
 GUI图形界面工具, 主要是3款: jconsole,  jvisualvm,  jmc。
 
 其中, jconsole比较古老，在此不进行介绍。
 
 
-### 4.7 `jvisualvm` 图形界面监控工具
+JVisualVM启动后的界面大致如下:
+
+![](04_01_jvm_start.png)
+
+在其中可以看到本地的JVM实例。
+
+通过 JVisualVM 连接到某个JVM以后, "概述"页签显示的基本信息如下图所示:
+
+![](04_02_jvisualvm_base_app.png)
+
+可以看到，其中有PID，启动参数，系统属性等信息。
+
+切换到"监视"页签：
+
+![](04_03_jvm_monit.png)
+
+可以看到整体的运行情况。 比如 CPU，堆内存，类，线程等信息。还可以执行一些操作，比如“强制执行垃圾回收”，“堆Dump”等。
+
+"线程"页签则展示了JVM中的线程列表。 再一次看出线程（池）命名的好处。
+
+![](04_04_jvm_thread.png)
 
 
+JVisualVM 强大的功能在于插件。
 
+JDK8需要安装较高版本(如Java SE 8u211)，才能安装jvisualvm的插件。
 
+![](04_05_to_plugin.png)
 
-JDK8需要安装较高版本(如Java SE 8u211)，才能安装插件。
+JVisualVM安装MBeans插件的步骤: 通过 工具(T) – 插件(G) – 可用插件 – 勾选具体的插件 – 安装 – 下一步 – 等待安装完成。
+
+![](04_06_select_plugin.png)
 
 如果看不到可用插件，请安装最新版本，或者下载插件到本地安装。
 
 请排除网络问题，或者检查更新，重新启动试试。
 
+![](04_07_licence.png)
+
+安装完成后, 重新连接某个JVM, 即可看到新安装的插件。
+
+切换到VisualGC页签:
+
+![](04_08_visual_gc.png)
+
+在其中可以看到各个内存池的使用情况，以及类加载时间，GC总次数，总消耗时间等信息。 比起命令行工具要简单得多。
+
+切换到 MBeans 标签:
+
+![](04_09_MBeans.png)
+
+一般不怎么关注 MBean , 但 MBean  对于理解GC的原理倒是挺有用的。
+
+主要看 `java.lang` 包下面的MBean。比如内存池, 或者垃圾收集器等。
+
+从图中可以看到 Metaspace 的 Type 是 NON_HEAP。
+
+当然，还可以看垃圾收集器(GarbageCollector)。
+
+对所有的垃圾收集器, 通过 JMX API 获取的信息包括:
+
+- **CollectionCount** :  垃圾收集器执行的GC总次数,
+- **CollectionTime**: 收集器运行时间的累计。这个值等于所有GC事件持续时间的总和,
+- **LastGcInfo**: 最近一次GC事件的详细信息。包括 GC事件的持续时间(duration),  开始时间(startTime) 和 结束时间(endTime), 以及各个内存池在最近一次GC之前和之后的使用情况,
+- **MemoryPoolNames**:  各个内存池的名称,
+- **Name**: 垃圾收集器的名称
+- **ObjectName**: 由JMX规范定义的 MBean的名字,,
+- **Valid**: 此收集器是否有效。本人只见过 "`true`"的情况 (^_^)
+
+
+根据经验, 这些信息对GC的性能来说,不能得出什么结论.  只有编写程序,  获取GC相关的 JMX 信息来进行统计和分析。 
 
 
 
+下面看怎么执行远程实时监控。
 
-本地实时监控。
+![](04_10_remote_jmx.png)
 
-远程实时监控。
+如上图所示，从文件菜单中, 我们可以选择“添加远程主机”，以及“添加JMX连接”。
 
+比如 “添加JMX连接”， 填上IP和端口号之后，勾选“不要求SSL连接”，点击“确定”按钮即可。
+
+关于目标JVM怎么启动JMX支持，请参考下面的 JMX 小节。
+
+远程主机则需要 jstatd 的支持。请参考 jstatd 部分。
 
 
 
@@ -1155,37 +1222,55 @@ jmc 和 jvisualvm 功能类似。
 
 Oracle 试图用jmc来取代 JVisualVM，但jmc和jinfo一样，都需要比较高的权限（去操纵其他JVM进程），可能会被Mac系统的安全限制拦截。在商业环境使用JFR需要付费获取授权。
 
+启动后的界面如下:
+
+![](04_11_jmc.png)
+
+可以看到，漂亮了很多，有些客户肯定喜欢。
+
+但jmc不只是一个监控工具，要求的权限很多，有些权限不够的管理员账户可能出一些问题。
+
+大致使用和JVisualVM差不多。点击下方的页签切换即可。
+
+
+### 4.9 jstatd服务端工具
+
+jstatd 是个强大的服务端支持工具。
+
+但因为涉及暴露一些服务器信息，所以需要配置策略文件。
+
+> $ `cat /etc/java/jstatd.all.policy`
+
+```
+grant codebase "file:${java.home}/../lib/tools.jar" { 
+   permission java.security.AllPermission; 
+};
+```
+
+后台启动 jstatd
+
+```
+jstatd -J-Djava.security.policy=jstatd.all.policy
+  -J-Djava.rmi.server.hostname=198.11.188.188 &
+```
+
+其中 198.11.188.188 是公网IP，如果没有公网，那么就是内网IP。
+
+
+然后使用 jvisualvm, 或者 jconsole 连接远程服务器。 其中IP为 198.11.188.188, 端口号是默认的 `1099`. 当然,端口号可以通过参数自定义。
+
+说明: 客户端与服务器的JVM大版本号必须一致或者兼容。
+
+
+CPU图形没有显示 ,原因是 jstatd 不支持监控CPU。 可以启用对应JVM的 JMX监控, 具体请参考JMX一节。
 
 
 
+### 4.10 更多工具
 
+JDK还自带了其他工具， 比如 `jsadebugd` 可以在服务端主机上，开启RMI Server。 `jhat` 可用于解析hprof内存Dump文件等。
 
-
-
-- 服务端工具
-
-
-
-### 4.9 jsadebugd 服务端支持工具
-
-
-
-
-
-### 4.10 jstatd服务端工具
-
-
-
-### 4.11 jhat 服务端工具
-
-
-
-选项:
-
-
-
-
-
+在此不进行介绍，有兴趣可以搜索看看。
 
 
 ## 5. JDWP简介
