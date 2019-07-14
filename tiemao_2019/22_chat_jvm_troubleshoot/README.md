@@ -1448,6 +1448,9 @@ List<GarbageCollectorMXBean> garbageCollectorMXBeans
 ## 7. GC日志解读与分析
 
 
+> 关于GC基础与GC性能调优，以及OutOfMemoryError，可参考铁锚的CSDN专栏: [GC性能优化](https://blog.csdn.net/renfufei/column/info/14851)
+
+
 因为GC日志模块内置于JVM中,  所以日志中包含了对GC活动最全面的描述。 这就是事实上的标准, 可作为GC性能评估和优化的最真实数据来源。
 
 
