@@ -1312,16 +1312,15 @@ MemoryMXBean memoryMXBean = ManagementFactory.getMemoryMXBean();
 List<MemoryPoolMXBean> memoryPoolMXBeans = ManagementFactory.getMemoryPoolMXBeans();
 // 3.3 内存管理器-列表
 List<MemoryManagerMXBean> memoryManagerMXBeans = ManagementFactory.getMemoryManagerMXBeans();
-
 // 4. class加载统计信息
 ClassLoadingMXBean classLoadingMXBean = ManagementFactory.getClassLoadingMXBean();
 // 5. 编译统计信息
 CompilationMXBean compilationMXBean = ManagementFactory.getCompilationMXBean();
 // 6. 线程
 ThreadMXBean threadMXBean = ManagementFactory.getThreadMXBean();
-
 // 7.GC
-List<GarbageCollectorMXBean> garbageCollectorMXBeans = ManagementFactory.getGarbageCollectorMXBeans();
+List<GarbageCollectorMXBean> garbageCollectorMXBeans 
+    = ManagementFactory.getGarbageCollectorMXBeans();
 ```
 
 取得这些MXBean之后，就可以获取对应的Java运行时信息，可以定时上报给某个系统，那么一个简单的监控就创建了。
@@ -1355,31 +1354,183 @@ List<GarbageCollectorMXBean> garbageCollectorMXBeans = ManagementFactory.getGarb
 
 如这里对应的就类似于： `47.57.227.67:10990`
 
-> 如果想要远程查看VIsualGC，则服务端需要开启 jstatd 来支持, jvisualvm先连jstatd远程主机，接着在远程主机上连 jmx。
-
-
+> 如果想要远程查看VisualGC，则服务端需要开启 jstatd 来支持, jvisualvm先连jstatd远程主机，接着在远程主机上点右键添加jmx连接。
 
 
 
 ## 7. GC日志解读与分析
 
 
-
-<https://github.com/cncounter/translation/blob/master/tiemao_2017/07_FasterStartUp_Tomcat/07_FasterStartUp_Tomcat.md#%E9%9A%8F%E6%9C%BA%E6%95%B0%E7%86%B5%E6%BA%90entropy-source>
-
+因为GC日志模块内置于JVM中,  所以日志中包含了对GC活动最全面的描述。 这就是事实上的标准, 可作为GC性能评估和优化的最真实数据来源。
 
 
+GC日志一般输出到文件之中, 是纯 text 格式的, 当然也可以打印到控制台。有多个可以控制GC日志的JVM参数。例如,可以打印每次GC的持续时间, 以及程序暂停时间(`-XX:+PrintGCApplicationStoppedTime`), 还有GC清理了多少引用类型(`-XX:+PrintReferenceGC`)。
+
+通过日志内容也可以得到GC相关的信息。
+
+要打印GC日志, 需要在启动脚本中指定类似的启动参数:
+
+```
+-verbose:gc
+-XX:+PrintGCDetails
+-XX:+PrintGCDateStamps
+-XX:+PrintGCTimeStamps
+-Xloggc:<filename>
+```
+
+各个垃圾收集器的日志可能有一些差异，但只要了解大致的套路之后，即使有差异也不会很大。
 
 
-gcviewer
+### 7.1 示例1
+
+这样配置以后，发生GC时输出的日志就类似于下面这种格式(为了显示方便,已手工折行):
+
+```
+2019-07-15T14:45:37.987+0800: 151.126: 
+  [GC (Allocation Failure) 151.126:
+    [DefNew: 629119K->69888K(629120K), 0.0584157 secs]
+    1619346K->1273247K(2027264K), 0.0585007 secs] 
+  [Times: user=0.06 sys=0.00, real=0.06 secs]
+
+2019-07-15T14:45:59.690+0800: 172.829: 
+  [GC (Allocation Failure) 172.829: 
+    [DefNew: 629120K->629120K(629120K), 0.0000372 secs]
+    172.829: [Tenured: 1203359K->755802K(1398144K), 0.1855567 secs]
+    1832479K->755802K(2027264K),
+    [Metaspace: 6741K->6741K(1056768K)], 0.1856954 secs]
+  [Times: user=0.18 sys=0.00, real=0.18 secs]
+```
+
+
+上面的GC日志暴露了JVM中的一些信息。事实上，这个日志片段中发生了 2 次垃圾收集事件(Garbage Collection events)。其中一次清理的是年轻代(Young generation), 而第二次处理的是整个堆内存。
+
+下面我们来看，如何解读第一次GC事件，发生在年轻代中的小型GC(Minor GC):
+
+
+1. `2019-07-15T14:45:37.987+0800` – GC事件(GC event)开始的时间点.
+1. `151.126` – GC时间的开始时间,相对于JVM的启动时间,单位是秒(Measured in seconds).
+1. `GC` – 用来区分(distinguish)是 Minor GC 还是 Full GC 的标志(Flag). 这里的 `GC` 表明本次发生的是 Minor GC.
+1. `Allocation Failure` – 引起垃圾回收的原因. 本次GC是因为年轻代中没有任何合适的区域能够存放需要分配的数据结构而触发的.
+1. `DefNew` – 使用的垃圾收集器的名字. `DefNew` 这个名字代表的是: 单线程(single-threaded), 采用标记复制(mark-copy)算法的, 使整个JVM暂停运行(stop-the-world)的年轻代(Young generation) 垃圾收集器(garbage collector).
+1. `629119K->69888K` – 在本次垃圾收集之前和之后的年轻代内存使用情况(Usage).
+1. `(629120K)` – 年轻代的总的大小(Total size).
+1. `1619346K->1273247K` – 在本次垃圾收集之前和之后整个堆内存的使用情况(Total used heap).
+1. `(2027264K)` – 总的可用的堆内存(Total available heap).
+1. `0.0585007 secs` – GC事件的持续时间(Duration),单位是秒.
+1. `[Times: user=0.06 sys=0.00, real=0.06 secs]` – GC事件的持续时间,通过多种分类来进行衡量:
+ - **user** – 此次垃圾回收, 各个垃圾收集线程消耗的总CPU时间(Total CPU time).
+ - **sys** – 操作系统调用(OS call) 以及等待系统事件的时间(waiting for system event)
+ - **real** – 应用程序暂停的时间(Clock time). 由于串行垃圾收集器(Serial Garbage Collector)使用单个线程, 所以 real time 等于 user + sys 的和.
+
+
+通过上面的分析, 就可以计算出在垃圾收集期间, JVM 中的内存使用情况。在垃圾收集之前, 堆内存总的使用了 **1.54G** (1,619,346K)。其中, 年轻代使用了 **614M**(629,119k)。也就可以推算出老年代使用的内存为: **967M**(990,227K)。
+
+`->` 右边的数据中蕴含了更重要的信息, 年轻代的内存使用量，在垃圾回收后下降了 **546M**(559,231k), 但总的堆内存使用(total heap usage)只减少了 **337M**(346,099k). 通过这一点可以算出, 有 **208M**(213,132K) 的年轻代对象被提升到老年代(Old)中。
+
+不知道各位同学有没有注意到一些套路。 GC日志中展示的内存数值，一般都是使用量和总大小。
+
+第二次的GC日志，各位可以尝试自己分析一下。
 
 
 
+### 7.2 示例2
+
+
+再来看一个 ParallelGC 输出的日志示例:
+
+
+```
+
+2019-07-15T14:46:28.829+0800: 200.659: 
+  [Full GC (Ergonomics) 
+    [PSYoungGen: 64000K->63999K(74240K)] 
+    [ParOldGen: 169318K->169318K(169472K)] 233318K->233317K(243712K), 
+    [Metaspace: 20427K->20427K(1067008K)], 
+  0.1538778 secs] 
+  [Times: user=0.42 sys=0.00, real=0.16 secs]
+```
+
+分析以上日志内容, 可以得知:
+
+- 这部分日志截取自JVM启动后200秒左右。
+- 日志片段中显示, 发生了 Full GC。
+- 这次暂停事件的总持续时间是 `160毫秒`。
+- 在GC完成之后,  几乎所有的老年代空间依然被占用(`169318K->169318K(169472K)`)。
+
+通过日志信息可以确定, 该应用的GC情况非常糟糕。而GC的结果是, 老年代空间仍然被占满.
+
+从此示例可以看出, GC日志对监控GC行为和JVM是否处于健康状态非常有效。
+
+一般情况下, 查看 GC 日志就可以快速确定以下症状:
+
+
+- GC开销太大。如果GC暂停的总时间很长, 就会损害系统的吞吐量。不同的系统允许不同比例的GC开销, 但一般认为, 正常范围在  `10%` 以内。
+- 极个别的GC事件暂停时间过长。当某次GC暂停时间太长, 就会影响系统的延迟指标.  如果延迟指标规定交易必须在 `1,000 ms`内完成, 那就不能容忍任何超过 `1000毫秒`的GC暂停。
+- 老年代的使用量超过限制。如果老年代空间在 Full GC 之后仍然接近全满, 那么GC就成为了性能瓶颈, 可能是内存太小, 也可能是存在内存泄漏。这种症状会让GC的开销暴增。
 
 
 
-暂停时间超标, 释放的内存量持续减小。
+#### GCViewer工具
 
+
+可以看到,GC日志中的信息非常详细。但除了这些简单的小程序,  生产系统一般都会生成大量的GC日志, 纯靠人工是很难阅读和进行解析的。
+
+我们可以自己编写解析器, 来将庞大的GC日志解析为直观易读的图形信息。 但很多时候自己写程序也不是个好办法, 因为各种GC算法的复杂性, 导致日志信息格式互相之间不太兼容。那么神器来了: [GCViewer](https://github.com/chewiebug/GCViewer)。
+
+GCViewer是一款开源的GC日志分析工具。GitHub项目主页对各项指标进行了完整的描述. 下面我们介绍最常用的一些指标。
+
+gcviewer本身是一个jar文件，使用的命令大致如下:
+
+```
+java -jar gcviewer_1.3.4.jar gc.log
+```
+
+大致会看到类似下面的图形界面:
+
+![](07_01_gcviewer-screenshot.png)
+
+
+上图中, Chart 区域是对GC事件的图形化展示。包括各个内存池的大小和GC事件。上图中, 只有两个可视化指标: 蓝色线条表示堆内存的使用情况, 黑色的Bar则表示每次GC暂停时间的长短。
+
+
+从图中可以看到, 内存使用量增长很快。一分钟左右就达到了堆内存的最大值.  堆内存几乎全部被消耗, 不能顺利分配新对象, 并引发频繁的 Full GC 事件. 这说明程序可能存在内存泄露, 或者启动时指定的内存空间不足。
+
+
+从图中还可以看到 GC暂停的频率和持续时间。`30秒`之后, GC几乎不间断地运行,最长的暂停时间超过`1.4秒`。
+
+
+在右边有三个选项卡。“**`Summary`**(摘要)” 中比较有用的是 “`Throughput`”(吞吐量百分比) 和 “`Number of GC pauses`”(GC暂停的次数), 以及“`Number of full GC pauses`”(Full GC 暂停的次数). 吞吐量显示了有效工作的时间比例, 剩下的部分就是GC的消耗。
+
+
+以上示例中的吞吐量为 **`6.28%`**。这意味着有 **`93.72%`** 的CPU时间用在了GC上面. 很明显系统所面临的情况很糟糕 —— 宝贵的CPU时间没有用于执行实际工作, 而是在试图清理垃圾。
+
+
+下一个有意思的地方是“**Pause**”(暂停)选项卡:
+
+![](07_02_gviewer-screenshot-pause.png)
+
+
+“`Pause`” 展示了GC暂停的总时间,平均值,最小值和最大值, 并且将 total 与minor/major 暂停分开统计。如果要优化程序的延迟指标, 这些统计可以很快判断出暂停时间是否过长。另外, 我们可以得出明确的信息: 累计暂停时间为 `634.59 秒`, GC暂停的总次数为 `3,938 次`, 这在`11分钟/660秒`的总运行时间里那不是一般的高。
+
+
+更详细的GC暂停汇总信息, 请查看主界面中的 “**Event details**” 标签:
+
+
+![](07_03_gcviewer-screenshot-eventdetails.png)
+
+
+从“**Event details**” 标签中, 可以看到日志中所有重要的GC事件汇总: `普通GC停顿` 和 `Full GC 停顿次数`, 以及`并发执行数`, `非 stop-the-world 事件`等。此示例中, 可以看到一个明显的地方, Full GC 暂停严重影响了吞吐量和延迟, 依据是: `3,928 次 Full GC`, 暂停了`634秒`。
+
+
+可以看到, GCViewer 能用图形界面快速展现异常的GC行为。一般来说, 图像化信息能迅速揭示以下症状:
+
+
+- 低吞吐量。当应用的吞吐量下降到不能容忍的地步时, 有用工作的总时间就大量减少. 具体有多大的 “容忍度”(tolerable) 取决于具体场景。按照经验, 低于 90% 的有效时间就值得警惕了, 可能需要好好优化下GC。
+- 单次GC的暂停时间过长。只要有一次GC停顿时间过长,就会影响程序的延迟指标. 例如, 延迟需求规定必须在 1000 ms以内完成交易, 那就不能容忍任何一次GC暂停超过1000毫秒。
+- 堆内存使用率过高。如果老年代空间在 Full GC 之后仍然接近全满,  程序性能就会大幅降低,  可能是资源不足或者内存泄漏。这种症状会对吞吐量产生严重影响。
+
+
+业界良心 —— 图形化展示的GC日志信息绝对是我们重磅推荐的。不用去阅读冗长而又复杂的GC日志,通过容易理解的图形, 也可以得到同样的信息。
 
 
 
