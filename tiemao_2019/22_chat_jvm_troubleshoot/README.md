@@ -472,10 +472,10 @@ export JAVA_OPTS="-Xms28g -Xmx28g -Xss1m \
   因为在运行时并没有什么开销, 所以在生产机器上是可以使用的。
   示例用法: `java -XX:+HeapDumpOnOutOfMemoryError -Xmx256m ConsumeHeap`
 
-  ```
-  java.lang.OutOfMemoryError: Java heap space
-  Dumping heap to java_pid2262.hprof ...
-  ......
+```
+java.lang.OutOfMemoryError: Java heap space
+Dumping heap to java_pid2262.hprof ...
+......
 ```
 
 - `-XX:HeapDumpPath` 选项, 与`HeapDumpOnOutOfMemoryError`搭配使用, 指定内存溢出时Dump文件的目录。
