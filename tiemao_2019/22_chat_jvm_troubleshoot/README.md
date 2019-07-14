@@ -148,15 +148,30 @@ WIndows系统，安装在哪就是哪，通过任务管理器也可以查看某�
 ## 2. 常用性能指标介绍
 
 
-计算机系统中可以度量的资源，主要分为这几类:
+JVM诊断是要诊断些什么呢?
+
+- 1. 程序BUG: 程序问题必须是优先解决的，要保证正确性。例如死锁等等, 当然，JVM层面的排查只是辅助手段，更多的还是分析业务代码和逻辑确定Java程序哪里有问题。
+- 2. 系统性能问题: 比如借助监控和日志，判断资源层面有没有问题? JVM层面有没有问题?
+
+
+进行JVM问题诊断的目的有：
+
+- 排查程序运行中出现的问题
+- 优化性能
+- 学习研究和知识储备
+
+计算机系统中,性能相关的资源主要分为这几类:
 
 - CPU
 - 内存
 - IO: 存储+网络
 
-如果系统性能上不去，一般套路就是先排查基础资源是否成为瓶颈。
 
-如果发生资源告警/不足, 就需要评估系统容量，分析原因。
+性能优化中常见的套路：
+
+一般先排查基础资源是否成为瓶颈。看资源够不够，只要成本允许，加配置可能是最快速的解决方案，还可能是最划算，最有效的解决方案。
+
+与JVM有关的系统资源，主要是 `CPU` 和 `内存` 这两部分。 如果发生资源告警/不足, 就需要评估系统容量，分析原因。
 
 > 至于 GPU 、主板、芯片组之类的资源则不太好衡量，通用计算系统很少涉及。
 
@@ -167,10 +182,10 @@ WIndows系统，安装在哪就是哪，通过任务管理器也可以查看某�
 - 吞吐量(Throughput), 一般的衡量每秒处理的事务数(TPS)。
 - 系统容量(Capacity), 也叫做设计容量，可以理解为硬件配置，成本约束。
 
-这3个维度互相关联，相互制约。
+这3个维度互相关联，相互制约。只要系统架构允许，增加硬件配置一般都能提升性能指标。
 
 
-性能指标可分为两类:
+性能指标还可分为两类:
 
 - **业务需求指标**：如吞吐量(QPS、TPS)、响应时间(RT)、并发数、业务成功率等。
 - **资源约束指标**：如CPU、内存、I/O等资源的消耗情况
@@ -178,12 +193,7 @@ WIndows系统，安装在哪就是哪，通过任务管理器也可以查看某�
 > 详情可参考: [性能测试中服务器关键性能指标浅析](https://www.jianshu.com/p/62cf2690e6eb)
 
 
-
-只要系统架构允许，增加硬件配置一般都能提升性能指标。
-
-每类系统关注的重点还不一样。 批处理/流处理 系统更关注吞吐量, 延迟可以适当放宽。一般来说大部分系统的硬件资源不会太差，但也不是无限的。
-
-高可用Web系统，既关注高并发情况下的系统响应时间，也关注吞吐量。
+每类系统关注的重点还不一样。 批处理/流处理 系统更关注吞吐量, 延迟可以适当放宽。一般来说大部分系统的硬件资源不会太差，但也不是无限的。高可用Web系统，既关注高并发情况下的系统响应时间，也关注吞吐量。
 
 
 > **例如**： "配置2核4GB的节点，每秒响应200个请求，95%线是20ms，最大响应时间40ms。"
@@ -192,34 +202,13 @@ WIndows系统，安装在哪就是哪，通过任务管理器也可以查看某�
 
 
 
-JVM诊断是要诊断些什么呢?
-
-- 1. 程序BUG: 程序问题必须是优先解决的，要保证正确性。当然，JVM层面的排查只是辅助手段，更多的还是分析业务代码和逻辑确定Java程序哪里有问题。
-- 2. 系统性能问题: 比如借助监控和日志，判断资源层面有没有问题? JVM层面有没有问题?
-
-
-进行JVM问题诊断的目的有：
-
-- 排查程序运行中出现的问题
-- 优化性能
-- 学习研究和知识储备
-
-
 我们可采用的方式:
 
-- 本地/远程调试
-- 状态监控/健康检测
-- 性能分析器/CPU使用情况/内存分配分析
-- Dump分析/内存分析
-- 设置参数改变JVM行为
-
-
-
-性能优化中的套路：
-
-一般先看资源够不够，只要成本允许，加配置可能是最快速的解决方案，还可能是最划算，最有效的解决方案。
-
-与JVM有关的系统资源，主要是 `CPU` 和 `内存` 这两部分。
+- 本地/远程调试, 下文将简单介绍JDWP与远程调试。
+- 状态监控
+- 性能分析: CPU使用情况/内存分配分析
+- 内存分析: Dump分析/GC日志分析
+- JVM启动参数调整
 
 
 
@@ -246,12 +235,12 @@ JVM诊断是要诊断些什么呢?
 ## 3. JVM基础知识和启动参数
 
 
-Java体系中有很多规范， 其中最基本的2个是 [`Java语言规范` 和 `Java虚拟机规范`](https://docs.oracle.com/javase/specs/index.html)
+Java体系中有很多规范， 其中最基本的是 [`Java语言规范` 和 `Java虚拟机规范`](https://docs.oracle.com/javase/specs/index.html)
 
-> 各个领域的神级人物，一般都通读或掌握相关规范。
+> 各个领域的神级人物，一般都通读和掌握相关规范。
 
 
-### JVM背景知识
+### 3.1 JVM背景知识
 
 JVM是Java程序的底层执行环境，主要用C++语言开发，如果想深入探索JVM，那么就需要掌握一定的C++语言知识，至少也应该看得懂C++代码。
 
@@ -272,7 +261,7 @@ JVM的操作对象是class文件，而不是java源码。
 先来看看需要具备哪些基础知识，有相关基础的读者大致过一眼即可。
 
 
-### JVM内存结构
+### 3.2 JVM内存结构
 
 根据对JVM内存划分的理解，制作了几张逻辑概念图。大家可以参考一下。
 
@@ -327,7 +316,7 @@ JVM的内存结构大致如此。
 
 
 
-### JVM启动参数
+### 3.3 JVM启动参数
 
 
 
@@ -359,7 +348,7 @@ JVM的启动参数, 从形式上可以简单分为：
   * `-XX:key=value` 形式, 指定某个选项的值。
 
 
-1. 设置系统属性
+#### 3.3.1 设置系统属性
 
 使用 `-Dproperty=value` 这种形式。
 
@@ -370,8 +359,7 @@ JAVA_OPTS="-Djava.security.egd=file:/dev/./urandom"
 ```
 
 
-
-2. agent相关的选项:
+#### 3.3.2 agent相关的选项:
 
 agent是JVM中的一项黑科技, 可以通过无侵入方式来做很多事情，比如注入AOP代码，执行统计等等，权限非常大。
 
@@ -390,7 +378,8 @@ JAVA_OPTS="-agentlib:hprof=cpu=samples,file=cpu.samples.log"
 
 hprof是JDK内置的一个性能分析器。`cpu=samples` 会抽样在各个方法消耗的时间占比, Java进程退出后会输出到文件。
 
-3. JVM运行模式:
+
+#### 3.3.3 JVM运行模式:
 
 `-server` 指定服务器模式, 64位JDK只支持该选项，是否设置都是这个值。
 
@@ -404,8 +393,7 @@ JAVA_OPTS="-server"
 
 
 
-
-4. 设置堆内存
+#### 3.3.4 设置堆内存
 
 JVM总内存=堆+栈+非堆+堆外内存。。。
 
@@ -428,7 +416,7 @@ JAVA_OPTS="-Xms28g -Xmx28g"
 
 
 
-5. 设置栈内存
+#### 3.3.5 设置栈内存
 
 - `-Xss`, 设置每个线程栈的字节数。 例如 `-Xss1m` 指定线程栈为1MB。
 - `-XX:ThreadStackSize=1m`, 和 `-Xss1m` 等价
@@ -441,7 +429,7 @@ JAVA_OPTS="-Xss1m"
 
 
 
-6. GC相关
+#### 3.3.6 GC相关
 
 
 - `-verbose:gc` 参数
@@ -453,16 +441,6 @@ JAVA_OPTS="-Xss1m"
 
 - `-XX:+PrintGCDetails` 和 `-XX:+PrintGCTimeStamps`, 打印GC细节与发生时间。参考GC部分。
 
-PrintGC
-
-PrintGCDetails
-
-PrintGCTimeStamps
-
-PrintClassHistogram
-
-PrintConcurrentLocks
-
 
 
 示例:
@@ -470,17 +448,15 @@ PrintConcurrentLocks
 ```shell
 export JAVA_OPTS="-Xms28g -Xmx28g -Xss1m \
 -verbosegc -XX:+UseG1GC -XX:MaxGCPauseMillis=200 \
--XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/usr/local/ \
-
-"
+-XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/usr/local/"
 
 ```
 
 
 
-7. 指定垃圾收集器
+#### 3.3.7 指定垃圾收集器
 
-指定使用的垃圾收集器。
+指定具体的垃圾收集器。
 
 - `-XX:+UseG1GC`
 - `-XX:+UseConcMarkSweepGC`
@@ -489,8 +465,7 @@ export JAVA_OPTS="-Xms28g -Xmx28g -Xss1m \
 
 
 
-8. 极端情况之下脚本
-
+#### 3.3.8 特殊情况执行脚本
 
 
 - `-XX:+-HeapDumpOnOutOfMemoryError` 选项, 当 `OutOfMemoryError` 产生，即内存溢出(堆内存或持久代)时，自动Dump堆内存。
@@ -516,9 +491,6 @@ export JAVA_OPTS="-Xms28g -Xmx28g -Xss1m \
 - `-XX:OnOutOfMemoryError` 选项,  抛出 OutOfMemoryError 错误时执行的脚本。
 
 - `-XX:ErrorFile=filename` 选项, 致命错误的日志文件名,绝对路径或者相对路径。
-
-
-
 
 
 
@@ -731,7 +703,7 @@ jstat -gc -t -h 10 864 1s 15
 
 
 
-## 4.3 `jmap` 工具
+### 4.3 `jmap` 工具
 
 面试最常问的就是 `jmap` 工具了。
 
@@ -882,7 +854,7 @@ jmap -dump:format=b,file=3826.hprof 3826
 
 
 
-## 4.4 `jcmd`工具
+### 4.4 `jcmd`工具
 
 >  诊断工具
 
@@ -1040,7 +1012,7 @@ jcmd 坑的地方在于, 必须指定绝对路径, 否则导出的hprof文件就
 
 
 
-## 4.5 `jstack` 工具
+### 4.5 `jstack` 工具
 
 > 命令行工具、诊断工具
 
@@ -1092,7 +1064,7 @@ jstack -l 4524
 
 
 
-## 4.6 `jinfo` 工具
+### 4.6 `jinfo` 工具
 
 > 诊断工具
 
@@ -1148,16 +1120,12 @@ Error attaching to process:
 
 
 
-图形化工具
+GUI图形界面工具, 主要是3款: jconsole,  jvisualvm,  jmc。
 
-jconsole —>  jvisualvm  —> jmc
-
-
+其中, jconsole比较古老，在此不进行介绍。
 
 
-
-
-## 4.7 `jvisualvm` 图形界面监控工具
+### 4.7 `jvisualvm` 图形界面监控工具
 
 
 
@@ -1181,7 +1149,7 @@ JDK8需要安装较高版本(如Java SE 8u211)，才能安装插件。
 
 
 
-## 4.8 `jmc` 图形界面客户端
+### 4.8 `jmc` 图形界面客户端
 
 jmc 和 jvisualvm 功能类似。
 
@@ -1194,20 +1162,21 @@ Oracle 试图用jmc来取代 JVisualVM，但jmc和jinfo一样，都需要比较�
 
 
 
+- 服务端工具
 
 
 
-## 4.9 jsadebugd 服务端支持工具
+### 4.9 jsadebugd 服务端支持工具
 
 
 
 
 
-## 4.10 jstatd服务端工具
+### 4.10 jstatd服务端工具
 
 
 
-## 4.11 jhat 服务端工具
+### 4.11 jhat 服务端工具
 
 
 
@@ -1221,25 +1190,86 @@ Oracle 试图用jmc来取代 JVisualVM，但jmc和jinfo一样，都需要比较�
 
 ## 5. JDWP简介
 
-Java 平台调试体系（Java Platform Debugger Architecture，JPDA），由三个相对独立的层次共同组成。这三个层次由低到高分别是 Java 虚拟机工具接口（JVMTI），Java 调试线协议（JDWP）以及 Java 调试接口（JDI）。
+Java平台调试体系（Java Platform Debugger Architecture，JPDA），由三个相对独立的层次共同组成。这三个层次由低到高分别是 Java 虚拟机工具接口（JVMTI），Java 调试线协议（JDWP）以及 Java 调试接口（JDI）。
 
 > 详细介绍请参考或搜索: [JPDA 体系概览](https://www.ibm.com/developerworks/cn/java/j-lo-jpda1/index.html)
 
 JDWP 是 Java Debug Wire Protocol 的缩写，翻译为 "Java调试线协议"，它定义了调试器（debugger）和被调试的 Java 虚拟机（target vm）之间的通信协议。
 
-本节主要讲解如何配置 JDWP，以供远程调试。
+
+### 5.1 服务端JVM配置
+
+本节主要讲解如何在JVM中启用JDWP，以供远程调试。
+
+假设主启动类是 `com.xxx.Test`。
+
+在Windows机器上:
+
+```
+java -Xdebug -Xrunjdwp:transport=dt_shmem,address=debug,server=y,suspend=y com.xxx.Test
+```
+
+在Solaris 或 Linux操作系统上:
 
 
+```
+java -Xdebug -Xrunjdwp:transport=dt_socket,address=8888,server=y,suspend=y com.xxx.Test
+```
 
-JDWP 远程debug
+```
+
+其实, `-Xdebug` 这个选项什么用都没有，官方说是为了历史兼容性, 避免报错才没有删除。
+
+通过这些启动参数, Test 类将运行在调试模式下, 并等待调试器连接到JVM的调试地址: 在Windows上是 debug, 在Oracle Solaris 或 Linux操作系统上是 8888端口。
+
+> 如果细心观察的话, 会发现 Idea 中Debug模式启动的程序，自动设置了类似的启动选项。
 
 
+### 5.2 jdb
 
-日志
+启用了jdwp之后, 可以使用各种客户端来进行调试/远程调试。
+
+比如 jdb 调试本地JVM:
+
+```
+jdb -attach 'debug'
+jdb -attach 8888
+```
+
+当 jdb初始化并连接到 Test 之后, 就可以进行 Java代码级(Java-level)的调试。
 
 
+### 5.3 idea中使用远程调试
 
-Review代码
+下面介绍Idea中怎样使用远程调试。
+
+和常规的Debug配置类似, 进入编辑:
+
+![](05_01_idea_run_debug.png)
+
+添加 Remote(不是Tomcat自带的那个Remote Server):
+
+![](05_02_idea_remote.png)
+
+然后配置端口号, 比如8888。
+
+![](05_03_idea_remote_config.png)
+
+然后应用。 
+
+点击debug的那个按钮即可启动远程调试，连上之后就和调试本地程序一样了。当然,记得加断点或者条件断点。
+
+**注意**: 远程调试时, 需要保证服务端JVM中运行的代码和本地完全一致，否则可能会有莫名其妙的问题。 
+
+细心的同学可能已经发现, Idea给出了远程JVM的启动参数, 建议使用 agentlib 的方式::
+
+```
+-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=8888
+```
+
+如果知道这个技巧, 就不用了特殊记忆了。需要的时候找一找即可。
+
+远程调试在测试环境追踪某些问题的时候特别有用。可以保持开启。
 
 
 
