@@ -1640,6 +1640,150 @@ java -jar gcviewer_1.3.4.jar gc.log
   jhat用来支持分析dump文件, 是一个HTTP/HTML服务器，能将dump文件生成在线的HTML文件，通过浏览器查看，一般很少使用。
 
 - MAT
+  分析JVM的 Dump文件, 最好用的工具是 `mat`,  全称是 `Eclipse Memory Analyzer` Tools。  优势在于, 可以从 GC root 进行对象引用分析, 计算各个 root 所引用的对象有多少, 比较容易定位内存泄露。
+  MAT是一款独立的产品, 100MB不到, 可以从官方下载。 下载地址: <https://www.eclipse.org/mat/>
+
+
+### MAT使用示例
+
+现象描述:  系统进行慢SQL优化调整之后上线。 在测试环境没有发现什么问题。但运行一段时间之后发现CPU跑满, 查看GC日志
+
+
+查看本机的Java进程:
+
+```
+jps -v
+```
+
+假设jps查看到的pid为3826。
+
+Dump内存:
+
+```
+jmap -dump:format=b,file=3826.hprof 3826
+```
+
+导出完成后, dump文件大约是3个G。所以需要修改MAT的配置参数，太小了不行，但也不一定要设置得非常大。
+
+在MAT安装目录下。
+
+> MemoryAnalyzer.ini
+
+默认的内存配置是 1024MB, 分析3GB的dump文件可能会报错。
+
+```
+-vmargs
+-Xmx1024m
+```
+
+根据Dump文件的大小, 适当增加最大堆内存设置, 要求是4MB的倍数, 例如:
+
+```
+-vmargs
+-Xmx4g
+```
+
+双击打开 MemoryAnalyzer.exe 
+
+选择菜单 File --> Open File...  选择对应的 dump 文件。
+
+选择 Leak Suspects Report 并确定, 分析内存泄露方面的报告。
+
+![](08_00_mat_leak_suspects_report.png)
+
+然后等待, 分析完成后, 汇总信息如下:
+
+![](08_01_mat_leak_overview.png)
+
+占用内存最大的问题根源1:
+
+![](08_02_mat_leak_problem1.png)
+
+
+占用内存最大的问题根源2:
+
+![](08_03_mat_leak_problem2.png)
+
+
+占用内存最大的问题根源3:
+
+![](08_04_mat_leak_problem3.png)。
+
+
+可以看到, 总的内存占用才2GB左右。问题根源1和根源2, 每个占用 800MB, 问题很可能就在他们身上。 当然, 根源3也有一定的参考价值, 表明这时候有很多JDBC操作。
+
+
+查看问题根源1。 其说明信息如下:
+
+```
+The thread org.apache.tomcat.util.threads.TaskThread 
+  @ 0x6c4276718 http-nio-8086-exec-8 
+keeps local variables with total size 826,745,896 (37.61%) bytes.
+
+The memory is accumulated in one instance of 
+"org.apache.tomcat.util.threads.TaskThread" 
+loaded by "java.net.URLClassLoader @ 0x6c0015a40".
+The stacktrace of this Thread is available. See stacktrace.
+
+Keywords
+java.net.URLClassLoader @ 0x6c0015a40
+org.apache.tomcat.util.threads.TaskThread
+
+```
+
+大致解读一下, 这是一个(运行中的)线程, 构造类是 `org.apache.tomcat.util.threads.TaskThread`, 持有了 大约 `826MB` 的对象, 占比为 `37.61%`。
+
+> 所有运行中的线程(栈)都是GC-Root。
+
+
+点开 `See stacktrace.` 链接, 查看导出时的线程调用栈。
+
+
+节选如下:
+
+```
+Thread Stack
+
+http-nio-8086-exec-8
+  ...
+  at org.mybatis.spring.SqlSessionTemplate.selectOne
+  at com.sun.proxy.$Proxy195.countVOBy(Lcom/****/domain/vo/home/residents/ResidentsInfomationVO;)I (Unknown Source)
+  at com.****.bi.home.service.residents.impl.ResidentsInfomationServiceImpl.countVOBy(....)Ljava/lang/Integer; (ResidentsInfomationServiceImpl.java:164)
+  at com.****.bi.home.service.residents.impl.ResidentsInfomationServiceImpl.selectAllVOByPage(....)Ljava/util/Map; (ResidentsInfomationServiceImpl.java:267)
+  at com.****.web.controller.personFocusGroups.DocPersonFocusGroupsController.loadPersonFocusGroups(....)Lcom/****/domain/vo/JSONMessage; (DocPersonFocusGroupsController.java:183)
+  at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run()V (TaskThread.java:61)
+  at java.lang.Thread.run()V (Thread.java:745)
+
+```
+
+其中比较关键的信息, 就是找到我们自己的 package, 如: `com.****.....ResidentsInfomationServiceImpl.selectAllVOByPage` 。
+
+并且其中给出了Java源文件所对应的行号。
+
+
+分析问题根源2, 结果和根源1基本上是一样的。
+
+当然, 还可以分析这个根源下持有的各个类的对象数量。
+
+点击根源1说明信息下面的 `Details »` 链接, 进入详情页面。
+
+查看其中的 “Accumulated Objects in Dominator Tree”
+
+![](08_05_max_object.png)
+
+可以看到占用内存最多的是2个 ArrayList 对象。
+
+鼠标左键点击第一个 ArrayList 对象, 在弹出的菜单中选择 "Show objects by class" --> "by outgoing references"。
+
+![](08_06_mat_class_accmulated.png)
+
+打开 class_references 标签页。
+
+![](08_07_object_count.png)
+
+展开后发现 PO 类对象有 113 万个。加载的确实有点多。直接占用170MB内存(每个对象约150字节。)
+
+MAT还提供了其他信息, 都可以点开看看, 以增加了解。 碰到不懂的就上网搜索。
 
 
 
