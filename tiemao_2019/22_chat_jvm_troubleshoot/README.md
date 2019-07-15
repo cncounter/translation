@@ -38,7 +38,7 @@ JVM全称为 Java Virtual Machine, 翻译为中文 "Java虚拟机"。
 
 文中的JVM主要指 Oracle 公司的 HotSpot VM, 版本是Java8(JDK8,JDK1.8是同样的版本)。
 
-关于JVM的文章，书籍有很多。 有基础的，也有深入的。
+如今关于JVM的文章、书籍有很多。 有基础的，也有深入的。
 
 本文主要介绍各种简单工具的使用，穿插一些基本的知识点。 目的是为了让初学者快速上手，先入个门。
 
@@ -73,9 +73,9 @@ Windows系统,  系统属性 - 高级 - 设置系统环境变量。 如果没权
 
 Linux和MacOSX系统, 需要配置脚本。 例如:
 
-```shell
-cat ~/.bash_profile
+> $ `cat ~/.bash_profile`
 
+```shell
 # JAVA ENV
 export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.8.0_162.jdk/Contents/Home
 export PATH=$PATH:$JAVA_HOME/bin
@@ -83,9 +83,7 @@ export PATH=$PATH:$JAVA_HOME/bin
 
 让环境配置立即生效:
 
-```shell
-source ~/.bash_profile
-```
+>  $ `source ~/.bash_profile`
 
 查看环境变量:
 
@@ -223,11 +221,13 @@ JVM诊断是要诊断些什么呢?
 
 
 
-不入门就是门外汉，门外汉就是只知道这里有一个庞然大物，云里雾里，不了解里面有什么, 需要注意些什么。
+不入门就是"门外汉"，门外汉就是只知道这里有一个庞然大物，云里雾里，不了解里面有什么, 需要注意些什么。
 
 只要工具用好了，获取到相关的状态信息，并能简单分析，那么JVM诊断这个技能就算是入门了，
 
-本文从侧面切入，讲解如何对JVM进行问题诊断。 通过监控和分析，能够判断出发生的问题是不是JVM的锅。
+本文从侧面切入，讲解如何对JVM进行问题诊断。 通过监控和分析，能够判断出是不是JVM层面的问题。
+
+> 实际上，用好 JVisulVM和相关的各种配置，JVM诊断就算是入门了。
 
 
 
@@ -376,7 +376,7 @@ agent是JVM中的一项黑科技, 可以通过无侵入方式来做很多事情�
 JAVA_OPTS="-agentlib:hprof=cpu=samples,file=cpu.samples.log"
 ```
 
-hprof是JDK内置的一个性能分析器。`cpu=samples` 会抽样在各个方法消耗的时间占比, Java进程退出后会输出到文件。
+hprof是JDK内置的一个性能分析器。`cpu=samples` 会抽样在各个方法消耗的时间占比, Java进程退出后会将分析结果输出到文件。
 
 
 #### 3.3.3 JVM运行模式:
@@ -429,7 +429,7 @@ JAVA_OPTS="-Xss1m"
 
 
 
-#### 3.3.6 GC相关
+#### 3.3.6 GC日志相关
 
 
 - `-verbose:gc` 参数
@@ -519,12 +519,11 @@ Java也提供了类似的命令行工具，叫做 `jps`,  用于展示java进程
 
 查看帮助信息:
 
-```shell
-jps -help
+> $ `jps -help`
 
+```shell
 usage: jps [-help]
        jps [-q] [-mlvV] [<hostid>]
-
 Definitions:
     <hostid>:      <hostname>[:<port>]
 ```
@@ -533,14 +532,15 @@ Definitions:
 
 常用的参数是小写的 `-v`,  显示传递给JVM的启动参数.
 
-```
-jps -v
+> $ `jps -v`
 
+```
 15883 Jps -Dapplication.home=/usr/local/jdk1.8.0_74 -Xms8m
 6446 Jstatd -Dapplication.home=/usr/local/jdk1.8.0_74 -Xms8m
         -Djava.security.policy=/etc/java/jstatd.all.policy
 32383 Bootstrap -Xmx4096m -XX:+UseG1GC -verbose:gc
-        -XX:+PrintGCDateStamps -XX:+PrintGCDetails -Xloggc:/xxx-tomcat/logs/gc.log
+        -XX:+PrintGCDateStamps -XX:+PrintGCDetails 
+        -Xloggc:/xxx-tomcat/logs/gc.log
         -Dcatalina.base=/xxx-tomcat -Dcatalina.home=/data/tomcat
 ```
 
@@ -553,7 +553,7 @@ jps -v
 - `-l`  显示启动 class 的完整类名, 或者启动 jar 的完整路径
 - `-V`  大写的V，这个参数有问题, 相当于没传一样。官方说的跟 `-q` 差不多。
 
-- `<hostid>` 部分是远程主机的标识符，需要远程主机启动 `jstatd` 服务器, 一般不怎么使用。
+- `<hostid>` 部分是远程主机的标识符，需要远程主机启动 `jstatd` 服务器支持。
 
   可以看到, 格式为 `<hostname>[:<port>]`, 不能用IP, 示例: `jps -v sample.com:1099`。
 
@@ -566,8 +566,9 @@ jps -v
 
 查看 `jstat` 的帮助信息, 大致如下:
 
+> $ `jstat -help`
+
 ```
-jstat -help
 Usage: jstat -help|-options
        jstat -<option> [-t] [-h<lines>] <vmid> [<interval> [<count>]]
 
@@ -582,9 +583,9 @@ Definitions:
 
 再来看看 `<option>` 部分支持哪些选项:
 
-```
-jstat -options
+> $ `jstat -options`
 
+```
 -class
 -compiler
 -gc
@@ -628,7 +629,7 @@ jstat -gcutil -t 864
 |----------|----|-----|-----|-----|-----|-----|------|-------|---|-----|-------|
 |14251645.5|0.00|13.50|55.05|71.91|83.84|69.52|113767|206.036|4  |0.122|206.158|
 
-`-t` 选项的位置是固定的，不能在前也不能在后。 可以看出是用于显示时间戳的, 即JVM启动到现在的秒数。
+`-t` 选项的位置是固定的，不能在前也不能在后。 可以看出是用于显示时间戳, 即JVM启动到现在的秒数。
 
 简单分析一下:
 
@@ -646,7 +647,7 @@ jstat -gcutil -t 864
 - `GCT`  所有GC加起来消耗的总时间, 即`YGCT`+`FGCT`。
 
 
-可以看到, `-gcutil` 这个选项出来的信息不太好用, 统计的百分比数字怪怪的，不太直观。
+可以看到, `-gcutil` 这个选项出来的信息不太好用, 统计的结果是百分比，不太直观。
 
 
 再看看, `-gc` 选项, GC相关的堆内存信息.
@@ -675,7 +676,7 @@ jstat -gc -t -h 10 864 1s 15
 |14254247.3|1152.0|1152.0|145.6|0.0|9600.0|2313.4|11848.0|8527.3|31616.0|26528.6|113788|206.082|4  |0.122|
 
 
-上面的结果是精简过后的, 为了排版去掉了 `GCT`，`CCSC`，`CCSU` 这三列。 看到这些单词可以试着猜一下意思, 详细的解读如下:
+上面的结果是精简过的, 为了排版去掉了 `GCT`，`CCSC`，`CCSU` 这三列。 看到这些单词可以试着猜一下意思, 详细的解读如下:
 
 
 - `Timestamp` 列: JVM启动了1425万秒,大约164天。
@@ -699,7 +700,7 @@ jstat -gc -t -h 10 864 1s 15
 
 最重要的信息是GC的次数和总消耗时间，其次是老年代的使用量。
 
-在没有其他监控工具的情况下， jstat 可以简单查看各个内存池和GC的信息，可用于判别原因是否是GC或者内存溢出。
+在没有其他监控工具的情况下， jstat 可以简单查看各个内存池和GC的信息，可用于判别是否是GC问题或者内存溢出。
 
 
 
@@ -711,12 +712,11 @@ jstat -gc -t -h 10 864 1s 15
 
 > 官方推荐使用JDK8自带的 `jcmd` 工具来取代 `jmap`， 但是 jmap 深入人心，jcmd可能暂时取代不了。
 
-
 查看 jmap 帮助信息:
 
-```
-jmap -help
+> $ `jmap -help`
 
+```
 Usage:
     jmap [option] <pid>
         (连接到本地进程)
@@ -755,9 +755,7 @@ where <option> is one of:
 
 看堆内存统计信息。
 
-```
-jmap -heap 4524
-```
+> $ `jmap -heap 4524`
 
 输出信息:
 
@@ -817,9 +815,7 @@ PS Old Generation
 
 看看直方图
 
-```
-jmap -histo 4524
-```
+> $ `jmap -histo 4524`
 
 结果为:
 
@@ -862,8 +858,9 @@ jcmd 是JDK8推出的一款本地诊断工具，只支持连接本机上同一�
 
 查看帮助:
 
+> $ `jcmd -help`
+
 ```shell
-jcmd -help
 Usage: jcmd <pid | main class> <command ...|PerfCounter.print|-f file>
    or: jcmd -l                                                    
    or: jcmd -h                                                    
@@ -879,8 +876,6 @@ Usage: jcmd <pid | main class> <command ...|PerfCounter.print|-f file>
   -l  列出(list)本机上可见的 JVM 进程                     
   -h  this help                           
 ```
-
-可以看到:
 
 
 
@@ -929,9 +924,7 @@ VM.version
 help
 ```
 
-可以试试这些命令:
-
-查看VM相关的信息 :
+可以试试这些命令。查看VM相关的信息 :
 
 ```shell
 # JVM实例运行时间
@@ -1145,20 +1138,22 @@ JVisualVM启动后的界面大致如下:
 
 可以看到整体的运行情况。 比如 CPU，堆内存，类，线程等信息。还可以执行一些操作，比如“强制执行垃圾回收”，“堆Dump”等。
 
-"线程"页签则展示了JVM中的线程列表。 再一次看出线程（池）命名的好处。
+"线程"页签则展示了JVM中的线程列表。 再一次看出在程序中对线程（池）命名的好处。
 
 ![](04_04_jvm_thread.png)
 
 
 JVisualVM 强大的功能在于插件。
 
-JDK8需要安装较高版本(如Java SE 8u211)，才能安装jvisualvm的插件。
+JDK8需要安装较高版本(如Java SE 8u211)，才能安装/更新jvisualvm的插件。
 
 ![](04_05_to_plugin.png)
 
 JVisualVM安装MBeans插件的步骤: 通过 工具(T) – 插件(G) – 可用插件 – 勾选具体的插件 – 安装 – 下一步 – 等待安装完成。
 
 ![](04_06_select_plugin.png)
+
+常用的插件是 VisualGC 和 MBeans。
 
 如果看不到可用插件，请安装最新版本，或者下载插件到本地安装。
 
@@ -1182,7 +1177,7 @@ JVisualVM安装MBeans插件的步骤: 通过 工具(T) – 插件(G) – 可用�
 
 主要看 `java.lang` 包下面的MBean。比如内存池, 或者垃圾收集器等。
 
-从图中可以看到 Metaspace 的 Type 是 NON_HEAP。
+从图中可以看到 Metaspace 内存池的 Type 是 `NON_HEAP`。
 
 当然，还可以看垃圾收集器(GarbageCollector)。
 
@@ -1197,7 +1192,7 @@ JVisualVM安装MBeans插件的步骤: 通过 工具(T) – 插件(G) – 可用�
 - **Valid**: 此收集器是否有效。本人只见过 "`true`"的情况 (^_^)
 
 
-根据经验, 这些信息对GC的性能来说,不能得出什么结论.  只有编写程序,  获取GC相关的 JMX 信息来进行统计和分析。 
+根据经验, 这些信息对分析GC性能来说,不能得出什么结论.  只有编写程序,  获取GC相关的 JMX 信息来进行统计和分析。 
 
 
 
@@ -1220,13 +1215,13 @@ JVisualVM安装MBeans插件的步骤: 通过 工具(T) – 插件(G) – 可用�
 
 jmc 和 jvisualvm 功能类似。
 
-Oracle 试图用jmc来取代 JVisualVM，但jmc和jinfo一样，都需要比较高的权限（去操纵其他JVM进程），可能会被Mac系统的安全限制拦截。在商业环境使用JFR需要付费获取授权。
+Oracle 试图用jmc来取代 JVisualVM，但jmc和jinfo一样，都需要比较高的权限（去操纵其他JVM进程），可能会被操作系统的安全限制拦截。在商业环境使用JFR需要付费获取授权。
 
 启动后的界面如下:
 
 ![](04_11_jmc.png)
 
-可以看到，漂亮了很多，有些客户肯定喜欢。
+jmc界面确实漂亮了很多，有些客户肯定喜欢。
 
 但jmc不只是一个监控工具，要求的权限很多，有些权限不够的管理员账户可能出一些问题。
 
@@ -1235,9 +1230,9 @@ Oracle 试图用jmc来取代 JVisualVM，但jmc和jinfo一样，都需要比较�
 
 ### 4.9 jstatd服务端工具
 
-jstatd 是个强大的服务端支持工具。
+jstatd 是一款强大的服务端支持工具。
 
-但因为涉及暴露一些服务器信息，所以需要配置策略文件。
+但因为涉及暴露一些服务器信息，所以需要配置安全策略文件。
 
 > $ `cat /etc/java/jstatd.all.policy`
 
@@ -1247,7 +1242,7 @@ grant codebase "file:${java.home}/../lib/tools.jar" {
 };
 ```
 
-后台启动 jstatd
+后台启动 jstatd的命令:
 
 ```
 jstatd -J-Djava.security.policy=jstatd.all.policy
@@ -1262,7 +1257,7 @@ jstatd -J-Djava.security.policy=jstatd.all.policy
 说明: 客户端与服务器的JVM大版本号必须一致或者兼容。
 
 
-CPU图形没有显示 ,原因是 jstatd 不支持监控CPU。 可以启用对应JVM的 JMX监控, 具体请参考JMX一节。
+CPU图形没有显示 ,原因是 jstatd 不监控单个实例的CPU。 可以启用对应JVM的 JMX监控, 具体请参考JMX一节。
 
 
 
@@ -1271,6 +1266,8 @@ CPU图形没有显示 ,原因是 jstatd 不支持监控CPU。 可以启用对应
 JDK还自带了其他工具， 比如 `jsadebugd` 可以在服务端主机上，开启RMI Server。 `jhat` 可用于解析hprof内存Dump文件等。
 
 在此不进行介绍，有兴趣可以搜索看看。
+
+
 
 
 ## 5. JDWP简介
@@ -1331,7 +1328,7 @@ jdb -attach 8888
 
 ![](05_01_idea_run_debug.png)
 
-添加 Remote(不是Tomcat自带的那个Remote Server):
+添加 Remote(不是Tomcat下面的那个Remote Server):
 
 ![](05_02_idea_remote.png)
 
@@ -1408,7 +1405,7 @@ List<GarbageCollectorMXBean> garbageCollectorMXBeans
 
 取得这些MXBean之后，就可以获取对应的Java运行时信息，可以定时上报给某个系统，那么一个简单的监控就创建了。
 
-当然，这么简单的事情，肯定有现成的轮子啦。比如 Spring Boot Actuator, 以及后面介绍的Micrometer等。 各种监控服务提供的 Agent-lib.jar 中也会采集对应的数据。
+当然，这么简单的事情，肯定有现成的轮子啦。比如 Spring Boot Actuator, 以及后面介绍的Micrometer等。 各种监控服务提供的 Agent-lib 中也会采集对应的数据。
 
 
 
@@ -1448,7 +1445,7 @@ List<GarbageCollectorMXBean> garbageCollectorMXBeans
 ## 7. GC日志解读与分析
 
 
-> 关于GC基础与GC性能调优，以及OutOfMemoryError，可参考铁锚的CSDN专栏: [GC性能优化](https://blog.csdn.net/renfufei/column/info/14851)
+> GC基础，GC性能调优，以及OutOfMemoryError，可参考铁锚的CSDN专栏: [GC性能优化](https://blog.csdn.net/renfufei/column/info/14851)
 
 
 因为GC日志模块内置于JVM中,  所以日志中包含了对GC活动最全面的描述。 这就是事实上的标准, 可作为GC性能评估和优化的最真实数据来源。
@@ -1473,16 +1470,16 @@ GC日志一般输出到文件之中, 是纯 text 格式的, 当然也可以打�
 
 ### 7.1 示例1
 
-这样配置以后，发生GC时输出的日志就类似于下面这种格式(为了显示方便,已手工折行):
+指定GC日志相关的启动选项，输出的GC日志就类似于下面这种格式(为了显示方便,已手工折行):
 
 ```
-2019-07-15T14:45:37.987+0800: 151.126: 
+2019-07-14T14:45:37.987+0800: 151.126: 
   [GC (Allocation Failure) 151.126:
     [DefNew: 629119K->69888K(629120K), 0.0584157 secs]
     1619346K->1273247K(2027264K), 0.0585007 secs] 
   [Times: user=0.06 sys=0.00, real=0.06 secs]
 
-2019-07-15T14:45:59.690+0800: 172.829: 
+2019-07-14T14:45:59.690+0800: 172.829: 
   [GC (Allocation Failure) 172.829: 
     [DefNew: 629120K->629120K(629120K), 0.0000372 secs]
     172.829: [Tenured: 1203359K->755802K(1398144K), 0.1855567 secs]
@@ -1497,7 +1494,7 @@ GC日志一般输出到文件之中, 是纯 text 格式的, 当然也可以打�
 下面我们来看，如何解读第一次GC事件，发生在年轻代中的小型GC(Minor GC):
 
 
-1. `2019-07-15T14:45:37.987+0800` – GC事件(GC event)开始的时间点.
+1. `2019-07-14T14:45:37.987+0800` – GC事件(GC event)开始的时间点.
 1. `151.126` – GC时间的开始时间,相对于JVM的启动时间,单位是秒(Measured in seconds).
 1. `GC` – 用来区分(distinguish)是 Minor GC 还是 Full GC 的标志(Flag). 这里的 `GC` 表明本次发生的是 Minor GC.
 1. `Allocation Failure` – 引起垃圾回收的原因. 本次GC是因为年轻代中没有任何合适的区域能够存放需要分配的数据结构而触发的.
@@ -1513,13 +1510,13 @@ GC日志一般输出到文件之中, 是纯 text 格式的, 当然也可以打�
  - **real** – 应用程序暂停的时间(Clock time). 由于串行垃圾收集器(Serial Garbage Collector)使用单个线程, 所以 real time 等于 user + sys 的和.
 
 
-通过上面的分析, 就可以计算出在垃圾收集期间, JVM 中的内存使用情况。在垃圾收集之前, 堆内存总的使用了 **1.54G** (1,619,346K)。其中, 年轻代使用了 **614M**(629,119k)。也就可以推算出老年代使用的内存为: **967M**(990,227K)。
+通过上面的分析, 可以计算出在垃圾收集期间, JVM 中的内存使用情况。在垃圾收集之前, 堆内存总的使用了 **1.54G** (1,619,346K)。其中, 年轻代使用了 **614M**(629,119k)。也就可以推算出老年代使用的内存为: **967M**(990,227K)。
 
 `->` 右边的数据中蕴含了更重要的信息, 年轻代的内存使用量，在垃圾回收后下降了 **546M**(559,231k), 但总的堆内存使用(total heap usage)只减少了 **337M**(346,099k). 通过这一点可以算出, 有 **208M**(213,132K) 的年轻代对象被提升到老年代(Old)中。
 
-不知道各位同学有没有注意到一些套路。 GC日志中展示的内存数值，一般都是使用量和总大小。
+不知道各位同学有没有注意到一些套路。 GC日志中展示的内存数值，一般都是使用量和总大小，猜一猜就知道各个部分的含义了。
 
-第二次的GC日志，各位可以尝试自己分析一下。
+第二次GC的日志，各位同学可以自己分析一下。
 
 
 
@@ -1530,8 +1527,7 @@ GC日志一般输出到文件之中, 是纯 text 格式的, 当然也可以打�
 
 
 ```
-
-2019-07-15T14:46:28.829+0800: 200.659: 
+2019-07-14T14:46:28.829+0800: 200.659: 
   [Full GC (Ergonomics) 
     [PSYoungGen: 64000K->63999K(74240K)] 
     [ParOldGen: 169318K->169318K(169472K)] 233318K->233317K(243712K), 
@@ -1560,7 +1556,7 @@ GC日志一般输出到文件之中, 是纯 text 格式的, 当然也可以打�
 
 
 
-#### GCViewer工具
+#### 7.3 GCViewer工具
 
 
 可以看到,GC日志中的信息非常详细。但除了这些简单的小程序,  生产系统一般都会生成大量的GC日志, 纯靠人工是很难阅读和进行解析的。
@@ -1629,7 +1625,7 @@ java -jar gcviewer_1.3.4.jar gc.log
 
 内存Dump分为2种方式： 主动Dump和被动Dump。
 
-主动Dump的工具包括: jcmd,  jmap, JVisualVM等等。具体使用请参考相关工具部分。
+主动Dump的工具包括: `jcmd`,  `jmap`, `JVisualVM`等等。具体使用请参考相关工具部分。
 
 被动Dump主要是: hprof, 以及 `-XX:+HeapDumpOnOutOfMemoryError` 等参数。
 
@@ -1783,6 +1779,8 @@ http-nio-8086-exec-8
 
 展开后发现 PO 类对象有 113 万个。加载的确实有点多。直接占用170MB内存(每个对象约150字节。)
 
+事实上，这是将批处理任务，放到实时的请求中进行计算，导致的问题。
+
 MAT还提供了其他信息, 都可以点开看看, 以增加了解。 碰到不懂的就上网搜索。
 
 
@@ -1838,7 +1836,7 @@ Arthas（阿尔萨斯）是Alibaba开源的Java诊断工具，深受开发者喜
 
 `Arthas`支持JDK 6+，支持Linux/Mac/Winodws，采用命令行交互模式，同时提供丰富的 `Tab` 自动补全功能，进一步方便进行问题的定位和诊断。
 
-
+> `Arthas`官方网站提供了在线的命令行模拟器，跟着执行一遍很容易了解相关的功能。
 
 
 
@@ -1861,9 +1859,9 @@ Arthas（阿尔萨斯）是Alibaba开源的Java诊断工具，深受开发者喜
 
 这些年在日志管理、预警、遥测以及报告等领域投入了大量精力。其中一些是有效的, 记录安全事件, 有意义的警报, 资源使用量都是具备价值的跟踪数据, 但前提是有一个清晰的策略来伴随用户体验的整个链路. 有一些工具, 比如 Zabbix, Nagios, 以及 Prometheus 被广泛使用, 但都没能解决实际用户体验的监控。
 
-只购买这些软件并不能缓解性能问题。 我们还需要采取各种措施，但这需要勇气、专注、和不懈的坚持。
+只使用这些软件并不能缓解性能问题。 我们还需要采取各种措施，但需要勇气、专注、和不懈的坚持。
 
-Web系统性能调优是一件很严肃的事情, 需要付出很多努力, 还需要严格遵守纪律。当然, 这项工作对团队的回报也是巨大的!
+Web系统性能调优是一件严肃的事情, 需要付出很多努力, 还需要严格遵守纪律。当然, 这项工作对团队的回报也是巨大的!
 
 请记住 —— 性能问题的关键点是人, 也就是我们的用户。
 
