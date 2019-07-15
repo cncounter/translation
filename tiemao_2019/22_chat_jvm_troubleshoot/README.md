@@ -1,15 +1,13 @@
-# 标题
+# JVM问题诊断-1.快速入门
 
-1.题目: JVM问题诊断快速入门
+**作者简介**
 
-2.作者简介: 任富飞，资深Java工程师，具有8年软件设计和开发经验，3年调优经验。
-翻译爱好者, 热爱各种开源技术，对JVM和Java体系有较深入的理解，熟悉互联网领域常用的各种调优套路。
+任富飞，火币集团研发中心架构师，具有8年软件设计和开发经验，3年Java系统调优经验。技术文章翻译爱好者，热爱各种开源技术，对JVM和Java体系有较深入的理解，熟悉互联网领域常用的各种调优方法和技巧。
 
-3.内容介绍:
+**内容介绍**
 
 本次分享主要介绍如何进行JVM问题诊断，在排查过程中可以使用哪些工具, 通过示例对各种工具进行简单的讲解,
-并引入相关的基础知识，在此过程中，结合作者的经验和学到的知识，提出一些观点和调优建议。
-内容涉及：
+并引入相关的基础知识，在此过程中，结合作者的经验和学到的知识，提出一些观点和调优建议。本次分享您将了解以下内容：
 
 1. 环境准备与相关设置
 
@@ -31,18 +29,12 @@
 
 10. 应对容器时代面临的挑战
 
-# 正文
 
 
-JVM全称为 Java Virtual Machine, 翻译为中文 "Java虚拟机"。
 
-文中的JVM主要指 Oracle 公司的 HotSpot VM, 版本是Java8(JDK8,JDK1.8是同样的版本)。
+JVM全称为 Java Virtual Machine, 翻译为中文 "Java虚拟机"。本文中的JVM主要指 Oracle 公司的 HotSpot VM, 版本是Java8(JDK8、JDK1.8是同样的版本)。如今关于JVM的文章、书籍有很多。 有基础的，也有深入的。
 
-如今关于JVM的文章、书籍有很多。 有基础的，也有深入的。
-
-本文主要介绍各种简单工具的使用，穿插一些基本的知识点。 目的是为了让初学者快速上手，先入个门。
-
-入门的意思，按我的理解就是： 会描述问题，知道怎么去搜索，怎么去找路子深入学习。
+本文主要介绍各种简单工具的使用，穿插一些基本的知识点。 目的是为了让初学者快速上手，先实现入门。入门的意思，按我的理解就是： 会描述问题，知道怎么去搜索，怎么去找路子深入学习。
 
 
 ## 1. 环境准备与相关设置
@@ -52,14 +44,13 @@ JVM全称为 Java Virtual Machine, 翻译为中文 "Java虚拟机"。
 
 JDK通常是从 [Oracle官网](https://www.oracle.com/)下载， 打开页面翻到底部，找 `Java for Developers`, 下载对应的x64版本即可。
 
-> 现在流行将下载链接放到页面底部，很多工具都这样。当前推荐下载 JDK8。 今后JDK11可能成为主流版本，因为Java11是LTS长期支持版本，但可能还需要一些年才会普及，而且两个版本的结构不太兼容。
+> 现在流行将下载链接放到页面底部，很多工具都这样。当前推荐下载 JDK8。 今后JDK11可能成为主流版本，因为Java11是LTS长期支持版本，但可能还需要一些时间才会普及，而且两个版本的结构不太兼容。
 
 有的操作系统提供了自动安装工具，直接使用也可以，比如 yum, brew, apt 等等。这部分比较基础，有问题直接搜索即可。
 
 安装完成后，Java环境一般来说就可以使用了。 验证的脚本命令为:
 
 ```shell
-javac -version
 java -version
 ```
 
@@ -88,7 +79,6 @@ export PATH=$PATH:$JAVA_HOME/bin
 查看环境变量:
 
 ```shell
-export
 echo $PATH
 echo $JAVA_HOME
 ```
@@ -119,7 +109,7 @@ WIndows系统，安装在哪就是哪，通过任务管理器也可以查看某�
 
 - 取消core文件限制
 
-  `ulimit -c unlimited` , 这属于高级操作，可以使用 `kill -6 <pid>` 杀进程来生成core文件, 然后用 `gdb` 或者其他工具进行调试。 本文不介绍，只是列出这个知识点。
+  操作系统提供限制可使用资源量的方式，这些限制可能会影响 Java应用程序，如果限制太低，系统可能无法生成完整的 Java 转储文件。解除限制方式：`ulimit -c unlimited` 
 
 - 开启自动内存Dump选项
 
@@ -127,7 +117,7 @@ WIndows系统，安装在哪就是哪，通过任务管理器也可以查看某�
 
 - 可以生成 JFR 记录
 
-  这是JDK内置工具 jmc 提供的功能, Oracle 试图用jmc来取代 JVisualVM。而且在商业环境使用JFR需要付费授权，我认为这是个鸡肋功能，如果想学习也可以试试。
+  这是JDK内置工具 jmc 提供的功能，Oracle 试图用jmc来取代 JVisualVM。而且在商业环境使用JFR需要付费授权，我认为这是个鸡肋功能，如果想学习也可以试试。
 
 - 开启GC日志
 
@@ -145,18 +135,18 @@ WIndows系统，安装在哪就是哪，通过任务管理器也可以查看某�
 
 ## 2. 常用性能指标介绍
 
+> 没有量化就没有改进，所以我们需要先了解和度量性能指标。
 
 JVM诊断是要诊断些什么呢?
 
-- 1. 程序BUG: 程序问题必须是优先解决的，要保证正确性。例如死锁等等, 当然，JVM层面的排查只是辅助手段，更多的还是分析业务代码和逻辑确定Java程序哪里有问题。
-- 2. 系统性能问题: 比如借助监控和日志，判断资源层面有没有问题? JVM层面有没有问题?
+1. 程序BUG: 程序问题必须是优先解决的，要保证正确性。例如死锁等等, 当然，JVM层面的排查只是辅助手段，更多的还是分析业务代码和逻辑确定Java程序哪里有问题。
+2. 系统性能问题: 比如借助监控和日志，判断资源层面有没有问题? JVM层面有没有问题?
 
 
 进行JVM问题诊断的目的有：
 
 - 排查程序运行中出现的问题
 - 优化性能
-- 学习研究和知识储备
 
 计算机系统中,性能相关的资源主要分为这几类:
 
@@ -176,9 +166,9 @@ JVM诊断是要诊断些什么呢?
 
 一般衡量系统性能的维度有3个:
 
-- 延迟(Latency), 一般衡量的是响应时间(Response Time)，比如95线，99线，最大响应时间等。
-- 吞吐量(Throughput), 一般的衡量每秒处理的事务数(TPS)。
-- 系统容量(Capacity), 也叫做设计容量，可以理解为硬件配置，成本约束。
+- 延迟(Latency)： 一般衡量的是响应时间(Response Time)，比如95线，99线，最大响应时间等。
+- 吞吐量(Throughput)： 一般的衡量每秒处理的事务数(TPS)。
+- 系统容量(Capacity)： 也叫做设计容量，可以理解为硬件配置，成本约束。
 
 这3个维度互相关联，相互制约。只要系统架构允许，增加硬件配置一般都能提升性能指标。
 
@@ -186,7 +176,7 @@ JVM诊断是要诊断些什么呢?
 性能指标还可分为两类:
 
 - **业务需求指标**：如吞吐量(QPS、TPS)、响应时间(RT)、并发数、业务成功率等。
-- **资源约束指标**：如CPU、内存、I/O等资源的消耗情况
+- **资源约束指标**：如CPU、内存、I/O等资源的消耗情况。
 
 > 详情可参考: [性能测试中服务器关键性能指标浅析](https://www.jianshu.com/p/62cf2690e6eb)
 
@@ -202,7 +192,7 @@ JVM诊断是要诊断些什么呢?
 
 我们可采用的方式:
 
-- 本地/远程调试, 下文将简单介绍JDWP与远程调试。
+- 本地/远程调试, 下文将简单介绍JDWP与远程调试
 - 状态监控
 - 性能分析: CPU使用情况/内存分配分析
 - 内存分析: Dump分析/GC日志分析
@@ -225,7 +215,7 @@ JVM诊断是要诊断些什么呢?
 
 只要工具用好了，获取到相关的状态信息，并能简单分析，那么JVM诊断这个技能就算是入门了，
 
-本文从侧面切入，讲解如何对JVM进行问题诊断。 通过监控和分析，能够判断出是不是JVM层面的问题。
+本文从如何各类易于上手的工具作为切入点，讲解如何对JVM进行问题诊断， 通过监控和分析，判断是不是JVM层面的问题。
 
 > 实际上，用好 JVisulVM和相关的各种配置，JVM诊断就算是入门了。
 
@@ -1843,19 +1833,11 @@ Arthas（阿尔萨斯）是Alibaba开源的Java诊断工具，深受开发者喜
 
 ## 10. 应对容器时代面临的挑战
 
-在大规模集群环境中，容器使用的越来越普及。
+在大规模集群环境中，容器使用的越来越普及。在这种环境下，要直接进行调试并不容易【当然可能性还是有的】。这就需要架构师、开发人员、测试人员、运维人员的协作。
 
-在这种环境下，要直接进行调试并不容易【当然可能性还是有的】。这就需要架构师、开发人员、测试人员、运维人员的协作。
+我们更多的是进行应用性能指标的采集和监控。 监控领域的工具, 又多又杂, 而且一直在努力发展和迭代。早期的监控工具, 只在系统发布时检查服务器参数，并将这些参数用作系统运行状况的指标。
 
-我们更多的是进行应用性能指标的采集和监控。 
-
-监控领域的工具, 又多又杂, 而且一直在努力发展和迭代。
-
-早期的监控工具, 只在系统发布时检查服务器参数，并将这些参数用作系统运行状况的指标。
-
-服务器的健康状况保持，与用户体验之间存在相关性。杯具在于，这种方式下发生的问题比实际检测的要多。
-
-如今，随着浏览器、通信协议和其他方面的发展，这种模式发生了变化。可以为浏览器设置代理(agent)来记录用户的体验。
+保持服务器的健康状况，与用户体验之间存在相关性，悲剧在于，这种方式下发生的问题比实际检测的要多。
 
 这些年在日志管理、预警、遥测以及报告等领域投入了大量精力。其中一些是有效的, 记录安全事件, 有意义的警报, 资源使用量都是具备价值的跟踪数据, 但前提是有一个清晰的策略来伴随用户体验的整个链路. 有一些工具, 比如 Zabbix, Nagios, 以及 Prometheus 被广泛使用, 但都没能解决实际用户体验的监控。
 
@@ -1871,30 +1853,28 @@ Web系统性能调优是一件严肃的事情, 需要付出很多努力, 还需�
 - 最大延迟，平均延迟，95%线， 吞吐量, 内存使用量 等信息。
 - 详情请参考官方文档: <https://micrometer.io/docs>
 
-此外，在小规模集群中，我们还可以使用 Pinpoint 等开源APM。
-
-
+此外，在小规模集群中，我们还可以使用 Pinpoint 、Skywalking等开源APM工具。
 
 
 
 ### 相关链接
 
-官方troubleshoot指南: <https://docs.oracle.com/javase/8/docs/technotes/guides/troubleshoot/toc.html>
+1. 官方troubleshoot指南: <https://docs.oracle.com/javase/8/docs/technotes/guides/troubleshoot/toc.html>
 
-JDK辅助工具参考文档 : <https://docs.oracle.com/javase/8/docs/technotes/tools/unix/index.html>
+2. JDK辅助工具参考文档 : <https://docs.oracle.com/javase/8/docs/technotes/tools/unix/index.html>
 
-HotSpot VM选项: <https://www.oracle.com/technetwork/java/javase/tech/vmoptions-jsp-140102.html>
+3. HotSpot VM选项: <https://www.oracle.com/technetwork/java/javase/tech/vmoptions-jsp-140102.html>
 
-JMX 配置指南: <https://docs.oracle.com/javase/8/docs/technotes/guides/management/agent.html>
+4. JMX 配置指南: <https://docs.oracle.com/javase/8/docs/technotes/guides/management/agent.html>
 
-GC性能优化系列: <https://renfufei.blog.csdn.net/column/info/14851/>
+5. GC性能优化系列: <https://renfufei.blog.csdn.net/column/info/14851/>
 
-GC调优指南: <https://docs.oracle.com/javase/8/docs/technotes/guides/vm/gctuning/>
+6. GC调优指南: <https://docs.oracle.com/javase/8/docs/technotes/guides/vm/gctuning/>
 
-延迟(Latency): <https://bravenewgeek.com/everything-you-know-about-latency-is-wrong/>
+7. 延迟(Latency): <https://bravenewgeek.com/everything-you-know-about-latency-is-wrong/>
 
-CAPACITY TUNING: <https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/6/html/performance_tuning_guide/s-memory-captun>
+8. CAPACITY TUNING: <https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/6/html/performance_tuning_guide/s-memory-captun>
 
-JVMInternals : <http://blog.jamesdbloom.com/JVMInternals.html>
+9. JVMInternals : <http://blog.jamesdbloom.com/JVMInternals.html>
 
-JDWP 协议及实现: <https://www.ibm.com/developerworks/cn/java/j-lo-jpda3/>
+10. JDWP 协议及实现: <https://www.ibm.com/developerworks/cn/java/j-lo-jpda3/>
