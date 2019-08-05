@@ -130,7 +130,7 @@ The dataset which we will be using in this article lists details about all the z
 
 Let’s look at a sample document after importing it into a collection called `zips` in the `test` database.
 
-`test数据库, `zips` 集合中有一条导入的数据。
+`test`数据库, `zips` 集合中有一条导入的数据。
 
 ```
 {
@@ -307,4 +307,5 @@ We also learned about the MongoDB aggregation framework support in Spring Data. 
 
 - [Spring Data MongoDB系列(一): 简介](05_01_spring-data-mongodb-tutorial.md)
 - [Spring Data MongoDB系列(二): 简单查询](05_02_queries-in-spring-data-mongodb.md)
+- [Spring Data MongoDB系列(三): 索引、注解和转换器](05_02_queries-in-spring-data-mongodb.md)
 - [Spring Data MongoDB系列(八): 映射与聚合](05_08_spring-data-mongodb-projections-aggregations.md)

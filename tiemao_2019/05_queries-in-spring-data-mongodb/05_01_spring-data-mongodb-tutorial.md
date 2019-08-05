@@ -361,7 +361,7 @@ The database will look like this:
 
 As you can see, in this particular example, *save* uses the semantics of *update*, because we use an object with given *_id*.
 
-如您所见,在这个特定的例子中,*存*使用*更新*的语义,因为我们使用一个对象* _id *。
+如您所见,在这个特定的例子中, `save` 使用 `update` 语义, 因为有 `_id`。
 
 ### 5.4. UpdateFirst
 
@@ -1061,4 +1061,5 @@ The implementation of all these examples and code snippets can be found [over on
 
 - [Spring Data MongoDB系列(一): 简介](05_01_spring-data-mongodb-tutorial.md)
 - [Spring Data MongoDB系列(二): 简单查询](05_02_queries-in-spring-data-mongodb.md)
+- [Spring Data MongoDB系列(三): 索引、注解和转换器](05_02_queries-in-spring-data-mongodb.md)
 - [Spring Data MongoDB系列(八): 映射与聚合](05_08_spring-data-mongodb-projections-aggregations.md)
