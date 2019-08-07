@@ -85,4 +85,3 @@ You can see more information at [Section G.3.79, “git-merge(1)”](git-command
 Although major merge working is done by git automatically, conflict maybe happen during merge, please see [Section 2.31, “Resolving Conflicts”](tgit-dug-conflicts.html) to how to resolve conflict.
 
 虽然通过 git 可以进行主要的自动合并工作, 但在合并时有可能会发生冲突, 请点击 [Section 2.31, “Resolving Conflicts”](tgit-dug-conflicts.html) 查看如何解决冲突。
-

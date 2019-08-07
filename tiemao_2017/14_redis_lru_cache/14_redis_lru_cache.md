@@ -1,6 +1,6 @@
 # Using Redis as an LRU cache
 
-# 配置LRU缓存模式的Redis
+# 配置Redis作为缓存
 
 
 When Redis is used as a cache, sometimes it is handy to let it automatically evict old data as you add new one. This behavior is very well known in the community of developers, since it is the default behavior of the popular*memcached* system.
@@ -230,4 +230,3 @@ To experiment in production with different values for the sample size by using t
 
 
 原文链接: <https://redis.io/topics/lru-cache>
-

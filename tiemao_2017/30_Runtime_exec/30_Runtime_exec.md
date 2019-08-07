@@ -1,6 +1,6 @@
 #### Execute an external program
 
-#### Java 调用外部程序
+#### Java-执行外部程序
 
 >  Be sure to **read** this [Javaworld article](http://www.javaworld.com/javaworld/jw-12-2000/jw-1229-traps.html?page=1). It describes the various **pitfalls** related to the Runtime.exec() method.
 
@@ -529,6 +529,3 @@ NOTE : Prior Vista, System folders were localized on disk like  `C:\Program File
 注意:之前Vista系统文件夹是本地化的磁盘上`C:\Program Files  -> C:\Archivos de programa`在Windows与西班牙本地化。因为Vista系统文件夹的英文名字总是存在,但当通过浏览器查看,显示本地化名称。参见http://msmvps.com/blogs/carlosq/archive/2007/02/12/windows-vista-junctions-points-mui-and-localized-folder-names.aspx
 
 原文链接: <http://www.rgagnon.com/javadetails/java-0014.html>
-
-
-

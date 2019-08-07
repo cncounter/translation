@@ -34,3 +34,6 @@ ReadWriteLock locks = new ReentrantReadWriteLock();
 > ReadWriteLock
 
 
+- <./ReadWriteLock.md>
+
+- <./ReentrantReadWriteLock.md>
