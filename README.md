@@ -136,7 +136,7 @@ GitHub地址: <https://github.com/cncounter/translation>
 38. [When Runtime.exec() won't](tiemao_2017/38_when-runtime-exec-won-t/38_when-runtime-exec-won-t.md)
 39. [Word-docx文件图片信息分析](tiemao_2017/39_Word_Image_template/39_Word_Image_template.md)
 40. [Chrome Headless 命令行操作简介](tiemao_2017/40_headless_chrome/40_headless_chrome.md)
-41. [TortoiseGit - 分支合并(Merging)](tiemao_2017/41_TortoiseGit _Merging/41_TortoiseGit _Merging.md)
+41. [TortoiseGit - 分支合并(Merging)](tiemao_2017/41_TortoiseGit_Merging/41_TortoiseGit_Merging.md)
 42. [CentOS安装Lemp环境和Wordpress](tiemao_2017/42_Lemp_Install/42_Lemp_Install.md)
 43. [读写锁](tiemao_2017/43_Read_Write_Lock/43_Read_Write_Lock.md)
 44. [JavaScript Copy to Clipboard](tiemao_2017/44_clipboard_js/44_clipboard_js.md)
