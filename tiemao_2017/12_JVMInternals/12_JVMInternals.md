@@ -13,9 +13,11 @@ This article explains the internal architecture of the Java Virtual Machine (JVM
 
 The components shown on this diagram are each explained below in two sections.  [First section](#threads) covers the components that are created for each thread and the [second section](#shared_between_threads) covers the components that are created independently of threads.
 
-这些组件分为两节进行介绍. 第一个部分是为每个线程创建的组件, 第二部分是所有线程共同使用的组件, 这些组件独立于线程。
+这些组件分为两节进行介绍.
 
-* [Threads,线程](#threads)
+第一个部分是为每个线程创建的组件:
+
+* [线程(Thread)](#threads)
   *   [JVM System Threads,JVM系统线程](#jvm_system_threads)
   *   [Per Thread,单个线程的结构](#per_thread)
   *   [program Counter (PC,程序计数器)](#program_counter)
@@ -26,6 +28,9 @@ The components shown on this diagram are each explained below in two sections.  
   *   [Local Variables Array,局部变量数组](#local_variables_array)
   *   [Operand Stack,操作数栈](#operand_stack)
   *   [Dynamic Linking,动态链接](#dynamic_linking)
+
+第二部分是所有线程共同使用的组件, 这些组件独立于线程:
+
 * [Shared Between Threads,所有线程共用](#shared_between_threads)
   * [Heap,堆内存](#heap)
   * [Memory Management,内存管理](#memory_management)
@@ -44,10 +49,11 @@ The components shown on this diagram are each explained below in two sections.  
 
 
 
+<a name="threads"></a>
 
 ## Thread
 
-## 线程
+## 线程(Thread)
 
 A thread is a thread of execution in a program. The JVM allows an application to have multiple threads of execution running concurrently.  In the Hotspot JVM there is a direct mapping between a Java Thread and a native operating system Thread.  After preparing all of the state for a Java thread such as thread-local storage, allocation buffers, synchronization objects, stacks and the program counter, the native thread is created.  The native thread is reclaimed once the Java thread terminates.  The operating system is therefore responsible for scheduling all threads and dispatching them to any available CPU.  Once the native thread has initialized it invokes the run() method in the Java thread.  When the run() method returns, uncaught exceptions are handled, then the native thread confirms if the JVM needs to be terminated as a result of the thread terminating (i.e. is it the last non-deamon thread).  When the thread terminates all resources for both the native and Java thread are released.
 
@@ -71,6 +77,8 @@ If you use jconsole or any debugger it is possible to see there are numerous thr
   These threads compile byte code to native code at runtime
 * Signal dispatcher thread
   This thread receives signals sent to the JVM process and handle them inside the JVM by calling the appropriate JVM methods.
+
+----
 
 * VM thread(虚拟机线程)
   这个线程等待需要JVM到达安全点的那些操作. 为什么要将这些操作抽出来单独用一个线程来执行呢? 是因为需要JVM中的线程都到达安全点, 这样堆内存才不会发生变化. 这个线程执行的操作就是 "stop-the-world" 垃圾收集, 线程栈转储, 线程暂停, 以及偏向锁撤销。
@@ -106,7 +114,7 @@ PC中记录的是当前指令(或操作码)的地址, 如果当前方法是nativ
 
 Each thread has its own stack that holds a frame for each method executing on that thread.  The stack is a Last In First Out (LIFO) data structure, so the currently executing method is at the top of the stack. A new frame is created and added (pushed) to the top of stack for every method invocation.  The frame is removed (popped) when the method returns normally or if an uncaught exception is thrown during the method invocation. The stack is not directly manipulated, except to push and pop frame objects, and therefore the frame objects may be allocated in the Heap and the memory does not need to be contiguous.
 
-每个线程都有自己的 stack(栈, 也叫线程栈), 其中包含的, 是执行链上, 分配给每个方法的栈帧(frame, 方法栈帧). 栈是一种后进先出(LIFO, Last In First Out)的数据结构, 因此当前执行方法的栈帧(frame)在栈的最顶部. 每调用一个方法, 都会创建一个新的栈帧并压入(pushed/added)到栈的顶部. 在方法正常返回, 或者异常退出时, 栈帧就会从栈顶弹出(popped/removed). 栈除了压入(push)和弹出(pop)栈帧之外,不支持其他操作, 所以栈帧对象可能是在堆中分配, 而且分配的物理内存不一定是连续的。
+每个线程都有自己的线程栈(stack), 其中包含执行链上, 分配给每个方法的栈帧(frame, 方法帧). 栈是一种后进先出(LIFO, Last In First Out)的数据结构, 因此当前执行方法的栈帧(frame)在栈的最顶部. 每调用一个方法, 都会创建一个新的栈帧并压入(pushed/added)到栈的顶部. 在方法正常返回, 或者异常退出时, 栈帧就会从栈顶弹出(popped/removed). 栈除了压入(push)和弹出(pop)栈帧之外,不支持其他操作, 所以栈帧对象可能在堆中分配, 而且分配的物理内存不一定是连续的。
 
 ### Native Stack
 
@@ -114,23 +122,23 @@ Each thread has its own stack that holds a frame for each method executing on th
 
 Not all JVMs support native methods, however, those that do typically create a per thread native method stack.  If a JVM has been implemented using a C-linkage model for Java Native Invocation (JNI) then the native stack will be a C stack.  In this case the order of arguments and return value will be identical in the native stack to typical C program. A native method can typically (depending on the JVM implementation) call back into the JVM and invoke a Java method.  Such a native to Java invocation will occur on the stack (normal Java stack); the thread will leave the native stack and create a new frame on the stack (normal Java stack).
 
-并不是所有jvm支持本地方法,然而,那些通常每个线程创建一个本地方法栈.如果JVM已经使用并且模型实现Java本机调用本地堆栈(JNI),那么将是一个C堆栈.在这种情况下,参数和返回值的顺序是相同的本地堆栈中典型的C程序.本机方法通常根据JVM实现电话回JVM和调用Java方法.这样的本地Java调用将出现在堆栈(普通Java堆栈);线程将离开本地堆栈和创建一个新的框架在堆栈上(普通Java堆栈)。
+并不是所有jvm都支持本地方法, 通常每个线程都会创建一个本地方法栈. 如果JVM实现使用 C-linkage 模型来处理Java本地调用(JNI), 那么本地方法栈就是一个 C stack. 在这种情况下,参数和返回值的顺序与普通C程序是相同的. 本地方法可以和Java方法互相调用. 如果Native调用Java方法,则会使用普通Java栈; 线程将离开native栈并在Java栈上创建一个新的栈帧。
 
 ### Stack Restrictions
 
-### 堆栈限制
+### 栈限制
 
 A stack can be a dynamic or fixed size.  If a thread requires a larger stack than allowed a StackOverflowError is thrown.  If a thread requires a new frame and there isn’t enough memory to allocate it then an OutOfMemoryError is thrown.
 
-堆栈是一个动态的或固定的大小。如果一个线程需要一个更大的比允许StackOverflowError堆栈.如果一个线程需要一个新的框架和没有足够的内存分配然后抛出一个OutOfMemoryError。
+栈的大小可能是动态的或固定的。如果线程需要的stack大小超过限制，则会抛出 `StackOverflowError`. 如果线程需要一个新的栈帧，但没有足够的内存可分配, 则会抛出 `OutOfMemoryError`。
 
 ### Frame
 
-### 框架
+### 栈帧(Frame)
 
 A new frame is created and added (pushed) to the top of stack for every method invocation.  The frame is removed (popped) when the method returns normally or if an uncaught exception is thrown during the method invocation.  For more detail on exception handling [see the section on Exception Tables below](#exception_table).
 
-创建和添加一个新的帧(推)为每个方法调用堆栈的顶部.帧删除(突然)方法返回正常或者方法调用期间未捕获的异常.关于异常处理的更多细节(参见下面的部分异常表)(# exception_table)。
+每个方法调用时,都会创建并添加/pushed 一个新的栈帧到线程栈的顶部. 方法正常返回或者异常退出则会删除/popped 栈帧. 关于异常处理的更多细节请参见下面的[异常表](#exception_table)。
 
 Each frame contains:
 
@@ -141,10 +149,10 @@ Each frame contains:
 *   Operand stack
 *   Reference to runtime constant pool for class of the current method
 
-*局部变量数组
-*返回值
-*操作数栈
-*参考运行时常量池类的方法
+* 局部变量数组
+* 返回值
+* 操作数栈
+* 指向运行时常量池的当前方法所属类的引用
 
 ### Local Variables Array
 
@@ -207,7 +215,7 @@ Gets compiled to the following byte code:
     1:    istore_1    // Pop value from top of operand stack and store as local variable 1
 ```    
 
-     
+
 
 For more detail explaining interactions between the local variables array, operand stack and run time constant pool [see the section on Class File Structure below](#class_file_structure).
 
@@ -229,7 +237,7 @@ When a Java class is compiled, all references to variables and methods are store
 
 编译Java类时,所有的变量和方法的引用存储在类的常量池是一种象征性参考.符号引用实际上是一个逻辑引用不是一个引用,指向一个物理内存的位置.JVM实现可以选择解决符号的引用时,会发生这种验证类文件时,被加载后,称为急切的或静态的决议,相反,这可能发生在第一次使用的符号引用称为懒惰或决议.但是JVM必须表现得好像解决发生在每个引用是第一次使用,把任何解析错误.绑定的过程,方法或类确定的符号引用被取而代之的是直接引用,这只发生一次,因为符号引用是完全取代。如果符号引用是指尚未解决的一个类然后将加载这个类.每个直接引用存储为一个偏移量对存储结构与运行时的位置相关联的变量或方法。
 
-      
+
 
 ## Shared Between Threads
 
@@ -260,7 +268,7 @@ To support garbage collection the heap is divided into three sections:
 * * *老一辈* *(也称为终身代)
 永久一代* * * * *
 
-       
+
 
 ### Memory Management
 
@@ -284,7 +292,7 @@ Typically this works as follows:
 3. 主要的垃圾收集,这通常会导致应用程序线程暂停,将对象之间的几代人.对象,仍然活着,将从年轻一代老(终身)的一代。
 4. 永久一代收集每次收集旧的一代。他们都是收集时变得完整。
 
-       
+
 
 ### Non-Heap Memory
 
@@ -934,6 +942,3 @@ String literals are automatically interned by the compiler and added into the sy
 
 
 原文链接: <http://blog.jamesdbloom.com/JVMInternals.html>
-
-
-
