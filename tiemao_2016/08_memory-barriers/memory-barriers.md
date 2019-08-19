@@ -118,7 +118,7 @@ Think of X and Y as files which exist on Larry’s working copy of the repositor
 
 Fortunately, Larry and Sergey are not entirely at the mercy of these random, unpredictable leaks happening in the background. They also have the ability to issue special instructions, called fence instructions, which act as memory barriers. For this analogy, it’s sufficient to define four types of memory barrier, and thus four different fence instructions. Each type of memory barrier is named after the type of memory reordering it’s designed to prevent: for example, #StoreLoad is designed to prevent the reordering of a store followed by a load.
 
-幸运的是,拉里和谢尔盖并不完全的摆布这些随机的,不可预知的泄漏发生在后台。他们也有能力问题的特别指示,叫栅栏指令,它作为内存屏障。对于这个比喻,它足以定义四种类型的内存屏障,因此四个不同栅栏指令.每种类型的内存屏障命名类型的内存重排序旨在防止:例如,# StoreLoad旨在防止商店,后跟一个负载的重排序。
+还好, 拉里和谢尔盖并不是完全被这些后台的随机操作摆布。 他们可以发出一些特别的指令, 称为栅栏指令（fence instruction）, 用来充当内存屏障（memory barrier）。对于这个类比, 可以定义四种类型的内存屏障, 因此有四个不同的栅栏指令. 每种类型的内存屏障，根据其阻止的内存重排序类型命名: 例如, `#StoreLoad` 旨在防止 `store` 与后面的 `load` 被重排序。
 
 
 ![](05_barrier-types.png)
@@ -128,12 +128,12 @@ Fortunately, Larry and Sergey are not entirely at the mercy of these random, unp
 
 As Doug Lea points out, these four categories map pretty well to specific instructions on real CPUs – though not exactly. Most of the time, a real CPU instruction acts as some combination of the above barrier types, possibly in addition to other effects. In any case, once you understand these four types of memory barriers in the source control analogy, you’re in a good position to understand a large number of instructions on real CPUs, as well as several higher-level programming language constructs.
 
-Doug Lea指出,这四个类别很好地映射到特定指令——尽管不是在真正的cpu。大部分的时间,针对社区劳教as a real指示上述认为some示范年东耶鲁撒冷。其他加法综合报告,一旦你理解了这四种类型的内存屏障的源代码版本控制类比,你在一个好的位置理解大量的说明真正的cpu,以及一些高级编程语言构造。
+[Doug Lea指出](http://gee.cs.oswego.edu/dl/jmm/cookbook.html), 这4种类型能很好地映射为CPU的特定指令 —— 尽管不是所有CPU都支持。
+大部分时候, 真正的CPU指令会实现以上多个屏障的效果，也就是会有其他效果。 无论如何，只要理解了这四种类型的内存屏障，也就能很好地理解真实CPU的大量指令, 以及一些高级编程语言的构造。
 
 
-### #LoadLoad
+### `#LoadLoad`
 
-# # # # LoadLoad
 
 
 A LoadLoad barrier effectively prevents reordering of loads performed before the barrier with loads performed after the barrier.
@@ -175,9 +175,8 @@ Obviously, this example depends on having the IsPublished flag leak into Sergey�
 显然,这个例子取决于拥有发表标志本身泄漏到谢尔盖的工作副本。不管什么时候发生,一旦泄露的国旗被观察到,他问题# LoadLoad栅栏防止阅读一些价值的价值比国旗本身。
 
 
-### #StoreStore
+### `#StoreStore`
 
-# # # # StoreStore
 
 
 A StoreStore barrier effectively prevents reordering of stores performed before the barrier with stores performed after the barrier.
@@ -217,9 +216,8 @@ Again, we’re counting on the value of IsPublished to leak from Larry’s worki
 再次,我们指望的价值发表泄漏从拉里工作副本交给布林的本身。一旦Sergey检测到,他有信心他会看到正确的价值的价值.有趣的是,这种模式工作,甚至不需要一个价值原子类型;它可以是一个巨大的结构有很多元素。
 
 
-### #LoadStore
+### `#LoadStore`
 
-# # # # LoadStore
 
 
 Unlike #LoadLoad and #StoreStore, there’s no clever metaphor for #LoadStore in terms of source control operations. The best way to understand a #LoadStore barrier is, quite simply, in terms of instruction reordering.
@@ -247,9 +245,8 @@ In our analogy, it’s valid for Larry to perform this kind of LoadStore reorder
 在我们的类比,拉里有效执行这种LoadStore重排序,即使有一个# LoadLoad或# StoreStore加载和存储之间的屏障。然而,在一个真正的CPU,指令通常作为# LoadStore屏障作为至少其他两个障碍类型之一。
 
 
-### #StoreLoad
+### `#StoreLoad`
 
-# # # # StoreLoad
 
 
 A StoreLoad barrier ensures that all stores performed before the barrier are visible to other processors, and that all loads performed after the barrier receive the latest value that is visible at the time of the barrier. In other words, it effectively prevents reordering of all stores before the barrier against all loads after the barrier, respecting the way a sequentially consistent multiprocessor would perform those operations.
@@ -320,7 +317,7 @@ If you’re interested in how CPUs work under the hood – things like stores bu
 
 
 
-欢迎加入: [CNC开源组件交流群 316630025](http://jq.qq.com/?_wv=1027&k=Z4v6kn)
+欢迎加入: [CNC开源技术交流群 316630025](http://jq.qq.com/?_wv=1027&k=Z4v6kn)
 
 
 原文链接: [http://preshing.com/20120710/memory-barriers-are-like-source-control-operations/](http://preshing.com/20120710/memory-barriers-are-like-source-control-operations/)
