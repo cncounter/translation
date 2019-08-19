@@ -138,12 +138,12 @@ As Doug Lea points out, these four categories map pretty well to specific instru
 
 A LoadLoad barrier effectively prevents reordering of loads performed before the barrier with loads performed after the barrier.
 
-LoadLoad障碍有效防止重排序的加载执行之前执行的障碍与负载之后的障碍。
+LoadLoad屏障能防止屏障之前load与屏障之后的load被重排序。
 
 
-In our analogy, the #LoadLoad fence instruction is basically equivalent to a pull from the central repository. Think git pull, hg pull, p4 sync, svn update or cvs update, all acting on the entire repository. If there are any merge conflicts with his local changes, let’s just say they’re resolved randomly.
+In our analogy, the `#LoadLoad` fence instruction is basically equivalent to a pull from the central repository. Think git pull, hg pull, p4 sync, svn update or cvs update, all acting on the entire repository. If there are any merge conflicts with his local changes, let’s just say they’re resolved randomly.
 
-在我们的类比,# LoadLoad栅栏指令基本上相当于将从中央仓库。认为git拉,hg拉,p4同步,svn cvs更新或更新,所有作用于整个存储库。如果有任何和他的本地更改合并冲突,假设他们解决随机。
+在版本库类比中, `#LoadLoad` 栅栏指令基本上相当于将从中央仓库拉取代码。比如 `git pull`, `hg pull`, `p4 sync`, `svn update` 或者 `cvs update`, 作用于整个仓库。 如果与本地代码存在冲突, 此处假定为随机解决。
 
 
 ![](06_loadload.png)
@@ -153,26 +153,26 @@ In our analogy, the #LoadLoad fence instruction is basically equivalent to a pul
 
 Mind you, there’s no guarantee that #LoadLoad will pull the latest, or head, revision of the entire repository! It could very well pull an older revision than the head, as long as that revision is at least as new as the newest value which leaked from the central repository into his local machine.
 
-请注意,不能保证# LoadLoad将最新的,或头,整个库的修改!它很可能将比头一个年长的修订,只要修改至少是一样新最新的价值从中央存储库泄露到本地机器上。
+请注意, `#LoadLoad` 并不能保证会拉取到整个仓库最新的状态! 很可能会pull到一个比head要旧的修订, 只要能保证拉取到本地的修订至少和本地机器的修改一样新。
 
 
 This may sound like a weak guarantee, but it’s still a perfectly good way to prevent seeing stale data. Consider the classic example, where Sergey checks a shared flag to see if some data has been published by Larry. If the flag is true, he issues a #LoadLoad barrier before reading the published value:
 
-这可能听起来像一个虚弱的保证,但它仍然是一个完美的方法来防止看到陈旧的数据。考虑到经典的例子,谢尔盖在检查一个共享的国旗,看看一些数据已经发表的拉里。如果国旗是真的,他的问题# LoadLoad屏障前阅读发布的值:
+可能听起来这个保证有点弱, 但仍然是一个防止看到陈旧数据的好方案。 考虑经典的例子, 谢尔盖检查一个共享标志, 确定某些数据是否已经发送到拉里的机器。如果标志是true, 则在读取发布的数据前，插入一个 `#LoadLoad` 屏障:
 
-
+```
 	if (IsPublished)                   // Load and check shared flag
 	{
 	    LOADLOAD_FENCE();              // Prevent reordering of loads
 	    return Value;                  // Load published value
 	}
+```
 
-如果(发表)/ /加载和检查共享国旗
 
 
 Obviously, this example depends on having the IsPublished flag leak into Sergey’s working copy by itself. It doesn’t matter exactly when that happens; once the leaked flag has been observed, he issues a #LoadLoad fence to prevent reading some value of Value which is older than the flag itself.
 
-显然,这个例子取决于拥有发表标志本身泄漏到谢尔盖的工作副本。不管什么时候发生,一旦泄露的国旗被观察到,他问题# LoadLoad栅栏防止阅读一些价值的价值比国旗本身。
+显然, 这个例子取决于 `IsPublished` 标志是否发布到了谢尔盖的工作副本中。 不管什么时候, 只要标志被检测到, 就发送一条 `#LoadLoad` 栅栏指令, 保证不会读取到比 flag 更古老的 Value 值。
 
 
 ### `#StoreStore`
@@ -181,7 +181,7 @@ Obviously, this example depends on having the IsPublished flag leak into Sergey�
 
 A StoreStore barrier effectively prevents reordering of stores performed before the barrier with stores performed after the barrier.
 
-StoreStore障碍有效防止执行的商店之前执行障碍与商店重排序后障碍。
+StoreStore屏障有效防止执行的商店之前执行屏障与商店重排序后屏障。
 
 
 In our analogy, the #StoreStore fence instruction corresponds to a push to the central repository. Think git push, hg push, p4 submit, svn commit or cvs commit, all acting on the entire repository.
@@ -201,7 +201,7 @@ As an added twist, let’s suppose that #StoreStore instructions are not instant
 
 This, too, may sound like a weak guarantee, but again, it’s perfectly sufficient to prevent Sergey from seeing any stale data published by Larry. Returning to the same example as above, Larry needs only to publish some data to shared memory, issue a #StoreStore barrier, then set the shared flag to true:
 
-这也可能听起来像一个虚弱的保证,但同样,它是完全足以防止Sergey看到任何陈旧的数据发表的拉里。回到上面的例子一样,拉里只需要发布一些数据共享内存,# StoreStore障碍问题,然后设置共享国旗真:
+这也可能听起来像一个虚弱的保证,但同样,它是完全足以防止Sergey看到任何陈旧的数据发表的拉里。回到上面的例子一样,拉里只需要发布一些数据共享内存,# StoreStore屏障问题,然后设置共享国旗真:
 
 
 	Value = x;                         // Publish some data
@@ -222,7 +222,7 @@ Again, we’re counting on the value of IsPublished to leak from Larry’s worki
 
 Unlike #LoadLoad and #StoreStore, there’s no clever metaphor for #LoadStore in terms of source control operations. The best way to understand a #LoadStore barrier is, quite simply, in terms of instruction reordering.
 
-与# LoadLoad和# StoreStore,巧妙的比喻# LoadStore源代码版本控制操作。要理解一个# LoadStore障碍的最好方法是,很简单,的指令重排序。
+与# LoadLoad和# StoreStore,巧妙的比喻# LoadStore源代码版本控制操作。要理解一个# LoadStore屏障的最好方法是,很简单,的指令重排序。
 
 
 ![](08_get-back-to-later.png)
@@ -237,12 +237,12 @@ Imagine Larry has a set of instructions to follow. Some instructions make him lo
 
 On a real CPU, such instruction reordering might happen on certain processors if, say, there is a cache miss on the load followed by a cache hit on the store. But in terms of understanding the analogy, such hardware details don’t really matter. Let’s just say Larry has a boring job, and this is one of the few times when he’s allowed to get creative. Whether or not he chooses to do it is completely unpredictable. Fortunately, this is a relatively inexpensive type of reordering to prevent; when Larry encounters a #LoadStore barrier, he simply refrains from such reordering around that barrier.
 
-等一个真正的CPU,指令重排序上可能发生某些处理器,如果小姐说,有一个缓存负载,后跟一个缓存命中的商店.但在理解类比,这样硬件细节真的不重要。假设拉里有一份无聊的工作,这是为数不多的时候,他可以得到创新.他选择这样做是否完全不可预测的。幸运的是,这是一种相对廉价的重排序,以防止;当拉里遇到一个# LoadStore障碍,他只是没有从这样的重排序,障碍。
+等一个真正的CPU,指令重排序上可能发生某些处理器,如果小姐说,有一个缓存负载,后跟一个缓存命中的商店.但在理解类比,这样硬件细节真的不重要。假设拉里有一份无聊的工作,这是为数不多的时候,他可以得到创新.他选择这样做是否完全不可预测的。幸运的是,这是一种相对廉价的重排序,以防止;当拉里遇到一个# LoadStore屏障,他只是没有从这样的重排序,屏障。
 
 
 In our analogy, it’s valid for Larry to perform this kind of LoadStore reordering even when there is a #LoadLoad or #StoreStore barrier between the load and the store. However, on a real CPU, instructions which act as a #LoadStore barrier typically act as at least one of those other two barrier types.
 
-在我们的类比,拉里有效执行这种LoadStore重排序,即使有一个# LoadLoad或# StoreStore加载和存储之间的屏障。然而,在一个真正的CPU,指令通常作为# LoadStore屏障作为至少其他两个障碍类型之一。
+在我们的类比,拉里有效执行这种LoadStore重排序,即使有一个# LoadLoad或# StoreStore加载和存储之间的屏障。然而,在一个真正的CPU,指令通常作为# LoadStore屏障作为至少其他两个屏障类型之一。
 
 
 ### `#StoreLoad`
@@ -251,7 +251,7 @@ In our analogy, it’s valid for Larry to perform this kind of LoadStore reorder
 
 A StoreLoad barrier ensures that all stores performed before the barrier are visible to other processors, and that all loads performed after the barrier receive the latest value that is visible at the time of the barrier. In other words, it effectively prevents reordering of all stores before the barrier against all loads after the barrier, respecting the way a sequentially consistent multiprocessor would perform those operations.
 
-StoreLoad屏障确保所有商店之前执行其他处理器的障碍是可见的,障碍后,所有加载执行接收最新的价值,可见时的障碍。换句话说,prevents根源的reordering of all遮阳窗帘墙against all受理、报告员after the way a sequentially包括其他multiprocessor元。而使之配套
+StoreLoad屏障确保所有商店之前执行其他处理器的屏障是可见的,屏障后,所有加载执行接收最新的价值,可见时的屏障。换句话说,prevents根源的reordering of all遮阳窗帘墙against all受理、报告员after the way a sequentially包括其他multiprocessor元。而使之配套
 
 
 #StoreLoad is unique. It’s the only type of memory barrier that will prevent the result r1 = r2 = 0 in the example given in Memory Reordering Caught in the Act; the same example I’ve repeated earlier in this post.
@@ -261,12 +261,12 @@ StoreLoad屏障确保所有商店之前执行其他处理器的障碍是可见�
 
 If you’ve been following closely, you might wonder: How is #StoreLoad different from a #StoreStore followed by a #LoadLoad? After all, a #StoreStore pushes changes to the central repository, while #LoadLoad pulls remote changes back. However, those two barrier types are insufficient. Remember, the push operation may be delayed for an arbitrary number of instructions, and the pull operation might not pull from the head revision. This hints at why the PowerPC’s lwsync instruction – which acts as all three #LoadLoad, #LoadStore and #StoreStore memory barriers, but not #StoreLoad – is insufficient to prevent r1 = r2 = 0 in that example.
 
-如果你一直密切关注,您可能想知道:# StoreLoad如何不同于# StoreStore后跟一个# LoadLoad吗?毕竟,# StoreStore推动改变中央存储库,虽然# LoadLoad拉远程更改。然而,这两个障碍类型是不够的。记住,推动操作为任意数量的指令可能会被推迟,不可能吸引和运作吸引from the head订正。at This hints why the PowerPC的lwsync as all,特地号——3 # # # # # # # # # # # # LoadLoad,LoadStore和StoreStore memory障碍,但不是# StoreLoad -不足以防止r1 = r2 = 0的例子。
+如果你一直密切关注,您可能想知道:# StoreLoad如何不同于# StoreStore后跟一个# LoadLoad吗?毕竟,# StoreStore推动改变中央存储库,虽然# LoadLoad拉远程更改。然而,这两个屏障类型是不够的。记住,推动操作为任意数量的指令可能会被推迟,不可能吸引和运作吸引from the head订正。at This hints why the PowerPC的lwsync as all,特地号——3 # # # # # # # # # # # # LoadLoad,LoadStore和StoreStore memory屏障,但不是# StoreLoad -不足以防止r1 = r2 = 0的例子。
 
 
 In terms of the analogy, a #StoreLoad barrier could be achieved by pushing all local changes to the central repostitory, waiting for that operation to complete, then pulling the absolute latest head revision of the repository. On most processors, instructions that act as a #StoreLoad barrier tend to be more expensive than instructions acting as the other barrier types.
 
-的类比,# StoreLoad障碍可以通过将所有本地更改中央repostitory等待操作完成,然后把绝对最新修订的存储库。在大多数的处理器,指令作为# StoreLoad障碍往往更昂贵的比其他指令充当障碍类型。
+的类比,# StoreLoad屏障可以通过将所有本地更改中央repostitory等待操作完成,然后把绝对最新修订的存储库。在大多数的处理器,指令作为# StoreLoad屏障往往更昂贵的比其他指令充当屏障类型。
 
 
 ![](09_storeload.png)
@@ -276,7 +276,7 @@ In terms of the analogy, a #StoreLoad barrier could be achieved by pushing all l
 
 If we throw a #LoadStore barrier into that operation, which shouldn’t be a big deal, then what we get is a full memory fence – acting as all four barrier types at once. As Doug Lea also points out, it just so happens that on all current processors, every instruction which acts as a #StoreLoad barrier also acts as a full memory fence.
 
-如果我们把# LoadStore屏障扔进操作,然后不应该是一个大问题,我们得到的是一个完整的内存栅栏,充当所有四个障碍类型。Doug Lea还指出,碰巧在所有当前的处理器,每个指令充当# StoreLoad栅栏屏障也作为一个完整的内存。
+如果我们把# LoadStore屏障扔进操作,然后不应该是一个大问题,我们得到的是一个完整的内存栅栏,充当所有四个屏障类型。Doug Lea还指出,碰巧在所有当前的处理器,每个指令充当# StoreLoad栅栏屏障也作为一个完整的内存。
 
 
 
