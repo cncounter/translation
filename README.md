@@ -166,7 +166,8 @@ GitHub地址: <https://github.com/cncounter/translation>
 <details>
 <summary>点击展开2016年文章目录</summary>
 
-[1.](./tiemao_2016/)
+
+08. [内存屏障: 通过版本控制来理解](tiemao_2016/08_memory-barriers/memory-barriers.md)【】
 
 </details>
 
