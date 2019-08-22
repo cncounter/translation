@@ -223,7 +223,8 @@ Again, we’re counting on the value of IsPublished to leak from Larry’s worki
 
 Unlike #LoadLoad and #StoreStore, there’s no clever metaphor for #LoadStore in terms of source control operations. The best way to understand a #LoadStore barrier is, quite simply, in terms of instruction reordering.
 
-与 `#LoadLoad` 和 `#StoreStore` 屏障不同, `#LoadStore` 在版本控制操作中没有适当的类比。 要理解`#LoadStore`屏障的最好方法是, 一个简单的术语, 指令重排序(instruction reordering)。
+与 `#LoadLoad` , `#StoreStore` 屏障不同, `#LoadStore` 在版本控制操作中没有适当的类比。
+要理解`#LoadStore`屏障的比较好的方法，是理解一个简单的术语, 指令重排序(instruction reordering)。
 
 
 ![](08_get-back-to-later.png)
@@ -235,17 +236,21 @@ Imagine Larry has a set of instructions to follow. Some instructions make him lo
 
 想象Larry有一组指令要执行。 一些指令让他将私人工作副本的数据load到寄存器, 另一些让他从寄存器中将数据store回工作副本。
 Larry有能力调整指令的执行顺序, 但只在某些特定的情况下允许。
-每当他遇到load指令, 他往前查找后面的store指令, 如果store和当前的load完全不相关, 然后他可以跳过load,先做store,然后再回来完成load。在这种情况下,内存的基本规则排序-不修改单线程程序的行为仍然是紧随其后。
+每当他遇到load指令时, 往后面查找是否有store指令, 如果后面的store和当前load完全不相关, 他可以跳过load,先执行store,完成后再回来执行load。
+在这种情况下,指令重排序的基本规则 - 不影响单线程程序的行为, 仍然是符合的。
 
 
 On a real CPU, such instruction reordering might happen on certain processors if, say, there is a cache miss on the load followed by a cache hit on the store. But in terms of understanding the analogy, such hardware details don’t really matter. Let’s just say Larry has a boring job, and this is one of the few times when he’s allowed to get creative. Whether or not he chooses to do it is completely unpredictable. Fortunately, this is a relatively inexpensive type of reordering to prevent; when Larry encounters a #LoadStore barrier, he simply refrains from such reordering around that barrier.
 
-等一个真正的CPU,指令重排序上可能发生某些处理器,如果小姐说,有一个缓存负载,后跟一个缓存命中的商店.但在理解类比,这样硬件细节真的不重要。假设Larry有一份无聊的工作,这是为数不多的时候,他可以得到创新.他选择这样做是否完全不可预测的。幸运的是,这是一种相对廉价的重排序,以防止;当Larry遇到一个# LoadStore屏障,他只是没有从这样的重排序,屏障。
+如果是真正的CPU, 指令重排序上可能在某些处理器上发生, 比如, 有一个load的操作数在缓存中未命中, 而后面紧跟的store却命中了缓存.
+但在理解类比时,这种底层的硬件实现细节并不重要。 假设Larry的工作有点无聊, 在为数不多的时候, 他可以自作主张.是否如此选择是完全不可预测的。
+幸运的是, 这是一种相对廉价的防止重排序的方式; 当Larry遇到 `#LoadStore` 屏障时, 只要在屏障附件去除重排序功能即可。
 
 
 In our analogy, it’s valid for Larry to perform this kind of LoadStore reordering even when there is a #LoadLoad or #StoreStore barrier between the load and the store. However, on a real CPU, instructions which act as a #LoadStore barrier typically act as at least one of those other two barrier types.
 
-在我们的类比,Larry有效执行这种LoadStore重排序,即使有一个# LoadLoad或# StoreStore加载和存储之间的屏障。然而,在一个真正的CPU,指令通常作为# LoadStore屏障作为至少其他两个屏障类型之一。
+在我们的示例中, 即使在 load 和 store 指令之间存在 `#LoadLoad` 或 `#StoreStore` 屏障,  Larry也是可以执行 LoadStore 这种重排序的。
+当然, 在真正的CPU中, `#LoadStore` 屏障对应的指令，至少也会起到另外两个屏障之一的作用。
 
 
 ### `#StoreLoad`
@@ -254,22 +259,26 @@ In our analogy, it’s valid for Larry to perform this kind of LoadStore reorder
 
 A StoreLoad barrier ensures that all stores performed before the barrier are visible to other processors, and that all loads performed after the barrier receive the latest value that is visible at the time of the barrier. In other words, it effectively prevents reordering of all stores before the barrier against all loads after the barrier, respecting the way a sequentially consistent multiprocessor would perform those operations.
 
-StoreLoad屏障确保所有商店之前执行其他处理器的屏障是可见的,屏障后,所有加载执行接收最新的价值,可见时的屏障。换句话说,prevents根源的reordering of all遮阳窗帘墙against all受理、报告员after the way a sequentially包括其他multiprocessor元。而使之配套
+StoreLoad屏障, 能确保屏障之前执行的所有store操作，都对其他处理器可见; 在屏障后面执行的load指令, 都能接收到最新的值。
+换句话说, 有效阻止屏障之前的store指令，与屏障之后的load指令乱序 、即使是多核心处理器，在执行这些操作时的[]顺序也是一致的](http://preshing.com/20120612/an-introduction-to-lock-free-programming#sequential-consistency)。
 
 
 #StoreLoad is unique. It’s the only type of memory barrier that will prevent the result r1 = r2 = 0 in the example given in Memory Reordering Caught in the Act; the same example I’ve repeated earlier in this post.
 
-# StoreLoad是独一无二的.这是唯一类型的内存屏障,防止结果r1 = r2 = 0的例子在内存中重排序在行为;同样的例子我重申稍早在这篇文章中。
+`#StoreLoad` 是独一无二的. 这是 [Memory Reordering Caught in the Act](http://preshing.com/20120515/memory-reordering-caught-in-the-act) 示例中, 唯一一个可以防止 `r1 = r2 = 0` 重排序的内存屏障类型; 同样的例子在这篇文章中也重申了。
 
 
 If you’ve been following closely, you might wonder: How is #StoreLoad different from a #StoreStore followed by a #LoadLoad? After all, a #StoreStore pushes changes to the central repository, while #LoadLoad pulls remote changes back. However, those two barrier types are insufficient. Remember, the push operation may be delayed for an arbitrary number of instructions, and the pull operation might not pull from the head revision. This hints at why the PowerPC’s lwsync instruction – which acts as all three #LoadLoad, #LoadStore and #StoreStore memory barriers, but not #StoreLoad – is insufficient to prevent r1 = r2 = 0 in that example.
 
-如果你一直密切关注,您可能想知道:# StoreLoad如何不同于# StoreStore后跟一个# LoadLoad吗?毕竟,# StoreStore推动改变中央存储库,虽然# LoadLoad拉远程更改。然而,这两个屏障类型是不够的。记住,推动操作为任意数量的指令可能会被推迟,不可能吸引和运作吸引from the head订正。at This hints why the PowerPC的lwsync as all,特地号——3 # # # # # # # # # # # # LoadLoad,LoadStore和StoreStore memory屏障,但不是# StoreLoad -不足以防止r1 = r2 = 0的例子。
+如果你密切关注, 可能会想知道: `#StoreLoad` 屏障，与 `#StoreStore` + `#LoadLoad` 屏障的组合有什么区别?
+毕竟, `#StoreStore` 将更改推送到中央仓库, 而 `#LoadLoad` 将远程更改拉回来。 然而,这两个屏障类型是不够的。
+记住, push 操作可能会推迟到任意数量的指令后面, 而 pull 操作可能也拉取不到 head 修正。
+这业务暗示了为什么 PowerPC 的 `lwsync`指令并不能阻止该示例中的 `r1 = r2 = 0` 重排序,(`lwsync` 充当的是 `#LoadLoad`、`#LoadStore`和`#StoreStore`这3个内存屏障，却不是`#StoreLoad` 屏障.)
 
 
 In terms of the analogy, a #StoreLoad barrier could be achieved by pushing all local changes to the central repostitory, waiting for that operation to complete, then pulling the absolute latest head revision of the repository. On most processors, instructions that act as a #StoreLoad barrier tend to be more expensive than instructions acting as the other barrier types.
 
-的类比,# StoreLoad屏障可以通过将所有本地更改中央repostitory等待操作完成,然后把绝对最新修订的存储库。在大多数的处理器,指令作为# StoreLoad屏障往往更昂贵的比其他指令充当屏障类型。
+在类比中, `#StoreLoad` 屏障可以通过将所有的本地更改推送到中央仓库中，并等待操作完成, 然后pull仓库中绝对最新的修订来实现。在大多数的处理器上, 作为 `#StoreLoad` 屏障的指令往往比其他的屏障指令代价更高。
 
 
 ![](09_storeload.png)
@@ -279,7 +288,8 @@ In terms of the analogy, a #StoreLoad barrier could be achieved by pushing all l
 
 If we throw a #LoadStore barrier into that operation, which shouldn’t be a big deal, then what we get is a full memory fence – acting as all four barrier types at once. As Doug Lea also points out, it just so happens that on all current processors, every instruction which acts as a #StoreLoad barrier also acts as a full memory fence.
 
-如果我们把# LoadStore屏障扔进操作,然后不应该是一个大问题,我们得到的是一个完整的内存栅栏,充当所有四个屏障类型。Doug Lea还指出,碰巧在所有当前的处理器,每个指令充当# StoreLoad栅栏屏障也作为一个完整的内存。
+如果我们把 `#LoadStore`(???) 屏障扔进指令中, 可能问题不大, 我们得到的是一个完整的内存栅栏,充当所有四个屏障类型。
+[Doug Lea还指出](http://gee.cs.oswego.edu/dl/jmm/cookbook.html), 碰巧了, 在限制的所有处理器中, 充当 `#StoreLoad` 屏障的指令，也能扮演一个完整的内存内存栅栏。
 
 
 
@@ -293,7 +303,8 @@ As I’ve mentioned previously, every processor has different habits when it com
 
 The analogy also corresponds pretty well to the abstract machine targeted by both C++11 (formerly known as C++0x) and C11. Therefore, if you write lock-free code using the standard library of those languages while keeping the above analogy in mind, it’s more likely to function correctly on any platform.
 
-这个类比也很好地对应了 C++11(原名 C++0x)和 C11中的抽象机器。因此,如果你写无锁代码时使用到这些语言的标准库,请记住上述的类比, 这可以让你的代码在任何平台都会正确执行。
+这个类比也很好地对应了 C++11(原名 C++0x)和 C11中的抽象机器。因此,如果你写无锁代码时使用到这些语言的标准库,请记住上述的类比,
+这可以让你的代码在任何平台都会正确执行。
 
 
 In this analogy, I’ve said that each programmer represents a single thread of execution running on a separate core. On a real operating system, threads tend to move between different cores over the course of their lifetime, but the analogy still works. I’ve also alternated between examples in machine language and examples written in C/C++. Obviously, we’d prefer to stick with C/C++, or another high-level language; this is possible because again, any operation which acts as a memory barrier also prevents compiler reordering.
