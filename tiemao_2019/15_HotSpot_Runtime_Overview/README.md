@@ -31,15 +31,15 @@ HotSpot虚拟机支持的命令行参数/环境变量非常多。 其中有少�
 
 There are three main categories of options: standard options, non-standard options, and developer options. Standard options are expected to be accepted by all JVM implementations and are stable between releases (though they can be deprecated). Options that begin with -X are non-standard (not guaranteed to be supported on all JVM implementations), and are subject to change without notice in subsequent releases of the Java SDK. Options that begin with -XX are developer options and often have specific system requirements for correct operation and may require privileged access to system configuration parameters; they are not recommended for casual use. These options are also subject to change without notice.
 
-启动参数分为三大类：标准选项（standard options），非标准选项（non-standard options）和开发者选项（developer options）。 标准选项就是所有JVM实现都要支持的部分，并且在各发行版之间保持稳定（当然也可能被废弃）。 
+启动参数分为三大类：标准选项（standard options），非标准选项（non-standard options）和开发者选项（developer options）。 标准选项就是所有JVM实现都要支持的部分，并且在各发行版之间保持稳定（当然也可能被废弃）。
 
-以 `-X` 开头的选项是非标准选项（可能只有某些公司的JVM实现支持这些选项）, 并且JDK厂商可能在后续版本的Java SDK中进行变更。 
+以 `-X` 开头的选项是非标准选项（可能只有某些公司的JVM实现支持这些选项）, 并且JDK厂商可能在后续版本的Java SDK中进行变更。
 
 以 `-XX` 开头的选项是开发者选项，通常需要一些特殊的权限，这些参数的配置需要专业人员来维护。JDK厂商可能根据需要进行变更。
 
 Command-line flags control the values of internal variables in the JVM, all of which have a type and a default value. For boolean values, the mere presence or lack of presence of a flag on the command-line can control the value of the variables. For-XX boolean flags, a ‘+’ or '-' prefix before the name indicates a true or false value, respectively. For variables that require additional data, there are a number of different mechanisms used to pass that data in. Some flags accept the data passed in directly after the name of the flag without any delineator, while for other flags you have to separate the flag name from the data with a ‘:’ or a ‘=’ character. Unfortunately the method depends on the particular flag and its parsing mechanism. Developer flags (the -XX flags) appear in only three different forms: -XX:+*OptionName*, -XX:-*OptionName*, and -XX:*OptionName*=.
 
-命令行参数可以控制JVM内部一些变量的值，当然这些变量都是具有默认值的。 
+命令行参数可以控制JVM内部一些变量的值，当然这些变量都是具有默认值的。
 
 对于布尔值，命令行中存在对应的参数就表示true，命令行中不存在对应的参数则表示false。
 
@@ -47,9 +47,9 @@ Command-line flags control the values of internal variables in the JVM, all of w
 
 对于需要传入数据的变量，有几种不同的方式。
 
-一部分标志直接在选项名后面带上传入的数据， 其他的则通过分隔符来区分, 比如 `:` 或 `=` 字符。 
+一部分标志直接在选项名后面带上传入的数据， 其他的则通过分隔符来区分, 比如 `:` 或 `=` 字符。
 
-可能花样确实很多，但主要是取决于该标志的数据类型和解析机制。 
+可能花样确实很多，但主要是取决于该标志的数据类型和解析机制。
 
 开发者选项（`-XX`）则只有三种格式： 加减等, `-XX:+OptionName`, `-XX:-OptionName`, 和 `-XX:OptionName=`。
 
@@ -99,7 +99,7 @@ JVM启动相关的操作包括：
 
 4. 如果命令行中没有指定主类(Main-Class)，则从JAR文件的清单中获取Main-Class信息。
 
-5. 在一个新创建的线程（非原始线程）中, 通过 `JNI_CreateJavaVM`创建 VM 实例。 
+5. 在一个新创建的线程（非原始线程）中, 通过 `JNI_CreateJavaVM`创建 VM 实例。
 
    原因是：如果直接在原始线程中创建VM实例会严重降低可配置性，比如在Windows系统中的栈空间大小(stack size)，以及受到其他限制。
 
@@ -169,17 +169,33 @@ This method can be called from the launcher to tear down the VM, it can also be 
 The tear down of the VM takes the following steps:
 
 1. Wait until we are the last non-daemon thread to execute, noting that the VM is still functional.
-2. Call java.lang.Shutdown.shutdown(), which will invoke Java level shutdown hooks, run finalizers if finalization-on-exit.
+2. Call `java.lang.Shutdown.shutdown()`, which will invoke Java level shutdown hooks, run finalizers if finalization-on-exit.
+3. Call `before_exit()`, prepare for VM exit run VM level shutdown hooks (they are registered through `JVM_OnExit()`), stop the Profiler,StatSampler, Watcher and GC threads. Post the status events to JVMTI/PI, disable JVMPI, and stop the Signal thread.
+4. Call `JavaThread::exit()`, to release JNI handle blocks, remove stack guard pages, and remove this thread from Threads list. From this point on we cannot execute any more Java code.
+5. Stop VM thread, it will bring the remaining VM to a safepoint and stop the compiler threads. At a safepoint, care should that we should not use anything that could get blocked by a Safepoint.
+6. Disable tracing at JNI/JVM/JVMPI barriers.
+7. Set `_vm_exited` flag for threads that are still running native code.
+8. Delete this thread.
+9. Call `exit_globals()`, which deletes IO and PerfMemory resources.
+10. Return to caller.
 
-1. Call before_exit(), prepare for VM exit run VM level shutdown hooks (they are registered through JVM_OnExit()), stop the Profiler,StatSampler, Watcher and GC threads. Post the status events to JVMTI/PI, disable JVMPI, and stop the Signal thread.
+--
 
-1. Call JavaThread::exit(), to release JNI handle blocks, remove stack guard pages, and remove this thread from Threads list. From this point on we cannot execute any more Java code.
-2. Stop VM thread, it will bring the remaining VM to a safepoint and stop the compiler threads. At a safepoint, care should that we should not use anything that could get blocked by a Safepoint.
-3. Disable tracing at JNI/JVM/JVMPI barriers.
-4. Set _vm_exited flag for threads that are still running native code.
-5. Delete this thread.
-6. Call exit_globals(), which deletes IO and PerfMemory resources.
-7. Return to caller.
+启动器可以调用此方法来销毁VM; 如果发生非常严重的错误时，VM本身也会调用此方法。
+
+销毁VM需要执行以下步骤：
+
+1. 等待其他的非守护程序线程全部执行结束，请注意此时VM仍然处于可用状态。
+2. 调用 `java.lang.Shutdown.shutdown()`， 它将调用Java级别的shutdown钩子代码，如果在退出时终止，则运行终结器。
+3. 调用 `before_exit()`，VM准备退出, 执行VM级别的shutdown代码（通过 `JVM_OnExit()` 注册），停止 Profiler，StatSampler，Watcher和GC线程。 给 JVMTI/PI 发送状态事件，然后禁用JVMPI，并停止Signal线程。
+4. 调用 `JavaThread::exit()`，释放JNI句柄块，删除栈保护页，并将此线程从 Threads list 中删除。 到这一步，无法再执行任何Java代码。
+5. 停止VM线程，将把VM带到安全点，并停止编译器线程。 在安全点， 注意不要用任何可能被Safepoint阻止的东西。
+6. 禁用JNI/JVM/JVMPI屏障的跟踪。
+7. 为仍在运行native代码的线程设置`_vm_exited`标志。
+8. 删除此线程。
+9. 调用 `exit_globals()`， 释放IO资源和PerfMemory资源。
+10. 返回调用者。
+
 
 ### VM Class Loading
 
@@ -487,4 +503,3 @@ We strongly encourage you to check out the “Trouble-Shooting and Diagnostic Gu
 
 
 <https://openjdk.java.net/groups/hotspot/docs/RuntimeOverview.html>
-
