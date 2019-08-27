@@ -199,15 +199,23 @@ The tear down of the VM takes the following steps:
 
 ### VM Class Loading
 
-### 类加载
+### 类加载(Class Loading)
 
 The Java Hotspot VM supports class loading as defined by the Java Language Specification, Third Edition [1], the Java Virtual Machine Specification (JVMS), Second Edition [2] and as amended by the updated JVMS chapter 5, Loading, Linking and Initializing [3].
 
+Java Hotspot VM 支持的类加载符合《Java语言规范（第三版）》，《Java虚拟机规范（第二版）》中的规定，以及更新的《JVMS. chapter 5, Loading, Linking and Initializing》。
+
 The VM is responsible for resolving constant pool symbols, which requires loading, linking and then initializing classes and interfaces. We will use the term “class loading” to describe the overall process of mapping a class or interface name to a class object, and the more specific terms loading, linking and initializing for the phases of class loading as defined by the JVMS.
 
-The most common reason for class loading is during bytecode resolution, when a constant pool symbol in the classfile requires resolution. Java APIs such as Class.forName(), classLoader.loadClass(), reflection APIs, andJNI_FindClass can initiate class loading. The VM itself can initiate class loading. The VM loads core classes such as java.lang.Object, java.lang.Thread, etc. at JVM startup. Loading a class requires loading all superclasses and superinterfaces. And classfile verification, which is part of the linking phase, can require loading additional classes.
+VM负责解析常量池符号，需要加载，链接然后初始化类和接口。 我们将使用术语“类加载”来表示: 将类或接口名称映射为类对象的整个过程，以及JVM规范中定义的更具体的阶段: 加载，链接和初始化。
+
+The most common reason for class loading is during bytecode resolution, when a constant pool symbol in the classfile requires resolution. Java APIs such as `Class.forName()`, `classLoader.loadClass()`, reflection APIs, and `JNI_FindClass` can initiate class loading. The VM itself can initiate class loading. The VM loads core classes such as `java.lang.Object`, `java.lang.Thread`, etc. at JVM startup. Loading a class requires loading all superclasses and superinterfaces. And classfile verification, which is part of the linking phase, can require loading additional classes.
+
+类加载过程处于字节码解析期间的主要原因，是因为class文件中的常量池符号需要被解析。诸如 `Class.forName()`, `classLoader.loadClass()` 等Java API, 反射API, 以及 `JNI_FindClass` 都可以启动类加载。 VM本身也会进行类加载。 比如在JVM启动时加载核心类，`java.lang.Object`, `java.lang.Thread`等。 加载一个class时, 需要加载所有super类和super接口。 而classfile的验证是链接阶段的一部分，可能需要加载其他类。
 
 The VM and Java SE class loading libraries share the responsibility for class loading. The VM performs constant pool resolution, linking and initialization for classes and interfaces. The loading phase is a cooperative effort between the VM and specific class loaders (java.lang.classLoader).
+
+VM和Java SE的类加载库共同负责class得加载。 VM对class和interface执行常量池解析，链接和初始化。 loading 阶段需要VM与具体的类加载器（`java.lang.lassLoader`）共同协作。
 
 #### Class Loading Phases
 
@@ -366,10 +374,10 @@ The VM uses a number of different internal thread states to characterize what ea
 
 The main thread states from the VM perspective are as follows:
 
-- _thread_new: a new thread in the process of being initialized
-- _thread_in_Java: a thread that is executing Java code
-- _thread_in_vm: a thread that is executing inside the VM
-- _thread_blocked: the thread is blocked for some reason (acquiring a lock, waiting for a condition, sleeping, performing a blocking I/O operation and so forth)
+- `_thread_new`: a new thread in the process of being initialized
+- `_thread_in_Java`: a thread that is executing Java code
+- `_thread_in_vm`: a thread that is executing inside the VM
+- `_thread_blocked`: the thread is blocked for some reason (acquiring a lock, waiting for a condition, sleeping, performing a blocking I/O operation and so forth)
 
 For debugging purposes additional state information is also maintained for reporting by tools, in thread dumps, stack traces etc. This is maintained in theOSThreadand some of it has fallen into dis-use, but states reported in thread dumps etc include:
 
@@ -393,7 +401,7 @@ All threads are instances of the Thread class, and all threads that execute Java
 
 #### VM Operations and Safepoints
 
-The VMThread spends its time waiting for operations to appear in the VMOperationQueue, and then executing those operations. Typically these operations are passed on to the VMThread because they require that the VM reach a *safepoin*t before they can be executed. In simple terms, when the VM is at safepoint all threads inside the VM have been blocked, and any threads executing in native code are prevented from returning to the VM while the safepoint is in progress. This means that the VM operation can be executed knowing that no thread can be in the middle of modifying the Java heap, and all threads are in a state such that their Java stacks are unchanging and can be examined.
+The VMThread spends its time waiting for operations to appear in the VMOperationQueue, and then executing those operations. Typically these operations are passed on to the VMThread because they require that the VM reach a `safepoint` before they can be executed. In simple terms, when the VM is at safepoint all threads inside the VM have been blocked, and any threads executing in native code are prevented from returning to the VM while the safepoint is in progress. This means that the VM operation can be executed knowing that no thread can be in the middle of modifying the Java heap, and all threads are in a state such that their Java stacks are unchanging and can be examined.
 
 The most familiar VM operation is for garbage collection, or more specifically for the “stop-the-world” phase of garbage collection that is common to many garbage collection algorithms. But many other safepoint based VM operations exist, for example: biased locking revocation, thread stack dumps, thread suspension or stopping (i.e. The java.lang.Thread.stop() method) and numerous inspection/modification operations requested through JVMTI.
 
@@ -456,7 +464,7 @@ Another important feature is you can specify -XX:OnError="*cmd1 args...;com2 ...
 
 Having said something about HotSpot error log files, here is a brief summary on how JVM internally handles fatal errors.
 
-- The VMError class was invented for aggregating and dumping the hs_err_pid*<pid>*.log file. It is invoked by the OS-specific code when an unrecognized signal/exception is seen.
+- The VMError class was invented for aggregating and dumping the `hs_err_pid*<pid>*.log` file. It is invoked by the OS-specific code when an unrecognized signal/exception is seen.
 - The VM uses signals internally for communication. The fatal error handler is invoked when the signal is not recognized. In the unrecognized case, it may come from a fault in application JNI code, OS native libraries, JRE native libraries, or the JVM itself.
 - The fatal error handler was carefully written to avoid causing faults itself, in the case of StackOverflow or crashes when critical locks are held (like malloc lock).
 
