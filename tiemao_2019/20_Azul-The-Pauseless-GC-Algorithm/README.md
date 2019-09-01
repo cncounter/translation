@@ -4,7 +4,7 @@
 
 > ##### 译者注: 
 > Pauseless GC Algorithm, 无停顿的垃圾收集算法; 算法本身是无STW停顿的，但兼容 HotSpot JVM 的实现还有少量的STW停顿。
-> mutator, 业务线程，对内存进行读写的线程, 可理解为业务线程, 与GC线程做区分。
+> mutator, 对内存进行读写操作的线程, 可理解为业务线程, 与GC线程做区分。
 
 ```
 作者: 
@@ -17,7 +17,7 @@ Mountain View, CA 94043
 
 > Permission to make digital or hard copies of all or part of this work for personal or classroom use is granted without fee provided that copies are not made or distributed for profit or commercial advantage and that copies bear this notice and the full citation on the first page. To copy otherwise, or republish, to post on servers or to redistribute to lists, requires prior specific permission and/or a fee.
 
-> 以个人学习或教学研究为目的, 可以免费使用本论文，但不得用于谋取利益或商业利益。 需要在第一页中展示本声明。以其他方式拷贝、发布、传播本文档，则需要获得许可/付费。
+> 本论文可免费用于学习和研究, 但不得用于谋利或商业化用途。 且需要在第一页中展示本声明。拷贝、发布、传播本文档，则需要获得许可/付费。
 
 > VEE’05, June 11–12, 2005, Chicago, Illinois, USA.
 
@@ -30,7 +30,7 @@ Mountain View, CA 94043
 
 Modern transactional response-time sensitive applications have run into practical limits on the size of garbage collected heaps. The heap can only grow until GC pauses exceed the response-time limits. Sustainable, scalable concurrent collection has become a feature worth paying for.
 
-如今有很多系统对业务的响应时间非常敏感, 却在GC这块受到堆内存大小的限制。 他们的堆内存不能设置得非常大，必须限制大小，让GC暂停时间满足业务允许的最大响应时间。 业界迫切需要一款可以长期稳定运行的、兼容各种内存规模的并发垃圾收集器。
+很多系统对业务的响应时间非常敏感, 却因为需要考虑GC暂停时间的原因，限制了最大堆内存空间。 因为堆内存不能设置太大，必须保证单次GC暂停时间小于业务允许的最大响应时间。 业界迫切需要一款可以长期稳定运行的、兼容各种内存规模的并发垃圾收集器。
 
 Azul Systems has built a custom system (CPU, chip, board, and OS) specifically to run garbage collected virtual machines. The custom CPU includes a read barrier instruction. The read barrier enables a highly concurrent (no stop-the-world phases), parallel and compacting GC algorithm. The Pauseless algorithm is designed for uninterrupted application execution and consistent mutator throughput in every GC phase.
 
