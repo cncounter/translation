@@ -2,12 +2,13 @@
 
 # Pauseless GC 算法论文 - 中文翻译
 
-> ##### 译者注: 
-> Pauseless GC Algorithm, 无停顿的垃圾收集算法; 算法本身是无STW停顿的，但兼容 HotSpot JVM 的实现还有少量的STW停顿。
+> ##### 译者注:
+> Pauseless GC Algorithm, 无停顿的垃圾收集算法;
+> 算法本身是无停顿的，但兼容 HotSpot JVM 的实现(C4, ZGC)还需要少量短暂的STW停顿。
 > mutator, 对内存进行读写操作的线程, 可理解为业务线程, 与GC线程做区分。
 
 ```
-作者: 
+作者:
 Cliff Click ;  Gil Tene ; Michael Wolf ; {cliffc,gil,wolf}@azulsystems.com
 
 Azul Systems, Inc.
@@ -49,7 +50,7 @@ We present the Pauseless GC algorithm, the supporting hardware features that ena
 
 ## 所属分类与主题
 
-D.3.4 [Processors] – Memory management, 
+D.3.4 [Processors] – Memory management,
 
 D.3.3 [Language Constructs and Features] – Dynamic storage management,
 
@@ -309,7 +310,7 @@ Instead of a STW pause or write-barrier we use a read barrier and require the mu
 
 我们既不使用STW暂停，也不使用写屏障，而是使用读屏障，并且在加载可能未标记的引用时，要求业务线程执行一点儿GC相关的工作，通过采用NMT陷阱的方式。依靠read-barrier和Not-Marked-Through位(从每个指针地址中截取的一个bit)来触发陷阱的行为。 在我们的系统中指针引用是64位的，可以表示的地址空间多到用不完；硬件只使用了其中很少的一部分虚拟地址空间; 在寻址时会忽略未使用的bit。读屏障的逻辑是维护NMT位的期望值这个概念，如果设置错误则会触发陷阱。正确设置NMT位的开销不会超过读屏障本身。不变量引用具有正确的NMT标志位、肯定已传给标记线程（即使它们尚未被标记）。 NMT位错误的引用可能被标记过，但是mutator线程不知道。所以在任何情况下都会通知标记线程。
 
-If a mutator thread loads and read-barriers a ref with the NMT bit set wrong, it has found a potentially unvisited ref. The mutator jumps to the NMT-trap handler. In the NMT-trap handler the loaded value has it's NMT bit set correctly. The ref is recorded with the Mark phase logic. <sup>2</sup>  Then the corrected ref is stored back into memory. Since the ref is changed in memory, that particular ref will not cause a trap in the future. 
+If a mutator thread loads and read-barriers a ref with the NMT bit set wrong, it has found a potentially unvisited ref. The mutator jumps to the NMT-trap handler. In the NMT-trap handler the loaded value has it's NMT bit set correctly. The ref is recorded with the Mark phase logic. <sup>2</sup>  Then the corrected ref is stored back into memory. Since the ref is changed in memory, that particular ref will not cause a trap in the future.
 
 如果一个mutator线程加载一个NMT位错误的引用，有读屏障存在的话，就会找到一个不可访问的引用。 mutator跳转到NMT陷阱处理程序。在NMT陷阱处理程序中，加载的值正确设置了NMT位。引用是在标记阶段逻辑中记录的。 <sup>{注2}</sup> 然后将更正的引用存回内存。由于在内存中引用发生了变更， 因此之后这个引用就不会再触发陷阱。
 
@@ -370,11 +371,11 @@ Next the Relocate phase builds side arrays to hold forwarding pointers. The forw
 
 > Figure 2: Finding sparsely populated pages
 
-![](03_Side_Arrays_and_TLB_Protection.jpg) 
+![](03_Side_Arrays_and_TLB_Protection.jpg)
 
 > Figure 3: Side Arrays and TLB Protection
 
-![](04_Copying_live_data_out.jpg) 
+![](04_Copying_live_data_out.jpg)
 
 > Figure 4: Copying live data out
 
@@ -615,7 +616,7 @@ We collected GC pause times reported with “-verbose:gc”. We summed all repor
 
 我们使用“-verbose：gc”来收集GC暂停时间的报告。 将所有暂停时间相加，汇总为一张 累积暂停时间VS.暂停持续时间的直方图。 图8显示了暂停报告。 大多数并发收集器的暂停时间一直在40-50ms范围内; IBM的并发收集器因为常见（模式）暂停时间而达到150毫秒左右。 正如预期的那样，并行收集器在停顿时间方面表现很糟糕，从大于150ms直到几秒之间都有。
 
-Table 1 also shows the ratio of worst-case transaction time and worst-case reported pause times. Note that JBB transactions are highly regular, doing a fixed amount of work per transaction. Changes in transaction time can be directly attributed to GC.<sup>4</sup> 
+Table 1 also shows the ratio of worst-case transaction time and worst-case reported pause times. Note that JBB transactions are highly regular, doing a fixed amount of work per transaction. Changes in transaction time can be directly attributed to GC.<sup>4</sup>
 Several of the worse-case transactions are a full second longer than the worse-case pauses. We have some guesses as to why this is so:
 
 表1还显示了最坏情况交易时间与最坏情况暂停时间的比率。 请注意，JBB事务是非常正规的，每个事务都执行固定数量的工作。 交易时间的变化可以直接归因于GC。<sup>4</sup>
@@ -629,7 +630,7 @@ It is possible that the concurrent collectors did not keep up with the allocatio
 
 有可能是并发收集器的速度跟不上分配速度，拖慢了业务线程。不幸的是，这个信息在“-verbose: gc”的输出中并不明显。此外，在某些并发GC的部分阶段中，业务线程在并发执行时会付出沉重的代价。这相当于有一部分未报告的暂停时间被涂抹了。有时会快速连续地触发GC暂停，因此同一个事务可能会被暂停好几次。还有可能是底层只有4个超线程CPU内核，操作系统对8个业务线程分配了非常短的时间片。
 
-In any case, **reported pause times can be highly misleading**. 
+In any case, **reported pause times can be highly misleading**.
 The concurrent collectors other than Pauseless under-report their effects by 2x to 6x! The parallel collectors also under- report, but only by 30% to 100%. Based on this data, we encourage the GC research community to test the end-to-end effects of GC algorithms carefully.
 
 无论如何，**暂停时间报告可能会产生很大的误导**。
@@ -732,7 +733,7 @@ On a final note, we were quite surprised at the difference between reported paus
 
 - [30] Wilson, P. Uniprocessor Garbage Collection Techniques. In 1992 Proceedings of the International Workshop on Memory Management (IWMM 92). Saint-Malo (France), 1992
 
-- [31] Wilson, P., Johnstone, M., Neely, M., Boles, D., Dynamic Storage Allocation: A Survey and Critical Review. In Proceedings of the International Workshop on Memory Management (IWMM 95), 1995 
+- [31] Wilson, P., Johnstone, M., Neely, M., Boles, D., Dynamic Storage Allocation: A Survey and Critical Review. In Proceedings of the International Workshop on Memory Management (IWMM 95), 1995
 
 > 相关论文请搜索 [`Azul-The-Pauseless-GC-Algorithm`](http://yuledanao.com/dl/Azul-The-Pauseless-GC-Algorithm.pdf)
 
