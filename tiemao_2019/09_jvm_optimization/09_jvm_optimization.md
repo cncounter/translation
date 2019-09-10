@@ -1,6 +1,6 @@
 # JVM性能优化， Part 1 ―― JVM简介
 
-已有中文翻译: <http://www.importnew.com/1774.html>
+已有中文翻译: <https://my.oschina.net/jackliang55/blog/338877>
 
 
 

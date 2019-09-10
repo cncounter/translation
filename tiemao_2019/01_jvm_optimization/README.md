@@ -11,7 +11,7 @@ JVM performance optimization: Read the series
 
 
 
-已有大部分中文翻译, 请参考: <http://www.importnew.com/author/caoxudong>
+已有大部分中文翻译, 请参考: <https://my.oschina.net/jackliang55?tab=newest&catalogId=564203>
 
 
 

@@ -1,6 +1,6 @@
 # JVM性能优化， Part 2 ―― 编译器
 
-已有中文翻译: <http://www.importnew.com/2009.html>
+已有中文翻译: <https://my.oschina.net/jackliang55/blog/338876>
 
 
 
