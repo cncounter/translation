@@ -18,7 +18,7 @@ Logback is intended as a successor to the popular log4j project. It was designed
 
 > In order to run the examples in this chapter, you need to make sure that certain jar files are present on the classpath. Please refer to the [setup page](https://logback.qos.ch/setup.html) for further details.
 
-
+### Requirements
 
 Logback-classic module requires the presence of *slf4j-api.jar* and *logback-core.jar* in addition to *logback-classic.jar* on the classpath.
 
