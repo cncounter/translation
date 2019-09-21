@@ -1,12 +1,25 @@
 # Chapter 2: Architecture
 
-*All true classification is genealogical.*
+# 第2章: Logback 架构
 
-—CHARLES DARWIN, *The Origin of Species*
+> All true classification is genealogical.
 
-*It is difficult, if not impossible, for anyone to learn a subject purely by reading about it, without applying the information to specific problems and thereby forcing himself to think about what has been read. Furthermore, we all learn best the things that we have discovered ourselves.*
+> —CHARLES DARWIN, 《The Origin of Species》
 
-—DONALD KNUTH, *The Art of Computer Programming*
+> 一切真实的分类都是依据家系的 - 达尔文,《物种起源》
+
+----
+
+> It is difficult, if not impossible, for anyone to learn a subject purely by reading about it, without applying the information to specific problems and thereby forcing himself to think about what has been read. Furthermore, we all learn best the things that we have discovered ourselves.
+>
+> — DONALD KNUTH, 《The Art of Computer Programming》
+
+
+> 学而不能时习之, 那就会很难学透。 纯粹通过阅读来学习一门学科，而没有具体的应用场景，也就很难促使其进行思考。 当然, 自己想明白的东西才学得最深。
+
+> — 高德纳, 《计算机程序设计艺术》
+
+----
 
 | Authors: Ceki Gülcü, Sébastien Pennec, Carl Harris Copyright © 2000-2017, QOS.ch |      |
 | ------------------------------------------------------------ | ---- |
@@ -14,11 +27,24 @@
 
 ## Logback's architecture
 
+## Logback的体系结构
+
 Logback's basic architecture is sufficiently generic so as to apply under different circumstances. At the present time, logback is divided into three modules, logback-core, logback-classic and logback-access.
+
+Logback的基本结构十分通用，足以应对各种不同的场景。 当前的logback分为三大模块： `logback-core`, `logback-classic` and `logback-access`。
 
 The *core* module lays the groundwork for the other two modules. The *classic* module extends *core*. The classic module corresponds to a significantly improved version of log4j. Logback-classic natively implements the [SLF4J API](http://www.slf4j.org/) so that you can readily switch back and forth between logback and other logging systems such as log4j or java.util.logging (JUL) introduced in JDK 1.4. The third module called *access* integrates with Servlet containers to provide HTTP-access log functionality. A separate document covers [access module documentation](https://logback.qos.ch/access.html).
 
+`logback-core` 模块是其他两个模块的基础。
+
+`logback-classic` 扩展了核心模块。 classic 模块对应于log4j的优化改进版本。 Logback-classic本地实现了 [SLF4J API](http://www.slf4j.org/)，因此可以在logback和其他日志系统之间轻松迁移（例如log4j, JDK1.4引入的 java.util.logging（JUL）等等）。
+
+`logback-access` 是第三个模块, 用于和Servlet容器集成，提供HTTP访问日志功能。 这个模块有自己的文档: [access 模块文档](https://logback.qos.ch/access.html)。
+
+
 In the remainder of this document, we will write "logback" to refer to the logback-classic module.
+
+在本文接下来的内容中，将使用“`logback`”来指代 `logback-classic` 模块。
 
 ## Logger, Appenders and Layouts
 
@@ -47,15 +73,15 @@ Logger rootLogger = LoggerFactory.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME);
 All other loggers are also retrieved with the class static `getLogger` method found in the [org.slf4j.LoggerFactory](http://www.slf4j.org/api/org/slf4j/Logger.html) class. This method takes the name of the desired logger as a parameter. Some of the basic methods in the `Logger` interface are listed below.
 
 ```java
-package org.slf4j; 
+package org.slf4j;
 public interface Logger {
 
-  // Printing methods: 
+  // Printing methods:
   public void trace(String message);
   public void debug(String message);
-  public void info(String message); 
-  public void warn(String message); 
-  public void error(String message); 
+  public void info(String message);
+  public void warn(String message);
+  public void error(String message);
 }
 ```
 
@@ -149,7 +175,7 @@ import org.slf4j.LoggerFactory;
 // get a logger instance named "com.foo". Let us further assume that the
 // logger is of type  ch.qos.logback.classic.Logger so that we can
 // set its level
-ch.qos.logback.classic.Logger logger = 
+ch.qos.logback.classic.Logger logger =
         (ch.qos.logback.classic.Logger) LoggerFactory.getLogger("com.foo");
 //set its Level to INFO. The setLevel() method requires a logback logger
 logger.setLevel(Level. INFO);
@@ -159,16 +185,16 @@ Logger barlogger = LoggerFactory.getLogger("com.foo.Bar");
 // This request is enabled, because WARN >= INFO
 logger.warn("Low fuel level.");
 
-// This request is disabled, because DEBUG < INFO. 
+// This request is disabled, because DEBUG < INFO.
 logger.debug("Starting search for nearest gas station.");
 
-// The logger instance barlogger, named "com.foo.Bar", 
-// will inherit its level from the logger named 
-// "com.foo" Thus, the following request is enabled 
-// because INFO >= INFO. 
+// The logger instance barlogger, named "com.foo.Bar",
+// will inherit its level from the logger named
+// "com.foo" Thus, the following request is enabled
+// because INFO >= INFO.
 barlogger.info("Located nearest gas station.");
 
-// This request is disabled, because DEBUG < INFO. 
+// This request is disabled, because DEBUG < INFO.
 barlogger.debug("Exiting gas station search");
 ```
 
@@ -179,7 +205,7 @@ Calling the `LoggerFactory.getLogger` method with the same name will always retu
 For example, in
 
 ```java
-Logger x = LoggerFactory.getLogger("wombat"); 
+Logger x = LoggerFactory.getLogger("wombat");
 Logger y = LoggerFactory.getLogger("wombat");
 ```
 
@@ -247,7 +273,7 @@ incurs the cost of constructing the message parameter, that is converting both i
 One possible way to avoid the cost of parameter construction is by surrounding the log statement with a test. Here is an example.
 
 ```java
-if(logger.isDebugEnabled()) { 
+if(logger.isDebugEnabled()) {
   logger.debug("Entry number: " + i + " is " + String.valueOf(entry[i]));
 }
 ```
@@ -259,7 +285,7 @@ This way you will not incur the cost of parameter construction if debugging is d
 There exists a convenient alternative based on message formats. Assuming `entry` is an object, you can write:
 
 ```java
-Object entry = new SomeObject(); 
+Object entry = new SomeObject();
 logger.debug("The entry is {}.", entry);
 ```
 
@@ -356,4 +382,4 @@ This is the cost of formatting the log output and sending it to its target desti
 Although feature-rich, one of the foremost design goals of logback was speed of execution, a requirement which is second only to reliability. Some logback components have been rewritten several times to improve performance.
 
 
-<https://logback.qos.ch/manual/introduction.html>
+<https://logback.qos.ch/manual/architecture.html>

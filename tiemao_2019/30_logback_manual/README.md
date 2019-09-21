@@ -38,8 +38,8 @@ Without further ado, here are the contents of the manual:
 
 logback手册的目录如下：
 
-- [Chapter 1: Introduction to logback](./01_introduction.md)
-- [Chapter 2: Architecture](./02_architecture.md)
+- [第1章: Logback简介](./01_introduction.md)
+- [第2章: Logback架构](./02_architecture.md)
 - [Chapter 3: Configuration](./03_configuration.md)
 - [Chapter 4: Appenders](./04_appenders.md)
 - [Chapter 5: Encoders](./05_encoders.md)
@@ -56,4 +56,4 @@ logback手册的目录如下：
 
 
 
-<https://logback.qos.ch/manual/>
+原文链接: <https://logback.qos.ch/manual/>
