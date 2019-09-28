@@ -31,40 +31,73 @@
 
 Logback's basic architecture is sufficiently generic so as to apply under different circumstances. At the present time, logback is divided into three modules, logback-core, logback-classic and logback-access.
 
-Logback的基本结构十分通用，足以应对各种不同的场景。 当前的logback分为三大模块： `logback-core`, `logback-classic` and `logback-access`。
+Logback的基本结构十分通用，足以应对各种不同的场景。 当前的logback分为： `logback-core`, `logback-classic` 和 `logback-access` 三个模块。
 
 The *core* module lays the groundwork for the other two modules. The *classic* module extends *core*. The classic module corresponds to a significantly improved version of log4j. Logback-classic natively implements the [SLF4J API](http://www.slf4j.org/) so that you can readily switch back and forth between logback and other logging systems such as log4j or java.util.logging (JUL) introduced in JDK 1.4. The third module called *access* integrates with Servlet containers to provide HTTP-access log functionality. A separate document covers [access module documentation](https://logback.qos.ch/access.html).
 
 `logback-core` 模块是其他两个模块的基础。
 
-`logback-classic` 扩展了核心模块。 classic 模块对应于log4j的优化改进版本。 Logback-classic本地实现了 [SLF4J API](http://www.slf4j.org/)，因此可以在logback和其他日志系统之间轻松迁移（例如log4j, JDK1.4引入的 java.util.logging（JUL）等等）。
+`logback-classic` 扩展了核心模块。 相当于是 log4j 的优化版。 Logback-classic 内置实现了 [SLF4J API](http://www.slf4j.org/)，可以在logback和其他日志框架之间轻松迁移（例如log4j, JDK1.4引入的 java.util.logging（JUL）等）。
 
-`logback-access` 是第三个模块, 用于和Servlet容器集成，提供HTTP访问日志功能。 这个模块有自己的文档: [access 模块文档](https://logback.qos.ch/access.html)。
+`logback-access` 是第三个模块, 用于和Servlet容器集成，提供 HTTP-access 日志功能。 这个模块有单独的文档: [access 模块文档](https://logback.qos.ch/access.html)。
 
 
 In the remainder of this document, we will write "logback" to refer to the logback-classic module.
 
-在本文接下来的内容中，将使用“`logback`”来指代 `logback-classic` 模块。
+在接下来的内容中，使用 “`logback`” 来表示 `logback-classic` 模块。
 
 ## Logger, Appenders and Layouts
 
+## 记录器(Logger), 附加目的地(Appender), 样式(Layout)
+
 Logback is built upon three main classes: `Logger`, `Appender` and `Layout`. These three types of components work together to enable developers to log messages according to message type and level, and to control at runtime how these messages are formatted and where they are reported.
 
-The `Logger` class is part of the logback-classic module. On the other hand, the `Appender` and `Layout` interfaces are part of logback-core. As a general-purpose module, logback-core has no notion of loggers.
+Logback 有三个主要的基础类： `Logger`, `Appender` 以及 `Layout`。 这三种类型的组件协同工作，使开发人员可以通过消息类型(message type)和级别(level)来打印不同的日志消息，并确定日志消息的格式, 以及打印到哪些地方。
+
+The `Logger` class is part of the `logback-classic` module. On the other hand, the `Appender` and `Layout` interfaces are part of `logback-core`. As a general-purpose module, `logback-core` has no notion of loggers.
+
+`Logger` 是`logback-classic`模块中的一个类。
+
+而 `Appender` 和 `Layout` 接口则是 `logback-core` 的一部分。
+
+`logback-core` 作为通用模块，是没有记录器(`logger`)这个概念的。
 
 ### Logger context
 
-The first and foremost advantage of any logging API over plain `System.out.println` resides in its ability to disable certain log statements while allowing others to print unhindered. This capability assumes that the logging space, that is, the space of all possible logging statements, is categorized according to some developer-chosen criteria. In logback-classic, this categorization is an inherent part of loggers. Every single logger is attached to a `LoggerContext` which is responsible for manufacturing loggers as well as arranging them in a tree like hierarchy.
+### Logger上下文
 
-Loggers are named entities. Their names are case-sensitive and they follow the hierarchical naming rule:
+The first and foremost advantage of any logging API over plain `System.out.println` resides in its ability to disable certain log statements while allowing others to print unhindered. This capability assumes that the logging space, that is, the space of all possible logging statements, is categorized according to some developer-chosen criteria. In `logback-classic`, this categorization is an inherent part of `loggers`. Every single `logger` is attached to a `LoggerContext` which is responsible for manufacturing `loggers` as well as arranging them in a tree like hierarchy.
+
+与纯粹的 `System.out.println` 相比， 各种日志框架API都支持一个重要的功能: 禁用符合某些特征的日志, 同时其他日志能够正常打印。
+
+实现这种功能需要有一个前提，日志命名空间(logging space), 对所有的日志按照某种标准进行归类。
+
+在 `logback-classic` 中，这种归类是 `logger` 内置的。 将每个`logger`都加入`LoggerContext`中，`LoggerContext` 主要负责将 `loggers` 维护成一棵树状的结构。
+
+`Loggers` are named entities. Their names are case-sensitive and they follow the hierarchical naming rule:
+
+`Logger` 是一种有名字的实体。而且它们的名称（name）区分大小写， 遵循分层命名规则：
 
 > Named Hierarchy
 
 > A logger is said to be an ancestor of another logger if its name followed by a dot is a prefix of the descendant logger name. A logger is said to be a parent of a child logger if there are no ancestors between itself and the descendant logger.
 
-For example, the logger named `"com.foo"` is a parent of the logger named `"com.foo.Bar"`. Similarly, `"java"` is a parent of `"java.util"` and an ancestor of `"java.util.Vector"`. This naming scheme should be familiar to most developers.
+> 分层命名
 
-The root logger resides at the top of the logger hierarchy. It is exceptional in that it is part of every hierarchy at its inception. Like every logger, it can be retrieved by its name, as follows:
+> 如果 `loggerS` 实例对应的name加上一个点（`.`），是另一个`loggerS`实例对应name的前缀, 则称 `loggerP` 是`loggerS`的祖先/上级(ancestor)。
+> 如果 `loggerP` 与 `loggerS` 之间没有其他层级，则称`loggerP`是`loggerS`的父级/上级(parent)。
+
+
+
+-----------
+
+For example, the `logger` named `"com.foo"` is a parent of the logger named `"com.foo.Bar"`. Similarly, `"java"` is a parent of `"java.util"` and an ancestor of `"java.util.Vector"`. This naming scheme should be familiar to most developers.
+
+例如，名为 `"com.foo"` 的记录器是名为“ com.foo.Bar”的记录器的父级。同样，“ java”是“ java.util”的父代，也是“ java.util.Vector”的祖先。大多数开发人员都应该熟悉这种命名方案。
+
+The `root logger` resides at the top of the logger hierarchy. It is exceptional in that it is part of every hierarchy at its inception. Like every logger, it can be retrieved by its name, as follows:
+
+“根记录器”位于记录器层次结构的顶部。这是一个例外，因为它从一开始就是每个层次结构的一部分。像每个记录器一样，可以按其名称检索它，如下所示：
 
 ```
 Logger rootLogger = LoggerFactory.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME);
