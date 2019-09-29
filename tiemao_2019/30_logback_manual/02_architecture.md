@@ -89,21 +89,23 @@ The first and foremost advantage of any logging API over plain `System.out.print
 
 
 
------------
-
 For example, the `logger` named `"com.foo"` is a parent of the logger named `"com.foo.Bar"`. Similarly, `"java"` is a parent of `"java.util"` and an ancestor of `"java.util.Vector"`. This naming scheme should be familiar to most developers.
 
-例如，名为 `"com.foo"` 的记录器是名为“ com.foo.Bar”的记录器的父级。同样，“ java”是“ java.util”的父代，也是“ java.util.Vector”的祖先。大多数开发人员都应该熟悉这种命名方案。
+例如，名为 `"com.foo"` 的`logger`, 是名为`"com.foo.Bar"`的`logger`的上级。
+同样，`"java"`是`"java.util"`的上级，也是`"java.util.Vector"`的上级。大部分开发人员应该很熟悉这种命名方案。
 
 The `root logger` resides at the top of the logger hierarchy. It is exceptional in that it is part of every hierarchy at its inception. Like every logger, it can be retrieved by its name, as follows:
 
-“根记录器”位于记录器层次结构的顶部。这是一个例外，因为它从一开始就是每个层次结构的一部分。像每个记录器一样，可以按其名称检索它，如下所示：
+根记录器（`root logger`）位于记录器层次结构的顶部。 这是一项特殊设定，从一开始就是这样定义的。
+在代码中, 可以像获取普通Logger一样，按名称获取跟记录器，如下所示：
 
 ```
 Logger rootLogger = LoggerFactory.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME);
 ```
 
 All other loggers are also retrieved with the class static `getLogger` method found in the [org.slf4j.LoggerFactory](http://www.slf4j.org/api/org/slf4j/Logger.html) class. This method takes the name of the desired logger as a parameter. Some of the basic methods in the `Logger` interface are listed below.
+
+其他的记录器也可以通过 [org.slf4j.LoggerFactory](http://www.slf4j.org/api/org/slf4j/Logger.html) 类中的 static 方法 `getLogger` 获取。 此方法接收所需记录器的名称。 下面列出了Logger接口中定义的一些基本方法。
 
 ```java
 package org.slf4j;
