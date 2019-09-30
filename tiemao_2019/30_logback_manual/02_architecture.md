@@ -122,26 +122,43 @@ public interface Logger {
 
 ### Effective Level aka Level Inheritance
 
+### 怎样确定生效的Level(日志级别继承关系）
+
 Loggers may be assigned levels. The set of possible levels (TRACE, DEBUG, INFO, WARN and ERROR) are defined in the `ch.qos.logback.classic.Level` class. Note that in logback, the `Level` class is final and cannot be sub-classed, as a much more flexible approach exists in the form of `Marker` objects.
+
+
+可以在配置中为Logger指定级别。 可选的日志级别包括(TRACE, DEBUG, INFO, WARN and ERROR), 在 `ch.qos.logback.classic.Level` 类中定义。 请注意，在logback中，`Level`是final类，不能被继承，所以可以通过标记(`Marker`)对象的方式来配置。
 
 If a given logger is not assigned a level, then it inherits one from its closest ancestor with an assigned level. More formally:
 
+
+如果某个Logger没有明确指定日志级别，则会从最近的上级继承。 具体为：
+
 > The effective level for a given logger *L*, is equal to the first non-null level in its hierarchy, starting at *L* itself and proceeding upwards in the hierarchy towards the root logger.
+
+> 记录器 `L` 的有效级别, 等于其层次结构中的第一个非空的日志级别， 从 `L` 自身开始往上遍历，一直找到 root logger 为止。
+
 
 To ensure that all loggers can eventually inherit a level, the root logger always has an assigned level. By default, this level is DEBUG.
 
+为了确保所有记录器都可以继承到日志级别，根记录器一定要有日志级别。 默认是DEBUG。
+
 Below are four examples with various assigned level values and the resulting effective (inherited) levels according to the level inheritance rule.
+
+下面的四个示例，指定了不同的日志级别, 并列举出继承得到的生效日志级别。
 
 > *Example 1*
 
 | Logger name | Assigned level | Effective level |
 | ----------- | -------------- | --------------- |
 | root        | DEBUG          | DEBUG           |
-| X           | none           | DEBUG           |
-| X.Y         | none           | DEBUG           |
-| X.Y.Z       | none           | DEBUG           |
+| X           | <none>         | DEBUG           |
+| X.Y         | <none>         | DEBUG           |
+| X.Y.Z       | <none>         | DEBUG           |
 
 In example 1 above, only the root logger is assigned a level. This level value, `DEBUG`, is inherited by the other loggers `X`, `X.Y` and `X.Y.Z`
+
+在示例1中，只指定了根记录器的日志级别 `DEBUG`。 其他记录器 `X`, `X.Y` 和 `X.Y.Z` 都继承了这个级别。
 
 > *Example 2*
 
@@ -154,16 +171,20 @@ In example 1 above, only the root logger is assigned a level. This level value, 
 
 In example 2 above, all loggers have an assigned level value. Level inheritance does not come into play.
 
+在示例2中，所有记录器都指定了日志级别。 所以这里的日志级别继承没有起作用。
+
 > *Example 3*
 
 | Logger name | Assigned level | Effective level |
 | ----------- | -------------- | --------------- |
 | root        | DEBUG          | DEBUG           |
 | X           | INFO           | INFO            |
-| X.Y         | none           | INFO            |
+| X.Y         | <none>         | INFO            |
 | X.Y.Z       | ERROR          | ERROR           |
 
 In example 3 above, the loggers `root`, `X` and `X.Y.Z` are assigned the levels `DEBUG`, `INFO` and `ERROR` respectively. Logger `X.Y` inherits its level value from its parent `X`.
+
+在示例3中，分别为记录器 `root`, `X` 和 `X.Y.Z` 指定了 `DEBUG`, `INFO`, `ERROR`级别。 记录器 `X.Y` 从上级 `X` 继承了日志级别。
 
 > *Example 4*
 
@@ -171,10 +192,12 @@ In example 3 above, the loggers `root`, `X` and `X.Y.Z` are assigned the levels 
 | ----------- | -------------- | --------------- |
 | root        | DEBUG          | DEBUG           |
 | X           | INFO           | INFO            |
-| X.Y         | none           | INFO            |
-| X.Y.Z       | none           | INFO            |
+| X.Y         | <none>         | INFO            |
+| X.Y.Z       | <none>         | INFO            |
 
 In example 4 above, the loggers `root` and `X` and are assigned the levels `DEBUG` and `INFO` respectively. The loggers `X.Y` and `X.Y.Z` inherit their level value from their nearest parent `X`, which has an assigned level.
+
+在示例4中，分别为记录器`root`, `X`指定了 `DEBUG`, `INFO`级别。 记录器  `X.Y` 和 `X.Y.Z` 从其最近的上级 `X` 继承了日志级别。
 
 ### Printing methods and the basic selection rule
 
@@ -278,10 +301,10 @@ The table below shows an example:
 | --------------- | ------------------ | --------------- | ---------------------- | ------------------------------------------------------------ |
 | root            | A1                 | not applicable  | A1                     | Since the root logger stands at the top of the logger hierarchy, the additivity flag does not apply to it. |
 | x               | A-x1, A-x2         | true            | A1, A-x1, A-x2         | Appenders of "x" and of root.                                |
-| x.y             | none               | true            | A1, A-x1, A-x2         | Appenders of "x" and of root.                                |
+| x.y             | <none>             | true            | A1, A-x1, A-x2         | Appenders of "x" and of root.                                |
 | x.y.z           | A-xyz1             | true            | A1, A-x1, A-x2, A-xyz1 | Appenders of "x.y.z", "x" and of root.                       |
 | security        | A-sec              | false           | A-sec                  | No appender accumulation since the additivity flag is set to `false`. Only appender A-sec will be used. |
-| security.access | none               | true            | A-sec                  | Only appenders of "security" because the additivity flag in "security" is set to `false`. |
+| security.access | <none>             | true            | A-sec                  | Only appenders of "security" because the additivity flag in "security" is set to `false`. |
 
 More often than not, users wish to customize not only the output destination but also the output format. This is accomplished by associating a *layout* with an appender. The layout is responsible for formatting the logging request according to the user's wishes, whereas an appender takes care of sending the formatted output to its destination. The `PatternLayout`, part of the standard logback distribution, lets the user specify the output format according to conversion patterns similar to the C language `printf` function.
 
