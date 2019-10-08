@@ -15,7 +15,7 @@
 > — DONALD KNUTH, 《The Art of Computer Programming》
 
 
-> 学而不能时习之, 那就会很难学透。 纯粹通过阅读来学习一门学科，而没有具体的应用场景，也就很难促使其进行思考。 当然, 自己想明白的东西才学得最深。
+> 学而不能时习之, 就很难学精通。 纯粹通过阅读来学习一门学科，缺乏具体的应用场景，也就很难促使自己进行思考。 也就是说, 自己悟透的才理解最深入。
 
 > — 高德纳, 《计算机程序设计艺术》
 
@@ -201,17 +201,34 @@ In example 4 above, the loggers `root` and `X` and are assigned the levels `DEBU
 
 ### Printing methods and the basic selection rule
 
+### 打印方法和基本选择规则
+
 By definition, the printing method determines the level of a logging request. For example, if `L` is a logger instance, then the statement `L.info("..")` is a logging statement of level INFO.
 
+
+根据定义，打印方法决定了日志的级别。 例如，如果 `L` 是logger实例，则 `L.info("..")` 语句输出`INFO`级别的日志。
+
 A logging request is said to be *enabled* if its level is higher than or equal to the effective level of its logger. Otherwise, the request is said to be *disabled*. As described previously, a logger without an assigned level will inherit one from its nearest ancestor. This rule is summarized below.
+
+如果日志请求的级别高于或等于logger的有效级别，则称该日志请求为“已启用”(*enabled*)。 否则，该请求被称为“已禁用”(*disabled*)。
+如前所述，没有分配级别的 logger 将从其最近的祖先那里继承。该规则总结如下。
 
 > Basic Selection Rule
 
 > A log request of level *p* issued to a logger having an effective level *q*, is enabled if *p >= q*.
 
+
+> 基本选择规则
+
+>如果 `p>=q` ，则有效级别为 *q* 的记录器的级别 *p* 的日志请求。
+
 This rule is at the heart of logback. It assumes that levels are ordered as follows: `TRACE < DEBUG < INFO <  WARN < ERROR`.
 
+这是 logback 的核心规则。 预定义的级别顺序为：`TRACE < DEBUG < INFO <  WARN < ERROR`。
+
 In a more graphic way, here is how the selection rule works. In the following table, the vertical header shows the level of the logging request, designated by *p*, while the horizontal header shows effective level of the logger, designated by *q*. The intersection of the rows (level request) and columns (effective level) is the boolean resulting from the basic selection rule.
+
+下面是选择规则的实现原理的图形化表示。 在下表中，垂直标题显示记录请求的级别，由 *p* 表示，而水平标题显示记录器的有效级别，由 *q* 表示。行（级别请求）和列（有效级别）的交集是基本选择规则产生的布尔值。
 
 | level of request *p* | effective level *q* |         |         |         |         |        |
 | -------------------- | ------------------- | ------- | ------- | ------- | ------- | ------ |
@@ -223,6 +240,8 @@ In a more graphic way, here is how the selection rule works. In the following ta
 | ERROR                | **YES**             | **YES** | **YES** | **YES** | **YES** | **NO** |
 
 Here is an example of the basic selection rule.
+
+以下代码演示基本的选择规则。
 
 ```java
 import ch.qos.logback.classic.Level;
@@ -236,7 +255,7 @@ import org.slf4j.LoggerFactory;
 ch.qos.logback.classic.Logger logger =
         (ch.qos.logback.classic.Logger) LoggerFactory.getLogger("com.foo");
 //set its Level to INFO. The setLevel() method requires a logback logger
-logger.setLevel(Level. INFO);
+logger.setLevel(Level.INFO);
 
 Logger barlogger = LoggerFactory.getLogger("com.foo.Bar");
 
@@ -258,9 +277,15 @@ barlogger.debug("Exiting gas station search");
 
 ### Retrieving Loggers
 
+### 获取Logger实例
+
 Calling the `LoggerFactory.getLogger` method with the same name will always return a reference to the exact same logger object.
 
+使用相同的name调用`LoggerFactory.getLogger`方法，将会返回同一个logger对象。
+
 For example, in
+
+示例:
 
 ```java
 Logger x = LoggerFactory.getLogger("wombat");
@@ -269,13 +294,25 @@ Logger y = LoggerFactory.getLogger("wombat");
 
 `x` and `y` refer to *exactly* the same logger object.
 
+`x` 和 `y` 指向同一个logger对象。
+
 Thus, it is possible to configure a logger and then to retrieve the same instance somewhere else in the code without passing around references. In fundamental contradiction to biological parenthood, where parents always precede their children, logback loggers can be created and configured in any order. In particular, a "parent" logger will find and link to its descendants even if it is instantiated after them.
+
+因此，可以配置logger，然后在其他代码中获取相同的实例，而无需传递logger引用。
+现实世界中总是现有父母再有孩子，但logback支持任意顺序创建和配置logger。 特别是，"parent" logger将查找并链接到其后代，即使在后面实例化。
 
 Configuration of the logback environment is typically done at application initialization. The preferred way is by reading a configuration file. This approach will be discussed shortly.
 
+对logback环境的配置通常在应用程序初始化时完成。 首选读取配置文件。稍后将讨论这种方法。
+
 Logback makes it easy to name loggers by *software component*. This can be accomplished by instantiating a logger in each class, with the logger name equal to the fully qualified name of the class. This is a useful and straightforward method of defining loggers. As the log output bears the name of the generating logger, this naming strategy makes it easy to identify the origin of a log message. However, this is only one possible, albeit common, strategy for naming loggers. Logback does not restrict the possible set of loggers. As a developer, you are free to name loggers as you wish.
 
+在Logback中，可以用 “组件” 来为logger命名。 在每个类中实例化logger，并将该类的完全限定名作为logger的name。
+这种方式非常直接有效。 由于日志输出带有对应logger的名称，因此这种命名方式非常容易识别日志消息的来源。 当然，这只是一种可选的命名方式。 Logback不限制logger的名称。开发人员可根据需要命名logger。
+
 Nevertheless, naming loggers after the class where they are located seems to be the best general strategy known so far.
+
+尽管有种种因素， 但根据所在的class来命名logger一直是最佳实践。
 
 ### Appenders and Layouts
 
