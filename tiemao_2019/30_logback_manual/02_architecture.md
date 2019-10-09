@@ -134,7 +134,7 @@ If a given logger is not assigned a level, then it inherits one from its closest
 
 如果某个Logger没有明确指定日志级别，则会从最近的上级继承。 具体为：
 
-> The effective level for a given logger *L*, is equal to the first non-null level in its hierarchy, starting at *L* itself and proceeding upwards in the hierarchy towards the root logger.
+> The effective level for a given logger `L`, is equal to the first non-null level in its hierarchy, starting at `L` itself and proceeding upwards in the hierarchy towards the root logger.
 
 > 记录器 `L` 的有效级别, 等于其层次结构中的第一个非空的日志级别， 从 `L` 自身开始往上遍历，一直找到 root logger 为止。
 
@@ -316,23 +316,50 @@ Nevertheless, naming loggers after the class where they are located seems to be 
 
 ### Appenders and Layouts
 
+### 追加器, 日志布局
+
 The ability to selectively enable or disable logging requests based on their logger is only part of the picture. Logback allows logging requests to print to multiple destinations. In logback speak, an output destination is called an appender. Currently, appenders exist for the console, files, remote socket servers, to MySQL, PostgreSQL, Oracle and other databases, JMS, and remote UNIX Syslog daemons.
+
+根据logger有选择地启用或禁用某些日志只是Logback的一个功能特征。 Logback可以将日志打印到多个地方。
+在logback中，输出目标称为追加器（appender）。 目前，追加器支持 控制台(console)，文件(file)，远程套接字服务器，MySQL，PostgreSQL，Oracle以及其他数据库，JMS, 远程UNIX Syslog守护程序等等。
 
 More than one appender can be attached to a logger.
 
-The `addAppender` method adds an appender to a given logger. Each enabled logging request for a given logger will be forwarded to all the appenders in that logger as well as the appenders higher in the hierarchy. In other words, appenders are inherited additively from the logger hierarchy. For example, if a console appender is added to the root logger, then all enabled logging requests will at least print on the console. If in addition a file appender is added to a logger, say *L*, then enabled logging requests for *L* and *L*'s children will print on a file *and* on the console. It is possible to override this default behavior so that appender accumulation is no longer additive by setting the additivity flag of a logger to false.
+同一个logger可以附加多个 Appender。
+
+The `addAppender` method adds an appender to a given logger. Each enabled logging request for a given logger will be forwarded to all the appenders in that logger as well as the appenders higher in the hierarchy. In other words, appenders are inherited additively from the logger hierarchy. For example, if a console appender is added to the root logger, then all enabled logging requests will at least print on the console. If in addition a file appender is added to a logger, say `L`, then enabled logging requests for `L` and `L`'s children will print on a file *and* on the console. It is possible to override this default behavior so that appender accumulation is no longer additive by setting the additivity flag of a logger to false.
+
+`addAppender`方法用于将appender挂载到给定的logger下。 每次日志请求调用都会被转发给挂载到对应Logger的所有Appender， 以及更上层挂载的Appender。换句话说，追加器是从logger层次结构中继承而来的。
+
+例如，如果将 console appender 挂载到 root logger，则启用的所有日志请求都会在控制台上打印。
+如果某个 logger 还挂载了 file appender，例如 `L` ，则对 `L` 和 `L` 的下级logger来说, 启用的日志请求都会打印到控制台上和对应的文件中。
+可以将logger的 additivity 标志设置为false，覆盖此默认行为，即不在多个appender中重复。
 
 The rules governing appender additivity are summarized below.
 
+下面是控制appender的additivity规则。
+
 > ### Appender Additivity
 
-> The output of a log statement of logger *L* will go to all the appenders in *L* and its ancestors. This is the meaning of the term "appender additivity".
+> The output of a log statement of logger `L` will go to all the appenders in `L` and its ancestors. This is the meaning of the term "appender additivity".
 
-> However, if an ancestor of logger *L*, say *P*, has the additivity flag set to false, then *L*'s output will be directed to all the appenders in *L* and its ancestors up to and including *P* but not the appenders in any of the ancestors of *P*.
+> However, if an ancestor of logger `L`, say *P*, has the additivity flag set to false, then `L`'s output will be directed to all the appenders in `L` and its ancestors up to and including *P* but not the appenders in any of the ancestors of *P*.
 
 > Loggers have their additivity flag set to true by default.
 
+> -------
+
+> ### Appender的累加标志(Additivity)
+
+> 记录器`L`的日志语句, 会输出到`L`及其祖先挂载的所有 Appender。 这就是术语 "appender additivity" 的含义。
+
+> 但是，如果记录器`L`的祖先（例如`P`）的 `additivity` 标志设置为 `false` ，则`L`的输出只会传递给 `L` 直接绑定的追加器, 一直上溯至`P`[包含]，但不会继续上溯至`P`的祖先绑定的追加器。
+
+> `Logger` 的 `additivity` 标志默认为 `true` 。
+
 The table below shows an example:
+
+示例如下：
 
 | Logger Name     | Attached Appenders | Additivity Flag | Output Targets         | Comment                                                      |
 | --------------- | ------------------ | --------------- | ---------------------- | ------------------------------------------------------------ |
