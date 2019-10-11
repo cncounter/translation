@@ -316,7 +316,7 @@ Nevertheless, naming loggers after the class where they are located seems to be 
 
 ### Appenders and Layouts
 
-### 追加器, 日志布局
+### 追加器(Appender), 日志布局(Layout)
 
 The ability to selectively enable or disable logging requests based on their logger is only part of the picture. Logback allows logging requests to print to multiple destinations. In logback speak, an output destination is called an appender. Currently, appenders exist for the console, files, remote socket servers, to MySQL, PostgreSQL, Oracle and other databases, JMS, and remote UNIX Syslog daemons.
 
@@ -370,15 +370,25 @@ The table below shows an example:
 | security        | A-sec              | false           | A-sec                  | No appender accumulation since the additivity flag is set to `false`. Only appender A-sec will be used. |
 | security.access | <none>             | true            | A-sec                  | Only appenders of "security" because the additivity flag in "security" is set to `false`. |
 
-More often than not, users wish to customize not only the output destination but also the output format. This is accomplished by associating a *layout* with an appender. The layout is responsible for formatting the logging request according to the user's wishes, whereas an appender takes care of sending the formatted output to its destination. The `PatternLayout`, part of the standard logback distribution, lets the user specify the output format according to conversion patterns similar to the C language `printf` function.
+More often than not, users wish to customize not only the output destination but also the output format. This is accomplished by associating a `layout` with an appender. The layout is responsible for formatting the logging request according to the user's wishes, whereas an appender takes care of sending the formatted output to its destination. The `PatternLayout`, part of the standard logback distribution, lets the user specify the output format according to conversion patterns similar to the C language `printf` function.
+
+我们不仅需要配置日志输出目标，还需要自定义日志的输出格式。 可以将appender与`layout`相关联来实现自定义输出格式。 layout 负责格式化日志，而 appender 负责将格式化后的输出内容发送到其目的地。  `PatternLayout` 是 Logback 标准发行版的一部分， 支持类似于C语言 `printf` 函数的模式定义输出格式。
 
 For example, the PatternLayout with the conversion pattern "%-4relative [%thread] %-5level %logger{32} - %msg%n" will output something akin to:
+
+PatternLayout的模板为 `"%-4relative [%thread] %-5level %logger{32} - %msg%n"`, 输出的内容示例如下：
 
 ```
 176  [main] DEBUG manual.architecture.HelloWorld2 - Hello world.
 ```
 
 The first field is the number of milliseconds elapsed since the start of the program. The second field is the thread making the log request. The third field is the level of the log request. The fourth field is the name of the logger associated with the log request. The text after the '-' is the message of the request.
+
+第一部分(`%-4relative`), 是自程序启动以来经过的毫秒数。
+第二部分(`[%thread]`) 是发出日志请求的线程名称。
+第三部分(`%-5level`) 是日志请求的级别。
+第四部分(`%logger{32}`) 是与日志请求相关的 logger 名称。
+“-”之后的部分(`%msg%n`) 则是日志请求的文本消息。
 
 ### Parameterized logging
 
