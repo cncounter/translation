@@ -392,9 +392,16 @@ The first field is the number of milliseconds elapsed since the start of the pro
 
 ### Parameterized logging
 
+### 占位符，参数化方式记日志
+
 Given that loggers in logback-classic implement the [SLF4J's Logger interface](http://www.slf4j.org/api/org/slf4j/Logger.html), certain printing methods admit more than one parameter. These printing method variants are mainly intended to improve performance while minimizing the impact on the readability of the code.
 
+`logback-classic` 实现了 [SLF4J's Logger interface](http://www.slf4j.org/api/org/slf4j/Logger.html), 日志方法支持传入多个参数。
+这些方法变体主要是为了提升性能，同时最大程度地减少对代码可读性的影响。
+
 For some Logger `logger`, writing,
+
+看看老式的日志调用:
 
 ```java
 logger.debug("Entry number: " + i + " is " + String.valueOf(entry[i]));
@@ -402,7 +409,11 @@ logger.debug("Entry number: " + i + " is " + String.valueOf(entry[i]));
 
 incurs the cost of constructing the message parameter, that is converting both integer `i` and `entry[i]` to a String, and concatenating intermediate strings. This is regardless of whether the message will be logged or not.
 
+在构造 message 参数的时候，将 `i` 和 `entry[i]` 都转换为字符串，并进行拼接。 而系统配置却有可能将debug日志忽略。
+
 One possible way to avoid the cost of parameter construction is by surrounding the log statement with a test. Here is an example.
+
+假若日志消息体足够大，字符串拼接的成本可能受不了。 有一种优化方法是将log语句包含在if分支里。 示例如下。
 
 ```java
 if(logger.isDebugEnabled()) {
@@ -412,9 +423,16 @@ if(logger.isDebugEnabled()) {
 
 This way you will not incur the cost of parameter construction if debugging is disabled for `logger`. On the other hand, if the logger is enabled for the DEBUG level, you will incur the cost of evaluating whether the logger is enabled or not, twice: once in `debugEnabled` and once in `debug`. In practice, this overhead is insignificant because evaluating a logger takes less than 1% of the time it takes to actually log a request.
 
+如果禁用了debug日志，则不会产生参数构造的开销。
+如果启用了DEBUG日志级别，则会产生两次计算的成本： 一次是 `debugEnabled` 方法， 一次是 `debug` 方法。 实际上，这点开销微不足道，因为计算logger是否开启DEBUG级别所花费的时间，还不到实际记录日志请求的1％。
+
 #### Better alternative
 
+#### 更好的选择
+
 There exists a convenient alternative based on message formats. Assuming `entry` is an object, you can write:
+
+logback提供了一种基于消息格式化的替代方法，我们可以这样使用：
 
 ```java
 Object entry = new SomeObject();
@@ -423,7 +441,12 @@ logger.debug("The entry is {}.", entry);
 
 Only after evaluating whether to log or not, and only if the decision is positive, will the logger implementation format the message and replace the '{}' pair with the string value of `entry`. In other words, this form does not incur the cost of parameter construction when the log statement is disabled.
 
+logback会先计算是否要记录此日志， 只在发现确实需要记录的情况下， logger实现才会格式化消息，并将 '{}' 对替换为 `entry` 的字符串值。
+换句话说，禁用log之后，这种方式不再有构造日志参数的开销。
+
 The following two lines will yield the exact same output. However, in case of a *disabled* logging statement, the second variant will outperform the first variant by a factor of at least 30.
+
+下面两行代码的输出完全相同。 但如果 log 请求被禁用, 第二种方式的性能将比第一种要高出30倍以上。
 
 ```java
 logger.debug("The new entry is "+entry+".");
@@ -432,11 +455,15 @@ logger.debug("The new entry is {}.", entry);
 
 A two argument variant is also available. For example, you can write:
 
+两个参数占位符的方式:
+
 ```java
 logger.debug("The new entry is {}. It replaces {}.", entry, oldEntry);
 ```
 
 If three or more arguments need to be passed, an `Object[]` variant is also available. For example, you can write:
+
+如果格式化参数超过3个，建议使用 `Object[]` 的方式:
 
 ```java
 Object[] paramArray = {newVal, below, above};
