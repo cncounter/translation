@@ -392,7 +392,7 @@ The first field is the number of milliseconds elapsed since the start of the pro
 
 ### Parameterized logging
 
-### 占位符，参数化方式记日志
+### 日志占位符与参数化方式
 
 Given that loggers in logback-classic implement the [SLF4J's Logger interface](http://www.slf4j.org/api/org/slf4j/Logger.html), certain printing methods admit more than one parameter. These printing method variants are mainly intended to improve performance while minimizing the impact on the readability of the code.
 
@@ -472,47 +472,101 @@ logger.debug("Value {} was inserted between {} and {}.", paramArray);
 
 ### A peek under the hood
 
+### 原理解析
+
 After we have introduced the essential logback components, we are now ready to describe the steps that the logback framework takes when the user invokes a logger's printing method. Let us now analyze the steps logback takes when the user invokes the `info()` method of a logger named *com.wombat*.
+
+介绍了基本的logback组件之后， 调用logger的打印方法时, logback框架所执行的步骤可以试着理解了。
+
+下面我们一起来分析当用户调用 (名为 *com.wombat*) logger 的 `info（）`方法时，logback 的执行步骤。
 
 #### 1. Get the filter chain decision
 
+#### 步骤1. 获取过滤器链的策略
+
 If it exists, the `TurboFilter` chain is invoked. Turbo filters can set a context-wide threshold, or filter out certain events based on information such as `Marker`, `Level`, `Logger`, message, or the `Throwable` that are associated with each logging request. If the reply of the filter chain is `FilterReply.DENY`, then the logging request is dropped. If it is `FilterReply.NEUTRAL`, then we continue with the next step, i.e. step 2. In case the reply is `FilterReply.ACCEPT`, we skip the next and directly jump to step 3.
+
+如果存在 `TurboFilter` 则调用。 Turbo 过滤器会设置上下文范围的阈值， 根据日志请求相关联的信息（如 `Marker`, `Level`, `Logger`, message, 以及`Throwable`）来过滤掉某些事件。
+
+如果过滤器链返回的是 `FilterReply.DENY`， 就会清掉这次日志请求。 如果返回的是 `FilterReply.NEUTRAL`，那么执行步骤2。
+如果返回的是 `FilterReply.ACCEPT`，则忽略步骤2，直接跳至步骤3。
 
 #### 2. Apply the [basic selection rule](https://logback.qos.ch/manual/architecture.html#basic_selection)
 
+#### 步骤2. 应用 [basic selection rule](https://logback.qos.ch/manual/architecture.html#basic_selection)
+
 At this step, logback compares the effective level of the logger with the level of the request. If the logging request is disabled according to this test, then logback will drop the request without further processing. Otherwise, it proceeds to the next step.
+
+步骤2中，logback 比较 logger 的有效级别与本次日志请求的级别。 如果判定本次日志请求被禁用，则logback会丢弃该请求，无需进一步处理。
+否则，继续执行下一步。
 
 #### 3. Create a `LoggingEvent` object
 
+#### 步骤3. 创建 `LoggingEvent` 对象
+
 If the request survived the previous filters, logback will create a `ch.qos.logback.classic.LoggingEvent` object containing all the relevant parameters of the request, such as the logger of the request, the request level, the message itself, the exception that might have been passed along with the request, the current time, the current thread, various data about the class that issued the logging request and the `MDC`. Note that some of these fields are initialized lazily, that is only when they are actually needed. The `MDC` is used to decorate the logging request with additional contextual information. MDC is discussed in a [subsequent chapter](https://logback.qos.ch/manual/mdc.html).
+
+如果经过前面的过滤器之后请求仍然存在，则logback会创建 `ch.qos.logback.classic.LoggingEvent` 对象，其中包含请求相关的所有参数，例如请求的logger，请求对应的level，以及消息体， 以及随请求一起传递进来的 exception 对象，当前时间，当前线程，发出日志请求的class相关数据， 以及 `MDC`。 请注意，其中某些字段是懒加载的。 `MDC` 通过其他上下文信息来修饰日志请求。 详细的 MDC 信息请参考: [subsequent chapter](https://logback.qos.ch/manual/mdc.html).
 
 #### 4. Invoking appenders
 
+#### 步骤4. 调用附加器
+
 After the creation of a `LoggingEvent` object, logback will invoke the `doAppend()` methods of all the applicable appenders, that is, the appenders inherited from the logger context.
+
+创建`LoggingEvent`对象后，logback将对所有匹配到的 appender 调用 `doAppend()`方法，即从 logger context 继承的附加器。
 
 All appenders shipped with the logback distribution extend the `AppenderBase` abstract class that implements the `doAppend` method in a synchronized block ensuring thread-safety. The `doAppend()` method of `AppenderBase` also invokes custom filters attached to the appender, if any such filters exist. Custom filters, which can be dynamically attached to any appender, are presented in a [separate chapter](https://logback.qos.ch/manual/filters.html).
 
+logback自带的所有附加器都继承自 `AppenderBase` 抽象类， 为了确保线程安全，其中的`doAppend`方法使用了同步块(synchronized)。
+`AppenderBase`的 `doAppend()`方法也会调用挂载到appender上的自定义过滤器。
+动态挂载到appender上的自定义过滤器请参考: [filters](https://logback.qos.ch/manual/filters.html).。
+
 #### 5. Formatting the output
+
+#### 步骤5. 格式化输出内容
 
 It is responsibility of the invoked appender to format the logging event. However, some (but not all) appenders delegate the task of formatting the logging event to a layout. A layout formats the `LoggingEvent` instance and returns the result as a String. Note that some appenders, such as the `SocketAppender`, do not transform the logging event into a string but serialize it instead. Consequently, they do not have nor require a layout.
 
+附加器负责格式化自己的日志。 但也有一部分附加器将格式化日志的操作委托给了 layout。 layout 格式化 `LoggingEvent` 对象并返回 String 格式的结果。 请注意，某些附加器（例如`SocketAppender`）不会将日志事件转换为string，而是将其序列化， 也就不需要 layout。
+
 #### 6. Sending out the `LoggingEvent`
+
+#### 步骤6. 发送 `LoggingEvent`
 
 After the logging event is fully formatted it is sent to its destination by each appender.
 
+日志事件完成格式化后，appender需要将其发送到自己的目标位置。
+
 Here is a sequence UML diagram to show how everything works. You might want to click on the image to display its bigger version.
 
-[![underTheHoodSequence2_small.gif](https://logback.qos.ch/manual/images/chapters/architecture/underTheHoodSequence2_small.gif)](https://logback.qos.ch/manual/underTheHood.html)
+下面的UML顺序图展示了工作原理。
+
+![underTheHoodSequence2_small.gif](https://logback.qos.ch/manual/underTheHood.html)
 
 ### Performance
 
+### 性能
+
 One of the often-cited arguments against logging is its computational cost. This is a legitimate concern as even moderately-sized applications can generate thousands of log requests. Much of our development effort is spent measuring and tweaking logback's performance. Independently of these efforts, the user should still be aware of the following performance issues.
+
+反对记日志的一个理由是计算成本。 这是一个合理的问题，即使是常规的应用系统也会产生成千上万的日志请求。 我们的很多开发工作都花在了衡量和调优logback的性能上。 即使工作内容与此无关，开发者仍然需要关心日志系统的性能问题。
 
 #### 1. Logging performance when logging is turned off entirely
 
+#### 1. 完全关闭日志时的日志系统性能
+
 You can turn off logging entirely by setting the level of the root logger to `Level.OFF`, the highest possible level. When logging is turned off entirely, the cost of a log request consists of a method invocation plus an integer comparison. On a 3.2Ghz Pentium D machine this cost is typically around 20 nanoseconds.
 
+可以将 root logger 的级别设置为最高级别 `Level.OFF`, 来完全关闭日志记录。
+
+完全关闭后，日志请求的成本包括方法调用和整数比较。 在 3.2Ghz 的 Pentium D机器上，此操作的时间成本为20纳秒左右。
+
+
 However, any method invocation involves the "hidden" cost of parameter construction. For example, for some logger *x* writing,
+
+
+但是，任何方法调用都涉及参数构造的“隐藏”成本。 例如，对 logger  *x* 的写入，
 
 ```java
 x.debug("Entry number: " + i + "is " + entry[i]);
@@ -520,7 +574,11 @@ x.debug("Entry number: " + i + "is " + entry[i]);
 
 incurs the cost of constructing the message parameter, i.e. converting both integer `i` and `entry[i]` to a string, and concatenating intermediate strings, regardless of whether the message will be logged or not.
 
+这里就有日志消息内容构造的成本，即将 `i` 和 `entry[i]` 都转换为字符串，并连接中间字符串，不管这个日志是否生效。
+
 The cost of parameter construction can be quite high and depends on the size of the parameters involved. To avoid the cost of parameter construction you can take advantage of SLF4J's parameterized logging:
+
+参数构造的开销可能很大，这取决于参数有多大。 为了避免不必要的参数构造开销，可以利用 SLF4J 的占位符与参数化方式记录日志：
 
 ```java
 x.debug("Entry number: {} is {}", i, entry[i]);
@@ -528,17 +586,32 @@ x.debug("Entry number: {} is {}", i, entry[i]);
 
 This variant will not incur the cost of parameter construction. Compared to the previous call to the `debug()` method, it will be faster by a wide margin. The message will be formatted only if the logging request is to be sent to attached appenders. Moreover, the component that formats messages is highly optimized.
 
+这个重载方法没有拼接参数的成本。 与之前的 `debug()` 方法调用相比，它的速度将大大提高。 只有将日志请求发送到 appender 时，消息才会被格式化。 此外，格式化消息的组件一般是进行过深度优化的。
+
 Notwithstanding the above placing log statements in tight loops, i.e. very frequently invoked code, is a lose-lose proposal, likely to result in degraded performance. Logging in tight loops will slow down your application even if logging is turned off, and if logging is turned on, will generate massive (and hence useless) output.
+
+尽管将上面的日志语句放在大量的循环中是一种不好的习惯，即频繁地调用代码时，可能导致性能下降。
+即使关闭日志记录，大量循环输出的日志也拖慢应用系统的速度； 如果开启日志功能，则会生成大量无用的输出。
 
 #### 2. The performance of deciding whether to log or not to log when logging is turned on.
 
+#### 2. 日志开启时， 决定是否记录日志的性能因素。
+
 In logback, there is no need to walk the logger hierarchy. A logger knows its effective level (that is, its level, once level inheritance has been taken into consideration) when it is created. Should the level of a parent logger be changed, then all child loggers are contacted to take notice of the change. Thus, before accepting or denying a request based on the effective level, the logger can make a quasi-instantaneous decision, without needing to consult its ancestors.
+
+在logback中，无需遍历logger层次结构。 在创建logger时便明确知道其有效级别（即只会计算一次继承级别）。 如果更改了 parent logger 的级别， 则会通知所有子记录器进行更改。 因此，在基于有效级别判断接受或拒绝请求时， logger 可以即时做出决定，而无需遍历咨询其祖先。
 
 #### 3. Actual logging (formatting and writing to the output device)
 
+#### 3. 实际记录日志是的性能（格式化并写入输出设备）
+
 This is the cost of formatting the log output and sending it to its target destination. Here again, a serious effort was made to make layouts (formatters) perform as quickly as possible. The same is true for appenders. The typical cost of actually logging is about 9 to 12 microseconds when logging to a file on the local machine. It goes up to several milliseconds when logging to a database on a remote server.
 
+格式化日志输出并将其发送到输出目标的成本。 我们在这里也付出了巨大的努力，使 layout(formatter)的执行速度更快。 appender 也是如此。 输出到本地机器上的文件时，实际记录日志的成本约为9到12微秒(microsecond)。 如果输出到远程数据库服务器，需要几毫秒的时间。
+
 Although feature-rich, one of the foremost design goals of logback was speed of execution, a requirement which is second only to reliability. Some logback components have been rewritten several times to improve performance.
+
+尽管功能丰富，但logback的首要设计目标之一是执行速度(speed)，这是仅次于可靠性的要求(reliability)。 某些 logback 组件已被多次重写以优化性能。
 
 
 <https://logback.qos.ch/manual/architecture.html>
