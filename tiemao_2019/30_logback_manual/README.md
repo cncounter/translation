@@ -56,4 +56,7 @@ logback手册的目录如下：
 
 
 
-原文链接: <https://logback.qos.ch/manual/>
+Logback用户手册 原文链接: <https://logback.qos.ch/manual/>
+
+
+Logback 文档地址: <http://logback.qos.ch/documentation.html>
