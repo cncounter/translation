@@ -42,6 +42,15 @@ GitHub地址: <https://github.com/cncounter/translation>
 * [19.mybatis-foreach问题](tiemao_2019/19_mybatis_foreach_item/README.md)
 * [20.Pauseless-GC算法](tiemao_2019/20_Azul-The-Pauseless-GC-Algorithm/README.md)
 * [21.Spring MVC找不到xsd文件等错误的原因分析](tiemao_2019/21_spring-beans-error/README.md)【已完成】
+* [22.JVM问题诊断-1.快速入门](tiemao_2019/22_chat_jvm_troubleshoot/README.md)
+* [23_jmx_common](tiemao_2019/23_jmx_common/README.md)
+* [24_JavaSE版本与代号概述](tiemao_2019/24_java-se-versions-history/README.md)
+* [25.JVM基础课程大纲](tiemao_2019/25_jvm_toc/README.md)
+* [26_jol_sample](tiemao_2019/26_jol_sample/README.md)
+* [27_jvm17_thread_lock](tiemao_2019/27_jvm17_thread_lock/README.md)
+* [28_java-classloaders](tiemao_2019/28_java-classloaders/README.md)
+* [29_resource_site](tiemao_2019/29_resource_site/README.md)
+* [30_Logback用户手册中文翻译](tiemao_2019/30_logback_manual/README.md)
 
 </details>
 

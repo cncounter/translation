@@ -28,13 +28,13 @@
 * [21.Spring MVC找不到xsd文件等错误的原因分析](./21_spring-beans-error/README.md)【已完成】
 * [22.JVM问题诊断-1.快速入门](./22_chat_jvm_troubleshoot/README.md)
 * [23_jmx_common](./23_jmx_common/README.md)
-* [24_java-se-versions-history](./24_java-se-versions-history/README.md)
+* [24_JavaSE版本与代号概述](./24_java-se-versions-history/README.md)
 * [25.JVM基础课程大纲](./25_jvm_toc/README.md)
 * [26_jol_sample](./26_jol_sample/README.md)
 * [27_jvm17_thread_lock](./27_jvm17_thread_lock/README.md)
 * [28_java-classloaders](./28_java-classloaders/README.md)
 * [29_resource_site](./29_resource_site/README.md)
-* [30.The logback manual](./30_logback_manual/README.md)
+* [30_Logback用户手册中文翻译](./30_logback_manual/README.md)
 
 
 </details>
