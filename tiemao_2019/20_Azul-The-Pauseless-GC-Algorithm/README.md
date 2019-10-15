@@ -31,25 +31,25 @@ Mountain View, CA 94043
 
 Modern transactional response-time sensitive applications have run into practical limits on the size of garbage collected heaps. The heap can only grow until GC pauses exceed the response-time limits. Sustainable, scalable concurrent collection has become a feature worth paying for.
 
-有很多业务系统对响应时间非常敏感, 却因为要考虑GC暂停时间，导致最大堆内存空间被限制住了。
-堆内存不能设置得太大，必须确保GC暂停时间要小于响应时间阈值。
-业界迫切需要一款可以长期稳定运行的、支持大量内存的并发垃圾收集器。
+很多业务系统对响应时间非常敏感, 却因为要考虑GC暂停时间，限制了可以配置的最大堆内存。
+不能将堆内存配得太大，以免GC暂停时间超过业务允许的响应时间阈值。
+所以业界迫切需要一款可以长期稳定运行的、支持大内存的并发垃圾收集器。
 
 Azul Systems has built a custom system (CPU, chip, board, and OS) specifically to run garbage collected virtual machines. The custom CPU includes a read barrier instruction. The read barrier enables a highly concurrent (no stop-the-world phases), parallel and compacting GC algorithm. The Pauseless algorithm is designed for uninterrupted application execution and consistent mutator throughput in every GC phase.
 
-Azul Systems 公司为此专门定制了一整套系统(包括CPU、芯片组、主板及操作系统)，用来运行支持垃圾收集算法的虚拟机。
-定制的CPU支持【读屏障指令】。通过读屏障(read barrier)的支持，可以实现并行的、具有碎片整理功能的高并发(无STW停顿)GC算法。
-Pauseless GC 算法专为不间断运行的应用系统而设计, 能保证在各个GC阶段都获得稳定的业务吞吐量。
+Azul Systems 公司为此专门定制了一整套系统(包括CPU、芯片组、主板和操作系统)，用来运行支持垃圾收集算法的虚拟机。
+定制的CPU支持【读屏障指令】。 通过读屏障(read barrier)，来实现并行的、具有碎片整理功能的高并发(无STW停顿)垃圾收集算法。
+Pauseless GC 算法专为不间断运行的系统设计, 保证在各个GC阶段都能获得稳定的业务吞吐量。
 
 Beyond the basic requirement of collecting faster than the allocation rate, the Pauseless collector is never in a “rush” to complete any GC phase. No phase places an undue burden on the mutators nor do phases race to complete before the mutators produce more work. Portions of the Pauseless algorithm also feature a “self-healing” behavior which limits mutator overhead and reduces mutator sensitivity to the current GC state.
 
-作为最基本的需求, 垃圾收集的速度必须要比内存分配的速度快， 所以 Pauseless 收集器就没有哪个GC阶段是必须急于完成的。
-任何阶段都不会跟业务线程拼命抢CPU资源。
-Pauseless垃圾收集算法中的一些组件还具有“自我修复”的特征，这种行为限制了业务线程的开销，也大大降低了业务对当前所处的GC状态的敏感度。
+除了垃圾收集速度要比内存分配速度快这个最基本的要求之外, Pauseless 垃圾收集器没有哪个阶段是必须快速完成的。
+任何阶段都不会跟业务线程争抢CPU资源，也没有哪个阶段需要在业务操作之前必须完成。
+Pauseless 算法中的一部分还具备“自我修复”的特征，这种特征限制了业务线程的额外开销，也降低了业务对当前所处的GC状态的敏感性。
 
 We present the Pauseless GC algorithm, the supporting hardware features that enable it, and data on the overhead, efficiency, and pause times when running a sustained workload.
 
-本论文主要介绍Pauseless GC算法, 以及硬件需要支持的特性, 在业务饱和场景下的GC开销、性能、暂停时间等信息和数据。
+本论文主要介绍 Pauseless GC算法, 硬件设备需要支持的功能特征, 以及在饱和业务场景下的GC开销、性能、暂停时间等数据。
 
 
 ## Categories and Subject Descriptors
@@ -62,13 +62,15 @@ D.3.3 [Language Constructs and Features] – Dynamic storage management,
 
 ## General Terms
 
-## 一般条款
+## 概述
 
 Languages, Performance, Design, Algorithms.
 
+编程语言、性能、设计、算法
+
 ## Keywords
 
-## 关键字
+## 关键字与标签
 
 Read barriers, memory management, garbage collection, concurrent GC, Java, custom hardware
 
