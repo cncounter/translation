@@ -4,37 +4,36 @@
 截止目前(2019年10月14日)，Java 各个版本的代号和发布日期如下所示:
 
 
+| 版本号 | 代号(Code Name) | 正式版发布日期 |
 | -----------  | --------- | -----------  |
-| Version Name | Code Name | Release Date |
-| -----------  | --------- | -----------  |
-| JDK 1.0      | Oak(橡树)  | January 1996 |
-| JDK 1.1      | (none)    | February 1997 |
-| JDK 1.1.4    | Sparkler(魔杖)  | Sept 12, 1997 |
-| JDK 1.1.5    | Pumpkin(南瓜)   | Dec 3, 1997 |
-| JDK 1.1.6    | Abigail   | April 24, 1998 |
-| JDK 1.1.7    | Brutus    | Sept 28, 1998 |
-| JDK 1.1.8    | Chelsea   | April 8, 1999 |
-| J2SE 1.2     | Playground(操场)|  Dec 4, 1998 |
-| J2SE 1.2.1   | (none)    | March 30, 1999 |
-| J2SE 1.2.2   | Cricket(板球)   | July 8, 1999 |
-| J2SE 1.3     | Kestrel(茶隼)   | May 8, 2000 |
-| J2SE 1.3.1   | Ladybird(瓢虫)  | May 17, 2001 |
-| J2SE 1.4.0   | Merlin(灰背隼)  | Feb 13, 2002 |
-| J2SE 1.4.1   | Hopper(蚱蜢)    | Sept 16, 2002 |
-| J2SE 1.4.2   | Mantis(螳螂)    | June 26, 2003 |
-| J2SE5.0(1.5.0)| Tiger(老虎)    |  Sept 29, 2004 |
-| JavaSE 6        | Mustang(野马)   | December 2006 |
-| JavaSE 7        | Dolphin(海豚)   | July 2011 |
-| JavaSE 8(LTS)   | Spider(蜘蛛)    | March 2014 |
-| JavaSE 9        |           | September, 21st 2017 |
-| JavaSE 10       |           | March, 20th 2018 |
-| JavaSE 11(LTS)  |           | September, 25th 2018 |
-| JavaSE 12       |           | March, 19th 2019 |
-| JavaSE 13       |           | September, 10th 2019 |
-| JavaSE 14	      |           | March 2020 |
-| JavaSE 15       |           | September 2020 |
-| JavaSE 16       |           | March 2021 |
-| JavaSE 17(LTS)  |           | September 2021 |
+| JDK 1.0      | Oak(橡树)  | 1996年01月 |
+| JDK 1.1      | (none)    | 1997年02月 |
+| JDK 1.1.4    | Sparkler(魔杖)  | 1997年09月12日 |
+| JDK 1.1.5    | Pumpkin(南瓜)   | 1997年12月03日 |
+| JDK 1.1.6    | Abigail   | 1998年04月24日 |
+| JDK 1.1.7    | Brutus    | 1998年09月28日 |
+| JDK 1.1.8    | Chelsea   | 1999年04月08日 |
+| J2SE 1.2     | Playground(操场)|  1998年12月04日 |
+| J2SE 1.2.1   | (none)    | 1999年03月30日 |
+| J2SE 1.2.2   | Cricket(板球)   | 1999年07月08日 |
+| J2SE 1.3     | Kestrel(茶隼)   | 2000年05月08日 |
+| J2SE 1.3.1   | Ladybird(瓢虫)  | 2001年05月17日 |
+| J2SE 1.4.0   | Merlin(灰背隼)  | 2002年02月13日 |
+| J2SE 1.4.1   | Hopper(蚱蜢)    | 2002年09月16日 |
+| J2SE 1.4.2   | Mantis(螳螂)    | 2003年06月26日 |
+| J2SE5.0(1.5.0)| Tiger(老虎)    | 2004年09月29日 |
+| JavaSE 6        | Mustang(野马)   | 2006年12月 |
+| JavaSE 7        | Dolphin(海豚)   | 2011年07月 |
+| JavaSE 8(LTS)   | Spider(蜘蛛)    | 2014年03月  |
+| JavaSE 9        |           | 2017年09月21日 |
+| JavaSE 10       |           | 2018年03月20日 |
+| JavaSE 11(LTS)  |           | 2018年09月25日 |
+| JavaSE 12       |           | 2019年03月19日 |
+| JavaSE 13       |           | 2019年09月10日 |
+| JavaSE 14	      |           | 2020年03月 |
+| JavaSE 15       |           | 2020年09月 |
+| JavaSE 16       |           | 2021年03月 |
+| JavaSE 17(LTS)  |           | 2021年09月 |
 
 
 
