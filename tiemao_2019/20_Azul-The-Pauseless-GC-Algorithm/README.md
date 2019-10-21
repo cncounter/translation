@@ -116,34 +116,68 @@ Pauseless GC 算法简洁高效（业务线程的额外开销很小），没有S
 
 The idea of garbage collection has been around for a long time [22][13][16][11]. We do not attempt to summarize all relevant GC work and instead we refer the reader to several GC surveys [30][31], and highlight a few papers.
 
-垃圾收集这种想法已经存很长的时间了(见[22][13][16][11]). 本文并不是汇总所有的GC理论, 只是参考其中的部分GC研究(见[30][31]),并着重强调一部分重要的内容。
+垃圾收集算法在很早以前就已提出(见[22][13][16][11]). 本论文并不汇总所有GC理论, 只是参考其中的一部分(见[30][31]), 并着重强调几点重要的内容。
 
 GC pauses and their unpredictable impact on mutators was the driving force behind the early work on concurrent collectors [26][5]. The expectation of the time was that special GC hardware would shortly be feasible and commonplace. This early work required such extensive fine-grained synchronization that it would only be feasible on dedicated hardware. GC hardware continues to be proposed to this day [23][29][24][18][20].
 
-GC停顿及其对业务性能的影响具有不可预测性, 推动了并发GC的早期发展(见[26][5]). 通过特殊的硬件设备来支撑可预期的短暂的GC时间, 被证明是可行的、是很普遍的解决方案.  这些早期产品使用了很多细粒度的同步, 所以要有专门的硬件支持。这时候GC专用的硬件持续被讨论(见[23][29][24][18][20])。
+GC停顿,以及对业务的影响具有不可预测性, 推动了早期并发垃圾收集器的发展(见[26][5]). 当时的预期, 是支持GC的硬件将会很快面世并得到普及.  这些早期作品用了很多细粒度的同步, 需要专门的硬件支持。直到今天，专用的GC硬件依然是很好的解决方案(见[23][29][24][18][20])。
 
 The idea of using common page-protection hardware to support GC has also been around awhile [2]. Both Appel [2][3] and Ossia [25] protect pages that may contain objects with non-forwarded pointers (initially all pages). Accessing a protected page causes an OS trap which the GC handles by forwarding all pointers on that page, then clearing the page protection. Appel does the forwarding in kernel-mode, Ossia maps the physical memory with a second unprotected virtual address for use by GC. Our Pauseless collector protects pages that contain objects being moved, instead of protecting pages that contain pointers to moved objects. This is a much smaller page set, and the pages can be incrementally protected. Our read-barrier allows us to intercept and correct individual stale references, and avoids blocking the mutator to fix up entire pages. We also support a special GC protection mode to allow fast, non-kernel-mode trap handlers that can access protected pages.
 
-使用通用页保护设备来支持GC的想法也在这时候提出(见[2]). Appel公司(见[2][3])和Ossia公司(见[25])使用非前向指针(non-forwarded pointers)来保护可能包含对象的内存页(初始化所有页面). 如果访问一个受保护的页面, 则会让操作系统使用陷阱来处理GC指针, 将该页面上的所有指针进行转发, 然后再去除页面保护.  Appel公司在内核模式执行指针转发, Ossia公司则是将物理内存映射到一个供GC使用的不受保护的虚拟地址.  而我们公司实现的Pauseless垃圾收集器会保护正在移动对象的页面,而不是去保护指向被移动对象的那些页面. 这种处理方式下 page set 会小得多，而且各个页面可以增量地受到保护. 使用读屏障可以让我们拦截并纠正极个别的过期引用, 避免修复整个页面，进而阻塞业务线程. 我们也支持一个特殊的GC保护模式, 在业务线程访问受保护的页面时, 以非内核模式调用快速陷阱处理程序。
+那时候还提出了一种想法, 使用通用页面保护硬件(page-protection hardware)来支持GC(见[2]).  
+Appel (见[2][3])和 Ossia 公司(见[25])用它来保护可能包含未转发指针(non-forwarded pointers)对象的页面(初始状态是保护所有页面).  
+只要访问受保护的页面, 就会触发OS陷阱, GC会在陷阱处理程序中, 转发该页面上的所有指针, 然后再清除页面保护.
+Appel公司以内核模式进行转发, Ossia公司则是将物理内存映射到另一个GC专用的虚拟地址,此虚拟地址不受硬件保护.
+我们公司的Pauseless垃圾收集器会保护即将进行对象移动的页面, 而不去保护有指针指向被移动对象的其他页面.
+这样我们的 page set 比较小，而且可以增量地对各个页面进行保护.
+读屏障可以拦截并纠正极个别的过时引用, 免得阻塞 mutator 修复整个页面.
+我们还支持特殊的GC保护模式, 以允许非内核模式的快速陷阱处理程序来访问受保护的页面。
 
------------
 
 The idea of an incremental collector (via reference counting) is not new either [15]. Incremental collection seeks to reduce pause time by spreading the collection work out in time, finely interleaving GC work with mutator work. Because reference counting is expensive, and indeed all barriers (reference counting typically involves a write barrier) impose some mutator cost there is considerable research in reducing barrier costs [6][21][8] [9]. Having the read-barrier implemented in hardware greatly reduces costs. In our case the typical cost is roughly that of a single cycle ALU instruction.
 
-增量收集器(通过引用计数)的想法也不是新提出的(见[15]). 增量收集的目的是为了减少停顿时间, 通过实时的GC工作, 精细交错GC任务与业务线程的执行. 因为引用计数的代价很高, 事实上所有的屏障(引用计数通常涉及写障碍)都会强加一些修改成本, 有很多研究致力于降低屏障开销(见[6][21][8][9]). 在硬件内实现的读屏障大大降低了开销。在我们的实现中, 一般只需要单个ALU指令的时钟周期。
+增量收集器(通过引用计数)的想法也不是新提出的(见[15]).
+增量收集的目的是减少停顿时间, 精细地交错GC任务与业务线程的执行.  
+但引用计数的代价太大, 事实上所有的屏障(引用计数通常涉及写障碍)都会强加业务线程的开销, 所以在降低屏障的开销方面已有大量研究(见[6][21][8][9]).
+硬件内置实现的读屏障指令, 可极大地降低开销。 在我们的实现中, 典型的开销只需要单个ALU指令的时钟周期。
+
 
 Incremental and low-pause-time collectors are becoming very popular again – partly because embedded devices have grown in compute power to the point where it's feasible to run a garbage collected language on them [19]. Metronome is an example of a modern low-pause time collector for a uniprocessor embedded system, and the pause times reported for Metronome are indeed smaller than those reported here [4]. However, Metronome as currently described is single-threaded and large business-class applications have enough mutators to overwhelm any singlethreaded collector. Pauseless is fully parallel and can add GC worker threads at any time. Metronome requires an oracle to predict the future GC needs of running applications; this oracle is easily supplied in embedded systems with a fixed application set (the engineer runs the finite application set and measures GC consumption). Servers typically do not have a fixed application set and GC requirements are highly unpredictable. Metronome mutator utilization is around 50%. In contrast our mutator utilization is closer to 98%, we use extra CPUs to do the collection work. In exchange, Metronome provides hard real-time guarantees while we provide only soft real-time guarantees.
 
-增量和低停顿时间的垃圾收集器再次变得流行起来 —— 部分原因是嵌入式设备的运算能力迅速增长, 已经可以在上面运行垃圾收集语言了(见[19]).Metronome是一款运行在单处理器嵌入式设备中的GC, 他的停顿时间据报道确实比其他的GC要好(见[4]). 但是呢, Metronome 目前还是一款单线程的垃圾收集器, 而大型的商业应用会有非常多的业务线程, 很轻易就能压垮所有单线程的GC. 无停顿GC是完全并行的,可以在任何时候增加GC工作线程. Metronome需要一个传谕者(oracle)来预测未来GC运行的需求; 在嵌入式系统中这个传谕者很容易提供，因为需要运行的程序基本上就那些(工程师编写的应用程序是有限的,而且可以采取一些GC消耗的措施)。而服务器环境要执行的程序海了去了, 而且GC的需求基本上是不可预测的。Metronome的业务线程利用率大约是50%. 相比之下我们的mutator利用率接近98%, 我们使用额外的cpu来完成垃圾收集工作. 简单对比, Metronome提供了硬实时保证, 而我们只提供软实时保证。
+增量式的低停顿时间的垃圾收集器再次流行起来 —— 部分原因是嵌入式设备的运算能力不断提高, 到了可以在其上运行垃圾收集语言的地步(见[19]).
+Metronome 是一款运行在单处理器嵌入式设备上的低停顿垃圾收集器,  
+其报告的停顿时间比参考资料(见[4])介绍的还要短.
+但 Metronome 目前还是一款单线程的垃圾收集器, 而大型应用系统的业务线程会非常多, 随时会压垮所有的单线程垃圾收集器.
+Pauseless GC 是一款完全并行的垃圾收集器, 在任何时候都可以增加worker线程.
+Metronome 需要预测器(oracle)来判断未来的GC需求;
+在嵌入式系统中很容易实现预测器，因为这类系统干的事情基本上是确定的(程序和GC开销的衡量都是有限的)。
+而在服务器环境要执行的程序可就多了, 基本上什么时候发生GC是不可预测的。
+Metronome的业务线程利用率大约是50%.
+相比之下我们的业务线程利用率接近98%, 我们使用额外的CPU来执行垃圾收集工作.
+简单对比, Metronome的暂停时间提供了硬实时保证, 而Pauseless仅提供软实时保证。
+
 
 Our read-barrier is used for Baker-style relocation [5][23], where the loaded value is corrected before the mutator is allowed to use it. We focus collection efforts on regions which are known to be mostly dead, similar to Garbage-First [14]. Our mark phase uses an incremental update style instead of Snapshot-At-The-Beginning (SATB) style [30]. SATB requires a modestly expensive write-barrier which first does a read (and generally a series of dependent tests). The Pauseless collector does not require a write barrier.
 
-我们将读屏障用于 Baker-style 的重定位[5][23], 在业务线程使用之前, 加载值会被纠正. 我们将收集的目标集中于那些大部分对象已死亡的区域, 这一点类似于G1(见[14]), 在标记阶段使用增量更新的方式, 而不是快照方式(Snapshot-At-The-Beginning,SATB),见[30]. SATB需要使用一些昂贵的写屏障, 首先要读取(通常伴随一系列的相关测试)。Pauseless 收集器不需要使用写屏障。
+读屏障用于 Baker 风格的重定位(见[5][23]), 在允许业务线程使用加载的value前, 加载值已经被修正了.
+我们将垃圾收集的重点放在已知大部分对象已死的区域, 类似于Garbage-First收集器(见[14]).
+标记阶段使用增量更新方式, 不再使用快照方式(Snapshot-At-The-Beginning,SATB, 见[30]).
+快照方式需要使用开销较大的写屏障, 写之前还要先读取(通常伴随一连串的判断)。
+Pauseless 收集器则不需要使用写屏障。
+
 
 Concurrent GCs are available in most modern production JVMs; BEA's JRockit [7], SUN's HotSpot [28] and IBM's production JVM [27] all have concurrent collectors and we tested with the latest available versions of Java 1.4 from each vendor. However, in all cases these collectors are not the defaults. They appear to not be as stable as the parallel collectors and they sometimes put high overheads on mutator threads. For some of these collectors, worse-case transaction times were no better than the default collectors.
 
-并发GC在如今的大部分生产级JVM中都可以使用; BEA的JRockit(见[7]), SUN公司的HotSpot(见[28])，以及IBM的 production JVM([27]) 都自带了concurrent收集器, 我们测试了各家公司提供的 Java 1.4版本的最新收集器. 然而,这些收集器都不是默认收集器。他们似乎没有并行垃圾收集器稳定, 有时候会导致mutator线程非常高的开销. 这些收集器, 在最坏情况下, 事务的响应并不比默认的收集器好。
+如今大部分产品级JVM中都可以使用并发式垃圾收集器(Concurrent GC);
+例如 BEA的JRockit(见[7]), SUN公司的HotSpot(见[28])，以及IBM产品中附带的JVM([27]) 都自带了并发式垃圾收集器,
+但经我们测试，各家公司 Java 1.4 版本的JVM中. 并发收集器都不是默认配置。
+有可能是并发收集器没有并行收集器稳定, 并且有时还会在业务线程上引起巨大的开销.
+在最坏情况下, 某些并发收集器的性能还不如默认的收集器。
 
+
+
+
+-----------
 
 
 ## 3. HARDWARE SUPPORT
