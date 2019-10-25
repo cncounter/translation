@@ -37,7 +37,7 @@ Modern transactional response-time sensitive applications have run into practica
 
 Azul Systems has built a custom system (CPU, chip, board, and OS) specifically to run garbage collected virtual machines. The custom CPU includes a read barrier instruction. The read barrier enables a highly concurrent (no stop-the-world phases), parallel and compacting GC algorithm. The Pauseless algorithm is designed for uninterrupted application execution and consistent mutator throughput in every GC phase.
 
-Azul Systems 公司为此专门定制了一整套系统(包括CPU、芯片组、主板和操作系统)，用来运行具备垃圾收集算法的虚拟机。
+Azul Systems 公司为此专门定制了一整套系统(包括CPU、芯片组、主板和操作系统)，用来运行具备垃圾收集功能的虚拟机。
 定制的CPU内置了【读屏障指令】。 通过读屏障(read barrier)，来实现并行的、具有碎片整理功能的高并发(无STW停顿)垃圾收集算法。
 Pauseless GC 算法专为不间断运行的系统设计, 保证在各个GC阶段都能获得稳定的业务吞吐量。
 
@@ -104,7 +104,7 @@ Azul Systems has built a custom system (CPU, chip, board, and OS) specifically t
 
 Azul Systems 公司构建了一套专门定制的系统(包括CPU、芯片组、主板以及操作系统)，用来运行支持垃圾收集的虚拟机。定制的CPU内置了[读屏障指令]。读屏障(read barrier)用于支持高并发、并行化、具有内存碎片整理功能的GC算法。无停顿的GC算法非常简洁、高效(突变开销很小), 没有STW停顿(Stop-The-World pauses)。
 
-Azul Systems 公司为此专门定制了一整套系统(包括CPU、芯片组、主板和操作系统)，用来运行具备垃圾收集算法的虚拟机。
+Azul Systems 公司为此专门定制了一整套系统(包括CPU、芯片组、主板和操作系统)，用来运行具备垃圾收集功能的虚拟机。
 定制的CPU内置了【读屏障指令】。 通过读屏障(read barrier)，来实现并行的、具有碎片整理功能的高并发垃圾收集算法。
 Pauseless GC 算法简洁高效（业务线程的额外开销很小），没有STW停顿(Stop-The-World pauses)。
 
@@ -175,11 +175,6 @@ Concurrent GCs are available in most modern production JVMs; BEA's JRockit [7], 
 在最坏情况下, 某些并发收集器的性能还不如默认的收集器。
 
 
-
-
------------
-
-
 ## 3. HARDWARE SUPPORT
 
 ## 3. 硬件支持
@@ -190,19 +185,36 @@ Concurrent GCs are available in most modern production JVMs; BEA's JRockit [7], 
 
 Azul Systems has built a custom system (CPU, chip, board, and OS) specifically to run garbage collected virtual machines such as Java; the JVM is based on SUN's HotSpot [28]. We describe actual production hardware, which had real costs to design, develop and debug. Thus we were strongly motivated to design simple and cost-effective hardware. In the end, the custom GC hardware we built was quite minor.
 
-Azul Systems 公司专门构建了一套定制系统（CPU，芯片组，电路板和操作系统），用于运行像Java这样支持垃圾收集的虚拟机; 其中JVM基于SUN公司的HotSpot([28])。我们描述了实际的生产级硬件，在设计，开发和调试过程中都会产生很多实际的成本。因此，我们非常需要设计出一种既简单又要有性价比的硬件设备。最终的结果是，我们构建并定制出来一款非常精巧的GC硬件。
+Azul Systems 公司专门定制了一整套系统(包括CPU、芯片组、主板和操作系统)，专门用于运行具备垃圾收集功能的虚拟机（例如Java）。
+JVM基于SUN公司的HotSpot(见[28])。
+我们都知道, 实际的产品级硬件，在设计，开发和调试阶段都需要投入很多成本。
+因此，我们迫切需要设计出一种简单而又具备性价比的硬件设备。
+最终我们定制并构建出来的是一款小小的GC硬件。
 
 The basic CPU core is a 64-bit RISC optimized to run modern managed languages like Java. It makes an excellent JIT target but does not directly execute Java bytecodes. Each chip contains 24 CPUs, and up to 16 such chips can be made cache-coherent; the maximum sized system has 384 CPU cores and 256G of memory in a flat, symmetric memory space. The box runs a custom OS and can run as many JVMs as memory allows. A single JVM can dynamically scale to use all CPUs and all available memory.
 
-使用经过优化的64位RISC架构CPU核心，可在上面运行像Java这样的现代托管语言。可以编译出一套卓越的JIT目标代码，并不直接执行Java字节码。每个芯片组包含24个CPU，实现缓存一致的前提下, 最多可升级到16个这样的芯片组级联; 所以系统的最大容量为384个CPU内核, 256G内存的对称内存空间。这套系统运行定制的操作系统，只要内存允许，可以同时运行很多个JVM。单个JVM可以根据需要、使用所有的CPU和可用内存。
+CPU核心是优化后的64位RISC架构，可在上面运行Java等语言。
+编译出性能更好的JIT代码，而不是直接执行Java字节码。
+每个主板包含24个CPU，在实现缓存一致的前提下, 同一套系统最多可集成16张主板;
+所以最大容量为384个CPU内核, 256G的平铺对称内存空间。
+这套系统运行的操作系统也进行了专门定制，只要内存允许，可以同时运行很多个JVM。
+其中每个JVM都可以在必要时进行动态扩展, 以使用所有CPU和内存。
+
 
 The hardware supports a number of fast user-mode trap handlers. These trap handlers can be entered and left in a handful of clock cycles (4-10, depending) and are frequently used by the GC algorithm; fast traps are key. The hardware also supports a fast cooperative preemption mechanism via interrupts that are taken only on user-selected instructions.
 
-硬件支持多个快速用户模式的陷阱处理器。这些陷阱处理器可以在进入后保留一定的时钟周期（4-10个），并且会经常被GC算法使用; 快速陷阱是其中的关键。通过仅在用户选择的指令中断, 这套硬件还支持快速协作抢占机制。
+硬件支持多个快速用户模式的陷阱处理程序。
+这些陷阱处理程序可以在几个时钟周期内进入和离开（取决于具体情况,一般4-10个CPU时钟），会被GC算法频繁地调用;
+快速陷阱是其中的关键。 硬件还支持仅在用户选择的指令上发生中断,来支持快速协作抢占机制。
+
+
+
+
+-----------
 
 ### 3.2 OS-level Support
 
-### 3.2 操作系统调整与支持
+### 3.2 操作系统层级的调整
 
 The hardware TLB supports an additional privilege level, the GC-mode, between the usual user- and kernel-modes. Usage of this GC-mode is explained in the GC algorithm section. Several of the fast user-mode traps start the trap handler in GC-mode instead of user-mode. The TLB also supports 1 megabyte pages; the 1M page thus becomes the standard unit of work for the Pauseless GC algorithm and appears frequently below.
 
