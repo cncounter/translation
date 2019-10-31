@@ -28,9 +28,11 @@ Mac 启动后会有一个小骨头的图标。 然后可以打开 Web UI. 进入
 需要注意的是 Web UI 里面 CTRL+F 查找配置并不太方便，可能是为了提高性能使用了懒加载技术。
 
 
-StatsDClient 通过UDP协议连接 StatsD 服务器。好处是即使 StatsD 挂掉，也不影响应用程序的执行。
+`StatsDClient` 通过UDP协议连接 StatsD 服务器。好处是即使 StatsD 挂掉，也不影响应用程序的执行。
 
 DogStatsD 是 Datadog Agent 内置的一款 StatsD 实现。
+
+`NonBlockingStatsDClient` 是Java实现类。
 
 
 配置:
