@@ -218,12 +218,17 @@ The hardware supports a number of fast user-mode trap handlers. These trap handl
 
 The hardware TLB supports an additional privilege level, the GC-mode, between the usual user- and kernel-modes. Usage of this GC-mode is explained in the GC algorithm section. Several of the fast user-mode traps start the trap handler in GC-mode instead of user-mode. The TLB also supports 1 megabyte pages; the 1M page thus becomes the standard unit of work for the Pauseless GC algorithm and appears frequently below.
 
-硬件TLB支持额外的权限级别, 即用户模式和内核模式之间多了一个GC模式(GC-mode)。在这里GC模式用于GC算法部分。有一些快速用户模式陷阱将会在GC模式下启动陷阱处理程序,而不是用户模式。TLB还支持1MB的内存页; 并且1MB的内存页是Pauseless GC算法的标准工作单元，下文会经常提到。
+硬件TLB在通常的用户模式(user-mode)和内核模式(kernel-mode)之间支持附加的特权级别，即GC模式(GC-mode)。
+下文中GC算法章节中说明了此GC模式的用法。 多个快速用户模式陷阱会以GC模式启动, 而不再以用户模式启动陷阱处理程序。
+TLB还支持1MB的内存页； 1M页面因此成为Pauseless GC算法的标准工作单元，下文会经常提到。
 
 
 The TLB is managed by the OS in the usual ways, with normal kernel-level TLB trap handlers being invoked when normal loads and stores fail an address translation. Setting the GC privilege mode bit is done by the JVM via calls into the OS. TLB violations on GC-protected pages generate fast user-level traps instead of OS level exceptions.
 
-TLB由操作系统以常规方式管理，当正常的加载和存储失败导致需要进行地址转换时，调用正常的内核级TLB陷阱处理程序。GC权限模式标志位的设置由JVM调用操作系统API来完成。受GC保护的内存页上的违规TLB访问, 会生成快速用户级陷阱，而不是操作系统级异常。
+操作系统以常规方式管理TLB，在正常的 load 和 store 失败需要进行地址转换，调用正常的内核级TLB陷阱处理程序。
+JVM通过调用操作系统API来设置GC特权模式标志位。
+受GC保护的内存页上的违规TLB访问会生成快速的用户级别陷阱，而不是操作系统级别的异常。
+
 
 HotSpot supports a notion of GC safepoints, code locations where we have precise knowledge about register and stack locations [1]. The hardware supports a fast cooperative preemption mechanism via interrupts that are taken only on user-selected instructions, allowing us to rapidly stop individual threads only at safepoints. Variants of some common instructions (e.g., backwards branches, function entries) are flagged as safepoints and will check for a pending per-CPU safepoint interrupt. If a safepoint interrupt is pending the CPU will take an exception and the OS will call into a user-mode safepoint-trap handler. The running thread, being at a known safepoint, will then save its state in some convenient format and call the OS to yield. When the OS wants to preempt a normal Java thread, it sets this bit and briefly waits for the thread to yield. If the thread doesn't report back in a timely fashion it gets preempted as normal.
 
