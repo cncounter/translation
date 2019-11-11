@@ -258,32 +258,56 @@ We also make use of Checkpoints, points where we cannot proceed until all mutato
 STW暂停和检查点都使用同样的硬件和操作系统支持。
 
 
-
------------
-
 ### 3.3 Hardware Read Barrier
 
 ### 3.3 硬件实现读屏障
 
 In addition to the standard RISC load/store instruction set, the CPUs have a few custom instructions to aid in object allocation and collection. In this paper we focus on the hardware read barrier. It is instructive to note that this barrier strongly resemble those from 20 years ago [23].
 
-除了标准RISC的 load/store指令集之外，CPU还支持一些自定义指令, 以辅助对象分配和收集。在本文中，我们将重点介绍硬件读屏障。值得一提的是，这种读屏障和20年前的极为相似(见[23])。
+除了RISC的标准指令 load/store 外， CPU还具有一些自定义指令来辅助进行对象分配和回收。
+在本文中，我们重点介绍硬件读屏障(read barrier)。
+值得一提的是，这个读屏障和20年前非常相似(见[23])。
+
 
 The read barrier performs a number of checks and is used in different ways during different GC phases. Its behavior is described briefly here, and then again in greater depth in the context of the GC algorithm in the next section. The read barrier is issued after a load instruction and executes in 1 clock. There is a standard load-use penalty which the compiler attempts to schedule around.
 
-读屏障执行一系列的检查，在不同的GC阶段都以不同的方式使用。本节简要介绍它的行为，下一节会继续在GC算法的上下文中深入地解释它的行为。读屏障在load指令之后发出，并在1个时钟周期内执行。编译器在尝试安排时会存在标准的 load-use 惩罚。
+在GC的各个阶段, 以不同的方式使用读屏障来执行多项检查。
+本节简要介绍读屏障的行为，下一节在GC算法的上下文中会再次进行更深入的讲解。
+在 load 指令之后触发读屏障指令，并在1个时钟周期内执行。
+编译器在尝试安排时会存在一次标准的 load-use 惩罚。
+
 
 The read barrier “looks like” a standard load instruction, in that it has a base register, an offset and a value register. The base and offset are not used by the barrier checks but are presented to the trap handler and are used in “self healing”. The value in the value register is assumed to be a freshly loaded ref, a heap pointer, and is cycled through the TLB just like a base address would be. If the ref refers to a GC-protected page a fast usermode trap handler is invoked, hereafter called the GC-trap. The read barrier ignores null refs. Unlike a Brooks-style [10] indirection barrier there is no null check, no memory access, no loaduse penalty, no extra word in the object header and no cache footprint. This behavior is used during the concurrent Relocate phase.
 
-读屏障“看起来像”一个标准的load指令，因为它具有基址寄存器(base register)，偏移量(offset)和值寄存器(value register)。基址寄存器和偏移量并不是障碍检查使用，而是提供给陷阱处理程序，以及用于“自我修复”。值寄存器中的值假定为新加载的引用，也就是堆内存指针，并且像基地址一样循环通过TLB。如果引用指向了受GC保护的页面，则调用快速用户模式陷阱处理程序，下文称为GC陷阱。读屏障忽略null引用。与Brooks风格的间接屏障不同(见[10])，读屏障没有null检查，没有内存访问，没有loaduse惩罚，对象头中也没有额外的字，也没有缓存占用空间。此行为在并发重定位阶段（concurrent Relocate phase）使用。
+读屏障看起来有点像标准的 load 指令，因为它带着基址寄存器(base register)，偏移量(offset)和值寄存器(value register)。
+屏障检查并不使用基址寄存器和偏移量，他们是提供给陷阱处理程序用来进行“自我修复”的。
+值寄存器中的数据，预定是新加载的 ref，也就是heap指针， 并且像基本地址一样在TLB中循环。
+如果 ref 指向受GC保护的页面，则会调用快速用户模式陷阱处理程序，下文称为GC陷阱。
+读屏障会忽略null引用。
+Brooks(见[10])间接屏障与读屏障不同，它没有null检查，没有内存访问，没有loaduse惩罚，对象头中也没有多余的字，也没有缓存占用。
+在并发重定位阶段（concurrent Relocate phase）使用此行为。
 
 We also steal 1 address bit from the 64-bit address space; the hardware ignores this bit (masks it off). This bit is called the Not-Marked-Through (NMT) bit and is used during the concurrent Marking phase. The hardware maintains a desired value for this bit and will trap to the NMT-trap if the ref has the wrong flavor. Null refs are ignored here as well.
 
-我们还从64位地址空间中截取了1个bit; 硬件会忽略这个bit（将其屏蔽掉）。该位称为未标记通过位（NMT, Not-Marked-Through），在并发标记阶段使用。硬件维护此bit的值, 如果引用可能有问题，则将陷阱链接到NMT陷阱。同样会忽略 null 引用。
+我们还从64位地址空间中截取了1个bit; 硬件会忽略该bit（将其屏蔽掉）。
+该位称为未标记通过位（NMT, Not-Marked-Through）, 在并发标记阶段使用。
+硬件将为此bit保持所需的值, 如果引用可能有问题，则将捕获到NMT陷阱。 这里同样会忽略 null 引用。
+
 
 Note that the read barrier behavior can be emulated on standard hardware at some cost. The GC protection check can be emulated with standard page protection and the read barrier emulated with a dead load instruction. The NMT check can be emulated by double-mapping memory and changing page protections to reflect the expected NMT bit value. However, using the TLB to check ref privileges means that a failure will trigger a kernellevel TLB trap instead of a fast user-mode trap. Turning this into a user-mode trap will generally have some substantial cost and may require altering the OS. Our read barrier instruction will not trap on a null ref, and null refs are quite common. Emulating this on standard hardware will require a conditional test in the barrier code or mapping page 0. This in turn precludes using normal memory operations from doubling as null-pointer checks, a common optimization in modern JVMs.
 
-请注意，在标准的硬件平台上，也可以模拟读屏障行为，但会有一定的开销。GC保护检查可以使用标准的页保护技术来模拟，读屏障则使用静态加载指令(dead load instruction)来模拟。NMT检查的模拟，可以通过双映射内存，加上更改页保护以反映预期的NMT位来实现。但是，使用TLB检查引用权限，失败则会触发内核级的TLB陷阱，而不是快速用户模式陷阱。将其转换为用户模式陷阱通常会产生一些实质性的开销，可能还需要修改操作系统代码。我们的读屏障指令不会陷入空引用，而空引用却很常见；在标准硬件上模拟这一点, 需要在屏障代码或者0号映射页面上进行条件测试。这反过来阻止了双倍的空指针检查, 这是现代JVM中常见的优化。
+请注意，可以损失一定的成本开销在标准硬件平台上模拟读屏障行为。
+使用标准页面保护来模拟GC保护检查，
+读屏障则使用静态加载指令(dead load instruction)来模拟。
+NMT检查的模拟，可以通过双重映射内存，加上更改页面保护来实现, 以反映预期的NMT位。
+但是，使用TLB来检查引用的权限，意味着失败则会触发内核级TLB陷阱，而不是快速用户模式陷阱。
+将其转换为用户模式陷阱通常会产生大量的开销，可能还需要修改操作系统代码。
+我们的读屏障指令不会捕获 null 引用，而且在Java中null引用太常见了；
+在标准硬件上仿真模拟, 需要在屏障代码上进行条件测试, 或者映射0号页面。
+这又将使用双倍的常规内存操作来进行空指针检查（这阻止了现代JVM中的常见优化）。
+
+
+-----------
 
 ## 4. THE PAUSELESS GC ALGORITHM
 
