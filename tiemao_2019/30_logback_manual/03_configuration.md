@@ -20,20 +20,20 @@ We start by presenting ways for configuring logback, with many example configura
 
 ## Configuration in logback
 
-## logback的配置
+## logback 配置
 
 Inserting log requests into the application code requires a fair amount of planning and effort. Observation shows that approximately four percent of code is dedicated to logging. Consequently, even a moderately sized application will contain thousands of logging statements embedded within its code. Given their number, we need tools to manage these log statements.
 
 
-将日志请求加入程序代码中需要大量的计划和工作。 观察表明，大约百分之四的代码专用于日志记录。 因此，即使是普通规模的应用程序也会在代码中包含数千行日志记录语句。 给定它们的数量，我们需要工具来管理这些日志语句。
+在程序代码中增加日志请求需要很多工作量。 研究显示，大约百分之四的代码专用于记录日志。 因此，即使普通规模的应用也会在代码中包含上千行日志记录代码。 既然知道了有这么大的数量，我们需要使用工具来管理这些日志代码。
 
 Logback can be configured either programmatically or with a configuration script expressed in XML or Groovy format. By the way, existing log4j users can convert their `log4j.properties` files to `logback.xml` using our [PropertiesTranslator](http://logback.qos.ch/translator/) web-application.
 
-可以通过编程、或者XML格式、Groovy格式的脚本来配置Logback。 顺便说一下，现有的log4j用户可以使用我们的[PropertiesTranslator]（http://logback.qos.ch/translator/）网络应用将其log4j.properties文件转换为logback.xml。
+可以通过编程、或者XML格式、Groovy格式的脚本来配置Logback。 顺便说一下，现有的log4j用户可以使用 [`PropertiesTranslator`]（http://logback.qos.ch/translator/）将 `log4j.properties` 文件转换为 `logback.xml`。
 
 Let us begin by discussing the initialization steps that logback follows to try to configure itself:
 
-让我们开始讨论登录后尝试进行自我配置的初始化步骤：
+先来看看 Logback 的初始化步骤：
 
 1. Logback tries to find a file called `logback-test.xml` [in the classpath](http://logback.qos.ch/faq.html#configFileLocation).
 2. If no such file is found, logback tries to find a file called `logback.groovy` [in the classpath](http://logback.qos.ch/faq.html#configFileLocation).
@@ -41,11 +41,27 @@ Let us begin by discussing the initialization steps that logback follows to try 
 4. If no such file is found, [service-provider loading facility](http://docs.oracle.com/javase/6/docs/api/java/util/ServiceLoader.html) (introduced in JDK 1.6) is used to resolve the implementation of [`com.qos.logback.classic.spi.Configurator`](http://logback.qos.ch/xref/ch/qos/logback/classic/spi/Configurator.html) interface by looking up the file `META-INF\services\ch.qos.logback.classic.spi.Configurator` in the class path. Its contents should specify the fully qualified class name of the desired `Configurator` implementation.
 5. If none of the above succeeds, logback configures itself automatically using the [`BasicConfigurator`](http://logback.qos.ch/xref/ch/qos/logback/classic/BasicConfigurator.html) which will cause logging output to be directed to the console.
 
+1. Logback 先在 classpath 路径中查找名为 `logback-test.xml` 的文件。
+2. 如果找不到， 则在 classpath 路径中查找名为 `logback.groovy` 的文件。
+3. 如果找不到， 则在 classpath 路径中查找名为 `logback.xml` 的文件。
+4. 如果找不到， 则使用 [service-provider加载工具](http://docs.oracle.com/javase/6/docs/api/java/util/ServiceLoader.html), 在 classpath 中查找 `META-INF\services\ch.qos.logback.classic.spi.Configurator` 文件, 以解析 [`com.qos.logback.classic.spi.Configurator`](http://logback.qos.ch/xref/ch/qos/logback/classic/spi/Configurator.html) 接口的实现。 其内容应指定所需 `Configurator` 实现的完全限定名。
+5. 如果以上方法均未成功， 则使用 [`BasicConfigurator`](http://logback.qos.ch/xref/ch/qos/logback/classic/BasicConfigurator.html) 进行自动配置， 也就是直接将日志信息输出到控制台。
+
 The last step is meant as last-ditch effort to provide a default (but very basic) logging functionality in the absence of a configuration file.
+
+最后一步的目的, 是在没有任何配置文件的情况下, 提供非常基本的日志功能。
 
 If you are using Maven and if you place the `logback-test.xml` under the `src/test/resources` folder, Maven will ensure that it won't be included in the artifact produced. Thus, you can use a different configuration file, namely `logback-test.xml` during testing, and another file, namely, `logback.xml`, in production.
 
+如果使用 Maven， 并且在 `src/test/resources` 目录下放置了文件 `logback-test.xml`， 则 Maven 不会将测试资源包含到打包生成的文件中。
+因此，可以放心地在单元测试中使用 `logback-test.xml`配置文件， 而在生产环境中使用 `logback.xml` 文件。
+
 `FAST START-UP` It takes about 100 miliseconds for Joran to parse a given logback configuration file. To shave off those miliseconds at aplication start up, you can use the service-provider loading facility (item 4 above) to load your own custom `Configurator` class with [BasicConfigrator](http://logback.qos.ch/xref/ch/qos/logback/classic/BasicConfigurator.html) serving as a good starting point.
+
+在 Joran 中, 解析给定的logback配置文件只需要 100 毫秒左右。
+要在程序启动时减少这个时间， 可以使用 service-provider 加载工具（对应前面的第4步）, 通过 [BasicConfigrator](http://logback.qos.ch/xref/ch/qos/logback/classic/BasicConfigurator.html) 加载自定义的 `Configurator` 类。
+
+--------
 
 ### Automatically configuring logback
 
