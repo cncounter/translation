@@ -307,15 +307,25 @@ NMT检查的模拟，可以通过双重映射内存，加上更改页面保护�
 这又将使用双倍的常规内存操作来进行空指针检查（这阻止了现代JVM中的常见优化）。
 
 
------------
-
 ## 4. THE PAUSELESS GC ALGORITHM
 
 ## 4. Pauseless GC 算法
 
 The Pauseless GC Algorithm is divided into three main phases: Mark, Relocate and Remap. Each phase is fully parallel and concurrent. Mark bits go stale; objects die over time and the mark bits do not reflect the changes. The Mark phase is responsible for periodically refreshing the mark bits. The Relocate phase uses the most recently available mark bits to find pages with little live data, to relocate and compact those pages and to free the backing physical memory. The Remap phase updates every relocated pointer in the heap.
 
-Pauseless GC算法分为三个主要阶段：Mark（标记），Relocate(重定位)和Remap(重映射)。每个阶段都是完全并行和并发的。标记位变得陈旧;对象随时间死亡，标记位不反映变更。标记阶段负责定期刷新标记位。重定位阶段使用最近可用的标记位来查找具有少量存活对象的页面，以重定位和压缩这些页面, 释放物理内存。重映射阶段更新堆中的每个重定位指针。
+重定位阶段使用最近可用的标记位来查找具有少量存活对象的页面，以重定位和压缩这些页面, 释放物理内存。重映射阶段更新堆中的每个重定位指针。
+
+Pauseless GC 算法分为三个主要阶段：标记(`Mark`)，重定位(`Relocate`)和重映射(`Remap`)。 每个阶段都是完全并行和并发执行的。
+标记位(Mark bits)慢慢变得陈旧； 随着对象在一段时间后死亡，但标记位却没能反映出这种变化。
+`标记` 阶段, 负责定时刷新标记位。
+`重定位` 阶段, 使用最新的标记位数据, 来查找只有少量存活数据的页面, 以重定位和压缩这些页面，并并释放底层的物理内存。
+`重映射` 阶段, 主要是更新堆内存中的每一个重定位指针。
+
+> 译者注: `并行`指GC线程之间并行执行, `并发`指GC线程与业务线程之间并发执行。
+
+
+
+-----------
 
 **There is no “rush” to finish any given phase.** No phase places a substantial burden on the mutators that needs to be relieved by ending the phase quickly. There is no “race” to finish some phase before collection can begin again – Relocation runs continuously and can immediately free memory at any point. Since all phases are parallel, GC can keep up with any number of mutator threads simply by adding more GC threads. Unlike other incremental update algorithms, there is no re-Mark or final- Mark phase; the concurrent Mark phase will complete in a single pass despite the mutators busily modifying the heap. GC threads do compete with mutator threads for CPU time. On Azul's hardware there are generally spare CPUs available to do GC work. However, “at the limit” some fraction of CPUs will be doing GC and will not be available to the mutators.
 
