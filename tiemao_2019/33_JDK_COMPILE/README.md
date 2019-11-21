@@ -130,7 +130,7 @@ hg clone http://hg.openjdk.java.net/jdk8u/jdk8u
 0.1 安装JDK8作为启动JDK。
 
 ```
-yum install -y java-1.8.0-openjdk
+yum install -y java-1.8.0-openjdk*
 
 ```
 
@@ -138,24 +138,24 @@ yum install -y java-1.8.0-openjdk
 0.2 需要先安装一些依赖:
 
 ```
-yum install -y alsa-lib-devel cups-devel libX* gcc gcc-c++ freetype-devel libstdc++-static ant make
+yum groupinstall -y "Development Tools"
+
+yum install -y alsa-lib-devel cups-devel libX* gcc gcc-c++ freetype-devel libstdc++-static ant make autoconf which
 
 ```
 
 
-进入源码目录：
+进入源码目录, 并执行 `configure` 文件：
 
 ```
 cd /usr/local/
-cd jdk8u60
+cd jdk
+bash configure
 ```
 
-给 `configure` 文件增加可执行权限并执行：
 
-```
-chmod +x configure
-./configure
-```
+JDK 需要使用 GNU Bash.  并不支持其他 shell.
+
 
 
 然后，尝试执行 `make` 命令，
