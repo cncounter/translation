@@ -14,11 +14,10 @@ that provides methods that perform addition, subtraction, multiplication, divisi
 
 `NitPickyMath`
 
-performs these mathematical operations the same as the normal operations offered by Java's "+", "-", "*", "/", and "%" operators, except the methods in
+performs these mathematical operations the same as the normal operations offered by Java's `+`, `-`, `*`, `/`, and `%` operators, except the methods in
 
 `NitPickyMath`
 
-**[ Learn Java from beginning concepts to advanced design patterns in this comprehensive 12-part course! ]**
 
 throw checked exceptions on overflow, underflow, and divide-by-zero conditions. The Java virtual machine will throw an
 
@@ -67,14 +66,14 @@ The main bytecode sequence for remainder:
    3 ireturn               // Return int on top of stack (the remainder)
 The bytecode sequence for the catch (ArithmeticException) clause:
    4 pop                   // Pop the reference to the ArithmeticException
-                           // because it isn't used by this catch clause. 
+                           // because it isn't used by this catch clause.
    5 new #5 <Class DivideByZeroException>
                            // Create and push reference to new object of class
                            // DivideByZeroException.
 DivideByZeroException
    8 dup           // Duplicate the reference to the new
-                           // object on the top of the stack because it 
-                           // must be both initialized 
+                           // object on the top of the stack because it
+                           // must be both initialized
                            // and thrown. The initialization will consume
                            // the copy of the reference created by the dup.
    9 invokenonvirtual #9 <Method DivideByZeroException.<init>()V>
@@ -82,7 +81,7 @@ DivideByZeroException
                            // to initialize it. This instruction
                            // will pop the top reference to the object.
   12 athrow                // Pop the reference to a Throwable object, in this
-                           // case the DivideByZeroException, 
+                           // case the DivideByZeroException,
                            // and throw the exception.
 ```
 
@@ -96,7 +95,7 @@ Exception table:
      0     4     4   <Class java.lang.ArithmeticException>
 ```
 
-The above exception table indicates that from pc offset zero through three, inclusive, `ArithmeticException` is caught. The try block's endpoint value, listed in the table under the label "to", is always one more than the last pc offset for which the exception is caught. In this case the endpoint value is listed as four, but the last pc offset for which the exception is caught is three. This range, zero to three inclusive, corresponds to the bytecode sequence that implements the code inside the try block of `remainder`. The target listed in the table is the pc offset to jump to if an `ArithmeticException` is thrown between the pc offsets zero and three, inclusive.
+The above exception table indicates that from pc offset zero through three, inclusive, `ArithmeticException` is caught. The try block's endpoint value, listed in the table under the label `to`, is always one more than the last pc offset for which the exception is caught. In this case the endpoint value is listed as four, but the last pc offset for which the exception is caught is three. This range, zero to three inclusive, corresponds to the bytecode sequence that implements the code inside the try block of `remainder`. The target listed in the table is the pc offset to jump to if an `ArithmeticException` is thrown between the pc offsets zero and three, inclusive.
 
 If an exception is thrown during the execution of a method, the Java virtual machine searches through the exception table for a matching entry. An exception table entry matches if the current program counter is within the range specified by the entry, and if the exception class thrown is the exception class specified by the entry (or is a subclass of the specified exception class). The Java virtual machine searches through the exception table in the order in which the entries appear in the table. When the first match is found, the Java Virtual Machine sets the program counter to the new pc offset location and continues execution there. If no match is found, the Java virtual machine pops the current stack frame and rethrows the same exception. When the Java virtual machine pops the current stack frame, it effectively aborts execution of the current method and returns to the method that called this method. But instead of continuing execution normally in the previous method, it throws the same exception in that method, which causes the Java virtual machine to go through the same process of searching through the exception table of that method.
 
@@ -174,7 +173,7 @@ The `playball` method loops forever. Every fourth pass through the loop, playbal
 
 The Java virtual machine checks the exception table and discovers that there is indeed an applicable entry. The entry's valid range is from 2 to 15, inclusive, and the exception is thrown at pc offset 12. The exception caught by the entry is of class `Ball`, and the exception thrown is of class `Ball`. Given this perfect match, the Java virtual machine pushes the thrown exception object onto the stack, and continues execution at pc offset 19. The catch clause merely resets *int* *i* to 0, and the loop starts over.
 
-To drive the simulation, just press the "Step" button. Each press of the "Step" button will cause the Java virtual machine to execute one bytecode instruction. To start the simulation over, press the "Reset" button. To cause the Java virtual machine to repeatedly execute bytecodes with no further coaxing on your part, press the "Run" button. The Java virtual machine will then execute the bytecodes until the "Stop" button is pressed. The text area at the bottom of the applet describes the next instruction to be executed. Happy clicking.
+To drive the simulation, just press the `Step` button. Each press of the `Step` button will cause the Java virtual machine to execute one bytecode instruction. To start the simulation over, press the `Reset` button. To cause the Java virtual machine to repeatedly execute bytecodes with no further coaxing on your part, press the `Run` button. The Java virtual machine will then execute the bytecodes until the `Stop` button is pressed. The text area at the bottom of the applet describes the next instruction to be executed. Happy clicking.
 
 Bill Venners has been writing software professionally for 12 years. Based in Silicon Valley, he provides software consulting and training services under the name Artima Software Company. Over the years he has developed software for the consumer electronics, education, semiconductor, and life insurance industries. He has programmed in many languages on many platforms: assembly language on various microprocessors, C on Unix, C++ on Windows, Java on the Web. He is author of the book: Inside the Java Virtual Machine, published by McGraw-Hill.
 
@@ -195,4 +194,3 @@ Bill Venners has been writing software professionally for 12 years. Based in Sil
 *   [Objects and Arrays](http://www.javaworld.com/javaworld/jw-12-1996/jw-12-hood.html) -- Describes how the Java virtual machine deals with objects and arrays, and discusses the relevant bytecodes.
 
 <https://www.javaworld.com/article/2076868/learn-java/how-the-java-virtual-machine-handles-exceptions.html>
-
