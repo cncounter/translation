@@ -1,22 +1,46 @@
 # Mastering Java Bytecode at the Core of the JVM
 
+# 深入JVM核心系列之: 掌握Java字节码
 
 
 ## Why Should I Know About Java Bytecode?
 
 > Whether you are a Java developer or architect, CxO or simply the user of a modern smart phone, `Java bytecode` is in your face, quietly supporting the foundation of the Java Virtual Machine (JVM).
 
+## 哪些人应该了解Java字节码？
+
+> 无论是Java开发人员还是架构师，CxO，还是智能手机的用户， 都涉及到了Java字节码(`bytecode`)，他们默默地支撑着 JVM。
+
+
 Directors, executives and non-technical folks can take a breather here: All they need to know is that while their development teams are building and preparing to deploy the next amazing version of their software, Java bytecode is silently pumping through the JVM platform.
 
-`Put simply`, Java bytecode is the intermediate representation of Java code (i.e. class files) and it is executed inside the JVM – so why should you care about it? Well, because you cannot run your entire development ecosystem without Java bytecode telling it all what to do, especially how to treat and define the code that Java developers are writing.
+董事，高管和非技术人员看到这里可以安下心来： 你们需要知道，尽管开发团队正在构建和准备下一个伟大的系统版本，但JVM平台上正在平稳地执行Java字节码。
+
+**Put simply**, Java bytecode is the intermediate representation of Java code (i.e. class files) and it is executed inside the JVM – so why should you care about it? Well, because you cannot run your entire development ecosystem without Java bytecode telling it all what to do, especially how to treat and define the code that Java developers are writing.
+
+
+**简而言之**， 字节码是Java代码编译后的中间表示方式，JVM必须依靠它才能执行。 那为什么我们要掌握它呢？ Well，如果没有Java字节码来表述所有的操作，整个Java生态系统就跑不起来，程序员编写的代码也就没有了用武之地。 特别是需要加深基本功的Java开发人员更需要理解字节码。
 
 `From a technical POV`, Java bytecode is the code set used by the Java Virtual Machine that is JIT-compiled into native code at runtime. Without Java bytecode behind the scenes, the JVM would not be able to compile and mirror the non-bytecode Java code developers write to add new features, fix bugs and produce beautiful apps.
 
+
+**从技术的角度看**， Java字节码是Java虚拟机使用的代码集，在运行时被JIT编译为本机机器代码。 如果没有Java字节码的支撑，则JVM将无法编译和映射开发人员编写的Java代码， 也就不能添加新功能，修复bug, 也无法构建精美的应用系统。
+
 Many IT professionals might not have had the time to goof around with assembler or machine code, so `Java bytecode` can seem like an obscure piece of low-level magic. But, as you know, sometimes things go really wrong and understanding what is happening at the very foundation of the JVM may be what stands between you and solving the problem at hand.
+
+
+随着软件行业的生态越来越庞大，很多技术专家也没有精力去研究汇编或者机器代码，因此Java字节码就充当了一种底层语言的角色。
+但有经验的开发者都知道，业务系统总不可能没有BUG，了解JVM的基础，会在排查问题和分析错误时非常有用。
 
 In this RebelLabs report you will learn how to read and write JVM bytecode directly, so as to better understand how the runtime works, and be able to disassemble key libraries that you depend on.
 
+
+本文带你学习如何直接读写JVM字节码，以更好地了解运行时的工作机制，并实践如何反编译第三方类库。
+
 In addition to getting the skinny on Java bytecode, we interviewed bytecode specialists [Cédric Champeau](https://twitter.com/cedricchampeau) and [Jochen Theodorou](http://blackdragsview.blogspot.cz/) working on the [Groovy](http://groovy.codehaus.org/) ecosystem at SpringSource, and tech lead [Andrey Breslav](https://twitter.com/abreslav) working on [Kotlin](http://kotlin.jetbrains.org/), a newcomer to the JVM language party, from JetBrains.
+
+
+除了简单介绍Java字节码，我们还采访了SpringSource 中 [Groovy](http://groovy.codehaus.org/) 生态系统的字节码专家[Cédric Champeau](https://twitter.com/cedricchampeau) and [Jochen Theodorou](http://blackdragsview.blogspot.cz/)，以及 [Kotlin](http://kotlin.jetbrains.org/) 技术负责人 [Andrey Breslav](https://twitter.com/abreslav)， 他是来自JetBrains的，刚加入JVM语言party。
 
 We will cover the following topics:
 
@@ -30,6 +54,19 @@ So, get ready for your journey to the center of the JVM, and don’t forget your
 
 - [Part I: A Gentle Introduction to Java Bytecode]()
 - [Part II: Getting Started with ASM]()
+
+我们将涵盖以下主题：
+
+-如何获取字节码清单
+-如何读取字节码
+-编译器如何映射语言结构：局部变量，方法调用，条件逻辑
+-ASM简介
+-字节码如何在其他JVM语言（如Groovy和Kotlin）中工作
+
+因此，请准备好进入JVM中心的旅程，并且不要忘记您的编译器;-)
+
+-[第一部分：Java字节码简介]（）
+-[第二部分：ASM入门]（）
 
 
 
