@@ -302,15 +302,35 @@ The accessor flags are also generated for methods, but we can also see how deep 
 
 ### The JVM as a stack machine
 
+### JVM就是一个栈机器
+
 To understand the details of the bytecode, we need to have an idea of the model of execution of the bytecode. A JVM is a stack-based machine. Each thread has a JVM stack which stores frames. Every time a method is invoked a frame is created. A frame consists of an operand stack, an array of local variables, and a reference to the runtime constant pool of the class of the current method. We have seen all this in our initial example, the disassembled Main class.
+
+要了解字节码的细节，我们需要对字节码的执行模型有所了解。 JVM是一款基于栈的计算机。
+每个线程都有一个独属于自己的线程栈(JVM stack)，用于存储 栈帧(Frame)。
+每调用一个方法，就会创建一个栈帧。
+`栈帧` 由 `操作数栈`， `局部变量数组` 以及一个`class引用`组成(指向运行时常量池中当前方法对应的class）。
+我们在前面反编译的那个示例中已经看到这些内容。
+
 
 ![JVM stack machine main class](https://jrebel.com/wp-content/uploads/2013/08/JVM-stack-machine.jpg)
 
 The array of local variables, also called the local variable table, contains the parameters of the method and is also used to hold the values of the local variables. The size of the array of local variables is determined at compile time and is dependent on the number and size of local variables and formal method parameters.
 
+
+`局部变量数组` 也称为`局部变量表`, 包含了方法的参数，并用来保存局部变量的值。 局部变量数组的大小在编译时就会确定: 和局部变量/形参的个数，以及每个变量占用的空间大小有关。
+
+
 The operand stack is a LIFO stack used to push and pop values. Its size is also determined at compile time. Certain opcode instructions push values onto the `operand stack;` others take operands from the stack, manipulate them, and push the result. The operand stack is also used to receive return values from methods.
 
+操作数栈是一个LIFO结构的栈， 用于压入和弹出值。 它的大小也在编译时确定。
+有一些操作码指令用于将值压入“操作数栈”； 还有一些操作码指令则是从栈中获取操作数，并进行处理后将结果压入stack。
+操作数栈还用于接收调用其他方法的返回值。
+
 In the debugger, we can drop frames one by one, however the state of the fields will not be rolled back.
+
+
+在调试器中，我们可以一帧一帧地删除 Frame， 但是字段的状态并不能回滚。
 
 ![JVM stack debugger drop frames](https://jrebel.com/wp-content/uploads/2013/08/JVM-stack-machine-debugger.jpg)
 
