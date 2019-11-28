@@ -122,9 +122,19 @@ The opcodes `iconst_1` and `iconst_2` put constants 1 and 2 to the stack. The in
 
 ## General Facts About Java Bytecode
 
+## 关于Java字节码的一些事实
+
+
 As the name implies, `Java bytecode` consists of one-byte instructions, hence there are 256 possible opcodes. There are a little less real instructions than the set permits – approximately 200 opcodes are utilized, where some of the opcodes are reserved for debugger operation.
 
+有一件有趣的事情， `Java bytecode` 就如名称所示, 由单个字节(byte)的指令组成，所以最多只能有 `256` 个操作码。
+实际上Java中只有200个左右的操作码， 还有一些操作码则保留了用于调试操作。
+
+
 Instructions are composed from a type prefix and the operation name. For instance, ‘i’ prefix stands for ‘integer’ and therefore the `iadd` instruction indicates that the addition operation is performed for integers.
+
+操作码， 即 `指令`, 由`类型前缀`和`操作名称`组成。
+例如，'`i`' 前缀代表 ‘`integer`’，所以，'`iadd`' 应该很容易理解, 表示的是对整数执行加法运算。
 
 Depending on the nature of the instructions, we can group these into several broader groups:
 
@@ -133,13 +143,28 @@ Depending on the nature of the instructions, we can group these into several bro
 - Object manipulation, incl. methods invocation
 - Arithmetics and type conversion
 
+
+
+根据指令的性质，可以分为四类：
+
+- 栈操作指令，包括与局部变量交互的指令。
+- 控制程序流转的指令
+- 对象操作，包括方法调用指令
+- 算术运算和类型转换
+
 There are also a number of instructions of more specialized tasks such as synchronization and exception throwing.
 
-> `javap`
+此外还有一些执行专门任务的指令，比如同步(synchronization), 以及抛出异常相关的指令。
+
+> #### `javap`
 
 To obtain the instruction listings of a compiled class file, we can apply the javap utility, the standard Java class file disassembler distributed with the JDK.
 
 We will start with a class that will serve as an entry point for our example application, the moving average calculator.
+
+可以使用 `javap` 工具来获取 class 文件的指令清单， 这个工具是标准Java JDK 的一部分, 专门用于反编译class文件。
+
+让我们从头开始, 先创建一个类，作为应用程序的入口点。
 
 ```
 public class Main {
@@ -152,6 +177,17 @@ public class Main {
 After the class file is compiled, to obtain the bytecode listing for the example above one needs to execute the following command: javap -c Main
 
 The result is as follows:
+
+然后编译这个类，生成 `.class` 文件,
+
+
+生成class文件之后, 执行命令获取上述对应的字节码清单：
+
+```
+javap -c Main
+```
+
+结果如下：
 
 ```
 Compiled from "Main.java"
@@ -180,11 +216,29 @@ The main method creates an instance of `MovingAverage` class and returns. We wil
 
 You might have noticed that some of the instructions are referring to some numbered parameters with `#1, #2, #3`. This are the references to the pool of constants. How can we find out what the constants are and how can we see the constant pool in the listing? We can apply the `-verbose` argument to javap when disassembling the class:
 
+可以看到，反编译后的代码清单中, 有一个默认的构造函数, 以及 main 方法。
+刚学Java时我们就知道， 如果不定义任何构造函数，那么仍然会有一个默认的构造函数，这里再次验证了这个知识点。
+好吧，这比较容易理解！我们证实了编译后的class文件中存在默认构造函数，所以这是Java编译器生成的， 而不是运行时由JVM字段生成。
+
+
+构造函数应该是空的方法体，但这里看到里面依然有一些指令。这是为什么呢？
+再次回顾Java知识, 每个构造函数都会调用 `super()` 对吧？ 这不会自动执行, 而是由指令控制的，这就是为什么默认构造函数中会有字节码指令的原因。
+基本上，这几条指令就是执行 `super()` 调用；
+
+main 方法创建了 `MovingAverage` 类的一个实例， 然后就return了。
+
+有些同学应该注意到了， 某些指令后面使用了 `#1, #2, #3` 这样的编号引用。
+这就是对常量池的引用。 那常量池里面有些什么呢? 怎么在代码清单中怎样查看常量池呢？
+我们可以在反编译 class 时，指定 `-verbose` 参数：
+
+
 ```
- $ javap -c -verbose HelloWorld
+$ javap -c -verbose HelloWorld
 ```
 
 Here’s some interesting parts that it prints:
+
+结果如下所示:
 
 ```
 Classfile /Users/anton/work-src/demox/out/production/demox/algo/Main.class
@@ -210,6 +264,15 @@ We can also see the accessor flags there: `ACC_PUBLIC` and `ACC_SUPER`. The `ACC
 
 You can also find the denoted constant definitions in the constant pool:
 
+其中显示了很多关于class文件信息： 编译时间， MD5校验和， 从哪个`*.java`源文件编译得来，符合哪个版本的Java语言规范等等。
+
+我们还可以看到 `ACC_PUBLIC` 和 `ACC_SUPER` 访问标志符。
+`ACC_PUBLIC` 标志很容易理解：这个类是public类，因此这个标志来说明。
+但 `ACC_PUBLIC` 标志是怎么回事呢？ 这就是历史原因了, 引入 `ACC_SUPER` 的目的是为了修正 `invokespecial` 指令调用 super 类方法的问题。
+这算是 Java 1.0版本的BUG修正, 以便可以正确查找到超类方法。 从 Java 1.1 开始， 编译器都会在字节码中强制生成`ACC_SUPER`访问器标志。
+
+终于看到常量池中的常量定义了：
+
 ```
    #1 = Methodref          #5.#21         //java/lang/Object."":()V
 ```
@@ -217,6 +280,11 @@ You can also find the denoted constant definitions in the constant pool:
 The constant definitions are composable, meaning the constant might be composed from other constants referenced from the same table.
 
 There are a few other things that reveal itself when using `-verbose` argument with javap. For instance there’s more information printed about the methods:
+
+常量定义支持组合, 也就是说一个常量的定义中可以引用其他常量。
+
+在 javap 命令中使用 `-verbose` 选项时， 还显示了其他的一些信息。 例如， main 方法的更多信息被打印出来：
+
 
 ```
 public static void main(java.lang.String[]);
@@ -227,6 +295,7 @@ public static void main(java.lang.String[]);
 
 The accessor flags are also generated for methods, but we can also see how deep a stack is required for execution of the method, how many parameters it takes in, and how many local variable slots need to be reserved in the local variables table.
 
+方法的访问标志也生成了， 而且可以看到执行该方法时需要的stack深度是多少，需要在局部变量表中保留多少个槽位, 还有方法的参数个数。
 
 
 ------
