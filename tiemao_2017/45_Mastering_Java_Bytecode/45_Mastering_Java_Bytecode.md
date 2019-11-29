@@ -340,6 +340,11 @@ In the debugger, we can drop frames one by one, however the state of the fields 
 
 When looking at the bytecode listing from the HelloWorld example you might start to wonder, what are those numbers in front of every instruction? And why are the intervals between the numbers not equal?
 
+### 方法体中有什么？
+
+从前面的示例中，细心的同学可能会猜测字节码列表前面的数字是什么意思，但他们之间的间隔又不相等。
+
+
 ```
   	0: new           #2       // class algo/MovingAverage
    	3: dup           
@@ -350,25 +355,49 @@ When looking at the bytecode listing from the HelloWorld example you might start
 
 The reason: Some of the opcodes have parameters that take up space in the bytecode array. For instance, new occupies three slots in the array to operate: one for itself and two for the input parameters. Therefore, the next instruction – `dup` – is located at the index 3.
 
+
+原因分析： 一部分操作码的参数也会占用字节码数组中的空间。 例如， `new` 就会占用三个槽位: 一个用于表示操作码本身，两个用于存放输入参数。
+因此，下一条指令 `dup` 的索引是 `3`。
+
+
 Here’s what it looks like if we visualize the method body as an array:
+
+
+如果将方法体变为可视化数组，则看起来如下所示：
 
 ![visualize the method body as an array](https://jrebel.com/wp-content/uploads/2013/08/method-body-array.jpg)
 
 Every instruction has its own HEX representation and if we use that we’ll get the HEX string that represents the method body:
 
+
+每条指令都有自己的十六进制(HEX)表示形式， 如果使用十六进制编辑器，将获得表示方法体的HEX字符串：
+
+
 ![HEX string that represents the method body](https://jrebel.com/wp-content/uploads/2013/08/HEX-string-method-body.jpg)
 
 By opening the class file in HEX editor we can find this string:
+
+
+通过在HEX编辑器中打开类文件，我们可以找到以下字符串：
 
 ![open class file in HEX editor string](https://jrebel.com/wp-content/uploads/2013/08/class-file-HEX-string.jpg)
 
 It is even possible to change the bytecode via HEX editor even though it is a bit fragile to do so. Besides there are some better ways of doing this, like using bytecode manipulation tools such as ASM or Javassist.
 
+
+甚至可以通过HEX编辑器更改字节码，尽管这样做容易出错。此外，还有一些更好的方法可以做到这一点，例如使用字节码操作工具（例如ASM或Javassist）。
+
+
 Not much to do with this knowledge at the moment, but now you know where these numbers come from.
+
+目前与这些知识关系不大，但是现在您知道这些数字从何而来。
 
 ------
 
 ### Crunching the local stack
+
+### 操作栈内存
+
 
 There are a number of instructions that manipulate the stack in one way or another. We have already mentioned some basic instructions that work with the stack: push values to the stack or take values from the stack. But there’s more; the swap instruction can swap two values on the top of the stack.
 
@@ -376,9 +405,28 @@ Here are some example instructions that juggle the values around the stack. Some
 
 There are some more complex instructions: `swap, dup_x1 and dup2_x1`, for instance. The swap instruction, as the name implies, swaps two values on the top of the stack, e.g. A and B exchange positions (see example 4); `dup_x1` inserts a copy of the top value into the stack two values from the top (see example 5); `dup2_x1` duplicates two top values and inserts beneath the third (example 6).
 
+有很多指令可以操纵方法栈。 前面提到了一些基本的栈操作指令： 将值压入栈，或从栈中获取值。 但除了这些基础操作之外还有更多指令； 比如 `swap` 指令可以交换栈顶两个元素的值。
+
+下面是一些示例指令，这些指令操作栈里的值。
+首先，最基础的：`dup` 和 `pop`。 `dup` 指令复制栈顶元素的值。 `pop` 指令则从栈中删除最顶部的值。
+
+还有一些复杂的指令：例如，`swap`, `dup_x1` 和 `dup2_x1`。
+顾名思义，`swap` 指令可交换栈顶两个元素的值，例如A和B交换位置（下图中的示例4）；
+`dup_x1` 将复制栈顶元素的值，并在栈顶插入两次（下图中的示例5）；
+`dup2_x1` 则复制栈顶两个元素的值，并插入第三个值（下图中的示例6）。
+
+
 ![duplicating top values stack](https://jrebel.com/wp-content/uploads/2013/08/duplicating-values-stack.jpg)
 
 The `dup_x1` and `dup2_x1` instructions seem to be a bit esoteric – why would anyone need to apply such behavior – duplicating top values under the existing values in the stack? Here’s a more practical example: how to swap 2 values of double type? The caveat is that double takes two slots in the stack, which means that if we have two double values on the stack they occupy four slots. To swap the two double values we would like to use the `swap` instruction but the problem is that it works only with one-word instructions, meaning it will not work with doubles, and swap2 instruction does not exist. The workaround is then to use `dup2_x2` instruction to duplicate the top double value below the bottom one, and then we can pop the top value using the `pop2` instruction. As a result, the two doubles will be swapped.
+
+
+`dup_x1` 和 `dup2_x1` 指令似乎有点深奥。
+为什么需要设置这种指令呢? 在栈中复制最顶部的值？
+请看一个实际的示例：如何交换2个double类型的值？
+需要注意的是, 一个double值占两个槽位，也就是说如果栈中有两个double值，它们将占用四个槽位。
+要交换两个double值，你可能想到了 `swap` 指令，但问题是 swap 只适用于单字指令(one-word instructions)，所以它不能处理double类型, 而又没有 swap2 指令。
+怎么办呢? 解决方法是使用 `dup2_x2`指令, 将操作数栈顶部的double值, 复制到底部的d​​ouble值下方， 然后再使用 `pop2` 指令弹出栈顶的double值。结果就是交换了两个 double 值。 如下图所示:
 
 ![swap instructor duplicate top double value pop2](https://jrebel.com/wp-content/uploads/2013/08/pop2-instruction.jpg)
 
@@ -389,6 +437,12 @@ The `dup_x1` and `dup2_x1` instructions seem to be a bit esoteric – why would 
 While the stack is used for execution, local variables are used to save the intermediate results and are in direct interaction with the stack.
 
 Let’s now add some more code into our initial example:
+
+### 局部变量
+
+栈主要用于执行指令，而局部变量则用来保存中间结果，可以和栈直接交互。
+
+接着我们增加更多代码：
 
 ```
 public static void main(String[] args) {
@@ -405,6 +459,10 @@ public static void main(String[] args) {
 ```
 
 We submit two numbers to the `MovingAverage` class and ask it to calculate the average of the current values. The bytecode obtained from this code is as follows:
+
+我们向 `MovingAverage` 类的实例提交了两个数值， 并要求其计算当前的平均值。 main 方法对应的字节码如下：
+
+
 
 ```
 Code:
@@ -441,6 +499,7 @@ Code:
         	30   	1 	4  avg    D
 ```
 
+> 注意: JDK8的javac工具内置了优化, 可能不生成局部变量表信息。 想查看可以使用 Idea 之类的工具自动生成。
 
 
 ------
@@ -451,6 +510,14 @@ Next, instructions `iconst_1` and `iconst_2` are used to load constants 1 and 2 
 
 Note that the invocation of store-like instruction actually removes the value from the top of the stack. This is why in order to use the variable value again we have to load it back to the stack. For instance, in the listing above, before calling the submit method, we have to load the value of the parameter to the stack again:
 
+创建了 `MovingAverage` 类的局部变量后， 使用 `astore_1` 指令将引用地址值(addr.)存储(store)到编号为1的局部变量中(此处为 `ma`)：
+ `astore_1` 中的 `1` 指代 LocalVariableTable 中ma对应的槽位编号。
+
+后面的指令 `iconst_1` 和 `iconst_2` 用来将常量值`1`和`2`加载到栈里面， 并分别由指令 `istore_2` 和 `istore_3` 将它们存储到在 LocalVariableTable 的槽位2和槽位3中。
+
+请注意，store之类的指令调用实际上从栈顶删除了该值。 这就是为什么再次使用相同的值时，必须再加载一次的原因。
+例如在上面的清单中，调用 `submit` 方法之前， 必须再次将参数值加载到栈中：
+
 ```
 12: aload_1
 13: iload_2
@@ -460,17 +527,30 @@ Note that the invocation of store-like instruction actually removes the value fr
 
 After calling the `getAvg()` method the result of the execution locates on the top of the stack and to store it to the local variable again the `dstore` instruction is used since the target variable is of type double.
 
+调用 `getAvg()` 方法后，返回的结果位于栈顶，然后使用 `dstore` 将 `double` 值保存到本地变量4号槽位，这里的d表示目标变量的类型为double。
+
 ```
 24: aload_1
 25: invokevirtual #5 // Method algo/MovingAverage.getAvg:()D
 28: dstore 4
 ```
 
-One more interesting thing to notice about the `LocalVariableTable `is that the first slot is occupied with the parameter(s) of the method. In our current example it is the static method and there’s no `this` reference assigned to the slot 0 in the table. However, for the non-static methods `this` will be assigned to slot 0.
+One more interesting thing to notice about the `LocalVariableTable` is that the first slot is occupied with the parameter(s) of the method. In our current example it is the static method and there’s no `this` reference assigned to the slot 0 in the table. However, for the non-static methods `this` will be assigned to slot 0.
+
+关于 `LocalVariableTable` 有个有意思的事情， 最前面的槽位会被方法参数占用。
+在这个示例中，因为是静态方法，所以槽位0中并没有设置为 `this` 引用的地址。  但是对于非静态方法来说， `this` 会将分配到第0号槽位中。
+
+> 有过反射编程经验的同学可能比较容易理解: `Method#invoke(Object obj, Object... args)`;
+> 有JavaScript编程经验的同学也可以类比: `fn.apply(obj, args) && fn.call(obj, arg1, arg2);`
 
 ![LocalVariableTable static method non-static method](https://jrebel.com/wp-content/uploads/2013/08/Local-Variable-Table.jpg)
 
 The takeaway from this part is that whenever you want to assign something to a local variable, it means you want to `store` it by using a respective instruction, e.g. `astore_1`. The store instruction will always remove the value from the top of the stack. The corresponding `load` instruction will push the value from the local variables table to the stack, however the value is not removed from the local variable.
+
+
+这部分的要点是，给局部变量赋值时，需要使用相应的指令来进行 `store`，如 `astore_1`。
+`store` 一类的指令都会从栈顶删除该值。
+相应的 `load` 指令会则会将值从局部变量表压入操作数栈，但并不会删除局部变量中的值。
 
 ------
 
