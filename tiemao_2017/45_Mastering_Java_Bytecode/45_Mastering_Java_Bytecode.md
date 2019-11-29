@@ -556,9 +556,17 @@ The takeaway from this part is that whenever you want to assign something to a l
 
 ### Flow control
 
+### 程序执行流程控制
+
 The flow control instructions are used to organize the flow of the execution depending on the conditions. If-Then-Else, ternary operator, various kinds of loops and even exception handling opcodes belong to the control flow group of `Java bytecode`. This is all about jumps and gotos now :)
 
+流程控制指令, 用于根据判断条件来控制程序的执行流程。
+一般是 `If-Then-Else` 这种三元运算符（ternary operator），
+Java中的各种循环，甚至异常处的理操作码都可归属于 程序流程控制字节码。 这就是现在关于跳转(jump)和goto的全部 :)
+
 We will now change our example so that it will handle an arbitrary number of numbers that can be submitted to the MovingAverage class:
+
+然后，我们修改示例代码，可以提交给 MovingAverage 类任意数量的数值：
 
 ```
 MovingAverage ma = new MovingAverage();
@@ -568,6 +576,8 @@ for (int number : numbers) {
 ```
 
 Assume that the numbers variable is a static field in the same class. The bytecode that corresponds to the loop that iterates over the numbers is as follows
+
+如果 numbers 是本类中的 static 属性， 则循环对应的字节码如下所示。
 
 ```
 0: new #2 // class algo/MovingAverage
@@ -590,11 +600,11 @@ Assume that the numbers variable is a static field in the same class. The byteco
 28: istore 5
 30: aload_1
 31: iload 5
-      33: i2d          
-      34: invokevirtual #5       // Method algo/MovingAverage.submit:(D)V
-      37: iinc      	4, 1
-      40: goto      	18
-      43: return
+33: i2d          
+34: invokevirtual #5       // Method algo/MovingAverage.submit:(D)V
+37: iinc      	4, 1
+40: goto      	18
+43: return
 	LocalVariableTable:
   	Start  Length  Slot  Name   Signature
          30       7 	5  number I
@@ -610,6 +620,14 @@ The instructions at positions 8 through 16 are used to organize the loop control
 
 The first instructions of the loop body are used to perform the comparison of the loop counter to the array length:
 
+位置 [8~16] 的指令用于循环控制。
+可以看到, 在LocalVariableTable 中有三个在源码中没有真出现的变量： `arr$`, `len$`, `i$`， 这就是循环变量。
+`arr$` 变量保存了 numbers 的引用值，
+`len$` 由 `arraylength` 指令使用, 得出循环的长度。
+`i$` 则是循环计数器， 每次迭代后使用 `iinc` 指令来递增。
+
+循环体的第一条指令用于执行 循环计数器与数组长度 的比较：
+
 ```
 18: iload 4
 20: iload_3
@@ -619,6 +637,13 @@ The first instructions of the loop body are used to perform the comparison of th
 We load the values of `i$` and `len$` to the stack and call the `if_icmpge` to compare the values. The `if_ icmpge` instruction meaning is that if the one value is greater or equal than the other value, in our case if `i$` is greater or equal than `len$`, then the execution should proceed from the statement that is marked with 43. If the condition does not hold, then the loop proceeds with the next iteration.
 
 At the end of the loop it loop counter is incremented by 1 and the loop jumps back to the beginning to validate the loop condition again:
+
+这段指令将 `i$` 和 `len$` 的值加载到栈中，并调用 `if_icmpge` 指令来比较他们的值。
+【`if_icmpge` 解读: if, integer, compare, greate equal】, 如果一个数的值大于或等于另一个值，则程序执行流程应该跳转到`pc=43`的地方继续执行。
+在这个例子中就是， 如果 `i$` 大于或等于 `len$`, 循环结束，方法也就返回了(43对应的是return).
+如果条件不成立，则循环继续进行下一次迭代。
+
+在循环结束时，它的循环计数器加1，然后循环跳回到起点以再次验证循环条件：
 
 ```
 37: iinc          4, 1       // increment i$
