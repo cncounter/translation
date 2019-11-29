@@ -656,9 +656,20 @@ At the end of the loop it loop counter is incremented by 1 and the loop jumps ba
 
 ### Arithmetics & Conversion
 
+### 算术运算与类型转换
+
 As you have seen already, there’s a number of instructions that perform all kind of arithmetics in `Java bytecode`. In fact, a large portion of the instruction set is denoted to the arithmetic. There are instructions of addition, subtraction, multiplication, division, negation for all kind of types – integers, longs, doubles, floats. Plus there’s a lot of instructions that are used to convert between the types.
 
+如您所见，Java字节码中有许多指令可以执行算术运算。
+实际上，指令集中有很大一部分表示都是关于数学运算的。
+对于所有数值类型(`int`, `long`, `double`, `float`)，都有加，减，乘，除，取反的指令。
+那么 `byte` 和 `char`, `boolean` 呢?  JVM 是当做 `int` 来处理的。
+另外，还有部分指令用于数据类型之间的转换。
+
 > Arithmetical opcodes and types
+
+
+> 算术操作码和类型
 
 ![arithmetical opcodes and types](https://jrebel.com/wp-content/uploads/2013/08/arithmetical-opcodes-and-types.jpg)
 
@@ -666,9 +677,15 @@ Type conversion happens for instance when we want to assign an integer value to 
 
 > Type conversion opcodes
 
+例如，当我们想将 integer 类型的值赋值给 long 类型的变量时，就会发生类型转换。
+
+> 类型转换操作码
+
 ![Type conversion opcodes table](https://jrebel.com/wp-content/uploads/2013/08/type-conversion-opcodes.jpg)
 
 In our example where an integer value is passed as a parameter to `submit()` method which actually takes double, we can see that before actually calling the method the type conversion opcode is applied:
+
+在前面的示例中， 将 int 值作为参数传递给实际上接收 double 的 `submit()` 方法时，可以看到, 在实际调用该方法之前，使用了类型转换的操作码：
 
 ```
     31: iload     	5
@@ -679,6 +696,10 @@ In our example where an integer value is passed as a parameter to `submit()` met
 It means we load a value of a local variable to the stack as an integer, and then apply `i2d` instruction to convert it into double in order to be able to pass it as a parameter.
 
 The only instruction that doesn’t require the value on the stack is the increment instruction, `iinc`, which operates on the value sitting in `LocalVariableTable` directly. All other operations are performed using the stack.
+
+也就是说, 将一个 int 类型局部变量的值, 作为整数加载到栈中，然后用 `i2d` 指令将其转换为 double 值，以便将其作为参数传递给方法。
+
+唯一不需要将数值load到操作数栈的指令是 `iinc`，它直接对 `LocalVariableTable` 中的值进行运算。 其他的所有操作均使用栈来执行。
 
 ------
 
