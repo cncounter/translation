@@ -705,13 +705,19 @@ The only instruction that doesn’t require the value on the stack is the increm
 
 ### `new`, & `<init>` & `<clinit>`
 
+### `new`, `<init>` 以及 `<clinit>` 简介
+
 There’s a keyword new in Java but there’s also a bytecode instruction called new. When we created an instance of MovingAverage class:
+
+我们都知道Java中有一个关键字是 `new`， 但其实在字节码中，也有一个指令叫做 `new`。 当我们创建 `MovingAverage` 类的实例时：
 
 ```
       MovingAverage ma = new MovingAverage();
 ```
 
 the compiler generated a sequence of opcodes that you can recognize as a pattern:
+
+编译器会生成类似下面这样的操作码：
 
 ```
 0: new #2 // class algo/MovingAverage
@@ -723,6 +729,15 @@ When you see `new, dup` and `invokespecial` instructions together it must ring a
 
 Why three instructions instead of one, you ask? The new instruction creates the object but it doesn’t call the constructor, for that, the invokespecial instruction is called: it invokes the mysterious method called , which is actually the constructor. The dup instruction is used to duplicate the value on the top of the stack. As the constructor call doesn’t return a value, after calling the method on the object the object will be initialized but the stack will be empty so we wouldn’t be able to do anything with the object after it was initialized. This is why we need to duplicate the reference in advance so that after the constructor returns we can assign the object instance into a local variable or a field. Hence, the next instruction is usually one of the following:
 
+当你同时看到 `new, dup` 和 `invokespecial` 指令在一起时，那么一定是在创建类的实例对象！
+
+为什么是三条指令而不是一条呢？
+这是因为 `new` 指令只是创建了对象，但没有调用构造函数。
+`invokespecial` 指令就是用来调用某个特殊方法的, 当然这里调用的是构造函数。
+`dup` 指令用于复制栈顶的值。 由于构造函数调用不会返回值，所以如果没有dup指令, 在对象上调用方法并初始化之后，操作数栈就会是空的，那么在初始化之后我们就无法对其进行任何处理。
+这就是为什么要事先复制引用的原因，以便在构造函数返回之后，可以将对象实例赋值给局部变量或某个字段。
+因此，接下来的那条指令一般是以下几种：
+
 - `astore {N}` or `astore_{N}` – to assign to a local variable, where {N} is the position of the variable in local variables table.
 - `putfield` – to assign the value to an instance field
 - `putstatic` – to assign the value to a static field
@@ -731,12 +746,24 @@ While a call to is a constructor invocation, there’s another similar method, w
 
 In fact, there is even more options to trigger the static initializer as described in the Chapter 5.5 of JVM specification [<http://docs.oracle.com/javase/specs/jvms/se7/html/>]
 
+- `astore {N}` or `astore_{N}` – 赋值给局部变量，其中 `{N}` 是局部变量表中的位置。
+- `putfield` – 将值赋给实例字段
+- `putstatic` – 将值赋给静态字段
+
+在调用构造函数的时候，其实还有另一个类似的方法，甚至会在构造函数之前调用。
+那就是该类的静态初始化器名称。 类的静态初始化方法并不会被直接调用的，而是由以下指令之一触发的： `new`, `getstatic`, `putstatic` or `invokestatic`。
+也就是说，如果创建某个类的新实例， 访问静态字段或者调用静态方法，则会触发静态初始化方法【如果尚未初始化】。
+
+实际上，还有一些情况会触发静态初始化， 详情请参考JVM规范中的 Chapter 5.5： [<http://docs.oracle.com/javase/specs/jvms/se7/html/>]
+
 
 
 
 ------
 
 ### Method invocation and parameter passing
+
+### 方法调用和参数传递
 
 We have touched the method invocation topic slightly in the class instantiation part: the method was invoked via `invokespecial` instruction which resulted in the constructor call. However, there are a few more instructions that are used for method invocation:
 
@@ -745,11 +772,31 @@ We have touched the method invocation topic slightly in the class instantiation 
 - `invokevirtual` is used to call public, protected and package private methods if the target object of a concrete type.
 - `invokeinterface` is used when the method to be called belongs to an interface.
 
+前面我们在类实例化部分稍微提了一下方法调用： 构造函数是通过 `invokespecial` 指令调用的。
+此外，还有一些用于方法调用的指令：
+
+- `invokestatic`, 顾名思义，这个指令用于调用 某个类的静态方法。 这是方法调用指令中最快的一个。
+- `invokespecial`, 我们已经学过了, `invokespecial` 指令用来调用构造函数。 但也可以用于调用同一个类中的 private 方法, 以及可看见的超类方法。
+- `invokevirtual` -如果具体类型的目标对象，`invokevirtual`用于调用公共，受保护和打包私有方法。
+- `invokeinterface` - 当要调用的方法属于某个接口时，将使用 `invokeinterface` 指令。
+
 > So what is the difference between invokevirtual and invokeinterface?
 
 Indeed a very good question. Why do we need both `invokevirtual` and `invokeinterface`, why not to use `invokevirtual` for everything? The interface methods are public methods after all! Well, this is all due to the optimization for method invocations. First, the method has to be resolved, and then we can call it. For instance, with `invokestatic` we know exactly which method to call: it is static, it belongs to only one class. With `invokespecial` we have a limited list of options – it is easier to choose the resolution strategy, meaning the runtime will find the required method faster.
 
 With `invokevirtual` and `invokeinterface` the difference is not that obvious however. Let me offer a very simplistic explanation of the difference for these two instructions. Imagine that the class definition contains a table of method definitions and all the methods are numbered by position. Here’s an example: class A, with methods method1 and method2 and a subclass B, which derives method1, overrides method2, and declares new method3. Note that method1 and method2 are at the same indexed position both in class A and class B.
+
+> 那么 `invokevirtual` 和 `invokeinterface` 有什么区别呢？
+
+这确实是个好问题。 为什么需要 `invokevirtual` 和 `invokeinterface` 这两种指令呢? 毕竟所有的接口方法都是公共方法, 直接使用 `invokevirtual` 不就可以了吗？
+这么做是源于对方法调用的优化。 JVM必须先解析该方法，然后才能调用它。
+例如，使用 `invokestatic` 指令， JVM就确切地知道要调用的是哪个方法：因为调用的是静态方法，只能属于一个类。
+使用 `invokespecial` 时， 查找的数量也很少， 解析也更加容易， 那么运行时就能更快地找到所需的方法。
+
+使用 `invokevirtual` 和 `invokeinterface` 的区别不是那么明显。
+想象一下，类定义中包含一个方法定义表， 所有方法都有位置编号。
+下面的示例中：A类包含 method1和method2方法； 子类B继承A，继承了method1，覆写了method2，并声明了方法method3。
+请注意，method1和method2方法在类A和类B中处于相同的索引位置。
 
 ```
 class A
@@ -764,6 +811,10 @@ class B extends A
 
 This means that if the runtime wants to call method2, it will always find it at position 2. Now, to explain the essential difference between `invokevirtual` and `invokeinterface` let’s make class B to extend interface X which declares a new method:
 
+那么，在运行时只要调用 method2，一定是在位置2处找到它。
+现在我们来解释`invokevirtual` 和 `invokeinterface` 之间的本质区别。
+假设有一个接口X声明了methodX方法, 让B类在上面的基础上实现接口X：
+
 ```
 class B extends A implements X
     1: method1
@@ -774,6 +825,9 @@ class B extends A implements X
 
 The new method is at index 4 and it looks like it is not any different from method3 in this situation. However, what if theres another class, C, which also implements the interface but does not belong to the same hierarchy as A and B:
 
+新方法methodX位于索引4处，在这种情况下，它看起来与method3没什么不同。
+但如果还有另一个类C也实现了X接口，但不继承A，也不继承B：
+
 ```
 class C implements  X
     1: methodC
@@ -782,7 +836,9 @@ class C implements  X
 
 The interface method is not at the same position as in class B any more and this is why runtime is more restricted in respect to `invokinterface`, meaning it can do less assumptions in method resolution process than with `invokevirtual`.
 
-
+C中的接口方法位置与B类的不同，这就是为什么运行时在 `invokinterface` 方面受到更多限制的原因，
+与 `invokevirtual` 相比，在方法解析过程中 `invokinterface` 可以做更少的假设, 效率更高。
+这也是为什么推荐使用 interface 编程，以及 HashMap 接口直接声明实现 Map 接口的一部分原因。
 
 ------
 
