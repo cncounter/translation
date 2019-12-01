@@ -215,17 +215,39 @@ The most common reason for class loading is during bytecode resolution, when a c
 
 The VM and Java SE class loading libraries share the responsibility for class loading. The VM performs constant pool resolution, linking and initialization for classes and interfaces. The loading phase is a cooperative effort between the VM and specific class loaders (java.lang.classLoader).
 
-VM和Java SE的类加载库共同负责class得加载。 VM对class和interface执行常量池解析，链接和初始化。 loading 阶段需要VM与具体的类加载器（`java.lang.lassLoader`）共同协作。
+VM和Java SE的类加载库共同负责class的加载。 VM对class和interface执行常量池解析，链接和初始化。 loading 阶段需要VM与具体的类加载器（`java.lang.ClassLoader`）共同协作。
 
 #### Class Loading Phases
 
-The load class phase takes a class or interface name, finds the binary in classfile format, defines the class and creates the java.lang.Class object. The load class phase can throw a NoClassDefFound error if a binary representation can not be found. In addition, the load class phase does format checking on the syntax of the classfile, which can throw a ClassFormatError or UnsupportedClassVersionError. Prior to completing loading of a class, the VM must load all of its superclasses and superinterfaces. If the class hierarchy has a problem such that this class is its own superclass or superinterface (recursively), then the VM will throw a ClassCircularityError. The VM also throwsIncompatibleClassChangeError if the direct superinterface is not an interface, or the direct superclass is an interface.
+#### 类加载各阶段
+
+The load class phase takes a class or interface name, finds the binary in classfile format, defines the class and creates the java.lang.Class object. The load class phase can throw a NoClassDefFound error if a binary representation can not be found. In addition, the load class phase does format checking on the syntax of the classfile, which can throw a ClassFormatError or UnsupportedClassVersionError. Prior to completing loading of a class, the VM must load all of its superclasses and superinterfaces. If the class hierarchy has a problem such that this class is its own superclass or superinterface (recursively), then the VM will throw a ClassCircularityError. The VM also throws IncompatibleClassChangeError if the direct super interface is not an interface, or the direct superclass is an interface.
+
+类加载首先肯定是需要一个类或接口的名称，然后去找到二进制classfile格式的文件，然后再定义该类并创建 `java.lang.Class` 对象。
+如果找不到二进制表示形式，则会抛出 `NoClassDefFound` 错误。
+此外，装载阶段并不去检查 classfile 的语法和格式，而验证过程中可能会抛出 `ClassFormatError` 或 `UnsupportedClassVersionError`。
+在某个类的加载过程中，JVM必须加载其所有的超类和接口。
+如果类层次结构有问题（例如，该类是自己的超类或接口,死循环了），则JVM将抛出 `ClassCircularityError`。
+而如果实现的接口并不是一个 interface，或者声明的超类是一个 interface，也会抛出 `IncompatibleClassChangeError`。
 
 The link class phase first does verification, which checks the classfile semantics, checks the constant pool symbols and does type checking. These checks can throw a VerifyError. Linking then does preparation, which creates and initializes static fields to standard defaults and allocates method tables. Note that no Java code has yet been run. Linking then optionally does resolution of symbolic references.
 
+链接阶段首先需要进行验证，验证过程会检查 classfile 的语义，判断常量池中的符号并执行类型检查。这些检查可能会抛出 `VerifyError`。
+然后进入准备阶段，这个阶段将会创建静态字段并将其初始化为标准默认值(比如`null`或者`0值`)，并分配方法表。请注意，到这一步并未执行任何Java代码。
+然后进入可选的解析符号引用阶段。
+
 Class initialization runs the static initializers, and initializers for static fields. This is the first Java code which runs for this class. Note that class initialization requires superclass initialization, although not superinterface initialization.
 
+类初始化会执行静态初始化函数，进行各个static字段的初始化。 这是此类最先执行的Java代码。 请注意，类初始化需要先进行父类的初始化，一般不执行接口的初始化。
+
+
 The JVMS specifies that class initialization occurs on the first “active use” of a class. The JLS allows flexibility in when the symbolic resolution step of linking occurs as long as we respect the semantics of the language, finish each step of loading, linking and initializing before performing the next step, and throw errors when programs would expect them. For performance, the HotSpot VM generally waits until class initialization to load and link a class. So if class A references class B, loading class A will not necessarily cause loading of class B (unless required for verification). Execution of the first instruction that references B will cause initialization of B, which requires loading and linking of class B.
+
+
+JVM规范明确规定, 必须在类的首次“主动使用”时才能执行类初始化。
+只要我们尊重语言的语义，在执行下一步之前完成 装载，链接和初始化这些步骤, 并按照程序预期抛出相应的错误，类加载系统便可以灵活地进行符号解析。
+为了提高性能，HotSpot JVM 通常要等到类初始化时才去装载和链接类。 因此，如果A类引用了B类，那么加载A类并不一定会去加载B类（除非需要进行验证）。
+对B类中的第一条指令执行将会导致B类的初始化，这就需要先完成对B类的装载和链接。
 
 #### Class Loader Delegation
 
