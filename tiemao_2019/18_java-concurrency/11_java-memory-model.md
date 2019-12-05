@@ -4,44 +4,56 @@
 
 The Java memory model specifies how the Java virtual machine works with the computer's memory (RAM). The Java virtual machine is a model of a whole computer so this model naturally includes a memory model - AKA the Java memory model.
 
-Java内存模型(Java Memory Model)规定了Java虚拟机如何使用计算机内存（RAM）。 Java虚拟机是一个整体的计算机模型，所以JVM模型自然需要有对应的内存模型 —— 称为Java内存模型。
+JVM是一个完整的计算机模型，所以自然就需要有对应的内存模型，这个模型被称为 “`Java内存模型`”，对应的英文是“`Java Memory Model`”，简称 `JMM`。
+
+Java内存模型规定了JVM应该如何使用计算机内存（RAM）。
 
 It is very important to understand the Java memory model if you want to design correctly behaving concurrent programs. The Java memory model specifies how and when different threads can see values written to shared variables by other threads, and how to synchronize access to shared variables when necessary.
 
-如果要掌握真正的并发程序设计，了解Java内存模型是非常必要的。 Java内存模型指定了不同线程之间， 什么时候，以什么方式,可以看见其他线程写入到内存中的共享变量的值，以及在必要时, 如何对共享变量的访问进行同步。
+想要真正地掌握并发程序设计，则必须要理解Java内存模型。
+Java内存模型明确定义了不同的线程之间，通过哪些方式，在什么时候可以看见其他线程保存到共享变量中的值； 以及如何对共享变量的访问进行同步。
 
 The original Java memory model was insufficient, so the Java memory model was revised in Java 1.5. This version of the Java memory model is still in use in Java 8.
 
-
-最初的Java内存模型有些坑，所以在Java 1.5版本中重新设计了Java内存模型，一直用到了Java 8及以后的版本。
+最初的Java内存模型有些坑，所以在Java 1.5版本的时候重新设计了Java内存模型，并一直沿用到今天。
 
 ## The Internal Java Memory Model
 
-## 内部Java内存模型
+## 深入JVM内部的Java内存模型
 
 The Java memory model used internally in the JVM divides memory between thread stacks and the heap. This diagram illustrates the Java memory model from a logic perspective:
 
-JVM内部使用的Java内存模型， 在逻辑上将内存划分为： 线程栈（thread stacks）和堆内存（heap）。 如下图所示：
+JVM内部使用的Java内存模型， 在逻辑上将内存划分为 `线程栈`（thread stacks）和`堆内存` （heap）两个部分。 如下图所示：
 
 ![](11_01_java-memory-model-1.png)
 
 Each thread running in the Java virtual machine has its own thread stack. The thread stack contains information about what methods the thread has called to reach the current point of execution. I will refer to this as the "call stack". As the thread executes its code, the call stack changes.
 
-JVM中，每个正在运行的线程，都有自己的线程栈。线程栈包含了执行到当前方法/节点时所经历的所有方法的状态信息。我将其称为“调用栈”（call stack）。 当线程执行代码时，调用栈会发生变化。
+JVM中，每个正在运行的线程，都有自己的线程栈。 线程栈包含了当前正在执行的方法链/调用链上的所有方法的状态信息。
+所以方法栈又被称为“调用栈”（call stack）。  线程在执行代码时，调用栈中的信息会一直在变化。
 
 
 The thread stack also contains all local variables for each method being executed (all methods on the call stack). A thread can only access it's own thread stack. Local variables created by a thread are invisible to all other threads than the thread who created it. Even if two threads are executing the exact same code, the two threads will still create the local variables of that code in each their own thread stack. Thus, each thread has its own version of each local variable.
 
-线程栈还包含（调用栈上）正在执行的所有方法对应的局部变量。线程只能访问自己的线程栈。 每个线程都不能访问(看不见)其他线程创建的局部变量。 即使两个线程正在执行完全相同的代码，但每个线程都会在自己的线程栈内，创建代码中声明的局部变量。因此，每个线程都有一份自己的局部变量（集）。
+线程栈里面保存了调用链上正在执行的所有方法中的局部变量。
+
+- 每个线程都只能访问自己的线程栈。
+- 每个线程都不能访问(看不见)其他线程的局部变量。
+
+即使两个线程正在执行完全相同的代码，但每个线程都会在自己的线程栈内创建对应代码中声明的局部变量。 所以每个线程都有一份自己的局部变量副本。
 
 
 All local variables of primitive types ( `boolean`, `byte`, `short`, `char`, `int`, `long`, `float`, `double`) are fully stored on the thread stack and are thus not visible to other threads. One thread may pass a copy of a pritimive variable to another thread, but it cannot share the primitive local variable itself.
 
-所有原生类型的局部变量（`boolean`，`byte`，`short`，`char`，`int`，`long`，`float`，`double`）,其数据/数值完全存储在线程栈中，因此对其他线程是不可见的。一个线程可以将一个原生变量的值(copy)传给另一个线程，但不能共享原生局部变量本身。
+所有原生类型的局部变量都存储在线程栈中，因此对其他线程是不可见的。
+线程可以将一个原生变量值的副本传给另一个线程，但不能共享原生局部变量本身。
+
+> **知识回顾** Java原生数据类型共8种: `boolean`，`byte`，`short`，`char`，`int`，`long`，`float`，`double` ;
 
 The heap contains all objects created in your Java application, regardless of what thread created the object. This includes the object versions of the primitive types (e.g. `Byte`, `Integer`, `Long` etc.). It does not matter if an object was created and assigned to a local variable, or created as a member variable of another object, the object is still stored on the heap.
 
-堆内存包含了所有在Java代码中创建的对象，不管是哪个线程创建的。其中包括了原生数据类型的包装类型（例如`Byte`，`Integer`，`Long`等）。无论是创建对象并将其分配给局部变量，还是创建为另一个对象的成员变量，对象都会存储在堆上。
+堆内存中包含了Java代码中创建的所有对象，不管是哪个线程创建的。 其中也涵盖了包装类型（例如`Byte`，`Integer`，`Long`等）。
+不管是创建一个对象并将其赋值给局部变量， 还是赋值给另一个对象的成员变量， 创建的对象都会被保存到堆内存中。
 
 Here is a diagram illustrating the call stack and local variables stored on the thread stacks, and objects stored on the heap:
 
@@ -51,28 +63,30 @@ Here is a diagram illustrating the call stack and local variables stored on the 
 
 A local variable may be of a primitive type, in which case it is totally kept on the thread stack.
 
-局部变量可以是基本类型，在这种情况下，它完全保留在线程堆栈上。
-
 A local variable may also be a reference to an object. In that case the reference (the local variable) is stored on the thread stack, but the object itself if stored on the heap.
 
-局部变量也可以是对象的引用。在这种情况下，引用（局部变量）存储在线程堆栈中，但是对象本身存储在堆上。
+如果是原生数据类型的局部变量，那么它的内容就全部保留在线程栈上。
+
+如果是对象引用，则栈中的局部变量槽位中保存着对象的引用地址，而实际的对象内容保存在堆中。
 
 
 An object may contain methods and these methods may contain local variables. These local variables are also stored on the thread stack, even if the object the method belongs to is stored on the heap.
 
-对象可能包含方法，这些方法可能包含局部变量。即使方法所属的对象存储在堆上，这些局部变量也存储在线程堆栈中。
+对象可以拥有多个方法，每个方法中都可以包含局部变量。 虽然方法所属的对象存储在堆上，但执行时的局部变量却存储在线程栈中。
 
 An object's member variables are stored on the heap along with the object itself. That is true both when the member variable is of a primitive type, and if it is a reference to an object.
 
-对象的成员变量与对象本身一起存储在堆上。当成员变量是基本类型时，以及它是对象的引用时都是如此。
+对象的成员变量与对象本身一起存储在堆上。 不管成员变量的类型是原生数值，还是对象引用。
 
 Static class variables are also stored on the heap along with the class definition.
 
-静态类变量也与类定义一起存储在堆上。
+类的静态变量和类定义都保存在堆中。
 
 Objects on the heap can be accessed by all threads that have a reference to the object. When a thread has access to an object, it can also get access to that object's member variables. If two threads call a method on the same object at the same time, they will both have access to the object's member variables, but each thread will have its own copy of the local variables.
 
-所有具有对象引用的线程都可以访问堆上的对象。当一个线程有权访问一个对象时，它也可以访问该对象的成员变量。如果两个线程同时在同一个对象上调用一个方法，它们都可以访问该对象的成员变量，但每个线程都有自己的局部变量副本。
+堆内存又称为“`共享堆`”，堆中的所有对象，可以被所有线程访问, 只要他们能拿到对象的引用地址。
+如果一个线程可以访问某个对象时，也就可以访问该对象的成员变量。
+如果两个线程同时调用某个对象的同一方法，则它们都可以访问该对象的成员变量，但每个线程都有自己的局部变量副本。
 
 Here is a diagram illustrating the points above:
 
@@ -243,4 +257,3 @@ This diagram illustrates an occurrence of the problem with race conditions as de
 To solve this problem you can use a [Java synchronized block](http://tutorials.jenkov.com/java-concurrency/synchronized.html). A synchronized block guarantees that only one thread can enter a given critical section of the code at any given time. Synchronized blocks also guarantee that all variables accessed inside the synchronized block will be read in from main memory, and when the thread exits the synchronized block, all updated variables will be flushed back to main memory again, regardless of whether the variable is declared volatile or not.
 
 <<http://tutorials.jenkov.com/java-concurrency/java-memory-model.html>>
-

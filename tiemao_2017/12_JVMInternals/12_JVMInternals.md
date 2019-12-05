@@ -1,6 +1,6 @@
 # JVM Internals
 
-# JVM内部结构详解
+# 深入解析JVM内部结构
 
 
 This article explains the internal architecture of the Java Virtual Machine (JVM).  The following diagram show the key internal components of a typical JVM that conforms to [The Java Virtual Machine Specification Java SE 7 Edition](http://www.amazon.co.uk/Virtual-Machine-Specification-Edition-Series/dp/0133260445).
@@ -13,9 +13,9 @@ This article explains the internal architecture of the Java Virtual Machine (JVM
 
 The components shown on this diagram are each explained below in two sections.  [First section](#threads) covers the components that are created for each thread and the [second section](#shared_between_threads) covers the components that are created independently of threads.
 
-这些组件分为两节进行介绍.
+我们将这些组件分成两个部分来介绍.
 
-第一个部分是为每个线程创建的组件:
+第一部分是每个线程自己的组件:
 
 * [线程(Thread)](#threads)
   *   [JVM System Threads,JVM系统线程](#jvm_system_threads)
@@ -29,7 +29,7 @@ The components shown on this diagram are each explained below in two sections.  
   *   [Operand Stack,操作数栈](#operand_stack)
   *   [Dynamic Linking,动态链接](#dynamic_linking)
 
-第二部分是所有线程共同使用的组件, 这些组件独立于线程:
+第二部分是所有线程共用的组件, 这些组件独立于线程存在:
 
 * [Shared Between Threads,所有线程共用](#shared_between_threads)
   * [Heap,堆内存](#heap)
@@ -57,7 +57,10 @@ The components shown on this diagram are each explained below in two sections.  
 
 A thread is a thread of execution in a program. The JVM allows an application to have multiple threads of execution running concurrently.  In the Hotspot JVM there is a direct mapping between a Java Thread and a native operating system Thread.  After preparing all of the state for a Java thread such as thread-local storage, allocation buffers, synchronization objects, stacks and the program counter, the native thread is created.  The native thread is reclaimed once the Java thread terminates.  The operating system is therefore responsible for scheduling all threads and dispatching them to any available CPU.  Once the native thread has initialized it invokes the run() method in the Java thread.  When the run() method returns, uncaught exceptions are handled, then the native thread confirms if the JVM needs to be terminated as a result of the thread terminating (i.e. is it the last non-deamon thread).  When the thread terminates all resources for both the native and Java thread are released.
 
-线程就是程序执行的一条路线。JVM允许程序同时执行多个线程. Hotspot JVM 将 Java线程和本地操作系统线程直接映射. 为Java线程准备好相关数据之后, 本地线程就创建完成, 包括 thread-local storage(线程本地存储)、allocation buffers(分配缓冲区), synchronization objects(同步对象), stacks(栈)和 program counter(程序计数器). 在Java线程终止时本地线程也将被回收。 操作系统负责所有的线程调度, 以及给线程分派可用的CPU. 本地线程完成初始化以后, 就会调用Java线程的 `run()` 方法. 当 `run()` 方法执行完成返回, 或者抛出未捕获的异常, 那么本地线程就会检车是否需要终止JVM( 例如, 判断该线程是否是最后存活的 non-deamon 线程)。线程终止时, 本地线程的资源和Java线程的所有资源都会被释放。
+线程就是程序执行时的一条线。 JVM允许程序同时启动多个线程. Hotspot JVM 直接将Java线程一对一的映射为底层操作系统线程。
+
+JVM需要为Java线程准备好各种相关数据之后才能启动底层的操作系统线程。
+包括 `线程本地存储`(thread-local storage)、 `分配缓冲区`(allocation buffers), `同步对象`(synchronization objects), stacks(栈)和 program counter(程序计数器). 在Java线程终止时本地线程也将被回收。 操作系统负责所有的线程调度, 以及给线程分派可用的CPU. 本地线程完成初始化以后, 就会调用Java线程的 `run()` 方法. 当 `run()` 方法执行完成返回, 或者抛出未捕获的异常, 那么本地线程就会检车是否需要终止JVM( 例如, 判断该线程是否是最后存活的 non-deamon 线程)。线程终止时, 本地线程的资源和Java线程的所有资源都会被释放。
 
 ### JVM System Threads
 
