@@ -35,6 +35,7 @@
 * [28_java-classloaders](./28_java-classloaders/README.md)
 * [29_resource_site](./29_resource_site/README.md)
 * [30_Logback用户手册中文翻译](./30_logback_manual/README.md)
+* [35_删除MySQL表（DROP TABLE）简介](./35_mysql-drop-table/README.md)
 
 
 </details>

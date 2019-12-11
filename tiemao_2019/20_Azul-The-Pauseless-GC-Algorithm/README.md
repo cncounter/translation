@@ -324,20 +324,23 @@ Pauseless GC 算法分为三个主要阶段：标记(`Mark`)，重定位(`Reloca
 > 译者注: `并行`指GC线程之间并行执行, `并发`指GC线程与业务线程之间并发执行。
 
 
-
------------
-
 **There is no “rush” to finish any given phase.** No phase places a substantial burden on the mutators that needs to be relieved by ending the phase quickly. There is no “race” to finish some phase before collection can begin again – Relocation runs continuously and can immediately free memory at any point. Since all phases are parallel, GC can keep up with any number of mutator threads simply by adding more GC threads. Unlike other incremental update algorithms, there is no re-Mark or final- Mark phase; the concurrent Mark phase will complete in a single pass despite the mutators busily modifying the heap. GC threads do compete with mutator threads for CPU time. On Azul's hardware there are generally spare CPUs available to do GC work. However, “at the limit” some fraction of CPUs will be doing GC and will not be available to the mutators.
 
-**任何特定阶段都不需要“匆忙”完成**。没有哪个阶段需要快速完成，缓解了给业务线程带来的沉重负担。在垃圾收集再次开始之前没有“抢着”完成某个阶段 - 重定位会连续运行，可以在任何时刻立即释放内存。由于所有阶段都是并行的，因此只需添加更多GC线程，GC就可以跟上任意数量的mutator线程。与其他增量更新算法不同，这里没有重新标记或最终标记阶段; 尽管mutator忙于修改堆内存，但并发标记阶段将在一次传递中完成。GC线程确实与mutator线程争枪CPU时间。在Azul的硬件上，通常有备用CPU来进行GC工作。而且，“在极限情况下”某些CPU只执行GC操作, 不会让业务线程使用。
+**任何阶段都不需要“急于”完成**。 没有哪个阶段需要快速完成，也就不会给业务线程带来很大的负担。 在垃圾收集再次开始之前不必“抢着”完成某个阶段 - 其中重定位会持续运行，可以在任意时刻释放内存。 由于各个阶段都是并行执行的，因此只需要增加GC线程，GC速度就可以赶上任意数量的业务线程。 与其他增量更新算法不同，这里没有重新标记或最终标记阶段; 尽管业务线程会一直修改堆内存，但并发标记阶段将在一次传递中完成。 GC线程确实会与业务线程争抢CPU时间。 在Azul的硬件上，通常有备用CPU来执行GC工作。 当然，“在极限情况下”某些CPU只执行GC操作, 不会让业务线程使用。
+
 
 **Each of the phases involves a “self-healing” aspect,** where the mutators immediately correct the cause of each read barrier trap by updating the ref in memory. This assures the same ref will not trigger another trap. The work involved varies by trap type and is detailed below. Once the mutators' working sets have been handled they can execute at full speed with no more traps. During certain phase shifts mutators suffer through a “trap storm”, a high volume of traps that amount to a pause smeared out in time. We measured the trap storms using Minimum Mutator Utilization, and they cost around 20ms spread out over a few hundred milliseconds.
 
-**每个阶段都涉及“自我修复”**，mutator 线程通过更新内存中的引用, 来立即纠正每个读屏障陷阱。这确保了同一个引用不会触发另一个陷阱。所涉及的工作因陷阱类型而异，具体情况是: 一旦处理了mutator的工作集，它们就可以全速执行而不再有陷阱。在某些阶段，业务线程遭受了“陷阱风暴”，大量的陷阱相当于实际上的停顿。我们使用 Minimum Mutator Utilization 来测量陷阱风暴，在几百ms内的开销大约是20ms。
+**每个阶段都涉及“自我修复”切面**，业务线程通过更新内存中的引用, 来立即修正读屏障陷阱。 这确保同一个引用不会触发多次陷阱调用。 具体的工作因陷阱类型而异，下面将对其进行详细说明。 一旦业务线程的工作集处理完成，就可以全速执行而不会再有任何陷阱。 在某些阶段，业务线程可能会遭受“陷阱风暴”，大量的陷阱实际上相当于造成了停顿。我们使用 Minimum Mutator Utilization 来测量陷阱风暴，在几百毫秒的时间周期内, 其开销大约是20ms左右。
+
 
 The algorithm we present has no Stop-The-World (STW) pauses, no places where all threads must be simultaneously stopped. However, for ease of engineering into the existing HotSpot JVM our implementation includes some STWs. We feel these STWs can be readily engineered to have pause times below standard OS context- switch times, where a GC pause will be indistinguishable from being context switched by the OS. We will mention where the implementation differs from theory as the phases are described.
 
-我们提出的算法没有Stop-The-World（STW）停顿，没有必须同时停止所有线程的地方。但是，为了与现有的HotSpot JVM兼容，我们的实现包括了一些STW。我们认为这些STW可以很容易地设计为低于标准OS上下文切换消耗的停顿时间，其中GC停顿的时间将与OS的上下文切换时间差别不大。我们将在描述时提及理论与实现的不同之处。
+我们提出的算法是没有STW停顿的，没有什么地方必须同时停止所有的线程。 但是，为了与现有的HotSpot JVM兼容和集成，在实际实现中引入了一些STW停顿。我们认为这些STW可以很容易通过巧妙的设计，让每次停顿的时间小于操作系统的上下文切换周期，其中GC停顿的时间将与OS的上下文切换时间差别不大。 我们将在描述各个阶段时, 介绍理论与实现的不同之处。
+
+
+
+-----------
 
 ### 4.1 Mark Phase
 
