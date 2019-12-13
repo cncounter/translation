@@ -339,20 +339,26 @@ The algorithm we present has no Stop-The-World (STW) pauses, no places where all
 我们提出的算法是没有STW停顿的，没有什么地方必须同时停止所有的线程。 但是，为了与现有的HotSpot JVM兼容和集成，在实际实现中引入了一些STW停顿。我们认为这些STW可以很容易通过巧妙的设计，让每次停顿的时间小于操作系统的上下文切换周期，其中GC停顿的时间将与OS的上下文切换时间差别不大。 我们将在描述各个阶段时, 介绍理论与实现的不同之处。
 
 
-
------------
-
 ### 4.1 Mark Phase
 
 ### 4.1 Mark Phase(标记阶段)
 
 The Mark phase is a parallel and concurrent incremental update (not SATB) marking algorithm [17], augmented with the read barrier. The Mark phase is responsible for marking all live objects, tagging live objects in some fashion to distinguish them from dead objects. In addition, each ref has it's NMT bit set to the expected value. The Mark phase also gathers per-1M-page liveness totals. These totals give a conservative estimate of live data on a page (hence a guaranteed amount of reclaimable space) and are used in the Relocate phase.
 
-标记阶段是并行的，而且使用的是并发增量更新标记算法（而不是SATB）(见[17])，增加了读屏障。标记阶段负责标记所有存活的对象，以某种方式打上标签，将存活对象与死亡对象区分开来。此外，将每个引用都设置对应的NMT位预期值。标记阶段还收集每个1M页的存活对象总数。这些总数对页面上的存活数据进行保守估计（以保证可回收空间量），并在重定位阶段使用。
+标记阶段是并行的，增加了读屏障，采样并发增量更新标记算法（而不是SATB）(见[17])。
+标记阶段负责标记所有的存活对象，并以某种方式打上标签，将其与死亡对象区分开。
+此外，每个引用的NMT标志位都设置为期望值。
+标记阶段还统计每个1M页的存活量。 存活量数据只是页面上存活数据的保守估计（因此保证了可回收空间的量），在“重定位”阶段中使用。
+
 
 The basic idea is straightforward: the Marker starts from some root set (generally static global variables and mutator stack contents) and begins marking reachable objects. After marking an object (and setting the NMT bit), the Marker then marksthrough the object – recursively marking all refs it finds inside the marked object. Extensions to make this algorithm parallel have been previously published [17]. Making marking fully concurrent is a little harder and the issues are described further below.
 
-基本思想很简单：标记程序从GC根（通常是静态全局变量和mutator线程的栈空间）开始，标记可达的对象。标记某个对象（并设置NMT位）之后，标记程序会遍历该对象 - 递归地标记该对象中的所有引用。使该算法并行执行的扩展已经发表(见[17])。使标记完全并发有点困难，下面将进一步描述这些问题。
+基本思想很简单：标记程序从GC根（通常是静态全局变量和业务线程的栈空间）开始，标记可达的对象。
+标记某个对象（并设置NMT位）之后，接着遍历该对象, 递归标记该对象持有的所有引用。
+先前使该算法并行的扩展已经发表了(见[17])。
+在标记阶段实现完全并发有点困难，这个问题将在后面进一步描述。
+
+
 
 ### 4.2 Relocate Phase
 
@@ -360,19 +366,30 @@ The basic idea is straightforward: the Marker starts from some root set (general
 
 The Relocate phase is where objects are relocated and pages are reclaimed. A page with mostly dead objects is made wholly unused by relocating the remaining live objects to other pages. The Relocate phase starts by selecting a set of pages that are above a given threshold of sparseness. Each page in this set is protected from mutator access, and then live objects are copied out. Forwarding information tracking the location of relocated objects is maintained outside the page.
 
-重定位阶段进行对象重新定位并回收内存页。如果某个页面中大部分是死亡对象，则可以将剩下的存活对象重新定位到其他页面，此页面则完全不使用。重定位阶段首先选择一组稀疏值(sparseness)高于给定阈值的页面。被选中的每个页面都受到保护，阻止业务线程访问，然后将存活对象拷贝出去。跟踪重定位对象的位置转发信息在页面外部维护。
+重定位阶段进行对象重新定位以及内存页面回收。
+如果某个页面中大部分都是死亡对象，则可以将剩下的存活对象重新分配到其他页面中去，然后这个页面就不再使用。
+重定位阶段首先会圈定一批大于某个稀疏值阈值的页面。
+然后将这些被选中的页面保护起来，防止业务线程访问，
+接着将存活对象拷贝出去。
+重定位对象的地址转发跟踪信息在页面外进行维护。
+
 
 If a mutator loads a reference to a protected page, the read-barrier instruction will trigger a GC-trap. The mutator is never allowed to use the protected-page reference in a language-visible way. The GC-trap handler is responsible for changing the stale protected-page reference to the correctly forwarded reference.
 
-如果 mutator 需要加载受保护页面中的引用，则读屏障指令将会触发一次GC陷阱。在语言可见的层面永远不允许mutator使用受保护页面的引用。GC陷阱处理程序负责将受保护页面中过时引用更改为正确的转发引用。
+如果业务线程需要从受保护页面中加载引用，则读屏障指令将会触发一次GC陷阱。
+在语言可见的层面, 业务代码永远不允许使用受保护页面的引用。 GC陷阱处理程序负责将指向受保护页面的过时引用更改为正确转发的引用。
+
 
 After the page contents have been relocated, the Relocate phase frees the **physical** memory; it's contents are never needed again. The physical memory is recycled by the OS and can immediately be used for new allocations. **Virtual** memory cannot be freed until no more stale references to that page remain in the heap, and that is the job of the Remap phase.
 
-页面中的内容全部重新定位后，重定位阶段释放 **物理内存**; 也就是其中的内容永远不再需要了。物理内存由操作系统回收，可立即用于新的内存分配。**虚拟内存** 地址不会立即释放，直到堆内存中不再有对该页面的过时引用，那就是Remap阶段的工作了。
+页面内容全部重定位后，“重定位”阶段就释放 **物理内存**;  因为其中的内容永远不再需要了。
+物理内存由操作系统回收后，可立即分配给需要的地方。
+但是 **虚拟内存** 地址则不会立即释放，需要等到没有对该页面的过时引用存在，当然后面的事情就是重映射阶段来做了。
+
 
 As hinted at in Figure 1, a Relocate phase runs constantly freeing memory to keep pace with the mutators' allocations. Sometimes it runs alone and sometimes concurrent with the next Mark phase.
 
-如图1所示，重定位阶段不断释放内存以跟上mutator的分配。有时候单独运行，有时也会和下一次标记阶段并发运行。
+如下面的图1所示，重定位阶段不断运行来释放内存, 以跟上业务线程分配内存的速度。 有时候会单独运行，有时也会和下一个标记阶段同时运行。
 
 
 ### 4.3 Remap Phase
@@ -381,21 +398,31 @@ As hinted at in Figure 1, a Relocate phase runs constantly freeing memory to kee
 
 During the Remap phase, GC threads traverse the object graph executing a read barrier against every ref in the heap. If the ref refers to a protected page it is stale and needs to be forwarded, just as if a mutator trapped on the ref. Once the Remap phase completes no live heap ref can refer to pages protected by the previous Relocate phase. At this point the virtual memory for those pages is freed.
 
-在Remap阶段，GC线程遍历对象图，对堆内存中的每个引用执行读屏障。如果引用指向了受保护的页面，那么它的指针是陈旧的,需要转发，就像是业务线程掉进了这个引用上的陷阱。Remap阶段完成后，不再有存活的堆内存引用指向受先前重定位阶段保护的页面。此时，这些页面的虚拟内存也被释放了。
+在重映射阶段，GC线程遍历对象图，对堆内存中的每个引用执行读屏障。
+如果引用指向受保护的页面，那么就是陈旧的, 需要进行转发，就如同业务线程掉进这个引用上的陷阱。
+重映射阶段完成后，不再有任何一个存活对象的引用指向先前的重定位阶段保护的页面。
+这时候，这些页面的虚拟内存也就释放了。
+
 
 ![](01_complete_gc_cycle.jpg)
 
 > Figure 1: The Complete GC Cycle
 
-> 图片1: 完整的GC周期
+> 图1: 完整的GC周期
 
 Since both the Remap and Mark phases need to touch all live objects, we fold them together. The Remap phase for the current GC cycle is run concurrently with the Mark phase for the next GC cycle, as shown in Figure 1.
 
-由于Remap和标记阶段都需要接触所有存活的对象，因此将它们放在一起。当前GC周期的Remap阶段, 与下一个GC周期的标记阶段并发运行，如图1所示。
+由于 重映射阶段 和 标记阶段 都需要接触所有存活对象，因此将它们放在一起。
+当前GC周期的重映射阶段, 与下一个GC周期的标记阶段可以同时并发运行，如图1所示。
 
 The Remap phase is also running concurrently with the 2nd half of the Relocate phase. The Relocate phase is creating new stale pointers that can only be fixed by a complete run of the Remap phase, so stale pointers created during the 2nd half of this Relocate phase are only cleaned out at the end of the next Remap phase. The next few sections will discuss each phase in more depth.
 
-Remap阶段也和重定位阶段的后半部分并发运行。重定位阶段会创建新的过时指针，只会在完整运行的Remap阶段来修复，因此在重定位阶段的下半部分创建的过时指针仅在下一个Remap阶段结束时清除。接下来的几节将深入地讨论每个阶段。
+重映射阶段， 和重定位阶段的后半部分也可以并发运行。
+重定位阶段会创建新的过时指针，只在完整运行的重映射阶段修复，
+因此在本次重定位阶段后半部分创建的过时指针, 仅在下一个重映射阶段结束时清除。 接下来的小节将深入讨论每一个阶段。
+
+
+-----------
 
 ## 5. MARK PHASE
 
