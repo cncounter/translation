@@ -35,6 +35,10 @@
 * [28_java-classloaders](./28_java-classloaders/README.md)
 * [29_resource_site](./29_resource_site/README.md)
 * [30_Logback用户手册中文翻译](./30_logback_manual/README.md)
+* [31.Hystrix 断路器配置](./31_Hystrix_Configuration/README.md)
+* [32.Datadog-Agent与DogStatsD简单配置](./32_DogStatsD/README.md)
+* [33.Open JDK Compile](./33_JDK_COMPILE/README.md)
+* [34.JVM01](./34_JVM01/README.md)
 * [35_删除MySQL表（DROP TABLE）简介](./35_mysql-drop-table/README.md)
 
 
