@@ -34,27 +34,26 @@
 
 ## 1. Introduction
 
-Commerce on the Internet has come to rely almost exclusively on financial institutions serving as
-trusted third parties to process electronic payments. While the system works well enough for
-most transactions, it still suffers from the inherent weaknesses of the trust based model.
-Completely non-reversible transactions are not really possible, since financial institutions cannot
-avoid mediating disputes. The cost of mediation increases transaction costs, limiting the
-minimum practical transaction size and cutting off the possibility for small casual transactions,
-and there is a broader cost in the loss of ability to make non-reversible payments for nonreversible
-services. With the possibility of reversal, the need for trust spreads. Merchants must
-be wary of their customers, hassling them for more information than they would otherwise need.
-A certain percentage of fraud is accepted as unavoidable. These costs and payment uncertainties
-can be avoided in person by using physical currency, but no mechanism exists to make payments
-over a communications channel without a trusted party.
+## 1.简介
 
-What is needed is an electronic payment system based on cryptographic proof instead of trust,
-allowing any two willing parties to transact directly with each other without the need for a trusted
-third party. Transactions that are computationally impractical to reverse would protect sellers
-from fraud, and routine escrow mechanisms could easily be implemented to protect buyers. In
-this paper, we propose a solution to the double-spending problem using a peer-to-peer distributed
-timestamp server to generate computational proof of the chronological order of transactions. The
-system is secure as long as honest nodes collectively control more CPU power than any
-cooperating group of attacker nodes.
+Commerce on the Internet has come to rely almost exclusively on financial institutions serving as trusted third parties to process electronic payments. While the system works well enough for most transactions, it still suffers from the inherent weaknesses of the trust based model. Completely non-reversible transactions are not really possible, since financial institutions cannot avoid mediating disputes. The cost of mediation increases transaction costs, limiting the minimum practical transaction size and cutting off the possibility for small casual transactions, and there is a broader cost in the loss of ability to make non-reversible payments for nonreversible services. With the possibility of reversal, the need for trust spreads. Merchants must be wary of their customers, hassling them for more information than they would otherwise need. A certain percentage of fraud is accepted as unavoidable. These costs and payment uncertainties can be avoided in person by using physical currency, but no mechanism exists to make payments over a communications channel without a trusted party.  
+
+互联网商务基本上完全依赖第三方可信金融机构提供的电子支付方式。
+虽然对大部分交易场景来说, 这套系统能够良好运行，但基于信任的模型有其固有弱点。
+由于金融机构必须得进行调解纠纷，因此想要实现完全不可逆的交易是不可能的。
+调解的开销也就增加了交易成本，事实上限制了最小交易规模，并切断了小额临时交易的可能性， 隐形地就损失了不可逆服务和不可逆支付能力的好处。
+因为交易可能被撤销/逆转，所以到处都需要解决信任问题。
+商家必须警惕他们的客户，向他们索要更多的信息。
+一定比例的欺诈行为是不可避免的。
+如果使用实体货币倒是可以避免这些成本和付款的不确定性，但在没有受信方的情况下，也就不存在使用电子方式进行付款的机制。
+
+What is needed is an electronic payment system based on cryptographic proof instead of trust, allowing any two willing parties to transact directly with each other without the need for a trusted third party. Transactions that are computationally impractical to reverse would protect sellers from fraud, and routine escrow mechanisms could easily be implemented to protect buyers. In this paper, we propose a solution to the double-spending problem using a peer-to-peer distributed timestamp server to generate computational proof of the chronological order of transactions. The system is secure as long as honest nodes collectively control more CPU power than any cooperating group of attacker nodes.
+
+我们需要一种基于密码证明而不是基于信任的电子支付系统，允许任意两个交易方直接进行交易，而无需第三方可信结构。
+在计算上不可逆的交易将保护卖方免受欺诈， 并且可以很容易地通过常规托管机制来保护买方。
+在本文中，我们提出了一种解决双花问题的方案，使用对等的分布式时间戳服务器，来生成交易的时间顺序的计算证明。
+只要诚实节点共同控制的CPU算力，比协作攻击者的算力高，那么这个系统就是安全的。
+
 
 ## 2. Transactions
 
