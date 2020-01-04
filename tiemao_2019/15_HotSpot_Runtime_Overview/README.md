@@ -341,19 +341,57 @@ Once the correct handler is found, the VM execution state is updated, and we jum
 
 Broadly, we can define “synchronization” as a mechanism that prevents, avoids or recovers from the inopportune interleavings (commonly called “races”) of concurrent operations. In Java, concurrency is expressed through the thread construct. Mutual exclusion is a special case of synchronization where at most a single thread is permitted access to protected code or data.
 
+广义上讲，我们将“同步（Synchronization）”定义为一种机制，用来防止/避免并发操作中不适当的交错（通常称为“竞赛”）。
+在Java中，并发是通过线程结构表示的。互斥是同步的一种特殊情况，最多允许一个线程访问受保护的代码或数据。
+
+
 HotSpot provides Java monitors by which threads running application code may participate in a mutual exclusion protocol. A monitor is either locked or unlocked, and only one thread may own the monitor at any one time. Only after acquiring ownership of a monitor may a thread enter the critical section protected by the monitor. In Java, critical sections are referred to as "synchronized blocks", and are delineated in code by the synchronized statement.
+
+
+HotSpot 为 Java 提供了管程(monitor)，线程执行程序代码时可以通过管程来实现互斥。 管程有两种状态： 锁定，解锁； 在任意时刻都只能有一个线程持有。 获得了管程的所有权后，线程才可以进入受管程保护的关键部分（critical section）。 在Java中，关键部分被称为“同步块（synchronized blocks）”， 在代码中由 synchronized 语句标识。
 
 If a thread attempts to lock a monitor and the monitor is in an unlocked state, the thread will immediately gain ownership of the monitor. If a subsequent thread attempts to gain ownership of the monitor while the monitor is locked that thread will not be permitted to proceed into the critical section until the owner releases the lock and the 2nd thread manages to gain (or is granted) exclusive ownership of the lock.
 
+
+如果线程尝试锁定某个管程，并且该管程处于未锁定状态，则该线程将立即获得该管程的所有权。
+如果第二个线程尝试获取该管程的所有权，在锁定管程的情况下，则不允许进入关键部分； 除非管程的所有者解除锁定，并且第二个线程设法获得（或被授予）这个锁的独占所有权。
+
+
 Some additional terminology: to “enter” a monitor means to acquire exclusive ownership of the monitor and enter the associated critical section. Likewise, to “exit” a monitor means to release ownership of the monitor and exit the critical section. We also say that a thread that has locked a monitor now “owns” that monitor. “Uncontended” refers to synchronization operations on an otherwise unowned monitor by only a single thread.
+
+
+其他一些术语：
+
+- “进入（enter）”管程,意味着获得管程的唯一所有权并进入关联的关键部分。
+- “退出（exit）”管程，意味着释放管程的所有权并退出关键部分。
+- 锁定管程的线程，“拥有（owns）”该管程。
+- “无竞争（Uncontended）” 是指仅由一个线程在原本没有所有权的管程上进行的同步操作。
 
 The HotSpot VM incorporates leading-edge techniques for both uncontended and contended synchronization operations which boost synchronization performance by a large factor.
 
+HotSpot VM 综合采用了用于无竞争和有竞争同步操作的先进手段，从而大大提高了同步性能。
+
 Uncontended synchronization operations, which comprise the majority of synchronizations, are implemented with constant-time techniques. With *biased locking*, in the best case these operations are essentially free of cost. Since most objects are locked by at most one thread during their lifetime, we allow that thread to *bias* an object toward itself. Once biased, that thread can subsequently lock and unlock the object without resorting to expensive atomic instructions.[7]
+
+无竞争同步操作，是大多数时候的同步情况， 是通过恒定时间技术实现的。
+借助“偏向锁（biased locking）”，在最佳情况下，这些操作基本上是没有开销的。
+由于大多数对象在生命周期中最多只会被一个线程锁定，因此我们允许该线程将一个对象“偏向”自身。
+一旦有偏向，该线程便可以在后续操作中锁定和解锁对象，而无需使用开销巨大的原子指令。[参见7]
+
 
 Contended synchronization operations use advanced adaptive spinning techniques to improve throughput even for applications with significant amounts of lock contention. As a result, synchronization performance becomes so fast that it is not a significant performance issue for the vast majority of real-world programs.
 
+竞争性同步操作使用高级自适应自旋技术来提高吞吐量，即使对于具有大量锁争用的应用程序也是如此。
+结果，同步性能变得如此之快，以至于对于大多数实际程序而言，它并不是一个重要的性能问题。
+
 In HotSpot, most synchronization is handled through what we call ””fast-path” code. We have two just-in-time compilers (JITs) and an interpreter, all of which will emit fast-path code. The two JITs are “C1”, which is the -client compiler, and “C2”, which is the -server compiler. C1 and C2 both emit fast-path code directly at the synchronization site. In the normal case when there's no contention, the synchronization operation will be completed entirely in the fast-path. If, however, we need to block or wake a thread (in monitorenter or monitorexit, respectively), the fast-path code will call into the slow-path. The slow-path implementation is in native C++ code while the fast-path is emitted by the JITs.
+
+在HotSpot中，大多数同步是通过所谓的“快速路径”代码处理的。
+有两个即时编译器（JIT）和一个解释器，它们都将发出快速路径代码。
+这两个JIT是“ C1”（即-client编译器）和“ C2”（即-server编译器）。 C1和C2都直接在同步站点发出快速路径代码。
+在没有争用的正常情况下，同步操作将完全在快速路径中完成。
+但是，如果我们需要阻塞或唤醒线程（分别在monitorenter或monitorexit中），则快速路径代码将调用慢速路径。
+慢路径实现是用本地C++代码实现的，而快速路径是由JIT发出的。
 
 Per-object synchronization state is encoded in the first word (the so-called *mark word*) of the VM's object representation. For several states, the mark word is multiplexed to point to additional synchronization metadata. (As an aside, in addition, the mark word is also multiplexed to contain GC age data, and the object's identity hashCode value.) The states are:
 
@@ -361,6 +399,17 @@ Per-object synchronization state is encoded in the first word (the so-called *ma
 - Biased: Locked/Unlocked + Unshared
 - Stack-Locked: Locked + Shared but uncontended The mark points to displaced mark word on the owner thread's stack.
 - Inflated: Locked/Unlocked + Shared and contended Threads are blocked in monitorenter or wait(). The mark points to heavy-weight "objectmonitor" structure.[8]
+
+
+
+每个对象的同步状态被编码到内存表示形式的第一个word中（所谓的*标记字*）。
+对于几种状态，标记字被多路复用以指向其他同步元数据。 （此外，标记字还被多路复用以包含GC年龄数据和对象的唯一hashCode值。）
+状态为：
+
+- 中立（Neutral）：未锁定（Unlocked）
+- 偏向（Biased）：锁定/解锁 + 非共享
+- 栈锁定（Stack-Locked）：锁定+共享，但无竞争标记指向所有者线程栈上的移位标记字。
+- 膨胀（Inflated）：锁定/解锁+共享， 竞争线程在monitorenter或wait（）中被阻塞。该标记指向重量级的“对象管程”结构体。[参见8]
 
 ### Thread Management
 
