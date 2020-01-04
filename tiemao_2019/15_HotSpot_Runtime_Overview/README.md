@@ -417,31 +417,87 @@ Per-object synchronization state is encoded in the first word (the so-called *ma
 
 Thread management covers all aspects of the thread lifecycle, from creation through to termination, and the coordination of threads within the VM. This involves management of threads created from Java code (whether application code or library code), native threads that attach directly to the VM, or internal VM threads created for a range of purposes. While the broader aspects of thread management are platform independent, the details necessarily vary depending on the underlying operating system.
 
+线程管理涵盖了线程生命周期的所有方面，从创建到终止，以及JVM中线程间的协调与交互。
+需要管理的线程包括: Java代码创建的线程，直接附加到VM的本地线程, 以及为各种目的而创建的JVM内部线程。
+尽管线程管理的更广泛方面是平台独立的，但是细节必定会根据底层操作系统而有所不同。
+
+
 #### Threading Model
+
+#### 线程模型
 
 The basic threading model in Hotspot is a 1:1 mapping between Java threads (an instance of java.lang.Thread) and native operating system threads. The native thread is created when the Java thread is started, and is reclaimed once it terminates. The operating system is responsible for scheduling all threads and dispatching to any available CPU.
 
+
+Hotspot中的基本线程模型，是将Java线程（`java.lang.Thread`实例）与底层操作系统线程之间进行 `1:1` 的映射。
+本地线程在Java线程启动时创建，并在终止时被回收。操作系统负责调度所有线程并分配到可用的CPU上执行。
+
 The relationship between Java thread priorities and operating system thread priorities is a complex one that varies across systems. These details are covered later.
+
+Java线程优先级，与操作系统线程的优先级之间的关系比较复杂， 每个操作系统都不同。 这些细节将在后面介绍。
+
 
 #### Thread Creation and Destruction
 
+
+#### 线程创建和销毁
+
 There are two basic ways for a thread to be introduced into the VM: execution of Java code that calls start() on a java.lang.Thread object; or attaching an existing native thread to the VM using JNI. Other threads created by the VM for internal purposes are discussed below.
+
+
+将线程引入JVM有两种基本的方法：
+
+- 在Java代码中，调用 `java.lang.Thread` 对象的 `start()` 方法；
+- 使用JNI将现有的 native 线程附加到JVM。
+
+JVM创建的其他内部线程将在下面讨论。
 
 There are a number of objects associated with a given thread in the VM (remembering that Hotspot is written in the C++ object-oriented programming language):
 
 - The java.lang.Thread instance that represents a thread in Java code
-- A JavaThread instance that represents the java.lang.Thread instance inside the VM. It contains additional information to track the state of the thread. A JavaThread holds a reference to its associatedjava.lang.Thread object (as an oop), and the java.lang.Thread object also stores a reference to its JavaThread (as a raw int). A JavaThreadalso holds a reference to its associated OSThread instance.
+- A JavaThread instance that represents the java.lang.Thread instance inside the VM. It contains additional information to track the state of the thread. A JavaThread holds a reference to its associated java.lang.Thread object (as an oop), and the java.lang.Thread object also stores a reference to its JavaThread (as a raw int). A JavaThread also holds a reference to its associated OSThread instance.
 - An OSThread instance represents an operating system thread, and contains additional operating-system-level information needed to track thread state. The OSThread then contains a platform specific “handle” to identify the actual thread to the operating system
 
-When a java.lang.Thread is started the VM creates the associated JavaThreadand OSThread objects, and ultimately the native thread. After preparing all of the VM state (such as thread-local storage and allocation buffers, synchronization objects and so forth) the native thread is started. The native thread completes initialization and then executes a start-up method that leads to the execution of the java.lang.Thread object's run() method, and then, upon its return, terminates the thread after dealing with any uncaught exceptions, and interacting with the VM to check if termination of this thread requires termination of the whole VM. Thread termination releases all allocated resources, removes the JavaThreadfrom the set of known threads, invokes destructors for the OSThread andJavaThread and ultimately ceases execution when it's initial startup method completes.
 
-A native thread attaches to the VM using the JNI call AttachCurrentThread. In response to this an associated OSThread and JavaThread instance is created and basic initialization is performed. Next a java.lang.Thread object must be created for the attached thread, which is done by reflectively invoking the Java code for the Thread class constructor, based on the arguments supplied when the thread attached. Once attached, a thread can invoke whatever Java code it needs to via the other JNI methods available. Finally when the native thread no longer wishes to be involved with the VM it can call the JNI DetachCurrentThreadmethod to disassociate it from the VM (release resources, drop the reference to thejava.lang.Thread instance, destruct the JavaThread and OSThread objects and so forth).
+JVM中有很多和线程关联的对象（请记住，Hotspot是使用C++语言编写的）：
 
-A special case of attaching a native thread is the initial creation of the VM via the JNI CreateJavaVM call, which can be done by a native application or by the launcher (java.c). This causes a range of initialization operations to take place and then acts effectively as if a call to AttachCurrentThread was made. The thread can then invoke Java code as needed, such as reflective invocation of themain method of an application. See the JNI section for further details.
+- Java代码中, 表示线程的 `java.lang.Thread` 实例
+- JVM 内部表示 `java.lang.Thread` 的 `JavaThread` 实例。 包含其他信息以跟踪线程的状态。 `JavaThread` 持有对其关联的 `java.lang.Thread` 对象的引用（oop指针），而 `java.lang.Thread` 对象也保存着对 `JavaThread` 的引用（原生 int）。 `JavaThread`还持有对应 `OSThread` 实例的引用。
+- `OSThread` 实例表示一个操作系统线程，并包含跟踪线程状态所需的操作系统级信息。 当然, `OSThread` 包含具体平台的“句柄”，以标识实际的操作系统线程。
+
+
+When a java.lang.Thread is started the VM creates the associated JavaThread and OSThread objects, and ultimately the native thread. After preparing all of the VM state (such as thread-local storage and allocation buffers, synchronization objects and so forth) the native thread is started. The native thread completes initialization and then executes a start-up method that leads to the execution of the java.lang.Thread object's run() method, and then, upon its return, terminates the thread after dealing with any uncaught exceptions, and interacting with the VM to check if termination of this thread requires termination of the whole VM. Thread termination releases all allocated resources, removes the JavaThread from the set of known threads, invokes destructors for the OSThread and JavaThread and ultimately ceases execution when it's initial startup method completes.
+
+在启动 `java.lang.Thread` 时，JVM将创建对应的 `JavaThread` 和 `OSThread` 对象，并最终创建 native 线程。
+准备好所有的VM状态（比如 thread-local 存储, 对象分配缓冲区，同步对象等等）之后，就启动 native 线程。
+native 线程完成初始化后，会执行一个启动方法，在其中调用 `java.lang.Thread` 对象的 `run()`方法， 然后根据 `run()` 方法的返回情况，处理完所有未捕获的异常之后，终止线程， 并与VM交互，判断在此线程终止后是否需要停止整个虚拟机。
+线程结束会释放所有分配的资源，从已知线程集中删除`JavaThread`，调用 `OSThread` 和 `JavaThread` 的析构函数，并在初始启动方法执行完成后，最终停止执行。
+
+A native thread attaches to the VM using the JNI call AttachCurrentThread. In response to this an associated OSThread and JavaThread instance is created and basic initialization is performed. Next a java.lang.Thread object must be created for the attached thread, which is done by reflectively invoking the Java code for the Thread class constructor, based on the arguments supplied when the thread attached. Once attached, a thread can invoke whatever Java code it needs to via the other JNI methods available. Finally when the native thread no longer wishes to be involved with the VM it can call the JNI DetachCurrentThreadmethod to disassociate it from the VM (release resources, drop the reference to the java.lang.Thread instance, destruct the JavaThread and OSThread objects and so forth).
+
+
+native 线程通过JNI调用 `AttachCurrentThread` 连接到JVM中。 对于这个调用的响应，JVM会创建关联的 `OSThread` 和 `JavaThread` 实例，并执行基本初始化。
+接下来，必须为连接的线程创建一个 `java.lang.Thread` 对象，该方法是根据连接线程时提供的参数，以反射方式调用Thread类构造函数对于的Java代码来完成的。
+连接后，线程可以通过其他可用的JNI方法调用所需的任何Java代码。
+最后，当 native 线程不再希望与JVM关联时，可以调用JNI的 `DetachCurrentThread` 方法, 将其与JVM解除关联（同时会释放资源，删除对 `java.lang.Thread` 实例的引用，析构 `JavaThread` 和 `OSThread` 对象等等）。
+
+A special case of attaching a native thread is the initial creation of the VM via the JNI CreateJavaVM call, which can be done by a native application or by the launcher (java.c). This causes a range of initialization operations to take place and then acts effectively as if a call to AttachCurrentThread was made. The thread can then invoke Java code as needed, such as reflective invocation of the main method of an application. See the JNI section for further details.
+
+附加 native 线程的一种特殊情况， 是通过JNI方式的 `CreateJavaVM` 来初始创建JVM时，这可以由本地应用程序或启动器（java.c）来完成。
+这将导致一系列初始化操作，然后有效地进行操作，就好像调用了 `AttachCurrentThread` 一样。
+然后，线程可以根据需要调用Java代码，例如反射调用应用程序的`main`方法。 更多详细信息，请参见JNI部分。
 
 #### Thread States
 
+#### 线程状态
+
+
 The VM uses a number of different internal thread states to characterize what each thread is doing. This is necessary both for coordinating the interactions of threads, and for providing useful debugging information if things go wrong. A thread's state transitions as different actions are performed, and these transition points are used to check that it is appropriate for a thread to proceed with the requested action at that point in time – see the discussion of safepoints below.
+
+JVM 使用许多不同的内部状态来标识每个线程在做什么。
+这对于协调线程之间的交互，以及在出现问题时提供有用的调试信息都是很有必要的。
+在执行不同的操作时，线程的状态会转换，这些转换点用于检查线程在该时间点是否适合执行所请求的操作 – 请参阅下面的安全点小节。
+
 
 The main thread states from the VM perspective are as follows:
 
@@ -450,17 +506,47 @@ The main thread states from the VM perspective are as follows:
 - `_thread_in_vm`: a thread that is executing inside the VM
 - `_thread_blocked`: the thread is blocked for some reason (acquiring a lock, waiting for a condition, sleeping, performing a blocking I/O operation and so forth)
 
+从JVM的角度看，主要的线程状态包括：
+
+- `_thread_new`：正在初始化的新线程
+- `_thread_in_Java`：正在执行Java代码的线程
+- `_thread_in_vm`：在JVM内部执行的线程
+- `_thread_blocked`：由于某种原因被阻塞的线程（例如获取锁，等待条件，休眠，执行阻塞的I/O操作等等）
+
+
 For debugging purposes additional state information is also maintained for reporting by tools, in thread dumps, stack traces etc. This is maintained in theOSThreadand some of it has fallen into dis-use, but states reported in thread dumps etc include:
 
 - MONITOR_WAIT: a thread is waiting to acquire a contended monitor lock
 - CONDVAR_WAIT: a thread is waiting on an internal condition variable used by the VM (not associated with any Java level object)
 - OBJECT_WAIT: a thread is performing an Object.wait() call
 
-Other subsystems and libraries impose their own state information, such as the JVMTI system and the ThreadStateexposed by the java.lang.Threadclass itself. Such information is generally not accessible to, nor relevant to, the management of threads inside the VM.
+
+出于调试目的，线程状态中还维护了其他信息，以便在线程转储，调用栈跟踪时，相关工具可以使用。 这些信息在 `OSThread` 中维护，其中一些已被废弃，但在线程转储等报告中使用的状态包括：
+
+- `MONITOR_WAIT`：线程正在等待获取竞争的管程锁
+- `CONDVAR_WAIT`：线程正在等待JVM使用的内部条件变量（不与任何Java级别对象相关联）
+- `OBJECT_WAIT`：线程正在执行 `Object.wait()` 调用
+
+
+Other subsystems and libraries impose their own state information, such as the JVMTI system and the ThreadState exposed by the java.lang.Thread class itself. Such information is generally not accessible to, nor relevant to, the management of threads inside the VM.
+
+
+其他子系统和库强加了它们自己的状态信息，例如JVMTI系统, 以及 `java.lang.Thread` 类自身暴露的 ThreadState。
+通常来说，这些信息与JVM内部的线程管理无关，也不会访问到这些信息。
+
+
+
+
+############
 
 #### Internal VM Threads
 
+####内部VM线程
+
+
 People are often surprised to discover that even executing a simple “Hello World” program can result in the creation of a dozen or more threads in the system. These arise from a combination of internal VM threads, and library related threads (such as reference handler and finalizer threads). The main kinds of VM threads are as follows:
+
+
 
 - VM thread: This singleton instance of VMThread is responsible for executing VM operations, which are discussed below
 - Periodic task thread: This singleton instance of WatcherThreadsimulates timer interrupts for executing periodic operations within the VM
@@ -468,17 +554,48 @@ People are often surprised to discover that even executing a simple “Hello Wor
 - Compiler threads: These threads perform runtime compilation of bytecode to native code
 - Signal dispatcher thread: This thread waits for process directed signals and dispatches them to a Java level signal handling method
 
+
+人们常常惊奇地发现，即使执行一个简单的“ Hello World”程序也可能导致在系统中创建十几个或更多线程。这些来自内部VM线程和与库相关的线程（例如引用处理程序和终结器线程）的组合。 VM线程的主要种类如下：
+
+-VM线程：VMThread的此单例实例负责执行VM操作，下面将对此进行讨论
+-定期任务线程：WatcherThread的此单例实例模拟计时器中断，以在VM中执行定期操作
+-GC线程：这些类型不同的线程支持并行和并发垃圾回收
+-编译器线程：这些线程执行字节码到本机代码的运行时编译
+-信号分配器线程：该线程等待过程指示的信号，并将其分配给Java级别的信号处理方法
+
+
 All threads are instances of the Thread class, and all threads that execute Java code are JavaThread instances (a subclass of Thread). The VM keeps track of all threads in a linked-list known as the Threads_list, and which is protected by the Threads_lock – one of the key synchronization locks used within the VM.
+
+
+所有线程都是Thread类的实例，而所有执行Java代码的线程都是JavaThread实例（Thread的子类）。 VM在称为Threads_list的链接列表中跟踪所有线程，并受Threads_lock（VM中使用的关键同步锁之一）保护。
 
 #### VM Operations and Safepoints
 
+
+#### VM操作和安全点
+
+
 The VMThread spends its time waiting for operations to appear in the VMOperationQueue, and then executing those operations. Typically these operations are passed on to the VMThread because they require that the VM reach a `safepoint` before they can be executed. In simple terms, when the VM is at safepoint all threads inside the VM have been blocked, and any threads executing in native code are prevented from returning to the VM while the safepoint is in progress. This means that the VM operation can be executed knowing that no thread can be in the middle of modifying the Java heap, and all threads are in a state such that their Java stacks are unchanging and can be examined.
+
+
+VMThread花时间等待操作出现在VMOperationQueue中，然后执行这些操作。通常，这些操作会传递给VMThread，因为它们要求VM在执行之前必须达到“安全点”。简而言之，当虚拟机处于安全点时，虚拟机内部的所有线程均被阻止，并且在执行安全点时，将阻止以本机代码执行的所有线程返回虚拟机。这意味着可以在不知道正在修改Java堆的线程的情况下执行VM操作，并且所有线程都处于这样的状态，即它们的Java堆栈不变且可以检查。
+
 
 The most familiar VM operation is for garbage collection, or more specifically for the “stop-the-world” phase of garbage collection that is common to many garbage collection algorithms. But many other safepoint based VM operations exist, for example: biased locking revocation, thread stack dumps, thread suspension or stopping (i.e. The java.lang.Thread.stop() method) and numerous inspection/modification operations requested through JVMTI.
 
+
+最熟悉的VM操作是用于垃圾收集，或更具体地说，是用于许多垃圾收集算法所共有的垃圾收集的“世界停止”阶段。但是还存在许多其他基于安全点的VM操作，例如：偏向的锁定吊销，线程堆栈转储，线程挂起或停止（即java.lang.Thread.stop（）方法）以及通过JVMTI请求的许多检查/修改操作。
+
+
 Many VM operations are synchronous, that is the requestor blocks until the operation has completed, but some are asynchronous or concurrent, meaning that the requestor can proceed in parallel with the VMThread (assuming no safepoint is initiated of course).
 
+许多VM操作是同步的，即请求者在操作完成之前一直阻塞，但有些操作是异步的或并发的，这意味着请求者可以与VMThread并行进行（当然，假设没有启动安全点）。
+
+
 Safepoints are initiated using a cooperative, polling-based mechanism. In simple terms, every so often a thread asks “should I block for a safepoint?”. Asking this question efficiently is not so simple. One place where the question is often asked is during a thread state transition. Not all state transitions do this, for example a thread leaving the VM to go to native code, but many do. The other places where a thread asks are in compiled code when returning from a method or at certain stages during loop iteration. Threads executing interpreted code don't usually ask the question, instead when the safepoint is requested the interpreter switches to a different dispatch table that includes the code to ask the question; when the safepoint is over, the dispatch table is switched back again. Once a safepoint has been requested, the VMThread must wait until all threads are known to be in a safepoint-safe state before proceeding to execute the VM operation. During a safepoint the Threads_lock is used to block any threads that were running, with the VMThread finally releasing the Threads_lock after the VM operation has been performed.
+
+
+安全点是使用基于轮询的合作机制启动的。简单来说，线程经常问“我应该阻止一个安全点吗？”。有效地问这个问题不是那么简单。一个经常被问到问题的地方是在线程状态转换期间。并非所有状态转换都执行此操作，例如，一个线程使VM进入本机代码，但是许多状态转换都这样做。从方法返回时或循环迭代期间的某些阶段，线程询问的其他位置在编译的代码中。执行解释代码的线程通常不问问题，而是当请求安全点时，解释器切换到另一个包含该问题代码的调度表。当安全点结束时，调度表将再次切回。请求安全点后，VMThread必须等待，直到已知所有线程都处于安全点安全状态，然后才能继续执行VM操作。在安全点期间，Threads_lock用于阻止正在运行的任何线程，VMThread在执行VM操作之后最终释放Threads_lock。
 
 ### C++ Heap Management
 
