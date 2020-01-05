@@ -535,13 +535,9 @@ Other subsystems and libraries impose their own state information, such as the J
 通常来说，这些信息与JVM内部的线程管理无关，也不会访问到这些信息。
 
 
-
-
-############
-
 #### Internal VM Threads
 
-####内部VM线程
+#### JVM内部线程
 
 
 People are often surprised to discover that even executing a simple “Hello World” program can result in the creation of a dozen or more threads in the system. These arise from a combination of internal VM threads, and library related threads (such as reference handler and finalizer threads). The main kinds of VM threads are as follows:
@@ -549,25 +545,29 @@ People are often surprised to discover that even executing a simple “Hello Wor
 
 
 - VM thread: This singleton instance of VMThread is responsible for executing VM operations, which are discussed below
-- Periodic task thread: This singleton instance of WatcherThreadsimulates timer interrupts for executing periodic operations within the VM
+- Periodic task thread: This singleton instance of WatcherThread simulates timer interrupts for executing periodic operations within the VM
 - GC threads: These threads, of different types, support parallel and concurrent garbage collection
 - Compiler threads: These threads perform runtime compilation of bytecode to native code
 - Signal dispatcher thread: This thread waits for process directed signals and dispatches them to a Java level signal handling method
 
 
-人们常常惊奇地发现，即使执行一个简单的“ Hello World”程序也可能导致在系统中创建十几个或更多线程。这些来自内部VM线程和与库相关的线程（例如引用处理程序和终结器线程）的组合。 VM线程的主要种类如下：
+我们会发现，即使执行一个简单的“Hello World”程序，也会导致在Java进程中创建几十个线程。
+这些线程主要是JVM内部线程，以及与库相关的线程（例如引用处理器， 终结者线程等等）。
+JVM的线程主要分为以下几种：
 
--VM线程：VMThread的此单例实例负责执行VM操作，下面将对此进行讨论
--定期任务线程：WatcherThread的此单例实例模拟计时器中断，以在VM中执行定期操作
--GC线程：这些类型不同的线程支持并行和并发垃圾回收
--编译器线程：这些线程执行字节码到本机代码的运行时编译
--信号分配器线程：该线程等待过程指示的信号，并将其分配给Java级别的信号处理方法
+- VM线程：`VMThread` 的单例对象, 负责执行VM操作，后面将对此进行讨论;
+- 定期任务线程：`WatcherThread` 的单例对象， 模拟在VM中执行定期操作的计时器中断；
+- GC线程：用于支持并行和并发垃圾回收的线程;
+- 编译器线程： 将字节码编译为本地机器代码;
+- 信号分发线程：此线程等待进程指示的信号，并将其分配给Java级别的信号处理方法
 
 
 All threads are instances of the Thread class, and all threads that execute Java code are JavaThread instances (a subclass of Thread). The VM keeps track of all threads in a linked-list known as the Threads_list, and which is protected by the Threads_lock – one of the key synchronization locks used within the VM.
 
 
-所有线程都是Thread类的实例，而所有执行Java代码的线程都是JavaThread实例（Thread的子类）。 VM在称为Threads_list的链接列表中跟踪所有线程，并受Threads_lock（VM中使用的关键同步锁之一）保护。
+所有线程都是`Thread`类的实例，而所有执行Java代码的线程都是（`Thread`的子类）`JavaThread` 的实例。
+JVM在称为 `Threads_list` 的链表中跟踪所有线程，并受 `Threads_lock` 的保护（这是JVM内部使用的一个关键同步锁）。
+
 
 #### VM Operations and Safepoints
 
@@ -578,24 +578,35 @@ All threads are instances of the Thread class, and all threads that execute Java
 The VMThread spends its time waiting for operations to appear in the VMOperationQueue, and then executing those operations. Typically these operations are passed on to the VMThread because they require that the VM reach a `safepoint` before they can be executed. In simple terms, when the VM is at safepoint all threads inside the VM have been blocked, and any threads executing in native code are prevented from returning to the VM while the safepoint is in progress. This means that the VM operation can be executed knowing that no thread can be in the middle of modifying the Java heap, and all threads are in a state such that their Java stacks are unchanging and can be examined.
 
 
-VMThread花时间等待操作出现在VMOperationQueue中，然后执行这些操作。通常，这些操作会传递给VMThread，因为它们要求VM在执行之前必须达到“安全点”。简而言之，当虚拟机处于安全点时，虚拟机内部的所有线程均被阻止，并且在执行安全点时，将阻止以本机代码执行的所有线程返回虚拟机。这意味着可以在不知道正在修改Java堆的线程的情况下执行VM操作，并且所有线程都处于这样的状态，即它们的Java堆栈不变且可以检查。
+VMThread 持续等待 `VMOperationQueue` 中出现的操作，然后执行这些操作。
+通常，这些操作会传递给VMThread，因为它们要求JVM在执行之前必须到达 “安全点”。
+简而言之，当虚拟机处于安全点时，JVM中的所有线程均被阻塞； 并且在执行安全点时，将阻止执行native代码的所有线程返回虚拟机。
+这意味着执行VM操作时，不可能有哪个线程正处于修改Java堆内存的过程中， 并且所有线程都处于可检查的状态，即它们的线程栈不会发生改变。
 
 
 The most familiar VM operation is for garbage collection, or more specifically for the “stop-the-world” phase of garbage collection that is common to many garbage collection algorithms. But many other safepoint based VM operations exist, for example: biased locking revocation, thread stack dumps, thread suspension or stopping (i.e. The java.lang.Thread.stop() method) and numerous inspection/modification operations requested through JVMTI.
 
 
-最熟悉的VM操作是用于垃圾收集，或更具体地说，是用于许多垃圾收集算法所共有的垃圾收集的“世界停止”阶段。但是还存在许多其他基于安全点的VM操作，例如：偏向的锁定吊销，线程堆栈转储，线程挂起或停止（即java.lang.Thread.stop（）方法）以及通过JVMTI请求的许多检查/修改操作。
+最常见的VM操作是 GC，或更具体地说，是许多垃圾收集算法所共有的 “stop-the-world” 阶段。
+但是还存在许多其他基于安全点的VM操作，例如：偏向锁的撤销，线程栈转储，线程挂起或停止（即 `java.lang.Thread.stop()` 方法）,以及通过 `JVMTI` 请求的许多检查/修改操作。
 
 
 Many VM operations are synchronous, that is the requestor blocks until the operation has completed, but some are asynchronous or concurrent, meaning that the requestor can proceed in parallel with the VMThread (assuming no safepoint is initiated of course).
 
-许多VM操作是同步的，即请求者在操作完成之前一直阻塞，但有些操作是异步的或并发的，这意味着请求者可以与VMThread并行进行（当然，假设没有启动安全点）。
+许多VM操作是同步的，即请求者在操作完成之前一直被阻塞; 但也有些操作是异步或并发的，这意味着请求者可以与 `VMThread` 并行执行（当然，假设没有启动安全点）。
 
 
 Safepoints are initiated using a cooperative, polling-based mechanism. In simple terms, every so often a thread asks “should I block for a safepoint?”. Asking this question efficiently is not so simple. One place where the question is often asked is during a thread state transition. Not all state transitions do this, for example a thread leaving the VM to go to native code, but many do. The other places where a thread asks are in compiled code when returning from a method or at certain stages during loop iteration. Threads executing interpreted code don't usually ask the question, instead when the safepoint is requested the interpreter switches to a different dispatch table that includes the code to ask the question; when the safepoint is over, the dispatch table is switched back again. Once a safepoint has been requested, the VMThread must wait until all threads are known to be in a safepoint-safe state before proceeding to execute the VM operation. During a safepoint the Threads_lock is used to block any threads that were running, with the VMThread finally releasing the Threads_lock after the VM operation has been performed.
 
 
-安全点是使用基于轮询的合作机制启动的。简单来说，线程经常问“我应该阻止一个安全点吗？”。有效地问这个问题不是那么简单。一个经常被问到问题的地方是在线程状态转换期间。并非所有状态转换都执行此操作，例如，一个线程使VM进入本机代码，但是许多状态转换都这样做。从方法返回时或循环迭代期间的某些阶段，线程询问的其他位置在编译的代码中。执行解释代码的线程通常不问问题，而是当请求安全点时，解释器切换到另一个包含该问题代码的调度表。当安全点结束时，调度表将再次切回。请求安全点后，VMThread必须等待，直到已知所有线程都处于安全点安全状态，然后才能继续执行VM操作。在安全点期间，Threads_lock用于阻止正在运行的任何线程，VMThread在执行VM操作之后最终释放Threads_lock。
+安全点是使用基于轮询的合作机制启动的。
+简单来说，线程会经常发出询问： “我应该在安全点处阻塞吗？”。
+想要高效地检查并不是那么简单。 一个经常发出询问的地方是在线程状态转换时。 大部分的状态转换都会执行这类操作，但不是全部，例如，线程离开JVM进入native代码时。
+其他发出询问的位置，是从编译后的native代码方法返回时, 或在循环迭代中的某些阶段。
+解释模式执行代码的线程通常不需要询问，而是在请求安全点时，由解释器切换到另一个包含询问代码的调度表中; 当安全点结束时，调度表将再次切回。
+请求安全点后，`VMThread` 必须等待所有已知的线程都处于安全点状态，然后才能继续执行VM操作。
+在安全点期间，`Threads_lock`用于阻塞所有正在运行的线程，在执行完VM操作之后， `VMThread`最终会释放Threads_lock。
+
 
 ### C++ Heap Management
 
