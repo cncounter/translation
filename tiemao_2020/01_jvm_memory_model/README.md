@@ -34,12 +34,13 @@ header 中的第一个机器字， 包含唯一哈希码，GC状态等信息。 
 
 ### Reflective Data are Represented as Objects
 
-### 3、用对象形式来表示反射数据
+### 3、用对象来表示反射数据
 
 
 Classes, methods, and other internal reflective data are represented directly as objects on the heap (although those objects may not be directly accessible to Java technology-based programs). This not only simplifies the VM internal object model, but also allows classes to be collected by the same garbage collector used for other Java programming language objects.
 
-类，方法和其他内部反射数据直接表示为堆上的对象（尽管基于Java技术的程序可能无法直接访问这些对象）。这不仅简化了VM内部对象模型，而且还允许使用与其他Java编程语言对象相同的垃圾收集器来收集类。
+类(class)，方法(method)和其他内部反射数据，都直接使用对象来表示（虽然这些对象无法通过常规的Java代码直接访问）。
+这不仅简化了JVM内部的对象模型，而且还像回收Java对象一样，允许垃圾收集器来回收class。
 
 
 ### Native Thread Support, Including Preemption and Multiprocessing
