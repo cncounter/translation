@@ -40,22 +40,25 @@ header 中的第一个机器字， 包含唯一哈希码，GC状态等信息。 
 Classes, methods, and other internal reflective data are represented directly as objects on the heap (although those objects may not be directly accessible to Java technology-based programs). This not only simplifies the VM internal object model, but also allows classes to be collected by the same garbage collector used for other Java programming language objects.
 
 类(class)，方法(method)和其他内部反射数据，都直接使用对象来表示（虽然这些对象无法通过常规的Java代码直接访问）。
-这不仅简化了JVM内部的对象模型，而且还像回收Java对象一样，允许垃圾收集器来回收class。
+这不仅简化了JVM内部的对象模型，而且还允许GC像回收Java对象一样，回收class。
 
 
 ### Native Thread Support, Including Preemption and Multiprocessing
 
-### 4、Native线程支持，包括抢占和多处理
+### 4、Native线程支持，包括抢占和多处理器
 
 Per-thread method activation stacks are represented using the host operating system's stack and thread model. Both Java programming language methods and native methods share the same stack, allowing fast calls between the C and Java programming languages. Fully preemptive Java programming language threads are supported using the host operating system's thread scheduling mechanism.
 
 
-每线程方法激活堆栈使用主机操作系统的堆栈和线程模型表示。 Java编程语言方法和本机方法都共享同一堆栈，从而允许在C和Java编程语言之间进行快速调用。使用主机操作系统的线程调度机制支持完全抢占式Java编程语言线程。
+每个线程的活动方法栈(activation stacks), 都使用底层操作系统的栈和线程模型来表示。
+Java方法和native方法都使用同样的栈，从而允许在C语言编写的JNI方法和Java方法之间进行快速调用。
+通过使用底层操作系统的线程调度机制, 支持完全抢占式的Java线程。
 
 A major advantage of using native OS threads and scheduling is the ability to take advantage of native OS multiprocessing support transparently. Because the Java HotSpot VM is designed to be insensitive to race conditions caused by preemption and/or multiprocessing while executing Java programming language code, the Java programming language threads will automatically take advantage of whatever scheduling and processor allocation policies the native OS provides.
 
 
-使用本机OS线程和调度的主要优点是能够透明地利用本机OS多处理支持。由于Java HotSpot VM被设计为对执行Java编程语言代码时抢占和/或多重处理引起的竞争条件不敏感，因此Java编程语言线程将自动利用本机OS提供的任何调度和处理器分配策略。
+使用底层OS线程和操作系统调度的最主要优势，在于能够透明地利用本机OS多处理支持。
+由于HotSpot JVM被设计为对竞争条件不敏感(竞态条件由抢占和/或多处理引起)， 所以Java线程将自动利用底层OS提供的所有调度和处理器分配策略。
 
 
 ## 原文链接
