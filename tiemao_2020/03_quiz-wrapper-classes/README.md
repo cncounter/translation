@@ -1,17 +1,18 @@
 # Quiz Yourself: Wrapper Classes (Intermediate)
 
-＃ Java坑人面试题: 包装类（中级）
+＃ Java坑人面试题系列: 包装类（中级）
 
 
 > Two integers are instantiated with the `Integer` wrapper class. How do you compare their values correctly?
 
 
-> 用Integer包装类实例化两个整数。 您如何正确比较它们的值？
+> 请思考一个问题: 两个 `Integer` 包装类对象。 怎样比较它们的值是否相等，有哪些方法？
 
 
 If you have worked on our quiz questions in the past, you know none of them is easy. They model the difficult questions from certification examinations. The levels marked “intermediate” and “advanced” refer to the exams, rather than the questions. Although in almost all cases, “advanced” questions will be harder. We write questions for the certification exams, and we intend that the same rules apply: Take words at their face value and trust that the questions are not intended to deceive you, but straightforwardly test your knowledge of the ins and outs of the language.
 
-如果您过去曾经处理过我们的测验问题，那么您会发现其中的任何一个都不容易。 他们模拟了认证考试中的难题。 标为“中级”和“高级”的级别是指考试，而不是问题。 尽管在几乎所有情况下，“高级”问题都会更加困难。 我们为认证考试编写问题，并且我们希望遵循相同的规则：以言行一致的方式讲话，并相信这些问题并非旨在欺骗您，而是直接测试您对语言的了解。
+如果你看过往期的测验问题，就会发现每一个都不容易。
+他们模拟了认证考试中的难题。 标为“中级”和“高级”的级别是指考试，而不是问题。 尽管在几乎所有情况下，“高级”问题都会更加困难。 我们为认证考试编写问题，并且我们希望遵循相同的规则：以言行一致的方式讲话，并相信这些问题并非旨在欺骗您，而是直接测试您对语言的了解。
 
 ### Question (intermediate).
 
@@ -173,5 +174,11 @@ The guarantee quoted earlier is mentioned only in the documentation for the `val
 Of course, the question here discusses two `Integer` objects: one created with a constructor and the other using autoboxing (which uses the `Integer.valueOf(int)` method). This means that if the body of the `if` statement had been entered, the output would have been false. But you’ve already established that option D is correct, so options B and C must be incorrect, and this is just an interesting side discussion. We hope it’s an interesting one, of course! The correct option is D.
 
 当然，这里的问题讨论了两个Integer对象：一个是使用构造函数创建的，另一个是使用自动装箱创建的（使用Integer.valueOf（int）方法）。 这意味着，如果输入了if语句的主体，则输出将为false。 但是您已经确定选项D是正确的，因此选项B和C必须不正确，这只是一个有趣的附带讨论。 我们当然希望这是一个有趣的活动！ 正确的选项是D。
+
+### 相关链接
+
+- [Java坑人面试题系列: 哪种循环效率高（中级）](https://blogs.oracle.com/javamagazine/quiz-intermediate-loop-constructs)
+- [Java坑人面试题系列: 集合（高级）](https://blogs.oracle.com/javamagazine/quiz-advanced-collectors)
+- [Java坑人面试题系列: 线程/线程池（高级）](https://blogs.oracle.com/javamagazine/quiz-advanced-executor-service)
 
 原文链接: <https://blogs.oracle.com/javamagazine/quiz-intermediate-wrapper-classes>
