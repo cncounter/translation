@@ -5,7 +5,7 @@
 
 If you have worked on our quiz questions in the past, you know none of them is easy. They model the difficult questions from certification examinations. The levels marked “intermediate” and “advanced” refer to the exams, rather than the questions. Although in almost all cases, “advanced” questions will be harder. We write questions for the certification exams, and we intend that the same rules apply: Take words at their face value and trust that the questions are not intended to deceive you, but straightforwardly test your knowledge of the ins and outs of the language.
 
-Java Magazine上面有一个专门坑人的面试题系列。
+Java Magazine上面有一个专门坑人的面试题系列: <https://blogs.oracle.com/javamagazine/quiz-2>。
 
 这些问题的设计宗旨，不是为了用弯弯绕绕来把面试者搞蒙圈，而是要测试面试者对Java语言的了解程度。
 
