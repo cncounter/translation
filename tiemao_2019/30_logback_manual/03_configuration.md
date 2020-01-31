@@ -3,7 +3,9 @@
 # 第3章: Logback配置
 
 ```
-In symbols one observes an advantage in discovery which is greatest when they express the exact nature of a thing briefly and, as it were, picture it; then indeed the labor of thought is wonderfully diminished.
+In symbols one observes an advantage in discovery which is greatest when they express the exact nature of a thing briefly and,
+as it were, picture it;
+then indeed the labor of thought is wonderfully diminished.
 
 — GOTTFRIED WILHELM LEIBNIZ
 ```
@@ -11,7 +13,9 @@ In symbols one observes an advantage in discovery which is greatest when they ex
 ----
 
 ```
-要发明，就要挑选恰当的符号，要做到这一点，就要用含义简明的少量符号来表达和比较忠实地描绘事物的内在本质，从而最大限度地减少人的思维劳动。
+要发明，就要挑选恰当的符号，
+要做到这一点，就要用含义简明的少量符号来表达和比较忠实地描绘事物的内在本质，
+从而最大限度地减少人的思维劳动。
 
 —— 莱布尼茨
 ```
@@ -22,7 +26,7 @@ We start by presenting ways for configuring logback, with many example configura
 
 ## Configuration in logback
 
-## logback 配置
+## Logback 配置信息简述
 
 Inserting log requests into the application code requires a fair amount of planning and effort. Observation shows that approximately four percent of code is dedicated to logging. Consequently, even a moderately sized application will contain thousands of logging statements embedded within its code. Given their number, we need tools to manage these log statements.
 
@@ -63,13 +67,20 @@ If you are using Maven and if you place the `logback-test.xml` under the `src/te
 在 Joran 中, 解析给定的logback配置文件只需要 100 毫秒左右。
 要在程序启动时减少这个时间， 可以使用 service-provider 加载工具（对应前面的第4步）, 通过 [BasicConfigrator](http://logback.qos.ch/xref/ch/qos/logback/classic/BasicConfigurator.html) 加载自定义的 `Configurator` 类。
 
---------
 
 ### Automatically configuring logback
 
+### Logback 默认配置示例
+
 The simplest way to configure logback is by letting logback fall back to its default configuration. Let us give a taste of how this is done in an imaginary application called `MyApp1`.
 
+Logback 最简单的配置方式，就是使用默认配置。
+
 Example: Simple example of `BasicConfigurator` usage [(logback-examples/src/main/java/chapters/configuration/MyApp1.java)](http://logback.qos.ch/xref/chapters/configuration/MyApp1.html)
+
+下面我们来看使用默认配置的示例代码:
+
+> `MyApp1.java`
 
 ```
 package chapters.configuration;
@@ -92,7 +103,15 @@ public class MyApp1 {
 
 This class defines a static logger variable. It then instantiates a `Foo` object. The `Foo` class is listed below:
 
+代码很简单, 先定义了一个 `static` 的 `logger`变量, 然后在 `main` 方法中创建了一个 `Foo` 对象并调用方法。
+
+
 Example: Small class doing logging [(logback-examples/src/main/java/chapters/configuration/Foo.java)](http://logback.qos.ch/xref/chapters/configuration/Foo.html)
+
+
+`Foo`类的代码如下:
+
+> `Foo.java`
 
 ```
 package chapters.configuration;
@@ -111,15 +130,45 @@ public class Foo {
 
 In order to run the examples in this chapter, you need to make sure that certain jar files are present on the class path. Please refer to the [setup page](http://logback.qos.ch/setup.html) for further details.
 
+如果程序跑不起来，你需要确保在 class path 中存在必须的jar文件。 详情请参考 [setup page](http://logback.qos.ch/setup.html)。
+
+
 Assuming the configuration files `logback-test.xml` or `logback.xml` are not present, logback will default to invoking [`BasicConfigurator`](http://logback.qos.ch/xref/ch/qos/logback/classic/BasicConfigurator.html) which will set up a minimal configuration. This minimal configuration consists of a `ConsoleAppender` attached to the root logger. The output is formatted using a `PatternLayoutEncoder` set to the pattern `%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n`. Moreover, by default the root logger is assigned the `DEBUG` level.
+
+假设没有 `logback-test.xml`, 也没有 `logback.xml` 配置文件，则 logback 默认调用 [`BasicConfigurator`](http://logback.qos.ch/xref/ch/qos/logback/classic/BasicConfigurator.html)  来进行最简单的配置。
+此最简配置将 `ConsoleAppender` 挂载为 root logger。
+使用 `PatternLayoutEncoder` 将输出格式设置为 `%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n`。
+root logger 的日志级别默认设置为 `DEBUG` 级别。
 
 Thus, the output of the command `java chapters.configuration.MyApp1` should be similar to:
 
-16:06:09.031 [main] INFO  chapters.configuration.MyApp1 - Entering application. 16:06:09.046 [main] DEBUG chapters.configuration.Foo - Did it again! 16:06:09.046 [main] INFO  chapters.configuration.MyApp1 - Exiting application.
+
+因此，`MyApp1`程序执行后的输出内容类似于：
+
+
+```
+16:06:09.031 [main] INFO  chapters.configuration.MyApp1 - Entering application.
+16:06:09.046 [main] DEBUG chapters.configuration.Foo - Did it again!
+16:06:09.046 [main] INFO  chapters.configuration.MyApp1 - Exiting application.
+```
+
 
 Except code that configures logback (if such code exists) client code does not need to depend on logback. Applications that use logback as their logging framework will have a compile-time dependency on SLF4J but not logback.
 
+
+程序中一般不需要依赖 Logback, 除非明确需要配置 logback。
+使用logback作为日志记录框架的应用程序, 在编译时只需要依赖 SLF4J 即可。
+
 The `MyApp1` application links to logback via calls to `org.slf4j.LoggerFactory` and `org.slf4j.Logger` classes, retrieve the loggers it wishes to use, and chugs on. Note that the only dependencies of the `Foo` class on logback are through `org.slf4j.LoggerFactory` and `org.slf4j.Logger` imports. Except code that configures logback (if such code exists) client code does not need to depend on logback. Since SLF4J permits the use of any logging framework under its abstraction layer, it is easy to migrate large bodies of code from one logging framework to another.
+
+
+应用程序 `MyApp1` 通过 `org.slf4j.LoggerFactory` 和 `org.slf4j.Logger` 类来链接到Logback，检索到希望使用的日志记录器并启动。
+
+请注意这里的 `Foo` 类唯一依赖的是 `org.slf4j.LoggerFactory` 和 `org.slf4j.Logger` 类。
+
+由于SLF4J允许在其抽象层下使用任何一种日志记录框架， 因此很容易将系统从一个日志框架迁移到另一个日志框架。
+
+---------
 
 ### Automatic configuration with `logback-test.xml` or `logback.xml`
 
