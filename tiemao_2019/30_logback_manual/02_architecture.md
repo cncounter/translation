@@ -1,6 +1,6 @@
 # Chapter 2: Architecture
 
-# 第2章: Logback 架构
+# 第2章: Logback架构
 
 > All true classification is genealogical.
 
@@ -542,7 +542,7 @@ Here is a sequence UML diagram to show how everything works. You might want to c
 
 下面的UML顺序图展示了工作原理。
 
-![underTheHoodSequence2_small.gif](https://logback.qos.ch/manual/underTheHood.html)
+![](http://logback.qos.ch/manual/images/chapters/architecture/underTheHoodSequence2_small.gif)
 
 ### Performance
 
