@@ -1,6 +1,6 @@
 # Chapter 1: Introduction
 
-# 第1章: Logback 简介
+# 第1章: Logback简介
 
 > The morale effects are startling. Enthusiasm jumps when there is a running system, even a simple one. Efforts redouble when the first picture from a new graphics software system appears on the screen, even if it is only a rectangle. One always has, at every stage in the process, a working system. I find that teams can grow much more complex entities in four months than they can build.
 > —— FREDERICK P. BROOKS, JR., 《The Mythical Man-Month》
@@ -199,7 +199,7 @@ Logback发行版包含完整的源代码，您可以修改logback的代码并构
 
 For building logback under an IDE, please see the [relevant section on the class path setup page](https://logback.qos.ch/setup.html#ide).
 
-要在IDE中构建回溯，请参阅 [relevant section on the class path setup page](https://logback.qos.ch/setup.html#ide)。
+要在IDE中构建回溯，请参阅 [class path 设置页面中的相关章节](https://logback.qos.ch/setup.html#ide)。
 
 
 原文链接: <https://logback.qos.ch/manual/introduction.html>
