@@ -40,7 +40,7 @@ logback手册的目录如下：
 
 - [第1章: Logback简介](./01_introduction.md)
 - [第2章: Logback架构](./02_architecture.md)
-- [Chapter 3: Configuration](./03_configuration.md)
+- [第3章: Logback配置](./03_configuration.md)
 - [Chapter 4: Appenders](./04_appenders.md)
 - [Chapter 5: Encoders](./05_encoders.md)
 - [Chapter 6: Layouts](./06_layouts.md)
