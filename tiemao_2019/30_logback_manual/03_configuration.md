@@ -172,9 +172,17 @@ The `MyApp1` application links to logback via calls to `org.slf4j.LoggerFactory`
 
 ### Automatic configuration with `logback-test.xml` or `logback.xml`
 
+### 通过 `logback-test.xml` 或者 `logback.xml` 配置Logback
+
 As mentioned earlier, logback will try to configure itself using the files `logback-test.xml` or `logback.xml` if found on the class path. Here is a configuration file equivalent to the one established by `BasicConfigurator` we've just seen.
 
+前面说过，如果在 class path 中找到 `logback-test.xml` 或者 `logback.xml` 文件，则Logback会用他们来作为配置文件。
+
 Example: Basic configuration file (logback-examples/src/main/resources/chapters/configuration/sample0.xml)
+
+示例:
+
+> 文件名 `logback.xml` 或者 `logback-test.xml`
 
 ```
 <configuration>
@@ -194,6 +202,10 @@ Example: Basic configuration file (logback-examples/src/main/resources/chapters/
 ```
 
 After you have renamed `sample0.xml` as `logback.xml` (or `logback-test.xml`) place it into a directory accessible from the class path. Running the `MyApp1` application should give identical results to its previous run.
+
+这个文件只要在 classpath 中，执行上面的程序 `MyApp1`，输出结果应该是等价的。如果稍微修改一下 `<pattern>` 部分，则会看到不同的结果。
+
+当然，根据名字中的含义，我们也能推断出， `logback-test.xml` 一般只在test时加入class path，对应 maven 中的 `test/resources` 目录。
 
 #### Automatic printing of status messages in case of warning or errors
 
