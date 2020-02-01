@@ -168,7 +168,6 @@ The `MyApp1` application links to logback via calls to `org.slf4j.LoggerFactory`
 
 由于SLF4J允许在其抽象层下使用任何一种日志记录框架， 因此很容易将系统从一个日志框架迁移到另一个日志框架。
 
----------
 
 ### Automatic configuration with `logback-test.xml` or `logback.xml`
 
@@ -207,27 +206,61 @@ After you have renamed `sample0.xml` as `logback.xml` (or `logback-test.xml`) pl
 
 当然，根据名字中的含义，我们也能推断出， `logback-test.xml` 一般只在test时加入class path，对应 maven 中的 `test/resources` 目录。
 
+---------
+
+
 #### Automatic printing of status messages in case of warning or errors
+
+#### 打印Logback的内部状态
 
 If warning or errors occur during the parsing of the configuration file, logback will automatically print its internal status messages on the console.
 
+如果在解析配置文件时产生警告或错误信息， 则Logback会自动将其内部状态打印到控制台。
+
 If warnings or errors occur during the parsing of the configuration file, logback will automatically print its internal status data on the console. Note that to avoid duplication, automatic status printing is disabled if the user explicitly registers a status listener (defined below).
+
+为了避免重复输出，如果用户手工注册了状态监听器，则会禁用自动状态打印。 具体示例请参考下文。
+
 
 In the absence of warnings or errors, if you still wish to inspect logback's internal status, then you can instruct logback to print status data by invoking the `print()` of the `StatusPrinter` class. The `MyApp2` application shown below is identical to `MyApp1` except for the addition of two lines of code for printing internal status data.
 
+在没有警告或错误的情况下，如果仍然希望检查logback的内部状态，那么可以调用 `StatusPrinter.print()` 方法来让 logback打印自身状态信息。
+
+下面所示的应用程序“MyApp2”与“MyApp1”基本相同，只是添加了两行代码来打印内部状态数据。
+
 Example: Print logback's internal status information [(logback-examples/src/main/java/chapters/configuration/MyApp2.java)](http://logback.qos.ch/xref/chapters/configuration/MyApp2.html)
 
+示例： 打印Logback的内部状态
+
+> `MyApp2.java`
+
 ```java
-public static void main(String[] args) {
-  // assume SLF4J is bound to logback in the current environment
-  LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
-  // print logback's internal status
-  StatusPrinter.print(lc);
-  ...
+import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.core.util.StatusPrinter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class MyApp2 {
+    final static Logger logger = LoggerFactory.getLogger(MyApp2.class);
+
+    public static void main(String[] args) {
+        // 在使用Logback作为日志框架的情况下
+        LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
+        // 打印 logback 内部状态
+        StatusPrinter.print(lc);
+        //
+        // ... 同MyApp1 的内容
+        logger.info("Entering application.");
+        Foo foo = new Foo();
+        foo.doIt();
+        logger.info("Exiting application.");
+    }
 }
 ```
 
-If everything goes well, you should see the following output on the console
+If everything goes well, you should see the following output on the console.
+
+如果不报错, 则输出内容类似如下:
 
 ```
 17:44:58,578 |-INFO in ch.qos.logback.classic.LoggerContext[default] - Found resource [logback-test.xml]
@@ -244,6 +277,8 @@ If everything goes well, you should see the following output on the console
 ```
 
 At the end of this output, you can recognize the lines that were printed in the previous example. You should also notice the logback's internal messages, a.k.a. `Status` objects, which allow convenient access to logback's internal state.
+
+在日志输出内容的末尾，可以发现之前的示例中的输出内容。 通过这个示例，我们可以看到Logback的内部状态，实际上这是使用一个 `Status` 对象来包装的。
 
 #### Status data
 
