@@ -282,7 +282,7 @@ At the end of this output, you can recognize the lines that were printed in the 
 
 #### Status data
 
-#### 状态数据
+#### 通过配置自动打印状态数据
 
 Enabling output of status data usually goes a long way in the diagnosis of issues with logback. As such, it is highly recommended and should be considered as a recourse of `first` resort.
 
@@ -298,7 +298,7 @@ Instead of invoking `StatusPrinter` programmatically from your code, you can ins
 
 Example: Basic configuration file using debug mode (logback-examples/src/main/resources/chapters/configuration/sample1.xml)
 
-示例:
+示例配置文件:
 
 > logback.xml
 
@@ -322,21 +322,42 @@ Example: Basic configuration file using debug mode (logback-examples/src/main/re
 
 
 
----------
 
+Setting `debug="true"` within the `<configuration>` element will output status information, assuming that:
 
-Setting `debug="true"` within the <configuration> element will output status information, assuming that:
 
 1. the configuration file is found
 2. the configuration file is well-formed XML.
 
+
+设置 `<configuration>` 元素的属性 `debug="true"`，则会自动输出状态信息。 当然，配置文件必须能被Logback扫描到，并且没有格式错误。
+
+
 If any of these two conditions is not fulfilled, Joran cannot interpret the `debug` attribute since the configuration file cannot be read. If the configuration file is found but is malformed, then logback will detect the error condition and automatically print its internal status on the console. However, if the configuration file cannot be found, logback will not automatically print its status data, since this is not necessarily an error condition. Programmatically invoking `StatusPrinter.print()` as shown in the [`MyApp2`](http://logback.qos.ch/xref/chapters/configuration/MyApp2.html) application above ensures that status information is printed in every case.
+
+如果没有扫描到配置文件，或者配置文件的格式不对，则Joran就不能正确解析 `debug` 属性。
+如果找到了配置文件，但格式不正确，那么logback将检测错误条件并在控制台上自动打印其内部状态。
+但如果找不到配置文件，logback就不会自动打印其状态数据，因为没有配置文件你不能说它出错了。
+前面的应用程序 `MyApp2` 中，因为是以代码直接调用的 `StatusPrinter.print()`, 不管什么情况都会打印出基本的状态信息。
+
 
 `FORCING STATUS OUTPUT` In the absence of status messages, tracking down a rogue `logback.xml` configuration file can be difficult, especially in production where the application source cannot be easily modified. To help identify the location of a rogue configuration file, you can set a `StatusListener` via the "logback.statusListenerClass" system property ([defined below](http://logback.qos.ch/manual/configuration.html#logback.statusLC)) to force output of status messages. The "logback.statusListenerClass" system property can also be used to silence output automatically generated in case of errors.
 
+在没有状态信息的情况下“强制状态输出”，跟踪恶意的 `logback.xml` 配置文件可能很困难，特别是在生产环境中，因为来回修改系统代码并不容易。
+为了帮助识别恶意配置文件的位置，我们可以通过系统属性 "`logback.statusListenerClass`" 设置 “`StatusListener`”, 强制输出状态消息。
+"`logback.statusListenerClass`" 系统属性还可以用来在出现错误时自动生成静默输出。
+
+
 By the way, setting `debug="true"` is strictly equivalent to installing an `OnConsoleStatusListener`. Status listeners are disccussed further below. The installation of `OnConsoleStatusListener` is shown next.
 
+顺便说一下，设置 `debug="true"` 严格来说等同于加载了 `OnConsoleStatusListener`。
+下面将进一步讨论状态监听器。
+
 Example: Registering a status listener (logback-examples/src/main/resources/chapters/configuration/onConsoleStatusListener.xml)
+
+装载 `OnConsoleStatusListener` 的示例： 注册状态监听器
+
+> logback.xml
 
 ```
 <configuration>
@@ -347,6 +368,13 @@ Example: Registering a status listener (logback-examples/src/main/resources/chap
 ```
 
 Enabling output of status data, either via the debug attribute or equivalently by installing `OnConsoleStatusListener`, will go a long way in helping you diagnose logback issues. As such, enabling logback status data is very highly recommended and should be considered as a recourse of `first` resort.
+
+通过设置 `<configuration>` 元素的属性 `debug="true"`， 或者安装`OnConsoleStatusListener`， 都可以启用Logback状态数据的输出。
+这非常有利于我们诊断 logback 问题。 因此官方强烈建议启用logback状态数据，并将其作为“`第一`”手段。
+
+
+
+---------
 
 ### Specifying the location of the default configuration file as a system property
 
@@ -1315,4 +1343,4 @@ Setting the resetJUL property of LevelChangePropagator will reset all previous l
 ```
 
 
-<http://logback.qos.ch/manual/configuration.html>
+原文链接: <http://logback.qos.ch/manual/configuration.html>
