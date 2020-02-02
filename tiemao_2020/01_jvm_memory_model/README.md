@@ -1,6 +1,6 @@
 ## Memory Model
 
-## JVM实现的内存模型
+## HotSpot JVM 的内存模型
 
 ### Handleless Objects
 
