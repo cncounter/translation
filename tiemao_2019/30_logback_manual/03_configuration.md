@@ -206,7 +206,6 @@ After you have renamed `sample0.xml` as `logback.xml` (or `logback-test.xml`) pl
 
 当然，根据名字中的含义，我们也能推断出， `logback-test.xml` 一般只在test时加入class path，对应 maven 中的 `test/resources` 目录。
 
----------
 
 
 #### Automatic printing of status messages in case of warning or errors
@@ -280,15 +279,29 @@ At the end of this output, you can recognize the lines that were printed in the 
 
 在日志输出内容的末尾，可以发现之前的示例中的输出内容。 通过这个示例，我们可以看到Logback的内部状态，实际上这是使用一个 `Status` 对象来包装的。
 
+
 #### Status data
+
+#### 状态数据
 
 Enabling output of status data usually goes a long way in the diagnosis of issues with logback. As such, it is highly recommended and should be considered as a recourse of `first` resort.
 
+启用状态数据的输出, 对于诊断logback问题很有帮助。 因此官方强烈建议将其作为“`优先`”手段。
+
 Instead of invoking `StatusPrinter` programmatically from your code, you can instruct the configuration file to dump status data, even in the absence of errors. To achieve this, you need to set the `debug` attribute of the `configuration` element, i.e. the top-most element in the configuration file, as shown below. Please note that this `debug` attribute relates only to the status data. It does `not` affect logback's configuration otherwise, in particular with respect to logger levels. (If you are asking, no, the root logger will `not` be set to `DEBUG`.)
+
+除了通过代码调用 `StatusPrinter` 来输出状态信息，还可以通过配置文件来导出Logback状态数据, 即使没有错误也会输出。
+我们只需要设置最顶层的 `configuration` 元素属性 `debug="true"`即可， 请参考下面的示例代码。
+请注意，这个 `debug` 属性只用于输出Logback的状态数据， 并不会影响logback的日志配置，也不会影响到程序的日志级别。
+(也就是说，root logger 并 `不会` 被这个属性设置为 `DEBUG` 级别。)
+
 
 Example: Basic configuration file using debug mode (logback-examples/src/main/resources/chapters/configuration/sample1.xml)
 
-View as .groovy
+示例:
+
+> logback.xml
+
 
 ```
 <configuration debug="true">
@@ -306,6 +319,11 @@ View as .groovy
   </root>
 </configuration>
 ```
+
+
+
+---------
+
 
 Setting `debug="true"` within the <configuration> element will output status information, assuming that:
 
