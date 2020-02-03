@@ -46,7 +46,7 @@ Classes, methods, and other internal reflective data are represented directly as
 
 ### Native Thread Support, Including Preemption and Multiprocessing
 
-### 4、Native线程支持，包括抢占和多处理器
+### 4、Native线程支持，包括抢占和多处理
 
 Per-thread method activation stacks are represented using the host operating system's stack and thread model. Both Java programming language methods and native methods share the same stack, allowing fast calls between the C and Java programming languages. Fully preemptive Java programming language threads are supported using the host operating system's thread scheduling mechanism.
 
