@@ -373,31 +373,46 @@ Enabling output of status data, either via the debug attribute or equivalently b
 这非常有利于我们诊断 logback 问题。 因此官方强烈建议启用logback状态数据，并将其作为“`第一`”手段。
 
 
-
----------
-
 ### Specifying the location of the default configuration file as a system property
+
+### 通过系统属性指定默认配置文件位置
 
 You may specify the location of the default configuration file with a system property named `"logback.configurationFile"`. The value of this property can be a URL, a resource on the class path or a path to a file external to the application.
 
-java `-Dlogback.configurationFile=/path/to/config.xml` chapters.configuration.MyApp1
+我们可以使用名为 `"logback.configurationFile"` 的系统属性来指定默认配置文件的位置。 属性值可以是URL、class path 上的资源, 或者外部文件的路径。
+
+示例如下:
+
+```
+java -Dlogback.configurationFile=/path/to/config.xml chapters.configuration.MyApp1
+```
 
 Note that the file extension must be ".xml" or ".groovy". Other extensions are ignored. [Explicitly registering a status listener](http://logback.qos.ch/manual/configuration.html#logback.statusLC) may help debugging issues locating the configuration file.
 
+需要注意的是，配置文件名必须以 "`.xml`" 或者 "`.groovy`" 结尾。其他后缀名的文件则会被忽略。
+明确指定状态监听器，有助于调试配置文件的位置。 请参考前面的小节。
+
 Given that `"logback.configurationFile"` is a Java system property, it may be set within your application as well. However, the system property must be set before any logger instance is created.
+
+系统属性 `"logback.configurationFile"` 可以通过命令行指定， 当然也可以在程序中配置，只要保证在所有 logger 实例创建之前设置好即可。
+
+示例代码如下:
 
 ```java
 import ch.qos.logback.classic.util.ContextInitializer;
 
 public class ServerMain {
     public static void main(String args[]) throws IOException, InterruptedException {
-       // must be set before the first call to  LoggerFactory.getLogger();
-       // ContextInitializer.CONFIG_FILE_PROPERTY is set to "logback.configurationFile"
+       // 设置系统熟悉必须再所有  LoggerFactory.getLogger() 调用之前;
+       // ContextInitializer.CONFIG_FILE_PROPERTY 是个字符串常量，值是 "logback.configurationFile"
        System.setProperty(ContextInitializer.CONFIG_FILE_PROPERTY, "/path/to/config.xml");
        ...
     }   
 }
 ```
+
+
+---------
 
 ### Automatically reloading configuration file upon modification
 

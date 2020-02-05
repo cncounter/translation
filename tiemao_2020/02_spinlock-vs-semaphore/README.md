@@ -1,6 +1,6 @@
 # Spinlock vs. semaphore
 
-# 自旋锁与信号量
+# 辨析： 自旋锁与信号量
 
 Spinlock and semaphore differ mainly in four things:
 
