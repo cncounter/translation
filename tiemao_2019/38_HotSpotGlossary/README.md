@@ -1,12 +1,23 @@
 # HotSpot Glossary of Terms
 
+# JVM相关术语和定义（HotSpot版）
+
 A work in progress, especially as the HotSpot VM evolves. But a place to put definitions of things so we only have to define them once. There are empty entries (marked TBD for "to be defined") because we think of things that we need to define faster than we think of good definitions.
 
 
+随着HotSpot VM的发展, 相关的术语定义一直是一项正在进行中的工作。
+我们希望只在统一的地方定义一次。
+文中可能会有一些空条目(使用 TBD 标记，表示“待定义，to be defined”)，因为需要定义的东西，比已经定义好的要多。
 
-- `adaptive spinning`
 
-An optimization technique whereby a thread spins waiting for a change-of-state to occur (typically a flag that represents some event has occurred - `such as the release of a lock) rather than just blocking until notified that the change has occurred. The "adaptive" part comes from the policy decisions that control how long the thread will spin until eventually deciding to block.`
+
+- `adaptive spinning`， 适应性自旋
+
+An optimization technique whereby a thread spins waiting for a change-of-state to occur (typically a flag that represents some event has occurred - such as the release of a lock) rather than just blocking until notified that the change has occurred. The "adaptive" part comes from the policy decisions that control how long the thread will spin until eventually deciding to block.
+
+"`适应性自旋`" 是一种优化技术，通过适应性自旋技术，线程在等待状态发生改变时会先进行一定次数的旋转, 而不是单纯阻塞并等待通知事件。(通常是一个表示某个事件已经发生的标志 —— 比如释放锁)。
+为什么叫 “适应性” 呢? 是因为控制线程在阻塞之前需要旋转多长时间，是由策略来决定的。
+
 
 - `biased locking`
 
