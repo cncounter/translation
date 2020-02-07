@@ -416,11 +416,18 @@ public class ServerMain {
 
 ### Automatically reloading configuration file upon modification
 
+### 自动加载修改后的配置文件
+
 Logback-classic can scan for changes in its configuration file and automatically reconfigure itself when the configuration file changes.
 
-If instructed to do so, logback-classic will scan for changes in its configuration file and automatically reconfigure itself when the configuration file changes. In order to instruct logback-classic to scan for changes in its configuration file and to automatically re-configure itself set the `scan` attribute of the ` ` element to true, as shown next.
+Logback-classic 可以扫描配置文件中的变更，并在配置文件更改时自动重新配置自身。
+
+If instructed to do so, logback-classic will scan for changes in its configuration file and automatically reconfigure itself when the configuration file changes. In order to instruct logback-classic to scan for changes in its configuration file and to automatically re-configure itself set the `scan` attribute of the `<configuration>` element to true, as shown next.
 
 Example: Scanning for changes in configuration file and automatic re-configuration (logback-examples/src/main/resources/chapters/configuration/scan1.xml)
+
+如果需要自动重新加载配置文件，可以将 `<configuration>` 元素的 `scan` 属性设置为 `true`，示例如下:
+
 
 ```
 <configuration scan="true">
@@ -428,11 +435,15 @@ Example: Scanning for changes in configuration file and automatic re-configurati
 </configuration>
 ```
 
-By default, the configuration file will be scanned for changes once every minute. You can specify a different scanning period by setting the `scanPeriod` attribute of the ` ` element. Values can be specified in units of milliseconds, seconds, minutes or hours. Here is an example:
+By default, the configuration file will be scanned for changes once every minute. You can specify a different scanning period by setting the `scanPeriod` attribute of the `<configuration>` element. Values can be specified in units of milliseconds, seconds, minutes or hours. Here is an example:
 
 Example: Specifying a different scanning period (logback-examples/src/main/resources/chapters/configuration/scan2.xml)
 
-View as .groovy
+默认情况下，每分钟扫描一次配置文件。
+
+也可以通过 `<configuration>` 元素的 `scanPeriod` 属性来指定不同的扫描周期。可以指定单位 `milliseconds`, `seconds`, `minutes` 以及 `hours` 。
+
+示例如下:
 
 ```
 <configuration scan="true" scanPeriod="30 seconds" >
@@ -442,9 +453,15 @@ View as .groovy
 
 `NOTE` If no unit of time is specified, then the unit of time is assumed to be milliseconds, which is usually inappropriate. If you change the default scanning period, do not forget to specify a time unit.
 
+如果没有指定时间单位，则默认时间单位为毫秒，这一般是不合适的。 所以如果修改了默认的扫描周期，请务必指定时间单位。
+
 Behind the scenes, when you set the scan attribute to `true`, a [`ReconfigureOnChangeTask`](http://logback.qos.ch/xref/ch/qos/logback/classic/joran/ReconfigureOnChangeTask.html) will be installed. This task run in a separate thread and will check whether your configuration file has changed. `ReconfigureOnChangeTask` will automatically watch for any [included](http://logback.qos.ch/manual/configuration.html#fileInclusion) files as well.
 
+如果我们将`scan`属性设置为`true`，则会启动一个 [`ReconfigureOnChangeTask`](http://logback.qos.ch/xref/ch/qos/logback/classic/joran/ReconfigureOnChangeTask.html)。 此任务在单独的线程中运行，并检查配置文件是否更改。 `ReconfigureOnChangeTask` 也会自动监测所有的配置文件，请参考下文。
+
 As it is easy to make errors while editing a configuration file, in case the latest version of the configuration file has XML syntax errors, it will fall back to a previous configuration file free of XML syntax errors.
+
+由于在编辑配置文件时很容易出错，比如新保存的配置文件有XML语法错误，则会自动回退到之前没有XML语法错误的版本。
 
 #### Enabling packaging data in stack traces
 
