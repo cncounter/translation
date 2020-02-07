@@ -2,6 +2,8 @@
 
 # JVM相关术语和定义（HotSpot版）
 
+[TOC]
+
 A work in progress, especially as the HotSpot VM evolves. But a place to put definitions of things so we only have to define them once. There are empty entries (marked TBD for "to be defined") because we think of things that we need to define faster than we think of good definitions.
 
 
@@ -11,7 +13,7 @@ A work in progress, especially as the HotSpot VM evolves. But a place to put def
 
 
 
-- `adaptive spinning`， 适应性自旋
+## 1、`adaptive spinning`, 适应性自旋
 
 An optimization technique whereby a thread spins waiting for a change-of-state to occur (typically a flag that represents some event has occurred - such as the release of a lock) rather than just blocking until notified that the change has occurred. The "adaptive" part comes from the policy decisions that control how long the thread will spin until eventually deciding to block.
 
@@ -19,33 +21,56 @@ An optimization technique whereby a thread spins waiting for a change-of-state t
 为什么叫 “适应性” 呢? 是因为控制线程在阻塞之前需要旋转多长时间，是由策略来决定的。
 
 
-- `biased locking`
+## 2、`biased locking`, 偏向锁
 
 An optimization in the VM that leaves an object as logically locked by a given thread even after the thread has released the lock. The premise is that if the thread subsequently reacquires the lock (as often happens), then reacquisition can be achieved at very low cost. If a different thread tries to acquire a biased lock then the bias must be revoked from the current bias owner.
 
-- `block start table`
+"`偏向锁`" 是JVM的一种优化，让一个对象在逻辑上被某个特定的线程锁定，即使该线程已经释放了锁。
+这样优化的前提是，假设大部分情况下都是该线程在后面的业务中继续获取这个对象锁，那么就可以用很低的开销成本来实现重新获得锁。
+如果另一个线程试图获取一个偏置锁，则必须先以安全的方式撤销偏置。
+
+## 3、`block start table`, 块起始表
 
 A table that shows, for a region of the heap, where the object starts that comes on to this region from lower addresees. Used, for example, with the card table variant of the remembered set.
 
-- `bootstrap classloader`
+对于堆中的一个区域(region)，都有一个 table, 用来表示有哪些从地址值较小的内存区指向本区域的对象的开始位置。
+例如，与 remembered set 一起使用的卡表变体(card table variant)。
 
-The logical classloader that has responsibility for loading the classes (and resources) that are found in the boot-classpath - `typically the core Java platform classes. Typically implemented as part of the VM, by historical convention the bootstrap classloader is represented by NULL at the Java API level.`
+## 4、`bootstrap classloader`, 引导类加载器
 
-- `bytecode verification`
+The logical classloader that has responsibility for loading the classes (and resources) that are found in the boot-classpath - typically the core Java platform classes. Typically implemented as part of the VM, by historical convention the bootstrap classloader is represented by NULL at the Java API level.
+
+这是一款逻辑上的类加载器，负责加载启动类路径中找到的类和资源，一般是指Java平台的核心类。
+通常作为JVM实现的一部分，根据历史约定，引导类加载器在Java API级别上显示为 `NULL`。
+
+## 5、`bytecode verification`, 字节码验证
 
 A step in the linking process of a class where the methods bytecodes are analyzed to ensure type-safety.
 
-- `C1 compiler`
+在类加载和链接过程中的一个步骤， 在这个步骤中将方法字节码验证并解析， 以确保类型安全。
+
+类的链接过程中的一个步骤，其中方法字节码被分析以确保类型安全。
+
+## 6、`C1 compiler`, C1编译器
 
 Fast, lightly optimizing bytecode compiler. Performs some value numbering, inlining, and class analysis. Uses a simple CFG-oriented SSA "high" IR, a machine-oriented "low" IR, a linear scan register allocation, and a template-style code generator.
 
-- `C2 compiler`
+快速、轻量优化的字节码编译器。 比如会执行：值编号、内联和类分析等操作。
+使用简单的面向配置的 SSA “高级别” IR、面向机器的 “底层” IR、 线性扫描寄存器分配，模板风格的代码生成器。
+
+## 7、`C2 compiler`, C2编译器
 
 Highly optimizing bytecode compiler, also known as 'opto'. Uses a "sea of nodes" SSA "ideal" IR, which lowers to a machine-specific IR of the same kind. Has a graph-coloring register allocator; colors all machine state, including local, global, and argument registers and stack. Optimizations include global value numbering, conditional constant type propagation, constant folding, global code motion, algebraic identities, method inlining (aggressive, optimistic, and/or multi-morphic), intrinsic replacement, loop transformations (unswitching, unrolling), array range check elimination.
 
-- `card table`
+高度优化的字节码编译器， 也称为 'opto'。 使用 “节点海洋” SSA “理想” IR， 深入到同一类型的机器特定IR。
+具有着色寄存器分配器; 为所有机器状态着色，包括局部、全局和参数寄存器，栈。
+优化包括全局值编号、条件常量类型传播、常量折叠、全局代码移动、代数恒等式、方法内联(积极的、乐观的和/或多态的)、内部替换、循环转换(不切换、展开)、数组范围检查消除。
+
+## 8、`card table`， 卡表
 
 A kind of remembered set that records where oops have changed in a generation.
+
+一种记忆集，用来记录 oops 指针在分代中的改变。
 
 - `class data sharing`
 
