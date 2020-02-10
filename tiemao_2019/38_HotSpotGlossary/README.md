@@ -72,17 +72,25 @@ A kind of remembered set that records where oops have changed in a generation.
 
 一种记忆集，用来记录 oops 指针在分代中的改变。
 
-- `class data sharing`
+## 9、`class data sharing`, 类数据共享
 
 A startup optimization that records the in-memory form of some classes, so that that form can be mapped into memory by a subsequent run of the virtual machine, rather than loading those classes from their class files.
 
-- `class hierachy analysis`
+一种启动时的优化，将某些类的信息放在内存中，以便后续启动的另一个虚拟机可以通过这种形式将类映射到内存中，而不再从 class files 中加载这些类。
+
+## 10、`class hierachy analysis`， 类层次分析
 
 Also known as 'CHA'. Analysis of the class tree used by a compiler to determine if the receiver at a virtual call site has a single implementor. If so, the callee can be inlined or the compiler can employ some other static call mechanism.
 
-- `code cache`
+简写为 'CHA'。 对编译器使用的class树进行分析，以确定虚拟调用位置的接收者是否只有一个实现。
+如果满足这个条件，则可以将此调用方法内联，或者编译器也可以使用其他一些静态调用机制。
+
+
+## 11、`code cache`, 代码缓存区
 
 A special heap that holds compiled code. These objects are not relocated by the GC, but may contain oops, which serve as GC roots.
+
+一块特殊的堆内存空间，用于存放被编译器编译后的代码。 这些对象不会被GC重定位， 但有可能包含oops，也就会成为GC根。
 
 - `compaction`
 
