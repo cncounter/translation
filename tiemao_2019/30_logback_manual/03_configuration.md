@@ -412,8 +412,6 @@ public class ServerMain {
 ```
 
 
----------
-
 ### Automatically reloading configuration file upon modification
 
 ### 自动加载修改后的配置文件
@@ -463,13 +461,26 @@ As it is easy to make errors while editing a configuration file, in case the lat
 
 由于在编辑配置文件时很容易出错，比如新保存的配置文件有XML语法错误，则会自动回退到之前没有XML语法错误的版本。
 
+
 #### Enabling packaging data in stack traces
+
+#### 显示调用链上的方法对应类所在的jar包
 
 While useful, packaging data is expensive to compute, especially in applications with frequent exceptions.
 
 `NOTE` As of version 1.1.4, packaging data is disabled by default.
 
+虽然jar包信息在排查问题时很有用，但计算成本也很高，尤其是在经常抛出异常的应用中。
+
+> 请注意: 从 1.1.4 版本开始，默认禁用jar包信息输出。
+
 If instructed to do so, logback can include packaging data for each line of the stack trace lines it outputs. Packaging data consists of the name and version of the jar file whence the class of the stack trace line originated. Packaging data can be very useful in identifying software versioning issues. However, it is rather expensive to compute, especially in application where exceptions are thrown frequently. Here is a sample output:
+
+如果确实需要输出jar包信息，logback可以在调用链的每一行中输出jar包信息。
+jar包信息由 `jar文件的名称+版本号` 组成，表明调用栈中这一行信息对应的类是从这个文件中加载的。
+在识别软件版本问题和jar包冲突时，jar包信息非常有用。
+然而，计算起来开销也很大，特别是在频繁抛出异常的系统中。
+下面是一个开启jar包信息输出的示例:
 
 ```
 14:28:48.835 [btpool0-7] INFO  c.q.l.demo.prime.PrimeAction - 99 is not a valid value
@@ -489,6 +500,8 @@ java.lang.Exception: 99 is invalid
 
 Packaging data is disabled by default but can be enabled by configuration:
 
+默认关闭，但我们可以通过以下配置开启:
+
 ```
 <configuration packagingData="true">
   ...
@@ -497,10 +510,15 @@ Packaging data is disabled by default but can be enabled by configuration:
 
 Alternatively, packaging data can be enabled/disabled programmatically by invoking the [setPackagingDataEnabled(boolean)](http://logback.qos.ch/apidocs/ch/qos/logback/classic/LoggerContext.html#setPackagingDataEnabled(boolean)) method in `LoggerContext`, as shown next:
 
+当然， 我们也可以在代码中调用 `LoggerContext` 的方法进行开启和关闭：
+
 ```java
   LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
   lc.setPackagingDataEnabled(true);
 ```
+
+---------
+
 
 ### Invoking `JoranConfigurator` directly
 
