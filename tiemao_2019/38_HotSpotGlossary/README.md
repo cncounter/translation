@@ -92,9 +92,11 @@ A special heap that holds compiled code. These objects are not relocated by the 
 
 一块特殊的堆内存空间，用于存放被编译器编译后的代码。 这些对象不会被GC重定位， 但有可能包含oops，也就会成为GC根。
 
-- `compaction`
+- `compaction`，整理
 
 A garbage collection technique that results in live objects occupying a dense portion of the virtual address space, and available space in another portion of the address space. Cf. free list.
+
+垃圾收集中的一种技术，将存活对象占用的虚拟地址空间归集到一边，那么可用地址空间就在另一边。参考 `空闲列表`。
 
 - `concurrency`
 
