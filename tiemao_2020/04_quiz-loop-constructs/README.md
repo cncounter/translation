@@ -1,6 +1,6 @@
 # Quiz Yourself: Comparing Loop Constructs (Intermediate)
 
-＃ Java坑人面试题系列: 思考while与for循环（中级难度）
+＃ Java坑人面试题系列: 比对while与for循环（中级难度）
 
 
 If you have worked on our quiz questions in the past, you know none of them is easy. They model the more difficult questions from certification examinations. The levels marked “intermediate” and “advanced” refer to the exams, rather than the questions. Although in almost all cases, “advanced” questions will be harder. We write questions for the certification exams, and we intend that the same rules apply. Take words at their face value and trust that the questions are not intended to deceive you, but straightforwardly test your knowledge of the ins and outs of the language.
@@ -191,4 +191,4 @@ The correct option is D .
 - [Java坑人面试题系列: 集合（高级）](https://blogs.oracle.com/javamagazine/quiz-advanced-collectors)
 - [Java坑人面试题系列: 线程/线程池（高级）](https://blogs.oracle.com/javamagazine/quiz-advanced-executor-service)
 
-原文链接: <https://blogs.oracle.com/javamagazine/quiz-intermediate-loop-constructs
+原文链接: <https://blogs.oracle.com/javamagazine/quiz-intermediate-loop-constructs>
