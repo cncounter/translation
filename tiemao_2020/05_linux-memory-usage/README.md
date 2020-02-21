@@ -181,3 +181,5 @@ ksysguard on KDE. Both provide resource usage information about cpu, ram, swap a
 
 
 <https://www.binarytides.com/linux-command-check-memory-usage/>
+
+Understanding memory usage on Linux: <http://virtualthreads.blogspot.com/2006/02/understanding-memory-usage-on-linux.html>
