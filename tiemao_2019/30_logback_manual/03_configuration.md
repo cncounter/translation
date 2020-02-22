@@ -414,7 +414,7 @@ public class ServerMain {
 
 ### Automatically reloading configuration file upon modification
 
-### 自动加载修改后的配置文件
+### 自动重新加载配置文件变更
 
 Logback-classic can scan for changes in its configuration file and automatically reconfigure itself when the configuration file changes.
 
@@ -464,7 +464,7 @@ As it is easy to make errors while editing a configuration file, in case the lat
 
 #### Enabling packaging data in stack traces
 
-#### 显示调用链上的方法对应类所在的jar包
+#### 显示调用链方法所在的jar包
 
 While useful, packaging data is expensive to compute, especially in applications with frequent exceptions.
 
@@ -513,18 +513,25 @@ Alternatively, packaging data can be enabled/disabled programmatically by invoki
 当然， 我们也可以在代码中调用 `LoggerContext` 的方法进行开启和关闭：
 
 ```java
-  LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
-  lc.setPackagingDataEnabled(true);
+LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
+lc.setPackagingDataEnabled(true);
 ```
-
----------
 
 
 ### Invoking `JoranConfigurator` directly
 
+### 代码中直接调用`JoranConfigurator`
+
 Logback relies on a configuration library called Joran, part of logback-core. Logback's default configuration mechanism invokes `JoranConfigurator` on the default configuration file it finds on the class path. If you wish to override logback's default configuration mechanism for whatever reason, you can do so by invoking `JoranConfigurator` directly. The next application, `MyApp3`, invokes JoranConfigurator on a configuration file passed as a parameter.
 
+Logback 的底层配置库叫做 Joran，它也是logback-core的一部分。
+Logback的默认配置机制是使用 class path 中找到的默认配置文件来调用 `JoranConfigurator`。
+如果由于某种原因需要覆盖logback的默认配置机制，可以直接在代码中调用 `JoranConfigurator` 来实现。
+下面的程序 `MyApp3` 将配置文件作为参数传递给 JoranConfigurator。
+
 Example: Invoking `JoranConfigurator` directly [(logback-examples/src/main/java/chapters/configuration/MyApp3.java)](http://logback.qos.ch/xref/chapters/configuration/MyApp3.html)
+
+> 示例: `MyApp3.java`
 
 ```
 package chapters.configuration;
@@ -541,19 +548,20 @@ public class MyApp3 {
   final static Logger logger = LoggerFactory.getLogger(MyApp3.class);
 
   public static void main(String[] args) {
-    // assume SLF4J is bound to logback in the current environment
+    // 当前程序中需要使用 logback 作为 SLF4J 的日志实现
     LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
 
     try {
       JoranConfigurator configurator = new JoranConfigurator();
       configurator.setContext(context);
-      // Call context.reset() to clear any previous configuration, e.g. default
-      // configuration. For multi-step configuration, omit calling context.reset().
+      // 执行 context.reset() 来清空之前的配置, 比如默认配置:
+      // 如果是 multi-step 配置, 则不能使用 context.reset() 调用.
       context.reset();
       configurator.doConfigure(args[0]);
     } catch (JoranException je) {
-      // StatusPrinter will handle this
+      // 参考 StatusPrinter 处理上下文异常
     }
+    // StatusPrinter 处理上下文异常
     StatusPrinter.printInCaseOfErrorsOrWarnings(context);
 
     logger.info("Entering application.");
@@ -566,6 +574,15 @@ public class MyApp3 {
 ```
 
 This application fetches the `LoggerContext` currently in effect, creates a new `JoranConfigurator`, sets the context on which it will operate, resets the logger context, and then finally asks the configurator to configure the context using the configuration file passed as a parameter to the application. Internal status data is printed in case of warnings or errors. Note that for multi-step configuration, `context.reset()` invocation should be omitted.
+
+程序先获取当前生效的 `LoggerContext`，
+然后将这个context设置为新创建的JoranConfigurator实例的上下文，
+并重置logger context，
+最终让配置器使用main参数传递的配置文件名称来配置上下文。
+如果出现警告或错误，则打印内部状态数据。
+注意，对于多步配置，则应该省略 `context.reset（）`调用。
+
+---------
 
 ### Viewing status messages
 
