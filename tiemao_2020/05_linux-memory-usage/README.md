@@ -1,28 +1,70 @@
 # check memory usage on Linux
 
+# 查看Linux内存使用情况
+
 ## Memory Usage
 
 On linux, there are commands for almost everything, because the gui might not be always available. When working on servers only shell access is available and everything has to be done from these commands. So today we shall be checking the commands that can be used to check memory usage on a linux system. Memory include RAM and swap.
 
 It is often important to check memory usage and memory used per process on servers so that resources do not fall short and users are able to access the server. For example a website. If you are running a webserver, then the server must have enough memory to serve the visitors to the site. If not, the site would become very slow or even go down when there is a traffic spike, simply because memory would fall short. Its just like what happens on your desktop PC.
 
+
+## 一、 查看内存使用情况
+
+在Linux系统中，基本上所有操作都得靠命令行来实现，因为图形界面确实很菜。
+如果是在服务器环境，则只能使用shell进行操作。
+下面介绍可用于查看内存使用情况的命令。 包括物理内存(RAM)和交换内存(swap)。
+
+大部分时候我们都需要检查服务器的内存使用情况，以及每个进程占用的内存，以免发生资源不足，影响用户体验。
+网站或者Web服务，必须具有足够的内存来处理客户端请求。 如果内存不大，请求高峰时就会变得非常缓慢，拥堵甚至崩溃。
+桌面应用系统也是一样的道理。
+
 ### 1. `free` command
+
+### 1. `free` 命令简介
 
 The `free` command is the most simple and easy to use command to check memory usage on linux. Here is a quick example
 
+`free` 命令是Linux系统中最简单和最常用的内存查看命令， 示例如下:
+
 ```
+
 $ free -m
-             total       used       free     shared    buffers     cached
-Mem:          7976       6459       1517          0        865       2248
--/+ buffers/cache:       3344       4631
-Swap:         1951          0       1951
+              total        used        free      shared  buff/cache   available
+Mem:           7822         321         324         377        7175        6795
+Swap:          4096           0        4095
+
+
+$ free -h
+              total        used        free      shared  buff/cache   available
+Mem:           7.6G        322M        324M        377M        7.0G        6.6G
+Swap:          4.0G        724K        4.0G
+
 ```
 
 
-The `m` option displays all data in MBs. The total os 7976 MB is the total amount of RAM installed on the system, that is 8GB. The used column shows the amount of RAM that has been used by linux, in this case around 6.4 GB. The output is pretty self explanatory. The catch over here is the cached and buffers column. The second line tells that 4.6 GB is free. This is the free memory in first line added with the buffers and cached amount of memory.
+The `m` option displays all data in MBs. The `total` os 7976 MB is the total amount of RAM installed on the system, that is 8GB. The `used` column shows the amount of RAM that has been used by linux, in this case around 6.4 GB. The output is pretty self explanatory. The catch over here is the cached and buffers column. The second line tells that 4.6 GB is free. This is the free memory in first line added with the buffers and cached amount of memory.
 
 Linux has the habit of caching lots of things for faster performance, so that memory can be freed and used if needed.
 The last line is the swap memory, which in this case is lying entirely free.
+
+`free -m` 选项是以MB为单位来展示内存使用信息;
+`free -h` 选项则是以人类(human)可读的单位来展示。
+
+上面的示例中, `Mem:` 这一行：
+
+- `total` 表示总共有 `7822MB` 的物理内存(RAM)，即`7.6G`。
+- `used` 表示物理内存的使用量，大约是 `322M`。
+- `free` 表示空闲内存;
+- `shared` 表示共享内存?;
+- `buff/cache` 表示缓存和缓冲内存量;  Linux 系统会将很多东西缓存起来以提高性能，这部分内存可以在必要时进行释放，给其他程序使用。
+- `available` 表示可用内存;
+
+输出结果很容易理解。
+
+`Swap` 这一行表示交换内存，从上面的数字看，基本上没使用到交换内存。
+
+
 
 ### 2. `/proc/meminfo`
 
