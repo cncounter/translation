@@ -582,7 +582,6 @@ This application fetches the `LoggerContext` currently in effect, creates a new 
 如果出现警告或错误，则打印内部状态数据。
 注意，对于多步配置，则应该省略 `context.reset（）`调用。
 
----------
 
 ### Viewing status messages
 
@@ -592,7 +591,22 @@ Given a `StatusManager` you can access all the status data associated with a log
 
 Logback-classic ships with a servlet called ViewStatusMessagesServlet. This servlet prints the contents of the `StatusManager` associated with the current `LoggerContext` as an HTML table. Here is sample output.
 
+### 查看状态信息
+
+Logback 将内部状态信息收集到一个 `StatusManager` 对象中，可通过 `LoggerContext` 来读取。
+
+可以通过 `StatusManager` 获取上下文中所有的状态数据。
+为了合理使用内存，`StatusManager` 的默认实现将状态信息分为： header 和 tail 两个部分。
+header 部分存储最早的 `H` 个状态消息，而 tail 部分存储最近的 `T` 个消息。
+目前的版本中， `H`=`T`=`150`; 在将来的发行版中这些值可能会有变化。
+
+Logback-classic 附带了一个称为 ViewStatusMessagesServlet 的servlet。 这个Servlet将与当前 `LoggerContext` 关联的 `StatusManager` 内容输出为 HTML table。
+
+下图是输出示例。
+
 [![click to enlarge](http://logback.qos.ch/manual/images/chapters/configuration/lbClassicStatus.jpg)](http://logback.qos.ch/manual/images/chapters/configuration/lbClassicStatus.jpg)
+
+相关的配置示例如下所示:
 
 ```
   <servlet>
@@ -607,6 +621,10 @@ Logback-classic ships with a servlet called ViewStatusMessagesServlet. This serv
 ```
 
 The `ViewStatusMessages` servlet will be viewable at the URL `http://host/yourWebapp/lbClassicStatus`
+
+然后可以通过 URL 来访问, 形如: `http://host/yourWebapp/lbClassicStatus`
+
+---------
 
 ### Listening to status messages
 
