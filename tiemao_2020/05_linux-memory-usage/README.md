@@ -144,42 +144,60 @@ They indicate same values of memory usage as the free command.
 
 The `vmstat` command with the s option, lays out the memory usage statistics much like the proc command. Here is an example
 
+
+### 3. 使用 `vmstat` 命令
+
+使用 `vmstat -s` 选项, 可以对内存使用情况进行统计和输出， 类似于 `proc` 一样。
+
+示例如下:
+
 ```
 $ vmstat -s
-      8167848 K total memory
-      7449376 K used memory
-      3423872 K active memory
-      3140312 K inactive memory
-       718472 K free memory
-      1154464 K buffer memory
-      2422876 K swap cache
-      1998844 K total swap
-            0 K used swap
-      1998844 K free swap
-       392650 non-nice user cpu ticks
-         8073 nice user cpu ticks
-        83959 system cpu ticks
-     10448341 idle cpu ticks
-        91904 IO-wait cpu ticks
+      8010408 K total memory
+       344016 K used memory
+      5444384 K active memory
+      1380052 K inactive memory
+       283468 K free memory
+       719668 K buffer memory
+      6663256 K swap cache
+      4194304 K total swap
+          724 K used swap
+      4193580 K free swap
+    132859985 non-nice user cpu ticks
+        29816 nice user cpu ticks
+     37600986 system cpu ticks
+   6643195204 idle cpu ticks
+      2721822 IO-wait cpu ticks
             0 IRQ cpu ticks
-         2189 softirq cpu ticks
+       592418 softirq cpu ticks
             0 stolen cpu ticks
-      2042603 pages paged in
-      2614057 pages paged out
-            0 pages swapped in
-            0 pages swapped out
-     42301605 interrupts
-     94581566 CPU context switches
-   1382755972 boot time
-         8567 forks
-$
+     13092214 pages paged in
+    293257816 pages paged out
+            8 pages swapped in
+         1365 pages swapped out
+   3396492150 interrupts
+   1327657196 CPU context switches
+   1548248091 boot time
+      8811556 forks
+
 ```
 
 The top few lines indicate total memory, free memory etc and so on.
 
+最前面的几行，显示了内存总量，使用量，以及空闲内存等信息。
+
 ### 4. top command
 
 The `top` command is generally used to check memory and cpu usage per process. However it also reports total memory usage and can be used to monitor the total RAM usage. The header on output has the required information. Here is a sample output
+
+### 4. `top`命令
+
+`top` 命令一般用于查看每个进程的内存和CPU使用情况。
+当然也还会报告内存总量，以及内存使用情况，可用于监控物理内存的使用情况。
+在输出信息的顶部是一些汇总信息。
+
+示例输出如下所示:
+
 
 ```
 top - 15:20:30 up  6:57,  5 users,  load average: 0.64, 0.44, 0.33
@@ -194,7 +212,24 @@ KiB Swap:  1998844 total,        0 used,  1998844 free,  2138148 cached
  7701 enlighte  20   0  424m  17m  10m S   4.0  0.2   0:00.12 kio_thumbnail
 ```
 
+各个操作系统支持的选项可能略有不同，一般来说都可以根据CPU和内存来排序。 可以使用 `top -h` 来查看相关的信息。
+
+例如:
+
+```
+# CentOS
+top -o %MEM
+top -o %CPU
+
+# mac
+top -o mem
+top -o cpu
+```
+
 Check the KiB Mem and KiB Swap lines on the header. They indicate total, used and free amounts of the memory. The buffer and cache information is present here too, like the free command.
+
+查看顶部的 `KiB Mem` 和  `KiB Swap` 这两行。 它们表示对应内存的总量、已使用量，以及可用的内存量。
+buffer 和 cache 信息和 `free` 命令展示的差不多。
 
 ### 5. htop
 
@@ -204,41 +239,71 @@ htop memory ram usage
 
 The header on top shows cpu usage along with RAM and swap usage with the corresponding figures.
 
-# RAM Information
+### 5. `htop` 命令
 
-To find out hardware information about the installed RAM, use the demidecode command. It reports lots of information about the installed RAM memory.
+`htop` 命令与 `top` 命令类似， 但 `htop` 还展示了其他的各种信息, 而且支持彩色显示哦。
+
+![](htop-demo.jpg)
+
+顶部的消息显示了CPU使用率, 以及RAM和交换内存的使用情况。
+
+
+## RAM Information
+
+## 查看物理内存信息
+
+To find out hardware information about the installed RAM, use the `demidecode` command. It reports lots of information about the installed RAM memory.
+
+想要查看机器安装的物理内存的硬件信息，可以使用 `demidecode` 命令。
+这个命令会输出物理内存相关的大量信息。
 
 ```
-$ sudo dmidecode -t 17
-# dmidecode 2.11
-SMBIOS 2.4 present.
+$ dmidecode -t 17
 
-Handle 0x0015, DMI type 17, 27 bytes
+# dmidecode 3.0
+Getting SMBIOS data from sysfs.
+SMBIOS 2.8 present.
+
+Handle 0x1100, DMI type 17, 40 bytes
 Memory Device
-        Array Handle: 0x0014
-        Error Information Handle: Not Provided
-        Total Width: 64 bits
-        Data Width: 64 bits
-        Size: 2048 MB
-        Form Factor: DIMM
-        Set: None
-        Locator: J1MY
-        Bank Locator: CHAN A DIMM 0
-        Type: DDR2
-        Type Detail: Synchronous
-        Speed: 667 MHz
-        Manufacturer: 0xFF00000000000000
-        Serial Number: 0xFFFFFFFF
-        Asset Tag: Unknown
-        Part Number: 0x524D32474235383443412D36344643FFFFFF
+	Array Handle: 0x1000
+	Error Information Handle: Not Provided
+	Total Width: Unknown
+	Data Width: Unknown
+	Size: 8192 MB
+	Form Factor: DIMM
+	Set: None
+	Locator: DIMM 0
+	Bank Locator: Not Specified
+	Type: RAM
+	Type Detail: Other
+	Speed: Unknown
+	Manufacturer: Alibaba Cloud
+	Serial Number: Not Specified
+	Asset Tag: Not Specified
+	Part Number: Not Specified
+	Rank: Unknown
+	Configured Clock Speed: Unknown
+	Minimum Voltage: Unknown
+	Maximum Voltage: Unknown
+	Configured Voltage: Unknown
 ```
 
 Provided information includes the size (2048MB), type (DDR2) , speed(667 Mhz) etc.
+
+`dmidecode -t 17` 展示的信息包括 内存大小, 类型，带宽等信息。 当然，因为我们使用的虚拟机，所以这里有的信息是不可用的。
+
+如果不加 `-t` 参数，则显示所有类型的硬件信息。 也可以指定其他类型查看对应的硬件信息哦。
 
 ## Summary
 
 All the above mentioned commands work from the terminal and do not have a gui. When working on a desktop with a gui, it is much easier to use a GUI tool with graphical output. The most common tools are gnome-system-monitor on gnome and
 ksysguard on KDE. Both provide resource usage information about cpu, ram, swap and network bandwidth in a graphical and easy to understand visual output.
+
+## 小结
+
+上面提到的这些命令都可以在shell终端上运行，不需要图形界面来展示。
+如果在带有图形界面的桌面电脑上使用Linux，则使用图形工具会更简单。 一般来说图形桌面都会提供对应的系统监控工具。 输出容易理解的 cpu, 物理内存, 交换内存, 网络带宽等资源的使用信息。
 
 
 
