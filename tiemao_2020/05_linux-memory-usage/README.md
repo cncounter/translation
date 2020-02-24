@@ -68,57 +68,77 @@ The last line is the swap memory, which in this case is lying entirely free.
 
 ### 2. `/proc/meminfo`
 
+### 2. 查看 `/proc/meminfo`
+
 The next way to check memory usage is to read the `/proc/meminfo` file. Know that the `/proc` file system does not contain real files. They are rather virtual files that contain dynamic information about the kernel and the system.
+
+另一种方法是读取 `/proc/meminfo` 文件。
+当然，我们知道 `/proc` 目录下的都不是真实的文件， 而是虚拟文件，包含内核和系统相关的动态信息。
 
 ```
 $ cat /proc/meminfo
-MemTotal:        8167848 kB
-MemFree:         1409696 kB
-Buffers:          961452 kB
-Cached:          2347236 kB
-SwapCached:            0 kB
-Active:          3124752 kB
-Inactive:        2781308 kB
-Active(anon):    2603376 kB
-Inactive(anon):   309056 kB
-Active(file):     521376 kB
-Inactive(file):  2472252 kB
-Unevictable:        5864 kB
-Mlocked:            5880 kB
-SwapTotal:       1998844 kB
-SwapFree:        1998844 kB
-Dirty:              7180 kB
+MemTotal:        8010408 kB
+MemFree:          323424 kB
+MemAvailable:    6956280 kB
+Buffers:          719620 kB
+Cached:          5817644 kB
+SwapCached:          132 kB
+Active:          5415824 kB
+Inactive:        1369528 kB
+Active(anon):     385660 kB
+Inactive(anon):   249292 kB
+Active(file):    5030164 kB
+Inactive(file):  1120236 kB
+Unevictable:           0 kB
+Mlocked:               0 kB
+SwapTotal:       4194304 kB
+SwapFree:        4193580 kB
+Dirty:                60 kB
 Writeback:             0 kB
-AnonPages:       2603272 kB
-Mapped:           788380 kB
-Shmem:            311596 kB
-Slab:             200468 kB
-SReclaimable:     151760 kB
-SUnreclaim:        48708 kB
-KernelStack:        6488 kB
-PageTables:        78592 kB
+AnonPages:        247888 kB
+Mapped:            61728 kB
+Shmem:            386864 kB
+Slab:             818320 kB
+SReclaimable:     788436 kB
+SUnreclaim:        29884 kB
+KernelStack:        2848 kB
+PageTables:         5780 kB
 NFS_Unstable:          0 kB
 Bounce:                0 kB
 WritebackTmp:          0 kB
-CommitLimit:     6082768 kB
-Committed_AS:    9397536 kB
+CommitLimit:     8199508 kB
+Committed_AS:     942596 kB
 VmallocTotal:   34359738367 kB
-VmallocUsed:      420204 kB
-VmallocChunk:   34359311104 kB
+VmallocUsed:       22528 kB
+VmallocChunk:   34359707388 kB
 HardwareCorrupted:     0 kB
-AnonHugePages:         0 kB
+AnonHugePages:     88064 kB
 HugePages_Total:       0
 HugePages_Free:        0
 HugePages_Rsvd:        0
 HugePages_Surp:        0
 Hugepagesize:       2048 kB
-DirectMap4k:       62464 kB
-DirectMap2M:     8316928 kB
+DirectMap4k:      176000 kB
+DirectMap2M:     6115328 kB
+DirectMap1G:     4194304 kB
 ```
 
 Check the values of `MemTotal`, `MemFree`, `Buffers`, `Cached`, `SwapTotal`, `SwapFree`.
 
 They indicate same values of memory usage as the free command.
+
+
+重点关注一下这几个数据:
+
+- `MemTotal`, 总内存
+- `MemFree`, 空闲内存
+- `MemAvailable`, 可用内存
+- `Buffers`, 缓冲
+- `Cached`, 缓存
+- `SwapTotal`, 交换内存
+- `SwapFree`, 空闲交换内存
+
+可以看到和 `free` 命令看到的差不多。
 
 ### 3. `vmstat`
 
