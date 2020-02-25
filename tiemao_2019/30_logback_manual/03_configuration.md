@@ -624,7 +624,6 @@ The `ViewStatusMessages` servlet will be viewable at the URL `http://host/yourWe
 
 然后可以通过 URL 来访问, 形如: `http://host/yourWebapp/lbClassicStatus`
 
----------
 
 ### Listening to status messages
 
@@ -634,6 +633,15 @@ Logback ships with a `StatusListener` implementation called `OnConsoleStatusList
 
 Here is [sample code](http://logback.qos.ch/xref/chapters/configuration/AddStatusListenerApp.html) to register an `OnConsoleStatusListener` instance with the StatusManager.
 
+### 监听状态消息
+
+在 `StatusManager` 上添加 `StatusListener`，可以在收到状态消息时执行某些操作或响应，比如在 Logback 配置信息修改之后。
+注册状态监听是一种监视内部状态变化的自动化方法，无需人工干预。
+
+Logback 内置了一个 `StatusListener` 的实现， 名为 `OnConsoleStatusListener`， 顾名思义，会将所有“新”传入的状态消息打印到控制台。
+
+> 示例如下:
+
 ```
    LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
    StatusManager statusManager = lc.getStatusManager();
@@ -641,11 +649,17 @@ Here is [sample code](http://logback.qos.ch/xref/chapters/configuration/AddStatu
    statusManager.add(onConsoleListener);
 ```
 
+
+
 Note that the registered status listener will only receive status events subsequent to its registration. It will not receive prior messages. Thus, it is usually a good idea to place status listener registration directives at top of the configuration file before other directives.
 
 It is also possible to register one or more status listeners within a configuration file. Here is an example.
 
 Example: Registering a status listener (logback-examples/src/main/resources/chapters/configuration/onConsoleStatusListener.xml)
+
+请注意，状态监听器只会收到注册成功之后的事件，也就是说不会收到以前的消息。 因此，最好将状态监听的注册指令放置在配置文件的顶部，然后再放置其他指令。
+
+下面是在配置文件中注册状态监听的示例：
 
 ```
 <configuration>
@@ -665,7 +679,31 @@ Logback ships with several status listener implementations. [OnConsoleStatusList
 
 Note that [automatic status printing](http://logback.qos.ch/manual/configuration.html#automaticStatusPrinting) (in case of errors) is disabled if any status listener is registered during configuration and in particular if the user specifies a status listener via the "logback.statusListenerClass" system. Thus, by setting `NopStatusListener` as a status listener, you can silence internal status printing altogether.
 
-java `-Dlogback.statusListenerClass`=ch.qos.logback.core.status.NopStatusListener ...
+### 使用系统属性 "`logback.statusListenerClass`"
+
+我们也可以通过Java的系统属性 "`logback.statusListenerClass`" 来指定需要注册的监听器类名。例如:
+
+```
+java -Dlogback.statusListenerClass=ch.qos.logback.core.status.OnConsoleStatusListener ...
+```
+
+Logback 内置了几个状态监听器：
+
+- [OnConsoleStatusListener](http://logback.qos.ch/xref/ch/qos/logback/core/status/OnConsoleStatusListener.html) 在标准控制台（System.out）打印传入的状态消息。
+- [OnErrorConsoleStatusListener](http://logback.qos.ch/xref/ch/qos/logback/core/status/OnErrorConsoleStatusListener.html) 在标准错误流（System.err）打印传入的状态消息。
+- [NopStatusListener](http://logback.qos.ch/xref/ch/qos/logback/core/status/NopStatusListener.html) 则是无操作，会丢弃收到的消息。
+
+请注意，如果注册了状态监听，则会禁用自动状态信息打印。 特别是在启动程序时指定了 "logback.statusListenerClass" 系统属性。
+因此，如果将 `NopStatusListener` 设置为状态监听器， 则可以完全屏蔽Logback内部的状态信息打印。
+
+示例如下:
+
+```
+java -Dlogback.statusListenerClass=ch.qos.logback.core.status.NopStatusListener ...
+```
+
+
+---------
 
 ## Stopping logback-classic
 
