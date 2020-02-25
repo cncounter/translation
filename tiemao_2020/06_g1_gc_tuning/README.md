@@ -183,6 +183,6 @@ Monica Beckwith, Principal Member of Technical Staff at Oracle, is the performan
 
 - [Facebook: I Love Java](https://www.facebook.com/ilovejava)
 
-- [Twitter: Java](https://twitter.com/#!/java)
+- [Twitter: Java](https://twitter.com/java)
 
 - [Java Blog](https://blogs.oracle.com/java/)
