@@ -703,11 +703,15 @@ java -Dlogback.statusListenerClass=ch.qos.logback.core.status.NopStatusListener 
 ```
 
 
----------
-
 ## Stopping logback-classic
 
 In order to release the resources used by logback-classic, it is always a good idea to stop the logback context. Stopping the context will close all appenders attached to loggers defined by the context and stop any active threads in an orderly way. Please also read the section on "shutdown hooks" just below.
+
+## 停止logback-classic
+
+为了释放 logback-classic 使用的资源，关闭 logback 上下文是一个好办法。
+停止上下文将关闭该上下文上的 appenders 和 loggers，并以有序的方式停止所有活动线程。
+详情请参考下面的 “关闭钩子” 小节。
 
 ```java
 import org.sflf4j.LoggerFactory;
@@ -720,6 +724,12 @@ loggerContext.stop();
 ```
 
 In web-applications the above code could be invoked from within the [contextDestroyed](http://docs.oracle.com/javaee/6/api/javax/servlet/ServletContextListener.html#contextDestroyed(javax.servlet.ServletContextEvent)) method of `ServletContextListener` in order to stop logback-classic and release resources. Starting with version 1.1.10, the appropriate `ServletContextListener` is installed automatically for you ([see just below](http://logback.qos.ch/manual/configuration.html#webShutdownHook)).
+
+在Web应用程序中，可以在 `ServletContextListener` 的 [contextDestroyed](http://docs.oracle.com/javaee/6/api/javax/servlet/ServletContextListener.html#contextDestroyed(javax.servlet.ServletContextEvent)) 方法中内调用上面的代码，以停止 logback-classic 并释放资源。
+从1.1.10版本开始，则会注册 `ServletContextListener`, 请参考下文。
+
+
+---------
 
 #### Stopping logback-classic via a shutdown hook
 
