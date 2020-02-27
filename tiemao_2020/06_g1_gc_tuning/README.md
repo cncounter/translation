@@ -2,13 +2,30 @@
 
 > Learn about how to adapt and tune the G1 GC for evaluation, analysis and performance.
 
+
+# G1垃圾收集器调优 - 官方文档
+
+> 本文详细介绍G1垃圾收集器的参数配置和性能调优, 并介绍如何对GC的性能进行分析和评估。
+
 The [Garbage First Garbage Collector (G1 GC)](https://blog.csdn.net/renfufei/article/details/41897113) is the low-pause, server-style generational garbage collector for Java HotSpot VM. The G1 GC uses concurrent and parallel phases to achieve its target pause time and to maintain good throughput. When G1 GC determines that a garbage collection is necessary, it collects the regions with the least live data first (garbage first).
+
+[Garbage First Garbage Collector (简称 G1 GC)](https://blog.csdn.net/renfufei/article/details/41897113) 是HotSpot VM 中集成的一款服务器版的，低延迟的分代垃圾收集器。
+G1使用多个并发和并行阶段来将暂停时间打散，以实现其低延迟的目标，并且能保持良好的吞吐量。
+只要G1认为可以进行垃圾收集时，就会触发一次垃圾收集, 当然，会优先回收存活数据比较少的区域（存活数据少那就是垃圾对象多，这就是 garbage first 名字的来源）。
 
 A garbage collector (GC) is a memory management tool. The G1 GC achieves automatic memory management through the following operations:
 
 - Allocating objects to a young generation and promoting aged objects into an old generation.
 - Finding live objects in the old generation through a concurrent (parallel) marking phase. The Java HotSpot VM triggers the marking phase when the total Java heap occupancy exceeds the default threshold.
 - Recovering free memory by compacting live objects through parallel copying.
+
+垃圾收集器本质上是一个内存管理工具。 G1 主要通过以下方式实现自动内存管理：
+
+- 【分代】在年轻代中分配对象存储空间，并将达到一定年龄的对象提升到老年代。
+- 【并发】在并发标记阶段遍历老年代中的存活对象。 当Java中堆内存的总使用量超过默认阈值时，HotSpot 就会触发标记阶段的执行。
+- 【整理】通过并行复制的方式，整理存活对象，以来恢复可用内存。
+
+> 在GC中， 并行就是指多个GC线程一起干活， 并发就是指GC线程和业务线程一起并发执行。
 
 Here, we look at how to adapt and tune the G1 GC for evaluation, analysis and performance—we assume a basic understanding of Java garbage collection.
 

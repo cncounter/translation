@@ -726,7 +726,7 @@ loggerContext.stop();
 In web-applications the above code could be invoked from within the [contextDestroyed](http://docs.oracle.com/javaee/6/api/javax/servlet/ServletContextListener.html#contextDestroyed(javax.servlet.ServletContextEvent)) method of `ServletContextListener` in order to stop logback-classic and release resources. Starting with version 1.1.10, the appropriate `ServletContextListener` is installed automatically for you ([see just below](http://logback.qos.ch/manual/configuration.html#webShutdownHook)).
 
 在Web应用程序中，可以在 `ServletContextListener` 的 [contextDestroyed](http://docs.oracle.com/javaee/6/api/javax/servlet/ServletContextListener.html#contextDestroyed(javax.servlet.ServletContextEvent)) 方法中内调用上面的代码，以停止 logback-classic 并释放资源。
-从1.1.10版本开始，则会注册 `ServletContextListener`, 请参考下文。
+从1.1.10版本开始，则会自动注册 `ServletContextListener`, 请参考下文。
 
 
 ---------
