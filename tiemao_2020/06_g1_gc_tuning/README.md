@@ -37,6 +37,25 @@ The G1 GC reduces heap fragmentation by incremental parallel copying of live obj
 
 The G1 GC uses independent Remembered Sets (RSets) to track references into regions. Independent RSets enable parallel and independent collection of regions because only a region's RSet must be scanned for references into that region, instead of the whole heap. The G1 GC uses a post-write barrier to record changes to the heap and update the RSets.
 
+
+在进行GC调优之前，要求读者对Java的垃圾收集有一定的了解。
+下面介绍如何对G1的参数进行配置和调整, 以及如何对GC的性能进行分析和评估。
+
+G1是一款分代垃圾收集器，将堆内存划分为多个大小相同的小块(region)。
+在启动时，JVM就会确定块(region)的大小。 范围是 `1MB`到`32MB`之间，具体取决于堆大小。 目标是不超过2048个region。
+新生代（eden），存活区（survivor）和老年代（old generation）在G1看来都是逻辑上的概念，可以由这些小块自由组合，也不要求各个区块之间保持连续。
+
+G1 可以设置一个期望的最大暂停时间, G1会尽量尝试去满足（软实时目标值）。
+在纯年轻模式（young）的垃圾收集过程中，G1 会调整其年轻代的大小（新生代+存活区），以达到软实时的目标暂停时间。
+在混合模式（mixed）的垃圾收集过程中，G1 会根据要回收的块数量，每个块中存活对象的百分比，以及可以容忍浪费多少堆内存，来调整本次需要回收的老年代region数量。
+
+G1 将存活对象从一到多个块集合/回收集（CSet, Collection Set）, 增量并行复制到新的块中，来实现内存碎片整理。
+目的是从空闲的那些区域中，尽可能多地回收堆内存，同时期望不要超过暂停时间目标值（garbage first）。
+
+G1 为每个块都使用独立的记忆集（RSets，Remembered Sets）, 来跟踪有哪些引用指向此区块。
+这种方式，支持对各个区块进行并行和独立的回收，因为仅需扫描此区块的RSet就可以找到有哪些对该区域的引用，而不用遍历整个堆内存。
+G1使用后置写屏障(post-write barrier)来记录对堆内存的更改, 并负责更新RSets。
+
 ## Garbage Collection Phases
 
 Apart from evacuation pauses (described below) that compose the stop-the-world (STW) young and mixed garbage collections, the G1 GC also has parallel, concurrent, and multiphase marking cycles. G1 GC uses the Snapshot-At-The-Beginning (SATB) algorithm, which takes a snapshot of the set of live objects in the heap at the start of a marking cycle. The set of live objects is composed of the live objects in the snapshot, and the objects allocated since the start of the marking cycle. The G1 GC marking algorithm uses a pre-write barrier to record and mark objects that are part of the logical snapshot.

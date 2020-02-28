@@ -735,9 +735,14 @@ In web-applications the above code could be invoked from within the [contextDest
 
 Installing a JVM shutdown hook is a convenient way for shutting down logback and releasing associated resources.
 
+#### 通过关闭钩子停止 logback-classic
+
+注册JVM的关闭钩子，可以很方便地关闭 logback 并释放相关的资源。
+
+
 ```
 <configuration debug="true">
-   <!-- in the absence of the class attribute, assume
+   <!-- 如果不指定 class 属性，则默认为:
    ch.qos.logback.core.hook.DefaultShutdownHook -->
    <shutdownHook/>
   ....
@@ -747,6 +752,10 @@ Installing a JVM shutdown hook is a convenient way for shutting down logback and
 Note that you may install a shutdown hook of your own making by setting the `class` attribute to correspond to your shutdown hook's class name.
 
 The default shutdown hook, namely [DefaultShutdownHook](http://logback.qos.ch/apidocs/ch/qos/logback/core/hook/DefaultShutdownHook.html), will `stop` the logback context after a specified delay (0 by default). Stopping the context will allow up to 30 seconds for any log file compression tasks running in the background to finish. In standalone Java applications, adding a ` ` directive to your configuration file is an easy way to ensure that any ongoing compression tasks are allowed to finish before JVM exit. In applications within a Web server, [webShutdownHook](http://logback.qos.ch/manual/configuration.html#webShutdownHook) will be installed automatically making ` ` directive quite redundant and unnecessary.
+
+请注意， 我们也可以将 `class` 属性设置为自定义的类，来自己实现相关的关机钩子。
+
+默认的关闭挂钩，即[DefaultShutdownHook]（http://logback.qos.ch/apidocs/ch/qos/logback/core/hook/DefaultShutdownHook.html），将在指定的延迟（0之后 默认情况下）。 停止上下文将使在后台运行的任何日志文件压缩任务最多需要30秒才能完成。 在独立的Java应用程序中，向配置文件中添加`指令是确保JVM退出之前允许任何正在进行的压缩任务完成的简便方法。 在Web服务器中的应用程序中，将自动安装[webShutdownHook]（http://logback.qos.ch/manual/configuration.html#webShutdownHook），从而使``指令变得非常多余和不必要。
 
 #### WebShutdownHook or stopping logback-classic in web-applications
 
