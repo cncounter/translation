@@ -60,13 +60,31 @@ G1使用后置写屏障(post-write barrier)来记录对堆内存的更改, 并�
 
 Apart from evacuation pauses (described below) that compose the stop-the-world (STW) young and mixed garbage collections, the G1 GC also has parallel, concurrent, and multiphase marking cycles. G1 GC uses the Snapshot-At-The-Beginning (SATB) algorithm, which takes a snapshot of the set of live objects in the heap at the start of a marking cycle. The set of live objects is composed of the live objects in the snapshot, and the objects allocated since the start of the marking cycle. The G1 GC marking algorithm uses a pre-write barrier to record and mark objects that are part of the logical snapshot.
 
+## 垃圾回收阶段划分
+
+除了年轻代模式和混合模式的转移暂停(evacuation pause)会有 STW 停顿之外，G1还有一些阶段是并行或者并发执行的，比如多阶段的标记周期。
+G1 使用开始快照算法（SATB，Snapshot-At-The-Beginning），在标记阶段开始时，对堆中的存活对象集进行快照。
+存活对象集包括快照中的存活对象，加上标记开始之后新分配的对象组成。
+G1的标记算法使用写前屏障(pre-write barrier)来记录和标记逻辑上属于快照中的对象。
+
 ## Young Garbage Collections
 
 The G1 GC satisfies most allocation requests from regions added to the eden set of regions. During a young garbage collection, the G1 GC collects both the eden regions and the survivor regions from the previous garbage collection. The live objects from the eden and survivor regions are copied, or evacuated, to a new set of regions. The destination region for a particular object depends upon the object's age; an object that has aged sufficiently evacuates to an old generation region (that is, promoted); otherwise, the object evacuates to a survivor region and will be included in the CSet of the next young or mixed garbage collection.
 
+## 年轻代垃圾收集
+
+G1将大部分的内存分配请求打到eden区。 在年轻代的垃圾收集过程中，G1回收eden区和上次GC的存活区。 并将其中的存活对象拷贝/转移到新的region中。 特定的目标区域取决于对象的年龄。 如果达到一定的GC年龄，则会转移到老年代之中（即被提升）； 否则，该对象会被转移到存活区，然后会加入到下一次的年轻代模式/混合模式GC的CSet中。
+
 ## Mixed Garbage Collections
 
 Upon successful completion of a concurrent marking cycle, the G1 GC switches from performing young garbage collections to performing mixed garbage collections. In a mixed garbage collection, the G1 GC optionally adds some old regions to the set of eden and survivor regions that will be collected. The exact number of old regions added is controlled by a number of flags that will be discussed later (see "Taming Mixed GCs"). After the G1 GC collects a sufficient number of old regions (over multiple mixed garbage collections), G1 reverts to performing young garbage collections until the next marking cycle completes.
+
+## 混合模式的垃圾收集
+
+如果成功完成了并发标记周期，则G1会从纯年轻模式切换到混合模式的垃圾收集。
+在混合模式的垃圾收集中，G1可以选择将一部分老年代region添加到回收集之中，当然，回收集包括所有的eden区和存活区。
+具体添加多少个老年代region，则是有多个标志联合控制。
+在经过多次混合模式的GC之后，G1回收了足够数量的老年代region，然后G1又会恢复为纯年轻代模式的垃圾收集， 直到下一次标记周期完成。
 
 ## Phases of the Marking Cycle
 
@@ -77,6 +95,16 @@ The marking cycle has the following phases:
 - `Concurrent marking phase`: The G1 GC finds reachable (live) objects across the entire heap. This phase happens concurrently with the application, and can be interrupted by STW young garbage collections.
 - `Remark phase`: This phase is STW collection and helps the completion of the marking cycle. G1 GC drains SATB buffers, traces unvisited live objects, and performs reference processing.
 - `Cleanup phase`: In this final phase, the G1 GC performs the STW operations of accounting and RSet scrubbing. During accounting, the G1 GC identifies completely free regions and mixed garbage collection candidates. The cleanup phase is partly concurrent when it resets and returns the empty regions to the free list.
+
+## 标记周期的各个阶段
+
+标记周期分为以下阶段：
+
+- “初始标记阶段(`Initial mark phase`)”： 在此阶段标记 GC roots。 此阶段有一次短暂的（STW停顿）,一般由一次年轻代GC顺带着执行。
+- “根区域扫描(`Root region scanning phase`)”： G1 扫描初始标记阶段的存活区域， 获取对老年代的引用，并标记所引用的对象。 该阶段与应用程序线程并发执行（所以没有STW），并且必须在下一次STW年轻代GC开始之前完成。
+- “并发标记阶段(`Concurrent marking phase`)”：G1 遍历整个堆，查找所有可到达的（存活）对象。此阶段与应用程序并发执行， 允许被STW年轻代GC中断。
+- “再次标记阶段(`Remark phase`)”： 此阶段有一次STW收集，以完成标记周期。 G1 排空SATB缓冲区，跟踪未访问到的存活对象，并执行引用处理。
+- “清除阶段(`Cleanup phase`)”： 在此最终阶段，G1在执行记录和RSet清理时会有STW操作。 在记录期间，G1会标识出完全空闲的region，以及混合模式GC的候选region。 清除阶段在重置并将空闲区域加入空闲列表时，部分处于并发模式。
 
 ## Important Defaults
 
