@@ -110,21 +110,43 @@ The marking cycle has the following phases:
 
 The G1 GC is an adaptive garbage collector with defaults that enable it to work efficiently without modification. Here is a list of important options and their default values. This list applies to the latest Java HotSpot VM, build 24. You can adapt and tune the G1 GC to your application performance needs by entering the following options with changed settings on the JVM command line.
 
+## 常用参数与默认值
+
+G1是一款自适应垃圾收集器，大部分参数都具有默认值，一般情况下无需额外配置即可高效工作。
+下面列出常用参数和默认值, 适用于最新的Java HotSpot VM（build 24）。
+如果有特殊需求，可以通过JVM启动参数来调整配置，以满足程序的性能需求。
+
 #### `-XX:G1HeapRegionSize=n`
 
 Sets the size of a G1 region. The value will be a power of two and can range from 1MB to 32MB. The goal is to have around 2048 regions based on the minimum Java heap size.
+
+此参数可以设置G1区块(region)的大小。 这个值必须是`2的幂`（x次方)，允许范围是`1MB`至`32MB`。
+这个参数会动态调整，目标是尽量将Java堆的初始值切割为大约2048个区块(region)。
 
 #### `-XX:MaxGCPauseMillis=200`
 
 Sets a target value for desired maximum pause time. The default value is 200 milliseconds. The specified value does not adapt to your heap size.
 
+指定期望的最大暂停时间目标值。 默认值为200毫秒。 具体的值和堆内存的大小没有关系。
+
 #### `-XX:G1NewSizePercent=5`
 
 Sets the percentage of the heap to use as the minimum for the young generation size. The default value is 5 percent of your Java heap. This is an experimental flag. See "How to unlock experimental VM flags" for an example. This setting replaces the `-XX:DefaultMinNewGenPercent` setting. This setting is not available in Java HotSpot VM, build 23.
 
+设置年轻代空间的最小百分比。 默认值为`5％`。
+这个参数是实验性质的，也就是说后续版本有可能会变化。相关示例请参考: “如何解锁实验性VM标志”。在Java HotSpot VM（build 23）中不可用。
+此设置会覆盖 `-XX:DefaultMinNewGenPercent` 设置。
+
+
 #### `-XX:G1MaxNewSizePercent=60`
 
 Sets the percentage of the heap size to use as the maximum for young generation size. The default value is 60 percent of your Java heap. This is an experimental flag. See "How to unlock experimental VM flags" for an example. This setting replaces the `-XX:DefaultMaxNewGenPercent` setting. This setting is not available in Java HotSpot VM, build 23.
+
+
+设置年轻代空间的最大百分比。 默认值为`60％`。
+这个参数是实验性质的，也就是说后续版本有可能会变化。 相关示例请参考: “如何解锁实验性VM标志”。在Java HotSpot VM（build 23）中不可用。
+此设置会覆盖 `-XX:DefaultMaxNewGenPercent` 设置。
+
 
 #### `-XX:ParallelGCThreads=n`
 
@@ -132,37 +154,68 @@ Sets the value of the STW worker threads. Sets the value of n to the number of l
 
 If there are more than eight logical processors, sets the value of n to approximately 5/8 of the logical processors. This works in most cases except for larger SPARC systems where the value of n can be approximately 5/16 of the logical processors.
 
+设置STW阶段的并行 worker 线程数量。
+如果逻辑处理器小于等于8个，则默认值`n`等于逻辑处理器的数量。
+如果逻辑处理器大于8个，则默认值`n`大约等于处理器数量的5/8。 在大多数情况下都是个比较合理的值。 如果是高配置的 SPARC 系统，则默认值 `n` 大约等于逻辑处理器数量的5/16。
+
 #### `-XX:ConcGCThreads=n`
 
 Sets the number of parallel marking threads. Sets n to approximately 1/4 of the number of parallel garbage collection threads (`ParallelGCThreads`).
+
+设置并发标记的GC线程数量。 默认值大约是 `ParallelGCThreads` 的四分之一。
 
 #### `-XX:InitiatingHeapOccupancyPercent=45`
 
 Sets the Java heap occupancy threshold that triggers a marking cycle. The default occupancy is 45 percent of the entire Java heap.
 
+设置触发标记周期的Java堆占用阈值。 默认占用率是整个Java堆的`45％`。
+
 #### `-XX:G1MixedGCLiveThresholdPercent=65`
 
 Sets the occupancy threshold for an old region to be included in a mixed garbage collection cycle. The default occupancy is 65 percent. This is an experimental flag. See "How to unlock experimental VM flags" for an example. This setting replaces the `-XX:G1OldCSetRegionLiveThresholdPercent` setting. This setting is not available in Java HotSpot VM, build 23.
+
+设置混合模式GC的老年代使用率阈值。 默认值为65％。
+这个参数是实验性质的，也就是说后续版本有可能会变化。 相关示例请参考: “如何解锁实验性VM标志”。 在Java HotSpot VM（build 23）中不可用。
+此设置会覆盖 `-XX:G1OldCSetRegionLiveThresholdPercent` 设置。
 
 #### `-XX:G1HeapWastePercent=10`
 
 Sets the percentage of heap that you are willing to waste. The Java HotSpot VM does not initiate the mixed garbage collection cycle when the reclaimable percentage is less than the heap waste percentage. The default is 10 percent. This setting is not available in Java HotSpot VM, build 23.
 
+设置我们愿意浪费的堆内存百分比。 如果可回收的堆内存百分比小于这个比例，则Java HotSpot VM不会启动混合模式的垃圾回收。
+默认值为`10％`。 此设置在Java HotSpot VM（内部版本23）中不可用。
+
 #### `-XX:G1MixedGCCountTarget=8`
 
 Sets the target number of mixed garbage collections after a marking cycle to collect old regions with at most `G1MixedGCLIveThresholdPercent` live data. The default is 8 mixed garbage collections. The goal for mixed collections is to be within this target number. This setting is not available in Java HotSpot VM, build 23.
+
+设置标记周期完成后希望执行多少次的混合模式GC，以达到收集最多 `G1MixedGCLIveThresholdPercent` 比例的老年代空间。
+默认值是8次混合模式垃圾回收。 具体的次数在这个目标值范围内。
+此设置在Java HotSpot VM（内部版本23）中不可用。
 
 #### `-XX:G1OldCSetRegionThresholdPercent=10`
 
 Sets an upper limit on the number of old regions to be collected during a mixed garbage collection cycle. The default is 10 percent of the Java heap. This setting is not available in Java HotSpot VM, build 23.
 
+设置混合模式垃圾收集周期中，每次要回收的老年代 region 数量上限百分比。 缺省值为Java堆的`10％`。
+此设置在Java HotSpot VM（内部版本23）中不可用。
+
 #### `-XX:G1ReservePercent=10`
 
 Sets the percentage of reserve memory to keep free so as to reduce the risk of to-space overflows. The default is 10 percent. When you increase or decrease the percentage, make sure to adjust the total Java heap by the same amount. This setting is not available in Java HotSpot VM, build 23.
 
+设置一定百分比的保留内存空间, 使其保持空闲状态，以减少GC时 to存活区 内存溢出的风险。 默认值为 `10％`。
+当增加或减少百分比时，请确保将总的Java堆也进行相同的调整。
+此设置在Java HotSpot VM（内部版本23）中不可用。
+
 ## How to Unlock Experimental VM Flags
 
 To change the value of experimental flags, you must unlock them first. You can do this by setting `-XX:+UnlockExperimentalVMOptions` explicitly on the command line before any experimental flags. For example:
+
+## 如何解锁实验性VM标志
+
+要修改实验性VM参数的值，必须先声明需要解锁。
+我们可以在命令行参数中，设置实验性标志之前，明确指定 `-XX:+UnlockExperimentalVMOptions`。 例如：
 
 ```
 java -XX:+UnlockExperimentalVMOptions -XX:G1NewSizePercent=10 -XX:G1MaxNewSizePercent=75 G1test.jar
@@ -185,15 +238,41 @@ When you evaluate and fine-tune G1 GC, keep the following recommendations in min
   * `-XX:G1MixedGCCountTarget` and `-XX:G1OldCSetRegionThresholdPercent`
     When you want to adjust the CSet for old regions.
 
+
+## 最佳实践与建议
+
+在测试和调整G1参数之前，需要记住以下几点：
+
+- `禁止设置年轻代的大小`: 避免使用 `-Xmn`、`-XX:NewRatio` 或者类似的选项来指定年轻代的大小。 固定的年轻代大小，会覆盖最大暂停时间目标。
+
+- `期望的最大暂停时间值`:  不管对哪一款垃圾收集器进行调优，都需要在延迟指标与吞吐量指标之间进行权衡。 G1是一款具有统一暂停时间的增量垃圾收集器， 所以对CPU等资源的开销相对要大一些。 G1的吞吐量目标，是在 **高负载** 的情况下，确保有90％以上的CPU时间在执行应用程序线程，而执行GC的开销保持在10％以下。 相比之下，HotSpot VM 中高吞吐量垃圾收集器可以优化到 99％ 的应用线程时间, 只有不到1％的GC开销。 因此，在测试G1的吞吐量指标时，需要放宽暂停时间指标。 设定过于激进的暂停时间目标，就表示我们愿意承担GC开销的增加，但这又会直接影响了吞吐量。 在测试 G1 的延迟指标时，我们可以设置期望的软实时目标值，G1 会尝试达到此目标。 副作用是吞吐量可能会受到影响。
+
+- `调优混合模式GC`: 在调优混合模式的GC时，可以尝试调优以下选项。 这些选项的详细信息请参考前面的小节：
+
+  * `-XX:InitiatingHeapOccupancyPercent`
+    更改触发标记的阈值。
+  * `-XX:G1MixedGCLiveThresholdPercent` 和 `-XX:G1HeapWastePercent`
+    调整混合模式GC的策略。
+  * `-XX:G1MixedGCCountTarget` 和 `-XX:G1OldCSetRegionThresholdPercent`
+    用于调整或优化CSet中的老年代region。
+
+
+
 ## Overflow and Exhausted Log Messages
 
 When you see to-space overflow/exhausted messages in your logs, the G1 GC does not have enough memory for either survivor or promoted objects, or for both. The Java heap cannot expand since it is already at its max. Example messages:
+
+## 日志输出内存溢出和耗尽
+
+如果我们在GC日志中看到 to-space 溢出/耗尽（overflow/exhausted）的消息时， 表明G1没有足够的内存来保存存活或提升的对象，或两者都不足。 而且Java堆内存已达到最大值，无法扩容。 GC日志消息示例如下：
 
 ```
 924.897: [GC pause (G1 Evacuation Pause) (mixed) (to-space exhausted), 0.1957310 secs]
 ```
 
 OR
+
+或者是这样:
 
 ```
 924.897: [GC pause (G1 Evacuation Pause) (mixed) (to-space overflow), 0.1957310 secs]
@@ -209,6 +288,16 @@ You can also increase the value of the `-XX:ConcGCThreads` option to increase th
 
 See "Important Defaults" for a description of these options.
 
+要缓解此问题，请尝试以下调整：
+
+- 加大 `-XX:G1ReservePercent` 选项的值来增加保留的 "to-space" 大小，一般来说也需要相应地增加总的堆内存大小。
+
+- 通过减少 `-XX:InitiatingHeapOccupancyPercent` 来尽早开始标记周期。
+
+- 适当加大 `-XX:ConcGCThreads` 选项的值，增加GC中并发标记线程的数量。
+
+有关这些选项的具体信息，请参考前面的描述。
+
 ## Humongous Objects and Humongous Allocations
 
 For G1 GC, any object that is more than half a region size is considered a "Humongous object". Such an object is allocated directly in the old generation into "Humongous regions". These Humongous regions are a contiguous set of regions. `StartsHumongous` marks the start of the contiguous set and `ContinuesHumongous` marks the continuation of the set.
@@ -223,19 +312,57 @@ Since each individual set of StartsHumongous and ContinuesHumongous regions cont
 
 If you see back-to-back concurrent cycles initiated due to Humongous allocations and if such allocations are fragmenting your old generation, please increase your `-XX:G1HeapRegionSize` such that previous Humongous objects are no longer Humongous and will follow the regular allocation path.
 
+## 大对象/巨无霸对象的内存分配
+
+对于G1来说，如果某个对象超过单个 region 空间的一半，则视为“大对象/巨无霸对象（Humongous object）”。
+这样的对象会直接分配到老年代的 “巨型region区（Humongous region）”。 这部分巨型region区是一组虚拟地址连续的块。 `StartsHumongous` 标志着连续集合的开始，而 `ContinuesHumongous` 标志着连续集合的后续。
+
+在分配巨型区域之前，先判断是否达到标记阈值，在必要时会启动并发周期。
+
+在标记周期最后的清理阶段，以及FullGC的清理过程中，都会释放不再使用的巨无霸对象。
+
+为了减少内存复制的开销，所有转移暂停中均不包含 巨无霸对象。 Full GC 周期会将巨无霸对象整理到位。
+
+由于每个 StartsHumongous 和 ContinuesHumongous 组成的集合都只包含一个巨无霸对象， 因此这组集合末尾总会有一部分空间是未使用的。
+对于占用空间只比N个region只稍微大一点点的对象，未使用的这部分空间就可能造成堆内存碎片问题。
+
+如果在GC日志中，看到大量由 Humongous 分配而触发的并发周期， 而且导致了大量的内存碎片，那么就需要增加 `-XX:G1HeapRegionSize` 的值，来让之前的巨无霸对象不再被当做巨无霸【让其小于50%~】，而是走常规的对象分配方式。
+
 ## Conclusion
 
 G1 GC is a regionalized, parallel-concurrent, incremental garbage collector that provides more predictable pauses compared to other HotSpot GCs. The incremental nature lets G1 GC work with larger heaps and still provide reasonable worst-case response times. The adaptive nature of G1 GC just needs a maximum soft-real time pause-time goal along-with the desired maximum and minimum size for the Java heap on the JVM command line.
+
+## 总结
+
+G1是一款并行+并发的增量垃圾收集器，将堆内存划分为多个小块，与其他 GC 相比，提供了更加可预测的暂停时间。
+增量特性使得G1可以应对更大的堆内存，在最坏情况下依然保持合理的响应时间。
+
+G1的自适应特性，使得我们在一般情况下，只需要设置3个调优参数:
+
+- 期望的最大暂停时间, 例如 `-XX:MaxGCPauseMillis=50`
+- 堆内存的最大值, 例如 `-Xmx4g`
+- 堆内存的最小值,  例如 `-Xms4g`
 
 
 ## About the Author
 
 Monica Beckwith, Principal Member of Technical Staff at Oracle, is the performance lead for the Java HotSpot VM's Garbage First Garbage Collector. She has worked in the performance and architecture industry for over 10 years. Prior to Oracle and Sun Microsystems, Monica lead the performance effort at Spansion Inc. Monica has worked with many industry standard Java based benchmarks with a constant goal of finding opportunities for improvement in the Java HotSpot VM.
 
+## 作者简介
+
+Monica Beckwith, Oracle技术工作组的核心成员，是Java HotSpot VM 项目下, Garbage First Garbage Collector 的性能负责人。
+在性能和架构领域具有10年以上的工作经验。
+在Oracle和Sun Microsystems之前的工作，Monica 负责 Spansion Inc.的性能调优工作。
+Monica与许多基于Java的性能测试标准进行了合作， 致力于探寻 Java HotSpot VM 的性能改进。
+
 
 ## 相关资源和链接
 
 - 原文链接: <https://www.oracle.com/technical-resources/articles/java/g1gc.html>
+
+- [G1垃圾收集器调优-英文版](https://docs.oracle.com/javase/8/docs/technotes/guides/vm/gctuning/g1_gc_tuning.html)
+
+- [JavaSE官方文档目录-英文版](https://docs.oracle.com/en/java/javase/index.html)
 
 - [G1特性简介-英文版](https://www.oracle.com/technetwork/java/javase/tech/g1-intro-jsp-135488.html)
 
