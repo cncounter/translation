@@ -729,8 +729,6 @@ In web-applications the above code could be invoked from within the [contextDest
 从1.1.10版本开始，则会自动注册 `ServletContextListener`, 请参考下文。
 
 
----------
-
 #### Stopping logback-classic via a shutdown hook
 
 Installing a JVM shutdown hook is a convenient way for shutting down logback and releasing associated resources.
@@ -757,11 +755,19 @@ The default shutdown hook, namely [DefaultShutdownHook](http://logback.qos.ch/ap
 
 默认的关闭挂钩，即[DefaultShutdownHook]（http://logback.qos.ch/apidocs/ch/qos/logback/core/hook/DefaultShutdownHook.html），将在指定的延迟（0之后 默认情况下）。 停止上下文将使在后台运行的任何日志文件压缩任务最多需要30秒才能完成。 在独立的Java应用程序中，向配置文件中添加`指令是确保JVM退出之前允许任何正在进行的压缩任务完成的简便方法。 在Web服务器中的应用程序中，将自动安装[webShutdownHook]（http://logback.qos.ch/manual/configuration.html#webShutdownHook），从而使``指令变得非常多余和不必要。
 
+
 #### WebShutdownHook or stopping logback-classic in web-applications
 
-`SINCE 1.1.10` Logback-classic will `automatically` ask the web-server to install a `LogbackServletContainerInitializer` implementing the `ServletContainerInitializer` interface (available in servlet-api 3.x and later). This initializer will in turn install and instance of `LogbackServletContextListener`. This listener will stop the current logback-classic context when the web-app is stopped or reloaded.
+SINCE `1.1.10` Logback-classic will `automatically` ask the web-server to install a `LogbackServletContainerInitializer` implementing the `ServletContainerInitializer` interface (available in servlet-api 3.x and later). This initializer will in turn install and instance of `LogbackServletContextListener`. This listener will stop the current logback-classic context when the web-app is stopped or reloaded.
 
 You may disable the automatic the installation of `LogbackServletContextListener` by setting a <context-param> named `logbackDisableServletContainerInitializer` in your web-application's web.xml file. Here is the relevant snippet.
+
+#### WebShutdownHook 以及在Web应用中关闭 logback
+
+Logback-classic从`1.1.10`版本开始，实现了 `ServletContainerInitializer` 接口的 `LogbackServletContainerInitializer`, 会被servlet-api 3.x及更高版本的Web服务器自动加载。
+该初始化程序将创建 `LogbackServletContextListener` 实例。 当Web应用停止或重新加载时，listener会关闭当前的 logback-classic 上下文。
+
+可以在 `web.xml` 文件中设置名为 `logbackDisableServletContainerInitializer` 的 `<context-param>` 来禁止自动安装 `LogbackServletContextListener`。 示例代码如下:
 
 ```
 <web-app>
@@ -774,6 +780,12 @@ You may disable the automatic the installation of `LogbackServletContextListener
 ```
 
 Note that `logbackDisableServletContainerInitializer` variable can also be set as a Java system property an OS environment variable. The most local setting has priority, i.e. web-app first, system property second and OS environment last.
+
+请注意，`logbackDisableServletContainerInitializer` 变量也可以通过喜欢环境变量、或者Java系统属性来设置。
+范围最小的变量优先级最高，也就是说，最优先的是Web应用，其次是系统属性，最后是操作系统的环境变量。
+
+
+---------
 
 ## Configuration file syntax
 
