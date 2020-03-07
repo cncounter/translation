@@ -178,6 +178,6 @@ The correct options are A and B.
 - [Java坑人面试题系列: 包装类（中级难度）](https://renfufei.blog.csdn.net/article/details/104163518)
 - [Java坑人面试题系列: 比对while与for循环（中级）](https://renfufei.blog.csdn.net/article/details/104378574)
 - [Java坑人面试题系列: 集合（高级）](https://blogs.oracle.com/javamagazine/quiz-advanced-collectors)
-- [Java坑人面试题系列: 线程/线程池（高级）](https://blogs.oracle.com/javamagazine/quiz-advanced-executor-service)
+- [Java坑人面试题系列: 线程/线程池（高级）](https://renfufei.blog.csdn.net/article/details/104726229)
 
 原文链接:  <https://blogs.oracle.com/javamagazine/quiz-advanced-executor-service>
