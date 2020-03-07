@@ -8,7 +8,7 @@
 If you have worked on our quiz questions in the past, you know none of them is easy. They model the difficult questions from certification examinations. The levels marked “intermediate” and “advanced” refer to the exams, rather than the questions. Although in almost all cases, “advanced” questions will be harder. We write questions for the certification exams, and we intend that the same rules apply: Take words at their face value and trust that the questions are not intended to deceive you, but straightforwardly test your knowledge of the ins and outs of the language.
 
 
->  `ExecutorService` 及相关API的细节面试题。
+>  `ExecutorService` 接口及相关API细节详解。
 
 
 Java Magazine上面有一个专门坑人的面试题系列: <https://blogs.oracle.com/javamagazine/quiz-2>。
@@ -29,9 +29,9 @@ The objective is to create worker threads using `Runnable` and `Callable` and to
 
 ### 问题（高级难度）
 
-问题的目标是考察通过 `Runnable` 和 `Callable` 创建工作线程的任务，并使用 `ExecutorService` 来并发执行任务。
+此问题的目的是考察如何通过 `Runnable` 和 `Callable` 来创建任务，并使用 `ExecutorService` 来并发执行。
 
-有一个 `Logger` 类，定义如下所示：
+我们有一个 `Logger` 类，定义如下所示：
 
 
 ```
@@ -49,7 +49,7 @@ class Logger implements Runnable {
 
 And given this code fragment:
 
-下面是对应的使用方式:
+并给出如下使用的代码:
 
 ```
 Stream<Logger> s = Stream.of(
@@ -65,7 +65,7 @@ es.awaitTermination(10, TimeUnit.SECONDS);
 
 Assuming all `import` statements (not shown) are properly configured and the code compiles, which are possible outputs? Choose two.
 
-这里省略了相关的 `import` 语句, 假设代码能编译通过并启动运行。 请选择两项可能的输出：
+这里省略了相关的 `import` 语句, 假设代码能编译并正常启动。 请选择两项可能的输出结果：
 
 - A、 Error Debug Warning
 - B、 Error Warning Debug
@@ -80,13 +80,13 @@ The exam objectives include topics related to the `Executors` class and the `Exe
 
 In the first versions of Java, the programmer had the responsibility for creating and managing threads, and because threads are expensive to create and they are limited, kernel-level resources, it was common to create a “thread pool” so a few threads could be used to process a large number of small, independent jobs. The idea of a thread pool is that instead of creating a thread for every little background job and then destroying the threads after each job is completed, a smaller number of threads are created and configured so that packages of work (for example, `Runnable` objects) can be passed to these threads. The first thread that has no work to do takes the job and runs it, and when the job is complete, that thread goes back to look for another job.
 
-这道试题属于 `Executors` 类和 `ExecutorService` 接口相关的考点，顺带考察了 `Executors` 工具类自带的`ExecutorService`线程池实现。
+这道试题属于 `Executors` 类和 `ExecutorService` 接口相关的考点，顺带考察 `Executors` 工具类自带的 `ExecutorService` 线程池实现。
 
-在Java的早期版本中，需要手工创建和管理线程。
-线程是系统内核级的重要资源，不能无限创建; 而且创建线程的开销也很大，所以我们开发中一般会使用资源池的模式，也就是创建 “线程池”。
-通过线程池，就可以用少量的线程，来执行大量的任务。
-线程池的思路是这样的： 与其为每个后台任务创建一个线程，执行完少量的任务后就销毁； 不如统一创建少量的线程， 将任务代码用 `Runnable` 包装起来， 提交给线程池来调度执行。
-调度的时候，找到空闲的线程，然后让他干活。 任务执行完成后，将对应的线程放到线程池里面，等待下一次调度。
+在Java的早期版本中，需要程序员手工创建和管理线程。
+线程是系统内核级的重要资源，并不能无限创建; 而且创建线程的开销很大，所以开发中一般会使用资源池模式，也就是创建 “线程池”。
+通过线程池，可以用少量的线程，来执行大量的任务。
+线程池的思路是这样的： 与其为每个任务创建一个线程，执行完就销毁； 倒不如统一创建少量的线程， 然后将任务逻辑用 `Runnable` 包装起来， 提交给线程池来调度执行。
+有任务需要调度的时候，线程池找一个空闲的线程，并通知他干活。 任务执行完成后，再将这个线程放回池子里，等待下一次调度。
 
 Thread pools became part of Java’s APIs in Java 5. The `Executor` and `ExecutorService` interfaces are provided as generalizations of thread pools and the interactions they support. Additionally, a number of implementations of `ExecutorService` can be instantiated from a class containing static factory methods. That class is called `Executors`. The `java.util.concurrent` package contains these three types along with many more high-level classes and interfaces aimed at helping a developer address common problems in concurrent programming.
 
@@ -94,22 +94,24 @@ The base interface, `Executor`, can execute tasks that implement `Runnable`. Mor
 
 Implementations of `Executor` and `ExecutorService` are not required to use a particular strategy to execute the work submitted to them. Some provide concurrent execution in a fixed-size pool, making new work wait until one of the threads becomes available. Others start more threads when the workload rises and clean them up in times of low demand. Another simply processes the jobs sequentially using a single thread. All of this depends on the particular implementation, and a programmer should be careful to choose something appropriate to the architectural needs of the application. Three factory methods in the `Executors` class produce the behaviors just discussed:
 
-Java 5.0 开始提供标准的线程池API。 `Executor` 和 `ExecutorService` 接口定义了线程池及其支持的交互操作。
-另外，可以使用 `Executors` 的静态工厂方法来实例化 `ExecutorService` 的许多实现。
-这些基础的类和接口都位于 `java.util.concurrent` 包中， 在编写大部分简单的并发任务时可以使用这些类。
+Java 5.0 开始提供标准的线程池API。
+`Executor` 和 `ExecutorService` 接口定义了线程池以及支持的交互操作。
+另外，我们可以使用 `Executors` 的静态工厂方法来实例化 `ExecutorService` 的各种实现。
+相关的基础类和接口都位于 `java.util.concurrent` 包中， 在编写简单的并发任务时，一般可以直接使用。
 
-基本接口 `Executor` 定义了执行 `Runnable` 任务的方法； 但使用更多的是子接口 `ExecutorService`。
+`Executor` 是顶层接口, 定义了执行 `Runnable` 任务的方法；
+但我们一般用的是子接口 `ExecutorService` 及其实现。
 `ExecutorService` 接口中增加了处理 `Callable` 的方法， 以及关闭线程池的功能。
-实现 `Callable` 接口的任务会返回一个结果， 调用方可以通过返回的 `Future` 来异步获取执行状态和结果，这样就对任务有了一定的管理能力。
+实现 `Callable` 接口的任务会返回一个结果， 调用方可以通过提交任务时返回的 `Future` 对象，来异步获取任务的执行状态和结果，这样就对任务有了一定的管理和控制能力。
 
 `Executor` 和 `ExecutorService` 接口并没有规定使用哪种调度策略来执行。
 
-- 有些线程池，使用固定数量的线程来并发执行任务，新提交的任务，要等到有某个线程空闲才会被执行。
-- 有的线程池, 在工作负载增加时启动更多线程，并在需求降低时清理一部分线程。
-- 还有使用单个线程的线程池，直接按顺序来处理作业。
+- 有些线程池，使用固定数量的线程来并发地执行任务，新提交的任务要等到有空闲线程才会被执行。
+- 有的线程池, 在工作负载上升时自动增加线程，并在需求降低时清理掉一部分线程。
+- 还有的线程池只使用单个线程，直接按顺序执行提交的任务。
 
-这些特征取决于具体的实现，根据业务特征，开发者需要选择适合的线程池。
-`Executors` 类提供了三种工厂方法来提供刚才讨论的这几种行为：
+这些特征取决于具体的实现，需要开发者根据业务系统的特征来权衡，并选择适当的线程池。
+上面讨论的这几类线程池，`Executors` 工具类提供了三种对应的工厂方法：
 
 - `newFixedThreadPool`
 - `newCachedThreadPool`
@@ -121,26 +123,27 @@ The code in this question uses a cached thread pool. This type of executor servi
 
 Given that the pool created by the code in the question has multiple threads, you can expect that the jobs submitted to it might well run concurrently. Because of that, regardless of the order they start in, no assumptions can be made about their relative progress. That, in turn, means that the output messages could show up in any order. This tells you that options A and B both are correct.
 
-前两个方法创建的是多个worker线程的线程池，而 `newSingleThreadExecutor` 方法创建的则是在单个线程中依次执行所有任务。
+前两个方法创建的线程池可以有多个worker线程， 而 `newSingleThreadExecutor` 方法创建的线程池则只有单个线程。
 
-回到前面的问题， 试题中的代码使用了缓存方式的线程池。
+回到前面的问题， 试题中给出的代码创建了缓存模式的线程池。
 这类线程池会根据需要生成新的worker线程，并清理一段时间内没有使用到的线程。
-但是，缓存方式的线程池有一个严重的缺点： 创建的线程数可能没有最大限制。 可能会有大量的资源消耗，而且在高负载场景下，会由于资源争用导致性能急剧下降。
+但缓存模式的线程池有一个严重缺点： 创建的线程数有可能不被限制, 那样的话会导致大量的资源占用。 在高负载场景下，可能会由于资源争用而导致性能急剧下降。
 
-代码中创建的线程池具有多个线程， 所以，提交的任务有可能会并发运行。
-因此，无论它们谁先开始，都无法对其执行进度做出精确判断。
-也就是说，输出的消息可能是任意顺序的。 由此得知 `选项A` 和 `选项B` 都是`正确`的。
+因为创建的线程池具有多个线程， 所以后面提交的任务可以并发执行。
+无论谁先开始，我们都无法对其执行进度做出精确预测。
+也就是说，他们输出消息的顺序可能是任意的。
+由此得知， `选项A` 和 `选项B` 都 `正确`。
 
 An `ExecutorService` runs each job that’s submitted to it at most one time. There are some circumstances when a job might not be run, or it could possibly be shut down before completion. However, no job runs more than once. This means that you will definitely not see any duplicated message. Therefore, option C is incorrect.
 
 When you call the `shutdown` method, an `ExecutorService` responds by rejecting any new job requests, but it continues to run until the last job is completed. Because of this, there is no possibility in the given code that you will not see all three messages. Because of this, you know that option D is incorrect.
 
-提交给 `ExecutorService` 的任务，会保证最多被执行一次。
-在某些情况下，任务可能不会被执行，或者在执行完之前线程池被关闭了。
-因为最多执行一次，所以我们绝对不会看到任何重复的消息。因此，`选项C不正确`。
+`ExecutorService` 会保证提交的任务最多被执行一次。
+在某些情况下，任务可能不会执行，或者在执行完成之前线程池就被关闭了。
+因为具有最多执行一次的特征，所以我们不会看到任何重复的消息。因此可以判断，`选项C不正确`。
 
-在调用 `shutdown` 方法时，`ExecutorService` 会拒绝新的作业提交请求， 但是会继续运行，一直将已收到的作业全部执行完。
-因此，在这里给的代码中， 三个消息都会看到。 因此，`选项D不正确`。
+在调用 `shutdown` 方法之后，`ExecutorService` 会拒绝新的任务提交请求， 但已有的任务会继续运行，直到所有的作业全部执行完才会关闭。
+因此在这里给的代码中， 三个消息都会看到。 因此可知，`选项D不正确`。
 
 
 As a side note, you might wonder whether it’s possible to assert that option D is correct on the basis that if the shutdown is not completed in 10 seconds, the code runs off the end of the example; therefore, how can you be sure the messages are printed?
@@ -151,15 +154,15 @@ Of course, you might still be tempted by option D because an extreme situation i
 
 The correct options are A and B.
 
-顺便提一句，可能有些读者会认为，如果在10秒内线程池未关闭， 那么选项D也可能是正确的。
+顺便提一句，可能有些读者会认为，如果在10秒内执行不完， 那么选项D也可能是正确的。
 但反过来说，如何确定这个消息会被打印呢？
 
-基于这里的代码，里面的逻辑非常简单，很明显不可能10秒钟执行不完。
-而且我们能判断出 `选项A` 和 `选项B` 是正确的， 那么我们在做题时就可以将这种不可能的情况排除。
+因为试题中给出的任务逻辑非常简单，很明显不可能10秒钟还执行不完。
+而且我们通过分析能判断出 `选项A` 和 `选项B` 是正确的， 那么做题时就可以将这种不可能的情况排除。
 
-当然，你可能对选项D很感兴趣，因为在其他某些极端情况下, 作业无法在10秒内完成，比如恰好在这个时刻操作系统启动升级或更新。
+当然，你可能对选项D感兴趣，因为在其他某些极端的情况下, 作业无法在10秒内完成，比如恰好在这个时刻操作系统启动升级或更新。
 请注意，在给定的代码中，没有任何证据表明 JVM 将被强行关闭。
-而且这里的线程是 `非守护线程`(nondaemon thread)，因此，在作业完成之前，JVM 都不会退出。
+而且默认创建的线程都是 `非守护线程`(nondaemon thread)，因此，在作业完成之前，JVM 不会退出。
 
 所以，如果允许程序运行，则对应的消息都会被打印出来。
 
