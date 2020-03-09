@@ -785,19 +785,43 @@ Note that `logbackDisableServletContainerInitializer` variable can also be set a
 范围最小的变量优先级最高，也就是说，最优先的是Web应用，其次是系统属性，最后是操作系统的环境变量。
 
 
----------
-
 ## Configuration file syntax
 
 As you have seen thus far in the manual with plenty of examples still to follow, logback allows you to redefine logging behavior without needing to recompile your code. Indeed, you can easily configure logback so as to disable logging for certain parts of your application, or direct output to a UNIX Syslog daemon, to a database, to a log visualizer, or forward logging events to a remote logback server, which would log according to local server policy, for example by forwarding the log event to a second logback server.
 
 The remainder of this section presents the syntax of configuration files.
 
-As will be demonstrated over and over, the syntax of logback configuration files is extremely flexible. As such, it is not possible to specify the allowed syntax with a DTD file or an XML schema. Nevertheless, the very basic structure of the configuration file can be described as, ` ` element, containing zero or more ` ` elements, followed by zero or more ` ` elements, followed by at most one ` ` element. The following diagram illustrates this basic structure.
+As will be demonstrated over and over, the syntax of logback configuration files is extremely flexible. As such, it is not possible to specify the allowed syntax with a DTD file or an XML schema. Nevertheless, the very basic structure of the configuration file can be described as, `<configuration>` element, containing zero or more `<appender>` elements, followed by zero or more `<logger>` elements, followed by at most one `<root>` element. The following diagram illustrates this basic structure.
 
 ![basic Syntax](http://logback.qos.ch/manual/images/chapters/configuration/basicSyntax.png)
 
 If you are unsure which case to use for a given tag name, just follow the [camelCase convention](http://en.wikipedia.org/wiki/CamelCase) which is almost always the correct convention.
+
+## 配置文件的语法格式
+
+到目前为止，我们已经看到了很多示例配置， logback支持重新定义日志行为，而无需重新编译代码。
+确实，可以轻松配置logback， 来实现：
+- 禁用某些日志，
+- 将输出定向到UNIX Syslog守护程序，数据库，日志可视化程序，
+- 将日志信息转发到远程 logback 服务器，后者将根据本地服务器策略来记录日志，例如将日志转发到第二台Logback服务器。
+
+本节接下来的部分将介绍配置文件的语法格式。
+
+正如我们一再强调的那样，logback配置文件的语法非常灵活。
+因此，也就不能用 DTD文件或XML schema 来指定其允许的语法。
+尽管如此，配置文件的基本结构可以描述为:
+
+`<configuration>`元素，包含0到多个`<appender>`元素，后面跟着0到多个`<logger>`元素，然后是最多包含一个`<root>`元素。
+下图说明了这种基本结构。
+
+![基本语法](http://logback.qos.ch/manual/images/chapters/configuration/basicSyntax.png)
+
+
+如果不确定某个标签的大小写格式，只需遵循 [驼峰标识]（https://zh.wikipedia.org/zh-cn/%E9%A9%BC%E5%B3%B0%E5%BC%8F%E5%A4%A7%E5%B0%8F%E5%86%99）即可， 一般来说都是正确的。
+
+
+---------
+
 
 #### Case sensitivity of tag names
 
