@@ -817,17 +817,30 @@ If you are unsure which case to use for a given tag name, just follow the [camel
 ![基本语法](http://logback.qos.ch/manual/images/chapters/configuration/basicSyntax.png)
 
 
-如果不确定某个标签的大小写格式，只需遵循 [驼峰标识]（https://zh.wikipedia.org/zh-cn/%E9%A9%BC%E5%B3%B0%E5%BC%8F%E5%A4%A7%E5%B0%8F%E5%86%99）即可， 一般来说都是正确的。
-
-
----------
+如果不确定某个标签的大小写格式，只需遵循 [驼峰标识（camelCase）]（https://zh.wikipedia.org/zh-cn/%E9%A9%BC%E5%B3%B0%E5%BC%8F%E5%A4%A7%E5%B0%8F%E5%86%99）即可， 一般来说都是正确的。
 
 
 #### Case sensitivity of tag names
 
-Since logback version 0.9.17, tag names pertaining to explicit rules are case insensitive. For example, ` `, ` ` and ` ` are valid configuration elements and will be interpreted in the same way. Note that XML well-formedness rules still apply, if you open a tag as ` ` you must close it as ` `, ` ` will not work. As for [implicit rules](http://logback.qos.ch/manual/onJoran.html#implicit), tag names are case sensitive except for the first letter. Thus, ` ` and ` ` are equivalent but not ` `. Implicit rules usually follow the [camelCase](http://en.wikipedia.org/wiki/CamelCase) convention, common in the Java world. Since it is not easy to tell when a tag is associated with an explicit action and when it is associated with an implicit action, it is not trivial to say whether an XML tag is case-sensitive or insensitive with respect to the first letter. If you are unsure which case to use for a given tag name, just follow the camelCase convention which is almost always the correct convention.
+Since logback version 0.9.17, tag names pertaining to explicit rules are case insensitive. For example, `<logger>`, `<Logger>` and `<LOGGER>` are valid configuration elements and will be interpreted in the same way. Note that XML well-formedness rules still apply, if you open a tag as `<xyz>` you must close it as `</xyz>`, `</XyZ>` will not work.
+As for [implicit rules](http://logback.qos.ch/manual/onJoran.html#implicit), tag names are case sensitive except for the first letter. Thus, `<xyz>` and `<Xyz>` are equivalent but not `<xYz>`. Implicit rules usually follow the [camelCase](http://en.wikipedia.org/wiki/CamelCase) convention, common in the Java world. Since it is not easy to tell when a tag is associated with an explicit action and when it is associated with an implicit action, it is not trivial to say whether an XML tag is case-sensitive or insensitive with respect to the first letter. If you are unsure which case to use for a given tag name, just follow the camelCase convention which is almost always the correct convention.
 
-#### Configuring loggers, or the ` ` element
+#### 标签名区分大小写
+
+Logback从0.9.17 版本开始，与显式规则相关的标签名就不区分大小写。
+例如， `<logger>`, `<Logger>` 和 `<LOGGER>` 都是有效的配置元素，并且将以相同的方式进行解析。
+请注意，依然要遵守XML格式的语法规范，如果以`<xyz>`开始，则必须同样以`</xyz>`关闭， 而大小写不一致的 `</XyZ>` 等格式无效。
+
+至于[隐式规则](http://logback.qos.ch/manual/onJoran.html#implicit)，标签名除首字母外均区分大小写。
+因此，`<xyz>` 和 `<Xyz>` 是等效的，但 `<xYz>` 则不是。
+隐式规则通常遵循Java中常见的 [驼峰标识（camelCase）]（https://zh.wikipedia.org/zh-cn/%E9%A9%BC%E5%B3%B0%E5%BC%8F%E5%A4%A7%E5%B0%8F%E5%86%99）。
+由于很难区分某个标签何时与显式动作关联，何时与隐式动作关联，因此很难说XML标签是区分大小写呢，还是说首字母不区分大小写。
+如果不确定给定标签适用哪种情况，只需遵循camelCase约定即可。
+
+
+---------
+
+#### Configuring loggers, or the `<logger>` element
 
 At this point you should have at least some understanding of [level inheritance](http://logback.qos.ch/manual/architecture.html#effectiveLevel) and the [basic selection rule](http://logback.qos.ch/manual/architecture.html#basic_selection). Otherwise, and unless you are an Egyptologist, logback configuration will be no more meaningful to you than are hieroglyphics.
 
