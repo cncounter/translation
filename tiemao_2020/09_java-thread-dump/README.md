@@ -13,11 +13,12 @@ In the next sections, we'll go through multiple tools and approaches to generate
 
 ## 1.概述
 
-在本教程中，我们将讨论捕获Java应用程序的线程转储的各种方法。
+本文介绍Java程序中获取线程转储的各种方法。
 
-线程转储是Java进程所有线程状态的快照。 每个线程的状态都带有堆栈跟踪，显示了线程堆栈的内容。 线程转储显示线程的活动，对于诊断问题很有用。 线程转储以纯文本编写，因此我们可以将其内容保存到文件中，并稍后在文本编辑器中对其进行查看。
+线程转储(Thread Dump)是JVM中所有线程状态的快照。 一般是文本格式，可以将其保存到文本文件中，然后可以人工查看和分析，也可以通过程序自动分析。
+每个线程的状态都可以通过调用栈来表示。 线程转储展示了各个线程的行为，对于诊断和排查问题非常有用。
 
-在下一节中，我们将介绍多种工具和方法来生成线程转储。
+下面我们通过示例来看如何使用这些工具来获取线程转储。
 
 ## 2. Using JDK Utilities
 
@@ -25,7 +26,9 @@ The JDK provides several utilities that can capture the thread dump of a Java ap
 
 ## 2. 使用JDK自带的工具
 
-JDK提供了一些实用程序，可以捕获Java应用程序的线程转储。 所有实用程序都位于JDK主目录内的bin文件夹下。 因此，只要此目录在我们的系统路径中，我们就可以从命令行执行这些实用程序。
+我们一般使用JDK自带的命令行工具来获取Java应用程序的线程转储。
+这些工具都位于JDK主目录的bin文件夹下。
+因此，只要配置好 PATH 路径即可。 如果不清楚的，请参考: [JDK环境准备](https://gitbook.cn/gitchat/column/5de76cc38d374b7721a15cec/topic/5dea1096b96d62481e404f36)
 
 ### 2.1. jstack
 
@@ -35,9 +38,10 @@ Let's take a look at the basic command syntax for capturing a thread dump using 
 
 ### 2.1 jstack 工具
 
-jstack是一个命令行JDK实用程序，可用于捕获线程转储。 它获取进程的pid，并在控制台中显示线程转储。 或者，我们可以将其输出重定向到文件。
+jstack 是一款命令行工具，这是专门用来执行线程转储的。
+通过进程的pid，可以在控制台中打印线程转储。 或者，我们也可以将其输出重定向到某个文件。
 
-让我们看一下使用jstack捕获线程转储的基本命令语法：
+让我们看一下使用jstack捕获线程转储的基本语法：
 
 ```
 jstack [-F] [-l] [-m] <pid>
@@ -45,27 +49,27 @@ jstack [-F] [-l] [-m] <pid>
 
 All the flags are optional. Let's see what they mean:
 
-`-F` option forces a thread dump; handy to use when jstack pid does not respond (the process is hung)
+`-F` option forces a thread dump; handy to use when `jstack pid` does not respond (the process is hung)
 `-l` option instructs the utility to look for ownable synchronizers in the heap and locks
 `-m` option prints native stack frames (C & C++) in addition to the Java stack frames
 
 Let's put this knowledge to use by capturing a thread dump and redirecting the result to a file:
 
-所有标志都是可选的。 让我们看看它们的含义：
+这几个选项都是可选的。 具体的含义说明如下：
 
--F选项强制执行线程转储； 当jstack pid不响应（进程已挂起）时，方便使用
--l选项指示实用程序在堆中查找可拥有的同步器并锁定
--m选项除了打印Java堆栈框架外，还打印本机堆栈框架（C和C ++）
+- `-F` 选项强制执行线程转储； 有时候 `jstack pid` 会假死, 则可以加上 `-F` 标志
+- `-l` 选项, 会查找堆内存中拥有的同步器以及资源锁
+- `-m` 选项，额外打印 native栈帧（C和C++的）
 
-让我们通过捕获线程转储并将结果重定向到文件来使用这些知识：
+例如，获取线程转储并将结果输出到文件：
 
 ```
-jstack 17264 > /tmp/threaddump.txt
+jstack -F 17264 > /tmp/threaddump.txt
 ```
 
 Remember that we can easily get the pid of a Java process by using the jps command.
 
-请记住，我们可以使用jps命令轻松获取Java进程的pid。
+使用 `jps` 命令可以获取本地Java进程的 pid。
 
 ### 2.2. Java Mission Control
 
@@ -75,9 +79,14 @@ We can right-click on the process and click on the “Start Flight Recording” 
 
 ### 2.2 Java Mission Control
 
-Java Mission Control（JMC）是一个GUI工具，用于收集和分析Java应用程序中的数据。 启动JMC后，它将显示在本地计算机上运行的Java进程的列表。 我们还可以通过JMC连接到远程Java进程。
+Java Mission Control（JMC）是一款图形界面客户端工具，用于收集和分析Java应用程序的各种数据。
+启动JMC后，首先会显示本地计算机上运行的Java进程列表。 当然也可以通过JMC连接到远程Java进程。
 
-我们可以右键单击该过程，然后单击“开始飞行记录”选项。 之后，“线程”选项卡显示“线程转储”：
+
+可以鼠标右键单击对应的进程，选择 “Start Flight Recording（开始飞行记录）” 。 结束之后，“Threads（线程）” 选项卡会显示“线程转储”：
+
+
+![](https://www.baeldung.com/wp-content/uploads/2020/03/JMC-1024x544-1.png)
 
 
 ### 2.3. jvisualvm
@@ -88,9 +97,11 @@ One of its many options allows us to capture a thread dump. If we right-click on
 
 ### 2.3 jvisualvm
 
-jvisualvm是带有图形用户界面的工具，可让我们监视Java应用程序，对其进行故障排除和分析。 GUI很简单，但是非常直观并且易于使用。
+jvisualvm是一款图形界面客户端工具，既简单又实用，可让用来监控 Java应用程序，对其进行故障排查和性能分析。
 
-它的众多选项之一使我们能够捕获线程转储。 如果我们右键单击Java进程并选择“ Thread Dump”选项，该工具将创建一个线程转储并在新选项卡中将其打开：
+也可以用来获取线程转储。 鼠标右键点击Java进程，并选择“ Thread Dump”选项， 则可以创建线程转储，并在新选项卡中打开：
+
+![](https://www.baeldung.com/wp-content/uploads/2020/03/JVisualVM.png)
 
 
 ### 2.4. jcmd
@@ -101,9 +112,9 @@ One of its many commands is Thread.print. We can use it to get a thread dump jus
 
 ### 2.4 jcmd
 
-jcmd是一种通过向JVM发送命令请求来工作的工具。 尽管功能强大，但它不包含任何远程功能-我们必须在运行Java进程的同一台计算机上使用它。
+jcmd工具本质上是向目标JVM发送一串命令。 尽管支持很多功能，但不支持连接远程JVM - 只能在Java进程的本地机器上使用。
 
-它的许多命令之一是Thread.print。 我们可以通过指定进程的pid来使用它来获取线程转储：
+其中一个命令是 `Thread.print`, 用来获取线程转储, 示例用法如下:
 
 ```
 jcmd 17264 Thread.print
@@ -115,7 +126,10 @@ jconsole lets us inspect the stack trace of each thread. If we open jconsole and
 
 ### 2.5  jconsole
 
-jconsole让我们检查每个线程的堆栈跟踪。 如果我们打开jconsole并连接到正在运行的Java进程，则可以导航到“线程”选项卡并找到每个线程的堆栈跟踪：
+jconsole 工具也可以查看线程栈跟踪。
+打开jconsole并连接到正在运行的Java进程，可以导航到“线程”选项卡并查看每个线程的堆栈跟踪：
+
+![](https://www.baeldung.com/wp-content/uploads/2020/03/JConsole-1024x544-1.png)
 
 
 ### 2.6. Summary
@@ -132,11 +146,11 @@ So as it turns out, there are many ways to capture a thread dump using JDK utili
 
 事实证明，有很多方法可以使用JDK实用程序捕获线程转储。 让我们花点时间反思一下，并概述一下它们的优缺点：
 
-- `jstack`：提供最快和最简单的方法来捕获线程转储。 但是，从Java 8开始可以使用更好的替代方法
-- `jmc`：增强的JDK分析和诊断工具。 它将性能分析工具通常存在的性能开销降至最低
-- `jvisualvm`：具有出色的GUI控制台的轻量级开源分析工具
-- `jcmd`：非常强大，推荐用于Java 8及更高版本。 一个具有多种用途的工具-捕获线程转储（jstack），堆转储（jmap），系统属性和命令行参数（jinfo）
-- `jconsole`：让我们检查线程堆栈跟踪信息
+- `jstack`：这是获取线程转储最简单快捷的工具； 在Java 8之后可以使用 jcmd 工具来替代；
+- `jmc`：增强的JDK性能分析和问题诊断工具。 用这款工具进行性能分析的开销会非常低。
+- `jvisualvm`：轻量级的开源分析工具，图形界面非常棒，还支持多种功能强悍的插件。
+- `jcmd`： 非常强大的本地工具，支持Java 8及更高版本。 集成了多种工具的用途， 例如： 捕获线程转储（jstack），堆转储（jmap），查看系统属性和查看命令行参数（jinfo）
+- `jconsole`：我们可以用来查看线程栈跟踪信息
 
 
 ## 3. From the Command Line
@@ -145,7 +159,9 @@ In enterprise application servers, only the JRE is installed for security reason
 
 ## 3. 使用Linux命令
 
-在企业应用程序服务器中，出于安全原因，仅安装JRE。 因此，我们不能使用上述实用程序，因为它们是JDK的一部分。 但是，有许多命令行替代方法可以让我们轻松捕获线程转储。
+在企业应用服务器中，出于安全原因，可能只安装了 JRE。
+这时候就没法使用内置的这些工具，因为它们是JDK的一部分。
+但是，还是有许多命令行可以用来获取线程转储。
 
 ### 3.1. kill -3 Command (Linux/Unix)
 
@@ -155,9 +171,9 @@ Using our same pid from earlier examples, let's take a look at how to use kill t
 
 ### 3.1 使用 `kill -3` 指令
 
-在类Unix系统中捕获线程转储的最简单方法是通过kill命令，我们可以使用kill命令通过kill（）系统调用将信号发送给进程。 在这种情况下，我们将其发送给-3信号。
+在类Unix系统中, 获取线程转储的方法是使用 `kill` 命令，内部是通过系统调用 `kill()` 将信号发送给进程。 这里我们发送的是 `-3` 信号。
 
-使用前面示例中的相同pid，让我们看一下如何使用kill捕获线程转储：
+需要先通过 `jps` 找到JAVA进程的pid，`kill -3` 的使用示例如下：
 
 
 ```
@@ -173,21 +189,24 @@ It's worth noting that, on some keyboards, the `Break` key is not available. The
 
 Both of these commands print the thread dump to the console.
 
-### 3.2. `Ctrl + Break` (Windows)
+### 3.2 `Ctrl + Break` (Windows)
 
-在Windows操作系统中，我们可以使用`CTRL`和`Break`组合键捕获线程转储。 要进行线程转储，请导航至用于启动Java应用程序的控制台，然后同时按`CTRL`和`Break`键。
+在Windows操作系统中，可以使用组合键 `Ctrl + Break` 来获取线程转储。 当然，需要先请导航至启动Java程序的控制台窗口，然后同时按下 `CTRL`和`Break`键。
 
-值得注意的是，在某些键盘上，“ Break”键不可用。 因此，在这种情况下，可以同时使用“ CTRL”，“ SHIFT”和“ Pause”键捕获线程转储。
+值得注意的是，在某些键盘上，是没有 “`Break`” 键的。
+在这种情况下，可以组合使用 `CTRL`, `SHIFT`, 以及 `Pause`键。
 
-这两个命令都将线程转储打印到控制台。
+这两个命令都可以将线程转储打印到控制台。
 
 ## 4. Programmatically Using ThreadMxBean
 
 The last approach we will discuss in the article is using `JMX`. We'll use ThreadMxBean to capture the thread dump. Let's see it in code:
 
-## 4.以编程方式使用ThreadMxBean
+## 4. 通过编程方式使用JMX技术
 
-我们将在本文中讨论的最后一种方法是使用“ JMX”。 我们将使用ThreadMxBean捕获线程转储。 让我们在代码中看到它：
+JMX技术支持各种各样的花式操作。 我们可以通过 `ThreadMxBean` 来线程转储。
+
+示例代码如下：
 
 ```
 private static String threadDump(boolean lockedMonitors, boolean lockedSynchronizers) {
@@ -206,11 +225,8 @@ In the above program, we are performing several steps:
 2. We then use the ManagementFactory class to get the instance of ThreadMxBean. A ManagementFactory is a factory class for getting managed beans for the Java platform. In addition, a ThreadMxBean is the management interface for the thread system of the JVM.
 3. Setting lockedMonitors and lockedSynchronizers values to true indicates to capture the ownable synchronizers and all locked monitors in the thread dump.
 
-在以上程序中，我们执行几个步骤：
-
-1.首先，初始化一个空的StringBuffer来保存每个线程的堆栈信息。
-2.然后，我们使用ManagementFactory类来获取ThreadMxBean的实例。 ManagementFactory是一种工厂类，用于获取Java平台的托管bean。 另外，ThreadMxBean是JVM线程系统的管理接口。
-3.将lockedMonitors和lockedSynchronizers值设置为true表示在线程转储中捕获可拥有的同步器和所有锁定的监视器。
+在以上程序中，我们做的事情其实很简单,  使用 `ManagementFactory` 类来获取 `ThreadMxBean` 实例。
+传入的 `lockedMonitors` 和 `lockedSynchronizers` 参数表示在线程转储时，是否导出 可拥有的同步器和所有管程锁。
 
 
 ## 5. Conclusion
@@ -221,10 +237,15 @@ At first, we discussed various JDK Utilities and then the command-line alternati
 
 As always, the full source code of the example is available [over on GitHub](https://github.com/eugenp/tutorials/tree/master/core-java-modules/core-java-perf).
 
-## 5. 结论
+## 5. 总结
 
-在本文中，我们展示了捕获线程转储的多种方法。
+在本文中，我们通过具体示例展示了如何获取线程转储。
 
-首先，我们讨论了各种JDK实用程序，然后讨论了命令行替代方法。 在上一节中，我们总结了使用JMX的编程方法。
+首先介绍的是各种JDK内置工具，
+然后讨论了命令行方式，
+最后则介绍了使用JMX的方式。
 
-与往常一样，该示例的完整源代码可在[在GitHub上]获得（https://github.com/eugenp/tutorials/tree/master/core/java-modules/core-java-perf）。
+完整的示例代码请参考我们的 [GitHub仓库](https://github.com/eugenp/tutorials/tree/master/core-java-modules/core-java-perf) 。
+
+原文链接:
+> <https://www.baeldung.com/java-thread-dump>
