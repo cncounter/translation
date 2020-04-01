@@ -8,15 +8,18 @@ If you tend to answer YES to the latter question, then you end up wasting a lot 
 
 
 根据定义，[故障排查(Troubleshooting)](https://zh.wikipedia.org/wiki/%E6%8E%92%E9%94%99) 被认为是对问题的来源进行逻辑严密和系统性的排查，以解决问题。
-如果对生产系统进行过故障排查的话，您觉得针对这些问题，您的排查过程算得上是系统性的排查吗？ 逻辑严密吗？ 还是您同意诸如忙碌和猜测驱动之类的词更可能描述您所经历的过程？
+如果对生产系统进行过故障排查的话，您觉得针对这些问题，您的排查过程算得上是系统性的排查吗？ 逻辑严密吗？ 还是因为匆忙而通过猜测来驱动您所执行的诊断过程？
 
-如果您倾向于对后一个问题回答是，那么您最终会浪费大量时间来寻找答案。 更糟糕的是，由于该过程是完全不可预测的，因此会在团队内部造成压力，并且可能会开始指责：
+如果您倾向于选择后一种方式，那么可能会浪费大量的时间，效果得看运气。  更糟糕的是，因为基本靠蒙， 所以这个过程是完全不可预测的，如果时间很紧张，就会在团队内部造成压力，甚至升级为甩锅和互相指责。
 
 ![troubleshooting war room](https://plumbr.io/app/uploads/2016/09/war-room-finger-pointing.jpg)
 
 In this post I am going to analyze different aspects leading to such situations. First part of the post focuses on the fundamental problems built into the environments where troubleshooting occurs. Second part of the post will describe the tooling and human-related problems in the field. In the closing section I will show that there is still some light at the end of the tunnel.
 
-在这篇文章中，我将分析导致这种情况的不同方面。 文章的第一部分重点介绍发生故障排除的环境中内置的基本问题。 文章的第二部分将描述该领域中的工具和与人相关的问题。 在结束部分，我将显示隧道尽头仍然有一些光线。
+接下来我们将分析为什么会导致这种情况。
+第一部分先重点介绍故障排除时需要注意的基本问题。
+第二部分将描述相关的工具和人力。
+最后给出一些可以尝试的点子。
 
 ## Troubleshooting in production
 
@@ -24,20 +27,28 @@ A particular set of problems tend to happen when you are troubleshooting a parti
 
 First and foremost, you are competing with the pressure of “**let’s just restart the instance to get back to normal**”. The desire to use the fastest way to get rid of the impact on end users is natural. Unfortunately, the restart is also likely to destroy any evidence regarding the actual root cause. If the instance is restarted, you no longer can harvest the evidence of what was actually happening. Even when the restart resolves the issue at hand, the root cause itself is still there and is just waiting to happen again.
 
-## 生产环境中进行故障排查
+## 生产环境中进行故障排查的困难
 
-对生产中的特定问题进行故障排除时，往往会发生一系列特定的问题。现在，许多不同的方面可能会使该过程变得痛苦：
+在生产环境中针对特定问题进行故障排除时，往往会有很多限制，可能会导致排查的过程变得痛苦：
 
-首先，您面临着“ **只需重启实例以恢复正常**”的压力。用最快的方法摆脱对最终用户的影响的愿望是很自然的。不幸的是，重启也可能破坏有关实际根本原因的任何证据。如果重新启动实例，您将无法再获取实际发生的证据。即使重新启动解决了当前的问题，根本原因本身仍然存在，只是在等待再次发生。
+首先，最快的办法可能是： “ **只要重启机器就能让系统恢复正常**”。
+用最快的方法来避免对用户产生影响是很自然的需求。
+但重启可能会破坏故障现场，那样就很难排查问题的根本原因了。
+如果重新启动实例，则无法再采集实际发生的情况。
+再说，即使重启解决了目前的问题，但问题原因本身仍然存在，后面还会接二连三地发生。
 
 Next in line are different security-related aspects, which tend to **isolate engineering from production environments**. If you do not have the access to the environment yourself, you are forced to troubleshoot remotely, with all the problems related to it: every operation to be carried out now includes multiple persons, increasing both the time it takes to carry out each action and potentially losing information along the way.
 
 The situation goes from bad to worse when you are shipping “let’s hope this works” patches to production. **Testing and applying the patch tends to take hours or even days**, further increasing the time it takes to actually fix the issue at hand. If multiple “let’s hope” patches are required, the resolution is delayed for week(s).
 
 
-接下来的是与安全性相关的不同方面，这些方面往往使工程与生产环境隔离开来。如果您自己无权访问环境，则将被迫进行远程故障排除，并涉及所有与之相关的问题：现在要执行的每项操作都需要多人参与，这不仅增加了执行每个操作所需的时间，而且可能会丢失信息。
+接下来是安全性相关的限制， 这些限制导致生产环境是独立和隔离的。
+如果没有权限访问生产环境，那么久只能进行远程故障排除，并涉及到所有与之相关的问题：
+- 每个要执行的操作都需要多人参与或审核，这不仅增加了执行单个操作所需的时间，而且沟通交流过程中可能会丢失一些信息。
 
-当您将“希望它能奏效”的补丁发布到生产环境时，情况越来越糟。 **测试和应用补丁通常需要数小时甚至数天**，从而进一步增加了实际解决当前问题所需的时间。如果需要多个“希望”补丁，则解决方案将延迟数周。
+特别是将临时程序发布到生产环境时， “希望它能生效”， 但情况却可能越来越糟糕。
+**因为测试和发布流程可能又要消耗几小时甚至几天**， 进一步增加了解决问题实际消耗的时间。
+如果还需要分多次上线这种“不一定生效的补丁程序”，则解决方案很可能会消耗几个星期。
 
 Last but not least in line are the tools to be used themselves. **Some of the tools you would like to deploy are likely to make the situation even worse** for end users. Just as examples:
 
@@ -45,21 +56,22 @@ Last but not least in line are the tools to be used themselves. **Some of the to
 - Increased verbosity in logging is likely to introduce additional concurrency issues.
 - The sheer overhead of an attached profiler can bring an already slow application completely down.
 
-最后但并非最不重要的一点是要自己使用的工具。 **对于最终用户来说，您想部署的某些工具可能会使情况变得更糟**。就像例子：
+最后但并也很重要的一点是需要使用的工具。 **对于最终用户来说，您希望安装的某些工具可能会使情况变得更糟**。
+例如：
 
-- 从JVM进行堆转储将使JVM停止数十秒钟。
-- 日志记录中的冗长性增加可能会引入其他并发问题。
-- 附加的探查器的庞大开销可能使已经很慢的应用程序彻底瘫痪。
+- 对JVM进行堆转储(heap dump)可能会使JVM暂停几十秒或更长时间。
+- 打印更细粒度的日志可能会引入其他的并发问题。
+- 增加的探测器或者分析器可能会有很大开销，导致本就缓慢的系统彻底卡死。
 
 So it is likely that you end up in a situation where days or even weeks are spent in passing yet another telemetry gathering script or yet another “let’s hope it works” patch to production:
 
-因此，您可能最终会花费数天甚至数周的时间来传递另一个遥测收集脚本或另一个“希望它能起作用”的生产补丁：
+因此，要想给系统打补丁或者增加新的远程监测程序，可能最终会花费很多天的时间：
 
 ![isolating engineers from operations](https://plumbr.io/app/uploads/2016/09/wall-of-confusion.jpg)
 
 Looking at the problems you are facing when troubleshooting in production, it is only natural that in many cases the troubleshooting activities are carried out in a different environment.
 
-查看生产中进行故障排除时面临的问题，很自然地，在许多情况下，故障排除活动都是在不同的环境中进行的。
+既然在生产环境中进行故障诊断排查会面临这么多的问题，很自然地，大部分情况下，我们都是在开发或测试环境中进行故障排查。
 
 ## Troubleshooting in test/development
 
@@ -69,7 +81,7 @@ When troubleshooting in a different environment you can escape the menaces haunt
 - The usage patterns revealing certain issues are not easy to recreate. Just imagine an issue which happens only on 29th of February and requires two users on Windows ME to access a particular function at the same time triggering a specific concurrency issue.
 - The application itself is not the same. The production deployment might have significantly different configuration. The differences can include a different OS, clustering features, startup parameters or even different builds.
 
-## 测试/开发环境中的故障排查
+## 测试/开发环境中进行问题排查时的麻烦
 
 在其他环境中进行故障排除时，您可以避免在生产中困扰您的麻烦。但是，您现在面临的是一个完全不同的问题，最终可能变得更糟：即重现生产中发生的性能问题的挑战。有许多不同的方面使复制过程陷入困境：
 
