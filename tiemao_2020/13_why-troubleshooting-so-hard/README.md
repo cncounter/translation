@@ -109,9 +109,11 @@ Besides the environment-specific constraints, there are other aspects also contr
 
 The environmental constraints would not be actual showstoppers if the tools used and the discipline of troubleshooting were mature. In reality it is far from it – the engineers responsible for solving the issue often do not have a predefined process to tackle the problem. Honestly, do you recognize yourself in the following sequence of actions taken in shell:
 
-## 经验丰富的工具和救援人员？
+## 临时专家与趁手工具
 
-如果使用的工具和故障排除的规则已经成熟，那么环境限制将不是真正的卖座。 实际上，它远非如此-负责解决问题的工程师通常没有预定义的过程来解决问题。 老实说，您是否按照以下在shell中执行的操作顺序认识自己：
+如果使用趁手的工具, 并且对于故障排除的规则已经胸有成竹，那么环境限制就不再是什么大问题。
+实际上，负责排查和解决问题的工程师通常没有预先规划好的处理流程。
+老实说，您是否有过像下面这样的 shell 操作：
 
 ```
 my-precious:~ me$ sar
@@ -144,7 +146,9 @@ my-precious:~ me$
 
 If you found the above to be too familiar, don’t be afraid, you are not alone. Far from it, most of the engineers lack the in-depth experience in the field which makes it impossible to make progress based on the familiar patterns recognized. This is not something to be ashamed of – unless you are [Brendan Gregg](http://www.brendangregg.com/) or [Peter Lawrey](https://twitter.com/PeterLawrey), you just don’t have the 10,000 hours of troubleshooting down your belt to make you an expert on the subject.
 
-如果您发现上述内容太过熟悉，不要害怕，您并不孤单。 远非如此，大多数工程师缺乏在该领域的深入经验，因此无法根据公认的熟悉模式来取得进步。 这不是要丢人的事–除非您是[Brendan Gregg]（http://www.brendangregg.com/）或[Peter Lawrey]（https://twitter.com/PeterLawrey），否则您不会 进行10,000小时的故障排除，使您成为该主题的专家。
+如果您觉得上面这个过程很熟悉，别紧张，其实大家都这样干。
+大多数工程师在故障排除和诊断调优领域都缺乏经验，因此也就很难使用标准的套路。
+这没什么丢人的 – 除非是 [Brendan Gregg](http://www.brendangregg.com/) or [Peter Lawrey](https://twitter.com/PeterLawrey) 这种专业大牛，否则您很难有1万小时的故障排除经历，也就很难成为这个领域的专家。
 
 This lack of experience tends to result in tossing different evidence-gathering tools towards the problem at hand, including but not limited to:
 
@@ -154,17 +158,21 @@ This lack of experience tends to result in tossing different evidence-gathering 
 - Capturing and analyzing thread dumps
 - Capturing and analyzing heap dumps
 
-缺乏经验往往会导致针对当前问题使用不同的证据收集工具，包括但不限于：
+缺乏经验的话，针对当前问题， 往往需要使用不同的工具来收集信息，例如：
 
-- 收集不同的指标（CPU，内存，IO，网络等）。
-- 分析应用程序日志
+- 收集不同的指标（CPU，内存，磁盘IO，网络等等）。
+- 分析应用日志
 - 分析GC日志
-- 捕获和分析线程转储
-- 捕获和分析堆转储
+- 获取线程转储并分析
+- 获取堆转储来进行分析
 
 The number of such tools you can use is almost unlimited. Just check out the lists [here](https://github.com/deephacks/awesome-jvm) and [here](https://docs.oracle.com/javase/8/docs/technotes/guides/troubleshoot/tooldescr.html#diagnostic_tools) if you are not convinced. The approach of randomly trying out different tools results in more time spent in choosing and trying out the tools than in actually solving the issue at hand.
 
-您可以使用的此类工具的数量几乎是无限的。 只需在 [here](https://github.com/deephacks/awesome-jvm) and [here](https://docs.oracle.com/javase/8/docs/technotes/guides/troubleshoot/tooldescr.html#diagnostic_tools)。 与实际解决当前问题相比，随机试用不同工具的方法导致选择和试用工具所花费的时间更多。
+我们可以使用的工具几乎是无限的。 如果你不信，可以看:
+- [here](https://github.com/deephacks/awesome-jvm)
+- [here](https://docs.oracle.com/javase/8/docs/technotes/guides/troubleshoot/tooldescr.html#diagnostic_tools)。
+
+与实际解决问题相比，随机使用各种不熟悉的工具，可能会浪费更多的时间。
 
 ## Solving the troubleshooting nightmare
 
