@@ -81,17 +81,19 @@ When troubleshooting in a different environment you can escape the menaces haunt
 - The usage patterns revealing certain issues are not easy to recreate. Just imagine an issue which happens only on 29th of February and requires two users on Windows ME to access a particular function at the same time triggering a specific concurrency issue.
 - The application itself is not the same. The production deployment might have significantly different configuration. The differences can include a different OS, clustering features, startup parameters or even different builds.
 
-## 测试/开发环境中进行问题排查时的麻烦
+## 测试和开发环境中进行问题排查需要注意哪些问题？
 
-在其他环境中进行故障排除时，您可以避免在生产中困扰您的麻烦。但是，您现在面临的是一个完全不同的问题，最终可能变得更糟：即重现生产中发生的性能问题的挑战。有许多不同的方面使复制过程陷入困境：
+如果在开发环境或者测试环境中进行问题诊断和故障排查，则可以避免生产环境中的那些麻烦。
+但是，因为开发环境和生产环境配置不同，有些时候可能也会有问题： 即很难复现生产环境中产生的性能问题。
+例如：
 
-- 测试环境未使用与生产相同的数据源。这意味着由数据量触发的问题可能不会在测试环境中重现。
-- 揭示某些问题的使用模式不容易重现。试想一下仅在2月29日发生的问题，该问题要求Windows ME上的两个用户同时访问特定功能，从而触发特定的并发问题。
-- 应用程序本身不一样。生产部署可能具有明显不同的配置。差异可能包括不同的操作系统，群集功能，启动参数甚至不同的内部版本。
+- 测试环境和生产环境使用的数据源不同。 这意味着由数据量引发的性能问题可能不会在测试环境中重现。
+- 某些问题的使用方式可能不容易复现。 例如只在2月29日这个特殊时间引起的并发问题，只在多个用户同时访问某个功能时引发，如果事先不知道原因，那也很难排查。
+- 两个环境下的应用程序可能还不一样。 生产部署的配置可能明显不同。 这些差异包括： 操作系统，群集，启动参数, 以及不同的打包版本。
 
 These difficulties lead to the infamous “works on my machine” quote being brought into the discussion:
 
-这些困难导致臭名昭著的“在我的机器上工作”的报价被引入讨论中：
+这些困难会引起 “在我的机器上是好的” 这种很尴尬的局面：
 
 ![works on my machine](https://plumbr.io/app/uploads/2016/09/cannot-reproduce.jpg)
 
@@ -99,9 +101,9 @@ So as can be seen, independent of the environment at hand, when you have to trou
 
 Besides the environment-specific constraints, there are other aspects also contributing to the unpredictable nature of the troubleshooting process. This will be covered in the next section.
 
-可以看出，独立于手头的环境，当您必须对某些问题进行故障排除时，手头的环境的性质会折断您遇到的一些障碍。
+可以看出，因为和手头的环境不同，所以在对某些问题进行故障排除时，当前系统环境的性质可能会让你遇到的一些莫名其妙的障碍。
 
-除了特定于环境的约束之外，还有其他方面也导致故障排除过程的不可预测性。 这将在下一节中介绍。
+除了特定环境的约束之外，还有其他方面的因素也会导致故障排除过程的不可预测性。 下面我们一起来看一下。
 
 ## Tooling and experienced people to the rescue?
 
