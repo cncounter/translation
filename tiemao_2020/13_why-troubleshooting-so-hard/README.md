@@ -116,32 +116,46 @@ The environmental constraints would not be actual showstoppers if the tools used
 老实说，您是否有过像下面这样的 shell 操作：
 
 ```
-my-precious:~ me$ sar
-sar: failed to open input file [-1][/var/log/sa/sa06]
-/usr/bin/sar [-Adgpu] [-n { DEV | EDEV | PPP }] [-e time] [-f filename] [-i sec] [-s time]
+# 查看当前路径
+pwd
 
-my-precious:~ me$ man sar
+# 查看当前目录下有哪些文件
+ls -l
 
-my-precious:~ me$ sar 1
-15:29:02  %usr  %nice   %sys   %idle
-15:29:03    1      0      2     97
-Average:      1      0      2     97   
+# 查看系统负载
+top
 
-my-precious:~ me$ sar 1 1000
-15:29:06  %usr  %nice   %sys   %idle
-15:29:07    2      0      2     97
-15:29:08    1      0      2     97
-^CAverage:      1      0      1     97
+# 查看剩余内存
+free -h
 
-my-precious:~ me$ man sar
-my-precious:~ me$ sar -G 1 3
+# 查看剩余磁盘
+df -h
+
+# 查看当前目录的使用量
+du -sh *
+
+# 系统活动情况报告
+sar
+-bash: sar: command not found
+
+# Linux安装sysstat
+# apt-get install sysstat
+# yum -y install sysstat
+
+# 查看帮助手册
+man sar
+
+# 查看最近的报告
+sar 1
+
+# ???
+sar -G 1 3
 sar: illegal option -- G
-/usr/bin/sar [-Adgpu] [-n { DEV | EDEV | PPP }] [-e time] [-f filename] [-i sec] [-s time]
 
-my-precious:~ me$ asdöäaskdasäl;
--bash: asdöäaskdasäl: command not found
+# 查看帮助手册
+man sar
 
-my-precious:~ me$
+# ......
 ```
 
 If you found the above to be too familiar, don’t be afraid, you are not alone. Far from it, most of the engineers lack the in-depth experience in the field which makes it impossible to make progress based on the familiar patterns recognized. This is not something to be ashamed of – unless you are [Brendan Gregg](http://www.brendangregg.com/) or [Peter Lawrey](https://twitter.com/PeterLawrey), you just don’t have the 10,000 hours of troubleshooting down your belt to make you an expert on the subject.
