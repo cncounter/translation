@@ -180,7 +180,7 @@ Besides accumulating minutes towards the 10,000 hours which would make you the e
 
 ## 解决故障排查带来的痛苦
 
-除了累积将近10,000小时的分钟数（这将使您成为该领域的专家）之外，还有更快速的解决方案来减轻故障排除所带来的痛苦。
+除了累积 1万小时的训练时间来成为该领域的专家之外，其实还有更快速的解决方案来减轻故障排除所带来的痛苦。
 
 ### Profiling in development
 
@@ -188,11 +188,14 @@ To make it clear, the post is not about bashing the profiling as a technique. Th
 
 However, the differences in data, usage patterns and environments will only end up exposing a subset of the issues you eventually will be faced in production. The same techniques which worked well as pre-emptive measures will only rarely help while troubleshooting the problem retroactively.
 
-### 在开发过程中进行抽样分析
+### 在开发环境中进行抽样分析
 
-为了清楚起见，该文章不是关于将剖析作为一种技巧。 对代码进行概要分析没有错，尤其是在将代码交付生产之前。 相反，了解应用程序各个部分的热点和内存消耗将首先防止某些问题影响生产中的最终用户。
+为了清楚起见，本文并不把抽样分析当做一种技巧。
+对代码进行抽样分析并没有错，尤其是在系统正式上线之前。
+相反，了解应用程序各个部分的热点以及内存消耗，能有效防止某些问题影响到生产环境的用户。
 
-但是，数据，使用模式和环境的差异最终只会暴露出您最终将在生产中面临的部分问题。 可以很好地用作先发制人的措施的技术只能在追溯解决问题时极有帮助。
+虽然由于数据，使用方式和环境的差异， 最终只能模拟生产环境中面临的一部分问题。
+但使用这种技术可以预先进行风险排查，如果真的发生问题，可以在追溯问题原因时很快定位。
 
 ### Testing in QA
 
@@ -200,13 +203,16 @@ Investing into QA, especially if the investments result in automation of the pro
 
 However it is often hard to justify the investments in QA. Everything labelled “performance test something” or “acceptance test something” will eventually be competing with new features driven by clear and measurable business goals. Now when the only things the developer pushing for the “performance something” task are some acronyms, such tasks will never make it out of the backlog:
 
-### QA测试
+### 在QA环境中测试
 
-投资质量保证，尤其是如果投资导致流程自动化是您可以构建的下一道防线。 如果进行周全和彻底的应用，测试将进一步减少生产中的事件数量。
+在质量保证领域投入适当的资源，尤其是自动化的持续集成、持续交付流程能及早暴露出很多问题。
+如果进行周全和彻底的测试，将进一步减少生产环境的事故。
 
-但是，通常很难证明对质量检查的投资是合理的。 一切标有“性能测试”或“验收测试”的产品最终都将与清晰而可衡量的业务目标驱动的新功能竞争。 现在，当开发人员推动“执行某项性能”任务的唯一条件是某些缩写词时，此类任务将永远不会使其积压下来：
+但是，很难证明对质量检查的投资是否合理。
+一切标有“性能测试”或“验收测试”的产品，最终都将与清晰而可衡量的业务目标（新功能开发）存在竞争。
+现在，当开发人员推动 “执行某项性能优化” 的任务时， 如果不能提升优先级， 此类任务会积压下来，永远都是待办事项：
 
-| **Priority** | **Type** | **Description**                     | **ROI**                                 |
+|  **优先级**  |  **类型**  |        **说明**                     | **ROI（投资回报率）**                      |
 | :----------- | :------- | :---------------------------------- | :-------------------------------------- |
 | 1            | Feature  | Integrate invoicing with Salesforce | BigCO will sign a 250K contract with us |
 | 2            | Feature  | Support Windows 10                  | 10% more trials sign-ups will convert   |
@@ -215,20 +221,24 @@ However it is often hard to justify the investments in QA. Everything labelled �
 
 To justify such investments, you need to link the return of the investment to the activity. Reducing the P1 performance incidents in production by 3x can be linked to its dollar value and in such case it has a chance against the next feature the sales team is pushing.
 
-为了证明这种投资的合理性，您需要将投资的回报与活动联系起来。 将生产中的P1性能事件减少3倍可以与它的美元价值联系起来，在这种情况下，它就有机会与销售团队推动的下一个功能相抵触。
+为了证明这种投资的合理性，您需要将投资回报与活动联系起来。 将生产环境中的P1性能事件减少3倍，是可以和美元价值联系起来的， 在这种情况下，它就有机会与销售团队推动的下一个功能相抵触。
 
 ### Monitoring in production
 
-### 生产环境中的监控
+### 在生产环境中做好监控
 
 First thing you need to accept is that problems will occur in production deployment. Even NASA tends to blow up their craft every once in a while, so you’d better be prepared for issues happening in production. No matter how well you profile or how thoroughly you test, bugs will still slip through.
 
 So you cannot avoid troubleshooting production issues. To be better equipped for the task at hand, you should have transparency to your production environment. Whenever an issue arises, you ideally already have all the evidence you need to fix it. If you have all the information you need, you can effectively skip the problematic reproducing and evidence gathering steps.
 
 
-您需要接受的第一件事是在生产部署中会出现问题。 即使是NASA也会不时地炸毁飞船，因此您最好为生产中发生的问题做好准备。 无论您的配置如何好或测试的透彻程度如何，错误仍然会漏掉。
+要有心理准备，您需要接受的第一件事情就是生产环境一定会出现问题。
+即使是NASA这种高端组织也会不时地炸几艘飞船，因此我们需要为线上发生的问题做好准备。
+无论怎么分析和测试，总会有些漏掉的地方，事故就在这些地方产生。
 
-因此，您无法避免对生产问题进行故障排除。 为了更好地完成手头的任务，您应该对生产环境保持透明。 每当出现问题时，理想情况下，您已经拥有解决该问题所需的所有证据。 如果您拥有所需的所有信息，则可以有效地跳过有问题的复制和证据收集步骤。
+既然无法避免总会需要对生产环境进行故障排除。为了更好地完成手头的工作，就需要监控生产环境中系统的状态。
+当出现问题时，理想情况下，我们已经拥有了足以解决该问题的相关信息。
+如果已经拥有了所需的信息，则可以快速跳过问题复现和信息收集的步骤。
 
 Unfortunately the state of the art in monitoring world offers no single silver bullet to expose all the information you need in different circumstances. The set of tools to deploy for a typical web-based application should include at least the following:
 
@@ -237,11 +247,12 @@ Unfortunately the state of the art in monitoring world offers no single silver b
 - Application Performance Monitoring/User Experience Monitoring. Keeping an eye on individual user interactions will reveal performance and availability issues impacting your end users. At minimum you will be aware when particular services your application(s) offer are malfunctioning. At best, when [Plumbr](https://plumbr.io/) is being used, you are also zoomed in to the actual root cause in source code.
 
 
-不幸的是，监视世界的最新技术无法提供任何灵丹妙药来揭示您在不同情况下所需的所有信息。 为典型的基于Web的应用程序部署的工具集应至少包括以下内容：
+不幸的是，监控领域并没有银弹(silver bullet, 万能药)。 即使是最新的技术也无法提供不同场景下的所有信息。
+典型的Web应用系统，至少应该集成下面这些部分：
 
-- 日志监控。应该汇总来自生产堆栈各个节点的日志，以便工程团队可以快速搜索信息，可视化日志并注册异常警报。最常用的解决方案之一是ELK堆栈，其中日志存储在 [Elasticsearch](http://www.elastic.co/) 中，并在 [Logstash](http://www.elastic.co/products/logstash) 中进行分析，并使用 [Kibana](http://www.elastic.co/products/kibana) 进行可视化。
-- 系统监控。在基础架构中汇总和可视化系统级指标既有益又易于设置。密切关注CPU，内存，网络和磁盘的使用情况，可以发现系统级问题并注册异常警报。
-- 应用程序性能监视/用户体验监视。密切关注单个用户的交互将揭示影响最终用户的性能和可用性问题。至少，您会知道您的应用程序提供的特定服务何时发生故障。充其量，当使用 [Plumbr](https://plumbr.io/) 时，还可以放大源代码中的实际根本原因。
+- 日志监控。 汇总各个服务器节点的日志，以便技术团队可以快速搜索相关的信息，日志可视化，并进行异常报警。 最常用的解决方案是ELK技术栈，将日志保存到 [Elasticsearch](http://www.elastic.co/) 中， 通过 [Logstash](http://www.elastic.co/products/logstash) 进行分析， 并使用 [Kibana](http://www.elastic.co/products/kibana) 来展示和查询。
+- 系统监控。 在基础架构中汇总系统指标并进行可视化查询， 既简单又有效。 关注CPU，内存，网络和磁盘的使用情况，可以发现系统问题并配置监控报警。
+- 系统性能监控(APM, Application Performance Monitoring)， 以及用户体验监控。 关注单个用户的交互，能有效展示用户感受到的系统性能和可用性问题。至少，我们可以知道是哪个服务在哪段时间发生了故障。 比如集成 Micrometer， Pinpoint 、Skywalking， Plumbr 等技术，能快速定位代码中的问题。
 
 ## Take-away
 
@@ -249,11 +260,13 @@ Troubleshooting is a necessary evil. You cannot avoid it, so it is only fair tha
 
 Making sure you apply profiling in development and test your code before the release reduces the frequency of troubleshooting issues in production. Having transparency to your production deployment allows you to respond faster and in a predictable way whenever the two safety nets have failed.
 
-## 带走
+## 结语
 
-故障排除是必不可少的。 您无法避免，因此您知道相关问题是很公平的。 您无法绕过不同环境所带来的约束，也无法一夜之间成为专家。
+故障排除是必不可少的过程。 只要有人使用的系统，就无法避免地会发生一些故障， 因此我们需要很清楚地了解相关的问题。
+我们无法绕过不同环境带来的困扰，但也不可能21天就变成专家。
 
-确保在发布之前在开发中应用性能分析并测试代码，从而减少了生产中故障排除的频率。 当两个安全网出现故障时，对生产部署保持透明可让您以可预测的方式更快地做出响应。
+确保在系统发布之前已经在开发环境中进行过系统性能分析，并经过测试验收， 从而减少生产故障。
+了解生产部署环境并做好监控，当故障发生时，我们就能可预料的方式，更快地做出响应。
 
 
 <https://plumbr.io/blog/monitoring/why-is-troubleshooting-so-hard>
