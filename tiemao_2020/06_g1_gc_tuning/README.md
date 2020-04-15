@@ -3,7 +3,7 @@
 > Learn about how to adapt and tune the G1 GC for evaluation, analysis and performance.
 
 
-# G1垃圾收集器调优 - 官方文档
+# G1垃圾收集器生产环境调优
 
 > 本文详细介绍G1垃圾收集器的参数配置和性能调优, 并介绍如何对GC的性能进行分析和评估。
 
@@ -358,7 +358,7 @@ Monica与许多基于Java的性能测试标准进行了合作， 致力于探寻
 
 ## 相关资源和链接
 
-- 原文链接: <https://www.oracle.com/technical-resources/articles/java/g1gc.html>
+- [G1生产环境参数调优-EN](https://www.oracle.com/technical-resources/articles/java/g1gc.html)
 
 - [G1垃圾收集器调优-英文版](https://docs.oracle.com/javase/8/docs/technotes/guides/vm/gctuning/g1_gc_tuning.html)
 

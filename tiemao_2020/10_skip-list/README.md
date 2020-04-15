@@ -1,6 +1,6 @@
 # Skip List
 
-# 高难度数据结构面试题: 跳跃表（Skip List）
+# 高级数据结构: 跳跃表（Skip List）
 
 [TOC]
 

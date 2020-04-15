@@ -1,7 +1,7 @@
 # 7 JVM arguments of Highly Effective Applications
 
 
-＃ 7高效应用程序的JVM参数
+＃ 提高性能的JVM参数简介
 
 At the time (March 2020) of writing this article there are 600+ arguments that you can pass to JVM just around Garbage collection and memory. If you include other aspects, total JVM arguments count will easily cross 1000+. It’s way too many arguments for anyone to digest and comprehend. In this article, we are highlighting seven important JVM arguments that you may find it useful.
 
