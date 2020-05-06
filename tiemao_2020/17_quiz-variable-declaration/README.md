@@ -243,7 +243,13 @@ The correct answer is options `B`,  `C`, and `E`.
 
 通过我们的分析可知，正确选项为: `B`,  `C`,  `E`.
 
-### 参考链接
 
-- <https://blogs.oracle.com/javamagazine/quiz-yourself-variable-declaration-intermediate>
-- <https://docs.oracle.com/javase/specs/jls/se11/html/index.html>
+### 相关链接
+
+- [Java坑人面试题系列: 包装类（中级难度）](https://renfufei.blog.csdn.net/article/details/104163518)
+- [Java坑人面试题系列: 比对while与for循环（中级）](https://renfufei.blog.csdn.net/article/details/104378574)
+- [Java坑人面试题系列: 集合（高级）](https://renfufei.blog.csdn.net/article/details/104378574)
+- [Java坑人面试题系列: 线程/线程池（高级）](https://renfufei.blog.csdn.net/article/details/104726229)
+- [Java坑人面试题系列: 变量声明（中级）](https://renfufei.blog.csdn.net/article/details/105962238)
+
+原文链接:  <https://blogs.oracle.com/javamagazine/quiz-yourself-variable-declaration-intermediate>
