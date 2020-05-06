@@ -154,6 +154,32 @@ flush privileges;
 
 
 
+## 处理文件数量限制
+
+因为数据库太多，建表时报错:
+
+```
+[ERROR in query 1] Out of resources when opening file 'xxx' (Errcode: 24 - Too many open files)
+Execution stopped!
+```
+
+修改文件 `/etc/systemd/system.conf`, 设置以下内容
+
+```
+DefaultLimitNOFILE=infinity
+DefaultLimitMEMLOCK=infinity
+```
+
+然后执行:
+
+```shell
+systemctl daemon-reload
+
+service mysql restart
+
+```
+
+参考: https://stackoverflow.com/questions/44006977/how-to-fix-too-many-open-files-in-mysql
 
 
 
