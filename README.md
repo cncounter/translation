@@ -29,7 +29,7 @@ GitHub地址: <https://github.com/cncounter/translation>
 * [03.Java坑人面试题系列: 包装类（中级）](./tiemao_2020/03_quiz-wrapper-classes/README.md)【已完成】
 * [04.Java坑人面试题系列: 思考while与for循环（中级难度）](./tiemao_2020/04_quiz-loop-constructs/README.md)【已完成】
 * [05.Linux系统命令 - 查看内存使用情况](./tiemao_2020/05_linux-memory-usage/README.md)【已完成】
-* [06.G1垃圾收集器生产环境调优](./tiemao_2020/06_g1_gc_tuning/README.md)
+* [06.G1垃圾收集器生产环境调优](./tiemao_2020/06_g1_gc_tuning/README.md)【已完成】
 * [07.Java坑人面试题系列: 线程/线程池（高级难度）](./tiemao_2020/07_quiz-executor-service/README.md)【已完成】
 * [08.Different Ways to Capture Java Heap Dumps](./tiemao_2020/08_java-heap-dump/README.md)
 * [09.Java线程Dump](./tiemao_2020/09_java-thread-dump/README.md)
