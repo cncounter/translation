@@ -12,8 +12,27 @@ The worst case search time for a sorted linked list is O(n) as we can only linea
 
 Can we augment sorted linked lists to make the search faster? The answer is Skip List. The idea is simple, we create multiple layers so that we can skip some nodes. See the following example list with 16 nodes and two layers. The upper layer works as an “express lane” which connects only main outer stations, and the lower layer works as a “normal lane” which connects every station. Suppose we want to search for 50, we start from first node of “express lane” and keep moving on “express lane” till we find a node whose next is greater than 50. Once we find such a node (30 is the node in following example) on “express lane”, we move to “normal lane” using pointer from this node, and linearly search for 50 on “normal lane”. In following example, we start from 30 on “normal lane” and with linear search, we find 50.
 
+## 一、跳跃表简介
+
+### 查找排序链表的时间复杂度可以比 `O(n)` 更小吗？
+
+已排序的简单链表, 进行元素查找的时间复杂度，最坏情况下为 `O(n)`，因为这时候只能遍历整个链表，在查找时不能跳过任何节点。
+对于平衡二叉查找树（Balanced Binary Search Tree），在与根元素进行一次比较后，就可以跳过差不多一半的节点。
+对于排好序的数组，因为能任意访问某个下标元素，可以使用二分查找算法(Binary Search)。
+
+在排序链表的基础上,可不可以进行扩充以加快查找速度呢？
+答案是使用跳跃表（Skip List）。
+这种算法其实很简单，通过创建多个层（layer），以便查找时可以跳过一些节点。
+请看下图：
+
 
 ![SkipList](01_01_SkipList1.png)
+
+图中展示的链表包含16个节点和两层。
+上面一层仅用作连接主要节点的“快速通道”，而下层则用作连接每个节点的“正常通道”。
+假设要查找 "50"，从“快速通道”的第一个节点开始，继续沿“快速通道”移动，找到满足 "下一个节点的值大于50" 的那个节点。
+一旦在“快速通道”中找到这样的节点， 则后续的查找过程挪到“正常通道”上执行， 然后执行线性查找。
+看图中的示例，对应节点的值是30，其下一个节点值为57。所以从值为30的节点开始，后面都是在 “正常通道” 上一次遍历，直到找到50（或者找不到，例如51）。
 
 
 ### What is the time complexity with two layers?
