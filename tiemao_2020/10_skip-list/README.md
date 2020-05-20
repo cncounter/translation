@@ -14,7 +14,7 @@ Can we augment sorted linked lists to make the search faster? The answer is Skip
 
 ## 一、跳跃表简介
 
-### 查找排序链表的时间复杂度可以比 `O(n)` 更小吗？
+### 单链表的查找时间复杂度 `O(n)`
 
 已排序的简单链表, 进行元素查找的时间复杂度，最坏情况下为 `O(n)`，因为这时候只能遍历整个链表，在查找时不能跳过任何节点。
 对于平衡二叉查找树（Balanced Binary Search Tree），在与根元素进行一次比较后，就可以跳过差不多一半的节点。
@@ -39,19 +39,28 @@ Can we augment sorted linked lists to make the search faster? The answer is Skip
 
 The worst case time complexity is number of nodes on “express lane” plus number of nodes in a segment (A segment is number of “normal lane” nodes between two “express lane” nodes) of “normal lane”. So if we have n nodes on “normal lane”, `√n` (square root of n) nodes on “express lane” and we equally divide the “normal lane”, then there will be `√n` nodes in every segment of “normal lane” . `√n` is actually optimal division with two layers. With this arrangement, the number of nodes traversed for a search will be `O(√n)`. Therefore, with `O(√n)` extra space, we are able to reduce the time complexity to `O(√n)`.
 
-### 两层跳跃表的时间复杂度是多少？
+### 两层跳跃表的时间复杂度
 
 最坏情况下的时间复杂度, 是“快速通道”的节点数，加上“正常通道”中一个分段的节点数量。 一个分段（segment）是指“正常通道”中，两个快速节点之间的部分。
-因此，如果“正常通道” 有`n`个节点，“快速通道”上有`√n`（根号n）个节点，并且均匀地分布到“正常通道”节点上，那么“正常通道”上的每个分段也就有`√n`个节点 ”。 `√n`实际上是两层跳跃表的最优除法。 通过这样划分，遍历搜索节点的时间复杂度为`O(√n)`。 用空间换时间，多了`O(√n)`的额外存储空间，就可以将时间复杂度降低到 `O(√n)`。
+如果“正常通道” 有`n`个节点，“快速通道”上有`√n`（根号n）个节点，并且均匀地分布到“正常通道”节点上，那么“正常通道”上的每个分段也就有`√n`个节点 ”。 `√n`实际上是两层跳跃表的最优除法, 通过这样划分，遍历搜索节点的时间复杂度为`O(√n)`。 用空间换时间，多了`O(√n)`的额外存储空间，就可以将时间复杂度降低到 `O(√n)`。
 
 ### Can we do better?
 
-The time complexity of skip lists can be reduced further by adding more layers. In fact, the time complexity of search, insert and delete can become O(Logn) in average case with O(n) extra space. We will soon be publishing more posts on Skip Lists.
+The time complexity of skip lists can be reduced further by adding more layers. In fact, the time complexity of search, insert and delete can become `O(Logn)` in average case with `O(n)` extra space. We will soon be publishing more posts on Skip Lists.
+
+### 有没有更低的时间复杂度？
+
+引入更多的层次，可以进一步降低跳跃表的时间复杂度。 实际上，具有额外空间 `O(n)` 的情况下， 查找, 插入和删除节点的时间复杂度可以变成 `O(Logn)`。
 
 ### References
 
+### 更多阅读
+
+跳跃表的更多信息请参考:
+
 - [MIT Video Lecture on Skip Lists](https://ocw.mit.edu/courses/electrical-engineering-and-computer-science/6-046j-introduction-to-algorithms-sma-5503-fall-2005/video-lectures/lecture-12-skip-lists/)
 - <http://en.wikipedia.org/wiki/Skip_list>
+
 
 
 ##  Skip List | Set 2 (Insertion)
