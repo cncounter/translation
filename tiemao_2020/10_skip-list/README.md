@@ -32,12 +32,17 @@ Can we augment sorted linked lists to make the search faster? The answer is Skip
 上面一层仅用作连接主要节点的“快速通道”，而下层则用作连接每个节点的“正常通道”。
 假设要查找 "50"，从“快速通道”的第一个节点开始，继续沿“快速通道”移动，找到满足 "下一个节点的值大于50" 的那个节点。
 一旦在“快速通道”中找到这样的节点， 则后续的查找过程挪到“正常通道”上执行， 然后执行线性查找。
-看图中的示例，对应节点的值是30，其下一个节点值为57。所以从值为30的节点开始，后面都是在 “正常通道” 上一次遍历，直到找到50（或者找不到，例如51）。
+看图中的示例，对应节点的值是30，其下一个节点值为57。所以从值为30的节点开始，后面都是在 “正常通道” 上进行遍历，直到找到50（或者找不到，例如51）。
 
 
 ### What is the time complexity with two layers?
 
-The worst case time complexity is number of nodes on “express lane” plus number of nodes in a segment (A segment is number of “normal lane” nodes between two “express lane” nodes) of “normal lane”. So if we have n nodes on “normal lane”, √n (square root of n) nodes on “express lane” and we equally divide the “normal lane”, then there will be √n nodes in every segment of “normal lane” . √n is actually optimal division with two layers. With this arrangement, the number of nodes traversed for a search will be O(√n). Therefore, with O(√n) extra space, we are able to reduce the time complexity to O(√n).
+The worst case time complexity is number of nodes on “express lane” plus number of nodes in a segment (A segment is number of “normal lane” nodes between two “express lane” nodes) of “normal lane”. So if we have n nodes on “normal lane”, `√n` (square root of n) nodes on “express lane” and we equally divide the “normal lane”, then there will be `√n` nodes in every segment of “normal lane” . `√n` is actually optimal division with two layers. With this arrangement, the number of nodes traversed for a search will be `O(√n)`. Therefore, with `O(√n)` extra space, we are able to reduce the time complexity to `O(√n)`.
+
+### 两层跳跃表的时间复杂度是多少？
+
+最坏情况下的时间复杂度, 是“快速通道”的节点数，加上“正常通道”中一个分段的节点数量。 一个分段（segment）是指“正常通道”中，两个快速节点之间的部分。
+因此，如果“正常通道” 有`n`个节点，“快速通道”上有`√n`（根号n）个节点，并且均匀地分布到“正常通道”节点上，那么“正常通道”上的每个分段也就有`√n`个节点 ”。 `√n`实际上是两层跳跃表的最优除法。 通过这样划分，遍历搜索节点的时间复杂度为`O(√n)`。 用空间换时间，多了`O(√n)`的额外存储空间，就可以将时间复杂度降低到 `O(√n)`。
 
 ### Can we do better?
 
