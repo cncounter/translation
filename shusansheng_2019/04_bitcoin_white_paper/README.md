@@ -61,7 +61,7 @@ What is needed is an electronic payment system based on cryptographic proof inst
 
 We define an electronic coin as a chain of digital signatures. Each owner transfers the coin to the next by digitally signing a hash of the previous transaction and the public key of the next owner and adding these to the end of the coin. A payee can verify the signatures to verify the chain of ownership.
 
-我们将一枚电子货币定义为数字签名链。 每个币的持有者在转账给下一任时，需要对 “上次交易的哈希值” 和 “下一任所有者的公钥” 进行数字签名，并将它们添加到这个币的末尾。 收款人可以通过检查签名来验证这个链的所有权。
+我们将电子货币定义为一条数字签名链。 每个币的持有者在转账给下一任时，需要对 “上次交易的哈希值” 和 “下一任所有者的公钥” 进行数字签名，并将它们添加到这个币的末尾。 收款人可以通过检查签名来验证这个链的所有权。
 
 ![](02_01_btc_transaction.jpg)
 
@@ -78,13 +78,17 @@ We need a way for the payee to know that the previous owners did not sign any ea
 就我们的目的而言，最早的交易才算数，所以我们不关心随后进行的双花尝试。
 确认有没有这个交易的唯一方法，就是知道所有所有交易信息。
 在基于造币厂的模型中，造币厂知道所有交易，并可以确定哪个交易请求先到达。
-为了在没有受信方参与的情况下完成这个任务，必须公开宣布所有交易(参考[1])，并且需要一种系统，只要参与就可以接收订单的单一历史并达成一致。
-收款人在每次交易时都需要证明，需要超过半数的节点都同意这是先收到的交易请求。
+为了在没有受信方参与的情况下完成这个任务，必须公开宣布所有交易(参见[1])，并且需要一种系统，只要参与就可以接收订单的单一历史并达成一致。
+收款人在每次交易时都需要证明，需要超过半数的节点确认这是先收到的交易请求。
 
 
 ## 3. Timestamp Server
 
 The solution we propose begins with a timestamp server. A timestamp server works by taking a hash of a block of items to be timestamped and widely publishing the hash, such as in a newspaper or Usenet post [2-5]. The timestamp proves that the data must have existed at the time, obviously, in order to get into the hash. Each timestamp includes the previous timestamp in its hash, forming a chain, with each additional timestamp reinforcing the ones before it.
+
+## 3. 时间戳服务器
+
+我们推荐的解决方案，是使用时间戳服务器（Timestamp Server）。 时间戳服务器对要打标记的区块计算哈希值并进行广播， 类似于报纸或新闻组帖子（参见[2-5]）。  时间戳证明，为了进入哈希表，数据必须在打标记时必须已经存在。 每个时间戳都在其哈希中包含前一个时间戳，从而形成一个链，每个附加时间戳都会加强之前的时间戳。
 
 ![](03_01_block_hash.jpg)
 
