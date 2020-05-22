@@ -166,20 +166,36 @@ The incentive may help encourage nodes to stay honest. If a greedy attacker is a
 
 ## 7. Reclaiming Disk Space
 
+## 7. 压缩存储空间
+
 Once the latest transaction in a coin is buried under enough blocks, the spent transactions before it can be discarded to save disk space. To facilitate this without breaking the block's hash, transactions are hashed in a Merkle Tree [7][2][5], with only the root included in the block's hash. Old blocks can then be compacted by stubbing off branches of the tree. The interior hashes do not need to be stored.
+
+一旦某个币对应的最新交易都被埋在足够的区块下，之前的交易信息就可以丢弃，以节省磁盘空间。 为了在不破坏区块哈希的情况下简化此过程，在 Merkle Tree 中对事务进行哈希处理（参见[7][2][5]），仅将算出来的根哈希包含在区块的哈希中。  然后可以通过砍掉树的分支来压缩老旧的区块。 内部的哈希值不需要存储。
+
 
 ![](07_01_transaction_hash.jpg)
 
 A block header with no transactions would be about 80 bytes. If we suppose blocks are generated every 10 minutes, 80 bytes * 6 * 24 * 365 = 4.2MB per year. With computer systems typically selling with 2GB of RAM as of 2008, and Moore's Law predicting current growth of 1.2GB per year, storage should not be a problem even if the block headers must be kept in memory.
 
+没有交易信息的区块Header大约只有80个字节。 如果我们假设每10分钟生成一个块，则每年只需要 `80 bytes * 6 * 24 * 365 = 4.2MB`。 截止到2008年，市面上销售的计算机系统一般是2GB内存，考虑摩尔定律预测当前每年增长1.2GB，即使将所有区块的头部都保存到内存，也不会引起存储问题。
+
 
 ## 8. Simplified Payment Verification
 
+## 8. 简化的付款验证流程
+
 It is possible to verify payments without running a full network node. A user only needs to keep a copy of the block headers of the longest proof-of-work chain, which he can get by querying network nodes until he's convinced he has the longest chain, and obtain the Merkle branch linking the transaction to the block it's timestamped in. He can't check the transaction for himself, but by linking it to a place in the chain, he can see that a network node has accepted it, and blocks added after it further confirm the network has accepted it.
+
+无需运行所有的网络节点就可以验证付款。用户只需要保存有最长工作量证明链的区块头信息，就可以通过查询网络节点来获取该副本，直到他确信自己拥有最长的链，然后获取与此交易相关的区块和关联的Merkle分支。 用户自身无法亲自检查交易，但可以链接到链中的某个位置，看到网络节点已接受该交易，并在后续的区块中进一步确认网络已接受了这笔交易。
 
 ![](08_01_payment_verify.jpg)
 
 As such, the verification is reliable as long as honest nodes control the network, but is more vulnerable if the network is overpowered by an attacker. While network nodes can verify transactions for themselves, the simplified method can be fooled by an attacker's fabricated transactions for as long as the attacker can continue to overpower the network. One strategy to protect against this would be to accept alerts from network nodes when they detect an invalid block, prompting the user's software to download the full block and alerted transactions to confirm the inconsistency. Businesses that receive frequent payments will probably still want to run their own nodes for more independent security and quicker verification.
+
+这样，只要诚信节点控制了网络，验证就变得可靠，但如果网络受到攻击者的算力压制，这种验证过程就有弱点了。
+尽管网络节点可以自己进行交易验证，但只要攻击者可以一直保持算力优势的网络攻击，简化的验证方法就可能受到虚假交易的欺骗。
+防止这种情况发生的一种策略是，当网络节点检测到无效块时，接受它们的警报，提示用户端软件去下载完整的块，并警告交易以确认不一致。
+频繁交易的企业可能会希望一直运行自己的节点，以获得更独立的安全性和更快的验证。
 
 
 ## 9. Combining and Splitting Value
