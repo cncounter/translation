@@ -150,12 +150,19 @@ New transaction broadcasts do not necessarily need to reach all nodes. As long a
 
 ## 6. Incentive
 
+## 6. 激励
+
 By convention, the first transaction in a block is a special transaction that starts a new coin owned by the creator of the block. This adds an incentive for nodes to support the network, and provides a way to initially distribute coins into circulation, since there is no central authority to issue them. The steady addition of a constant of amount of new coins is analogous to gold miners expending resources to add gold to circulation. In our case, it is CPU time and electricity that is expended.
+
+按照惯例，区块中的第一笔交易是特殊交易，它让区块创建者拥有了一些新的币。 这增强了节点支持整个网络的动力，并提供了一种方法来将币初始化并分配到流通环节，因为并没有中央授权机构来发行。 稳定增加一定量的新币，类似于黄金开采商消耗资源来增加黄金的流通量。 在我们的示例中，所花费的是CPU时间和电力资源。
 
 The incentive can also be funded with transaction fees. If the output value of a transaction is less than its input value, the difference is a transaction fee that is added to the incentive value of the block containing the transaction. Once a predetermined number of coins have entered circulation, the incentive can transition entirely to transaction fees and be completely inflation free.
 
+激励措施也可以由交易费用来提供资金。 如果交易的输出值小于其输入值，则差额就是交易费用，这笔费用会加到包含该交易的区块激励值中。 一旦预定数量的币进入流通，激励就可以完全过渡为交易费用，然后就完全没有通货膨胀。
+
 The incentive may help encourage nodes to stay honest. If a greedy attacker is able to assemble more CPU power than all the honest nodes, he would have to choose between using it to defraud people by stealing back his payments, or using it to generate new coins. He ought to find it more profitable to play by the rules, such rules that favour him with more new coins than everyone else combined, than to undermine the system and the validity of his own wealth.
 
+这种激励有助于鼓励节点保持诚信。如果一个贪婪的攻击者能够筹集到比所有诚信节点还要多的CPU算力，他有两种选择： 一种是篡改自己的付款信息把钱偷回来并欺骗其他人，另一种是用这些算力来生成新的代币。 然后他会发现，遵守这些规则获得的收益远比其他方式要多得多，这些规则比其他方式加起来都要更有利于他，也就不用破坏整个系统和自身财富的有效性。
 
 ## 7. Reclaiming Disk Space
 
