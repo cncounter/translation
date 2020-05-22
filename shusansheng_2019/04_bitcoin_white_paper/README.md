@@ -97,26 +97,28 @@ The solution we propose begins with a timestamp server. A timestamp server works
 
 ## 4. 工作量证明
 
-To implement a distributed timestamp server on a peer-to-peer basis, we will need to use a proofof- work system similar to Adam Back's Hashcash [6], rather than newspaper or Usenet posts. The proof-of-work involves scanning for a value that when hashed, such as with SHA-256, the hash begins with a number of zero bits. The average work required is exponential in the number of zero bits required and can be verified by executing a single hash.
+To implement a distributed timestamp server on a peer-to-peer basis, we will need to use a proof-of- work system similar to Adam Back's Hashcash [6], rather than newspaper or Usenet posts. The proof-of-work involves scanning for a value that when hashed, such as with SHA-256, the hash begins with a number of zero bits. The average work required is exponential in the number of zero bits required and can be verified by executing a single hash.
 
 为了实现对等的分布式时间戳服务器，我们将需要使用工作量证明系统, 类似于 Adam Back's Hashcash（参见[6]），而不是报纸或新闻组。 工作量证明就是去穷举一个哈希值，例如使用SHA-256之类的算法，规定以很多位前导0开始的二进制数。 根据前导0的位数不同，所需的平均工作量呈指数级增长，而验证工作只需要执行单次哈希运算即可。
 
 For our timestamp network, we implement the proof-of-work by incrementing a nonce in the block until a value is found that gives the block's hash the required zero bits. Once the CPU effort has been expended to make it satisfy the proof-of-work, the block cannot be changed without redoing the work. As later blocks are chained after it, the work to change the block would include redoing all the blocks after it.
 
-在我们的时间戳网络中，通过增加块中的随机数来实现工作量证明，直到找到一个值，满足给定块的哈希所需的前导零位数。 一旦花费了CPU工作量来满足工作量证明，在不重做工作的情况下就不能更改这个块。 当有新的块链接到其后时，更改这个块的成本就要包括重新计算之后的所有块。
+在我们的时间戳网络中，通过增加区块中的随机数来实现工作量证明，直到找到一个值，满足给定区块的哈希所需的前导零位数。 一旦花费了CPU工作量来满足工作量证明，在不重做工作的情况下就不能更改这个区块。 当有新的区块链接到其后时，更改这个区块的成本就要包括重新计算之后的所有区块。
 
 ![](04_01_proof_of_work.jpg)
 
 The proof-of-work also solves the problem of determining representation in majority decision making. If the majority were based on one-IP-address-one-vote, it could be subverted by anyone able to allocate many IPs. Proof-of-work is essentially one-CPU-one-vote. The majority decision is represented by the longest chain, which has the greatest proof-of-work effort invested in it. If a majority of CPU power is controlled by honest nodes, the honest chain will grow the fastest and outpace any competing chains. To modify a past block, an attacker would have to redo the proof-of-work of the block and all blocks after it and then catch up with and surpass the work of the honest nodes. We will show later that the probability of a slower attacker catching up diminishes exponentially as subsequent blocks are added.
 
-工作量证明还解决了在多数决策中确定代表的问题。 如果是基于给每个IP地址一张票（one-IP-address-one-vote）的投票表决，那么能够分配很多IP的人就可以随时颠覆它。 工作量证明的本质是一个CPU给一票（one-CPU-one-vote）。多数决策由最长的链代表，因为这条链上投入的工作量最大。如果半数以上的CPU算力由诚信节点控制，那么诚信链将以最快的速度增长，并超越任何竞争链。假若想要篡改之前的块，攻击者必须重做该块及其后所有块的工作量证明，然后赶上并超越诚信节点的工作。 稍后我们将说明，随着后续块的增加，运算速度较慢的攻击者追赶上的概率将呈指数级下降。
+工作量证明还解决了在多数决策中确定代表的问题。 如果是基于给每个IP地址一张票（one-IP-address-one-vote）的投票表决，那么能够分配很多IP的人就可以随时颠覆它。 工作量证明的本质是一个CPU给一票（one-CPU-one-vote）。多数决策由最长的链代表，因为这条链上投入的工作量最大。如果半数以上的CPU算力由诚信节点控制，那么诚信链将以最快的速度增长，并超越任何竞争链。假若想要篡改之前的区块，攻击者必须重做该区块及其后所有区块的工作量证明，然后赶上并超越诚信节点的工作。 稍后我们将说明，随着后续区块的增加，运算速度较慢的攻击者追赶上的概率将呈指数级下降。
 
 To compensate for increasing hardware speed and varying interest in running nodes over time, the proof-of-work difficulty is determined by a moving average targeting an average number of blocks per hour. If they're generated too fast, the difficulty increases.
 
-为了应对硬件算力的提升，以及随时间推移而增加的运行节点数量， 工作量证明的难度，由每小时平均出块数量的移动平均值确定。 如果生成块的速度加快，则难度就会增加。
+为了应对硬件算力的提升，以及随时间推移而增加的运行节点数量， 工作量证明的难度，由每小时平均出区块数量的移动平均值确定。 如果生成区块的速度加快，则难度就会增加。
 
 
 ## 5. Network
+
+## 5. 网络
 
 The steps to run the network are as follows:
 
@@ -127,9 +129,23 @@ The steps to run the network are as follows:
 - 5) Nodes accept the block only if all transactions in it are valid and not already spent.
 - 6) Nodes express their acceptance of the block by working on creating the next block in the chain, using the hash of the accepted block as the previous hash.
 
-Nodes always consider the longest chain to be the correct one and will keep working on extending it. If two nodes broadcast different versions of the next block simultaneously, some nodes may receive one or the other first. In that case, they work on the first one they received, but save the other branch in case it becomes longer. The tie will be broken when the next proofof- work is found and one branch becomes longer; the nodes that were working on the other branch will then switch to the longer one.
+
+运行网络的步骤如下：
+
+- 1）新交易被广播到所有节点。
+- 2）每个节点将新交易收集到一个区块中。
+- 3）每个节点都在为自己的区块寻找一个很难的工作量证明。
+- 4）当节点找到工作量证明时，它将区块广播给所有节点。
+- 5）只有其中的所有交易都有效，并且对应的币尚未花费时，节点才接受这个区块。
+- 6）节点接受该区块的表达方式，就是在创建下一个区块时引用这个区块的哈希值作为输入。
+
+Nodes always consider the longest chain to be the correct one and will keep working on extending it. If two nodes broadcast different versions of the next block simultaneously, some nodes may receive one or the other first. In that case, they work on the first one they received, but save the other branch in case it becomes longer. The tie will be broken when the next proof-of-work is found and one branch becomes longer; the nodes that were working on the other branch will then switch to the longer one.
+
+节点始终将最长的链视为正确的链，并继续在其基础上努力进行扩展。 如果两个节点同时广播了下一个区块的不同版本，则可能会有一部分节点先收到某个广播，另一部分节点却先收到另一个。 在这种情况下，这些节点都在自己先收到的那个分支上运作，但保留另一个分支以备其变得更长。 当下一个工作证明被找到，并且某个分支变得更长时，关系将断开。 然后，在另一个分支上工作的节点将切换到更长的链上。
 
 New transaction broadcasts do not necessarily need to reach all nodes. As long as they reach many nodes, they will get into a block before long. Block broadcasts are also tolerant of dropped messages. If a node does not receive a block, it will request it when it receives the next block and realizes it missed one.
+
+新的交易广播并不需要到达所有节点。只要广播到多个节点，很快就会进入一个区块。 区块广播还可以容忍消息丢失。 如果节点没有收到某个区块，则会在收到下一个区块时， 意识到丢了一个区块，并自动请求上一个区块的数据。
 
 
 ## 6. Incentive
@@ -290,3 +306,6 @@ We have proposed a system for electronic transactions without relying on trust. 
 
 
 ==
+
+- [GitHub中英文对照版翻译](https://github.com/cncounter/translation/tree/master/shusansheng_2019/04_bitcoin_white_paper)
+- [比特币白皮书（英文版）.pdf](https://bitcoin.org/bitcoin.pdf)
