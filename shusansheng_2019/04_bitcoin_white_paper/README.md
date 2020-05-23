@@ -200,11 +200,17 @@ As such, the verification is reliable as long as honest nodes control the networ
 
 ## 9. Combining and Splitting Value
 
+## 9. 合并与拆分币值
+
 Although it would be possible to handle coins individually, it would be unwieldy to make a separate transaction for every cent in a transfer. To allow value to be split and combined, transactions contain multiple inputs and outputs. Normally there will be either a single input from a larger previous transaction or multiple inputs combining smaller amounts, and at most two outputs: one for the payment, and one returning the change, if any, back to the sender.
+
+虽然可以单独处理每一个币， 但如果将转账中的每一笔钱都单独作为一次交易进行处理，那就太麻烦了。 为了允许币值被拆分和组合，事务包含多个输入和多个输出。 通常情况下，会有来自前一笔交易的较大的单个输入，或者组合多个较小金额的输入，以及最多支持两个输出: 一个输出用于支付，另一个用于找零（如果有的话，表示返回给支出方）。
 
 ![](09_01_combining_and_spiltting_value.jpg)
 
 It should be noted that fan-out, where a transaction depends on several transactions, and those transactions depend on many more, is not a problem here. There is never the need to extract a complete standalone copy of a transaction's history.
+
+应该注意“扇出”的情形， 虽然每次交易依赖于之前的多个交易， 继而又依赖之前的更多交易， 但在这里并不是问题。 因为并不需要提取各个交易的完整历史信息。
 
 
 ## 10. Privacy
