@@ -204,7 +204,7 @@ As such, the verification is reliable as long as honest nodes control the networ
 
 Although it would be possible to handle coins individually, it would be unwieldy to make a separate transaction for every cent in a transfer. To allow value to be split and combined, transactions contain multiple inputs and outputs. Normally there will be either a single input from a larger previous transaction or multiple inputs combining smaller amounts, and at most two outputs: one for the payment, and one returning the change, if any, back to the sender.
 
-虽然可以单独处理每一个币， 但如果将转账中的每一笔钱都单独作为一次交易进行处理，那就太麻烦了。 为了允许币值被拆分和组合，事务包含多个输入和多个输出。 通常情况下，会有来自前一笔交易的较大的单个输入，或者组合多个较小金额的输入，以及最多支持两个输出: 一个输出用于支付，另一个用于找零（如果有的话，表示返回给支出方）。
+虽然可以单独处理每一个币， 但如果将转账中的每一笔钱都单独作为一次交易进行处理，那就太麻烦了。 为了允许币值被拆分和组合，事务包含多个输入和多个输出。 通常情况下，会有来自前一笔交易的较大的单个输入，或者组合多个较小金额的输入，以及最多支持两个输出: 一个输出用于支付， 如果有找零的话，另一个输出用来找零给支出方。
 
 ![](09_01_combining_and_spiltting_value.jpg)
 
@@ -215,11 +215,24 @@ It should be noted that fan-out, where a transaction depends on several transact
 
 ## 10. Privacy
 
+## 10. 隐私保护
+
 The traditional banking model achieves a level of privacy by limiting access to information to the parties involved and the trusted third party. The necessity to announce all transactions publicly precludes this method, but privacy can still be maintained by breaking the flow of information in another place: by keeping public keys anonymous. The public can see that someone is sending an amount to someone else, but without information linking the transaction to anyone. This is similar to the level of information released by stock exchanges, where the time and size of individual trades, the "tape", is made public, but without telling who the parties were.
+
+传统的银行业务模型，通过限制用户和第三方机构对信息的访问来实现一定程度上的隐私保护。
+必须公开广播所有交易的模式不能使用这种方法，但也可以通过在另一个地方中断信息流来保持隐私： 将公钥保持匿名。
+大家都可以看到有人在向其他人汇款，却没办法将交易信息关联到具体的人身上。
+这有点类似于证券交易所公布的信息等级，这个等级，公开的信息包括每次交易的时间和数量，即"tape"，但交易双方的信息却不进行公布。
+
 
 ![](10_01_privacy.jpg)
 
 As an additional firewall, a new key pair should be used for each transaction to keep them from being linked to a common owner. Some linking is still unavoidable with multi-input transactions, which necessarily reveal that their inputs were owned by the same owner. The risk is that if the owner of a key is revealed, linking could reveal other transactions that belonged to the same owner.
+
+
+作为额外的保护措施，每一笔交易都应该使用新的密钥对，以防止将多个交易关联到同一个持有者。
+有多个输入的交易却是没办法避免这种关联，因为这些输入地址肯定都是属于同一个持有者的。
+风险就是，如果有一个密钥暴露了，则这些关联关系会暴露属于同一个人的其他交易。
 
 
 ## 11. Calculations
