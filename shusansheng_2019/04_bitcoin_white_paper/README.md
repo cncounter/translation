@@ -237,11 +237,35 @@ As an additional firewall, a new key pair should be used for each transaction to
 
 ## 11. Calculations
 
+## 11. 计算
+
 We consider the scenario of an attacker trying to generate an alternate chain faster than the honest chain. Even if this is accomplished, it does not throw the system open to arbitrary changes, such as creating value out of thin air or taking money that never belonged to the attacker. Nodes are not going to accept an invalid transaction as payment, and honest nodes will never accept a block containing them. An attacker can only try to change one of his own transactions to take back money he recently spent.
+
+我们来看看攻击者想要比诚实链更快地生成备用链这种场景。 即使他攻击成功，也不会让系统面临任意更改的威胁，比如凭空创造代币，或者获取从未属于过攻击者的金钱。 节点不会接受无效的交易数据作为支付信息，诚实节点永远不会接受包含无效数据的区块。 攻击者只有可能更改他自己的某些交易，恶意取回最近支付的资金。
 
 The race between the honest chain and an attacker chain can be characterized as a Binomial Random Walk. The success event is the honest chain being extended by one block, increasing its lead by +1, and the failure event is the attacker's chain being extended by one block, reducing the gap by -1.
 
+诚实链和攻击者链之间的竞赛可以描述为 “二项式随机游走（Binomial Random Walk）”。 成功事件是诚实链扩展了一个区块，将其领先优势+1，失败事件则是攻击者链扩展了一个区块，从而将差距-1。
+
 The probability of an attacker catching up from a given deficit is analogous to a Gambler's Ruin problem. Suppose a gambler with unlimited credit starts at a deficit and plays potentially an infinite number of trials to try to reach breakeven. We can calculate the probability he ever reaches breakeven, or that an attacker ever catches up with the honest chain, as follows [8]:
+
+攻击者追赶给定亏空的可能性类似于赌徒破产问题（Gambler's Ruin problem）。 假设拥有无限信用的赌徒从亏损开始，可以进行无数次的尝试以达到收支平衡。 我们可以计算出他达到收支平衡（或攻击者赶上诚实链）的可能性，如下所示（参见[8]）：
+
+```
+p = 诚实节点找到下一个区块的概率
+q = 攻击者找到下一个区块的概率
+qz = 攻击者在后面z个区块追赶上的概率
+
+{
+  if p≤q; then qz = 1;
+}
+{
+  if p>q; then qz = (q/p)^z;
+}
+
+```
+
+对应的公式为:
 
 ![](11_01_calculation.jpg)
 
@@ -266,7 +290,9 @@ Rearranging to avoid summing the infinite tail of the distribution...
 
 Converting to C code...
 
-```
+使用C语言来实现的算法为:
+
+```c
 #include <math.h>
 double AttackerSuccessProbability(double q, int z)
 {
@@ -287,6 +313,8 @@ double AttackerSuccessProbability(double q, int z)
 
 Running some results, we can see the probability drop off exponentially with z.
 
+执行代码进行统计，我们可以看到攻击成功的概率随z的增加呈指数下降：
+
 ```
 q=0.1
 z=0 P=1.0000000
@@ -300,6 +328,7 @@ z=7 P=0.0000647
 z=8 P=0.0000173
 z=9 P=0.0000046
 z=10 P=0.0000012
+
 q=0.3
 z=0 P=1.0000000
 z=5 P=0.1773523
@@ -316,6 +345,8 @@ z=50 P=0.0000006
 
 Solving for P less than 0.1%...
 
+求解P小于0.1％的情形...
+
 ```
 P < 0.001
 q=0.10 z=5
@@ -331,10 +362,16 @@ q=0.45 z=340
 
 ## 12. Conclusion
 
+## 12. 总结
+
 We have proposed a system for electronic transactions without relying on trust. We started with the usual framework of coins made from digital signatures, which provides strong control of ownership, but is incomplete without a way to prevent double-spending. To solve this, we proposed a peer-to-peer network using proof-of-work to record a public history of transactions that quickly becomes computationally impractical for an attacker to change if honest nodes control a majority of CPU power. The network is robust in its unstructured simplicity. Nodes work all at once with little coordination. They do not need to be identified, since messages are not routed to any particular place and only need to be delivered on a best effort basis. Nodes can leave and rejoin the network at will, accepting the proof-of-work chain as proof of what happened while they were gone. They vote with their CPU power, expressing their acceptance of valid blocks by working on extending them and rejecting invalid blocks by refusing to work on them. Any needed rules and incentives can be enforced with this consensus mechanism.
+
+本文提出了一种完全不依赖信任关系的电子交易系统。 我们创建了基于签名机制的数字币通用框架，该框架提供了对所有权的强大控制，但是如果没有防止双花的方法，则是不完整的。 为了解决这个问题，我们提出了一种使用工作量证明机制的对等网络来记录交易的公共历史记录，如果诚实节点控制了大部分CPU算力，则攻击者想要更改记录就会变得不切实际。这个网络的结构极度简单却异常强大。各个节点基本上不需要协调就可以立即运行起来。 由于消息不需要路由到特定的地方，只需要尽最大努力进行传播即可，因此也不需要标识这些节点。 节点可以随意离开并重新加入网络，接受工作量证明链作为离开期间发生的事情的证据。 以CPU算力投票，通过扩展来表示接受有效区块，并通过拒绝对其进行操作来拒绝无效区块。 通过这种共识机制的执行，可以进行任何必要的规则和激励措施。
 
 
 ## References
+
+## 参考文献
 
 [1] W. Dai, "b-money," http://www.weidai.com/bmoney.txt, 1998.
 [2] H. Massias, X.S. Avila, and J.-J. Quisquater, "Design of a secure timestamping service with minimal trust requirements," In 20th Symposium on Information Theory in the Benelux, May 1999.
