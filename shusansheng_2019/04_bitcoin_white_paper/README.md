@@ -271,26 +271,42 @@ qz = 攻击者在后面z个区块追赶上的概率
 
 Given our assumption that p > q, the probability drops exponentially as the number of blocks the attacker has to catch up with increases. With the odds against him, if he doesn't make a lucky lunge forward early on, his chances become vanishingly small as he falls further behind.
 
+我们假设 `p > q` 的情况下， 随着区块数量增加，攻击者赶上的概率呈指数下降。 随着他的赔率越来越大，如果他不及早地向前走，那么随着他的落后，其机会就越来越小。
+
 We now consider how long the recipient of a new transaction needs to wait before being sufficiently certain the sender can't change the transaction. We assume the sender is an attacker who wants to make the recipient believe he paid him for a while, then switch it to pay back to himself after some time has passed. The receiver will be alerted when that happens, but the sender hopes it will be too late.
+
+现在，我们来看看新交易的收款方需要等待多长时间，才应该确定付款方无法更改交易。 假设付款方是攻击者，他需要交易完成后达到一定时间才能让收款方相信他已经支付完成，过了这段时间后将其支付的交易取消。 发生这种情况时，收款方会得到通知，但付款方希望为时已晚。
 
 The receiver generates a new key pair and gives the public key to the sender shortly before signing. This prevents the sender from preparing a chain of blocks ahead of time by working on it continuously until he is lucky enough to get far enough ahead, then executing the transaction at that moment. Once the transaction is sent, the dishonest sender starts working in secret on a parallel chain containing an alternate version of his transaction.
 
+收款者生成一个新的密钥对，并在签名之前将公钥提供给发送者。 这可以防止付款人通过不断地进行处理，直到他有幸能够取得足够的领先优势，然后再执行交易，并提前准备区块链。 一旦交易信息发送出去，不诚实的付款方就开始，偷偷在包含其变种交易的并行链上执行计算。
+
 The recipient waits until the transaction has been added to a block and z blocks have been linked after it. He doesn't know the exact amount of progress the attacker has made, but assuming the honest blocks took the average expected time per block, the attacker's potential progress will be a Poisson distribution with expected value:
+
+收款方会一直等待，等到其交易信息被添加到某个区块中， 并在其后链接了 `z` 个区块。 他并不知道攻击者链的确切进展，但可以预期每个诚实区块所花费的平均时间， 攻击者的潜在进度将是具有预期值的泊松分布（Poisson distribution）：
+
+```
+r = z * q/p
+```
 
 ![](11_02_poisson.jpg)
 
 To get the probability the attacker could still catch up now, we multiply the Poisson density for each amount of progress he could have made by the probability he could catch up from that point:
 
-![]()
+为了获得攻击者之后仍然可以追上的可能性，我们将他可以取得的每一个进展量的泊松密度，乘以他从这一点可以追上的可能性：
+
+![](11_03_poisson_density.jpg)
 
 Rearranging to avoid summing the infinite tail of the distribution...
 
-![]()
+重新安排以避免对分布的无限尾求和...
+
+![](11_04_poisson_rearranging.jpg)
 
 
 Converting to C code...
 
-使用C语言来实现的算法为:
+转换为C语言函数:
 
 ```c
 #include <math.h>
@@ -313,7 +329,7 @@ double AttackerSuccessProbability(double q, int z)
 
 Running some results, we can see the probability drop off exponentially with z.
 
-执行代码进行统计，我们可以看到攻击成功的概率随z的增加呈指数下降：
+执行一些样本数据，可以看到攻击成功的概率随z的增加呈指数下降：
 
 ```
 q=0.1
