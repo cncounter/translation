@@ -14,7 +14,7 @@ Can we augment sorted linked lists to make the search faster? The answer is Skip
 
 ## 一、跳跃表简介
 
-### 单链表的查找时间复杂度 `O(n)`
+### 单链表查找的时间复杂度 `O(n)`
 
 已排序的简单链表, 进行元素查找的时间复杂度，最坏情况下为 `O(n)`，因为这时候只能遍历整个链表，在查找时不能跳过任何节点。
 对于平衡二叉查找树（Balanced Binary Search Tree），在与根元素进行一次比较后，就可以跳过差不多一半的节点。
@@ -68,12 +68,22 @@ The time complexity of skip lists can be reduced further by adding more layers. 
 We have already discussed the idea of Skip list and how they work.
 Next, we will be discussing how to insert an element in Skip list.
 
+## 二、插入操作
+
+前面介绍了跳跃表的概念及其工作方式。
+接下来，我们将讨论如何在“跳跃表”中插入元素。
+
 ### Deciding nodes level
 
 Each element in the list is represented by a node, the level of the node is chosen randomly while insertion in the list.
 
 Level does not depend on the number of elements in the node. The level for node is decided by the following algorithm –
 
+### 确定节点级别
+
+列表中的每个元素都由一个节点来表示，在插入时会随机选择节点的级别。
+
+具体的级别与节点中元素的数量无关。 节点级别由以下算法决定-
 
 ```c
 randomLevel()
@@ -85,17 +95,26 @@ return lvl
 ```
 
 
-> MaxLevel is the upper bound on number of levels in the skip list.
+MaxLevel is the upper bound on number of levels in the skip list.
 
 It can be determined as:
+
+
+MaxLevel 是跳跃表的最大层级。可以定义为：
 
 ![](02_01_maxlevel.jpg)
 
 Above algorithm assure that random level will never be greater than MaxLevel. Here p is the fraction of the nodes with level i pointers also having level i+1 pointers and N is the number of nodes in the list.
 
+上面的算法确保随机层次永远不会大于MaxLevel。 在此，`p` 是具有 `i`层指针也具有 `i+1`层指针的节点的分数，`N` 是列表中节点的数量。
+
 ### Node Structure
 
 Each node carries a key and a forward array carrying pointers to nodes of a different level. A level i node carries i forward pointers indexed through 0 to i.
+
+### 节点数据结构
+
+每个节点都包含一个 key 和一个前向数组，其中包含指向不同层级节点的指针。 层级 `i` 的节点，具有从 0到i总共`i`个前向指针。
 
 ![Skip Node](02_02_Insertion-in-node.jpg)
 
@@ -103,13 +122,22 @@ Each node carries a key and a forward array carrying pointers to nodes of a diff
 
 ### Insertion in Skip List
 
-We will start from highest level in the list and compare key of next node of the current node with the key to be inserted. Basic idea is If:
+### 跳跃表的插入操作
 
+We will start from highest level in the list and compare key of next node of the current node with the key to be inserted. Basic idea is If:
 
 1. Key of next node is less than key to be inserted then we keep on moving forward on the same level
 2. Key of next node is greater than the key to be inserted then we store the pointer to current node i at update[i] and move one level down and continue our search.
 
 At the level 0, we will definitely find a position to insert given key. Following is the pseudo code for the insertion algorithm:
+
+首先从最高层级开始，将下一个节点的 key 与要插入的key比较。 基本思路是：
+
+1. 如果下一个节点的 key 小于要插入的key， 继续在同一层级上前进。
+2. 如果下一个节点的 key 大于要插入的key， 在update[i]处保存指向当前节点i的指针， 向下移动一级并继续搜索。
+
+最终在第0级，肯定会找到一个合适的位置，来插入给定的key。 以下是插入算法的伪代码：
+
 
 ```c++
 Insert(list, searchKey)
@@ -132,13 +160,17 @@ for i := 0 to level do
 
 Here update[i] holds the pointer to node at level i from which we moved down to level i-1 and pointer of node left to insertion position at level 0. Consider this example where we want to insert key 17:
 
+在这里，`update[i]` 保存了指向第i层节点的指针，通过该指针我们可以向下移动到第`i-1`层， 最终将节点的指针保留到第0层的插入位置。 考虑以下示例，我们要插入的key=17：
+
 ![Insert node](02_03_Skip-List-3-4.jpg)
 
 
 
 Following is the code for insertion of key in Skip list:
 
-```
+下面是跳跃表插入的C++代码:
+
+```cpp
 // C++ code for inserting element in skip list
 
 #include <bits/stdc++.h>
@@ -325,6 +357,8 @@ int main()
 
 Output:
 
+输出结果为:
+
 ```shells
 Successfully Inserted key 3
 Successfully Inserted key 6
@@ -347,14 +381,21 @@ Level 3: 12 17 25
 
 Python code : <https://www.geeksforgeeks.org/skip-list-set-2-insertion/>
 
+Python 语言对应的代码请参考: <https://www.geeksforgeeks.org/skip-list-set-2-insertion/>
+
 Note: The level of nodes is decided randomly, so output may differ.
 
 Time complexity (Average): `O(log n)`
 Time complexity (Worst): `O(n)`
 
 In next article we will discuss searching and deletion in Skip List.
-References
 
+注意： 节点的层级是随机决定的，因此输出可能会略有不同。
+
+时间复杂度（平均）： `O(log n)`
+时间复杂度（最差）： `O(n)`
+
+下一节，我们将讨论“跳跃表”的查找和删除。
 
 
 
