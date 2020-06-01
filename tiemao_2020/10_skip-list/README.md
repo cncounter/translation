@@ -398,12 +398,18 @@ In next article we will discuss searching and deletion in Skip List.
 下一节，我们将讨论“跳跃表”的查找和删除。
 
 
-
 ## Skip List | Set 3 (Searching and Deletion)
 
 we discussed the structure of skip nodes and how to insert an element in the skip list.
 
 we will discuss how to search and delete an element from skip list.
+
+
+## 三、跳跃表查找与删除操作
+
+上一节我们讨论了跳跃表节点的结构，以及如何在跳跃表中插入元素。
+
+下面来看看如何从跳跃表查找与删除元素。
 
 ### Searching an element in Skip list
 
@@ -415,6 +421,16 @@ Searching an element is very similar to approach for searching a spot for insert
 At the lowest level (0), if the element next to the rightmost element (update[0]) has key equal to the search key, then we have found key otherwise failure.
 
 Following is the pseudo code for searching element:
+
+### 在跳跃表中查找元素
+
+查找元素与插入元素的算法非常相似。 基本思想是：
+
+1. 如果下一个节点的 key 小于要查找的key， 继续在同一层级上前进。
+2. 如果下一个节点的 key 大于要查找的key， 在update[i]处保存指向当前节点i的指针， 向下移动一层并继续搜索。
+
+
+最终在第0级，一直往右边找，如果在某个位置找到等于搜索的key，则查找成功。否则就是找不到， 下面是伪代码:
 
 ```c
 Search(list, searchKey)
@@ -428,6 +444,8 @@ else return failure
 
 Consider this example where we want to search for key 17:
 
+例如要查找key=17的情形：
+
 ![](03_01_Skip-List-1.jpg)
 
 
@@ -436,6 +454,14 @@ Consider this example where we want to search for key 17:
 Deletion of an element k is preceded by locating element in the Skip list using above mentioned search algorithm. Once the element is located, rearrangement of pointers is done to remove element form list just like we do in singly linked list. We start from lowest level and do rearrangement until element next to update[i] is not k.
 
 After deletion of element there could be levels with no elements, so we will remove these levels as well by decrementing the level of Skip list. Following is the pseudo code for deletion:
+
+### 从跳跃表中删除元素
+
+在删除元素k之前，使用前面介绍的搜索算法来定位元素。
+元素定位后，就像单链表操作一样，即可完成指针重排以删除元素。
+我们从最低级别开始进行重排，直到 update[i] 旁边的元素不是k。
+
+删除元素后，可能某些层会没有元素，因此需要减少“跳跃表”的层级来删除这些级别。 以下是删除的伪代码：
 
 ```c
 Delete(list, searchKey)
@@ -456,6 +482,8 @@ if x -> key = searchKey then
 
 Consider this example where we want to delete element 6:
 
+例如删除key=6的元素：
+
 ![](03_02_Skip-List.jpg)
 
 
@@ -463,7 +491,11 @@ Here at level 3, there is no element (arrow in red) after deleting element 6. So
 
 Following is the code for searching and deleting element from Skip List:
 
-```c++
+可以看到，删除元素6之后，第3层一个元素都没有了（看红色箭头）。 因此，需要将跳跃表的层数减1。
+
+以下是用于从跳跃表中搜索和删除元素的代码：
+
+```cpp
 // C++ code for searching and deleting element in skip list
 
 #include <bits/stdc++.h>
@@ -741,6 +773,8 @@ int main()
 
 Output:
 
+输出结果为：
+
 ```shell
 Successfully Inserted key 3
 Successfully Inserted key 6
@@ -768,15 +802,22 @@ Level 2: 17 21
 
 Python code: <https://www.geeksforgeeks.org/skip-list-set-3-searching-deletion/>
 
+Python代码请参考: <https://www.geeksforgeeks.org/skip-list-set-3-searching-deletion/>
+
 
 Time complexity of both searching and deletion is same:
 Time complexity (Average): `O(log n)`
 Time complexity (Worst): `O(n)`
 
+查找和删除元素的时间复杂度是一样的：
 
+时间复杂度（平均）： `O(log n)`
+时间复杂度（最差）： `O(n)`
 
 
 ## References
+
+## 参考文档
 
 
 - PDF File: <ftp://ftp.cs.umd.edu/pub/skipLists/skiplists.pdf>
