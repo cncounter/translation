@@ -1,13 +1,12 @@
 # Bitcoin: A Peer-to-Peer Electronic Cash System
 
-# 比特币: 点对点电子现金系统
+# 比特币: 基于对等网络的电子现金系统
 
-> 比特币白皮书(英文版): [bitcoin.pdf](https://bitcoin.org/bitcoin.pdf)
+> [比特币白皮书_英文版.pdf](https://bitcoin.org/bitcoin.pdf)
 
-> 作者:
-- Satoshi Nakamoto
-- satoshin@gmx.com
-- www.bitcoin.org
+- 作者: Satoshi Nakamoto(聪·中本)
+- 邮箱: satoshin@gmx.com
+- 网站: www.bitcoin.org
 
 
 > ## Abstract.
@@ -21,14 +20,14 @@ The network itself requires minimal structure.
 Messages are broadcast on a best effort basis, and nodes can leave and rejoin the network at will, accepting the longest proof-of-work chain as proof of what happened while they were gone.
 >
 > ## 摘要:
-比特币是一种纯粹的点对点电子现金系统, 可以通过在线支付方式， 直接将资金从一方支付给另一方，而无需通过银行等金融机构。
-数字签名提供了一部分的解决方案，但如果仍然需要一个可信的第三方来防止双花，那么这个系统最大的优势就会丧失。
-我们提出了一种通过对等网络来解决双花问题的解决方案。
-这个网络通过将交易信息散列到正在进行的基于散列的工作量证明链中，对交易进行时间戳标记，从而形成一条记录，除非重做工作量证明，否则无法更改该记录。
-最长的链不仅可以证明所见证事件的顺序，还可以证明它来自最大的CPU算力。
-只要大部分CPU算力不被攻击网络的节点控制，它们就会产生最长的链并超过攻击者。
-网络本身需要的结构很小。
-消息以尽力而为的方式进行广播，节点可以随意离开并重新加入网络，并接受最长的工作量证明链作为消息消失时发生的证据。
+比特币是一种纯粹的点对点电子现金系统, 可以通过在线支付方式，直接将资金支付给对方，而无需银行等金融机构。
+数字签名技术提供了一部分问题的解决方案，但如果还需要引入第三方可信机构来阻止双花问题的话，那就将自身最大的优势给放弃了。
+我们提出了一种很棒的方案，使用对等网络来解决双花问题。
+在这个网络系统中，会将交易信息进行哈希运算，并存放到当前正在进行的、基于哈希的工作量证明链之中，从而对该交易生成时间戳标记，进而形成一条不可更改的记录（除非重做工作量证明，否则都不可篡改）。
+最长的链不仅能证明其所见证事件的顺序，还说明它来自最强大的CPU算力池。
+只要大部分CPU算力由诚实节点控制，不与攻击网络的节点合作，它们就会产生最长的链并超过攻击者。
+网络本身只需要最小化的结构。
+消息以尽力而为的方式进行广播，每个节点都可以随时离开，也可以随时加入网络，只需要接受最长的工作量证明链, 作为其未参与时期所发生事件的基础即可。
 
 
 ## 1. Introduction
