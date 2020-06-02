@@ -9,27 +9,26 @@
 - satoshin@gmx.com
 - www.bitcoin.org
 
+
 > ## Abstract.
-
-> ## 摘要.
-
-> A purely peer-to-peer version of electronic cash would allow online payments to be sent directly from one party to another without going through a financial institution.
-> Digital signatures provide part of the solution, but the main benefits are lost if a trusted third party is still required to prevent double-spending.
-> We propose a solution to the double-spending problem using a peer-to-peer network.
-> The network timestamps transactions by hashing them into an ongoing chain of hash-based proof-of-work, forming a record that cannot be changed without redoing the proof-of-work.
-> The longest chain not only serves as proof of the sequence of events witnessed, but proof that it came from the largest pool of CPU power.
-> As long as a majority of CPU power is controlled by nodes that are not cooperating to attack the network, they'll generate the longest chain and outpace attackers.
-> The network itself requires minimal structure.
-> Messages are broadcast on a best effort basis, and nodes can leave and rejoin the network at will, accepting the longest proof-of-work chain as proof of what happened while they were gone.
-
-> 比特币是一种纯粹的点对点电子现金系统, 可以通过在线支付方式， 直接将资金从一方支付给另一方，而无需通过银行等金融机构。
-> 数字签名提供了一部分的解决方案，但如果仍然需要一个可信的第三方来防止双花，那么这个系统最大的优势就会丧失。
-> 我们提出了一种通过对等网络来解决双花问题的解决方案。
-> 这个网络通过将交易信息散列到正在进行的基于散列的工作量证明链中，对交易进行时间戳标记，从而形成一条记录，除非重做工作量证明，否则无法更改该记录。
-> 最长的链不仅可以证明所见证事件的顺序，还可以证明它来自最大的CPU算力。
-> 只要大部分CPU算力不被攻击网络的节点控制，它们就会产生最长的链并超过攻击者。
-> 网络本身需要的结构很小。
-> 消息以尽力而为的方式进行广播，节点可以随意离开并重新加入网络，并接受最长的工作量证明链作为消息消失时发生的证据。
+A purely peer-to-peer version of electronic cash would allow online payments to be sent directly from one party to another without going through a financial institution.
+Digital signatures provide part of the solution, but the main benefits are lost if a trusted third party is still required to prevent double-spending.
+We propose a solution to the double-spending problem using a peer-to-peer network.
+The network timestamps transactions by hashing them into an ongoing chain of hash-based proof-of-work, forming a record that cannot be changed without redoing the proof-of-work.
+The longest chain not only serves as proof of the sequence of events witnessed, but proof that it came from the largest pool of CPU power.
+As long as a majority of CPU power is controlled by nodes that are not cooperating to attack the network, they'll generate the longest chain and outpace attackers.
+The network itself requires minimal structure.
+Messages are broadcast on a best effort basis, and nodes can leave and rejoin the network at will, accepting the longest proof-of-work chain as proof of what happened while they were gone.
+>
+> ## 摘要:
+比特币是一种纯粹的点对点电子现金系统, 可以通过在线支付方式， 直接将资金从一方支付给另一方，而无需通过银行等金融机构。
+数字签名提供了一部分的解决方案，但如果仍然需要一个可信的第三方来防止双花，那么这个系统最大的优势就会丧失。
+我们提出了一种通过对等网络来解决双花问题的解决方案。
+这个网络通过将交易信息散列到正在进行的基于散列的工作量证明链中，对交易进行时间戳标记，从而形成一条记录，除非重做工作量证明，否则无法更改该记录。
+最长的链不仅可以证明所见证事件的顺序，还可以证明它来自最大的CPU算力。
+只要大部分CPU算力不被攻击网络的节点控制，它们就会产生最长的链并超过攻击者。
+网络本身需要的结构很小。
+消息以尽力而为的方式进行广播，节点可以随意离开并重新加入网络，并接受最长的工作量证明链作为消息消失时发生的证据。
 
 
 ## 1. Introduction
