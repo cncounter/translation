@@ -144,17 +144,29 @@ All the tools that we've shown in the previous sections are intended to capture 
 
 For these cases, Java provides the `HeapDumpOnOutOfMemoryError` command-line option that generates a heap dump when a `java.lang.OutOfMemoryError` is thrown:
 
+
+## 3. 自动创建堆内存转储
+
+前面介绍的工具都是手工执行的，在某些情况下，可能会希望在发生内存溢出错误 `java.lang.OutOfMemoryError` 时自动创建堆内存转储，以方便事后进行排查分析。 JVM提供了一个命令行选项 `HeapDumpOnOutOfMemoryError`， 使用的格式为：
+
+
 ```
 java -XX:+HeapDumpOnOutOfMemoryError
 ```
 
 By default, it stores the dump in a `java_pid.hprof` file in the directory where we're running the application. If we want to specify another file or directory we can set it in the `HeapDumpPath` option:
 
+如果不用 `HeapDumpPath` 选项指定存储路径，则自动创建的转储文件会保存到启动目录下，名称为: `java_pid<pid>.hprof`。
+
+指定 `HeapDumpPath` 参数的示例为:
+
 ```
 java -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=<file-or-dir-path>
 ```
 
 When our application runs out of memory using this option, we'll be able to see in the logs the created file that contains the heap dump:
+
+如果程序运行过程中发生内存溢出错误，则会在日志中看到类似下面的内容：
 
 ```
 java.lang.OutOfMemoryError: Requested array size exceeds VM limit
@@ -170,9 +182,18 @@ As we can see, this option is very useful and there is no overhead when running 
 
 Finally, this option can also be specified at runtime by using the `HotSpotDiagnostic` MBean. To do so, we can use JConsole and set the `HeapDumpOnOutOfMemoryError` VM option to `true`:
 
+这里自动创建的文件名称为 `java_pid12587.hprof`。
+
+你会发现，这个选项非常有用，而且对正常运行的程序来说并没有什么开销。 因此强烈建议开启该选项，特别是在生产环境中。
+
+当然，这个选项也可以通过 `HotSpotDiagnostic` MBean 来动态设置，比如在JMX客户端之中设置 `HeapDumpOnOutOfMemoryError` 选项的值为 `true`:
+
 [![img](https://www.baeldung.com/wp-content/uploads/2018/09/jconsole-setvmoption-1.png)](https://www.baeldung.com/wp-content/uploads/2018/09/jconsole-setvmoption-1.png)
 
 We can find more information about MBeans and JMX in this [article](https://www.baeldung.com/java-management-extensions).
+
+MBeans 和 JMX 的更多信息请参考: https://www.baeldung.com/java-management-extensions
+
 
 ## 4. JMX
 
