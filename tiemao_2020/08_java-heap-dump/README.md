@@ -1,5 +1,7 @@
 # Different Ways to Capture Java Heap Dumps
 
+# JVM堆内存转储的获取方法
+
 ## 1. Introduction
 
 In this article, we'll show different ways to capture a heap dump in Java.
@@ -14,6 +16,15 @@ We can open and analyze these files using tools like jhat or JVisualVM. Also, fo
 
 In the next sections, we'll go through multiple tools and approaches to generate a heap dump and we'll show the main differences between them.
 
+## 1. 堆内存转储简介
+
+堆内存转储（Heap Dump），是指在某一个时刻的JVM堆内存快照，一般使用二进制格式的 hprof 文件来保存，常用于分析内存泄漏问题，以及优化Java程序的内存占用。
+
+内存转储的分析工具包括: jhat， JVisualVM，以及基于 Eclipse 的 [MAT](https://www.eclipse.org/mat/).
+
+下面依次介绍各种获取堆内存转储的方法。
+
+
 ## 2. JDK Tools
 
 The JDK comes with several tools to capture heap dumps in different ways.
@@ -24,11 +35,19 @@ Therefore, we can start them from the command line as long as this directory is 
 
 In the next sections, we'll show how to use these tools in order to capture heap dumps.
 
+## 2. JDK内置工具介绍
+
+JDK自带了多种获取堆内存转储的工具，这些内置工具都位于 `JDK_HOME/bin` 目录下，一般来说这个目录都被包含在系统PATH路径中，所以可以直接在命令行中调用。
+
 ### 2.1. jmap
 
 jmap is a tool to print statistics about the memory in a running JVM. We can use it for local or remote processes.
 
 To capture a heap dump using jmap we need to use the `dump` option:
+
+### 2.1 `jmap` 工具简介
+
+`jmap` 可用于打印JVM内存的统计信息，而且支持访问本地JVM，或者远程JVM。 获取堆内存转储的使用方式为：
 
 ```
 jmap -dump:[live],format=b,file=<file-path> <pid>
@@ -43,6 +62,15 @@ Along with that option, we should specify several parameters:
 
 An example would be like this:
 
+在 `-dump:` 选项后面， 可以指定以下参数：
+
+- `live`: 可选；指定该选项，则表示只输出存活对象，并清除其他可以被GC的部分。
+- `format=b`: 指定 dump 文件为二进制格式(binary format). 在堆内存转储时，不指定也默认是二进制格式。
+- `file`:  指定内存转储文件的保存位置。
+- `pid`: 指定Java进程的pid。
+
+使用示例如下:
+
 ```
 jmap -dump:live,format=b,file=/tmp/dump.hprof 12587
 ```
@@ -53,6 +81,8 @@ Remember that we can easily get the `pid` of a Java process by using the `jps` c
 
 Therefore, in some cases, it may be preferable to use other tools instead.
 
+其中，pid 我们一般通过 `jps` 命令，或者  `jcmd` 命令得到。
+
 ### 2.2. jcmd
 
 jcmd is a very complete tool which works by sending command requests to the JVM. We have to use it in the same machine where the Java process is running.
@@ -61,17 +91,26 @@ jcmd is a very complete tool which works by sending command requests to the JVM.
 
 We can use it to get a heap dump just by specifying the `pid` of the process and the output file path:
 
+### 2.2 `jcmd` 工具简介
+
+`jcmd` 是一个全能的命令行诊断工具，其工作方式是将要执行的命令发送给具体的JVM实例，所以只能在本地机器上使用。
+
+其中的一个命令是 `GC.heap_dump`， 可以用来获取堆内存转储，内存转储都是二进制格式，使用方式为：
+
 ```
 jcmd <pid> GC.heap_dump <file-path>
 ```
 
 We can execute it with the same parameters that we used before:
 
+类似地，使用示例如下：
+
 ```
 jcmd 12587 GC.heap_dump /tmp/dump.hprof
 ```
 
 As with jmap, the dump generated is in binary format.
+
 
 ### 2.3. JVisualVM
 
@@ -81,9 +120,23 @@ The GUI is simple but very intuitive and easy to use.
 
 One of its many options allows us to capture a heap dump. If we right-click on a Java process and select the `“Heap Dump”` option, the tool will create a heap dump and open it in a new tab:
 
-[![img](https://www.baeldung.com/wp-content/uploads/2018/09/dump-menu-cropped-1.png)](https://www.baeldung.com/wp-content/uploads/2018/09/dump-menu-cropped-1.png)
+![img](https://www.baeldung.com/wp-content/uploads/2018/09/dump-menu-cropped-1.png)
 
 Notice that we can find the path of the file created in the “Basic Info” section.
+
+### 2.3 JVisualVM 工具
+
+JVisualVM是一款图形界面工具，可用于监控、分析、诊断和调优Java应用程序。
+
+界面简单优雅，却又功能强大，而且支持众多插件。
+
+其中的一个功能是抓取堆内存转储，打开程序，在可见的Java进程上点击鼠标右键，选择“堆内存转储（Heap Dump）”， 即可创建新的内存转储文件，并自动在新标签页中打开。
+
+![img](https://www.baeldung.com/wp-content/uploads/2018/09/dump-menu-cropped-1.png)
+
+当然，我们可以在基本信息（Basic Info）中看到转储文件的目录信息。
+
+
 
 ## 3. Capture a Heap Dump Automatically
 
