@@ -204,15 +204,36 @@ The last approach that we'll cover in this article is using JMX. We'll use the `
 
 In the next sections, we'll show 2 different ways to invoke this method in order to capture a heap dump.
 
+## 4. JMX方式
+
+最后，我们来看看JMX怎么获取堆内存转储。 本质上是使用 `HotSpotDiagnostic` MBean，其提供了一个 `dumpHeap` 方法， 参数为：
+
+- `outputFile`: 转储文件的路径， 一般以 `.hprof` 后缀结尾。
+- `live`: 如果设置为 `true`, 则只转储存活对象, 和 `jmap` 的使用类似。
+
+下面是使用示例：
+
+
 ### 4.1. `JConsole`
 
 The easiest way to use the `HotSpotDiagnostic` MBean is by using a JMX client such as JConsole.
 
 If we open `JConsole` and connect to a running Java process, we can navigate to the `MBeans` tab and find the `HotSpotDiagnostic` under `com.sun.management.` In operations, we can find the `dumpHeap` method that we've described before:
 
-[![img](https://www.baeldung.com/wp-content/uploads/2018/09/jconsole-dump-1.png)](https://www.baeldung.com/wp-content/uploads/2018/09/jconsole-dump-1.png)
+
+### 4.1. JMX客户端工具
+
+`HotSpotDiagnostic` MBean 最容易操作的方式是图形界面客户端， 例如 `JConsole`， `JVisualVM` 等。
+
+打开 `JConsole`, 连接到指定的Java进程， 切换到 `MBeans` 页签， 定位到 `com.sun.management.` 包下面的 `HotSpotDiagnostic`， 执行对应的 `dumpHeap` 方法。
+
+![img](https://www.baeldung.com/wp-content/uploads/2018/09/jconsole-dump-1.png)
 
 As shown, we just need to introduce the parameters `outputFile` and `live` into the `p0` and `p1` text fields in order to perform the `dumpHeap` operation.
+
+分别在 `p0` 和  `p1` 槽位填写对应的参数 `outputFile`, `live`, 然后执行 `dumpHeap` 即可。
+
+
 
 ### 4.2. Programmatic Way
 
@@ -222,7 +243,12 @@ To do so, we first need to get an `MBeanServer` instance in order to get an MBea
 
 Let's see it in code:
 
-```
+
+### 4.2. 编程方式调用
+
+首先，我们需要获取 `MBeanServer` 实例，然后再来获取系统注册的 `HotSpotDiagnosticMXBean` MBean， 同样调用 `dumpHeap` 方法， 示例代码如下:
+
+```java
 public static void dumpHeap(String filePath, boolean live) throws IOException {
     MBeanServer server = ManagementFactory.getPlatformMBeanServer();
     HotSpotDiagnosticMXBean mxBean = ManagementFactory.newPlatformMXBeanProxy(
@@ -232,6 +258,8 @@ public static void dumpHeap(String filePath, boolean live) throws IOException {
 ```
 
 Notice that an hprof file cannot be overwritten. Therefore, we should take this into account when creating an application that prints heap dumps. If we fail to do so we'll get an exception:
+
+请注意 `hprof` 文件不能覆盖， 如果文件已存在，则会报错：
 
 ```
 Exception in thread "main" java.io.IOException: File exists
@@ -248,4 +276,15 @@ As a rule of thumb, we should remember to use the `HeapDumpOnOutOfMemoryError` o
 As always, the full source code of the examples is available [over on GitHub](https://github.com/eugenp/tutorials/tree/master/core-java-modules/core-java-perf).
 
 
-<https://www.baeldung.com/java-heap-dump-capture>
+## 5. 小结
+
+本文介绍了各种获取堆内存转储的方法。 简单总结一下：
+
+1. 强烈建议指定JVM启动参数 `HeapDumpOnOutOfMemoryError`.
+2. 如果 `jmap` 不能使用，可以使用其他的替代方式，例如  jcmd、JVisualVM、JMX等等。
+3. 本文对应的代码请参考: [GitHub仓库](https://github.com/eugenp/tutorials/tree/master/core-java-modules/core-java-perf).
+
+
+
+
+- https://www.baeldung.com/java-heap-dump-capture
