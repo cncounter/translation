@@ -1,6 +1,6 @@
 
 
-DataDog集成MySQL的配置：
+# DataDog集成MySQL的配置：
 
 > https://docs.datadoghq.com/integrations/mysql/
 

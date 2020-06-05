@@ -183,6 +183,11 @@ service mysql restart
 
 
 
+注意安全组件的限制：
+
+- SeLinux
+- ACL
+- AppArmor
 
 
 

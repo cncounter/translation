@@ -31,17 +31,23 @@ GitHub地址: <https://github.com/cncounter/translation>
 * [05.Linux系统命令 - 查看内存使用情况](./tiemao_2020/05_linux-memory-usage/README.md)【已完成】
 * [06.G1垃圾收集器生产环境调优](./tiemao_2020/06_g1_gc_tuning/README.md)【已完成】
 * [07.Java坑人面试题系列: 线程/线程池（高级难度）](./tiemao_2020/07_quiz-executor-service/README.md)【已完成】
-* [08.Different Ways to Capture Java Heap Dumps](./tiemao_2020/08_java-heap-dump/README.md)
-* [09.Java线程Dump](./tiemao_2020/09_java-thread-dump/README.md)
+* [08.Different Ways to Capture Java Heap Dumps](./tiemao_2020/08_java-heap-dump/README.md)【粗翻】
+* [09.Java线程Dump](./tiemao_2020/09_java-thread-dump/README.md)【粗翻】
 * [10.高级数据结构: 跳跃表（Skip List）](./tiemao_2020/10_skip-list/README.md)
 * [11.提高性能的JVM参数简介](./tiemao_2020/11_jvm-arguments-of-highly-effective/README.md)
 * [12.Introduction to the POM](./tiemao_2020/12_introduction-to-the-pom/README.md)
-* [13.为什么问题诊断和排查这么困难](./tiemao_2020/13_why-troubleshooting-so-hard/README.md)
+* [13.为什么问题诊断和排查这么困难](./tiemao_2020/13_why-troubleshooting-so-hard/README.md)【已完成】
 * [14.Micrometer Documentation](./tiemao_2020/14_micrometer_intro/README.md)
-* [15.]()
-* [16.]()
+* [15.DataDog集成MySQL的配置](./tiemao_2020/15_datadog_mysql/README.md)【已完成】
+* [16.迁移Ubuntu下MySQL的data目录](./tiemao_2020/16_mysql_data_dir/README.md)【已完成】
 * [17.Java坑人面试题系列: 变量声明（中级难度）](./tiemao_2020/17_quiz-variable-declaration/README.md)【已完成】
-* [18.]()
+* [18.Using MySQL UNIQUE Index](./tiemao_2020/18_mysql-unique-index/README.md)
+* [19.quiz-advanced-collectors](./tiemao_2020/19_quiz-advanced-collectors/README.md)
+* [20.Real User Monitoring vs. Synthetic Monitoring](./tiemao_2020/20_monitoring-vs-synthetic-monitoring/README.md)
+* [21.Introduction to JVM Code Cache](./tiemao_2020/21_jvm-code-cache/README.md)
+* [22.Java 9 Module System](./tiemao_2020/22_Java_9_Module_System/README.md)
+* [23.Z Garbage Collector](./tiemao_2020/23_zgc_intro/README.md)
+* [24.Python Tutorial](./tiemao_2020/24_python-tutorial/README.md)
 
 
 
