@@ -263,3 +263,4 @@ Talks
 
 - https://wiki.openjdk.java.net/display/zgc
 - https://openjdk.java.net/jeps/333
+- http://www.herongyang.com/Java-GC/
