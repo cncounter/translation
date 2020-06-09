@@ -84,29 +84,27 @@ For more detailed logging, use the following options:
 
 See below for more information on these and additional options.
 
-请参考下文获取更多选项的说明信息。
+请参考下文获取更多参数的说明信息。
 
 ## Configuration & Tuning
 
-## 选项配置与性能优化
+## 参数配置与性能优化
 
 ### Overview
 
-### 概述
+### 配置参数
 
 The following JVM options can be used with ZGC:
 
-下面是使用ZGC时支持的JVM选项：
+下面是使用ZGC时支持的JVM参数：
 
+> JVM通用的GC参数
 
 |--|--|--|
-| JVM通用的GC选项 | ZGC 选项 | ZGC诊断调优选项 (需要使用 -XX:+UnlockDiagnosticVMOptions)  |
-| -XX:MinHeapSize| | |
-| -Xms| | |
-| -XX:InitialHeapSize| | |
-| -Xms| | |
-| -XX:MaxHeapSize| | |
-| -Xmx| | |
+| JVM通用的GC参数 | | |
+| -XX:MinHeapSize, -Xms| | |
+| -XX:InitialHeapSize, -Xms| | |
+| -XX:MaxHeapSize, -Xmx| | |
 | -XX:SoftMaxHeapSize| | |
 | -XX:ConcGCThreads| | |
 | -XX:ParallelGCThreads| | |
@@ -115,6 +113,11 @@ The following JVM options can be used with ZGC:
 | -XX:UseNUMA| | |
 | -XX:SoftRefLRUPolicyMSPerMB| | |
 | -XX:AllocateHeapAt| | |
+
+> ZGC配置参数
+
+|--|--|--|
+| | ZGC 参数 | |
 | | -XX:ZAllocationSpikeTolerance| |
 | | -XX:ZCollectionInterval| |
 | | -XX:ZFragmentationLimit| |
@@ -122,6 +125,11 @@ The following JVM options can be used with ZGC:
 | | -XX:ZProactive| |
 | | -XX:ZUncommit| |
 | | -XX:ZUncommitDelay| |
+
+> ZGC诊断调优参数
+
+|--|--|--|
+| | | ZGC诊断调优参数 (需要在前面指定 -XX:+UnlockDiagnosticVMOptions)  |
 | | | -XX:ZStatisticsInterval|
 | | | -XX:ZVerifyForwarding|
 | | | -XX:ZVerifyMarking|
@@ -137,7 +145,7 @@ The following JVM options can be used with ZGC:
 
 Use the `-XX:+UnlockExperimentalVMOptions -XX:+UseZGC` options to enable ZGC.
 
-当前，请使用 `-XX:+UnlockExperimentalVMOptions -XX:+UseZGC` 选项来开启ZGC。
+当前，请使用 `-XX:+UnlockExperimentalVMOptions -XX:+UseZGC` 参数来开启ZGC。
 
 ### Setting Heap Size
 
