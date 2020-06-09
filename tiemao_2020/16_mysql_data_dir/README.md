@@ -192,6 +192,16 @@ service mysql restart
 
 
 
+### 设置时区
+
+```
+select now();
+
+set global time_zone = '+8:00';
+
+flush privileges; 
+```
+
 
 
 

@@ -1,11 +1,22 @@
 # JAR File Specification
 
+# Java规范系列：JAR文件规范
+
 [TOC]
 
 
 ## Introduction
 
-JAR file is a file format based on the popular ZIP file format and is used for aggregating many files into one. A JAR file is essentially a zip file that contains an optional META-INF directory. A JAR file can be created by the command-line jar tool, or by using the [`java.util.jar`](https://docs.oracle.com/en/java/javase/14/docs/api/java.base/java/util/jar/package-summary.html) API in the Java platform. There is no restriction on the name of a JAR file, it can be any legal file name on a particular platform.
+JAR file is a file format based on the popular ZIP file format and is used for aggregating many files into one. A JAR file is essentially a zip file that contains an optional `META-INF` directory. A JAR file can be created by the command-line jar tool, or by using the [`java.util.jar`](https://docs.oracle.com/en/java/javase/14/docs/api/java.base/java/util/jar/package-summary.html) API in the Java platform. There is no restriction on the name of a JAR file, it can be any legal file name on a particular platform.
+
+## JAR文件格式
+
+JAR文件格式基于ZIP文件规范，用于将多个文件聚合到一个文件中。
+本质上JAR文件就是一个zip文件，其中包含一个可选的 `META-INF` 目录。
+可以通过命令行工具 `jar` 打包jar文件, 也可以在程序中使用[`java.util.jar`](https://docs.oracle.com/en/java/javase/14/docs/api/java.base/java/util/jar/package-summary.html)里面的工具类来创建jar文件。
+JAR文件的名称没有限制，只要符合所在平台上的文件命名规则即可。
+
+![](01_jar_meta_inf.jpg)
 
 ## Modular JAR files
 
@@ -15,11 +26,32 @@ A modular JAR file deployed on the module path, as opposed to the class path, is
 
 A non-modular JAR file deployed on the module path is an *automatic module*. If the JAR file has a main attribute `Automatic-Module-Name` (see [Main Attributes](https://docs.oracle.com/en/java/javase/14/docs/specs/jar/jar.html#main-attributes)) then the attribute's value is the module name, otherwise the module name is derived from the name of the JAR file as specified in [`ModuleFinder.of(Path...)`](https://docs.oracle.com/en/java/javase/14/docs/api/java.base/java/lang/module/ModuleFinder.html#automatic-modules).
 
+## 模块化JAR文件
+
+模块化JAR文件也是JAR文件格式，其内部的顶级路径（根路径）下有一个模块描述文件 `module-info.class`。
+模块描述文件是模块声明的二进制形式。  更详细的模块化JAR文件定义请参考: [multi-release JAR files](https://docs.oracle.com/en/java/javase/14/docs/specs/jar/jar.html#multi-release-jar-files)。
+
+相对于类路径，部署在模块路径下的模块化JAR文件是 **显式的** 模块。
+依赖项和服务提供者都在模块描述符中声明。
+如果将模块化JAR文件部署到类路径中，则其行为就如同非模块化的JAR文件一样。
+
+部署在模块路径下的非模块化JAR文件则是 **自动模块**。
+如果这个JAR文件具有主属性 [`Automatic-Module-Name`](https://docs.oracle.com/en/java/javase/14/docs/specs/jar/jar.html#main-attributes)，那么模块名称就是该属性的值，否则模块名称根据 Jar 文件名推导得出，具体推导规则请参考: [`ModuleFinder.of(Path...)`](https://docs.oracle.com/en/java/javase/14/docs/api/java.base/java/lang/module/ModuleFinder.html#automatic-modules).
+
 ## Multi-release JAR files
 
 A multi-release JAR file allows for a single JAR file to support multiple major versions of Java platform releases. For example, a multi-release JAR file can depend on both the Java 8 and Java 9 major platform releases, where some class files depend on APIs in Java 8 and other class files depend on APIs in Java 9. This enables library and framework developers to decouple the use of APIs in a specific major version of a Java platform release from the requirement that all their users migrate to that major version. Library and framework developers can gradually migrate to and support new Java features while still supporting the old features.
 
 A multi-release JAR file is identified by the main attribute:
+
+## 多版本JAR文件
+
+多版本JAR文件，允许单个JAR文件支持多个JDK版本。
+例如，一个多版本的JAR文件可以同时依赖Java 8和Java 9版本，其中，有一些类文件是兼容Java 8中的API，另一些类文件则兼容Java 9的API。
+这个特性主要是第三方库和框架的开发人员在使用，以便兼容不同的JDK版本。
+第三方库和框架的开发人员可以逐步迁移并支持新的Java特性，同时也兼容旧的特性。
+
+多版本JAR文件由main属性来标识：
 
 ```
 Multi-Release: true
@@ -29,29 +61,59 @@ declared in the main section of the [JAR Manifest](https://docs.oracle.com/en/ja
 
 Classes and resource files dependent on a major version, 9 or greater, of a Java platform release may be located under a *versioned directory* instead of under the top-level (or root) directory. The versioned directory is located under the [the META-INF directory](https://docs.oracle.com/en/java/javase/14/docs/specs/jar/jar.html#the-meta-inf-directory) and is of the form:
 
+在 [JAR Manifest](https://docs.oracle.com/en/java/javase/14/docs/specs/jar/jar.html#jar-manifest) 的main这一节中声明。
+
+依赖于Java 9 或更高版本的类和资源文件可以放到 **特定版本目录** 下，而不是顶级目录中。
+版本目录位于 [META-INF](https://docs.oracle.com/en/java/javase/14/docs/specs/jar/jar.html#the-meta-inf-directory) 下面，其格式为：
+
 ```
 META-INF/versions/N
 ```
 
 where N is the string representation of the major version number of a Java platform release. Specifically `N` must conform to the specification:
 
-| *N:* | *`{1-9}` `{0-9}`** |
+其中 `N` 是Java平台大版本号的字符串表示形式。 具体来说，`N`的格式需要满足：
+
+| N: | `{1-9}{0-9}*` |
 | :--- | ------------------ |
 |      |                    |
+
 
 Any versioned directory whose value of `N` is less than `9` is ignored as is a string representation of `N` that does not conform to the above specification.
 
 A class file under a versioned directory, of version `N` say, in a multi-release JAR must have a class file version less than or equal to the class file version associated with `N`th major version of a Java platform release. If the class of the class file is public or protected then that class must *preside over* a class of the same fully qualified name and access modifier whose class file is present under the top-level directory. By logical extension this applies to a class of a class file, if present, under a versioned directory whose version is less than `N`.
 
+如果N的值小于9 将被忽略，不符合上述规范的版本目录也会被忽略。
+
+在多版本JAR中，版本目录`N`下面的 class 文件, 其 class file version 必须小于等于Java平台第N个大版本对应的 major version。
+如果类文件中的类是 public 或 protected 的，那么根目录下也必须能够找到具有完全限定名和访问修饰符的class。
+通过逻辑扩展，这同样适用于版本小于“ N”的类文件。
+
 If a multi-release JAR file is deployed on the class path or module path (as an automatic module or an explicit [multi-release module](https://docs.oracle.com/en/java/javase/14/docs/specs/jar/jar.html#modular-multi-release-jar-files)) of major version `N` of a Java platform release runtime, then a class loader loading classes from that JAR file will first search for class files under the `N`th versioned directory, then prior versioned directories in descending order (if present), down to a lower major version bound of `9`, and finally under the top-level directory.
 
 The public API exported by the classes in a multi-release JAR file must be *exactly* the same across versions, hence at a minimum why versioned public or protected classes for class files under a versioned directory must preside over classes for class files under the top-level directory. It is difficult and costly to perform extensive API verification checks as such tooling, such as the `jar` tool, is not required to perform extensive verification and a Java runtime is not required to perform any verification. A future release of this specification may relax the exact same API constraint to support careful evolution.
+
+如果将多版本JAR文件部署到 class path 或 module path 中，假设JDK版本为 `N`， 那么类加载器从该JAR文件加载class的时候，将优先搜索版本目录`N`，找不到则递减，搜索 `N-1`，直到下限9为止，最后才会搜索顶级目录。
+
+多版本JAR文件中, 各个版本暴露的 public API 必须 “完全一致”， 这就解释了为什么特定版本目录下的 public 和 protected 类文件，都必须在根目录下存在相同限定名的类。
+执行扩展API的校验非常困难而且开销很大，所以并不要求 `jar` 之类的工具来验证， 也不要求Java运行时来执行这类验证。
+本规范未来的版本可能会放宽完全一致的API约束，以支持谨慎的演进。
+
 
 Resources under the `META-INF` directory cannot be versioned (such as for service configuration).
 
 A multi-release JAR file can be signed.
 
 Multi-release JAR files are not supported by the boot class loader of a Java runtime. If a multi-release JAR file is appended to the boot class path (with the `-Xbootclasspath/a` option) then the JAR is treated as if it is an ordinary JAR file.
+
+
+
+`META-INF` 目录下的资源无法进行版本控制（例如服务配置）。
+
+多版本JAR文件也可以进行签名。
+
+Java运行时的引导类加载器（ boot class loader）不支持多版本JAR文件。
+如果将多版本JAR文件放到引导类路径（使用 `-Xbootclasspath/a` 选项），则该JAR将被当做一个普通的JAR文件。
 
 ### Modular multi-release JAR files
 
