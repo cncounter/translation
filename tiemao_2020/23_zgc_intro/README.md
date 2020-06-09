@@ -1,5 +1,6 @@
 # Z Garbage Collector
 
+# ZGC简介
 
 
 ![](http://cr.openjdk.java.net/~pliden/zgc/banner.png)
@@ -12,6 +13,12 @@ The Z Garbage Collector, also known as ZGC, is a scalable low latency garbage co
 - Pause times do not increase with the heap or live-set size (*)
 - Handle heaps ranging from a 8MB to 16TB in size
 
+ZGC, 全称为Z Garbage Collector, 是一款适用范围广泛的低延迟垃圾收集器，设计目标包括：
+
+- 最大暂停时间为毫秒级 (✔️)
+- 暂停时间不会随堆内存或活动集的扩大而增加 (✔️)
+- 兼容的堆内存大小，范围包括 `8MB ~ 16TB`。
+
 At a glance, ZGC is:
 
 - Concurrent
@@ -21,26 +28,47 @@ At a glance, ZGC is:
 - Using colored pointers
 - Using load barriers
 
+简单来说，ZGC的特性包括：
+
+- 并发(Concurrent)
+- 内存分为多个小块(Region-based)
+- 内存整理(Compacting)
+- 支持 NUMA 体系结构
+- 使用着色指针(colored pointer)
+- 使用读屏障(load barrier)
+
 At its core, ZGC is a concurrent garbage collector, meaning all heavy lifting work is done while Java threads continue to execute. This greatly limits the impact garbage collection will have on your application's response time.
 
 This OpenJDK project is sponsored by the HotSpot Group.
 
+ZGC的核心特征是并发垃圾收集器，并发的意思就是说： 在Java应用线程正常运行的时候， GC线程会同时执行大部分繁重的垃圾收集任务。 这大大降低了GC对系统响应时间的影响。
+
+ZGC是一个OpenJDK项目，由HotSpot Group赞助。
+
 
 > *) Work is ongoing, which will make ZGC a sub-millisecond max pause time GC, where pause times do not increase with heap, live-set, or root-set size.
 
+> 开发工作还在进行中，目标是让 ZGC 达成毫秒级以下的 "最大GC暂停时间"，而且不会随着堆内存，存活数据集，GC根数据集的扩大而增加暂停时间。
+
 ## Supported Platforms
 
+## 系统支持情况
+
 |--|--|--|--|
-| Platform | Supported | Since | Comment |
-| Linux/x64	| (tick)	| JDK 11 | |
-| Linux/AArch64	| (tick) | JDK 13 | |
-| macOS	| (tick)	| JDK 14 | |
-| Windows	| (tick)	| JDK 14	| Requires Windows version 1803 (Windows 10 or Windows Server 2019) or later. |
+| 系统平台(Platform) | 是否支持(Supported) | 起始版本(Since) | 备注(Comment) |
+| Linux/x64	| ✔️	| JDK 11 | |
+| Linux/AArch64	| ✔️ | JDK 13 | |
+| macOS	| ✔️	| JDK 14 | |
+| Windows	| ✔️	| JDK 14	| 要求Windows 1803 及以上版本 (即Windows 10 或者 Windows Server 2019). |
 
 
 ## Quick Start
 
+## 快速开始
+
 If you're trying out ZGC for the first time, start by using the following GC options:
+
+要试用 ZGC，可以指定以下GC参数:
 
 ```
 -XX:+UnlockExperimentalVMOptions -XX:+UseZGC -Xmx<size> -Xlog:gc
@@ -48,28 +76,68 @@ If you're trying out ZGC for the first time, start by using the following GC opt
 
 For more detailed logging, use the following options:
 
+如果想要打印更详细的GC日志， 可指定以下参数：
+
 ```
 -XX:+UnlockExperimentalVMOptions -XX:+UseZGC -Xmx<size> -Xlog:gc*
 ```
 
 See below for more information on these and additional options.
 
+请参考下文获取更多选项的说明信息。
+
 ## Configuration & Tuning
+
+## 选项配置与性能优化
 
 ### Overview
 
+### 概述
+
 The following JVM options can be used with ZGC:
 
+下面是使用ZGC时支持的JVM选项：
 
 
 |--|--|--|
-| General GC Options | ZGC Options | ZGC Diagnostic Options (-XX:+UnlockDiagnosticVMOptions)  |
-| -XX:MinHeapSize, -Xms -XX:InitialHeapSize, -Xms -XX:MaxHeapSize, -Xmx -XX:SoftMaxHeapSize -XX:ConcGCThreads -XX:ParallelGCThreads -XX:UseLargePages -XX:UseTransparentHugePages -XX:UseNUMA -XX:SoftRefLRUPolicyMSPerMB -XX:AllocateHeapAt | -XX:ZAllocationSpikeTolerance  -XX:ZCollectionInterval  -XX:ZFragmentationLimit  -XX:ZMarkStackSpaceLimit  -XX:ZProactive  -XX:ZUncommit  -XX:ZUncommitDelay | -XX:ZStatisticsInterval  -XX:ZVerifyForwarding  -XX:ZVerifyMarking  -XX:ZVerifyObjects  -XX:ZVerifyRoots  -XX:ZVerifyViews |
+| JVM通用的GC选项 | ZGC 选项 | ZGC诊断调优选项 (需要使用 -XX:+UnlockDiagnosticVMOptions)  |
+| -XX:MinHeapSize| | |
+| -Xms| | |
+| -XX:InitialHeapSize| | |
+| -Xms| | |
+| -XX:MaxHeapSize| | |
+| -Xmx| | |
+| -XX:SoftMaxHeapSize| | |
+| -XX:ConcGCThreads| | |
+| -XX:ParallelGCThreads| | |
+| -XX:UseLargePages| | |
+| -XX:UseTransparentHugePages| | |
+| -XX:UseNUMA| | |
+| -XX:SoftRefLRUPolicyMSPerMB| | |
+| -XX:AllocateHeapAt| | |
+| | -XX:ZAllocationSpikeTolerance| |
+| | -XX:ZCollectionInterval| |
+| | -XX:ZFragmentationLimit| |
+| | -XX:ZMarkStackSpaceLimit| |
+| | -XX:ZProactive| |
+| | -XX:ZUncommit| |
+| | -XX:ZUncommitDelay| |
+| | | -XX:ZStatisticsInterval|
+| | | -XX:ZVerifyForwarding|
+| | | -XX:ZVerifyMarking|
+| | | -XX:ZVerifyObjects|
+| | | -XX:ZVerifyRoots|
+| | | -XX:ZVerifyViews|
+
 
 
 ### Enabling ZGC
 
+### 开启 ZGC 垃圾收集器
+
 Use the `-XX:+UnlockExperimentalVMOptions -XX:+UseZGC` options to enable ZGC.
+
+当前，请使用 `-XX:+UnlockExperimentalVMOptions -XX:+UseZGC` 选项来开启ZGC。
 
 ### Setting Heap Size
 
