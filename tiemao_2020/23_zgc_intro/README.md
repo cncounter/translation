@@ -100,42 +100,42 @@ The following JVM options can be used with ZGC:
 
 > JVM通用的GC参数
 
-|--|--|--|
-| JVM通用的GC参数 | 说明 | |
-| -XX:MinHeapSize, -Xms| | |
-| -XX:InitialHeapSize, -Xms| | |
-| -XX:MaxHeapSize, -Xmx| | |
-| -XX:SoftMaxHeapSize| | |
-| -XX:ConcGCThreads| | |
-| -XX:ParallelGCThreads| | |
-| -XX:UseLargePages| | |
-| -XX:UseTransparentHugePages| | |
-| -XX:UseNUMA| | |
-| -XX:SoftRefLRUPolicyMSPerMB| | |
-| -XX:AllocateHeapAt| | |
+| **JVM通用的GC参数** | **说明** |
+| :----------- | :------- |
+| -XX:MinHeapSize, -Xms| |
+| -XX:InitialHeapSize, -Xms| |
+| -XX:MaxHeapSize, -Xmx| |
+| -XX:SoftMaxHeapSize| |
+| -XX:ConcGCThreads| |
+| -XX:ParallelGCThreads| |
+| -XX:UseLargePages| |
+| -XX:UseTransparentHugePages| |
+| -XX:UseNUMA| |
+| -XX:SoftRefLRUPolicyMSPerMB| |
+| -XX:AllocateHeapAt| |
 
 > ZGC配置参数
 
-|--|--|--|
-| | ZGC 参数 | 说明 |
-| | -XX:ZAllocationSpikeTolerance| |
-| | -XX:ZCollectionInterval| |
-| | -XX:ZFragmentationLimit| |
-| | -XX:ZMarkStackSpaceLimit| |
-| | -XX:ZProactive| |
-| | -XX:ZUncommit| |
-| | -XX:ZUncommitDelay| |
+| ZGC 参数 | 说明 |
+| :------- | :-- |
+| -XX:ZAllocationSpikeTolerance| |
+| -XX:ZCollectionInterval| |
+| -XX:ZFragmentationLimit| |
+| -XX:ZMarkStackSpaceLimit| |
+| -XX:ZProactive| |
+| -XX:ZUncommit| |
+| -XX:ZUncommitDelay| |
 
 > ZGC诊断调优参数
 
-|--|--|--|
-| | ZGC诊断调优参数 (需要在前面指定 -XX:+UnlockDiagnosticVMOptions)  | 说明 |
-| | -XX:ZStatisticsInterval| |
-| | -XX:ZVerifyForwarding| |
-| | -XX:ZVerifyMarking| |
-| | -XX:ZVerifyObjects| |
-| | -XX:ZVerifyRoots| |
-| | -XX:ZVerifyViews| |
+| ZGC诊断调优参数 (需要在前面指定 -XX:+UnlockDiagnosticVMOptions)  | 说明 |
+| :---------------------------------- | :------- |
+| -XX:ZStatisticsInterval| |
+| -XX:ZVerifyForwarding| |
+| -XX:ZVerifyMarking| |
+| -XX:ZVerifyObjects| |
+| -XX:ZVerifyRoots| |
+| -XX:ZVerifyViews| |
 
 
 
