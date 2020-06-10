@@ -46,7 +46,7 @@ ZGC的核心特征是并发垃圾收集器，并发的意思就是说： 在Java
 ZGC是一个OpenJDK项目，由HotSpot Group赞助。
 
 
-> *) Work is ongoing, which will make ZGC a sub-millisecond max pause time GC, where pause times do not increase with heap, live-set, or root-set size.
+> `^_^` Work is ongoing, which will make ZGC a sub-millisecond max pause time GC, where pause times do not increase with heap, live-set, or root-set size.
 
 > 开发工作还在进行中，目标是让 ZGC 达成毫秒级以下的 "最大GC暂停时间"，而且不会随着堆内存，存活数据集，GC根数据集的扩大而增加暂停时间。
 
@@ -101,7 +101,7 @@ The following JVM options can be used with ZGC:
 > JVM通用的GC参数
 
 |--|--|--|
-| JVM通用的GC参数 | | |
+| JVM通用的GC参数 | 说明 | |
 | -XX:MinHeapSize, -Xms| | |
 | -XX:InitialHeapSize, -Xms| | |
 | -XX:MaxHeapSize, -Xmx| | |
@@ -117,7 +117,7 @@ The following JVM options can be used with ZGC:
 > ZGC配置参数
 
 |--|--|--|
-| | ZGC 参数 | |
+| | ZGC 参数 | 说明 |
 | | -XX:ZAllocationSpikeTolerance| |
 | | -XX:ZCollectionInterval| |
 | | -XX:ZFragmentationLimit| |
@@ -129,33 +129,53 @@ The following JVM options can be used with ZGC:
 > ZGC诊断调优参数
 
 |--|--|--|
-| | | ZGC诊断调优参数 (需要在前面指定 -XX:+UnlockDiagnosticVMOptions)  |
-| | | -XX:ZStatisticsInterval|
-| | | -XX:ZVerifyForwarding|
-| | | -XX:ZVerifyMarking|
-| | | -XX:ZVerifyObjects|
-| | | -XX:ZVerifyRoots|
-| | | -XX:ZVerifyViews|
+| | ZGC诊断调优参数 (需要在前面指定 -XX:+UnlockDiagnosticVMOptions)  | 说明 |
+| | -XX:ZStatisticsInterval| |
+| | -XX:ZVerifyForwarding| |
+| | -XX:ZVerifyMarking| |
+| | -XX:ZVerifyObjects| |
+| | -XX:ZVerifyRoots| |
+| | -XX:ZVerifyViews| |
 
 
 
 ### Enabling ZGC
 
-### 开启 ZGC 垃圾收集器
-
 Use the `-XX:+UnlockExperimentalVMOptions -XX:+UseZGC` options to enable ZGC.
+
+### 开启 ZGC 垃圾收集器
 
 当前，请使用 `-XX:+UnlockExperimentalVMOptions -XX:+UseZGC` 参数来开启ZGC。
 
 ### Setting Heap Size
 
-The most important tuning option for ZGC is setting the max heap size (-Xmx<size>). Since ZGC is a concurrent collector a max heap size must be selected such that, 1) the heap can accommodate the live-set of your application, and 2) there is enough headroom in the heap to allow allocations to be serviced while the GC is running. How much headroom is needed very much depends on the allocation rate and the live-set size of the application. In general, the more memory you give to ZGC the better. But at the same time, wasting memory is undesirable, so it’s all about finding a balance between memory usage and how often the GC needs to run.
+The most important tuning option for ZGC is setting the max heap size (`-Xmx<size>`). Since ZGC is a concurrent collector a max heap size must be selected such that, 1) the heap can accommodate the live-set of your application, and 2) there is enough headroom in the heap to allow allocations to be serviced while the GC is running. How much headroom is needed very much depends on the allocation rate and the live-set size of the application. In general, the more memory you give to ZGC the better. But at the same time, wasting memory is undesirable, so it’s all about finding a balance between memory usage and how often the GC needs to run.
+
+### 指定堆内存的大小
+
+ZGC最重要的配置参数是设置堆内存的最大值(`-Xmx<size>`)。
+ZGC是一款并发垃圾收集器，必须指定这个参数，原因在于：
+- 1）堆内存必须能够存放应用程序运行所需的活动集；
+- 2）在GC处于运行状态时，堆中需要有足够的空闲内存，以允许正常的内存分配。
+
+需要多少空间主要取决于分配率，以及应用程序的活动集大小。
+通常，给ZGC的内存越多越好，但也没必要故意去浪费内存，所以需要在程序的内存量使用量，以及GC需要的运行频率之间进行权衡。
 
 ### Setting Concurrent GC Threads
 
-The second tuning option one might want to look at is setting the number of concurrent GC threads (-XX:ConcGCThreads=<number>). ZGC has heuristics to automatically select this number. This heuristic usually works well but depending on the characteristics of the application this might need to be adjusted. This option essentially dictates how much CPU-time the GC should be given. Give it too much and the GC will steal too much CPU-time from the application. Give it too little, and the application might allocate garbage faster than the GC can collect it.
+The second tuning option one might want to look at is setting the number of concurrent GC threads (`-XX:ConcGCThreads=<number>`). ZGC has heuristics to automatically select this number. This heuristic usually works well but depending on the characteristics of the application this might need to be adjusted. This option essentially dictates how much CPU-time the GC should be given. Give it too much and the GC will steal too much CPU-time from the application. Give it too little, and the application might allocate garbage faster than the GC can collect it.
 
 NOTE! In general, if low latency (i.e. low application response time) is important for you application, then never over-provision your system. Ideally, your system should never have more than 70% CPU utilization.
+
+### 设置并发GC线程数
+
+第二个配置参数是设置并发GC线程的数量（`-XX:ConcGCThreads=<number>`）。
+ZGC具有启发式的特性，可以自动选择此数字。 大部分情况下这种启发式的方法效果都很好，但有些系统比较特殊，可能需要手工进行调整。
+这个参数从根本上决定了应该给垃圾收集器多少比例的CPU时间。
+给的太多，GC的开销就比较大，甚至抢占一些应用程序的CPU时间。
+给的太少，GC回收内存的速度又跟不上应用程序分配内存的速度。
+
+> **警告！**  如果低延迟（即系统响应时间）是非常重要的系统指标，就不能让系统负载太高。 理想情况下，系统的CPU利用率应该在70％以下。
 
 ### Returning Unused Memory to the Operating System
 
