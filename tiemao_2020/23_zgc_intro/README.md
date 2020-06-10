@@ -179,11 +179,22 @@ ZGC具有启发式的特性，可以自动选择此数字。 大部分情况下�
 
 ### Returning Unused Memory to the Operating System
 
-By default, ZGC uncommits unused memory, returning it to the operating system. This is useful for applications and environments where memory footprint is a concern. This feature can be disabled using -XX:-ZUncommit. Furthermore, memory will not be uncommitted so that the heap size shrinks below the minimum heap size (-Xms). This means this feature will be implicitly disabled if the minimum heap size (-Xms) is configured to be equal to the maximum heap size (-Xmx).
+By default, ZGC uncommits unused memory, returning it to the operating system. This is useful for applications and environments where memory footprint is a concern. This feature can be disabled using `-XX:-ZUncommit`. Furthermore, memory will not be uncommitted so that the heap size shrinks below the minimum heap size (`-Xms`). This means this feature will be implicitly disabled if the minimum heap size (`-Xms`) is configured to be equal to the maximum heap size (`-Xmx`).
 
-An uncommit delay can be configured using -XX:ZUncommitDelay=<seconds> (default is 300 seconds). This delay specifies for how long memory should have been unused before it's eligible for uncommit.
+An uncommit delay can be configured using `-XX:ZUncommitDelay=<seconds>` (default is 300 seconds). This delay specifies for how long memory should have been unused before it's eligible for uncommit.
 
 NOTE! On Linux, uncommitting unused memory requires fallocate(2) with FALLOC_FL_PUNCH_HOLE support, which first appeared in kernel version 3.5 (for tmpfs) and 4.3 (for hugetlbfs).
+
+### 将不使用的内存还给操作系统
+
+默认情况下，ZGC取消分配未使用的内存，还给操作系统。 这对于关注内存占用的应用程序和环境很有用。
+如果要禁用此功能可以设置开关参数 `-XX:-ZUncommit`。
+当然，取消分配内存的操作不会让内存使用量低于最小堆内存空间(`-Xms`)。
+也就是说, 如果最小堆内存空间(`-Xms`) 等于 最大堆内存空间(`-Xmx`)，则将隐式地禁用此功能。
+
+可以使用 `-XX:ZUncommitDelay=<seconds>` 参数（默认值为300秒）来配置取消分配内存的延迟。 这个延迟参数指定了在取消提交之前应使用多长时间的内存。
+
+注意！ 在Linux上，取消分配未使用的内存需要带有  `FALLOC_FL_PUNCH_HOLE` 支持的 `fallocate(2)`， 要求Linux内核版本3.5（对于tmpfs）和4.3版本（对于 hugetlbfs）及以上。
 
 ### Enabling Large Pages On Linux
 
