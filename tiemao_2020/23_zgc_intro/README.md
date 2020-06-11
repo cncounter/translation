@@ -54,8 +54,8 @@ ZGC是一个OpenJDK项目，由HotSpot Group赞助。
 
 ## 系统支持情况
 
-|--|--|--|--|
 | 系统平台(Platform) | 是否支持(Supported) | 起始版本(Since) | 备注(Comment) |
+| :---------- | :---------- | :---------- | :------- |
 | Linux/x64	| ✔️	| JDK 11 | |
 | Linux/AArch64	| ✔️ | JDK 13 | |
 | macOS	| ✔️	| JDK 14 | |
@@ -202,19 +202,37 @@ Configuring ZGC to use large pages will generally yield better performance (in t
 
 On Linux/x86, large pages (also known as "huge pages") have a size of 2MB.
 
-Let's assume you want a 16G Java heap. That means you need 16G / 2M = 8192 huge pages.
+Let's assume you want a 16G Java heap. That means you need `16G / 2M = 8192` huge pages.
 
 First assign at least 16G (8192 pages) of memory to the pool of huge pages. The "at least" part is important, since enabling the use of large pages in the JVM means that not only the GC will try to use these for the Java heap, but also that other parts of the JVM will try to use them for various internal data structures (code heap, marking bitmaps, etc). In this example we will therefore reserve 9216 pages (18G) to allow for 2G of non-Java heap allocations to use large pages.
 
 Configure the system's huge page pool to have the required number pages (requires root privileges):
 
-```
+### Linux系统开启大页面
+
+配置ZGC使用大页面通常会产生更好的性能（包括吞吐量，延迟和启动时间），除了设置稍微复杂指纹并没有什么缺点。
+但配置的过程中需要root权限，这也是为什么默认情况下不开启的原因。
+
+在 Linux/x86 平台上，大页面(large pages) 也称为“巨型页面”(huge pages)， 其大小为2MB。
+
+假设Java堆内存为16G, 那么需要的大页面数量为: `16G / 2M = 8192`。
+
+首先，将至少16G（8192页）的内存分配给大页池。
+“至少” 这个描述很关键，因为在JVM中启用大页面的使用, 意味着不仅GC会将这些页面用于Java堆，其他JVM组件也会将其用于各种内部数据结构，比如 code heap, marking bitmaps（标记位图）等等。
+在此案例中，我们将会保留9216页（18G），其中分配2G的大页来作为非堆部分（non-Java heap）。
+
+配置系统的大页池需要root权限，比如设置为所需页数的命令：
+
+```shell
 $ echo 9216 > /sys/kernel/mm/hugepages/hugepages-2048kB/nr_hugepages
 ```
 
 Note that the above command is not guaranteed to be successful if the kernel can not find enough free huge pages to satisfy the request. Also note that it might take some time for the kernel to process the request. Before proceeding, check the number of huge pages assigned to the pool to make sure the request was successful and has completed.
 
-```
+请注意上述命令不一定能保证成功，比如内核找不到足够的空闲大页面等情况。
+另请注意，内核可能需要一段时间来处理这种请求。 在继续之前，请检查分配给池的大页面数，以确保请求成功并已完成。
+
+```shell
 $ cat /sys/kernel/mm/hugepages/hugepages-2048kB/nr_hugepages
 
 9216
@@ -224,6 +242,12 @@ NOTE! If you're using a Linux kernel >= 4.14, then the next step (where you moun
 
 Mount a hugetlbfs filesystem (requires root privileges) and make it accessible to the user running the JVM (in this example we're assuming this user has 123 as its uid).
 
+如果 `Linux kernel >= 4.14`， 则可以跳过下面的步骤（挂载 hugetlbfs 文件系统）。
+但如果使用的内核版本比这个老，则ZGC需要通过 hugetlbfs 文件系统来访问大页面。
+
+挂载hugetlbfs文件系统需要root权限，而且需要让启动JVM的用户可以访问。
+假定该用户的uid为123：
+
 ```
 $ mkdir /hugepages
 $ mount -t hugetlbfs -o uid=123 nodev /hugepages
@@ -231,17 +255,24 @@ $ mount -t hugetlbfs -o uid=123 nodev /hugepages
 
 Now start the JVM using the -XX:+UseLargePages option.
 
+这些条件都具备之后，我们可以使用 `-XX:+UseLargePages` 参数来开启大页面：
+
 ```
 $ java -XX:+UnlockExperimentalVMOptions -XX:+UseZGC -Xms16G -Xmx16G -XX:+UseLargePages ...
 ```
 
 If there are more than one accessible hugetlbfs filesystem available, then (and only then) do you also have to use -XX:AllocateHeapAt to specify the path to the filesystems you want to use. For example, assume there are multiple accessible hugetlbfs filesystems mounted, but the filesystem you specifically want to use it mounted on /hugepages, then use the following options.
 
+如果有多个可用的hugetlbfs文件系统， 那么我们必须同时使用 `-XX:AllocateHeapAt` 参数来指定需要使用的文件系统路径。
+例如，假设安装了多个可访问的hugetlbfs文件系统，但我们想使用挂载到 `/hugepages` 目录的这个，则使用的参数为:
+
 ```
 $ java -XX:+UnlockExperimentalVMOptions -XX:+UseZGC -Xms16G -Xmx16G -XX:+UseLargePages -XX:AllocateHeapAt=/hugepages ...
 ```
 
 NOTE! The configuration of the huge page pool and the mounting of the hugetlbfs file system is not persistent across reboots, unless adequate measures are taken.
+
+注意！ 除非采取其他措施，否则系统重启后，大页池的配置和 hugetlbfs 文件系统的挂载会失效。
 
 ### Enabling Transparent Huge Pages On Linux
 
