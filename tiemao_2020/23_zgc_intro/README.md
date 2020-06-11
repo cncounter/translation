@@ -242,7 +242,7 @@ NOTE! If you're using a Linux kernel >= 4.14, then the next step (where you moun
 
 Mount a hugetlbfs filesystem (requires root privileges) and make it accessible to the user running the JVM (in this example we're assuming this user has 123 as its uid).
 
-如果 `Linux kernel >= 4.14`， 则可以跳过下面的步骤（挂载 hugetlbfs 文件系统）。
+如果 `Linux kernel >= 4.14`， 则可以跳过接下来挂载 hugetlbfs 文件系统的步骤。
 但如果使用的内核版本比这个老，则ZGC需要通过 hugetlbfs 文件系统来访问大页面。
 
 挂载hugetlbfs文件系统需要root权限，而且需要让启动JVM的用户可以访问。
@@ -272,7 +272,7 @@ $ java -XX:+UnlockExperimentalVMOptions -XX:+UseZGC -Xms16G -Xmx16G -XX:+UseLarg
 
 NOTE! The configuration of the huge page pool and the mounting of the hugetlbfs file system is not persistent across reboots, unless adequate measures are taken.
 
-注意！ 除非采取其他措施，否则系统重启后，大页池的配置和 hugetlbfs 文件系统的挂载会失效。
+注意！ 大页池的配置和 hugetlbfs 文件系统的挂载不会自动持久化，除非采取其他措施，否则系统重启后就丢失。
 
 ### Enabling Transparent Huge Pages On Linux
 
