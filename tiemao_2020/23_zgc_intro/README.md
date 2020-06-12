@@ -283,6 +283,7 @@ NOTE! On Linux, using ZGC with transparent huge pages enabled requires kernel >=
 
 Use the following options to enable transparent huge pages in the VM:
 
+
 ### 在Linux系统开启透明式大页面
 
 除了明确指定使用大页面之外， 还可以使用透明方式的大页面。
@@ -319,13 +320,25 @@ See the [kernel documentation](https://www.kernel.org/doc/Documentation/vm/trans
 
 ### Enabling NUMA Support
 
-ZGC has NUMA support, which means it will try it's best to direct Java heap allocations to NUMA-local memory. This feature is enabled by default. However, it will automatically be disabled if the JVM detects that it's bound to a sub-set of the CPUs in the system. In general, you don't need to worry about this setting, but if you want to explicitly override the JVM's decision you can do so by using the -XX:+UseNUMA or -XX:-UseNUMA options.
+ZGC has NUMA support, which means it will try it's best to direct Java heap allocations to NUMA-local memory. This feature is enabled by default. However, it will automatically be disabled if the JVM detects that it's bound to a sub-set of the CPUs in the system. In general, you don't need to worry about this setting, but if you want to explicitly override the JVM's decision you can do so by using the `-XX:+UseNUMA` or `-XX:-UseNUMA` options.
 
 When running on a NUMA machine (e.g. a multi-socket x86 machine), having NUMA support enabled will often give a noticeable performance boost.
 
+### 启用NUMA支持
+
+ZGC 对 NUMA 提供支持，也就是说， 会尽最大努力将Java堆分配定向到 NUMA-local 内存。
+默认情况下这个功能是开启的。 但如果JVM进程检测到自身被绑定到某一部分CPU内核，则会自动禁用。
+一般情况下我们不需要关心此项配置, 如果要明确指定JVM的行为，则可以使用 `-XX:+UseNUMA` 或者 `-XX:-UseNUMA` 参数开关。
+
+在 NUMA 机器（例如多个插槽的x86机器）上运行时， 启用NUMA支持通常会获得显着的性能提升。
+
 ### Enabling GC Logging
 
+### 开启GC日志
+
 GC logging is enabled using the following command-line option:
+
+开启GC日志的参数格式为:
 
 ```
 -Xlog:<tag set>,[<tag set>, ...]:<log file>
@@ -333,11 +346,15 @@ GC logging is enabled using the following command-line option:
 
 For general information/help on this option:
 
+JDK9之后的版本，查看GC日志相关的帮助信息：
+
 ```
--Xlog:help
+java -Xlog:help
 ```
 
 To enable basic logging (one line of output per GC):
+
+打印基本的GC日志， 每次GC打印1行：
 
 ```
 -Xlog:gc:gc.log
@@ -345,13 +362,22 @@ To enable basic logging (one line of output per GC):
 
 To enable GC logging that is useful for tuning/performance analysis:
 
+在性能分析和调优时，打印更详细的GC日志:
+
 ```
 -Xlog:gc*:gc.log
 ```
 
-Where gc* means log all tag combinations that contain the gc tag, and :gc.log means write the log to a file named gc.log.
+Where `gc*` means log all tag combinations that contain the gc tag, and `:gc.log` means write the log to a file named gc.log.
+
+其中， `gc*` 的含义是： 标签(tag)中包含 gc 这两个字母的所有日志信息都打印出来。
+
+`:gc.log` 则表示将日志信息输出到文件 `gc.log` 之中。
+
 
 ## Change Log
+
+## ZGC相关的更新日志
 
 ### JDK 15 (under development)
 - Production ready (JEP 377)
@@ -361,15 +387,34 @@ Where gc* means log all tag combinations that contain the gc tag, and :gc.log me
 - Support for compressed class pointers
 - Additional JFR events
 
+### JDK 15 (2020年06月: 正在开发中。。。)
+- 正式发版准备就绪 (JEP 377)
+- 提高 NUMA 的识别灵敏度
+- 支持类信息共享, Class Data Sharing (CDS)
+- 支持将堆内存分配到 NVRAM
+- 支持压缩class指针(compressed class pointers)
+- 新增部分 JFR 事件
+
 ### JDK 14
 - macOS support (JEP 364)
 - Windows support (JEP 365)
 - Support for tiny/small heaps (down to 8M)
 - Support for JFR leak profiler
 - Support for limited and discontiguous address space
-- Parallel pre-touch (when using -XX:+AlwaysPreTouch)
+- Parallel pre-touch (when using `-XX:+AlwaysPreTouch`)
 - Performance improvements (clone intrinsic, etc)
 - Stability improvements
+
+### JDK 14 版本
+- 支持 macOS 系统 (JEP 364)
+- 支持 Windows 系统 (JEP 365)
+- 支持超小堆内存(tiny/small heaps, 下限为8M)
+- 支持JFR泄漏分析器
+- 支持受限的和不连续的地址空间
+- 并行 pre-touch (使用参数 `-XX:+AlwaysPreTouch`)
+- 性能优化 (clone intrinsic, etc)
+- 提升稳定性
+
 
 ### JDK 13
 - Increased max heap size from 4TB to 16TB
@@ -378,13 +423,30 @@ Where gc* means log all tag combinations that contain the gc tag, and :gc.log me
 - Support for the Linux/AArch64 platform
 - Reduced Time-To-Safepoint
 
+### JDK 13 版本
+- 最大堆内存从 `4TB` 增加到 `16TB`
+- 支持返还未使用的内存 (JEP 351)
+- 支持 `-XX:SoftMaxHeapSIze`
+- 支持 Linux/AArch64 平台
+- 缩短安全点时间(Time-To-Safepoint)
+
+
 ### JDK 12
 - Support for concurrent class unloading
 - Further pause time reductions
 
+### JDK 12 版本
+- 支持并发方式的类卸载(class unloading)
+- 进一步减少GC暂停时间
+
+
 ### JDK 11
 - Initial version of ZGC
-- Does not support class unloading (using -XX:+ClassUnloading has no effect)
+- Does not support class unloading (using `-XX:+ClassUnloading` has no effect)
+
+### JDK 11 版本
+- ZGC的第一版
+- 不支持类卸载（ `-XX:+ClassUnloading` 参数在此版本中无效）
 
 
 ## FAQ
@@ -392,6 +454,14 @@ Where gc* means log all tag combinations that contain the gc tag, and :gc.log me
 ### What does the "Z" in ZGC stand for?
 
 It doesn't stand for anything, ZGC is just a name. It was originally inspired by, or a homage to, ZFS (the filesystem) which in many ways was revolutionary when it first came out. Originally, ZFS was an acronym for "Zettabyte File System", but that meaning was abandoned and it was later said to not stand for anything. It's just a name. See Jeff Bonwick's Blog for more details.
+
+## 解惑：ZGC中的字母Z是什么意思?
+
+其实这个Z没有什么特殊的含义，ZGC就是一个名字而已。
+最初名字的来源是为了致敬伟大的 ZFS 文件系统。 最初 ZFS 的含义是 "Zettabyte File System", 但后来这个含义也被放弃了。
+所以这个ZGC就只是一个代号，具体的信息可以参考: [Jeff Bonwick's Blog](https://web.archive.org/web/20170223222515/https://blogs.oracle.com/bonwick/en_US/entry/you_say_zeta_i_say)。
+
+> ^_^ 其实有一点 Zero 的意思，无停顿垃圾收集器， 然而这个目标没有达到。
 
 
 ## 相关链接
