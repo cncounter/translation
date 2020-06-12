@@ -274,6 +274,7 @@ NOTE! The configuration of the huge page pool and the mounting of the hugetlbfs 
 
 注意！ 大页池的配置和 hugetlbfs 文件系统的挂载不会自动持久化，除非采取其他措施，否则系统重启后就丢失。
 
+
 ### Enabling Transparent Huge Pages On Linux
 
 An alternative to using explicit large pages (as described above) is to use transparent huge pages. Use of transparent huge pages is usually not recommended for latency sensitive applications, because it tends to cause unwanted latency spikes. However, it might be worth experimenting with to see if/how your workload is affected by it. But be aware, your mileage may vary.
@@ -282,25 +283,39 @@ NOTE! On Linux, using ZGC with transparent huge pages enabled requires kernel >=
 
 Use the following options to enable transparent huge pages in the VM:
 
+### 在Linux系统开启透明式大页面
+
+除了明确指定使用大页面之外， 还可以使用透明方式的大页面。
+对延迟非常敏感的系统来说，一般不建议使用透明式大页面，因为有可能会导致不必要的延迟峰值。
+但可能尝试一下，看看是否会影响工作负载。 当然，具体情况可能各个系统会有所不同。
+
+注意！ 在Linux上，使用透明式大页面要求内核 `kernel >= 4.7`。
+
+开启透明大页面的JVM参数为：
+
 ```
+# 低延迟敏感的系统不推荐
 -XX:+UseLargePages -XX:+UseTransparentHugePages
 ```
 
-These options tell the JVM to issue madvise(..., MADV_HUGEPAGE) calls for memory it mapps, which is useful when using transparent huge pages in madvise mode.
+These options tell the JVM to issue `madvise(..., MADV_HUGEPAGE)` calls for memory it mapps, which is useful when using transparent huge pages in madvise mode.
 
 To enable transparent huge pages you also need to configure the kernel, by enabling the madvise mode.
 
+这些参数让JVM对其映射的内存执行 `madvise(..., MADV_HUGEPAGE)` 调用， 这在 madvise 模式下使用透明大页面时非常有用。
+
+要启用透明大页面， 还需要系统管理员启用madvise模式， 配置内核的方法为：
+
 ```
 $ echo madvise > /sys/kernel/mm/transparent_hugepage/enabled
-```
 
-and
-
-```
 $ echo advise > /sys/kernel/mm/transparent_hugepage/shmem_enabled
+
 ```
 
-See the kernel documentation for more information.
+See the [kernel documentation](https://www.kernel.org/doc/Documentation/vm/transhuge.txt) for more information.
+
+更多信息请参考 [Linux内核参考文档](https://www.kernel.org/doc/Documentation/vm/transhuge.txt)
 
 ### Enabling NUMA Support
 
