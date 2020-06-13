@@ -12,8 +12,8 @@
 * [05.Linux系统命令 - 查看内存使用情况](./05_linux-memory-usage/README.md)【已完成】
 * [06.G1垃圾收集器生产环境调优](./06_g1_gc_tuning/README.md)【已完成】
 * [07.Java坑人面试题系列: 线程/线程池（高级难度）](./07_quiz-executor-service/README.md)【已完成】
-* [08.Different Ways to Capture Java Heap Dumps](./08_java-heap-dump/README.md)【粗翻】
-* [09.Java线程Dump](./09_java-thread-dump/README.md)【粗翻】
+* [08.JVM堆内存转储的获取方法](./08_java-heap-dump/README.md)【粗翻】
+* [09.Java线程调用栈Dump](./09_java-thread-dump/README.md)【粗翻】
 * [10.高级数据结构: 跳跃表（Skip List）](./10_skip-list/README.md)【粗翻】
 * [11.提高性能的JVM参数简介](./11_jvm-arguments-of-highly-effective/README.md)
 * [12.Introduction to the POM](./12_introduction-to-the-pom/README.md)
@@ -26,7 +26,7 @@
 * [19.quiz-advanced-collectors](./19_quiz-advanced-collectors/README.md)
 * [20.Real User Monitoring vs. Synthetic Monitoring](./20_monitoring-vs-synthetic-monitoring/README.md)
 * [21.Introduction to JVM Code Cache](./21_jvm-code-cache/README.md)
-* [22.Java 9 Module System](./22_Java_9_Module_System/README.md) 【系列文章】
+* [22.Java 9 Module System(系列)](./22_Java_9_Module_System/README.md) 【系列文章】
 * [23.ZGC简介](./23_zgc_intro/README.md)【粗翻】
 * [24.Python Tutorial](./24_python-tutorial/README.md)【系列文章】
 * [25.系统设计最佳实践](./25_embedded-rules-of-thumb/README.md)【系列文章】

@@ -123,3 +123,8 @@ A spinlock is typically implemented using atomic operations, and without using a
 
 
 Stackoverflow上的问题链接: <https://stackoverflow.com/questions/195853/spinlock-versus-semaphore>
+
+
+- [CSDN文章链接: 辨析：自旋锁与信号量](https://renfufei.blog.csdn.net/article/details/104182975)
+
+- [GitHub中英双语版本: 辨析：自旋锁与信号量](https://github.com/cncounter/translation/blob/master/tiemao_2020/02_spinlock-vs-semaphore/README.md)

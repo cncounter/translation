@@ -252,4 +252,6 @@ The correct answer is options `B`,  `C`, and `E`.
 - [Java坑人面试题系列: 线程/线程池（高级）](https://renfufei.blog.csdn.net/article/details/104726229)
 - [Java坑人面试题系列: 变量声明（中级）](https://renfufei.blog.csdn.net/article/details/105962238)
 
+- [GitHub中英双语版本: Java坑人面试题系列: 变量声明（中级难度）](https://github.com/cncounter/translation/blob/master/tiemao_2020/17_quiz-variable-declaration/README.md)
+
 原文链接:  <https://blogs.oracle.com/javamagazine/quiz-yourself-variable-declaration-intermediate>

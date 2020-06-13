@@ -260,4 +260,6 @@ Of course, the question here discusses two `Integer` objects: one created with a
 - [Java坑人面试题系列: 线程/线程池（高级）](https://renfufei.blog.csdn.net/article/details/104726229)
 - [Java坑人面试题系列: 变量声明（中级）](https://renfufei.blog.csdn.net/article/details/105962238)
 
+- [GitHub中英双语版本: Java坑人面试题系列: 包装类（中级难度）](https://github.com/cncounter/translation/blob/master/tiemao_2020/03_quiz-wrapper-classes/README.md)
+
 原文链接: <https://blogs.oracle.com/javamagazine/quiz-intermediate-wrapper-classes>

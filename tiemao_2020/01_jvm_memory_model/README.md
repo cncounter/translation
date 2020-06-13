@@ -64,4 +64,8 @@ A major advantage of using native OS threads and scheduling is the ability to ta
 
 ## 原文链接
 
-The Java HotSpot Performance Engine Architecture: <https://www.oracle.com/technetwork/java/whitepaper-135217.html#memory>
+- [The Java HotSpot Performance Engine Architecture](https://www.oracle.com/technetwork/java/whitepaper-135217.html#memory)
+
+- [CSDN文章链接: JVM技术细节: HotSpot的内存模型](https://renfufei.blog.csdn.net/article/details/104150007)
+
+- [GitHub中英双语版本: JVM技术细节: HotSpot的内存模型](https://github.com/cncounter/translation/blob/master/tiemao_2020/01_jvm_memory_model/README.md)

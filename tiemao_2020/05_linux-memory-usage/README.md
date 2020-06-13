@@ -310,3 +310,6 @@ ksysguard on KDE. Both provide resource usage information about cpu, ram, swap a
 
 - <https://www.binarytides.com/linux-command-check-memory-usage/>
 - <http://virtualthreads.blogspot.com/2006/02/understanding-memory-usage-on-linux.html>
+
+- [CSDN文章链接: Linux系统命令 - 查看内存使用情况](https://renfufei.blog.csdn.net/article/details/105851728)
+- [GitHub中英双语版本: Linux系统命令 - 查看内存使用情况](https://github.com/cncounter/translation/blob/master/tiemao_2020/05_linux-memory-usage/README.md)
