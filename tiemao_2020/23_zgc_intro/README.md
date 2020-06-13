@@ -468,22 +468,29 @@ It doesn't stand for anything, ZGC is just a name. It was originally inspired by
 
 Source Code
 
-- Stable:  https://github.com/openjdk/jdk
-- Development: https://github.com/openjdk/zgc
+ZGC相关源代码：
+
+- 稳定版（Stable）:  https://github.com/openjdk/jdk
+- 开发板（Development）: https://github.com/openjdk/zgc
 
 
 Talks
 
-- Oracle Code One 2019 - [Slides](http://cr.openjdk.java.net/~mikael/presentations/20190917-OracleCodeOne-DEV4459-G1_and_ZGC_A_Look_into_the_Progress_of_Garbage_Collection.pdf)
-- PL-Meetup 2019 - [Slides](http://cr.openjdk.java.net/~pliden/slides/ZGC-PLMeetup-2019.pdf)
-- Jfokus 2019 - [Slides](http://cr.openjdk.java.net/~pliden/slides/ZGC-Jfokus-2019.pdf) | [Video (21 min)](https://www.youtube.com/watch?v=qs2_w0sv3LQ)
-- Devoxx 2018 - [Slides](http://cr.openjdk.java.net/~pliden/slides/ZGC-Devoxx-2018.pdf) | [Video (40 min)](https://www.youtube.com/watch?v=7cWiwu7kYkE)
-- Oracle Code One 2018 - [Slides](http://cr.openjdk.java.net/~pliden/slides/ZGC-OracleCodeOne-2018.pdf) | [Video (45 min)](https://www.youtube.com/watch?v=kF_r3GE3zOo)
-- Jfokus 2018 - [Slides](http://cr.openjdk.java.net/~pliden/slides/ZGC-Jfokus-2018.pdf) | [Video (45 min)](https://www.youtube.com/watch?v=tShc0dyFtgw)
-- FOSDEM 2018 - [Slides](http://cr.openjdk.java.net/~pliden/slides/ZGC-FOSDEM-2018.pdf)
+ZGC英文版视频教程与PPT：
+
+- Oracle Code One 2019 - [幻灯片转PDF_EN](http://cr.openjdk.java.net/~mikael/presentations/20190917-OracleCodeOne-DEV4459-G1_and_ZGC_A_Look_into_the_Progress_of_Garbage_Collection.pdf)
+- PL-Meetup 2019 - [幻灯片转PDF_EN](http://cr.openjdk.java.net/~pliden/slides/ZGC-PLMeetup-2019.pdf)
+- Jfokus 2019 - [幻灯片转PDF_EN](http://cr.openjdk.java.net/~pliden/slides/ZGC-Jfokus-2019.pdf) | [Video (21 min)](https://www.youtube.com/watch?v=qs2_w0sv3LQ)
+- Devoxx 2018 - [幻灯片转PDF_EN](http://cr.openjdk.java.net/~pliden/slides/ZGC-Devoxx-2018.pdf) | [Video (40 min)](https://www.youtube.com/watch?v=7cWiwu7kYkE)
+- Oracle Code One 2018 - [幻灯片转PDF_EN](http://cr.openjdk.java.net/~pliden/slides/ZGC-OracleCodeOne-2018.pdf) | [Video (45 min)](https://www.youtube.com/watch?v=kF_r3GE3zOo)
+- Jfokus 2018 - [幻灯片转PDF_EN](http://cr.openjdk.java.net/~pliden/slides/ZGC-Jfokus-2018.pdf) | [Video (45 min)](https://www.youtube.com/watch?v=tShc0dyFtgw)
+- FOSDEM 2018 - [幻灯片转PDF_EN](http://cr.openjdk.java.net/~pliden/slides/ZGC-FOSDEM-2018.pdf)
+
+相关规范:
+
+- https://openjdk.java.net/jeps/333
+- http://www.herongyang.com/Java-GC/
 
 原文链接:
 
 - https://wiki.openjdk.java.net/display/zgc
-- https://openjdk.java.net/jeps/333
-- http://www.herongyang.com/Java-GC/

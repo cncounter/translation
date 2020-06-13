@@ -26,13 +26,13 @@
 * [19.quiz-advanced-collectors](./19_quiz-advanced-collectors/README.md)
 * [20.Real User Monitoring vs. Synthetic Monitoring](./20_monitoring-vs-synthetic-monitoring/README.md)
 * [21.Introduction to JVM Code Cache](./21_jvm-code-cache/README.md)
-* [22.Java 9 Module System](./22_Java_9_Module_System/README.md)
-* [23.Z Garbage Collector](./23_zgc_intro/README.md)
-* [24.Python Tutorial](./24_python-tutorial/README.md)
-* [25.]()
-* [26.]()
-* [27.]()
-* [28.]()
+* [22.Java 9 Module System](./22_Java_9_Module_System/README.md) 【系列文章】
+* [23.ZGC简介](./23_zgc_intro/README.md)【粗翻】
+* [24.Python Tutorial](./24_python-tutorial/README.md)【系列文章】
+* [25.系统设计最佳实践](./25_embedded-rules-of-thumb/README.md)【系列文章】
+* [26.Java规范系列：JAR文件规范](./26_jar_specs/README.md)
+* [27.vim与vi编辑器使用技巧](./27_vi-vim-editor-end-of-line/README.md)
+* [28.深入剖析JVM实现细节(系列)](./28_anatomy-quarks/README.md)【系列文章】
 * [29.]()
 * [30.]()
 
