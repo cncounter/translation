@@ -461,7 +461,127 @@ It doesn't stand for anything, ZGC is just a name. It was originally inspired by
 最初名字的来源是为了致敬伟大的 ZFS 文件系统。 最初 ZFS 的含义是 "Zettabyte File System", 但后来这个含义也被放弃了。
 所以这个ZGC就只是一个代号，具体的信息可以参考: [Jeff Bonwick's Blog](https://web.archive.org/web/20170223222515/https://blogs.oracle.com/bonwick/en_US/entry/you_say_zeta_i_say)。
 
-> ^_^ 其实有一点 Zero 的意思，无停顿垃圾收集器， 然而这个目标没有达到。
+> `^_^` 其实有一点 Zero 的意思，无停顿垃圾收集器， 然而这个目标没有达到。
+
+
+
+## 实际测试
+
+系统版本:
+
+```
+# cat /etc/lsb-release
+DISTRIB_ID=Ubuntu
+DISTRIB_RELEASE=16.04
+DISTRIB_CODENAME=xenial
+DISTRIB_DESCRIPTION="Ubuntu 16.04.4 LTS"
+
+```
+
+JVM 启动参数:
+
+```
+export JAVA_OPTS="-Xmx6g -Xms6g -XX:+UnlockExperimentalVMOptions -XX:+UseZGC -XX:ParallelGCThreads=8 -XX:ConcGCThreads=28 -XX:ZCollectionInterval=5"
+```
+
+结果：
+
+```
+[GC日志监听-GC事件]gcId=8; duration:61; gcDetail: {"duration":61,"maxPauseMillis":61,"gcCause":"Timer","collectionTime":37,"gcAction":"end of major GC","afterUsage":{"ZHeap":"738MB","CodeHeap 'profiled nmethods'":"20MB","CodeHeap 'non-profiled nmethods'":"7MB","Metaspace":"85MB","CodeHeap 'non-nmethods'":"1MB"},"gcId":8,"collectionCount":8,"gcName":"ZGC","type":"jvm.gc.pause"}
+
+[GC日志监听-GC事件]gcId=165; duration:34; gcDetail: {"duration":34,"maxPauseMillis":61,"gcCause":"Timer","collectionTime":973,"gcAction":"end of major GC","afterUsage":{"ZHeap":"184MB","CodeHeap 'profiled nmethods'":"26MB","CodeHeap 'non-profiled nmethods'":"9MB","Metaspace":"93MB","CodeHeap 'non-nmethods'":"1MB"},"gcId":165,"collectionCount":165,"gcName":"ZGC","type":"jvm.gc.pause"}
+
+[GC日志监听-GC事件]gcId=179; duration:38; gcDetail: {"duration":38,"maxPauseMillis":61,"gcCause":"Timer","collectionTime":1060,"gcAction":"end of major GC","afterUsage":{"ZHeap":"184MB","CodeHeap 'profiled nmethods'":"26MB","CodeHeap 'non-profiled nmethods'":"9MB","Metaspace":"93MB","CodeHeap 'non-nmethods'":"1MB"},"gcId":179,"collectionCount":179,"gcName":"ZGC","type":"jvm.gc.pause"}
+...
+```
+
+稳定在30ms~40ms的暂停时间，没有达到10ms的状态。
+
+系统负载:
+
+```
+# ps -ef | wc -l
+242
+
+# free -h
+              total        used        free      shared  buff/cache   available
+Mem:            31G        1.0G         21G        6.3G        9.0G         23G
+Swap:          4.0G          0B        4.0G
+
+# top
+top - 11:07:28 up 777 days, 18:57,  1 user,  load average: 1.28, 1.14, 1.18
+Tasks: 240 total,   1 running, 134 sleeping,   0 stopped,   0 zombie
+%Cpu(s):  0.2 us,  0.1 sy,  0.0 ni, 99.4 id,  0.3 wa,  0.0 hi,  0.0 si,  0.0 st
+KiB Mem : 32917052 total, 22454852 free,  1018152 used,  9444048 buff/cache
+KiB Swap:  4190204 total,  4190204 free,        0 used. 24765604 avail Mem
+```
+
+ps -ef | grep -v grep | grep java | grep `hostname`
+
+
+
+修改JVM 启动参数 `-XX:ConcGCThreads=8`:
+
+```
+export JAVA_OPTS="-Xmx6g -Xms6g -XX:+UnlockExperimentalVMOptions -XX:+UseZGC -XX:ParallelGCThreads=8 -XX:ConcGCThreads=8 -XX:ZCollectionInterval=5"
+```
+
+再次启动, 结果略有降低:
+
+```
+[GC日志监听-GC事件]gcId=7; duration:131; gcDetail: {"duration":131,"maxPauseMillis":131,"gcCause":"Timer","collectionTime":20,"gcAction":"end of major GC","afterUsage":{"ZHeap":"678MB","CodeHeap 'profiled nmethods'":"20MB","CodeHeap 'non-profiled nmethods'":"7MB","Metaspace":"85MB","CodeHeap 'non-nmethods'":"1MB"},"gcId":7,"collectionCount":7,"gcName":"ZGC","type":"jvm.gc.pause"}
+
+[GC日志监听-GC事件]gcId=29; duration:25; gcDetail: {"duration":25,"maxPauseMillis":131,"gcCause":"Timer","collectionTime":96,"gcAction":"end of major GC","afterUsage":{"ZHeap":"186MB","CodeHeap 'profiled nmethods'":"24MB","CodeHeap 'non-profiled nmethods'":"7MB","Metaspace":"86MB","CodeHeap 'non-nmethods'":"1MB"},"gcId":29,"collectionCount":29,"gcName":"ZGC","type":"jvm.gc.pause"}
+
+[GC日志监听-GC事件]gcId=3225; duration:24; gcDetail: {"duration":24,"maxPauseMillis":131,"gcCause":"Timer","collectionTime":11879,"gcAction":"end of major GC","afterUsage":{"ZHeap":"178MB","CodeHeap 'profiled nmethods'":"25MB","CodeHeap 'non-profiled nmethods'":"10MB","Metaspace":"95MB","CodeHeap 'non-nmethods'":"1MB"},"gcId":3225,"collectionCount":3225,"gcName":"ZGC","type":"jvm.gc.pause"}
+
+```
+
+
+
+
+8核心6GB配置信息:
+
+```
+[GC日志监听-初始化]jvmInfo={"osConfig":{"freePhysicalMemorySize":"102405MB","availableProcessors":8,"name":"Linux","totalPhysicalMemorySize":"140767MB","arch":"amd64","version":"4.15.0-64-generic"},"runtimeConfig":{"vmName":"Java HotSpot(TM) 64-Bit Server VM","specVersion":"11","inputArguments":["-Xmx4g","-Xms4g","-XX:ParallelGCThreads=8","-XX:ConcGCThreads=8","-XX:+UnlockExperimentalVMOptions","-XX:+UseZGC","-XX:ZCollectionInterval=5","-Dcom.sun.management.jmxremote","-Dcom.sun.management.jmxremote.port=10080","-Dcom.sun.management.jmxremote.ssl=false","-Dcom.sun.management.jmxremote.authenticate=false","-Djava.security.egd=file:/dev/./urandom"],"vmId":"1@rc-report-78cf5c6bcd-7drlp","vmVersion":"11.0.6+8-LTS","vmVendor":"Oracle Corporation","uptime":27977}}
+```
+
+AWS+K8S运行环境:
+
+结果稳定在40ms左右,1分钟CPU负载均值在1.0左右（1核心CPU运行ZGC的1m负载在6.0左右）:
+
+```
+[GC日志监听-GC事件]gcId=74; duration:42; gcDetail: {"duration":42,"maxPauseMillis":67,"gcCause":"Timer","collectionTime":255,"gcAction":"end of major GC","afterUsage":{"ZHeap":"332MB","CodeHeap 'profiled nmethods'":"32MB","CodeHeap 'non-profiled nmethods'":"15MB","Metaspace":"103MB","CodeHeap 'non-nmethods'":"1MB"},"gcId":74,"collectionCount":74,"gcName":"ZGC","type":"jvm.gc.pause"}
+
+[GC日志监听-GC事件]gcId=73; duration:45; gcDetail: {"duration":45,"maxPauseMillis":67,"gcCause":"Timer","collectionTime":252,"gcAction":"end of major GC","afterUsage":{"ZHeap":"352MB","CodeHeap 'profiled nmethods'":"32MB","CodeHeap 'non-profiled nmethods'":"15MB","Metaspace":"103MB","CodeHeap 'non-nmethods'":"1MB"},"gcId":73,"collectionCount":73,"gcName":"ZGC","type":"jvm.gc.pause"}
+```
+
+
+
+
+```
+-XX:+UnlockExperimentalVMOptions -XX:+UseZGC -XX:ZCollectionInterval=5
+-XX:+UseG1GC  -XX:MaxGCPauseMillis=50
+
+# 如果G1的并发GC线程超过并行GC线程数则会报错。
+-XX:ParallelGCThreads=1 -XX:ConcGCThreads=2
+```
+
+换成G1，其他参数不变。CPU负载在1-2左右。
+
+```
+[GC日志监听-初始化]jvmInfo={"osConfig":{"freePhysicalMemorySize":"106219MB","availableProcessors":8,"name":"Linux","totalPhysicalMemorySize":"140767MB","arch":"amd64","version":"4.15.0-64-generic"},"runtimeConfig":{"vmName":"Java HotSpot(TM) 64-Bit Server VM","specVersion":"11","inputArguments":["-Xmx4g","-Xms4g","-XX:ParallelGCThreads=8","-XX:ConcGCThreads=8","-XX:+UseG1GC","-XX:MaxGCPauseMillis=50","-Dcom.sun.management.jmxremote","-Dcom.sun.management.jmxremote.port=10080","-Dcom.sun.management.jmxremote.ssl=false","-Dcom.sun.management.jmxremote.authenticate=false","-Djava.security.egd=file:/dev/./urandom"],"vmId":"1@rc-report-57c5548475-rmmqq","vmVersion":"11.0.6+8-LTS","vmVendor":"Oracle Corporation","uptime":26211}}
+
+[GC日志监听-GC事件]gcId=18; duration:19; gcDetail: {"duration":19,"maxPauseMillis":24,"gcCause":"G1 Evacuation Pause","liveDataSize":"94MB","collectionTime":259,"gcAction":"end of minor GC","afterUsage":{"CodeHeap 'profiled nmethods'":"34MB","G1 Old Gen":"94MB","CodeHeap 'non-profiled nmethods'":"15MB","G1 Survivor Space":"22MB","Compressed Class Space":"11MB","Metaspace":"100MB","G1 Eden Space":"0","CodeHeap 'non-nmethods'":"1MB"},"gcId":18,"collectionCount":18,"gcName":"G1 Young Generation","type":"jvm.gc.pause"}
+
+[GC日志监听-GC事件]gcId=20; duration:13; gcDetail: {"duration":13,"maxPauseMillis":24,"gcCause":"G1 Evacuation Pause","liveDataSize":"94MB","collectionTime":288,"gcAction":"end of minor GC","afterUsage":{"CodeHeap 'profiled nmethods'":"28MB","G1 Old Gen":"94MB","CodeHeap 'non-profiled nmethods'":"15MB","G1 Survivor Space":"26MB","Compressed Class Space":"11MB","Metaspace":"103MB","G1 Eden Space":"0","CodeHeap 'non-nmethods'":"1MB"},"gcId":20,"collectionCount":20,"gcName":"G1 Young Generation","type":"jvm.gc.pause"}
+
+```
+
+
+
+
+
 
 
 ## 相关链接
@@ -490,6 +610,13 @@ ZGC英文版视频教程与PPT：
 
 - https://openjdk.java.net/jeps/333
 - http://www.herongyang.com/Java-GC/
+
+其他教程:
+
+- https://www.opsian.com/blog/javas-new-zgc-is-very-exciting/
+- https://ionutbalosin.com/2019/12/jvm-garbage-collectors-benchmarks-report-19-12/
+- https://dzone.com/articles/garbage-collectors-affect-microbenchmarks
+- https://www.reddit.com/r/java/comments/a4q7xs/anyone_using_zgc/
 
 原文链接:
 
