@@ -579,6 +579,51 @@ AWS+K8S运行环境:
 ```
 
 
+监控信息:
+
+```
+[GC日志监听-GC事件]gcId=7; duration:25; gcDetail: {"duration":25,"maxPauseMillis":71,"gcCause":"Proactive","collectionTime":31,"gcAction":"end of major GC","afterUsage":{"ZHeap":"214MB","CodeHeap 'profiled nmethods'":"26MB","CodeHeap 'non-profiled nmethods'":"8MB","Metaspace":"95MB","CodeHeap 'non-nmethods'":"1MB"},"gcId":7,"collectionCount":7,"gcName":"ZGC","type":"jvm.gc.pause"}
+```
+
+
+对应的 GC 日志：
+
+```
+[2020-07-22T19:54:13.335+0800] GC(6) Garbage Collection (Proactive)
+[2020-07-22T19:54:13.338+0800] GC(6) Pause Mark Start 2.223ms
+[2020-07-22T19:54:13.358+0800] GC(6) Concurrent Mark 19.991ms
+[2020-07-22T19:54:13.358+0800] GC(6) Pause Mark End 0.119ms
+[2020-07-22T19:54:13.359+0800] GC(6) Concurrent Process Non-Strong References 0.385ms
+[2020-07-22T19:54:13.359+0800] GC(6) Concurrent Reset Relocation Set 0.010ms
+[2020-07-22T19:54:13.359+0800] GC(6) Concurrent Destroy Detached Pages 0.001ms
+[2020-07-22T19:54:13.359+0800] GC(6) Concurrent Select Relocation Set 0.758ms
+[2020-07-22T19:54:13.359+0800] GC(6) Concurrent Prepare Relocation Set 0.086ms
+[2020-07-22T19:54:13.361+0800] GC(6) Pause Relocate Start 1.410ms
+[2020-07-22T19:54:13.363+0800] GC(6) Concurrent Relocate 2.162ms
+[2020-07-22T19:54:13.363+0800] GC(6) Load: 0.01/0.03/0.01
+[2020-07-22T19:54:13.363+0800] GC(6) MMU: 2ms/0.0%, 5ms/0.0%, 10ms/44.5%, 20ms/72.3%, 50ms/87.6%, 100ms/91.1%
+[2020-07-22T19:54:13.363+0800] GC(6) Mark: 8 stripe(s), 2 proactive flush(es), 1 terminate flush(es), 0 completion(s), 0 continuation(s)
+[2020-07-22T19:54:13.363+0800] GC(6) Relocation: Successful, 8M relocated
+[2020-07-22T19:54:13.363+0800] GC(6) NMethods: 8271 registered, 1622 unregistered
+[2020-07-22T19:54:13.363+0800] GC(6) Metaspace: 95M used, 97M capacity, 97M committed, 98M reserved
+[2020-07-22T19:54:13.363+0800] GC(6) Soft: 7427 encountered, 0 discovered, 0 enqueued
+[2020-07-22T19:54:13.363+0800] GC(6) Weak: 4925 encountered, 2543 discovered, 0 enqueued
+[2020-07-22T19:54:13.363+0800] GC(6) Final: 305 encountered, 13 discovered, 0 enqueued
+[2020-07-22T19:54:13.363+0800] GC(6) Phantom: 54 encountered, 38 discovered, 2 enqueued
+[2020-07-22T19:54:13.363+0800] GC(6)                Mark Start          Mark End        Relocate Start      Relocate End           High               Low         
+[2020-07-22T19:54:13.363+0800] GC(6)  Capacity:     6144M (100%)       6144M (100%)       6144M (100%)       6144M (100%)       6144M (100%)       6144M (100%)   
+[2020-07-22T19:54:13.363+0800] GC(6)   Reserve:       48M (1%)           48M (1%)           48M (1%)           48M (1%)           48M (1%)           48M (1%)     
+[2020-07-22T19:54:13.363+0800] GC(6)      Free:     5864M (95%)        5864M (95%)        5898M (96%)        5938M (97%)        5938M (97%)        5864M (95%)    
+[2020-07-22T19:54:13.363+0800] GC(6)      Used:      232M (4%)          232M (4%)          198M (3%)          158M (3%)          232M (4%)          158M (3%)     
+[2020-07-22T19:54:13.363+0800] GC(6)      Live:         -               102M (2%)          102M (2%)          102M (2%)             -                  -          
+[2020-07-22T19:54:13.363+0800] GC(6) Allocated:         -                 0M (0%)            0M (0%)           20M (0%)             -                  -          
+[2020-07-22T19:54:13.363+0800] GC(6)   Garbage:         -               129M (2%)           95M (2%)           51M (1%)             -                  -          
+[2020-07-22T19:54:13.363+0800] GC(6) Reclaimed:         -                  -                34M (1%)           78M (1%)             -                  -          
+[2020-07-22T19:54:13.363+0800] GC(6) Garbage Collection (Proactive) 232M(4%)->158M(3%)
+```
+
+结论: GC
+
 
 
 
@@ -605,6 +650,7 @@ ZGC英文版视频教程与PPT：
 - Oracle Code One 2018 - [幻灯片转PDF_EN](http://cr.openjdk.java.net/~pliden/slides/ZGC-OracleCodeOne-2018.pdf) | [Video (45 min)](https://www.youtube.com/watch?v=kF_r3GE3zOo)
 - Jfokus 2018 - [幻灯片转PDF_EN](http://cr.openjdk.java.net/~pliden/slides/ZGC-Jfokus-2018.pdf) | [Video (45 min)](https://www.youtube.com/watch?v=tShc0dyFtgw)
 - FOSDEM 2018 - [幻灯片转PDF_EN](http://cr.openjdk.java.net/~pliden/slides/ZGC-FOSDEM-2018.pdf)
+- 官方文档[JVM-11-GC-tuning-guide_EN.pdf](https://docs.oracle.com/en/java/javase/11/gctuning/hotspot-virtual-machine-garbage-collection-tuning-guide.pdf)
 
 相关规范:
 
@@ -617,6 +663,7 @@ ZGC英文版视频教程与PPT：
 - https://ionutbalosin.com/2019/12/jvm-garbage-collectors-benchmarks-report-19-12/
 - https://dzone.com/articles/garbage-collectors-affect-microbenchmarks
 - https://www.reddit.com/r/java/comments/a4q7xs/anyone_using_zgc/
+- https://bugs.openjdk.java.net/browse/JDK-8240679
 
 原文链接:
 
