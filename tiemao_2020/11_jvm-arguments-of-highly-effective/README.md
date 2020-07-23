@@ -1,20 +1,26 @@
 # 7 JVM arguments of Highly Effective Applications
 
 
-＃ 提高性能的JVM参数简介
+＃ 高性能JVM参数简介
 
 At the time (March 2020) of writing this article there are 600+ arguments that you can pass to JVM just around Garbage collection and memory. If you include other aspects, total JVM arguments count will easily cross 1000+. It’s way too many arguments for anyone to digest and comprehend. In this article, we are highlighting seven important JVM arguments that you may find it useful.
 
-截止目前（2020年3月）, JVM可配置参数已经达到1000多个，其中GC和内存配置相关的JVM参数就有600多个。
-参数太多是个大麻烦，让人难以下手，理解起来也很费事。
-本文主要介绍七个非常重要的JVM参数，您会发现他们非常有用。
+截止目前, 可配置的JVM参数已达1000多个，其中GC和内存相关的配置参数有600多个。
+参数太多是个麻烦，让我们难以下手，学习和理解起来也很费事。
+本文主要介绍最重要的七个JVM参数，学会之后你会发现水平提高了一大截。
 
 ## 1. `-Xmx` and `-XX:MaxMetaspaceSize`
 
-`-Xmx` is probably the most important JVM argument. `-Xmx` defines the maximum amount of heap size you are allocating to your application. (To learn about different memory regions in a JVM, you may watch this short video clip). You can define your application’s heap size like this:
+`-Xmx` is probably the most important JVM argument. `-Xmx` defines the maximum amount of heap size you are allocating to your application. (To learn about different memory regions in a JVM, you may watch [this short video clip](https://www.youtube.com/watch?v=uJLOlCuOR4k&t=9s) ). You can define your application’s heap size like this:
+
+## 1. 设置最大堆内存
+
+`-Xmx` 可以说是最重要的JVM参数，用于指定应用程序可以使用的堆内存最大值。
+关于JVM内存的基础知识，可以参考这个英语版的youtube视频: [JVM Memory - Learn Easily](https://www.youtube.com/watch?v=uJLOlCuOR4k&t=9s)。
+使用示例:
 
 ```
--Xmx2g
+-Xmx4g
 ```
 
 Heap size plays a critical role in determining your
@@ -22,13 +28,26 @@ Heap size plays a critical role in determining your
 - a. Application performance
 - b. Bill, that you are going to get from your cloud provider (AWS, Azure,…)
 
-This brings question, what is the right heap size for my application? Should I allocate a large heap size or small heap size for my application? Answer is: ‘It depends’. In this article, we have shared our thoughts whether you need to go with large or small heap size.
+This brings question, what is the right heap size for my application? Should I allocate a large heap size or small heap size for my application? Answer is: ‘It depends’. In [this article](https://blog.heaphero.io/2019/06/21/large-or-small-memory-size-for-my-app/), we have shared our thoughts whether you need to go with large or small heap size.
 
-You might also consider reading this article: advantages of setting -Xms and `-Xmx` to same value.
+You might also consider reading this article: [advantages of setting `-Xms` and `-Xmx` to same value](https://blog.gceasy.io/2020/03/09/advantages-of-setting-xms-and-xmx-to-same-value/).
+
+堆内存的大小对系统性能有很大影响， 当然，提高系统配置也会增加运行成本， 需要综合考虑。
+给应用程序配置的堆内存太大或太小都会有副作用，那我们应该设置多大? 请参考: [LARGE OR SMALL MEMORY SIZE FOR MY APP?](https://blog.heaphero.io/2019/06/21/large-or-small-memory-size-for-my-app/)
+
+另一个参数 `-Xms` 决定了初始堆内存大小，详情请参考: [advantages of setting `-Xms` and `-Xmx` to same value](https://blog.gceasy.io/2020/03/09/advantages-of-setting-xms-and-xmx-to-same-value/).
+
+
 Metaspace is the region where JVM’s metadata definitions, such as class definitions, method definitions, will be stored.  By default, the amount of memory that can be used to store this metadata information is unlimited (i.e. limited by your container or machine’s RAM size). You need to use `-XX:MaxMetaspaceSize`  argument to specify an upper limit on the amount of memory that can be used to store metadata information.
 
+
+JDK8引入了 Metaspace 空间，用于存储JVM中的公用信息，比如class定义，方法定义等等。
+JVM默认没有限制 Metaspace，但受限于宿主机的物理内存大小， 如果程序出BUG，JVM使用的内存超出限制，可能会被操作系统给杀了。
+参考案例: [OOM终结者参数调优](https://renfufei.blog.csdn.net/article/details/80468217)
+我们可以使用参数 `-XX:MaxMetaspaceSize` 来限制Meta区的大小：
+
 ```
--XX:MaxMetaspaceSize=256m
+-XX:MaxMetaspaceSize=2g
 ```
 
 ## 2. GC Algorithm
@@ -43,22 +62,51 @@ As on date (March 2020), there are 7 different GC algorithms in OpenJDK:
 - f. Z GC
 - g. Epsilon GC
 
+
+## 2. 指定GC算法
+
+截至目前， OpenJDK 支持的所有 GC 算法，一共有 7 类：
+
+- 1. 串行 GC（Serial GC）：单线程执行，应用需要暂停；
+- 1. 并行 GC（ParNew、Parallel Scavenge、Parallel Old）：多线程并行地执行垃圾回收，关注与高吞吐；
+- 1. CMS（Concurrent Mark-Sweep）：多线程并发标记和清除，关注与降低延迟；
+- 1. G1（G First）：通过划分多个内存区域做增量整理和回收，进一步降低延迟；
+- 1. ZGC（Z Garbage Collector）：通过着色指针和读屏障，实现几乎全部的并发执行，几毫秒级别的延迟，线性可扩展；
+- 1. Epsilon：实验性的 GC，供性能分析使用；
+- 1. Shenandoah：G1 的改进版本，跟 ZGC 类似。
+
+详细情况可参考: [JVM 核心技术 32 讲](https://gitbook.cn/gitchat/column/5de76cc38d374b7721a15cec/topic/5df0bea044f0aa237c287868)
+
+
 If you don’t specify the GC algorithm explicitly, then JVM will choose the default algorithm. Until Java 8, Parallel GC is the default GC algorithm. Since Java 9, G1 GC is the default GC algorithm.
 
 Selection of the GC algorithm plays a crucial role in determining the application’s performance. Based on our research, we are observing excellent performance results with Z GC algorithm. If you are running with JVM 11+, then you may consider using Z GC algorithm (i.e. -XX:+UseZGC). More details about Z GC algorithm can be found here.
 
 Below table summarizes the JVM argument that you need to pass to activate each type of Garbage Collection algorithm.
 
+如果没有明确指定，则JVM会使用默认的GC算法。
+在Java8及之前的版本，默认使用成熟稳定的 Parallel GC 算法。
+从Java8开始， 默认的GC算法为G1。
+
+GC算法对系统性能的影响也很明显，直接影响了一些关键的性能指标: `响应延迟` 以及 `吞吐量` 。
+根据业界的研究，ZGC是目前最棒的GC算法。
+如果系统使用JDK 11 及以上版本，大部分系统都可以考虑使用ZGC。
+
+需要提醒的是, JDK11中 `NotificationListener` 通知的 `GarbageCollectionNotificationInfo#duration` 并不是ZGC的暂停时间，而是ZGC的GC周期消耗的时间， 这一点和之前的GC算法不同。 具体案例可参考： [ZGC简介](https://github.com/cncounter/translation/tree/master/tiemao_2020/23_zgc_intro)。
+
+
+
+各种GC算法对应的JVM启动参数见下表:
+
+| GC 算法	 | JVM 参数 |
 | -------------- | ------------ |
-| GC Algorithm	 | JVM argument |
 | Serial GC	 | `-XX:+UseSerialGC` |
 | Parallel GC	 | `-XX:+UseParallelGC` |
-| Concurrent Market & Sweep (CMS) GC	 | `-XX:+UseConcMarkSweepGC` |
+| CMS GC	 | `-XX:+UseConcMarkSweepGC` |
 | G1 GC	 | `-XX:+UseG1GC` |
 | Shenandoah GC	 | `-XX:+UseShenandoahGC` |
-| Z GC	 | `-XX:+UseZGC` |
+| Z GC	 | `-XX:+UnlockExperimentalVMOptions -XX:+UseZGC` |
 | Epsilon GC	 | `-XX:+UseEpsilonGC` |
-
 
 
 ## 3. Enable GC Logging
