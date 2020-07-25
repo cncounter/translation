@@ -1,7 +1,7 @@
 # 7 JVM arguments of Highly Effective Applications
 
 
-＃ 最重要的JVM启动参数 -- 性能篇
+＃ 最重要的JVM性能调优参数
 
 At the time (March 2020) of writing this article there are 600+ arguments that you can pass to JVM just around Garbage collection and memory. If you include other aspects, total JVM arguments count will easily cross 1000+. It’s way too many arguments for anyone to digest and comprehend. In this article, we are highlighting seven important JVM arguments that you may find it useful.
 
@@ -13,7 +13,7 @@ At the time (March 2020) of writing this article there are 600+ arguments that y
 
 `-Xmx` is probably the most important JVM argument. `-Xmx` defines the maximum amount of heap size you are allocating to your application. (To learn about different memory regions in a JVM, you may watch [this short video clip](https://www.youtube.com/watch?v=uJLOlCuOR4k&t=9s) ). You can define your application’s heap size like this:
 
-## 1. 设置最大堆内存
+## 1. 限制最大堆内存
 
 `-Xmx` 可以说是最重要的JVM参数，用于指定应用程序可以使用的堆内存最大值。
 关于JVM内存的基础知识，可以参考这个英语版的youtube视频: [JVM Memory - Learn Easily](https://www.youtube.com/watch?v=uJLOlCuOR4k&t=9s)。
@@ -208,17 +208,40 @@ You can monitor GC related micrometrics in real time, using [GCeasy REST API](ht
 
 OutOfMemoryError is a serious problem that will affect your application’s availability/performance SLAs. To diagnose OutOfMemoryError or any memory-related problems, one would have to capture heap dump right at the moment or few moments before the application starts to experience OutOfMemoryError. As we don’t know when OutOfMemoryError will be thrown, it’s hard to capture heap dump manually at the right around the time when it’s thrown. However, capturing heap dumps can be automated by passing following JVM arguments:
 
- `-XX:+HeapDumpOnOutOfMemoryError` and `-XX:HeapDumpPath={HEAP-DUMP-FILE-PATH}`
+## 4. 内存溢出时自动执行堆转储
 
-In ‘-XX:HeapDumpPath’, you need to specify the file path where heap dump should be stored. When you pass these two JVM arguments, heap dumps will be automatically captured and written to a defined file path, when OutOfMemoryError is thrown. Example:
+OutOfMemoryError 是一个很严重的问题， 会影响应用系统的可用性和性能， 继而影响我们的SLA。
+为了诊断 OutOfMemoryError 或者其他内存相关的问题，必须在抛出OutOfMemoryError的那一个瞬间获取堆内存快照(heap dump)。
+当然我们肯定不知道何时会发生 OutOfMemoryError，所以很难手工在内存溢出时执行堆转储。
+官方肯定考虑到了这种情形，所以我们可以指定以下JVM启动参数来自动获取堆转储：
+
+```
+-XX:+HeapDumpOnOutOfMemoryError
+-XX:HeapDumpPath={HEAP-DUMP-FILE-PATH}
+```
+
+In `-XX:HeapDumpPath`, you need to specify the file path where heap dump should be stored. When you pass these two JVM arguments, heap dumps will be automatically captured and written to a defined file path, when OutOfMemoryError is thrown. Example:
+
+
+指定 `-XX:HeapDumpPath` 参数时需要带上保存堆转储的具体文件名或者目录，JVM会自动判断. 例如:
 
 ```
 -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/crashes/my-heap-dump.hprof
 ```
 
-Once heap dumps are captured, you can use tools like HeapHero, EclipseMAT to analyze heap dumps.
+By default the heap dump is created in a file called `java_pidpid.hprof` in the working directory of the VM, as in the example above. You can specify an alternative file name or directory with the -XX:HeapDumpPath= option. For example -XX:HeapDumpPath=/disk2/dumps will cause the heap dump to be generated in the /disk2/dumps directory.
 
-More details around the OutOfMemoryError JVM arguments can be found in this article.
+Once heap dumps are captured, you can use tools like [HeapHero](https://heaphero.io/), [EclipseMAT](https://www.eclipse.org/mat/) to analyze heap dumps.
+
+More details around the OutOfMemoryError JVM arguments can be found in [this article](https://blog.heaphero.io/2019/06/21/outofmemoryerror-related-jvm-arguments/).
+
+如果不指定 `-XX:HeapDumpPath`, 则会默认使用Java程序的启动目录，堆转储文件名格式为 `java_pid{pid}.hprof`。
+
+如果指定的目录不存在或无权限则会报错。
+
+获取到堆转储之后，可使用 [HeapHero](https://heaphero.io/)， [EclipseMAT](https://www.eclipse.org/mat/) 等工具来分析。
+
+更多关于 OutOfMemoryError 的JVM参数可参考: [OutOfMemoryError related JVM Arguments](https://blog.heaphero.io/2019/06/21/outofmemoryerror-related-jvm-arguments/)。
 
 ## 5. `-Xss`
 
@@ -285,4 +308,6 @@ To avoid these commotions, it’s highly recommended to set the time zone at the
 In this article, we have attempted to summarize some of the important JVM arguments and their positive impacts. We hope you may find it helpful.
 
 
-<https://blog.gceasy.io/2020/03/18/7-jvm-arguments-of-highly-effective-applications/>
+- <https://blog.gceasy.io/2020/03/18/7-jvm-arguments-of-highly-effective-applications/>
+
+- [Java HotSpot VM Troubleshooting Guide Command-Line Options](https://docs.oracle.com/javase/8/docs/technotes/guides/troubleshoot/clopts001.html)
