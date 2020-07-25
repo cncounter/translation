@@ -255,6 +255,25 @@ Each application will have tens, hundreds, thousands of threads. Each thread wil
 
 Each one of them consumes memory. If their consumption goes beyond a certain limit, then StackOverflowError is thrown. More details about StackOverflowError & it’s solution can be found in this article. However, you can increase the thread’s stack size limit by passing `-Xss` argument. Example:
 
+## 5. 指定线程栈大小
+
+每个程序一般会有几十上百个线程，多的可能还会有上千个。
+每个线程都有专用的线程栈。
+在每个线程的线程栈中，需要存储以下信息：
+
+
+- a. 当前执行的方法/函数
+- b. 原生数据类型
+- c. 变量
+- d. 对象指针
+- e. 返回值
+
+每个部分都会占用内存。
+如果它们的使用量超出某个限制值，则会引发 StackOverflowError。
+更多信息可参考: [StackOverflowError 的原因和解决方案](https://blog.fastthread.io/2018/09/24/stackoverflowerror/)。
+如果确实是程序正常运行所需， 我们可以设置 `-Xss` 参数来增加线程栈的大小限制。
+
+
 ```
 -Xss256k
 ```
@@ -266,6 +285,25 @@ Say your application has 500 threads, then with `-Xss` value to be `2mb`, your t
 Note: Threads are created outside heap (i.e. `-Xmx`), thus this `1000mb` will be in addition to `-Xmx` value you have already assigned. To understand why threads are created outside heap, you can watch this short video clip.
 
 Our recommendation is to start from a low value (say `256kb`). Run thorough regression, performance, and AB testing with this setting. Only if you experience StackOverflowError then increase the value, otherwise consider sticking on to a low value.
+
+如果 `-Xss` 的值设置太大，则会造成内存占用和浪费。
+假设指定 `-Xss2m`，而程序正常运行只需要256kb，则会浪费大量的内存， 算法不是 `2mb – 256kb = 1792kb`, 可以先想一想为什么？
+
+比如程序有 500个线程，设置 `-Xss` 值为 `2mb`，那么线程栈部分则会消耗 1000mb的内存（即 `500 threads x 2mb/thread` ）。
+如果 `-Xss` 值设置为 `256kb`， 那么线程栈部分则只会消耗 `125mb` 的内存（即`500 threads x 256kb/thread`）。
+这样的话每个JVM实例就能节省 `875mb`的内存 (`1000mb – 125mb = 875mb`)。
+差别还是很明显的。
+
+注意： 线程栈所占的内存和堆内存的大小 (`-Xmx`)没关系.   
+如果已经指定了 `-Xmx`，这时候JVM占用的内存还要加上栈内存的这 `1000mb`。
+要了解为什么在堆外创建线程，可以观看 [此短片](https://www.youtube.com/watch?v=uJLOlCuOR4k&t=9s)。
+
+我们建议先设置一个较小的值开始（例如 `-Xss256k`）。
+然后进行彻底的回归测试，性能性能和AB测试。
+只有在遇到 StackOverflowError 时才增加这个配置，否则请考虑坚持使用较小的值。
+
+> 有些操作系统会有优化, 先分配地址空间，实际使用才分配物理内存，当然，和操作系统的内存页大小有关系，看具体情况。
+
 
 ## 6. `-Dsun.net.client.defaultConnectTimeout` and `-Dsun.net.client.defaultReadTimeout`
 
