@@ -298,9 +298,8 @@ Our recommendation is to start from a low value (say `256kb`). Run thorough regr
 如果已经指定了 `-Xmx`，这时候JVM占用的内存还要加上栈内存的这 `1000mb`。
 要了解为什么在堆外创建线程，可以观看 [此短片](https://www.youtube.com/watch?v=uJLOlCuOR4k&t=9s)。
 
-我们建议先设置一个较小的值开始（例如 `-Xss256k`）。
-然后进行彻底的回归测试，性能性能和AB测试。
-只有在遇到 StackOverflowError 时才增加这个配置，否则请考虑坚持使用较小的值。
+我们建议先设置一个较小的值, 例如 `-Xss256k`。 然后进行完整的回归测试，性能性能和AB测试。
+只有在遇到 StackOverflowError 时才增加这个配置， 否则请坚持使用较小的值。
 
 > 有些操作系统会有优化, 先分配地址空间，实际使用才分配物理内存，当然，和操作系统的内存页大小有关系，看具体情况。
 
@@ -311,12 +310,27 @@ Modern applications use numerous protocols (i.e. SOAP, REST, HTTP, HTTPS, JDBC, 
 
 If you don’t have proper timeout settings, and if remote applications don’t respond fast enough, then your application threads/resources will get stuck. Remote applications unresponsiveness can affect your application’s availability. It can bring down your application to grinding halt. To safeguard your application’s high availability, appropriate timeout settings should be configured.
 
-You can pass these two powerful timeout networking properties at the JVM level that can be globally applicable to all protocol handlers that uses java.net.URLConnection:
+You can pass these two powerful timeout networking properties at the JVM level that can be globally applicable to all protocol handlers that uses `java.net.URLConnection`:
 
 - `sun.net.client.defaultConnectTimeout` specifies the timeout (in milliseconds) to establish the connection to the host. For example, for HTTP connections, it is the timeout when establishing the connection to the HTTP server.
 - `sun.net.client.defaultReadTimeout` specifies the timeout (in milliseconds) when reading from the input stream when a connection is established to a resource.
 
 Example, if you would like to set these properties to 2 seconds:
+
+## 6. 默认连接超时时间
+
+现在的应用系统之间通过各种协议相互连接（比如 SOAP，REST，HTTP，HTTPS，JDBC，RMI等等）。
+但有时候远程服务器的响应时间很长，甚至客户端一直收不到响应信息。
+
+如果程序没有设置合适的连接超时时间，而且远程服务的响应速度不够快的话，那么应用线程/资源会被阻塞，继而影响系统的可用性。
+严重的拖慢甚至拖死我们的系统。 要保证系统高可用，创建连接时应该配置合适的超时时间。
+
+我们可以通过设置JVM启动参数，来指定虚拟机级别的最大超时时间，下面这两个属性适用于所有使用 `java.net.URLConnection` 的协议处理器：
+
+- `sun.net.client.defaultConnectTimeout` 指定创建连接时的超时时间（单位：毫秒）。 例如，与HTTP服务器建立连接时的超时时间。
+- `sun.net.client.defaultReadTimeout` 读超时时间，即： 连接成功之后，连续多少毫秒没有读取到数据则超时。
+
+例如，将这些属性都设置为2秒：
 
 ```
 -Dsun.net.client.defaultConnectTimeout=2000
@@ -325,9 +339,11 @@ Example, if you would like to set these properties to 2 seconds:
 
 Note, by default values for these 2 properties is -1, which means no timeout is set. More details on these properties can be found in this article.
 
+需要注意的是，这两个属性的默认值都是 `-1`，表示不设置超时。 关于这些属性的详细信息，请参见本文。
+
 ## 7. `-Duser.timeZone`
 
-Your application might have sensitive business requirements around time/date. For example, if you are building a trading application, you can’t take transaction before 9:30 am. To implement those time/date related business requirements, you might be using java.util.Date, java.util.Calendar objects. These objects, by default, picks up time zone information from the underlying operating system. This will become a problem; if your application is running in a distributed environment. Look at the below scenarios:
+Your application might have sensitive business requirements around time/date. For example, if you are building a trading application, you can’t take transaction before 9:30 am. To implement those time/date related business requirements, you might be using `java.util.Date`, `java.util.Calendar` objects. These objects, by default, picks up time zone information from the underlying operating system. This will become a problem; if your application is running in a distributed environment. Look at the below scenarios:
 
 - a. If your application is running across multiple data centers, say, San Francisco, Chicago, Singapore – then JVMs in each data center would end up having different time zone. Thus, JVMs in each data center would exhibit different behaviors. It would result in inconsistent results.
 
@@ -337,13 +353,54 @@ Your application might have sensitive business requirements around time/date. Fo
 
 To avoid these commotions, it’s highly recommended to set the time zone at the JVM using the `-Duser.timezone` system property. Example if you want to set EDT time zone for your application, you will do:
 
+## 7. 设置时区
+
+有些业务需要在某个具体的时间/日期执行。
+例如，很多股票交易系统不允许在上午9:30之前进行交易。
+为了实现这些与时间/日期相关的业务需求，可能会用到 `java.util.Date`，`java.util.Calendar`对象。
+默认情况下，这些对象从底层操作系统获取时区信息。
+如果系统在分布式集群环境中运行, 可能会产生一些问题。
+可能会碰到这些问题：
+
+- 1. 如果系统部署在多个数据中心运行（例如，旧金山，芝加哥，新加坡等等）， 这些数据中心跨域了多个时区。 有可能会导致JVM产生不一致的行为, 造成结果的不一致。
+- 2. 如果在云环境中部署应用系统，则可能会在用户无感知的情况下将应用迁移到其他数据中心。在这种情况下，也有可能会产生不同的结果。
+- 3. Ops团队可以会更改默认时区，如果没有与开发团队沟通。也会造成某些不可预料的结果。
+
+所以、为了减少麻烦，建议使用系统属性 `-Duser.timezone` 明确指定JVM的时区，。
+
+设置时区的示例：
+
+
+```shell
+-Duser.timezone=GMT
+-Duser.timezone=GMT+08
 ```
--Duser.timezone=US/Eastern
+
+或者 Java代码:
+
+```java
+import java.util.*;
+// 查看可用的系统时区
+System.out.println(Arrays.toString(TimeZone.getAvailableIDs()));
+// 结果很多, 示例:
+/*
+Etc/GMT, Etc/GMT+0, Etc/GMT+1, Etc/GMT+10, Etc/GMT+11, Etc/GMT+12,
+Etc/GMT+2, Etc/GMT+3, Etc/GMT+4, Etc/GMT+5, Etc/GMT+6, Etc/GMT+7, Etc/GMT+8, Etc/GMT+9,
+Etc/GMT-0, Etc/GMT-1, Etc/GMT-10, Etc/GMT-11, Etc/GMT-12, Etc/GMT-13, Etc/GMT-14,
+Etc/GMT-2, Etc/GMT-3, Etc/GMT-4, Etc/GMT-5, Etc/GMT-6, Etc/GMT-7, Etc/GMT-8, Etc/GMT-9,
+Etc/GMT0, Etc/Greenwich, Etc/UCT, Etc/UTC
+*/
 ```
 
 ## Conclusion
 
 In this article, we have attempted to summarize some of the important JVM arguments and their positive impacts. We hope you may find it helpful.
+
+## 小结
+
+本文介绍了最重要的几个JVM启动参数， 建议读者倒回去再快速过一遍。
+
+## 相关链接
 
 
 - <https://blog.gceasy.io/2020/03/18/7-jvm-arguments-of-highly-effective-applications/>
