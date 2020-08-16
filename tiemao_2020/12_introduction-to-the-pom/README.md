@@ -1,21 +1,37 @@
 ## Introduction to the POM
 
+## MAVEN基础系列（二） POM文件
+
 ### What is a POM?
 
 A Project Object Model or POM is the fundamental unit of work in Maven. It is an XML file that contains information about the project and configuration details used by Maven to build the project. It contains default values for most projects. Examples for this is the build directory, which is `target`; the source directory, which is `src/main/java`; the test source directory, which is `src/test/java`; and so on. When executing a task or goal, Maven looks for the POM in the current directory. It reads the POM, gets the needed configuration information, then executes the goal.
 
 Some of the configuration that can be specified in the POM are the project dependencies, the plugins or goals that can be executed, the build profiles, and so on. Other information such as the project version, description, developers, mailing lists and such can also be specified.
 
+### 2.1 POM定义
+
+项目对象模型（Project Object Model，POM）是Maven的基本工作单元。
+POM是一个XML文件，其中包含项目相关的信息，以及用于构建Maven项目的详细配置信息。
+POM包含了一般项目所需的默认值。 例如构建目录是 `target`; 源代码目录是 `src/main/java`; 测试源码目录是 `src/test/java`; 等等。
+当执行某个任务(task)或目标(goal)时，Maven会在当前目录下查找POM文件。 读取并解析POM文件，获取所需的配置信息，然后再执行。
+
+在POM中可以指定项目的依赖项，插件，可执行目标，配置文件等等。 当然也可以指定其他信息，例如项目版本，描述，开发人员，邮件列表等。
 
 
 ### Super POM
 
 The Super POM is Maven's default POM. All POMs extend the Super POM unless explicitly set, meaning the configuration specified in the Super POM is inherited by the POMs you created for your projects. The snippet below is the Super POM for Maven 3.5.4.
 
+### 2.2 Super POM
+
+Super POM可称为超级POM，是Maven的默认POM。 所有项目的POM都隐式继承 Super POM，除非明确指定。 也就是说 Super POM 中指定的配置都会被我们项目的的POM继承。 下面是 [Maven 3.6.3 的超级POM文件](https://maven.apache.org/ref/3.6.3/maven-model-builder/super-pom.html)。
+
+
 ```xml
 <project>
   <modelVersion>4.0.0</modelVersion>
 
+  <!-- 中央仓库的地址 -->
   <repositories>
     <repository>
       <id>central</id>
@@ -28,6 +44,7 @@ The Super POM is Maven's default POM. All POMs extend the Super POM unless expli
     </repository>
   </repositories>
 
+  <!-- 默认插件的中央仓库地址 -->
   <pluginRepositories>
     <pluginRepository>
       <id>central</id>
@@ -43,6 +60,7 @@ The Super POM is Maven's default POM. All POMs extend the Super POM unless expli
     </pluginRepository>
   </pluginRepositories>
 
+  <!-- 默认目录相对位置; 以及默认插件版本号 -->
   <build>
     <directory>${project.basedir}/target</directory>
     <outputDirectory>${project.build.directory}/classes</outputDirectory>
@@ -89,6 +107,7 @@ The Super POM is Maven's default POM. All POMs extend the Super POM unless expli
     <outputDirectory>${project.build.directory}/site</outputDirectory>
   </reporting>
 
+  <!-- 默认配置信息 -->
   <profiles>
     <!-- NOTE: The release profile will be removed from future versions of the super POM -->
     <profile>
@@ -142,6 +161,8 @@ The Super POM is Maven's default POM. All POMs extend the Super POM unless expli
 </project>
 ```
 
+可以看到，其中指定了中央仓库的地址，默认插件的中央仓库地址，默认目录相对位置; 以及默认插件版本号，默认配置信息。
+
 
 
 ### Minimal POM
@@ -155,6 +176,18 @@ The minimum requirement for a POM are the following:
 - version - the version of the artifact under the specified group
 
 Here's an example:
+
+### 2.3 最小POM
+
+POM文件必须包含以下信息：
+
+- project root
+- modelVersion - 应该设置为 `4.0.0`
+- groupId - 项目组/工作组的标识
+- artifactId - 项目标识， 项目可称为 artifact（组件） 或者 project（项目）
+- version - 在指定 group（工作组） 名下的 artifact 版本号
+
+示例：
 
 ```xml
 <project>
@@ -171,6 +204,16 @@ Also, as mentioned in the [first section](https://maven.apache.org/guides/introd
 
 Furthermore, you can see that in the minimal POM the *repositories* were not specified. If you build your project using the minimal POM, it would inherit the *repositories* configuration in the Super POM. Therefore when Maven sees the dependencies in the minimal POM, it would know that these dependencies will be downloaded from `https://repo.maven.apache.org/maven2` which was specified in the Super POM.
 
+POM文件必须指定 groupId, artifactId, 以及 version。 这三个配置可以唯一定位一个项目， 其格式为 `<groupId>:<artifactId>:<version>`。
+对于上面的示例，其完全限定名称为 "com.mycompany.app:my-app:1"。
+
+POM简介我们提到，如果未指定某个配置的信息，则Maven使用默认值。
+其中的一个默认值是打包类型（packaging type）。每个Maven项目都有打包类型。如果未在POM中指定，则使用默认值 "jar"。
+
+可以看到，最小POM中并未指定 `repositories`。
+如果我们使用最小POM来构建项目，则将继承Super POM中的 `repositories` 配置。
+因此，当Maven在最小POM中看到依赖项时，就知道这些依赖应该从Super POM中指定的仓库地址 `https://repo.maven.apache.org/maven2` 下载。
+
 
 
 ### Project Inheritance
@@ -186,11 +229,34 @@ Elements in the POM that are merged are the following:
 
 The Super POM is one example of project inheritance, however you can also introduce your own parent POMs by specifying the parent element in the POM, as demonstrated in the following examples.
 
+
+<a name="Project_Inheritance"></a>
+
+### 2.4 项目继承结构
+
+POM中的这些元素会被合并：
+
+- 依赖， dependencies
+- 开发人员和贡献者
+- 插件列表（包括报告插件）
+- 插件的可执行信息
+- 插件配置信息
+- 资源信息
+
+Super POM 是项目继承结构的一个示例，当然我们也可以在POM中直接指定 `parent` 元素来引入父POM，情况下面的演示。
+
 #### Example 1
 
 ##### The Scenario
 
 As an example, let us reuse our previous artifact, com.mycompany.app:my-app:1. And let us introduce another artifact, com.mycompany.app:my-module:1.
+
+#### 第1个例子
+
+##### 场景描述
+
+假设我们的项目和前面一样，是 `com.mycompany.app:my-app:1`.
+新引入的项目为 `com.mycompany.app:my-module:1`.
 
 ```xml
 <project>
@@ -203,6 +269,8 @@ As an example, let us reuse our previous artifact, com.mycompany.app:my-app:1. A
 
 And let us specify their directory structure as the following:
 
+项目的目录结构如下:
+
 ```
 .
  |-- my-module
@@ -212,9 +280,17 @@ And let us specify their directory structure as the following:
 
 **Note:** `my-module/pom.xml` is the POM of com.mycompany.app:my-module:1 while `pom.xml` is the POM of com.mycompany.app:my-app:1
 
+> 可以看到, `my-module/pom.xml` 是 `com.mycompany.app:my-module:1` 项目的POM文件; 而 `com.mycompany.app:my-app:1` 对应的POM文件是顶层目录下的 `pom.xml`
+
 ##### The Solution
 
 Now, if we were to turn com.mycompany.app:my-app:1 into a parent artifact of com.mycompany.app:my-module:1,we will have to modify com.mycompany.app:my-module:1's POM to the following configuration:
+
+**com.mycompany.app:my-module:1's POM**
+
+##### 实现方式
+
+如果要将 com.mycompany.app:my-app:1 作为 com.mycompany.app:my-module:1 的父级项目, 则可以修改 com.mycompany.app:my-module:1 的 POM 文件配置:
 
 **com.mycompany.app:my-module:1's POM**
 
@@ -236,6 +312,13 @@ Notice that we now have an added section, the parent section. This section allow
 
 Alternatively, if we want the groupId and / or the version of your modules to be the same as their parents, you can remove the groupId and / or the version identity of your module in its POM.
 
+
+可以看到，我们在xml文件中加入了 `<parent>` 部分, 用来指定当前POM的父级项目.
+包括父级项目的完全组件名称.
+这样配置之后， 新的 module 就继承了 parent POM 中的属性.
+
+所以，如果和父级项目的组织、版本一致，则可以从子模块POM中去除 `groupId` 和 `version` 元素.
+
 ```xml
 <project>
   <parent>
@@ -244,11 +327,15 @@ Alternatively, if we want the groupId and / or the version of your modules to be
     <version>1</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
+  <!-- 继承parent项目的 groupId ... 省略 -->
   <artifactId>my-module</artifactId>
+  <!-- 继承parent项目的 version ... 省略 -->
 </project>
 ```
 
 This allows the module to inherit the groupId and / or the version of its parent POM.
+
+通过这种继承关系，很多项目开发都很省事。
 
 
 
@@ -259,6 +346,17 @@ This allows the module to inherit the groupId and / or the version of its parent
 However, that would work if the parent project was already installed in our local repository or was in that specific directory structure (parent `pom.xml` is one directory higher than that of the module's `pom.xml`).
 
 But what if the parent is not yet installed and if the directory structure is as in the following example?
+
+
+#### 第2个例子
+
+##### 场景描述
+
+上面的例子能够正常运行，因为 parent 项目位于子项目的上层目录。
+或者父项目已经install到本地仓库，也能正确找到parent项目。
+除了这两种情况，别的要如何引入呢？
+比如下面这样的目录结构：
+
 
 ```
 .
@@ -271,6 +369,10 @@ But what if the parent is not yet installed and if the directory structure is as
 ##### The Solution
 
 To address this directory structure (or any other directory structure), we would have to add the `<relativePath>` element to our parent section.
+
+##### 实现方式
+
+我们使用 `<relativePath>` 来指定 parent 项目的相对位置.
 
 ```xml
 <project>
@@ -287,12 +389,27 @@ To address this directory structure (or any other directory structure), we would
 
 As the name suggests, it's the relative path from the module's `pom.xml` to the parent's `pom.xml`.
 
+顾名思义，就是根据当前模块的 `pom.xml` 文件以及相对位置，来定位 parent 项目的 `pom.xml` 文件。
+
+
 ### Project Aggregation
 
 Project Aggregation is similar to [Project Inheritance](https://maven.apache.org/guides/introduction/introduction-to-the-pom.html#Project_Inheritance). But instead of specifying the parent POM from the module, it specifies the modules from the parent POM. By doing so, the parent project now knows its modules, and if a Maven command is invoked against the parent project, that Maven command will then be executed to the parent's modules as well. To do Project Aggregation, you must do the following:
 
 - Change the parent POMs packaging to the value "pom".
 - Specify in the parent POM the directories of its modules (children POMs).
+
+
+### 2.5 项目聚合结构
+
+项目聚合类似于上面提到的 [项目继承结构](#Project_Inheritance).
+但不再采用每个模块指定 parent POM 的方式, 而是直接在 parent POM 中指定每一个子模块.
+所以 parent 项目需要知道每一个模块的信息,
+如果在 parent 项目目录下执行Maven命令, 则同样会对每一个子模块都执行相同的操作.
+执行项目组合的操作为:
+
+- 将 parent POM 的打包类型修改为 "pom".
+- 在 parent POM 中指定每个子模块(children POMs)的目录.
 
 
 
@@ -304,6 +421,13 @@ Given the previous original artifact POMs and directory structure:
 
 **com.mycompany.app:my-app:1's POM**
 
+
+#### 第3个例子
+
+##### 场景描述
+
+和前面的项目名称一样， POM 文件如下所示:
+
 ```xml
 <project>
   <modelVersion>4.0.0</modelVersion>
@@ -313,7 +437,7 @@ Given the previous original artifact POMs and directory structure:
 </project>
 ```
 
-**com.mycompany.app:my-module:1's POM**
+子模块的 POM 文件如下所示:
 
 ```xml
 <project>
@@ -324,7 +448,7 @@ Given the previous original artifact POMs and directory structure:
 </project>
 ```
 
-**directory structure**
+目录结构为:
 
 ```
 .
@@ -336,6 +460,11 @@ Given the previous original artifact POMs and directory structure:
 ##### The Solution
 
 If we are to aggregate my-module into my-app, we would only have to modify my-app.
+
+##### 实现方式
+
+我们修改父项目的POM文件，将子模块引入:
+
 
 ```xml
 <project>
@@ -356,12 +485,26 @@ In the revised com.mycompany.app:my-app:1, the packaging section and the modules
 Now, whenever a Maven command processes com.mycompany.app:my-app:1, that same Maven command would be ran against com.mycompany.app:my-module:1 as well. Furthermore, some commands (goals specifically) handle project aggregation differently.
 
 
+很简单，我们修改父项目 my-app 的打包类型 `<packaging>pom</packaging>`, 并添加了 `modules` 和子模块描述信息 `<module>my-module</module>`.
+其中 `<module>` 元素的值，是指子模块POM的相对目录。
+一般来说，为了方便，子模块的模块名称（artifactId）和所在目录同名.
+
+这样配置之后， 对 `com.mycompany.app:my-app:1` 执行的Maven命令，都会对子模块 `com.mycompany.app:my-module:1` 执行一次。
+当然，某些命令/目标也会有特例。
+
 
 #### Example 4
 
 ##### The Scenario
 
 But what if we change the directory structure to the following:
+
+
+#### 第4个例子
+
+##### 场景描述
+
+如果父项目和子项目的目录结构不在一起怎么办？ 比如:
 
 ```
 .
@@ -373,9 +516,15 @@ But what if we change the directory structure to the following:
 
 How would the parent POM specify its modules?
 
+parent POM 如何指定子模块的位置呢？
+
 ##### The Solution
 
 The answer? - the same way as Example 3, by specifying the path to the module.
+
+##### 实现方式
+
+聪明的你是否想到了？ 指定模块的相对目录即可：
 
 ```xml
 <project>
@@ -390,6 +539,9 @@ The answer? - the same way as Example 3, by specifying the path to the module.
   </modules>
 </project>
 ```
+
+
+-------------
 
 ### Project Inheritance vs Project Aggregation
 

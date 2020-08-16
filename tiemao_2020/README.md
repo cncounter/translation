@@ -15,7 +15,7 @@
 * [08.JVM堆内存转储的获取方法](./08_java-heap-dump/README.md)【粗翻】
 * [09.Java线程调用栈Dump](./09_java-thread-dump/README.md)【粗翻】
 * [10.高级数据结构: 跳跃表（Skip List）](./10_skip-list/README.md)【粗翻】
-* [11.提高性能的JVM参数简介](./11_jvm-arguments-of-highly-effective/README.md)
+* [11.提高性能的JVM参数简介](./11_jvm-arguments-of-highly-effective/README.md)【粗翻】
 * [12.Introduction to the POM](./12_introduction-to-the-pom/README.md)
 * [13.为什么问题诊断和排查这么困难](./13_why-troubleshooting-so-hard/README.md)【已完成】
 * [14.Micrometer Documentation](./14_micrometer_intro/README.md)
