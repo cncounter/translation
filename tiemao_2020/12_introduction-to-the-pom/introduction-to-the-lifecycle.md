@@ -44,7 +44,7 @@ For example, the default lifecycle comprises of the following phases (for a comp
 
 These lifecycle phases (plus the other lifecycle phases not shown here) are executed sequentially to complete the `default` lifecycle. Given the lifecycle phases above, this means that when the default lifecycle is used, Maven will first validate the project, then will try to compile the sources, run those against the tests, package the binaries (e.g. jar), run integration tests against that package, verify the integration tests, install the verified package to the local repository, then deploy the installed package to a remote repository.
 
-#### 构建生命周期由多个阶段组成
+#### 由多个阶段组成的构建生命周期
 
 每一个构建生命周期都由不同的构建阶段列表来定义，其中，构建阶段（build phase）表示生命周期中的一个阶段。
 
@@ -68,6 +68,14 @@ You should select the phase that matches your outcome. If you want your jar, run
 
 If you are uncertain what you want, the preferred phase to call is
 
+#### 常用命令行
+
+在使用时，我们应该选择与结果相匹配的阶段。
+如果想要生产 jar 文件，则执行 `package`。
+如果要运行单元测试，请运行 `test`。
+
+如果不确定想要什么阶段，则可以调用：
+
 ```shell
 mvn verify
 ```
@@ -76,17 +84,38 @@ This command executes each default lifecycle phase in order (`validate`, `compil
 
 In a build environment, use the following call to cleanly build and deploy artifacts into the shared repository.
 
+此命令按顺序执行默认生命周期中 `verify` 之前的每个阶段（`validate`, `compile`, `test`, `package` 等）。
+我们只需要调用要执行的最后一个构建阶段即可，这里对应的是 `verify`。
+在大多数情况下，效果与 `package` 相同。
+但如果有集成测试，则也会执行这些测试。
+并且在 `verify` 阶段还可以执行一些其他检查，例如代码格式是否符合预定义的 checkstyle 规则。
+
+在构建环境中，使用以下命令来清理干净，并部署到远程仓库中。
+
+
 ```shell
 mvn clean deploy
 ```
 
 The same command can be used in a multi-module scenario (i.e. a project with one or more subprojects). Maven traverses into every subproject and executes `clean`, then executes `deploy` (including all of the prior build phase steps).
 
+可以在多模块方案中使用同一命令（即具有一个或多个子项目的项目）。 Maven遍历每个子项目并执行“清理”，然后执行“部署”（包括所有先前的构建阶段步骤）。
+
 #### A Build Phase is Made Up of Plugin Goals
 
 However, even though a build phase is responsible for a specific step in the build lifecycle, the manner in which it carries out those responsibilities may vary. And this is done by declaring the plugin goals bound to those build phases.
 
 A plugin goal represents a specific task (finer than a build phase) which contributes to the building and managing of a project. It may be bound to zero or more build phases. A goal not bound to any build phase could be executed outside of the build lifecycle by direct invocation. The order of execution depends on the order in which the goal(s) and the build phase(s) are invoked. For example, consider the command below. The `clean` and `package` arguments are build phases, while the `dependency:copy-dependencies` is a goal (of a plugin).
+
+#### 由插件目标组成的构建阶段
+
+即使构建阶段负责构建生命周期中特定的步骤，执行这些职责的方式也可以不同。 这是通过声明插件目标与这些构建阶段绑定来完成的。
+
+插件目标代表一个特定的任务（比构建阶段还要具体），该任务有助于项目的构建和管理。
+可以绑定到零到多个构建阶段。
+没有绑定任何构建生命周期的插件目标，也可以通过直接调用来执行，不受任何构建阶段约束。
+执行的顺序取决于调用目标和构建阶段的顺序。
+ 例如下面的命令，构建阶段是  `clean` 和 `package` 参数，而 `dependency:copy-dependencies` 则是插件的目标。
 
 ```shell
 mvn clean dependency:copy-dependencies package
@@ -100,6 +129,15 @@ Furthermore, a build phase can also have zero or more goals bound to it. If a bu
 
 (*Note: In Maven 2.0.5 and above, multiple goals bound to a phase are executed in the same order as they are declared in the POM, however multiple instances of the same plugin are not supported. Multiple instances of the same plugin are grouped to execute together and ordered in Maven 2.0.11 and above*).
 
+
+运行此命令，则首先会执行 `clean` 阶段（也就是执行清理周期之前的所有阶段，以及“清理”阶段本身），然后执行 `dependency:copy-dependencies` 目标，最后执行 `package` 阶段（以及默认生命周期中，打包之前的所有构建阶段）。
+
+当然，如果某个目标绑定到一个或多个构建阶段，则在这些阶段中都会调用这个目标。
+
+此外，构建阶段也可以绑定零到多个目标。 如果某个构建阶段没有绑定目标，则该构建阶段就不会执行。 但如果绑定了一个或多个目标，它将挨个执行所有绑定的目标。
+
+> 注意：在 Maven 2.0.5 及更高版本中，绑定到某个阶段的多个目标, 将按照在POM中声明的顺序执行，但是不支持同一插件的多个实例。  而在 Maven 2.0.11 及更高版本中， 同一插件的多个实例会分到一个组并按顺序执行。
+
 #### Some Phases Are Not Usually Called From the Command Line
 
 The phases named with hyphenated-words (`pre-*`, `post-*`, or `process-*`) are not usually directly called from the command line. These phases sequence the build, producing intermediate results that are not useful outside the build. In the case of invoking `integration-test`, the environment may be left in a hanging state.
@@ -108,15 +146,35 @@ Code coverage tools such as Jacoco and execution container plugins such as Tomca
 
 Failsafe and code coverage plugins bind goals to `integration-test` and `verify` phases. The net result is test and coverage reports are available after the `verify` phase. If `integration-test` were to be called from the command line, no reports are generated. Worse is that the integration test container environment is left in a hanging state; the Tomcat webserver or Docker instance is left running, and Maven may not even terminate by itself.
 
+
+#### 某些阶段通常不从命令行调用
+
+通常不从命令行直接调用以连字符命名的阶段（如 `pre-*`, `post-*`, or `process-*`）。
+这些阶段对构建进行排序，产生中间结果，这些结果在构建外部无用。 在调用 `integration-test` 的情况下，环境可能处于挂起状态。
+
+Jacoco 等代码覆盖率检测工具, 以及Tomcat，Cargo  和Docker 等执行容器插件将目标绑定到 `pre-integration-test` 阶段，以准备集成测试容器环境。这些插件还将目标绑定到 `post-integration-test` 阶段，以收集覆盖率统计信息，或者停用集成测试容器。
+
+故障安全和代码覆盖检测插件将目标绑定到 `integration-test` 和 `verify` 阶段。 最终结果是测试报告和覆盖率报告，并且在 `verify` 阶段之后可用。 如果直接从命令行调用 `integration-test`，则不会生成任何报告。 更糟糕的是，集成测试容器环境处于挂起状态； Tomcat Web服务器或Docker实例保持运行状态，甚至 Maven 还无法自行终止。
+
 ### Setting Up Your Project to Use the Build Lifecycle
 
 The build lifecycle is simple enough to use, but when you are constructing a Maven build for a project, how do you go about assigning tasks to each of those build phases?
+
+### 设置项目以使用构建生命周期
+
+构建生命周期很容易使用， 但是当您为项目配置Maven构建时，如何为每个构建阶段分配任务呢？
 
 #### Packaging
 
 The first, and most common way, is to set the packaging for your project via the equally named POM element `<packaging>`. Some of the valid packaging values are `jar`, `war`, `ear` and `pom`. If no packaging value has been specified, it will default to `jar`.
 
 Each packaging contains a list of goals to bind to a particular phase. For example, the `jar` packaging will bind the following goals to build phases of the default lifecycle.
+
+#### 打包
+
+首先，最常见的方法是通过POM元素 `<packaging>` 设置项目的打包类型。 可用的类型包括 `jar`, `war`, `ear` 以及 `pom`。 如果未指定打包类型，则默认值为 `jar`。
+
+每个打包类型都包含绑定到特定阶段的目标列表。 例如，`jar` 类型将以下目标绑定到默认生命周期的各个阶段。
 
 | Phase                    | plugin:goal               |
 | :----------------------- | :------------------------ |
@@ -132,6 +190,14 @@ Each packaging contains a list of goals to bind to a particular phase. For examp
 This is an almost [standard set of bindings](https://maven.apache.org/ref/current/maven-core/default-bindings.html); however, some packagings handle them differently. For example, a project that is purely metadata (packaging value is `pom`) only binds goals to the `install` and `deploy` phases (for a complete list of goal-to-build-phase bindings of some of the packaging types, refer to the [Lifecycle Reference](#Lifecycle_Reference)).
 
 Note that for some packaging types to be available, you may also need to include a particular plugin in the `<build>` section of your POM and specify `<extensions>true</extensions>` for that plugin. One example of a plugin that requires this is the Plexus plugin, which provides a `plexus-application` and `plexus-service` packaging.
+
+这基本上算是 [标准绑定集](https://maven.apache.org/ref/current/maven-core/default-bindings.html)；
+但是，有些打包类型对它们的处理方式有所不同。
+例如，纯粹是元数据的项目（类型为`pom`）只将目标绑定到 `install` 和 `deploy` 阶段。
+
+请注意，对于某些可用的打包类型，我们可能还需要在POM的 `<build>` 部分中包含特定的插件，并为插件指定`<extensions>true</extensions>`。 Plexus 插件是其中的一个示例，它可以提供 `plexus-application` 和 `plexus-service` 包。
+
+--------------
 
 #### Plugins
 
