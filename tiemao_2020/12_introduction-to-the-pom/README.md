@@ -504,7 +504,7 @@ But what if we change the directory structure to the following:
 
 ##### 场景描述
 
-如果父项目和子项目的目录结构不在一起怎么办？ 比如:
+如果父项目和子项目不是上下级目录关系怎么办？ 比如:
 
 ```
 .
@@ -555,6 +555,18 @@ But of course, you can have both Project Inheritance and Project Aggregation. Me
 - Change the parent POMs packaging to the value "pom" .
 - Specify in the parent POM the directories of its modules (children POMs)
 
+### 2.6 项目继承结构 vs. 项目聚合结构
+
+如果有多个Maven项目的配置相似， 那么可以将公共的配置提取到一个 parent 项目中。 然后，重构这些Maven项目以继承 parent 项目，这些配置就生效了。
+
+如果有一组项目需要一起构建或处理，则可以创建一个 parent 项目，把其他项目声明为子模块。 这样我们就只需要构建父项目即可。
+
+当然，我们可以同时使用项目继承结构和项目聚合结构。
+比如为子模块指定 parent 项目，同时 parent 项目也将这些 Maven 项目指定为子模块。 只需要符合以下3个规则即可：
+
+- 在每个子POM中指定其父POM。
+- 将父POM的打包类型修改为 "pom"。
+- 在父POM中指定子模块的相对目录。
 
 
 #### Example 5
@@ -564,6 +576,15 @@ But of course, you can have both Project Inheritance and Project Aggregation. Me
 Given the previous original artifact POMs again,
 
 **com.mycompany.app:my-app:1's POM**
+
+
+
+#### 第4个例子
+
+##### 场景描述
+
+还是前面的项目， `my-app` 的POM文件:
+
 
 ```xml
 <project>
@@ -576,6 +597,8 @@ Given the previous original artifact POMs again,
 
 **com.mycompany.app:my-module:1's POM**
 
+`my-module` 的POM文件:
+
 ```xml
 <project>
   <modelVersion>4.0.0</modelVersion>
@@ -586,6 +609,8 @@ Given the previous original artifact POMs again,
 ```
 
 and this **directory structure**
+
+目录结构如下:
 
 ```
 .
@@ -600,6 +625,13 @@ and this **directory structure**
 To do both project inheritance and aggregation, you only have to apply all three rules.
 
 **com.mycompany.app:my-app:1's POM**
+
+##### 实现方式
+
+想要同时使用项目继承 和 项目聚合结构，符合上面提到的3个规则即可。
+
+`my-app` 的POM文件，修改 `packaging` 和 `modules`:
+
 
 ```xml
 <project>
@@ -617,6 +649,8 @@ To do both project inheritance and aggregation, you only have to apply all three
 
 **com.mycompany.app:my-module:1's POM**
 
+修改 `my-module` 的POM文件，加上 `parent`:
+
 ```xml
 <project>
   <parent>
@@ -631,6 +665,8 @@ To do both project inheritance and aggregation, you only have to apply all three
 ```
 
 **NOTE:** Profile inheritance the same inheritance strategy as used for the POM itself.
+
+> **提示**: Profile 的继承策略与POM一样。
 
 
 
