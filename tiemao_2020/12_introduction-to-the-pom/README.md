@@ -676,11 +676,23 @@ One of the practices that Maven encourages is *don't repeat yourself*. However, 
 
 For example, to access the `project.version` variable, you would reference it like so:
 
+
+### 2.7 项目插值和变量
+
+Maven 推荐的做法是 `尽量不要重复`。
+但在某些情况下，我们需要在多个不同的位置使用相同的值。
+为了确保只需要在一个地方定义该值，Maven允许我们在POM中使用自定义变量和预定义变量。
+
+例如要使用 `project.version` 变量，我们可以这样引用：
+
 ```xml
   <version>${project.version}</version>
 ```
 
 One factor to note is that these variables are processed *after* inheritance as outlined above. This means that if a parent project uses a variable, then its definition in the child, not the parent, will be the one eventually used.
+
+如上所述，需要注意的一点是，这些变量是在继承关系之后才进行处理的。
+这意味着，如果父项目定义了某个变量，子项目也定义了这个变量， 那么在处理子项目时，最终生效的是子项目的变量值（此时入侵到父项目POM的配置中）。
 
 #### Available Variables
 
@@ -690,6 +702,17 @@ Any field of the model that is a single value element can be referenced as a var
 
 These variables are all referenced by the prefix "`project.`". You may also see references with `pom.` as the prefix, or the prefix omitted entirely - these forms are now deprecated and should not be used.
 
+#### 可用变量
+
+##### 项目模型变量
+
+项目模型(POM)中的所有字段都可以被当成单个变量值来引用。
+例如，`$ {project.groupId}`，`$ {project.version}`，`$ {project.build.sourceDirectory}` 等等。
+查看完整的属性列表请参阅 [POM参考手册]()。
+
+这些变量引用的前缀都是 "`project.`"。
+有些时候可能还会看到带有 `pom.` 前缀的引用，但现在已经完全废弃，我们就不要再用了。
+
 ##### Special Variables
 
 | `project.basedir`       | The directory that the current project resides in.           |
@@ -698,6 +721,18 @@ These variables are all referenced by the prefix "`project.`". You may also see 
 | `maven.build.timestamp` | The timestamp that denotes the start of the build (UTC). *Since Maven 2.1.0-M1* |
 
 The format of the build timestamp can be customized by declaring the property `maven.build.timestamp.format` as shown in the example below:
+
+
+
+##### 特殊变量
+
+| `project.basedir`       | 当前项目所在的目录。                                |
+| ----------------------- | ----------------------------------------------- |
+| `project.baseUri`       | 当前项目所在的目录，以URI表示。 *Since Maven 2.1.0*  |
+| `maven.build.timestamp` | 表示开始构建项目的时间戳（UTC）。 *Since Maven 2.1.0-M1* |
+
+开始构建项目的时间戳格式，可以通过属性 `maven.build.timestamp.format` 来指定，示例如下：
+
 
 ```xml
 <project>
@@ -711,9 +746,16 @@ The format of the build timestamp can be customized by declaring the property `m
 
 The format pattern has to comply with the rules given in the API documentation for [SimpleDateFormat](https://docs.oracle.com/javase/7/docs/api/java/text/SimpleDateFormat.html). If the property is not present, the format defaults to the value already given in the example.
 
+具体格式必须符合Java API文档中 [SimpleDateFormat](https://docs.oracle.com/javase/7/docs/api/java/text/SimpleDateFormat.html) 给出的规则。 如果没有指定该属性，则默认使用以上示例中给定的值。
+
 ##### Properties
 
 You are also able to reference any properties defined in the project as a variable. Consider the following example:
+
+##### 属性
+
+我们也可以将项目中定义的属性当做变量来引用。
+示例如下：
 
 ```xml
 <project>
@@ -738,5 +780,6 @@ You are also able to reference any properties defined in the project as a variab
 ```
 
 
+### 参考链接
 
-<https://maven.apache.org/guides/introduction/introduction-to-the-pom.html>
+原文链接: <https://maven.apache.org/guides/introduction/introduction-to-the-pom.html>
