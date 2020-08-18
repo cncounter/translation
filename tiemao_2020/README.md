@@ -16,7 +16,8 @@
 * [09.Java线程调用栈Dump](./09_java-thread-dump/README.md)【粗翻】
 * [10.高级数据结构: 跳跃表（Skip List）](./10_skip-list/README.md)【粗翻】
 * [11.提高性能的JVM参数简介](./11_jvm-arguments-of-highly-effective/README.md)【粗翻】
-* [12.Introduction to the POM](./12_introduction-to-the-pom/README.md)
+- [12.1 MAVEN基础系列（一） 构建生命周期](./12_introduction-to-the-pom/introduction-to-the-lifecycle.md)【粗翻】
+- [12.2 MAVEN基础系列（二） POM文件](./12_introduction-to-the-pom/README.md)【粗翻】
 * [13.为什么问题诊断和排查这么困难](./13_why-troubleshooting-so-hard/README.md)【已完成】
 * [14.Micrometer Documentation](./14_micrometer_intro/README.md)
 * [15.DataDog集成MySQL的配置](./15_datadog_mysql/README.md)【已完成】
