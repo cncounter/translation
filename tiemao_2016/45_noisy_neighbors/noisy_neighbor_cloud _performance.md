@@ -1,26 +1,31 @@
 # noisy neighbor (cloud computing performance)
 
-# 按量付费？谈谈公有云的坏邻居效应
+# 谈谈云环境中的坏邻居效应
 
-> noisy neighbor effect, 坏邻居效应, 此处指云环境中的资源争抢。
-> 
-> 是不是觉得按量付费很划算？也许是我们太天真了！
-> 
-> 碰到了很多次，阿里云ECS服务器的卡顿和性能问题。所以最终还是要翻译这篇晦涩的文章。
+> noisy neighbor effect, 坏邻居效应, 指云环境中的资源争抢导致的性能问题。
+
+有没有人觉得虚拟机和Docker是万能的？按量付费的公有云又便宜又划算？
+但是一分钱一分货，也许是我们太天真了！
+笔者碰到过很多次，阿里云的ECS服务器卡顿和性能问题。
+所以最终还是要整理这篇晦涩的文章。
 
 Noisy neighbor is a phrase used to describe a cloud computing infrastructure co-tenant that monopolizes bandwidth, disk I/O, CPU and other resources, and can negatively affect other users' cloud performance. The noisy neighbor effect causes other virtual machines and applications that share the infrastructure to suffer from uneven cloud network performance.
 
-吵闹的坏邻居(noisy neighbor), 用于描述云计算领域中, 用来描述抢占共有带宽,磁盘I/O、CPU以及其他资源的行为； 坏邻居效应, 对同一环境下的其他虚拟机/应用的性能会造成影响或抖动。一般来说，会对其他用户的性能和体验造成恶劣的影响. 
+计算机领域有一个术语叫坏邻居(noisy neighbor), 用来描述云计算环境中, 有些客户大量抢占共享资源的行为，比如网络带宽, 磁盘I/O、CPU以及其他资源；
+坏邻居效应, 会影响共享基础设施的虚拟机/容器/应用，造成性能下降，遭受云环境性能抖动的困扰。
 
 
 The cloud is a multi-tenant environment, which means that a single architecture hosts multiple customers' applications and data. The noisy neighbor effect occurs when an application or virtual machine uses the majority of available resources and causes network performance issues for others on the shared infrastructure.
 
-云, 是一种多租户环境, 同一台物理机, 会共享给多个客户来运行程序/存储数据. 坏邻居效应产生的原因, 是某个虚拟机/应用霸占了大部分资源, 进而影响到其他客户的性能。
+云环境就是一种多租户环境, 同一基础设施（物理机）会分配给多个客户来运行程序/存储数据。
+坏邻居效应产生的原因, 是某个虚拟机/应用霸占了大部分的可用资源, 继而影响其他客户。
 
 
 A lack of bandwidth is one cause of network performance issues. Bandwidth carries data throughout a network, so when one application or instance uses too much, other applications suffer from slow speeds or latency. Noisy neighbor can affect Web hosting, databases, networks, storage and servers.
 
-带宽不足是造成网络性能问题的主要原因. 在网络中传输数据严重依赖带宽的大小, 如果某个应用或实例占用太多的网络资源, 很可能对其他用户造成延迟/缓慢. 坏邻居会影响虚拟机、数据库、网络、存储以及其他云服务。
+带宽不足是网络性能问题的主要原因。 网络上传输数据的速度，主要取决于带宽的大小。
+如果某个应用实例挤占了太多的网络资源, 可能会让其他用户遭受网络延迟和网速下降。
+当然，不仅是网络，坏邻居还会影响虚拟机、容器、数据库、网络、存储以及其他云服务。
 
 
 One way to avoid the noisy neighbor effect is to use a bare-metal cloud. The bare-metal cloud runs one application at a time directly on the hardware, which creates a single-tenant environment and eliminates noisy neighbors. While single-tenant environments avoid the noisy neighbor effect, they do not solve the problem. Infrastructure over-commitment, or when an environment is shared by too many applications, limits overall cloud performance.
@@ -368,7 +373,7 @@ Some customers at the show said [fluctuations in cloud computing performance](ht
 
 
 
-原文链接: 
+原文链接:
 
 http://searchcloudcomputing.techtarget.com/definition/noisy-neighbor-cloud-computing-performance
 
@@ -387,4 +392,3 @@ http://www.networkcomputing.com/storage/eliminating-noisy-neighbors-public-cloud
 
 
 [IT之家公告：完成阿里云至百度云站点迁移工作](http://www.ithome.com/html/it/267407.htm)
-

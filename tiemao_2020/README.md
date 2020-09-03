@@ -34,7 +34,7 @@
 * [26.Java规范系列：JAR文件规范](./26_jar_specs/README.md)
 * [27.vim与vi编辑器使用技巧](./27_vi-vim-editor-end-of-line/README.md)
 * [28.深入剖析JVM实现细节(系列)](./28_anatomy-quarks/README.md)【系列文章】
-* [29.]()
+* [29.通过线程调度延迟来探测CPU性能抖动](./29_sleep_test/README.md)【已完成】
 * [30.]()
 
 
