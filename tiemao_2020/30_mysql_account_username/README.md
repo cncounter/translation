@@ -1,4 +1,4 @@
-# MySQL用户命名规范
+# MySQL账号命名规范
 
 > 用户名, 账号名, Account Names
 
