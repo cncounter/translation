@@ -33,7 +33,7 @@ Additional links to other rules of thumb are included in the [Further Reading](h
 
 ## 一般原则
 
-- 要系统正常运行并不难，但挖坑之后再去填就不容易了。[by: James Grenning]
+- 让系统跑起来并不难，但挖坑之后再去填就不容易了。[by: James Grenning]
 - 错误暴露的时机，尽可能保持在编译期，而不要到运行时
 - 没有文档的程序简直就是垃圾
 - 无意义的注释，只在简单地重复代码直观表达的信息。
@@ -49,39 +49,40 @@ Additional links to other rules of thumb are included in the [Further Reading](h
 ## Design
 
 - Complex systems evolve out of simple systems that worked (John Gall)
-
   - “A complex system that works is invariably found to have evolved from a simple system that worked. The inverse proposition also appears to be true: A complex system designed from scratch never works and cannot be made to work. You have to start over, beginning with a working simple system.” (John Gall)
-
 - If you can’t describe the behavior in plain English, you can’t successfully describe it with code
-
 - Decompose complex problems into smaller sub-problems
-
   - If a problem can be decomposed into two or more independently solvable problems, then solve them independently first!
   - After you have implemented and tested the solutions, combine the parts into a larger operation
-
 - A function should perform only one conceptual task
-
 - Don’t solve problems that don’t exist
-
 - Solve the specific problem, not the general case
-
 - To design a spacecraft right takes an infinite amount of effort. This is why it’s a good idea to design them to operate when some things are wrong. (Akin’s Laws)
-
 - Design is an iterative process. The necessary number of iterations is one more than the number you have currently done. This is true at any point in time. (Akin’s Laws)
-
 - There is never a single right solution. There are always multiple wrong ones, though. (Akin’s Laws)
-
 - (Edison’s Law) “Better” is the enemy of “good”. (Akin’s Laws)
-
 - (Shea’s Law) The ability to improve a design occurs primarily at the interfaces. This is also the prime location for screwing it up. (Akin’s Laws)
-
-- Studies have found that reworking defective requirements, design, and code typically consumes 40 to 50 percent of the total cost of software development. (
-
-  Steve McConnell
-
-  , citing Capers Jones)
-
+- Studies have found that reworking defective requirements, design, and code typically consumes 40 to 50 percent of the total cost of software development. (Steve McConnell, citing Capers Jones)
   - In the worst case, reworking a software requirements problem once the software is in operation typically costs 50 to 200 times what it would take to rework the problem in the requirements stage. ([Steve McConnell](https://stevemcconnell.com/articles/software-quality-at-top-speed/), citing Boehm and Papaccio)
+
+## 设计原则
+
+- 复杂系统都是由能跑起来的简单系统演变而来（by John Gall）
+  * “你会发现一个简单而有趣的事实: 能有效运行的复杂系统, 都是从一个能运行的简单系统演变而来。 与此相反的命题似乎也是对的：一开始就设计得太过复杂的系统永远也跑不起来，谁也无法让他运转。 我们必须从设计一个简单却能运行的系统开始。” (John Gall)
+- 如果不能用简单的语言来描述其行为，也就无法转换为代码来表述
+- 将复杂问题拆解成较小的子问题
+  * 如果一个问题可以分解为两个或多个能独立解决的问题，则可以先独立解决！
+  * 方案实现并通过测试后，将各部分组装为一个更大的操作。
+- 一个方法只做一件事
+- 不要去解决那些不存在的问题
+- 去解决特定问题，而不要纠结一般情况
+- 宇宙飞船的正确设计需要无限的努力。这就是为什么最好将它们设计为在出现某些问题时依然可以运行的原因。 （阿金法则）
+- 设计是一项反复迭代的过程。 永远需要比当前完成的迭代多1次。 在任何时间点都是如此。 （阿金法则）
+- 从来没有一个正确的解决方案。 总是会有很多错误的地方。 （阿金法则）
+- （爱迪生定律）“更好” 是 “良好” 的敌人。 （阿金法则）
+- （Shea定律）改进设计的能力主要发生在表面。这也是将其拧紧的主要位置。 （阿金法则）
+- 研究发现，因缺陷导致的返工需求，设计和编码通常会消耗软件开发总成本的40％到50％。 ([Steve McConnell](https://stevemcconnell.com/articles/software-quality-at-top-speed/), 引用Capers Jones的话)
+  * 在最坏的情况下，软件投入运行之后，再处理软件需求问题的成本，通常是需求阶段重新处理的50到200倍。 （[Steve McConnell]（https://stevemcconnell.com/articles/software-quality-at-top-speed/），引用Boehm和Papaccio的话）
 
 ## Cost
 
