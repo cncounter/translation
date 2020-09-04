@@ -4,13 +4,17 @@
 
 [TOC]
 
-
-
 You may call them guidelines, heuristics, or rules of thumb. No matter, the purpose is the same: to provide a reasonable approximation of the truth. These rules of thumb can help guide your understanding of the systems you work on, focus you toward the right solutions, and highlight potential problem areas.
 
 These are just the initial rules of thumb that I’ve collected over the past year. If you have any other useful rules or heuristics, please [send me an email](https://embeddedartistry.com/contact) or leave a comment below.
 
 Additional links to other rules of thumb are included in the [Further Reading](https://embeddedartistry.com/blog/2018/04/26/embedded-rules-of-thumb/#furtherreading) section.
+
+本文要介绍的内容，可称之为设计准则，避坑指南，或者最佳实践。
+不管怎么命名，这些内容的目的都是要尽最大可能地探索真理。
+这些是作者在去年初步收集整理的经验法则, 通过这些汇总的实践经验，可以帮助理解我们所使用的系统，把精力放在正确的解决方案上，并突显出潜在的问题。
+
+更多避坑指南，请参考文末的 [相关链接](#furtherreading) 部分。
 
 ## General
 
@@ -26,6 +30,21 @@ Additional links to other rules of thumb are included in the [Further Reading](h
 - In nature, the optimum is almost always in the middle somewhere. Distrust assertions that the optimum is at an extreme point. (Akin’s Laws)
 - Past experience is excellent for providing a reality check. Too much reality can doom an otherwise worthwhile design, though (Akin’s Laws)
 - As a rule of thumb, every hour you spend on defect prevention will reduce your repair time from three to ten hours. ([Steve McConnell](https://stevemcconnell.com/articles/software-quality-at-top-speed/))
+
+## 一般原则
+
+- 要系统正常运行并不难，但挖坑之后再去填就不容易了。[by: James Grenning]
+- 错误暴露的时机，尽可能保持在编译期，而不要到运行时
+- 没有文档的程序简直就是垃圾
+- 无意义的注释，只在简单地重复代码直观表达的信息。
+- 注释信息，应该是描述意图，以方便后期维护。
+- 保证头文件中的每个声明，（预期）至少被两个以上的源文件使用
+- 通过消除分心和干扰，可以显著提高开发人员的生产力
+  * “如果在小隔间办公的程序员工作效率不高。请检查他们如何管理中断。” [by: Jack Ganssle]
+- “复杂度会指数级增长；罗伯特·格拉斯（Robert Glass）认为，问题难度每增加25％，代码行数就会翻倍。 上百万行的代码，则会有无数状态，这种规模是任何人类无法掌控的。”  [by: Jack Ganssle]
+- 自然界中的最佳状态，几乎总是处于中间位置。 不信任断言最优是在极端点。 （阿金定律）
+- 历史教训非常适合用来审查当前状况。但是，太多的现实会注定原本不值得的设计失败 （阿金定律）
+- 根据经验，预防缺陷所花费的每一个小时，都能够节省修复BUG时的3到10个小时。 ([Steve McConnell](https://stevemcconnell.com/articles/software-quality-at-top-speed/))
 
 ## Design
 
@@ -263,6 +282,8 @@ Here are Capers’s rules of thumb, where “FP” means function points. These 
 ## Humorous
 
 - If anyone says you are to work with an acoustic modem, ask them if it will be located in another building. Refuse unless the answer is yes. (Elecia White)
+
+<a name="furtherreading"></a>
 
 ## Further Reading
 
