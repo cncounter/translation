@@ -5,12 +5,12 @@
 <summary>点击展开2020年目录</summary>
 
 
-* [01.HotSpot JVM 的内存模型](./01_jvm_memory_model/README.md)【已完成】
-* [02.自旋锁与信号量](./02_spinlock-vs-semaphore/README.md)【已完成】
-* [03.Java坑人面试题系列: 包装类（中级）](./03_quiz-wrapper-classes/README.md)【已完成】
-* [04.Java坑人面试题系列: 思考while与for循环（中级难度）](./04_quiz-loop-constructs/README.md)【已完成】
+* [01.JVM技术细节: HotSpot的内存模型](./01_jvm_memory_model/README.md)【已完成】
+* [02.辨析： 自旋锁与信号量](./02_spinlock-vs-semaphore/README.md)【已完成】
+* [03.Java坑人面试题系列: 包装类（中级难度）](./03_quiz-wrapper-classes/README.md)【已完成】
+* [04.Java坑人面试题系列: 比对while与for循环（中级难度）](./04_quiz-loop-constructs/README.md)【已完成】
 * [05.Linux系统命令 - 查看内存使用情况](./05_linux-memory-usage/README.md)【已完成】
-* [06.G1垃圾收集器生产环境调优](./06_g1_gc_tuning/README.md)【已完成】
+* [06.GC调优-生产环境G1调优指南](./06_g1_gc_tuning/README.md)【已完成】
 * [07.Java坑人面试题系列: 线程/线程池（高级难度）](./07_quiz-executor-service/README.md)【已完成】
 * [08.JVM堆内存转储的获取方法](./08_java-heap-dump/README.md)【粗翻】
 * [09.Java线程调用栈Dump](./09_java-thread-dump/README.md)【粗翻】

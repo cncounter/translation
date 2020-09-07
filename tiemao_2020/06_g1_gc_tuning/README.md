@@ -3,15 +3,16 @@
 > Learn about how to adapt and tune the G1 GC for evaluation, analysis and performance.
 
 
-# G1垃圾收集器生产环境调优
+# GC调优-生产环境G1调优指南
 
-> 本文详细介绍如何对G1垃圾收集器进行参数设置和性能调优, 以及怎样进行GC性能分析和评估。
+> 本文详细介绍怎样配置G1垃圾收集器的参数，如何进行性能调优, 如何对GC性能进行分析和评估。
 
 The [Garbage First Garbage Collector (G1 GC)](https://blog.csdn.net/renfufei/article/details/41897113) is the low-pause, server-style generational garbage collector for Java HotSpot VM. The G1 GC uses concurrent and parallel phases to achieve its target pause time and to maintain good throughput. When G1 GC determines that a garbage collection is necessary, it collects the regions with the least live data first (garbage first).
 
-G1的全称为 [Garbage First Garbage Collector](https://blog.csdn.net/renfufei/article/details/41897113), 是HotSpot内置的一款服务器端垃圾收集器，使用分代算法, 具有低延迟特性。
-把垃圾收集过程拆分为多个并发和并行阶段，从而将暂停时间打散，实现了低延迟特性，并保持有良好的吞吐量。
-只要G1认为可以进行垃圾收集，就会触发GC, 当然，G1优先回收存活数据较少的区域（存活数据少就是垃圾对象多，这就是 garbage first 名字的来源）。
+G1的全称为 [Garbage First Garbage Collector](https://blog.csdn.net/renfufei/article/details/41897113), 是一款内置在HotSpot JVM 中的服务端垃圾收集器。
+G1使用【分代算法】, 将GC过程拆解为多个并发和并行阶段，将暂停时间打散，从而实现了低延迟特性，并保持良好的吞吐量。
+只要G1认为可以进行垃圾收集，就会触发一次GC, 当然，G1优先回收存活数据较少的区域。
+存活数据少就表示里面的垃圾对象多，这就是名字 Garbage First 的由来。
 
 A garbage collector (GC) is a memory management tool. The G1 GC achieves automatic memory management through the following operations:
 
@@ -19,13 +20,13 @@ A garbage collector (GC) is a memory management tool. The G1 GC achieves automat
 - Finding live objects in the old generation through a concurrent (parallel) marking phase. The Java HotSpot VM triggers the marking phase when the total Java heap occupancy exceeds the default threshold.
 - Recovering free memory by compacting live objects through parallel copying.
 
-垃圾收集器本质上是一款内存管理工具。 G1 主要通过以下方式来实现自动内存管理：
+垃圾收集器本质上是一款内存管理工具。 G1算法主要通过以下方式来实现自动内存管理：
 
-- 【分代】在年轻代中分配对象，达到一定年龄的对象则提升到老年代。
+- 【分代】在年轻代中分配新对象，达到一定年龄的对象则提升到老年代。
 - 【并发】在并发标记阶段遍历老年代中的所有存活对象。 只要Java中堆内存的总使用量超过阈值，HotSpot 就会触发标记周期。
-- 【整理】通过并行复制，整理存活对象，释放可用内存。
+- 【整理】通过并行复制方式来整理存活对象，释放可用内存。
 
-> 在GC中， 并行是指多个GC线程一起干活， 并发指GC线程和业务线程一起并发执行。
+> 在GC中， 并行(parallel)是指多个GC线程一起干活， 并发(concurrent)指GC线程和业务线程一起并发执行。
 
 Here, we look at how to adapt and tune the G1 GC for evaluation, analysis and performance—we assume a basic understanding of Java garbage collection.
 
@@ -38,53 +39,59 @@ The G1 GC reduces heap fragmentation by incremental parallel copying of live obj
 The G1 GC uses independent Remembered Sets (RSets) to track references into regions. Independent RSets enable parallel and independent collection of regions because only a region's RSet must be scanned for references into that region, instead of the whole heap. The G1 GC uses a post-write barrier to record changes to the heap and update the RSets.
 
 
-下面我们先学习如何对G1的参数进行配置和调整, 然后再对GC的性能进行分析和评估。
-要进行GC调优，至少要对Java的垃圾收集机制有一定的了解。
+本文先简要介绍怎样配置G1参数, 然后再介绍如何对GC性能进行分析和评估。
+想要进行GC调优，至少要对 [Java的垃圾收集机制](https://blog.csdn.net/renfufei/article/details/54144385) 有一定了解。
 
-G1是一款分代垃圾收集器，把堆内存分为多个大小相同的块(region)。
-在JVM启动时，就会确定块的大小。 大小范围是 `1MB`到`32MB`之间，目标是不超过2048个region，具体取决于堆内存的大小。
-所以，新生代（eden），存活区（survivor）和老年代（old generation）在G1中都是逻辑上的概念，可以用这些小块自由组合，并不需要这些块之间保持连续。
+G1是一款增量式的分代垃圾收集器。 什么是增量呢？
+G1把堆内存分为很多个大小相同的【块】(region)。
+在JVM启动时，根据堆内存的配置，确定每个块的大小。 块的大小取值范围是 `1MB`到`32MB`，总数一般不会超过2048块。
+在G1中，新生代（eden），存活区（survivor）和老年代（old generation）都是逻辑上的概念，由这些小块组合而成，这些块之间并不需要保持连续。
 
-可以设置一个期望的最大暂停时间, G1会尽量满足（软实时目标值）。
-在纯年轻模式（young）的垃圾收集过程中，G1 会调整年轻代的大小，以达到软实时的目标暂停时间。
-在混合模式（mixed）的垃圾收集过程中，根据要回收的块总数，调整此次回收的老年代region数量，当然也会参考每个块中存活对象的百分比，以及允许浪费多少堆内存。
+可以设置参数来指定 “期望的最大暂停时间”, G1会尽量去满足这个软实时目标值。
+在【纯年轻模式（young）】的垃圾收集过程中，G1可以动态调整年轻代的大小（eden + survivor），以达成这个软实时目标暂停时间。
+在【混合模式（mixed）】的垃圾收集过程中，G1可以调整本次GC需要回收的老年代region数量，取决于【要回收的总块数】，【每个块中存活对象的百分比】，以及【堆内存允许浪费的比例】等数据。
 
-G1采用增量并行的方式实现内存碎片整理，将存活对象从回收集（CSet, Collection Set，多个块组成的集合）复制到新的块中。
-目的是从有空闲的块中，尽可能多地回收堆内存，同时期望不超过暂停时间目标值。
+G1采用【增量并行复制】的方式来实现【堆内存碎片整理功能】，将回收集中的存活对象拷贝到新块中，回收集的英文是 Collection Set，简称CSet，也就是本次GC涉及的块集合。
+目标是尽可能多地，从有空闲的块中回收堆内存，同时也试图达成预期的暂停时间指标。
 
-G1为每个块都设置独立的记忆集（RSets，Remembered Sets）, 来跟踪有哪些引用从别的块指向该区块。
-通过这种方式，不用遍历整个堆内存，只需要扫描RSet就可以得知有哪些对该区的引用，从而支持对各个块进行独立的回收。
-G1使用后置写屏障(post-write barrier)来记录对堆内存的更改, 并负责更新RSets。
+G1为每个块都单独设置了一份【记忆集】，英文是 Remembered Set，简称 RSet, 用来跟踪记录从别的块指向这个块中的引用。
+通过这种region划分和独立的RSet数据结构，G1就可以并行地进行增量式垃圾回收，而不用遍历整个堆内存。
+因为只需要扫描RSet，就可以得知有哪些跨区的引用指向这个region，从而对这些块进行回收。
+G1使用【后置写屏障】(post-write barrier)来记录堆内存的修改信息, 并负责更新RSet。
 
 ## Garbage Collection Phases
 
 Apart from evacuation pauses (described below) that compose the stop-the-world (STW) young and mixed garbage collections, the G1 GC also has parallel, concurrent, and multiphase marking cycles. G1 GC uses the Snapshot-At-The-Beginning (SATB) algorithm, which takes a snapshot of the set of live objects in the heap at the start of a marking cycle. The set of live objects is composed of the live objects in the snapshot, and the objects allocated since the start of the marking cycle. The G1 GC marking algorithm uses a pre-write barrier to record and mark objects that are part of the logical snapshot.
 
-## 垃圾回收阶段
+## 1. 垃圾回收阶段简介
 
-年轻代模式，以及混合模式的转移暂停(evacuation pause)都会有 STW 停顿。 除此之外，G1还有一些阶段是并行或并发执行的，比如多个阶段的标记周期。
-G1 使用开始快照算法（SATB，Snapshot-At-The-Beginning），在开始标记周期时，对堆中的存活对象集进行快照。
-存活对象集包括快照中的存活对象，以及标记开始后新分配的对象。
-G1的标记算法使用前置写屏障(pre-write barrier)来记录和标记逻辑上属于快照中的对象。
+G1垃圾收集器的纯年轻代模式GC，以及混合模式GC， 除了转移暂停(evacuation pause)这个 STW 阶段之外，还有多个并行的、或者并发的，多阶段的标记周期。
+G1 使用开始快照算法（SATB，Snapshot-At-The-Beginning），在标记周期开始时，对堆内存中的存活对象信息进行一次快照。
+那么，总的存活对象就包括开始快照中的存活对象，加上标记开始之后新创建的对象。
+G1的标记算法使用【前置写屏障】(pre-write barrier)来记录和标记逻辑上属于这次快照的对象。
 
 ## Young Garbage Collections
 
 The G1 GC satisfies most allocation requests from regions added to the eden set of regions. During a young garbage collection, the G1 GC collects both the eden regions and the survivor regions from the previous garbage collection. The live objects from the eden and survivor regions are copied, or evacuated, to a new set of regions. The destination region for a particular object depends upon the object's age; an object that has aged sufficiently evacuates to an old generation region (that is, promoted); otherwise, the object evacuates to a survivor region and will be included in the CSet of the next young or mixed garbage collection.
 
-## 纯年轻代垃圾收集
+## 2. 纯年轻代模式的垃圾收集
 
-G1将大部分的内存分配请求打到eden区。 在年轻代的垃圾收集过程中，会处理eden区和上次GC的存活区。 并将存活对象拷贝/转移到新的region中。 根据对象的年龄来决定拷贝到哪里。 如果达到一定的GC年龄，则会转移（提升）到老年代之中； 否则会转移到存活区，并添加到下一次的年轻代/混合模式GC的CSet中。
+G1将绝大部分的内存分配请求打到eden区。
+在年轻代模式的垃圾收集过程中，G1会收集eden区和前一次GC使用的存活区。
+并将存活对象拷贝/转移到一些新的块里面， 具体拷贝到哪里则取决于对象的年龄;
+如果达到一定的GC年龄，就会转移/提升到老年代中；否则就会转移到存活区。
+本次的存活区则会被加入到下一次年轻代GC/混合模式GC的CSet中。
 
 ## Mixed Garbage Collections
 
 Upon successful completion of a concurrent marking cycle, the G1 GC switches from performing young garbage collections to performing mixed garbage collections. In a mixed garbage collection, the G1 GC optionally adds some old regions to the set of eden and survivor regions that will be collected. The exact number of old regions added is controlled by a number of flags that will be discussed later (see "Taming Mixed GCs"). After the G1 GC collects a sufficient number of old regions (over multiple mixed garbage collections), G1 reverts to performing young garbage collections until the next marking cycle completes.
 
-## 混合模式的垃圾收集
+## 3. 混合模式的垃圾收集
 
-如果完成了并发标记周期，则会从纯年轻模式切换到混合模式。
-在混合模式的垃圾收集中，G1可以将一部分老年代region添加到回收集，具体添加多少个老年代region，则是由多个参数共同控制。
-当然，每次的回收集都包含所有eden区和存活区。
-经过多次混合模式的GC后，G1回收了足够数量的老年代region，然后又切换到纯年轻代模式的垃圾收集， 直到下一次标记周期完成。
+并发标记周期执行完毕之后，G1则会从纯年轻模式切换到混合模式。
+在执行混合模式的垃圾收集时，G1会选择一部分老年代region加入回收集，当然，每次的回收集都包括所有eden区和存活区。
+具体一次添加多少个老年代region，由哪些参数来决定，将会在后面进行讨论。
+经过多次混合模式的垃圾收集之后，很多老年代region其实已经处理过了，然后G1又切换回纯年轻代模式，直到下一次的并发标记周期完成。
 
 ## Phases of the Marking Cycle
 
