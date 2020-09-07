@@ -43,20 +43,20 @@ The G1 GC uses independent Remembered Sets (RSets) to track references into regi
 想要进行GC调优，至少要对 [Java的垃圾收集机制](https://blog.csdn.net/renfufei/article/details/54144385) 有一定了解。
 
 G1是一款增量式的分代垃圾收集器。 什么是增量呢？
-G1把堆内存分为很多个大小相同的【块】(region)。
-在JVM启动时，根据堆内存的配置，确定每个块的大小。 块的大小取值范围是 `1MB`到`32MB`，总数一般不会超过2048块。
-在G1中，新生代（eden），存活区（survivor）和老年代（old generation）都是逻辑上的概念，由这些小块组合而成，这些块之间并不需要保持连续。
+G1把堆内存分为很多个大小相同的【region】(region)。
+在JVM启动时，根据堆内存的配置，确定每个region的大小。 region的大小取值范围是 `1MB`到`32MB`，总数一般不会超过2048region。
+在G1中，新生代（eden），存活区（survivor）和老年代（old generation）都是逻辑上的概念，由这些region组合而成，这些region之间并不需要保持连续。
 
 可以设置参数来指定 “期望的最大暂停时间”, G1会尽量去满足这个软实时目标值。
 在【纯年轻模式（young）】的垃圾收集过程中，G1可以动态调整年轻代的大小（eden + survivor），以达成这个软实时目标暂停时间。
-在【混合模式（mixed）】的垃圾收集过程中，G1可以调整本次GC需要回收的老年代region数量，取决于【要回收的总块数】，【每个块中存活对象的百分比】，以及【堆内存允许浪费的比例】等数据。
+在【混合模式（mixed）】的垃圾收集过程中，G1可以调整本次GC需要回收的老年代region数量，取决于【要回收的总region数】，【每个region中存活对象的百分比】，以及【堆内存允许浪费的比例】等数据。
 
-G1采用【增量并行复制】的方式来实现【堆内存碎片整理功能】，将回收集中的存活对象拷贝到新块中，回收集的英文是 Collection Set，简称CSet，也就是本次GC涉及的块集合。
-目标是尽可能多地，从有空闲的块中回收堆内存，同时也试图达成预期的暂停时间指标。
+G1采用【增量并行复制】的方式来实现【堆内存碎片整理功能】，将回收集中的存活对象拷贝到新region中，回收集的英文是 Collection Set，简称CSet，也就是本次GC涉及的region集合。
+目标是尽可能多地，从有空闲的region中回收堆内存，同时也试图达成预期的暂停时间指标。
 
-G1为每个块都单独设置了一份【记忆集】，英文是 Remembered Set，简称 RSet, 用来跟踪记录从别的块指向这个块中的引用。
+G1为每个region都单独设置了一份【记忆集】，英文是 Remembered Set，简称 RSet, 用来跟踪记录从别的region指向这个region中的引用。
 通过这种region划分和独立的RSet数据结构，G1就可以并行地进行增量式垃圾回收，而不用遍历整个堆内存。
-因为只需要扫描RSet，就可以得知有哪些跨区的引用指向这个region，从而对这些块进行回收。
+因为只需要扫描RSet，就可以得知有哪些跨区的引用指向这个region，从而对这些region进行回收。
 G1使用【后置写屏障】(post-write barrier)来记录堆内存的修改信息, 并负责更新RSet。
 
 ## Garbage Collection Phases
@@ -65,7 +65,7 @@ Apart from evacuation pauses (described below) that compose the stop-the-world (
 
 ## 1. 垃圾回收阶段简介
 
-G1垃圾收集器的纯年轻代模式GC，以及混合模式GC， 除了转移暂停(evacuation pause)这个 STW 阶段之外，还有多个并行的、或者并发的，多阶段的标记周期。
+G1垃圾收集器的纯年轻代模式GC，以及混合模式GC， 除了转移暂停(evacuation pause)这个 STW 阶段之外，还有并行的、并发的，由多个子阶段组成的标记周期。
 G1 使用开始快照算法（SATB，Snapshot-At-The-Beginning），在标记周期开始时，对堆内存中的存活对象信息进行一次快照。
 那么，总的存活对象就包括开始快照中的存活对象，加上标记开始之后新创建的对象。
 G1的标记算法使用【前置写屏障】(pre-write barrier)来记录和标记逻辑上属于这次快照的对象。
@@ -78,7 +78,7 @@ The G1 GC satisfies most allocation requests from regions added to the eden set 
 
 G1将绝大部分的内存分配请求打到eden区。
 在年轻代模式的垃圾收集过程中，G1会收集eden区和前一次GC使用的存活区。
-并将存活对象拷贝/转移到一些新的块里面， 具体拷贝到哪里则取决于对象的年龄;
+并将存活对象拷贝/转移到一些新的region里面， 具体拷贝到哪里则取决于对象的年龄;
 如果达到一定的GC年龄，就会转移/提升到老年代中；否则就会转移到存活区。
 本次的存活区则会被加入到下一次年轻代GC/混合模式GC的CSet中。
 
@@ -103,15 +103,15 @@ The marking cycle has the following phases:
 - `Remark phase`: This phase is STW collection and helps the completion of the marking cycle. G1 GC drains SATB buffers, traces unvisited live objects, and performs reference processing.
 - `Cleanup phase`: In this final phase, the G1 GC performs the STW operations of accounting and RSet scrubbing. During accounting, the G1 GC identifies completely free regions and mixed garbage collection candidates. The cleanup phase is partly concurrent when it resets and returns the empty regions to the free list.
 
-## 标记周期的多个阶段
+## 4. 标记周期的各个阶段
 
-标记周期分为以下阶段：
+G1的标记周期包括以下这些阶段：
 
-- “初始标记阶段(`Initial mark phase`)”： 在此阶段标记 GC roots, 一般由某次年轻代GC顺带着执行, 会有一次短暂的STW停顿。
-- “根区域扫描(`Root region scanning phase`)”： 扫描初始标记阶段的存活区域， 获取对老年代的引用，并标记所引用的对象。 该阶段与应用程序线程并发执行（所以没有STW），要求必须在下一次年轻代GC开始之前完成。
-- “并发标记阶段(`Concurrent marking phase`)”： 遍历整个堆，查找所有可达的存活对象。 此阶段与应用线程并发执行， 允许被年轻代GC中断。
-- “再次标记阶段(`Remark phase`)”： 此阶段有一次STW暂停，以完成标记周期。 G1会清空SATB缓冲区，跟踪未访问到的存活对象，并进行引用处理。
-- “清除阶段(`Cleanup phase`)”： 这是最终阶段，G1在进行统计和清理RSet时会有一次STW停顿。 在统计过程中，会把完全空闲的region标记出来，也会标记好适合进行混合模式GC的候选region。 清除阶段部分处于并发模式，比如在重置并将空闲区域放入空闲列表时。
+- 【初始标记阶段】(`Initial mark phase`)： 在此阶段标记 GC roots, 一般是附加在某次常规的年轻代GC中顺带着执行。
+- 【扫描GC根所在的region】(`Root region scanning phase`)： 根据初始标记阶段确定的GC根元素，扫描这些元素所在region，获取对老年代的引用，并标记被引用的对象。 该阶段与应用线程并发执行，也就是说没有STW停顿，必须在下一次年轻代GC开始之前完成。
+- 【并发标记阶段】(`Concurrent marking phase`)”： 遍历整个堆，查找所有可达的存活对象。 此阶段与应用线程并发执行， 也允许被年轻代GC打断。
+- 【再次标记阶段】(`Remark phase`)： 此阶段有一次STW暂停，以完成标记周期。 G1会清空SATB缓冲区，跟踪未访问到的存活对象，并进行引用处理。
+- 【清理阶段】(`Cleanup phase`)： 这是最后的子阶段，G1在执行统计和清理RSet时会有一次STW停顿。 在统计过程中，会把完全空闲的region标记出来，也会标记出适合于进行混合模式GC的候选region。 清理阶段有一部分是并发执行的，比如在重置空闲region并将其加入空闲列表时。
 
 ## Important Defaults
 
@@ -126,8 +126,8 @@ G1是一款自适应垃圾收集器，大部分参数都有默认值，一般情
 
 Sets the size of a G1 region. The value will be a power of two and can range from 1MB to 32MB. The goal is to have around 2048 regions based on the minimum Java heap size.
 
-可以设置G1区块(region)的大小。 必须是`2的幂`（x次方)，允许范围是`1MB`至`32MB`。
-根据Java堆内存的初始大小，这个参数的默认值会动态调整，目标是将Java堆切割为2048块(region)。
+可以设置G1 region的大小。 必须是`2的幂`（x次方)，允许范围是`1MB`至`32MB`。
+根据Java堆内存的初始大小，这个参数的默认值会动态调整，目标是将Java堆切割为2048region(region)。
 
 #### `-XX:MaxGCPauseMillis=200`
 
@@ -319,7 +319,7 @@ If you see back-to-back concurrent cycles initiated due to Humongous allocations
 ## 大对象/巨无霸对象的内存分配
 
 对于G1来说，如果某个对象超过单个 region 空间的一半，则视为“大对象/巨无霸对象（Humongous object）”。
-这样的对象会直接分配到老年代的 “巨型region区（Humongous region）”。 这部分巨型region区是一组虚拟地址连续的块。 `StartsHumongous` 标志着连续集合的开始，而 `ContinuesHumongous` 则是紧随的连续集合区域。
+这样的对象会直接分配到老年代的 “巨型region区（Humongous region）”。 这部分巨型region区是一组虚拟地址连续的region。 `StartsHumongous` 标志着连续集合的开始，而 `ContinuesHumongous` 则是紧随的连续集合区域。
 
 在分配巨型区域之前，G1会先判断是否达到标记阈值，在必要时会启动并发周期。
 
@@ -338,7 +338,7 @@ G1 GC is a regionalized, parallel-concurrent, incremental garbage collector that
 
 ## 总结
 
-G1是一款并行+并发方式的增量垃圾收集器，将堆内存划分为多个小块，与其他 GC 实现算法相比，提供了可预测性更强的暂停时间。
+G1是一款并行+并发方式的增量垃圾收集器，将堆内存划分为多个region，与其他 GC 实现算法相比，提供了可预测性更强的暂停时间。
 增量特性使得G1可以应对更大的堆内存，在最坏情况下依然保持合理的响应时间。
 
 G1具有自适应特性，在一般情况下，只需要设置3个调优参数:
