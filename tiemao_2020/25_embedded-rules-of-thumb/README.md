@@ -98,10 +98,27 @@ Additional links to other rules of thumb are included in the [Further Reading](h
     - Only useful if that hardware already exists!
     - Software/hardware partitioning should be assessed early in the design process
   * Save NRE dollars by delivering the product faster (Jack Ganssle)
-
 - It is easier and cheaper to completely rewrite the 5% of problematic functions than to fix the existing implementation
   * These functions cost four times as much as other functions (Barry Boehm)
   * “Perhaps we really blew it when first writing the code, but if we can identify these crummy routines, toss them out, and start over, we’ll save big bucks.” (Jack Ganssle)
+
+## 费用开销
+
+- 软件开发是一件昂贵的事情
+  * “大量研究表明，在未记录的混乱情况下，商业软件中每行代码的价格为15至30美元。 糟糕的1000行代码，其实际成本可能约为30,000美元，而且很难在1000行中完成很多工作。 “这只是一个小小的需求变更” 相当于 “这需要一块金砖的开销”。 （杰克·甘斯勒）
+  * “每行代码的价格约为15至40美元。 每行代码的成本在40美元时，可以获得相对健壮，设计良好的代码，适合于行业应用。 15美元一行的成本往往只能换来简单的设计和测试。 换句话说，有些人写一行代码的成本只需要15美元，但他们的代码质量令人怀疑。”（Phil Koopman）
+  * “【2015年10月更新】。 如今每行代码的成本大约是 $25-$50 的样子。 外包给亚洲的项目成本已经大大增加，因为工资和招聘程序员的竞争都加剧了。” （菲尔·考夫曼）
+- 如果想压缩软件开发的成本，直接从需求文档中删除某些功能即可。 （杰克·甘斯勒）
+  * 功能过多，等价于进度缓慢+庞大的开发成本（Jack Ganssle）
+- 非经常性工程（NRE，Non-recurring engineering）的费用必须分摊到所售出的每类产品中
+  * 通过减少功能节省NRE开支
+  * 通过将软件功能转移到硬件组件中来节省NRE开支（当然这会增加BOM成本）
+    - 仅在硬件已经存在的情况下才有用！
+    - 应在系统设计的早期就评估软件/硬件的功能边界
+  * 通过更快交付产品来节省NRE开销（Jack Ganssle）
+- 那有问题的5％的函数，完全重写比修复现有的实现要更简单，也更便宜
+  * 这些函数的开销是其他代码的四倍（Barry Boehm）
+  * “也许我们真的对某些初次编写的代码不满意，但如果能够识别出这些糟糕的部分，将其丢弃，然后重新开始，那么我们将节省很多钱。” （杰克·甘斯勒）
 
 ## Scheduling
 
