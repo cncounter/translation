@@ -5,14 +5,14 @@
 
 # 深入解析G1垃圾收集器与性能优化
 
-> 本文详细介绍怎样配置G1垃圾收集器的参数，如何进行性能调优, 如何对GC性能进行分析和评估。
+> 本文详细介绍怎样配置G1垃圾收集器的参数，如何进行性能调优, 以及如何对GC性能进行分析和评估。
 
 The [Garbage First Garbage Collector (G1 GC)](https://blog.csdn.net/renfufei/article/details/41897113) is the low-pause, server-style generational garbage collector for Java HotSpot VM. The G1 GC uses concurrent and parallel phases to achieve its target pause time and to maintain good throughput. When G1 GC determines that a garbage collection is necessary, it collects the regions with the least live data first (garbage first).
 
 G1的全称为 [Garbage First Garbage Collector](https://blog.csdn.net/renfufei/article/details/41897113), 是一款内置在HotSpot JVM 中的服务端垃圾收集器。
 G1使用【分代算法】, 将GC过程拆解为多个并发和并行阶段，将暂停时间打散，从而实现了低延迟特性，并保持良好的吞吐量。
 只要G1认为可以进行垃圾收集，就会触发一次GC, 当然，G1优先回收存活数据较少的区域。
-存活数据少就表示里面的垃圾对象多，这就是名字 Garbage First 的由来。
+存活数据少就表示里面的垃圾对象多，这也是名字 Garbage First 的由来。
 
 A garbage collector (GC) is a memory management tool. The G1 GC achieves automatic memory management through the following operations:
 
@@ -43,7 +43,7 @@ The G1 GC uses independent Remembered Sets (RSets) to track references into regi
 想要进行GC调优，至少要对 [Java的垃圾收集机制](https://blog.csdn.net/renfufei/article/details/54144385) 有一定了解。
 
 G1是一款增量式的分代垃圾收集器。 什么是增量呢？
-G1把堆内存分为很多个大小相同的【region】(region)。
+G1把堆内存分为很多个大小相同的【小区域、小块】(region)。
 在JVM启动时，根据堆内存的配置，确定每个region的大小。 region的大小取值范围是 `1MB`到`32MB`，总数一般不会超过2048region。
 在G1中，新生代（eden），存活区（survivor）和老年代（old generation）都是逻辑上的概念，由这些region组合而成，这些region之间并不需要保持连续。
 
@@ -223,7 +223,7 @@ Sets the percentage of reserve memory to keep free so as to reduce the risk of t
 
 To change the value of experimental flags, you must unlock them first. You can do this by setting `-XX:+UnlockExperimentalVMOptions` explicitly on the command line before any experimental flags. For example:
 
-## 如何解锁实验性质的JVM参数
+## 6. 如何解锁实验性质的JVM参数
 
 要修改实验性质的JVM参数值，必须先进行声明。
 我们可以在命令行参数中，设置实验性质的参数之前，明确指定 `-XX:+UnlockExperimentalVMOptions`。 例如：
@@ -250,7 +250,7 @@ When you evaluate and fine-tune G1 GC, keep the following recommendations in min
     When you want to adjust the CSet for old regions.
 
 
-## 最佳实践与建议
+## 7. 最佳实践与建议
 
 调整G1参数之前，需要记住以下几点：
 
@@ -268,7 +268,7 @@ When you evaluate and fine-tune G1 GC, keep the following recommendations in min
 
 When you see to-space overflow/exhausted messages in your logs, the G1 GC does not have enough memory for either survivor or promoted objects, or for both. The Java heap cannot expand since it is already at its max. Example messages:
 
-## GC日志中内存溢出和内存耗尽的信息
+## 8. GC日志中内存溢出和内存耗尽的信息
 
 如果我们在GC日志中看到 `to-space overflow/exhausted`， 则表明G1没有足够的内存来存放存活区或者需要提升的对象，或者两者都不足。 这时候Java堆内存一般都已达到最大值，无法自动扩容。 示例如下：
 
@@ -316,7 +316,7 @@ Since each individual set of StartsHumongous and ContinuesHumongous regions cont
 
 If you see back-to-back concurrent cycles initiated due to Humongous allocations and if such allocations are fragmenting your old generation, please increase your `-XX:G1HeapRegionSize` such that previous Humongous objects are no longer Humongous and will follow the regular allocation path.
 
-## 大对象/巨型对象的内存分配
+## 9. 大对象/巨型对象的内存分配
 
 如果某个对象超过单个 region 空间的一半，则会被G1视为 【大对象/巨型对象】（Humongous object）。 例如一个很大的数组或者`String`。
 这样的对象会直接分配到老年代的 “大对象region区（Humongous region）”。  一个大对象region区就是一组虚拟地址空间连续的region。 `StartsHumongous` 标志着开头的region，而 `ContinuesHumongous` 则标记随后的region集合。
@@ -336,7 +336,7 @@ If you see back-to-back concurrent cycles initiated due to Humongous allocations
 
 G1 GC is a regionalized, parallel-concurrent, incremental garbage collector that provides more predictable pauses compared to other HotSpot GCs. The incremental nature lets G1 GC work with larger heaps and still provide reasonable worst-case response times. The adaptive nature of G1 GC just needs a maximum soft-real time pause-time goal along-with the desired maximum and minimum size for the Java heap on the JVM command line.
 
-## 总结
+## 10. 总结
 
 G1是一款 【并行+并发】 方式的【增量】垃圾收集器，将堆内存划分为很多个region，与其他 GC 算法实现相比，提供了可预测性更精准的暂停时间。
 增量特性使得G1可以处理更大的堆内存空间，在最坏情况下依然保持合理的响应时间。
