@@ -76,11 +76,11 @@ Additional links to other rules of thumb are included in the [Further Reading](h
 - 一个方法只做一件事
 - 不要去解决那些不存在的问题
 - 去解决特定问题，而不要纠结一般情况
-- 宇宙飞船的正确设计需要无限的努力。这就是为什么最好将它们设计为在出现某些问题时依然可以运行的原因。 （阿金法则）
-- 设计是一项反复迭代的过程。 永远需要比当前完成的迭代多1次。 在任何时间点都是如此。 （阿金法则）
-- 从来没有一个正确的解决方案。 总是会有很多错误的地方。 （阿金法则）
-- （爱迪生定律）“更好” 是 “良好” 的敌人。 （阿金法则）
-- （Shea定律）改进设计的能力主要发生在表面。这也是将其拧紧的主要位置。 （阿金法则）
+- 宇宙飞船的正确设计需要无限的努力。这就是为什么最好将它们设计为在出现某些问题时依然可以运行的原因。 （阿金守则）
+- 设计是一项反复迭代的过程。 永远需要比当前完成的迭代多1次。 在任何时间点都是如此。 （阿金守则）
+- 从来没有一个正确的解决方案。 总是会有很多错误的地方。 （阿金守则）
+- （爱迪生定律）“更好” 是 “良好” 的敌人。 （阿金守则）
+- （Shea定律）改进设计的能力主要发生在表面。这也是将其拧紧的主要位置。 （阿金守则）
 - 研究发现，因缺陷导致的返工需求，设计和编码通常会消耗软件开发总成本的40％到50％。 ([Steve McConnell](https://stevemcconnell.com/articles/software-quality-at-top-speed/), 引用Capers Jones的话)
   * 在最坏的情况下，软件投入运行之后再进行需求变更，其成本通常是需求阶段变更的50到200倍。 （[Steve McConnell]（https://stevemcconnell.com/articles/software-quality-at-top-speed/），引用Boehm和Papaccio的话）
 
@@ -142,7 +142,7 @@ Additional links to other rules of thumb are included in the [Further Reading](h
 
 ## 项目排期
 
-- 将系统做得完美有多少时间都不够，完成功能开发倒是可以在预期时间内完成。 （阿金法则）
+- 将系统做得完美有多少时间都不够，完成功能开发倒是可以在预期时间内完成。 （阿金守则）
 - 估算日期而不是小时数, 可以保证项目的及时完成（Jack Ganssle）
   * “如果开发人员不将日历时间与工时区分开，不可避免地会发生排期灾难。” （杰克·甘斯勒）
 - “如果进度表中的人员利用率已经超过50％，则该项目将成比例落后。” （杰克·甘斯勒）
@@ -156,9 +156,9 @@ Additional links to other rules of thumb are included in the [Further Reading](h
 - 将旧代码移植到新项目时，如果修改超过25％，那么进度排期就不会增加（Richard Selby）
 - 【嵌入式系统】如果CPU负载达到了90％，那么所需的开发时间，至少是70％负载时的两倍。 如果系统负载达到95％，则开发时间至少要增加三倍。 （杰克·甘斯勒）
   * “内存快要耗尽时，即使增加一个小小的功能也需要数周时间，因为开发人员必须重写大量代码来释放内存或降低CPU消耗。” （杰克·甘斯勒）
-- 您制定的排期表看起来就像是一件虚构的完美作品，直到客户因不不满意而解雇您为止。 （阿金法则）
-- 有时候，最快抵达终点的方法，是丢掉所有包袱并重新开始。 （阿金法则）
--【帕顿的计划规划法】现在暴力执行一个良好的计划，远比下周再执行一个完美的计划要好。 （阿金法则）
+- 您制定的排期表看起来就像是一件虚构的完美作品，直到客户因不不满意而解雇您为止。 （阿金守则）
+- 有时候，最快抵达终点的方法，是丢掉所有包袱并重新开始。 （阿金守则）
+-【帕顿的计划规划法】现在暴力执行一个良好的计划，胜过下周再执行一个完美的计划。 （阿金守则）
 
 ## Hardware
 
@@ -171,6 +171,18 @@ Additional links to other rules of thumb are included in the [Further Reading](h
   * This will dramatically reduce NRE and software development costs, at a tradeoff for an increase in BOM costs.
   * Systems loaded to 90% of the processor capability require 2x development time over systems loaded at 70% or less. 95% loading triples development time. Add additional hardware to reduce loading. (Jack Ganssle)
 - (Atkin’s Law of Demonstrations) When the hardware is working perfectly, the really important visitors don’t show up. (Akin’s Laws)
+
+## 硬件设计
+
+- 增加硬件的同时也会增加功耗
+- 使用硬件加速器来替代基于CPU的算法可以降低功耗
+- 每个传感器都是温度传感器。某些传感器也可以测量其他东西。 （埃莉西亚·怀特）
+- 将讨厌的硬件实时处理功能拆解到独立的CPU上（Jack Ganssle）
+  * 这个设备每秒会有1000次中断？快拆分到它自己的控制器上，让主处理器不用负担它的ISR开销
+- 只要可以简化软件，那就添加硬件（Jack Ganssle）
+  * 这将显著降低NRE和软件开发成本，但也需要权衡BOM成本的增加。
+  * 在处理器负载达到90％的系统上，开发功能所需的时间是70％系统负载的两倍。 而在95％的系统负载上开发功能的时间则会扩大三倍。 添加其他硬件来减少CPU开销。 （杰克·甘斯勒）
+- （阿特金演示法则）在硬件运行正常时，真正重要的访客不会出现。 （阿金法则）
 
 ## Software Reuse
 
