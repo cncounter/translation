@@ -12,7 +12,7 @@
 * [05.Linux系统命令 - 查看内存使用情况](./05_linux-memory-usage/README.md)【已完成】
 * [06.深入解析G1垃圾收集器与性能优化](./06_g1_gc_tuning/README.md)【已完成】
 * [07.Java坑人面试题系列: 线程/线程池（高级难度）](./07_quiz-executor-service/README.md)【已完成】
-* [08.JVM堆内存转储的获取方法](./08_java-heap-dump/README.md)【粗翻】
+* [08.获取JVM堆内存转储的常用方法](./08_java-heap-dump/README.md)【已完成】
 * [09.Java线程调用栈Dump](./09_java-thread-dump/README.md)【粗翻】
 * [10.高级数据结构: 跳跃表（Skip List）](./10_skip-list/README.md)【粗翻】
 * [11.提高性能的JVM参数简介](./11_jvm-arguments-of-highly-effective/README.md)【粗翻】
