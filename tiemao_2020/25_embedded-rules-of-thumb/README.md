@@ -194,6 +194,16 @@ Additional links to other rules of thumb are included in the [Further Reading](h
   * “We’re not smart enough to truly understand the range of applications where a chunk of software may be used. Every domain requires its own unique features and tweaks; till we’ve actually used the code several times, over a wide enough range of apps, we won’t have generalized it enough to have it truly reusable.” (Jack Ganssle)
 - Reuse works best when done in large sections of code – think about reusing entire drivers or libraries, not functions (Jack Ganssle)
 
+## 软件重用原则
+
+- 优先使用已存在的，经过审查的代码。
+  * 例如，使用 [STL](https://embeddedartistry.com/fieldmanual-terms/standard-template-library/) 而不要自己造一个容器
+- 使用简单的标准通信协议，不要再去造轮子搞个自定义协议。
+- 遵循 “三次原则”: 你可以拷贝粘贴一次代码，但同一份代码被复制三次时，应将其提取到新的函数中（Martin Fowler）
+- 在一个软件包真正可重用之前，至少应该已被重用三次（Jack Ganssle）
+  * “我们的大脑有极限，无法真正理解大量软件可能的使用范围。 而每个领域都需要自己独特的功能和优化； 只有在足够广泛的应用程序中实际使用过多次之后，我们才能对代码进行泛化，使其真正地可重用。” （杰克·甘斯勒）
+- 重用在处理大部分代码时效果最好 – 想一想重用整个驱动程序或库，而不只是功能（Jack Ganssle）
+
 ## Optimization
 
 - Premature optimization is a waste of time
