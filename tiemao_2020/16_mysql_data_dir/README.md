@@ -216,7 +216,7 @@ flush privileges;
 
 ```
 [mysqld]
-log-bin=/data/huobi/mysql/mysql-bin-log
+log-bin=/data/hh/mysql/mysql-bin-log
 server-id=28
 
 # innodb_flush_log_at_trx_commit=1
@@ -234,9 +234,9 @@ service mysql restart
 查看Binlog相关的文件:
 
 ```
-# ll /data/huobi/mysql/mysql-bin-log*
--rw-r----- 1 mysql mysql 2057339 Sep 14 16:32 /data/huobi/mysql/mysql-bin-log.000001
--rw-r----- 1 mysql mysql      39 Sep 14 16:26 /data/huobi/mysql/mysql-bin-log.index
+# ll /data/hh/mysql/mysql-bin-log*
+-rw-r----- 1 mysql mysql 2057339 Sep 14 16:32 /data/hh/mysql/mysql-bin-log.000001
+-rw-r----- 1 mysql mysql      39 Sep 14 16:26 /data/hh/mysql/mysql-bin-log.index
 ```
 
 
@@ -277,7 +277,7 @@ mysqldump --all-databases --master-data > dbdump.db
 # 导出特定的数据库
 mysqldump -u root -p --databases db_name1 db_name2 --master-data > dbdump.db
 
-mysqldump -u root -proot123 --databases  huobi_rc_report_test-1 huobi_rc_report_test-2 huobi_rc_report_test-5 huobi_rc_report_test-6 huobi_rc_report_test-7 --master-data > huobi_rc_report_28_dbdump.db
+mysqldump -u root -p --databases  hh_rr_test-1 hh_rr_test-2 hh_rr_test-5 hh_rr_test-6 hh_rr_test-7 --master-data > hh_rr_28_dbdump.db
 
 ```
 
@@ -293,11 +293,11 @@ mysqldump -u root -proot123 --databases  huobi_rc_report_test-1 huobi_rc_report_
 server-id=29
 
 # 限定需要复制的数据库, 每行一个, 使用逗号时不生效，因为数据库名称中可能有逗号^_^。
-replicate-do-db=huobi_rc_report_test-1
-replicate-do-db=huobi_rc_report_test-2
-replicate-do-db=huobi_rc_report_test-5
-replicate-do-db=huobi_rc_report_test-6
-replicate-do-db=huobi_rc_report_test-7
+replicate-do-db=hh_rr_test-1
+replicate-do-db=hh_rr_test-2
+replicate-do-db=hh_rr_test-5
+replicate-do-db=hh_rr_test-6
+replicate-do-db=hh_rr_test-7
 
 ```
 
@@ -319,7 +319,7 @@ service mysql restart
 STOP SLAVE;
 
 -- 设置主库信息; 未启动 SLAVE
-CHANGE MASTER TO MASTER_HOST='172.18.1.28',MASTER_PORT=3306,
+CHANGE MASTER TO MASTER_HOST='192.168.1.28',MASTER_PORT=3306,
   MASTER_USER='replication29',MASTER_PASSWORD='replication29';
 
 -- 显示从库状态
@@ -333,7 +333,7 @@ SHOW SLAVE STATUS;
 导入数据库:
 
 ```
-mysql -u root -proot123 < huobi_rc_report_28_dbdump.db
+mysql -u root -p < hh_rr_28_dbdump.db
 
 ```
 
