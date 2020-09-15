@@ -292,7 +292,7 @@ mysqldump -u root -proot123 --databases  huobi_rc_report_test-1 huobi_rc_report_
 # log-bin=/data/mysql/mysql-bin-log
 server-id=29
 
-# 限定需要复制的数据库, 每行一个, 使用逗号时不生效。
+# 限定需要复制的数据库, 每行一个, 使用逗号时不生效，因为数据库名称中可能有逗号^_^。
 replicate-do-db=huobi_rc_report_test-1
 replicate-do-db=huobi_rc_report_test-2
 replicate-do-db=huobi_rc_report_test-5
@@ -300,6 +300,8 @@ replicate-do-db=huobi_rc_report_test-6
 replicate-do-db=huobi_rc_report_test-7
 
 ```
+
+- [replicate-do-db](https://dev.mysql.com/doc/refman/5.7/en/replication-options-replica.html#option_mysqld_replicate-do-db)
 
 
 重启服务器
