@@ -318,6 +318,9 @@ service mysql restart
 -- 停止从库复制
 STOP SLAVE;
 
+-- 停止 slave io thread
+STOP SLAVE IO_THREAD FOR CHANNEL ''；
+
 -- 设置主库信息; 未启动 SLAVE
 CHANGE MASTER TO MASTER_HOST='192.168.1.28',MASTER_PORT=3306,
   MASTER_USER='replication29',MASTER_PASSWORD='replication29';
