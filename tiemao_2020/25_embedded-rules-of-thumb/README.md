@@ -292,6 +292,30 @@ Avoid the following operations within interrupt handlers: (Phillip Johnston)
 - Avoid stack allocations
   * Depending on your architecture and operational model, your interrupt handler may utilize the stack of the interrupted thread or a common “interrupt stack”.
 
+## 硬件中断
+
+- 在最短的时间内和最迫切的需求中，保持中断。 （杰克·甘斯勒）
+- 如果您在某个代码块中禁用了中断，请在同一块代码中重新启用它们（Jack Ganssle）
+- 保持较小的ISR
+  * 警惕ISR长度超过一半的代码（Jack Ganssle）
+  * 在大多数情况下，处理程序内部基本上都没有处理（Phillip Johnston）
+  * 设置一个标志，向队列添加一个值，然后依靠用户空间代码来处理更复杂的任务
+- 最小化ISR延迟，以确保系统不会错过中断（Jack Ganssle）
+- 在返回之前立即检查所有重新启用中断的ISR设计（杰克·甘斯尔）
+  * 最小化ISR中的关键部分。
+  * “允许另一台设备中断ISR很好！给定足够的堆栈空间，甚至允许相同的中断执行此操作。这表明我们应该创建服务例程，该例程应尽早处理所有非可重入任务（例如，维修硬件），发布EI，然后继续可重入活动。然后弹出寄存器并返回。” （杰克·甘斯勒）
+
+避免在中断处理程序中进行以下操作：（Phillip Johnston）
+
+- 不要在处理程序中声明任何非静态变量
+- 避免调用阻塞函数
+- 避免调用非重入函数
+- 避免进行任何长时间的处理
+- 避免使用锁进行操作，因为这样会使ISR中的程序死锁
+- 避免涉及动态内存分配的操作，因为分配可能需要锁定，并且将花费不确定的时间
+- 避免调用栈分配
+  * 根据您的体系结构和操作模型，您的中断处理程序可能会使用被中断线程的调用栈或常见的“中断栈”。
+
 ## Function Point Rules of Thumb
 
 A function point is the measure of functionality of a part of a software, which [you can read about here](https://www.ifpug.org/content/documents/Jones-OriginsOfFunctionPointMetrics.pdf). One [C](https://embeddedartistry.com/fieldmanual-terms/c/) function point is about 130 lines of code, on average.
@@ -308,13 +332,35 @@ Here are Capers’s rules of thumb, where “FP” means function points. These 
 - Requirements grow about 2%/month from the design through coding phases.
 - Rough number of test cases that will be created: FP^1.2
 
+## 功能点经验法则
+
+功能点是软件功能的一种度量方式，有关信息请参考: [OriginsOfFunctionPointMetrics.pdf](https://www.ifpug.org/content/documents/Jones-OriginsOfFunctionPointMetrics.pdf),  平均一个 [C级功能点](https://embeddedartistry.com/fieldmanual-terms/c/) 需要130行左右的代码。
+
+下面是Capers的经验法则，“FP” 表示功能点。 摘录自 Jack Ganssle’s newsletter。
+
+- 项目中的BUG数约等于：`FP^1.25`
+  * 人工代码检查将发现大约`65％`的BUG。 对于专业团队来说，这个数字还会高得多。
+- 项目组的最佳成员数： `FP/150`
+- 项目相关的纸质文档页数约等于：`FP^1.15`
+- 每种测试策略大约可以发现`30％`的错误。
+- 项目排期大约为(月为单位)：`FP^0.4`
+- 项目发布后需要的后期全职维护人员大约为：`FP/750`
+- 从设计到编码阶段，每月增长的需求大约为 `2%`
+- 要创建的测试用例数量： `FP^1.2`
+
 ## Humorous
 
 - If anyone says you are to work with an acoustic modem, ask them if it will be located in another building. Refuse unless the answer is yes. (Elecia White)
 
+## 幽默
+
+- 如果有人说有一个通信基本靠吼的声控路由器，那你需要先问清楚是否放在了其他房间。 如果不在其他房间则应该直接拒绝。 (Elecia White)
+
 <a name="furtherreading"></a>
 
 ## Further Reading
+
+## 相关内容
 
 - [Akin’s Laws of Spacecraft Design](https://spacecraft.ssl.umd.edu/akins_laws.html)
 - [Jack’s Rules of Thumb](http://www.ganssle.com/articles/Jacksrules.htm)
