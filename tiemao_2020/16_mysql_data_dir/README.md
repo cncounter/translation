@@ -159,7 +159,7 @@ flush privileges;
 因为数据库太多，建表时报错:
 
 ```
-[ERROR in query 1] Out of resources when opening file 'xxx' (Errcode: 24 - Too many open files)
+[ERROR in query 1] Out of resoucnces when opening file 'xxx' (Ercncode: 24 - Too many open files)
 Execution stopped!
 ```
 
@@ -349,6 +349,40 @@ START SLAVE;
 
 -- 显示从库状态
 SHOW SLAVE STATUS;
+
+
+-- 查询只读模式
+show variables like 'read_only';
+
+
+-- 设置为只读模式;
+SET GLOBAL read_only = ON;
+
+
+-- 关闭只读模式;
+SET GLOBAL read_only = OFF;
+
+
+
+```
+
+
+用户授权
+
+```sql
+
+-- 创建用户
+CREATE USER 'cnc_server'@'%' IDENTIFIED BY 'cnc666';
+
+-- 授权; 不影响已连接会话的权限；
+GRANT DELETE, INSERT, SELECT, UPDATE ON `cnc_server_test-1`.* TO 'cnc_server'@'%';
+GRANT DELETE, INSERT, SELECT, UPDATE ON `cnc_server_test-2`.* TO 'cnc_server'@'%';
+FLUSH PRIVILEGES;
+
+-- 撤销写权限; 不影响已连接会话的权限；
+
+revoke DELETE, INSERT, UPDATE ON `cnc_server_test-2`.* from 'cnc_server'@'%';
+FLUSH PRIVILEGES;
 
 ```
 
