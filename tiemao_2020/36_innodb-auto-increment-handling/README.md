@@ -1,13 +1,105 @@
+
 # AUTO_INCREMENT Handling in InnoDB
 
 # InnoDB中的AUTO_INCREMENT处理机制
+
+[TOC]
+
+
+### Examples Using AUTO_INCREMENT
+
+
+The `AUTO_INCREMENT` attribute can be used to generate a unique identity for new rows:
+
+```sql
+CREATE TABLE animals (
+     id MEDIUMINT NOT NULL AUTO_INCREMENT,
+     name CHAR(30) NOT NULL,
+     PRIMARY KEY (id)
+);
+
+INSERT INTO animals (name) VALUES
+    ('dog'),('cat'),('penguin'),
+    ('lax'),('whale'),('ostrich');
+
+SELECT * FROM animals;
+```
+
+Which returns:
+
+```none
++----+---------+
+| id | name    |
++----+---------+
+|  1 | dog     |
+|  2 | cat     |
+|  3 | penguin |
+|  4 | lax     |
+|  5 | whale   |
+|  6 | ostrich |
++----+---------+
+```
+
+No value was specified for the `AUTO_INCREMENT` column, so MySQL assigned sequence numbers automatically. You can also explicitly assign 0 to the column to generate sequence numbers, unless the [`NO_AUTO_VALUE_ON_ZERO`](https://dev.mysql.com/doc/refman/5.6/en/sql-mode.html#sqlmode_no_auto_value_on_zero) SQL mode is enabled. For example:
+
+```sql
+INSERT INTO animals (id,name) VALUES(0,'groundhog');
+```
+
+If the column is declared `NOT NULL`, it is also possible to assign `NULL` to the column to generate sequence numbers. For example:
+
+```sql
+INSERT INTO animals (id,name) VALUES(NULL,'squirrel');
+```
+
+When you insert any other value into an `AUTO_INCREMENT` column, the column is set to that value and the sequence is reset so that the next automatically generated value follows sequentially from the largest column value. For example:
+
+```sql
+INSERT INTO animals (id,name) VALUES(100,'rabbit');
+INSERT INTO animals (id,name) VALUES(NULL,'mouse');
+SELECT * FROM animals;
++-----+-----------+
+| id  | name      |
++-----+-----------+
+|   1 | dog       |
+|   2 | cat       |
+|   3 | penguin   |
+|   4 | lax       |
+|   5 | whale     |
+|   6 | ostrich   |
+|   7 | groundhog |
+|   8 | squirrel  |
+| 100 | rabbit    |
+| 101 | mouse     |
++-----+-----------+
+```
+
+Updating an existing `AUTO_INCREMENT` column value in an `InnoDB` table does not reset the `AUTO_INCREMENT` sequence as it does for `MyISAM` and `NDB` tables.
+
+You can retrieve the most recent automatically generated `AUTO_INCREMENT` value with the [`LAST_INSERT_ID()`](https://dev.mysql.com/doc/refman/5.6/en/information-functions.html#function_last-insert-id) SQL function or the [`mysql_insert_id()`](https://dev.mysql.com/doc/c-api/5.6/en/mysql-insert-id.html) C API function. These functions are connection-specific, so their return values are not affected by another connection which is also performing inserts.
+
+Use the smallest integer data type for the `AUTO_INCREMENT` column that is large enough to hold the maximum sequence value you will need. When the column reaches the upper limit of the data type, the next attempt to generate a sequence number fails. Use the `UNSIGNED` attribute if possible to allow a greater range. For example, if you use [`TINYINT`](https://dev.mysql.com/doc/refman/5.6/en/integer-types.html), the maximum permissible sequence number is 127. For [`TINYINT UNSIGNED`](https://dev.mysql.com/doc/refman/5.6/en/integer-types.html), the maximum is 255. See [Section 11.1.2, “Integer Types (Exact Value) - INTEGER, INT, SMALLINT, TINYINT, MEDIUMINT, BIGINT”](https://dev.mysql.com/doc/refman/5.6/en/integer-types.html) for the ranges of all the integer types.
+
+Note
+
+For a multiple-row insert, [`LAST_INSERT_ID()`](https://dev.mysql.com/doc/refman/5.6/en/information-functions.html#function_last-insert-id) and [`mysql_insert_id()`](https://dev.mysql.com/doc/c-api/5.6/en/mysql-insert-id.html) actually return the `AUTO_INCREMENT` key from the *first* of the inserted rows. This enables multiple-row inserts to be reproduced correctly on other servers in a replication setup.
+
+To start with an `AUTO_INCREMENT` value other than 1, set that value with [`CREATE TABLE`](https://dev.mysql.com/doc/refman/5.6/en/create-table.html) or [`ALTER TABLE`](https://dev.mysql.com/doc/refman/5.6/en/alter-table.html), like this:
+
+```sql
+mysql> ALTER TABLE tbl AUTO_INCREMENT = 100;
+```
+
+### AUTO_INCREMENT Handling in InnoDB
+
+### InnoDB中的AUTO_INCREMENT处理机制
 
 
 `InnoDB` provides a configurable locking mechanism that can significantly improve scalability and performance of SQL statements that add rows to tables with `AUTO_INCREMENT` columns. To use the `AUTO_INCREMENT` mechanism with an `InnoDB` table, an `AUTO_INCREMENT` column must be defined as part of an index such that it is possible to perform the equivalent of an indexed `SELECT MAX(*`ai_col`*)` lookup on the table to obtain the maximum column value. Typically, this is achieved by making the column the first column of some table index.
 
 This section describes the behavior of `AUTO_INCREMENT` lock modes, usage implications for different `AUTO_INCREMENT` lock mode settings, and how `InnoDB` initializes the `AUTO_INCREMENT` counter.
 
-[TOC]
+
 
 ##### InnoDB AUTO_INCREMENT Lock Modes
 
@@ -280,3 +372,4 @@ A server restart also cancels the effect of the `AUTO_INCREMENT = *`N`*` table o
 
 
 - https://dev.mysql.com/doc/refman/5.7/en/innodb-auto-increment-handling.html
+- https://dev.mysql.com/doc/refman/5.6/en/example-auto-increment.html
