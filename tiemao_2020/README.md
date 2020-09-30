@@ -23,7 +23,7 @@
 * [15.DataDog集成MySQL的配置](./15_datadog_mysql/README.md)【已完成】
 * [16.迁移Ubuntu下MySQL的data目录](./16_mysql_data_dir/README.md)【已完成】
 * [17.Java坑人面试题系列: 变量声明（中级难度）](./17_quiz-variable-declaration/README.md)【已完成】
-* [18.Using MySQL UNIQUE Index](./18_mysql-unique-index/README.md)
+* [18.实战MySQL唯一索引](./18_mysql-unique-index/README.md)【粗翻.TODO】
 * [19.Java坑人面试题系列: 集合（高级难度）](./19_quiz-advanced-collectors/README.md)【粗翻】
 * [20.真实用户监控与综合性能监控](./20_monitoring-vs-synthetic-monitoring/README.md)【机器翻译】
 * [21.快速掌握JVM代码缓存区](./21_jvm-code-cache/README.md)【粗翻】

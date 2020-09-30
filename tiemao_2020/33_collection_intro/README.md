@@ -2,6 +2,21 @@
 
 数据结构与算法是编程人员必须掌握的技能。
 
+开发人员核心技能领域大杂烩：
+编程语言: Java： Spring、JavaWeb、JDBC/ORM。
+数据库: MySQL
+缓存: Redis, Guava/Caffeine
+Web: Nginx, Tomcat,
+操作系统: Linux、Shell
+性能: CDN、高防、
+MQ: Kafka, RabbitMQ, RocketMQ
+RPC: Rest/Dubbo/Cloud
+云平台: Docker， Kubernetes
+前端: HTML、HTTP、JS、CSS、新框架、NodeJS
+编程工具: Idea/Eclipse/VSCode/Git、Xcode
+测试工具: Chrome/Postman/Mock/JUnit/自动化测试/压测
+文档工具: Office、PowerDesigner、
+
 ## 对象与封装
 
 一个对象，可以认为是一组数据。 例如:
