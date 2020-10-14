@@ -27,12 +27,30 @@ Table of Contents
 
 This chapter explains how to optimize MySQL performance and provides examples. Optimization involves configuring, tuning, and measuring performance, at several levels. Depending on your job role (developer, DBA, or a combination of both), you might optimize at the level of individual SQL statements, entire applications, a single database server, or multiple networked database servers. Sometimes you can be proactive and plan in advance for performance, while other times you might troubleshoot a configuration or code issue after a problem occurs. Optimizing CPU and memory usage can also improve scalability, allowing the database to handle more load without slowing down.
 
-本章通过实际案例来介绍如何优化MySQL数据库的性能。 涉及多个层级的配置参数调整以及性能指标检测。
-根据工作角色（开发人员，DBA或两者皆有）的不同， 可以在不同的层级上进行优化： 单个SQL语句，整个应用程序， 单个数据库服务器， 或者多个网络数据库服务器级别。
-有时后可以主动进行提前的性能规划，而有时则需要在问题发生后，迅速对配置或代码问题进行诊断并排除故障。
-优化CPU和内存使用率也可以提高可伸缩性，从而使数据库能够应对更大的负载而不降低速度。
+本章通过具体实例来讲解如何进行MySQL数据库的性能优化。
+涉及多个层次的调优，包括配置参数调整以及性能指标度量。
+根据工作角色的划分（开发人员，DBA，或者两者皆有），可以在不同的层面进行优化：
+
+- 开发人员-角色:
+  * 单个SQL语句
+  * 整个应用程序
+
+- DBA角色:
+  * 单个数据库服务器
+  * 数据库集群和服务网络
+
+- 调优时机划分
+  * 提前进行主动的性能规划
+  * 诊断问题并修复代码问题
+  * 定位性能问题与排除故障
 
 
+系统扩容: 增加配置, 应对更高的负载(数据量、用户数、连接数、QPS)
+
+- CPU
+- 内存
+- 网络
+- 存储设备
 
 
 - https://dev.mysql.com/doc/refman/5.7/en/optimization.html
