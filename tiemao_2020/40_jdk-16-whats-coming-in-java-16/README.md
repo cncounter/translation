@@ -2,11 +2,21 @@
 
 > Due March 2021, the next Java upgrade targets a new metaspace memory allocator, support for C++ 14 language features in JDK source code, and a vector API
 
+# JDK 16 有哪些新特性?
+
+> JDK16预计发布时间为 2021年3月; 支持新的 Metaspace 内存分配管理器; 新版本的JDK源码兼容C++ 14的语言特性; 新增 vector API;
+
 Although not due to arrive until March 2021, Java Development Kit (JDK) 16 has begun to take shape, with proposed features including concurrent thread-stack processing for garbage collection, support for C++ 14 language features, and an “elastic metaspace” capability to more quickly return unused class metadata memory to the OS.
 
 JDK 16 will be the reference implementation of the version of standard Java set to follow JDK 15, which arrived September 15. The six-month release cadence for standard Java would have JDK 16 arriving next March.
 
 As of October 8, eight proposals officially target JDK 16. The new capabilities coming to Java 16 include:
+
+JDK16虽然要到【2021年3月】才会发布，但已初具规模，预计的功能特性包括: 使用并发线程栈来处理ZGC; 兼容C++ 14语言特性; 弹性Metaspace, 以更快地将不使用的metadata内存返还给操作系统。
+
+JDK15已经在【2020年9月15日】发布GA版本, JDK 16是标准Java下一版本的参考实现，根据现在六个月一次的发行节奏，JDK 16将在明年3月发行。
+
+截至10月8日，针对JDK16已经有八项正式的提案。Java16的新功能包括：
 
 
 ## Moving ZGC (Z Garbage Collector) thread-stack processing from safepoints to a concurrent phase.
