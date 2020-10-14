@@ -7,6 +7,8 @@ CNCounter translation
 
 GitHub地址: <https://github.com/cncounter/translation>
 
+GITHUB官方帮助文档(中文版): <https://docs.github.com/cn/free-pro-team@latest/github>
+
 # 目录 #
 
 
