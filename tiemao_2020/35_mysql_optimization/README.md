@@ -8,7 +8,7 @@ Table of Contents
 目录
 
 
-- [8.1 Optimization Overview](./8.1-optimize-overview.md)
+- [8.1 Optimization Overview](./8.1-optimize-overview.md) 【粗翻】
 - [8.2 Optimizing SQL Statements](./README.md)
 - [8.3 Optimization and Indexes](./README.md)
 - [8.4 Optimizing Database Structure](./README.md)
