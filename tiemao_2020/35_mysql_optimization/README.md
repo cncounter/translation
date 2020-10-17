@@ -9,19 +9,19 @@ Table of Contents
 
 
 - [8.1 Optimization Overview](./8.1-optimize-overview.md) 【粗翻】
-- [8.2 Optimizing SQL Statements](./README.md)
-- [8.3 Optimization and Indexes](./README.md)
-- [8.4 Optimizing Database Structure](./README.md)
-- [8.5 Optimizing for InnoDB Tables](./README.md)
+- [8.2 Optimizing SQL Statements](./8.2-statement-optimization.md)
+- [8.3 Optimization and Indexes](./8.3-optimization-indexes.md)
+- [8.4 Optimizing Database Structure](./8.4-optimizing-database-structure.md)
+- [8.5 Optimizing for InnoDB Tables](./8.5-optimizing-innodb.md)
 - [8.6 Optimizing for MyISAM Tables](./README.md)
 - [8.7 Optimizing for MEMORY Tables](./README.md)
-- [8.8 Understanding the Query Execution Plan](./README.md)
-- [8.9 Controlling the Query Optimizer](./README.md)
-- [8.10 Buffering and Caching](./README.md)
-- [8.11 Optimizing Locking Operations](./README.md)
-- [8.12 Optimizing the MySQL Server](./README.md)
-- [8.13 Measuring Performance (Benchmarking)](./README.md)
-- [8.14 Examining Server Thread (Process) Information](./README.md)
+- [8.8 Understanding the Query Execution Plan](./8.8-execution-plan-information.md)
+- [8.9 Controlling the Query Optimizer](./8.9-controlling-optimizer.md)
+- [8.10 Buffering and Caching](./8.10-buffering-caching.md)
+- [8.11 Optimizing Locking Operations](./8.11-locking-issues.md)
+- [8.12 Optimizing the MySQL Server](./8.12-optimizing-server.md)
+- [8.13 Measuring Performance (Benchmarking)](./8.13-optimize-benchmarking.md)
+- [8.14 Examining Server Thread (Process) Information](./8.14-thread-information.md)
 
 
 
