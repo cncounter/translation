@@ -1,7 +1,7 @@
 
 # AUTO_INCREMENT Handling in InnoDB
 
-# InnoDB中的AUTO_INCREMENT处理机制
+# InnoDB引擎中AUTO_INCREMENT的处理机制
 
 [TOC]
 

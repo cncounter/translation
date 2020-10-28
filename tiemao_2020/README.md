@@ -4,7 +4,6 @@
 <details>
 <summary>点击展开2020年目录</summary>
 
-
 * [01.JVM技术细节: HotSpot的内存模型](./01_jvm_memory_model/README.md)【已完成】
 * [02.辨析： 自旋锁与信号量](./02_spinlock-vs-semaphore/README.md)【已完成】
 * [03.Java坑人面试题系列: 包装类（中级难度）](./03_quiz-wrapper-classes/README.md)【已完成】
@@ -41,11 +40,17 @@
 * [33.数据结构与集合](./33_collection_intro/README.md)
 * [34.Word常用技巧](./34_word_skill/README.md)
 * [35.MySQL优化手册 - 官方文档[中文版]](./35_mysql_optimization/README.md)【系列文章】
-* [36.](./)
-* [37.](./)
-* [38.](./)
-* [39.](./)
-* [40.](./)
+* [36.InnoDB引擎中AUTO_INCREMENT的处理机制](.//README.md)
+* [37.CompressedOops详解](./37_CompressedOops/README.md)
+* [38.机器学习平台怎么选](./38_how-to-choose-a-cloud-machine-learning-platform/README.md)
+* [39.深度学习和机器学习](./39_deep-learning-vs-machine-learning/README.md)
+* [40.JDK 16新特性抢先看](./40_jdk-16-whats-coming-in-java-16/README.md)
+* [41.实例详解JVM-invoke相关操作码](./41_invoke_opcode/README.md)
+* [42.](.//README.md)
+* [43.](.//README.md)
+* [44.](.//README.md)
+* [45.](.//README.md)
+* [46.](.//README.md)
 
 
 

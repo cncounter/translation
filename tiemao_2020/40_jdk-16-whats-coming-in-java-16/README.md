@@ -2,7 +2,7 @@
 
 > Due March 2021, the next Java upgrade targets a new metaspace memory allocator, support for C++ 14 language features in JDK source code, and a vector API
 
-# JDK 16 有哪些新特性?
+# JDK 16新特性抢先看
 
 > JDK16预计发布时间为 2021年3月; 支持新的 Metaspace 内存分配管理器; 新版本的JDK源码兼容C++ 14的语言特性; 新增 vector API;
 
