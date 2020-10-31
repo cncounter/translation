@@ -44,7 +44,7 @@
 * [37.CompressedOops详解](./37_CompressedOops/README.md)
 * [38.机器学习平台怎么选](./38_how-to-choose-a-cloud-machine-learning-platform/README.md)
 * [39.深度学习和机器学习](./39_deep-learning-vs-machine-learning/README.md)
-* [40.JDK 16新特性抢先看](./40_jdk-16-whats-coming-in-java-16/README.md)
+* [40.JDK 16新特性抢先看](./40_jdk-16-whats-coming-in-java-16/README.md)【粗翻】
 * [41.实例详解JVM-invoke相关操作码](./41_invoke_opcode/README.md)
 * [42.](.//README.md)
 * [43.](.//README.md)

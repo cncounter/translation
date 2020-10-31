@@ -60,36 +60,50 @@ ZGC旨在使HotSpot中的GC暂停和可伸缩性问题成为过去式。
 
 ## An elastic metaspace capability
 
-## 弹性Metaspace
+## Metaspace弹性空间大小
 
 > https://openjdk.java.net/jeps/387
 
 which returns unused HotSpot VM class metadata (metaspace) memory more promptly to the OS, reduces metaspace footprint and simplifies metaspace code to reduce maintenance costs. Metaspace has had issues with high off-heap memory use. The plan calls for replacing the existing memory allocator with a buddy-based allocation scheme, providing an algorithm to divide memory into partitions to satisfy memory requests. This approach has been used in places such as the Linux kernel and will make it practical to allocate memory in smaller chunks to reduce class-loader overhead. Fragmentation also will be reduced. In addition, the commitment of memory from the OS to memory management arenas will be done lazily, on demand, to reduce the footprint for loaders that start out with large arenas but do not use them immediately or might not use them to their full extent. To fully exploit the elasticity offered by buddy allocation, metaspace memory will be arranged into uniformly sized granules that can be committed and uncommitted independently of each other.
 
-这样可以更快速地将未使用的HotSpot VM类元数据（元空间）内存返回给操作系统，从而减少元空间占用空间并简化元空间代码以降低维护成本。元空间存在大量的堆外内存使用问题。该计划要求用基于伙伴的分配方案替换现有的内存分配器，提供一种将内存划分为多个分区以满足内存请求的算法。这种方法已在Linux内核等地方使用，它将使在较小的块中分配内存变得可行，以减少类加载器的开销。碎片也将减少。此外，将从操作系统到内存管理区域的内存承诺会按需延迟执行，以减少从大型区域开始但不立即使用它们或可能无法完全使用它们的装载程序的占用空间。为了充分利用伙伴分配所提供的弹性，将元空间内存排列成大小统一的颗粒，这些颗粒可以彼此独立地进行提交和不提交。
+目的是为了将未使用的HotSpot VM class 元数据空间的内存，更快速地返回给操作系统，从而减少元空间的内存占用，并简化元空间代码以降低维护成本。
+元空间使用大量堆外内存（off-heap）时会存在问题。该计划要求用基于伙伴的分配方案（buddy-based allocation scheme）替换现有的内存分配器，提供一种将内存划分为多个部分以满足内存请求的算法。这种方法已在Linux内核等地方广泛使用，使得在较小的块中分配内存变得可行，以减少类加载器的开销。
+碎片也将减少。
+此外，将从操作系统到内存管理区域的内存承诺会按需延迟执行，以减少从大型区域开始但不立即使用它们或可能无法完全使用它们的装载程序的占用空间。
+为了充分利用伙伴分配所提供的弹性，将元空间内存排列成大小统一的颗粒，这些颗粒可以彼此独立地进行申请和归还。
 
 
 ## Enablement of C++ 14 language features
 
-##启用C ++ 14语言功能
+## 启用 C++ 14 的语言特性
 
 > https://openjdk.java.net/jeps/347
 
 to allow the use of C++ 14 capabilities in JDK C++ source code and give specific guidance about which of these features may be used in HotSpot VM code. Through JDK 15, language features used by C++ code in the JDK have been limited to the C++98/03 language standards. With JDK 11, the source code was updated to support building with newer versions of the C++ standard. This includes being able to build with recent versions of compilers that support C++ 11/14 language features. This proposal does not propose any style or usage changes for C++ code that is used outside of HotSpot. But to take advantage of C++ language features, some build-time changes are required, depending on the platform compiler.
 
-允许在JDK C ++源代码中使用C ++ 14功能，并提供有关在HotSpot VM代码中可以使用其中哪些功能的特定指南。 通过JDK 15，JDK中C ++代码使用的语言功能已限于C ++ 98/03语言标准。 使用JDK 11，源代码已更新，以支持使用更新版本的C ++标准进行构建。 这包括能够使用支持C ++ 11/14语言功能的最新版本的编译器进行构建。 本提案不建议在HotSpot之外使用的C ++代码的样式或用法更改。 但是要利用C ++语言功能，需要进行一些构建时更改，具体取决于平台编译器。
+允许在JDK的源代码中使用C++ 14功能，并提供在HotSpot VM代码中可以使用哪些特性的特定说明文档。
+在JDK 15及之前，JDK支持的C++语言特性受限于 C++98/03 版语言标准。
+在JDK 11中，源代码已更新，以支持使用更新版本的C++标准进行构建。 包括能够使用支持C++ 11/14语言特性的最新版本的编译器进行构建。
+本提案不建议在HotSpot之外使用的C ++代码风格进行修改。 但是要利用C++语言特性的优势，需要进行一些构建时更改，取决于具体平台的编译器。
 
 
 ## A vector API in an incubator stage
 
-## 孵化阶段的 vector API
+## 孵化阶段的向量计算API
 
 > https://openjdk.java.net/jeps/338
 
-in which the JDK would be fitted with an incubator module, jdk.incubator.vector, to express vector computations that compile to optimal vector hardware instructions on supported CPU architectures, to achieve superior performance to equivalent scalar computations. The vector API provides a mechanism to write complex vector algorithms in Java, using pre-existing support in the HotSpot VM for vectorization but with a user model that makes vectorization more predictable and robust. Goals of the proposal include providing a clear and concise API to express a range of vector computations, being platform-agnostic by supporting multiple CPU architectures, and offering reliable runtime compilation and performance on x64 and AArch64 architectures. Graceful degradation also is a goal, in which a vector computation would degrade gracefully and still function if it cannot be fully expressed at runtime as a sequence of hardware vector instructions, either because an architecture does not support some instructions or another CPU architecture is not supported.
+in which the JDK would be fitted with an incubator module, `jdk.incubator.vector`, to express vector computations that compile to optimal vector hardware instructions on supported CPU architectures, to achieve superior performance to equivalent scalar computations. The vector API provides a mechanism to write complex vector algorithms in Java, using pre-existing support in the HotSpot VM for vectorization but with a user model that makes vectorization more predictable and robust. Goals of the proposal include providing a clear and concise API to express a range of vector computations, being platform-agnostic by supporting multiple CPU architectures, and offering reliable runtime compilation and performance on x64 and AArch64 architectures. Graceful degradation also is a goal, in which a vector computation would degrade gracefully and still function if it cannot be fully expressed at runtime as a sequence of hardware vector instructions, either because an architecture does not support some instructions or another CPU architecture is not supported.
 
 
-其中，JDK将配备孵化器模块jdk.incubator.vector，以表达向量计算，这些向量计算可在支持的CPU架构上编译为最佳向量硬件指令，以实现优于等效标量计算的性能。矢量API提供了一种使用Java编写复杂矢量算法的机制，它使用HotSpot VM中预先存在的支持进行矢量化，但用户模型使矢量化更加可预测且更可靠。该提案的目标包括提供一个清晰简洁的API来表达一系列矢量计算，通过支持多种CPU架构而与平台无关，在x64和AArch64架构上提供可靠的运行时编译和性能。平稳降级也是一个目标，其中矢量计算将适度降级，如果在运行时无法将其完全表达为一系列硬件矢量指令，则该计算仍会正常运行，原因是某个体系结构不支持某些指令或不支持其他CPU架构。
+JDK将配备一个孵化阶段的模块 `jdk.incubator.vector`，以支持向量计算，这些向量计算可在兼容的CPU架构上编译为最佳向量指令，以实现优于等效标量计算的性能。
+矢量API提供了一种使用Java编写复杂矢量算法的机制，它使用HotSpot VM中预先存在的支持进行矢量化，但用户模型使矢量化更加可预测且更可靠。
+该提案的目标包括：
+
+- 提供一个清晰简洁的API来表达一系列矢量计算，
+- 跨平台支持多种CPU架构
+- 在x64和AArch64架构上提供可靠的运行时编译和性能。
+- 平滑降级也是一个目标，其中矢量计算将适度降级，如果在运行时无法将其完全表达为一系列硬件矢量指令，则该计算仍会正常运行，比如某些CPU平台架构不支持某个指令的话。
 
 
 ## Porting the JDK to the Windows/AArch64 platform.
@@ -100,7 +114,7 @@ in which the JDK would be fitted with an incubator module, jdk.incubator.vector,
 
 With the release of new server-class and consumer AArch64 (ARM64) hardware, Windows/AArch64 has become an important platform due to demand. While the porting itself is already mostly complete, the focus of this proposal involves integration of the port into the mainline JDK repository.
 
-随着新的服务器级和消费类AArch64（ARM64）硬件的发布，由于需求，Windows / AArch64已成为重要的平台。 尽管移植本身已经基本完成，但该建议的重点是将端口集成到主线JDK存储库中。
+随着AArch64（ARM64）发布新的服务器级和消费者级别的硬件，Windows/AArch64 已成为一个很重要的平台。 尽管移植基本上已经完成，但该提案的重点是将这种能力集成到JDK代码库的主线中。
 
 
 ## Porting of the JDK to Alpine Linux
@@ -166,6 +180,6 @@ JDK 17则是下一个长期支持版本（LTS）, 预计于2021年9月发布，�
 
 ## 相关链接
 
-- GitHub版本: [https://github.com/cncounter/translation/tree/master/tiemao_2020/40_jdk-16-whats-coming-in-java-16](https://github.com/cncounter/translation/tree/master/tiemao_2020/40_jdk-16-whats-coming-in-java-16)
+- [JDK16新特性（不断更新中）- GitHub版](https://github.com/cncounter/translation/tree/master/tiemao_2020/40_jdk-16-whats-coming-in-java-16)
 
-- 原文链接: [https://www.infoworld.com/article/3569150/jdk-16-whats-coming-in-java-16.html](https://www.infoworld.com/article/3569150/jdk-16-whats-coming-in-java-16.html)
+- 英文版链接: [https://www.infoworld.com/article/3569150/jdk-16-whats-coming-in-java-16.html](https://www.infoworld.com/article/3569150/jdk-16-whats-coming-in-java-16.html)

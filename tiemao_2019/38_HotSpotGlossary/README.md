@@ -1,6 +1,6 @@
 # HotSpot Glossary of Terms
 
-# JVM相关术语和定义（HotSpot版）
+# JVM术语表（HotSpot版）
 
 [TOC]
 
