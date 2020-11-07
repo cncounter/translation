@@ -134,3 +134,9 @@ Thread的状态包括:
 比如使用Java内置的 `object.wait()` 和 `object.notify()` 方法，依次执行完并通知对方。
 
 或者使用同一个锁的多个 Condition, 分别等待。
+
+
+### 2.7 `Thread.sleep` 和 `Object#wait()` 的区别
+
+- `Thread.sleep()`: 让出CPU
+- `Object#wait()` : 释放锁
