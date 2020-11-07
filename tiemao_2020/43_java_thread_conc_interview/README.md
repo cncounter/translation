@@ -131,12 +131,85 @@ Thread的状态包括:
 
 可以使用细粒度的锁(fine-grained locks)来控制执行顺序。
 
-比如使用Java内置的 `object.wait()` 和 `object.notify()` 方法，依次执行完并通知对方。
-
-或者使用同一个锁的多个 Condition, 分别等待。
-
+- 比如使用Java内置的 `object.wait()` 和 `object.notify()` 方法，依次执行完并通知对方。
+- 或者使用同一个锁的多个 Condition, 分别等待。
+- 或者使用 CountDownLatch 和 CyclicBarrier 等工具进行辅助。
 
 ### 2.7 `Thread.sleep` 和 `Object#wait()` 的区别
 
 - `Thread.sleep()`: 让出CPU
 - `Object#wait()` : 释放锁
+
+
+### 2.8 线程之间如何通信?
+
+
+线程间通信(inter-thread communication)主要有两种方式:
+
+1. 共享内存: 多个线程之间使用堆内存之中的对象/属性作为状态值,来进行隐式的通信。
+2. 消息传递: 线程之间通过明确的发送消息来进行显式的通信。
+
+
+
+## 3. 线程安全
+
+### 3.1 什么是线程安全?
+
+线程安全是多线程环境下的一个概念，保证多个线程并发执行同一段代码时, 不会出现不确定的结果, 也不会出现与单线程执行时不一致的结果。 也就是保证多个线程对共享状态操作的正确性。
+
+在Java中, 完全由代码来控制线程安全, 共享状态一般是指堆内存中的数据（对象的属性）。
+
+
+### 3.2 线程安全有哪些特征?
+
+- 原子性: 临界区内的操作不会中途被其他线程干扰，一般通过同步机制来实现。
+- 可见性: 一个线程执行的修改操作，对其他线程来说必须立即可见。 比如将修改的数据强制刷新到主内存、其他线程读取时也强制从主内存读取。
+- 有序性: 保证线程内的串行语义，避免指令重排，例如增加内存屏障。
+
+
+### 3.3 怎么保证线程安全？
+
+- 使用原子类。
+- 加锁: 例如 `synchronized`, `Lock`
+- `object.wait()` 方法
+- `object.notify()` 方法
+- `thread.join()` 方法
+- `CountdownLatch` 类
+- `CyclicBarrier` 类
+- `FutureTask` 类
+- `Callable` 类
+
+
+### 3.4 经常使用哪些线程安全的集合类?
+
+- `ConcurrentHashMap`
+- `CopyOnWriteArrayList`
+- `ConcurrentLinkedQueue`
+- `ConcurrentLinkedDeque`
+- `Collections` 的 `synchronizedList` 等工具方法
+
+
+### 3.5 类加载和初始化的过程是线程安全的吗? 哪些情况下是不安全的?
+
+类加载的过程是同步阻塞方式的，所以是线程安全的。
+
+类和对象初始化的过程也是同步阻塞的，但如果初始化代码中有引用泄漏，则可能造成其他问题。
+
+### 3.6 ThreadLocal 是什么?
+
+ThreadLocal, 线程本地变量。
+
+### 3.7 ThreadLocal 的实现原理是什么?
+
+每个 ThreadLocal 对象, 为每个线程提供独立的变量副本，所以每个线程都可以独立地改变自己的副本，而不会影响其它线程对应的副本。
+
+### 3.8 ThreadLocal 有哪些使用场景？
+
+- 维护遗留系统，避免增加方法调用参数，修改一连串方法签名
+- Spring的JDBC连接以及事务管理
+- 请求上下文: Tomcat基于线程的连接模型
+
+### 3.9 使用 ThreadLocal 有哪些需要注意的地方?
+
+- 注意防止污染: finally中及时进行清理, 避免污染下一次的请求。
+- 防止内存泄漏: 避免将持有大量数据的对象放到ThreadLocal。
