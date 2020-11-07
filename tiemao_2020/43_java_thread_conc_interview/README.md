@@ -133,7 +133,7 @@ Thread的状态包括:
 
 - 比如使用Java内置的 `object.wait()` 和 `object.notify()` 方法，依次执行完并通知对方。
 - 或者使用同一个锁的多个 Condition, 分别等待。
-- 或者使用 CountDownLatch 和 CyclicBarrier 等工具进行辅助。
+- 或者创建自定义线程时, 使用 CountDownLatch 和 CyclicBarrier 等工具进行辅助。
 
 ### 2.7 `Thread.sleep` 和 `Object#wait()` 的区别
 
@@ -162,8 +162,8 @@ Thread的状态包括:
 
 ### 3.2 线程安全有哪些特征?
 
-- 原子性: 临界区内的操作不会中途被其他线程干扰，一般通过同步机制来实现。
-- 可见性: 一个线程执行的修改操作，对其他线程来说必须立即可见。 比如将修改的数据强制刷新到主内存、其他线程读取时也强制从主内存读取。
+- 原子性: 对基本数据类型的变量的读取和赋值操作是原子性操作，即这些操作是不可被中断的，要么执行，要么不执行。
+- 可见性: 一个线程执行的修改操作，对其他线程来说必须立即可见。 Java 提供了volatile 关键字来保证可见性，读取时强制从主内存读取。
 - 有序性: 保证线程内的串行语义，避免指令重排，例如增加内存屏障。
 
 
@@ -213,3 +213,134 @@ ThreadLocal, 线程本地变量。
 
 - 注意防止污染: finally中及时进行清理, 避免污染下一次的请求。
 - 防止内存泄漏: 避免将持有大量数据的对象放到ThreadLocal。
+
+
+
+## 4. 线程池
+
+线程池从功能上看，就是一个任务执行器。
+
+### 4.1 怎么创建线程池？
+
+创建线程池的方式有多种，例如:
+
+- 构造 `ThreadPoolExecutor` 对象
+- 使用`Executors` 工具类
+
+
+### 4.2 有哪些种类的线程池
+
+1. `newSingleThreadExecutor`
+  创建一个单线程的线程池。这个线程池只有一个线程在工作，也就是相当于单线程串行执行所有任务。如果这个唯一的线程因为异常结束，那么会有一个新的线程来替代它。此线程池保证所有任务的执行顺序按照任务的提交顺序执行。
+2. `newFixedThreadPool`
+  创建固定大小的线程池。每次提交一个任务就创建一个线程，直到线程达到线程池的最大大小。线程池的大小一旦达到最大值就会保持不变，如果某个线程因为执行异常而结束，那么线程池会补充一个新线程。
+3. `newCachedThreadPool`
+  创建一个可缓存的线程池。如果线程池的大小超过了处理任务所需要的线程，那么就会回收部分空闲（60秒不执行任务）的线程，当任务数增加时，此线程池又可以智能的添加新线程来处理任务。此线程池不会对线程池大小做限制，线程池大小完全依赖于操作系统（或者说JVM）能够创建的最大线程大小。
+4. `newScheduledThreadPool`
+  创建一个大小无限的线程池。此线程池支持定时以及周期性执行任务的需求。
+
+
+
+### 4.3 创建线程池有哪些常用参数？
+
+```
+public ThreadPoolExecutor(
+    int corePoolSize,                   // 核心线程数
+    int maximumPoolSize,                // 最大线程数
+    long keepAliveTime,                 // 空闲存活时间
+    TimeUnit unit,                      // 空闲存活时间单位
+    BlockingQueue<Runnable> workQueue,  // 工作队列; 排队队列
+    ThreadFactory threadFactory,        // 线程工厂
+    RejectedExecutionHandler handler    // 拒绝策略处理器
+)
+```
+
+
+### 4.4 线程池在什么时候会创建新线程?
+
+ThreadPoolExecutor 提交任务逻辑:
+1. 判断corePoolSize 【创建】
+2. 加入workQueue
+3. 判断maximumPoolSize 【创建】
+4. 执行拒绝策略处理器
+
+
+
+### 4.5 线程池可以指定哪些拒绝策略?
+
+1. `ThreadPoolExecutor.AbortPolicy`: 丢弃任务并抛出 `RejectedExecutionException` 异常。
+2. `ThreadPoolExecutor.DiscardPolicy`:  丢弃任务，但是不抛出异常。
+3. `ThreadPoolExecutor.DiscardOldestPolicy`: 丢弃队列最前面的任务，然后重新提交被拒绝的任务
+4. `ThreadPoolExecutor.CallerRunsPolicy`: 由调用线程（提交任务的线程）处理该任务
+
+
+### 4.6  线程池都有哪些状态？
+
+```
+/**
+ * RUNNING -> SHUTDOWN
+ *    On invocation of shutdown()
+ * (RUNNING or SHUTDOWN) -> STOP
+ *    On invocation of shutdownNow()
+ * SHUTDOWN -> TIDYING
+ *    When both queue and pool are empty
+ * STOP -> TIDYING
+ *    When pool is empty
+ * TIDYING -> TERMINATED
+ *    When the terminated() hook method has completed
+*/
+
+private static final int RUNNING    = -1 << COUNT_BITS; // 运行中
+private static final int SHUTDOWN   =  0 << COUNT_BITS; // 关闭
+private static final int STOP       =  1 << COUNT_BITS; // 停止
+private static final int TIDYING    =  2 << COUNT_BITS; // 收拾
+private static final int TERMINATED =  3 << COUNT_BITS; // 终止
+```
+
+### 4.7 线程池的 `submit()` 和 `execute()` 方法有什么区别？
+
+- `submit` 方法: 有Future封装的返回值，执行中如果抛出异常, 等待的方法中可以 catch 到。
+- `execute` 方法: 无返回值, 执行任务是捕捉不到异常的。
+
+
+### 4.8 线程池有哪些关闭方法?
+
+- `shutdown()`: 停止接收新任务，已有的任务继续执行
+- `shutdownNow()`: 停止接收新任务，停止执行已有的任务, 正在执行的线程会抛出 InterruptedException 异常。
+- `awaitTermination(long timeOut, TimeUnit unit)`: 当前线程阻塞，等待终止
+
+
+### 4.9 使用线程池有哪些好处?
+
+- 避免创建线程的开销。
+- 避免线程数量爆炸，导致系统崩溃。
+- 合理控制线程数量, 避免过度的资源竞争, 造成系统性能急剧下降。
+- 利用特定线程池的功能特征, 例如定时调度等。
+
+
+### 4.10 其他问题
+
+- 线程池的实现原理是什么?
+- 怎么提交任务？
+- 怎么获取执行结果?
+- 如何控制线程池的线程池容量?
+- 线程池怎样监控?
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-
