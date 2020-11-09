@@ -36,7 +36,7 @@ A table that shows, for a region of the heap, where the object starts that comes
 对于堆中的一个区域(region)，都有一个 table, 用来表示有哪些从地址值较小的内存区指向本区域的对象的开始位置。
 例如，与 remembered set 一起使用的卡表变体(card table variant)。
 
-## 4、`bootstrap classloader`, 引导类加载器
+## 4、`bootstrap classloader`, 启动类加载器
 
 The logical classloader that has responsibility for loading the classes (and resources) that are found in the boot-classpath - typically the core Java platform classes. Typically implemented as part of the VM, by historical convention the bootstrap classloader is represented by NULL at the Java API level.
 
@@ -92,177 +92,177 @@ A special heap that holds compiled code. These objects are not relocated by the 
 
 一块特殊的堆内存空间，用于存放被编译器编译后的代码。 这些对象不会被GC重定位， 但有可能包含oops，也就会成为GC根。
 
-- `compaction`，整理
+- 12、`compaction`，整理
 
 A garbage collection technique that results in live objects occupying a dense portion of the virtual address space, and available space in another portion of the address space. Cf. free list.
 
 垃圾收集中的一种技术，将存活对象占用的虚拟地址空间归集到一边，那么可用地址空间就在另一边。参考 `空闲列表`。
 
-- `concurrency`
+- 13、`concurrency`
 
 Concurrency, or more specifically concurrent programming, is the logical simultaneous execution of multiple instruction streams. If multiple processors are available then the logical simultaneity can be physical simultaneity - `this is known as 'parallelism'`
 
-- `concurrent garbage collection`
+- 14、`concurrent garbage collection`
 
 A garbage collection algorithm that does most (if not all) of its work while the Java application threads are still running.
 
-- `copying garbage collection`
+- 15、`copying garbage collection`
 
 A garbage collection algorithm that moves objects during the collection.
 
-- `deoptimization`
+- 16、`deoptimization`
 
 The process of converting an compiled (or more optimized) stack frame into an interpreted (or less optimized) stack frame. Also describes the discarding of an nmethod whose dependencies (or other assumptions) have been broken. Deoptimized nmethods are typically recompiled to adapt to changing application behavior. Example: A compiler initially assumes a reference value is never null, and tests for it using a trapping memory access. Later on, the application uses null values, and the method is deoptimized and recompiled to use an explicit test-and-branch idiom to detect such nulls.
 
-- `dependency`
+- 17、`dependency`
 
 An optimistic assumption associated with an nmethod, which allowed the compiler to emit improved code into the nmethod. Example: A given class has no subclasses, which simplifies method dispatch and type testing. The loading of new classes (or replacement of old classes) can cause dependencies to become false, which requires dependent nmethods to be discarded and activations of those nmethods to be deoptimized.
 
-- `eden`
+- 18、`eden`
 
 A part of the Java object heap where object can be created efficiently.
 
-- `free list`
+- 19、`free list`
 
 A storage management technique in which unused parts of the Java object heap are chained one to the next, rather than having all of the unused part of the heap in a single block.
 
-- `garbage collection`
+- 20、`garbage collection`
 
 The automatic management of storage.
 
-- `garbage collection root`
+- 21、`garbage collection root`
 
 A pointer into the Java object heap from outside the heap. These come up, e.g., from static fields of classes, local references in activation frames, etc.
 
-- `GC map`
+- 22、`GC map`
 
 A description emitted by the JIT (C1 or C2) of the locations of oops in registers or on stack in a compiled stack frame. Each code location which might execute a safepoint has an associated GC map. The GC knows how to parse a frame from a stack, to request a GC map from a frame's nmethod, and to unpack the GC map and manage the indicated oops within the stack frame.
 
-- `generational garbage collection`
+- 23、`generational garbage collection`
 
 A storage management technique that separates objects expected to be referenced for different lengths of time into different regions of the heap, so that different algorithms can be applied to the collection of those regions.
 
-- `handle`
+- 24、`handle`
 
 A memory word containing an oop. The word is known to the GC, as a root reference. C/C++ code generally refers to oops indirectly via handles, to enable the GC to find and manage its root set more easily. Whenever C/C++ code blocks in a safepoint, the GC may change any oop stored in a handle. Handles are either 'local' (thread-specific, subject to a stack discipline though not necessarily on the thread stack) or global (long-lived and explicitly deallocated). There are a number of handle implementations throughout the VM, and the GC knows about them all.
 
-- `hot lock`
+- 25、`hot lock`
 
 A lock that is highly contended.
 
-- `interpreter`
+- 26、 `interpreter` 解释器
 
 A VM module which implements method calls by individually executing bytecodes. The interpreter has a limited set of highly stylized stack frame layouts and register usage patterns, which it uses for all method activations. The Hotspot VM generates its own interpreter at start-up time.
 
-- `JIT compilers`
+- 27、`JIT compilers`
 
 An on-line compiler which generates code for an application (or class library) during execution of the application itself. ("JIT" stands for "just in time".) A JIT compiler may create machine code shortly before the first invocation of a Java method. Hotspot compilers usually allow the interpreter ample time to "warm up" Java methods, by executing them thousands of times. This warm-up period allows a compiler to make better optimization decisions, because it can observe (after initial class loading) a more complete class hierarchy. The compiler can also inspect branch and type profile information gathered by the interpreter.
 
-- `JNI`
+- 28、`JNI`
 
 The Java Native Interface - `a specification and API for how Java code can call out to native C code, and how native C code can call into the Java VM`
 
-- `JVM TI`
+- 29、`JVM TI`
 
 The Java Virtual Machine Tools Interface - `a standard specification and API that is used by development and monitoring tools. See JVM TI for more information.`
 
-- `klass pointer`
+- 30、`klass pointer`
 
 The second word of every object header. Points to another object (a metaobject) which describes the layout and behavior of the original object. For Java objects, the "klass" contains a C++ style "vtable".
 
-- `mark word`
+- 31、`mark word`
 
 The first word of every object header. Usually a set of bitfields including synchronization state and identity hash code. May also be a pointer (with characteristic low bit encoding) to synchronization related information. During GC, may contain GC state bits.
 
-- `nmethod`
+- 33、`nmethod`
 
 A block of executable code which implements some Java bytecodes. It may be a complete Java method, or an 'OSR' method. It routinely includes object code for additional methods inlined by the compiler.
 
-- `object header`
+- 34、`object header`
 
 Common structure at the beginning of every GC-managed heap object. (Every oop points to an object header.) Includes fundamental information about the heap object's layout, type, GC state, synchronization state, and identity hash code. Consists of two words. In arrays it is immediately followed by a length field. Note that both Java objects and VM-internal objects have a common object header format.
 
-- `object promotion`
+- 35、`object promotion`
 
 The act of copying an object from one generation to another.
 
-- `old generation`
+- 36、`old generation`
 
 A region of the Java object heap that holds object that have remained referenced for a while.
 
-- `on-stack replacement`
+- 37、`on-stack replacement`
 
 Also known as 'OSR'. The process of converting an interpreted (or less optimized) stack frame into a compiled (or more optimized) stack frame. This happens when the interpreter discovers that a method is looping, requests the compiler to generate a special nmethod with an entry point somewhere in the loop (specifically, at a backward branch), and transfers control to that nmethod. A rough inverse to deoptimization.
 
-- `oop`
+- 38、`oop`
 
 An object pointer. Specifically, a pointer into the GC-managed heap. (The term is traditional. One 'o' may stand for 'ordinary'.) Implemented as a native machine address, not a handle. Oops may be directly manipulated by compiled or interpreted Java code, because the GC knows about the liveness and location of oops within such code. (See GC map.) Oops can also be directly manipulated by short spans of C/C++ code, but must be kept by such code within handles across every safepoint.
 
-- `parallel classloading`
+- 39、`parallel classloading`
 
 The ability to have multiple classes/type be in the process of being loaded by the same classloader at the same time.
 
-- `parallel garbage collection`
+- 40、`parallel garbage collection`
 
 A garbage collection algorithm that uses multiple threads of control to perform more efficiently on multi-processor boxes.
 
-- `permanent generation`
+- 41、`permanent generation`
 
 A region of the address space that holds object allocated by the virtual machine itself, but which is managed by the garbage collector. The permanent generation is mis-named, in that almost all of the objects in it can be collected, though they tend to be referenced for a long time, so they rarely become garbage.
 
-- `remembered set`
+- 42、`remembered set`
 
 A data structure that records pointers between generations.
 
-- `safepoint`
+- 43、`safepoint`
 
 A point during program execution at which all GC roots are known and all heap object contents are consistent. From a global point of view, all threads must block at a safepoint before the GC can run. (As a special case, threads running JNI code can continue to run, because they use only handles. During a safepoint they must block instead of loading the contents of the handle.) From a local point of view, a safepoint is a distinguished point in a block of code where the executing thread may block for the GC. Most call sites qualify as safepoints. There are strong invariants which hold true at every safepoint, which may be disregarded at non-safepoints. Both compiled Java code and C/C++ code be optimized between safepoints, but less so across safepoints. The JIT compiler emits a GC map at each safepoint. C/C++ code in the VM uses stylized macro-based conventions (e.g., TRAPS) to mark potential safepoints.
 
-- `sea-of-nodes`
+- 44、`sea-of-nodes`
 
 The high-level intermediate representation in C2. It is an SSA form where both data and control flow are represented with explicit edges between nodes. It differs from forms used in more traditional compilers in that nodes are not bound to a block in a control flow graph. The IR allows nodes to float within the sea (subject to edge constraints) until they are scheduled late in the compilation process.
 
-- `Serviceability Agent (SA)`
+- 45、`Serviceability Agent (SA)`
 
 The Serviceablity Agent is collection of Sun internal code that aids in debugging HotSpot problems. It is also used by several JDK tools - `jstack, jmap, jinfo, and jdb. See SA for more information.`
 
-- `stackmap`
+- 46、`stackmap`
 
 Refers to the StackMapTable attribut e or a particular StackMapFrame in the table.
 
-- `StackMapTable`
+- 47、`StackMapTable`
 
 An attribute of the Code attribute in a classfile which contains type information used by the new verifier during verification. It consists of an array of StackMapFrames. It is generated automatically by javac as of JDK6.
 
-- `survivor space`
+- 48、`survivor space`
 
 A region of the Java object heap used to hold objects. There are usually a pair of survivor spaces, and collection of one is achieved by copying the referenced objects in one survivor space to the other survivor space.
 
-- `synchronization`
+- 49、`synchronization`
 
 In general terms this is the coordination of concurrent activities to ensure the safety and liveness properties of those activities. For example, protecting access to shared data by using a lock to guard all code paths to that data.
 
-- `TLAB`
+- 50、`TLAB`
 
 Thread-local allocation buffer. Used to allocate heap space quickly without synchronization. Compiled code has a "fast path" of a few instructions which tries to bump a high-water mark in the current thread's TLAB, successfully allocating an object if the bumped mark falls before a TLAB-specific limit address.
 
-- `uncommon trap`
+- 51、`uncommon trap`
 
 When code generated by C2 reverts back to the interpreter for further execution. C2 typically compiles for the common case, allowing it to focus on optimization of frequently executed paths. For example, C2 inserts an uncommon trap in generated code when a class that is uninitialized at compile time requires run time initialization.
 
-- `verifier`
+- 52、`verifier`
 
 The software code in the VM which performs bytecode verification.
 
-- `VM Operations`
+- 53、`VM Operations`
 
 Operations in the VM that can be requested by Java threads, but which must be executed, in serial fashion by a specific thread known as the VM thread. These operations are often synchronous, in that the requester will block until the VM thread has completed the operation. Many of these operations also require that the VM be brought to a safepoint before the operation can be performed - `a garbage collection request is a simple example.`
 
-- `write barrier`
+- 54、`write barrier`
 
 Code that is executed on every oop store. For example, to maintain a remembered set.
 
-- `young generation`
+- 55、`young generation`
 
 A region of the Java object heap that holds recently-allocated objects.
 
