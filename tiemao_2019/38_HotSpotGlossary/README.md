@@ -9,7 +9,7 @@ A work in progress, especially as the HotSpot VM evolves. But a place to put def
 
 随着HotSpot VM的发展, 相关的术语定义一直是一项正在进行中的工作。
 我们希望只在统一的地方定义一次。
-文中可能会有一些空条目(使用 TBD 标记，表示“待定义，to be defined”)，因为需要定义的东西，比已经定义好的要多。
+文中可能会有一些空条目(使用 TBD 标记,表示“待定义,to be defined”),因为需要定义的东西,比已经定义好的要多。
 
 
 
@@ -17,102 +17,111 @@ A work in progress, especially as the HotSpot VM evolves. But a place to put def
 
 An optimization technique whereby a thread spins waiting for a change-of-state to occur (typically a flag that represents some event has occurred - such as the release of a lock) rather than just blocking until notified that the change has occurred. The "adaptive" part comes from the policy decisions that control how long the thread will spin until eventually deciding to block.
 
-"`适应性自旋`" 是一种优化技术，通过适应性自旋技术，线程在等待状态发生改变时会先进行一定次数的旋转, 而不是单纯阻塞并等待通知事件。(通常是一个表示某个事件已经发生的标志 —— 比如释放锁)。
-为什么叫 “适应性” 呢? 是因为控制线程在阻塞之前需要旋转多长时间，是由策略来决定的。
+"`适应性自旋`" 是一种优化技术,通过适应性自旋技术,线程在等待状态发生改变时会先进行一定次数的旋转, 而不是单纯阻塞并等待通知事件。(通常是一个表示某个事件已经发生的标志 —— 比如释放锁)。
+为什么叫 “适应性” 呢? 是因为控制线程在阻塞之前需要旋转多长时间,是由策略来决定的。
 
 
 ## 2、`biased locking`, 偏向锁
 
 An optimization in the VM that leaves an object as logically locked by a given thread even after the thread has released the lock. The premise is that if the thread subsequently reacquires the lock (as often happens), then reacquisition can be achieved at very low cost. If a different thread tries to acquire a biased lock then the bias must be revoked from the current bias owner.
 
-"`偏向锁`" 是JVM的一种优化，让一个对象在逻辑上被某个特定的线程锁定，即使该线程已经释放了锁。
-这样优化的前提是，假设大部分情况下都是该线程在后面的业务中继续获取这个对象锁，那么就可以用很低的开销成本来实现重新获得锁。
-如果另一个线程试图获取一个偏置锁，则必须先以安全的方式撤销偏置。
+"`偏向锁`" 是JVM的一种优化,让一个对象在逻辑上被某个特定的线程锁定,即使该线程已经释放了锁。
+这样优化的前提是,假设大部分情况下都是该线程在后面的业务中继续获取这个对象锁,那么就可以用很低的开销成本来实现重新获得锁。
+如果另一个线程试图获取一个偏置锁,则必须先以安全的方式撤销偏置。
 
 ## 3、`block start table`, 块起始表
 
 A table that shows, for a region of the heap, where the object starts that comes on to this region from lower addresees. Used, for example, with the card table variant of the remembered set.
 
-对于堆中的一个区域(region)，都有一个 table, 用来表示有哪些从地址值较小的内存区指向本区域的对象的开始位置。
-例如，与 remembered set 一起使用的卡表变体(card table variant)。
+对于堆中的一个区域(region),都有一个 table, 用来表示有哪些从地址值较小的内存区指向本区域的对象的开始位置。
+例如,与 remembered set 一起使用的卡表变体(card table variant)。
 
 ## 4、`bootstrap classloader`, 启动类加载器
 
 The logical classloader that has responsibility for loading the classes (and resources) that are found in the boot-classpath - typically the core Java platform classes. Typically implemented as part of the VM, by historical convention the bootstrap classloader is represented by NULL at the Java API level.
 
-这是一款逻辑上的类加载器，负责加载启动类路径中找到的类和资源，一般是指Java平台的核心类。
-通常作为JVM实现的一部分，根据历史约定，引导类加载器在Java API级别上显示为 `NULL`。
+这是一款逻辑上的类加载器,负责加载启动类路径中找到的类和资源,一般是指Java平台的核心类。
+通常作为JVM实现的一部分,根据历史约定,引导类加载器在Java API级别上显示为 `NULL`。
 
 ## 5、`bytecode verification`, 字节码验证
 
 A step in the linking process of a class where the methods bytecodes are analyzed to ensure type-safety.
 
-在类加载和链接过程中的一个步骤， 在这个步骤中将方法字节码验证并解析， 以确保类型安全。
+在类加载和链接过程中的一个步骤, 在这个步骤中将方法字节码验证并解析, 以确保类型安全。
 
-类的链接过程中的一个步骤，其中方法字节码被分析以确保类型安全。
+类的链接过程中的一个步骤,其中方法字节码被分析以确保类型安全。
 
 ## 6、`C1 compiler`, C1编译器
 
 Fast, lightly optimizing bytecode compiler. Performs some value numbering, inlining, and class analysis. Uses a simple CFG-oriented SSA "high" IR, a machine-oriented "low" IR, a linear scan register allocation, and a template-style code generator.
 
 快速、轻量优化的字节码编译器。 比如会执行：值编号、内联和类分析等操作。
-使用简单的面向配置的 SSA “高级别” IR、面向机器的 “底层” IR、 线性扫描寄存器分配，模板风格的代码生成器。
+使用简单的面向配置的 SSA “高级别” IR、面向机器的 “底层” IR、 线性扫描寄存器分配,模板风格的代码生成器。
 
 ## 7、`C2 compiler`, C2编译器
 
 Highly optimizing bytecode compiler, also known as 'opto'. Uses a "sea of nodes" SSA "ideal" IR, which lowers to a machine-specific IR of the same kind. Has a graph-coloring register allocator; colors all machine state, including local, global, and argument registers and stack. Optimizations include global value numbering, conditional constant type propagation, constant folding, global code motion, algebraic identities, method inlining (aggressive, optimistic, and/or multi-morphic), intrinsic replacement, loop transformations (unswitching, unrolling), array range check elimination.
 
-高度优化的字节码编译器， 也称为 'opto'。 使用 “节点海洋” SSA “理想” IR， 深入到同一类型的机器特定IR。
-具有着色寄存器分配器; 为所有机器状态着色，包括局部、全局和参数寄存器，栈。
+高度优化的字节码编译器, 也称为 'opto'。 使用 “节点海洋” SSA “理想” IR, 深入到同一类型的机器特定IR。
+具有着色寄存器分配器; 为所有机器状态着色,包括局部、全局和参数寄存器,栈。
 优化包括全局值编号、条件常量类型传播、常量折叠、全局代码移动、代数恒等式、方法内联(积极的、乐观的和/或多态的)、内部替换、循环转换(不切换、展开)、数组范围检查消除。
 
-## 8、`card table`， 卡表
+## 8、`card table`, 卡表
 
 A kind of remembered set that records where oops have changed in a generation.
 
-一种记忆集，用来记录 oops 指针在分代中的改变。
+一种记忆集,用来记录 oops 指针在分代中的改变。
 
 ## 9、`class data sharing`, 类数据共享
 
 A startup optimization that records the in-memory form of some classes, so that that form can be mapped into memory by a subsequent run of the virtual machine, rather than loading those classes from their class files.
 
-一种启动时的优化，将某些类的信息放在内存中，以便后续启动的另一个虚拟机可以通过这种形式将类映射到内存中，而不再从 class files 中加载这些类。
+一种启动时的优化,将某些类的信息放在内存中,以便后续启动的另一个虚拟机可以通过这种形式将类映射到内存中,而不再从 class files 中加载这些类。
 
-## 10、`class hierachy analysis`， 类层次分析
+## 10、`class hierachy analysis`, 类层次分析
 
 Also known as 'CHA'. Analysis of the class tree used by a compiler to determine if the receiver at a virtual call site has a single implementor. If so, the callee can be inlined or the compiler can employ some other static call mechanism.
 
-简写为 'CHA'。 对编译器使用的class树进行分析，以确定虚拟调用位置的接收者是否只有一个实现。
-如果满足这个条件，则可以将此调用方法内联，或者编译器也可以使用其他一些静态调用机制。
+简写为 'CHA'。 对编译器使用的class树进行分析,以确定虚拟调用位置的接收者是否只有一个实现。
+如果满足这个条件,则可以将此调用方法内联,或者编译器也可以使用其他一些静态调用机制。
 
 
 ## 11、`code cache`, 代码缓存区
 
 A special heap that holds compiled code. These objects are not relocated by the GC, but may contain oops, which serve as GC roots.
 
-一块特殊的堆内存空间，用于存放被编译器编译后的代码。 这些对象不会被GC重定位， 但有可能包含oops，也就会成为GC根。
+一块特殊的堆内存空间,用于存放被编译器编译后的代码。 这些对象不会被GC重定位, 但有可能包含oops,也就会成为GC根。
 
-- 12、`compaction`，整理
+- 12、`compaction`,整理,压实(压缩)
 
 A garbage collection technique that results in live objects occupying a dense portion of the virtual address space, and available space in another portion of the address space. Cf. free list.
 
-垃圾收集中的一种技术，将存活对象占用的虚拟地址空间归集到一边，那么可用地址空间就在另一边。参考 `空闲列表`。
+垃圾收集中的一种技术,将存活对象占用的虚拟地址空间归集到一边,那么可用地址空间就在另一边。参考 `空闲列表`。
 
-- 13、`concurrency`
+- 13、`concurrency`, 并发
 
 Concurrency, or more specifically concurrent programming, is the logical simultaneous execution of multiple instruction streams. If multiple processors are available then the logical simultaneity can be physical simultaneity - `this is known as 'parallelism'`
 
-- 14、`concurrent garbage collection`
+并发, 更确切地说并发编程, 是指多个指令流在逻辑上同时执行。 如果有多个处理器，则逻辑上可以是物理同时性 - 这称为“并行性(parallelism)”。
+
+- 14、`concurrent garbage collection`, 并发垃圾收集
 
 A garbage collection algorithm that does most (if not all) of its work while the Java application threads are still running.
 
-- 15、`copying garbage collection`
+并发垃圾收集算法，在Java应用程序线程执行的同时，并发地完成大部分GC工作。
+
+- 15、`copying garbage collection`, 复制算法
 
 A garbage collection algorithm that moves objects during the collection.
 
-- 16、`deoptimization`
+在垃圾收集期间移动对象的垃圾收集算法。
+
+- 16、`deoptimization`, 优化逆操作
 
 The process of converting an compiled (or more optimized) stack frame into an interpreted (or less optimized) stack frame. Also describes the discarding of an nmethod whose dependencies (or other assumptions) have been broken. Deoptimized nmethods are typically recompiled to adapt to changing application behavior. Example: A compiler initially assumes a reference value is never null, and tests for it using a trapping memory access. Later on, the application uses null values, and the method is deoptimized and recompiled to use an explicit test-and-branch idiom to detect such nulls.
+
+将已编译（或优化过）的栈帧转换为解释型（低优化）栈帧的过程。
+还描述了其依赖项已被破坏的 nmethod 的丢弃。 通常会重新编译未优化的方法，以适应不断变化的应用程序行为。 示例：编译器最初假定参考值永远不会为null，然后使用捕获内存访问对其进行测试。 稍后，应用程序使用空值，并且对该方法进行了优化和重新编译，以使用显式的“测试和分支”习惯来检测此类空值。
 
 - 17、`dependency`
 
