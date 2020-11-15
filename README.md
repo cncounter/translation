@@ -64,6 +64,8 @@ GITHUB官方帮助文档(中文版): <https://docs.github.com/cn/free-pro-team@l
 * [39.深度学习和机器学习](./tiemao_2020/39_deep-learning-vs-machine-learning/README.md)
 * [40.JDK 16新特性抢先看](./tiemao_2020/40_jdk-16-whats-coming-in-java-16/README.md)
 * [41.实例详解JVM-invoke相关操作码](./tiemao_2020/41_invoke_opcode/README.md)
+* [42.案例讲解JVM方法体字节码](./42_method_byte_code/README.md)
+* [43.Java多线程与并发面试题](./43_java_thread_conc_interview/README.md)【已完成】
 
 
 

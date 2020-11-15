@@ -46,8 +46,8 @@
 * [39.深度学习和机器学习](./39_deep-learning-vs-machine-learning/README.md)
 * [40.JDK 16新特性抢先看](./40_jdk-16-whats-coming-in-java-16/README.md)【粗翻】
 * [41.实例详解JVM-invoke相关操作码](./41_invoke_opcode/README.md)
-* [42.](.//README.md)
-* [43.](.//README.md)
+* [42.案例讲解JVM方法体字节码](./42_method_byte_code/README.md)
+* [43.Java多线程与并发面试题](./43_java_thread_conc_interview/README.md)【已完成】
 * [44.](.//README.md)
 * [45.](.//README.md)
 * [46.](.//README.md)
