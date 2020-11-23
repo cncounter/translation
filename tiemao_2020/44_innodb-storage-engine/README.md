@@ -2,7 +2,9 @@
 
 # InnoDB存储引擎官方文档中文翻译
 
-Table of Contents
+##### Table of Contents
+
+##### 目录
 
 - [14.1 Introduction to InnoDB](14.1_innodb-introduction.md)
 - [14.2 InnoDB and the ACID Model](14.2_mysql-acid.md)
@@ -29,4 +31,9 @@ Table of Contents
 - [14.23 InnoDB Limits]()
 - [14.24 InnoDB Restrictions and Limitations]()
 
-<https://dev.mysql.com/doc/refman/5.7/en/innodb-storage-engine.html>
+##### 相关链接
+
+- [InnoDB存储引擎官方文档-中文翻译-GitHub](https://github.com/cncounter/translation/tree/master/tiemao_2020/44_innodb-storage-engine)
+- [MySQL5.7中文文档](https://www.docs4dev.com/docs/zh/mysql/5.7/reference)
+- [Chapter 14 The InnoDB Storage Engine](https://dev.mysql.com/doc/refman/5.7/en/innodb-storage-engine.html)
+- [MySQL Internals Manual](https://dev.mysql.com/doc/internals/en/)
