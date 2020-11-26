@@ -8,7 +8,7 @@
 
 - [14.1 Introduction to InnoDB](14.1_innodb-introduction.md)
 - [14.2 InnoDB and the ACID Model](14.2_mysql-acid.md)
-- [14.3 InnoDB Multi-Versioning](14.3_innodb-multi-versioning.md)
+- [14.3 InnoDB与MVCC](14.3_innodb-multi-versioning.md)【粗翻】
 - [14.4 InnoDB Architecture](14.4_innodb-architecture.md)
 - [14.5 InnoDB In-Memory Structures](14.5_innodb-in-memory-structures.md)
 - [14.6 InnoDB On-Disk Structures](14.6_innodb-on-disk-structures.md)
