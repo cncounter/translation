@@ -1,6 +1,6 @@
 # Regular expressions simplify pattern-matching code
 
-# 用正则表达式简化你的模式匹配代码
+# 用正则来简化模式匹配代码
 
 ### Discover the elegance of regular expressions in text-processing scenarios that involve pattern matching
 
@@ -171,10 +171,10 @@ What happens if we replace .ox with the period metacharacter? That is, what outp
 
 > ##Tip
 > To specify . or any metacharacter as a literal character in a regex construct, quote—convert from meta status to literal status—the metacharacter in one of two ways:
-> 
+>
 > - Precede the metacharacter with a backslash character.
 > - Place the metacharacter between `\Q` and `\E` (e.g., `\Q.\E`).
-> 
+>
 > In either scenario, don't forget to double each backslash character (as in `\\.` or `\\Q.\\E`) that appears in a string literal (e.g., `String regex = "\\.";`). Do not double the backslash character when it appears as part of a command-line argument.
 
 
@@ -190,7 +190,7 @@ We sometimes limit those characters that produce matches to a specific set of ch
 `java RegexDemo [csw] cave` matches c in [csw] with c in cave. No other matches exist.
 
 - **Negation**: begins with the ^ metacharacter and matches only those characters not in that class. Example: [^abc] matches all characters except a, b, and c. The following command line offers a second example:
-- 
+-
 	java RegexDemo [^csw] cave
 
 `java RegexDemo [^csw] cave` matches a, v, and e with their counterparts in cave. No other matches exist.
@@ -262,7 +262,7 @@ The command line above produces the following output, which shows that the perio
 
 > ##Note
 > Pattern's SDK documentation refers to the period metacharacter as a predefined character class that matches any character except for a line terminator—a one- or two-character sequence identifying the end of a text line—unless dotall mode (discussed later) is in effect. Pattern recognizes the following line terminators:
-> 
+>
 > - The carriage-return character (\r\)
 - The new-line (line feed) character (\n)
 - The carriage-return character immediately followed by the new-line character (\r\n)
@@ -314,13 +314,13 @@ The following examples illustrate the behavior of the six fundamental quantifier
 	Text = abaa
 	Found a
 	  starting at index 0 and ending at index 1
-	Found 
+	Found
 	  starting at index 1 and ending at index 1
 	Found a
 	  starting at index 2 and ending at index 3
 	Found a
 	  starting at index 3 and ending at index 4
-	Found 
+	Found
 	  starting at index 4 and ending at index 4
 
 
@@ -334,11 +334,11 @@ The output reveals five matches. Although the first, third, and fourth matches c
 	Text = abaa
 	Found a
 	  starting at index 0 and ending at index 1
-	Found 
+	Found
 	  starting at index 1 and ending at index 1
 	Found aa
 	  starting at index 2 and ending at index 4
-	Found 
+	Found
 	  starting at index 4 and ending at index 4
 
 The output reveals four matches. As with a?, a* produces zero-length matches. The third match, where a* matches aa, is interesting. Unlike a?, a* matches either no a or all consecutive as.
@@ -584,7 +584,7 @@ The \s+ regex detects one or more occurrences of whitespace characters in text. 
 The example produces the following output:
 
 
-	Remove the duplicate whitespace. 
+	Remove the duplicate whitespace.
 
 
 Listing 1 includes System.out.println ("Found " + m.group ());. Notice the call to group(). That method is one of three capturing group-oriented Matcher methods:
@@ -843,4 +843,3 @@ Jeff Friesen has been involved with computers for the past 23 years. He holds a 
 翻译日期: 2015年3月24日
 
 翻译人员: [铁锚: http://blog.csdn.net/renfufei](http://blog.csdn.net/renfufei)
-
