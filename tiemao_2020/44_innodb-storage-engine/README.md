@@ -12,7 +12,7 @@
 - [14.4 InnoDB Architecture](14.4_innodb-architecture.md)
 - [14.5 InnoDB In-Memory Structures](14.5_innodb-in-memory-structures.md)
 - [14.6 InnoDB On-Disk Structures](14.6_innodb-on-disk-structures.md)
-- [14.7 锁和InnoDB事务模型](14.7_innodb-locking-transaction-model.md)
+- [14.7 InnoDB的锁和事务模型](14.7_innodb-locking-transaction-model.md)
 - [14.8 InnoDB Configuration]()
 - [14.9 InnoDB Table and Page Compression]()
 - [14.10 InnoDB File-Format Management]()
