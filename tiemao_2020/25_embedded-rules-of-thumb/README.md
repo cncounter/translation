@@ -10,11 +10,11 @@ These are just the initial rules of thumb that I’ve collected over the past ye
 
 Additional links to other rules of thumb are included in the [Further Reading](https://embeddedartistry.com/blog/2018/04/26/embedded-rules-of-thumb/#furtherreading) section.
 
-本文要介绍的内容，可称之为设计原则，避坑指南，或者最佳实践。
-不管怎么命名，这些内容的目的都是要尽最大可能地探索真理。
-这些是作者在去年初步收集整理的经验法则, 通过这些汇总的实践经验，可以帮助理解我们所使用的系统，把精力放在正确的解决方案上，并突显出潜在的问题。
+我们可以称之为系统设计原则，避坑指南，或者最佳实践。不管叫什么，目的都是为了尽可能地探索世间的真理。 帮助我们理解当前的系统，凸显潜在的问题，并把精力用到正确的解决方案上。
 
-更多避坑指南，请参考文末的 [相关链接](#furtherreading) 部分。
+下面是这几年收集整理的最佳实践汇总, 你也可以联系作者: [https://embeddedartistry.com/contact](https://embeddedartistry.com/contact)
+
+更多信息，请参考文末的 [相关链接](#furtherreading) 部分。
 
 ## General
 
@@ -31,20 +31,20 @@ Additional links to other rules of thumb are included in the [Further Reading](h
 - Past experience is excellent for providing a reality check. Too much reality can doom an otherwise worthwhile design, though (Akin’s Laws)
 - As a rule of thumb, every hour you spend on defect prevention will reduce your repair time from three to ten hours. ([Steve McConnell](https://stevemcconnell.com/articles/software-quality-at-top-speed/))
 
-## 一般原则
+## 通用经验法则
 
-- 让系统跑起来并不难，但挖坑之后再去填就不容易了。[by: James Grenning]
-- 错误暴露的时机，尽可能保持在编译期，而不要到运行时
-- 没有文档的程序简直就是垃圾
-- 无意义的注释，只在简单地重复代码直观表达的信息。
-- 注释信息，应该是描述意图，以方便后期维护。
-- 保证头文件中的每个声明，(预期)至少被两个以上的源文件使用
-- 通过消除分心和干扰，可以显著提高开发人员的生产力
-  * “如果在小隔间办公的程序员工作效率不高。请检查他们如何管理中断。” [by: Jack Ganssle]
-- “复杂度会指数级增长；罗伯特·格拉斯(Robert Glass)认为，问题难度每增加25％，代码行数就会翻倍。 上百万行的代码，则会有无数状态，这种规模是任何人类无法掌控的。”  [by: Jack Ganssle]
-- 自然界中的最佳状态，几乎总是处于中间位置。 不信任断言最优是在极端点。 (阿金定律)
-- 历史教训非常适合用来审查当前状况。但是，太多的现实会注定原本不值得的设计失败 (阿金定律)
-- 根据经验，预防缺陷所花费的每一个小时，都能够节省修复BUG时的3到10个小时。 ([Steve McConnell](https://stevemcconnell.com/articles/software-quality-at-top-speed/))
+- 让系统跑起来并不难，但崩溃之后再去修正就不容易了。[by: James Grenning]
+- 尽可能将错误暴露在编译期，而不要等到运行时。
+- 没有文档的程序不能称之为软件，简直就是一坨垃圾。
+- 机械地复述代码的含义, 这种注释毫无意义。
+- 注释信息应该是在描述意图，这样才有利于后期维护。
+- 头文件中的声明，应该被至少两个以上的源文件所使用。
+- 消除分心和干扰，可以显著提高码农们的开发效率。
+  * “在小办公室的码农工作效率不一定就高。还要看他们如何处理干扰。” [by: Jack Ganssle]
+- “软件的复杂度，会随规模的扩大，呈指数级增长；罗伯特·格拉斯(Robert Glass)指出，问题难度每增加25％，代码行数就要翻倍。 上百万行代码，会有无数种状态，这种规模是谁都无法掌控的。”  [by: Jack Ganssle]
+- 世界上的最优解, 总是很自然地出现在中间的平衡位置。 不要相信最好答案出现在极端位置的那些论断。 (阿金定律)
+- 曾经的经验教训很适合用来审查当前状况。 但约束太多则会让有价值的设计偏离方向 (阿金定律)
+- 根据经验，在防御缺陷方面消耗的每一分每一秒，都能节省3到10倍修复BUG所需的功夫。 ([Steve McConnell](https://stevemcconnell.com/articles/software-quality-at-top-speed/))
 
 ## Design
 
