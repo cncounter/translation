@@ -4,6 +4,39 @@
 
 ## 1. String基础
 
+Java语言通过 `String` 类封装了字符串, 并提供了一些常用的操作方法。 例如字符串查找和替换, 请看代码:
+
+```java
+public class StringBaseTest {
+    public static void main(String[] args) {
+        // 具体的字符串
+        String url = "https://so.csdn.net/so/search/s.do?q=renfufei%40qq.com&t=blog&u=renfufei";
+        // 1. 字符个数; 字符串长度
+        int len = url.length(); // 72
+        // 2. 查找子串出现的索引位置
+        int firstIndex = url.indexOf("renfufei"); // 37
+        int index2 = url.indexOf("renfufei", firstIndex + 1); // 64
+        int lastIndex = url.lastIndexOf("renfufei"); // 64
+        // 3. 截取字符串; 子串
+        String query = url.substring(url.indexOf("?") + 1);
+        // 4. 字符串替换
+        String url2 = url.replace("renfufei", "kimmking");
+        // 5. 正则替换
+        url2 = url2.replaceAll("%\\d+\\w+\\.com", "");
+        // 6. 输出结果
+        System.out.println("len=" + len);
+        System.out.println("firstIndex=" + firstIndex);
+        System.out.println("index2=" + index2);
+        System.out.println("lastIndex=" + lastIndex);
+        System.out.println("query: " + query);
+        System.out.println("url2: " + url2);
+    }
+}
+```
+
+初学者容易出错的是 `replaceAll` 方法, 以及 `replaceFirst` 方法, 第一个参数都会被当做正则表达式来解析。
+
+说到底这是API命名没有做好, 让新手容易混淆。 但为了兼容性, 都已经这样了那就这样吧。
 
 
 
