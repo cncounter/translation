@@ -3006,3 +3006,5 @@ Intel Itanium Architecture Software Developer's Manual: Volume 1:
 
 - <https://www.kernel.org/doc/Documentation/memory-barriers.txt>
 - <https://www.infoq.com/articles/memory_barriers_jvm_concurrency/>
+- <https://www.extremetech.com/extreme/188776-how-l1-and-l2-cpu-caches-work-and-why-theyre-an-essential-part-of-modern-chips>
+- <https://github.com/cncounter/translation/tree/master/tiemao_2016/08_memory-barriers>
