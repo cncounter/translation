@@ -38,15 +38,65 @@ public class StringBaseTest {
 
 说到底这是API命名没有做好, 让新手容易混淆。 但为了兼容性, 都已经这样了那就这样吧。
 
+再来看看String类高级一点的用法:
 
 
+```java
 
-
-
+public class StringRegexTest {
+    public static void main(String[] args) {
+        // XML字符串
+        String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                "<project>\n" +
+                "    <modelVersion>4.0.0</modelVersion>\n" +
+                "    <groupId>com.cncounter</groupId>\n" +
+                "    <artifactId>regex-demo</artifactId>\n" +
+                "    <version>1.0</version>\n" +
+                "    <properties>\n" +
+                "        <shardingsphere.version>4.1.1</shardingsphere.version>\n" +
+                "    </properties>\n" +
+                "    <dependencies>\n" +
+                "        <dependency>\n" +
+                "            <groupId>org.apache.shardingsphere</groupId>\n" +
+                "            <artifactId>sharding-jdbc-core</artifactId>\n" +
+                "            <version>${shardingsphere.version}</version>\n" +
+                "        </dependency>\n" +
+                "    </dependencies>\n" +
+                "</project>\n";
+        // 1. 字符个数; 字符串长度
+        int len = xml.length(); // 72
+        // 2. 查找子串出现的索引位置
+        int firstIndex = xml.indexOf("renfufei"); // 37
+        int index2 = xml.indexOf("renfufei", firstIndex + 1); // 64
+        int lastIndex = xml.lastIndexOf("renfufei"); // 64
+        // 3. 截取字符串; 子串
+        String query = xml.substring(xml.indexOf("?") + 1);
+        // 4. 字符串替换
+        String xml2 = xml.replace("renfufei", "kimmking");
+        // 5. 正则替换
+        xml2 = xml2.replaceAll("%\\d+\\w+\\.com", "");
+        // 6. 输出结果
+        System.out.println("len=" + len);
+        System.out.println("firstIndex=" + firstIndex);
+        System.out.println("index2=" + index2);
+        System.out.println("lastIndex=" + lastIndex);
+        System.out.println("query: " + query);
+        System.out.println("xml2: " + xml2);
+    }
+}
+```
 
 
 
 ## 2. Java正则表达式基础
+
+String类只提供了使用正则表达式来替换
+
+
+
+
+
+
 
 ## 3. 正则相关概念
 
