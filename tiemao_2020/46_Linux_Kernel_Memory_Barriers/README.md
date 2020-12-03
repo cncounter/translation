@@ -21,32 +21,38 @@ By: David Howells <dhowells@redhat.com>
 DISCLAIMER
 ==========
 
-This document is not a specification; it is intentionally (for the sake of
-brevity) and unintentionally (due to being human) incomplete. This document is
-meant as a guide to using the various memory barriers provided by Linux, but
-in case of any doubt (and there are many) please ask.  Some doubts may be
-resolved by referring to the formal memory consistency model and related
-documentation at tools/memory-model/.  Nevertheless, even this memory
-model should be viewed as the collective opinion of its maintainers rather
-than as an infallible oracle.
+This document is not a specification; it is intentionally (for the sake of brevity) and unintentionally (due to being human) incomplete. This document is meant as a guide to using the various memory barriers provided by Linux, but in case of any doubt (and there are many) please ask.  Some doubts may be resolved by referring to the formal memory consistency model and related documentation at tools/memory-model/.  Nevertheless, even this memory model should be viewed as the collective opinion of its maintainers rather than as an infallible oracle.
 
-To repeat, this document is not a specification of what Linux expects from
-hardware.
+To repeat, this document is not a specification of what Linux expects from hardware.
 
 The purpose of this document is twofold:
 
- (1) to specify the minimum functionality that one can rely on for any
-     particular barrier, and
+ (1) to specify the minimum functionality that one can rely on for any particular barrier, and
 
  (2) to provide a guide as to how to use the barriers that are available.
 
-Note that an architecture can provide more than the minimum requirement
-for any particular barrier, but if the architecture provides less than
-that, that architecture is incorrect.
+Note that an architecture can provide more than the minimum requirement for any particular barrier, but if the architecture provides less than that, that architecture is incorrect.
 
-Note also that it is possible that a barrier may be a no-op for an
-architecture because the way that arch works renders an explicit barrier
-unnecessary in that case.
+Note also that it is possible that a barrier may be a no-op for an architecture because the way that arch works renders an explicit barrier unnecessary in that case.
+
+
+## 免责声明
+
+本文档并不是硬性规范； 为了方便阅读, 做了一定程度的精简。
+目的是为了使用Linux提供的各种内存屏障做一个参考指南，如有疑问请到社区咨询。
+某些疑问可参考源码的 `tools/memory-model/` 目录下正式的内存一致性模型和相关文档。 当然, 这种内存模型被视为维护者的集体观点，而不是死板的规定。
+
+重复一遍，该文档不是 Linux 对硬件期望的规范。
+
+本文档的目的有两个：
+
+- （1）确定每个内存屏障可依靠的最小功能；
+
+- （2）提供如何使用现有内存屏障的指南。
+
+请注意，具体的CPU体系结构, 可以提供超出任何特定屏障要求的最小功能， 但如果该架构支持的功能少于最低要求， 则该体系结构是不正确的。
+
+还要注意，对于某些CPU体系结构而言，屏障指令可能没有对应的真实操作（no-op），因为这些体系结构的运行机制可能就不需要内存屏障。
 
 
 ========
