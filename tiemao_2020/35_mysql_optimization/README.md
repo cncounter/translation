@@ -1,6 +1,6 @@
 # MySQL Optimization Reference Manual
 
-# MySQL调优文档 - 官方文档[中文版]
+# MySQL调优手册官方文档-中文翻译
 
 
 Table of Contents
@@ -53,4 +53,11 @@ This chapter explains how to optimize MySQL performance and provides examples. O
 - 存储设备
 
 
-- https://dev.mysql.com/doc/refman/5.7/en/optimization.html
+##### 相关链接
+
+- [MySQL5.7英文文档 - MySQL Optimization Reference Manual](https://dev.mysql.com/doc/refman/5.7/en/optimization.html)
+- [MySQL5.7中文文档](https://www.docs4dev.com/docs/zh/mysql/5.7/reference)
+- [InnoDB存储引擎官方文档-中文翻译-GitHub](https://github.com/cncounter/translation/tree/master/tiemao_2020/44_innodb-storage-engine)
+- [MySQL调优手册官方文档-中文翻译-GitHub](https://github.com/cncounter/translation/tree/master/tiemao_2020/35_mysql_optimization/)
+
+-

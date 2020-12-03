@@ -38,3 +38,4 @@
 - [MySQL5.7中文文档](https://www.docs4dev.com/docs/zh/mysql/5.7/reference)
 - [MySQL Internals Manual - Chapter 6 Transaction Handling in the Server](./transaction-management.md)
 - [MySQL Internals Manual](https://dev.mysql.com/doc/internals/en/)
+- [MySQL调优手册官方文档-中文翻译-GitHub](https://github.com/cncounter/translation/tree/master/tiemao_2020/35_mysql_optimization/)
