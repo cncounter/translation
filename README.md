@@ -64,9 +64,12 @@ GITHUB官方帮助文档(中文版): <https://docs.github.com/cn/free-pro-team@l
 * [39.深度学习和机器学习](./tiemao_2020/39_deep-learning-vs-machine-learning/README.md)
 * [40.JDK 16新特性抢先看](./tiemao_2020/40_jdk-16-whats-coming-in-java-16/README.md)
 * [41.实例详解JVM-invoke相关操作码](./tiemao_2020/41_invoke_opcode/README.md)
-* [42.案例讲解JVM方法体字节码](./42_method_byte_code/README.md)
-* [43.Java多线程与并发面试题](./43_java_thread_conc_interview/README.md)【已完成】
-
+* [42.案例讲解JVM方法体字节码](./tiemao_2020/42_method_byte_code/README.md)
+* [43.Java多线程与并发面试题](./tiemao_2020/43_java_thread_conc_interview/README.md)【已完成】
+* [44.InnoDB存储引擎官方文档中文翻译](./tiemao_2020/44_innodb-storage-engine/README.md)【系列文章】
+* [44.7 InnoDB的锁和事务模型](./tiemao_2020/44_innodb-storage-engine/14.7_innodb-locking-transaction-model_CN.md)【已完成】
+* [45.Java正则表达式入门与实战](./tiemao_2020/45_java_and_regex/README.md)
+* [46.Linux内核文档: 内存屏障](./tiemao_2020/46_Linux_Kernel_Memory_Barriers/README.md)
 
 
 
