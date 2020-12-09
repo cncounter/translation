@@ -1,5 +1,7 @@
 # How to choose a cloud machine learning platform
 
+# 如何选择机器学习平台
+
 > 12 capabilities every cloud machine learning platform should provide to support the complete machine learning lifecycle
 
 In order to create effective machine learning and deep learning models, you need copious amounts of data, a way to clean the data and perform feature engineering on it, and a way to train models on your data in a reasonable amount of time. Then you need a way to deploy your models, monitor them for drift over time, and retrain them as needed.

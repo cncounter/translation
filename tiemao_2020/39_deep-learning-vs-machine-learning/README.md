@@ -1,5 +1,7 @@
 # Deep learning vs. machine learning: Understand the differences
 
+# 解析了解深度学习与机器学习
+
 > Both machine learning and deep learning discover patterns in data, but they involve dramatically different techniques
 
 Machine learning and deep learning are both forms of artificial intelligence. You can also say, correctly, that deep learning is a specific kind of machine learning. Both machine learning and deep learning start with training and test data and a model and go through an optimization process to find the weights that make the model best fit the data. Both can handle numeric (regression) and non-numeric (classification) problems, although there are several application areas, such as object recognition and language translation, where deep learning models tend to produce better fits than machine learning models.
