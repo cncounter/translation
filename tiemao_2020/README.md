@@ -43,7 +43,7 @@
 * [36.InnoDB引擎中AUTO_INCREMENT的处理机制](.//README.md)
 * [37.CompressedOops详解](./37_CompressedOops/README.md)
 * [38.如何选择机器学习平台](./38_how-to-choose-a-cloud-machine-learning-platform/README.md)
-* [39.解析了解深度学习与机器学习](./39_deep-learning-vs-machine-learning/README.md)
+* [39.辨析深度学习和机器学习](./39_deep-learning-vs-machine-learning/README.md)
 * [40.JDK 16新特性抢先看](./40_jdk-16-whats-coming-in-java-16/README.md)【粗翻】
 * [41.实例详解JVM-invoke相关操作码](./41_invoke_opcode/README.md)
 * [42.案例讲解JVM方法体字节码](./42_method_byte_code/README.md)

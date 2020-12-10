@@ -61,7 +61,7 @@ GITHUB官方帮助文档(中文版): <https://docs.github.com/cn/free-pro-team@l
 * [36.InnoDB引擎中AUTO_INCREMENT的处理机制](./tiemao_2020//README.md)
 * [37.CompressedOops详解](./tiemao_2020/37_CompressedOops/README.md)
 * [38.如何选择机器学习平台](./tiemao_2020/38_how-to-choose-a-cloud-machine-learning-platform/README.md)
-* [39.解析了解深度学习与机器学习](./tiemao_2020/39_deep-learning-vs-machine-learning/README.md)
+* [39.辨析深度学习和机器学习](./tiemao_2020/39_deep-learning-vs-machine-learning/README.md)
 * [40.JDK 16新特性抢先看](./tiemao_2020/40_jdk-16-whats-coming-in-java-16/README.md)
 * [41.实例详解JVM-invoke相关操作码](./tiemao_2020/41_invoke_opcode/README.md)
 * [42.案例讲解JVM方法体字节码](./tiemao_2020/42_method_byte_code/README.md)

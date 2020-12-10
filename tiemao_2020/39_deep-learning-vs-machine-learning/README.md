@@ -1,6 +1,6 @@
 # Deep learning vs. machine learning: Understand the differences
 
-# 解析了解深度学习与机器学习
+# 辨析深度学习和机器学习
 
 > Both machine learning and deep learning discover patterns in data, but they involve dramatically different techniques
 
