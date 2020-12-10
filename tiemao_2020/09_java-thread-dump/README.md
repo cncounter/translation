@@ -1,7 +1,6 @@
 # Capturing a Java Thread Dump
 
-# Java线程调用栈Dump
-
+# 获取Java线程转储的常用方法
 
 ## 1. Overview
 
@@ -11,14 +10,22 @@ A thread dump is a snapshot of the state of all the threads of a Java process. T
 
 In the next sections, we'll go through multiple tools and approaches to generate a thread dump.
 
-## 1.概述
+## 1. 什么是线程转储
 
-本文介绍Java程序中获取线程转储的各种方法。
+线程转储(Thread Dump)是JVM中所有线程状态的快照。
 
-线程转储(Thread Dump)是JVM中所有线程状态的快照。 一般是文本格式，可以将其保存到文本文件中，然后可以人工查看和分析，也可以通过程序自动分析。
-每个线程的状态都可以通过调用栈来表示。 线程转储展示了各个线程的行为，对于诊断和排查问题非常有用。
+线程转储一般是文本格式，可以将其保存到文本文件中，然后人工查看和分析，或者通过工具/API自动分析。
 
-下面我们通过示例来看如何使用这些工具来获取线程转储。
+Java中的线程模型, 直接使用了操作系统的线程调度模型, 只进行简单的封装。
+
+线程调用栈，也称为方法调用栈。 比如在程序执行过程中, 有一连串的方法调用链: `obj1.method2` 调用了 `obj2.methodB`, `obj2.methodB` 又调用了 `obj3.methodC`。
+
+每个线程的状态都可以通过这种调用栈来表示。
+
+线程转储展示了各个线程的行为，对于诊断和排查问题非常有用。
+
+下面我们通过具体示例, 来演示各种获取Java线程转储的工具, 以及使用方法。
+
 
 ## 2. Using JDK Utilities
 
