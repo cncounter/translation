@@ -30,7 +30,7 @@ GITHUB官方帮助文档(中文版): <https://docs.github.com/cn/free-pro-team@l
 * [06.深入解析G1垃圾收集器与性能优化](./tiemao_2020/06_g1_gc_tuning/README.md)【已完成】
 * [07.Java坑人面试题系列: 线程/线程池（高级难度）](./tiemao_2020/07_quiz-executor-service/README.md)【已完成】
 * [08.获取JVM堆内存转储的常用方法](./tiemao_2020/08_java-heap-dump/README.md)【已完成】
-* [09.Java线程调用栈Dump](./tiemao_2020/09_java-thread-dump/README.md)【粗翻】
+* [09.获取Java线程转储的常用方法](./tiemao_2020/09_java-thread-dump/README.md)【粗翻】
 * [10.高级数据结构: 跳跃表（Skip List）](./tiemao_2020/10_skip-list/README.md)【粗翻】
 * [11.提高性能的JVM参数简介](./tiemao_2020/11_jvm-arguments-of-highly-effective/README.md)【粗翻】
 - [12.1 MAVEN基础系列（一） 构建生命周期](./tiemao_2020/12_introduction-to-the-pom/introduction-to-the-lifecycle.md)【粗翻】

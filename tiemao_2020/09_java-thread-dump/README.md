@@ -33,9 +33,9 @@ The JDK provides several utilities that can capture the thread dump of a Java ap
 
 ## 2. 使用JDK自带的工具
 
-我们一般使用JDK自带的命令行工具来获取Java应用程序的线程转储。
-这些工具都位于JDK主目录的bin文件夹下。
-因此，只要配置好 PATH 路径即可。 如果不清楚的，请参考: [JDK环境准备](https://gitbook.cn/gitchat/column/5de76cc38d374b7721a15cec/topic/5dea1096b96d62481e404f36)
+我们一般使用JDK自带的命令行工具来获取Java应用程序的线程转储。 这些工具都在JDK主目录的bin文件夹下。
+
+所以，只要配置好 PATH 路径即可。 如果不会配置，可以参考: [JDK环境准备](https://gitbook.cn/gitchat/column/5de76cc38d374b7721a15cec/topic/5dea1096b96d62481e404f36)
 
 ### 2.1. jstack
 
@@ -45,10 +45,11 @@ Let's take a look at the basic command syntax for capturing a thread dump using 
 
 ### 2.1 jstack 工具
 
-jstack 是一款命令行工具，这是专门用来执行线程转储的。
-通过进程的pid，可以在控制台中打印线程转储。 或者，我们也可以将其输出重定向到某个文件。
+jstack 是JDK内置的一款命令行工具，专门用来查看线程状态, 可用于执行线程转储。
 
-让我们看一下使用jstack捕获线程转储的基本语法：
+一般先通过 jps 或者 ps 命令查找Java进程的pid，然后通过pid在控制台中打印线程转储。 当然，我们也可以将输出内容重定向到某个文件。
+
+使用jstack工具获取线程转储的基本参数格式为:
 
 ```
 jstack [-F] [-l] [-m] <pid>
@@ -62,7 +63,35 @@ All the flags are optional. Let's see what they mean:
 
 Let's put this knowledge to use by capturing a thread dump and redirecting the result to a file:
 
-这几个选项都是可选的。 具体的含义说明如下：
+请看具体的演示:
+
+```
+# 1. 查看帮助信息
+jstack -help
+```
+
+输出的内容类似于:
+
+```
+Usage:
+    jstack [-l] <pid>
+        (to connect to running process)
+    jstack -F [-m] [-l] <pid>
+        (to connect to a hung process)
+    jstack [-m] [-l] <executable> <core>
+        (to connect to a core file)
+    jstack [-m] [-l] [server_id@]<remote server IP or hostname>
+        (to connect to a remote debug server)
+
+Options:
+    -F  to force a thread dump. Use when jstack <pid> does not respond (process is hung)
+    -m  to print both java and native frames (mixed mode)
+    -l  long listing. Prints additional information about locks
+    -h or -help to print this help message
+```
+
+
+对应的选项参数都是可选的。 具体含义说明如下：
 
 - `-F` 选项强制执行线程转储； 有时候 `jstack pid` 会假死, 则可以加上 `-F` 标志
 - `-l` 选项, 会查找堆内存中拥有的同步器以及资源锁
