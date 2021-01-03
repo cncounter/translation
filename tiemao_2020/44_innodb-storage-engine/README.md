@@ -6,7 +6,7 @@
 
 ##### 目录
 
-- [14.1 Introduction to InnoDB](14.1_innodb-introduction.md)
+- [14.1 Introduction to InnoDB](14.1_innodb-introduction.md)【粗翻】
 - [14.2 InnoDB和ACID模型](14.2_mysql-acid.md)【粗翻】
 - [14.3 InnoDB与MVCC](14.3_innodb-multi-versioning.md)【粗翻】
 - [14.4 InnoDB Architecture](14.4_innodb-architecture.md)【粗翻】
