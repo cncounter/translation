@@ -49,7 +49,7 @@ jstack 是JDK内置的一款命令行工具, 专门用来查看线程状态, 也
 
 使用jstack工具获取线程转储的基本参数格式为:
 
-```
+```shell
 jstack [-F] [-l] [-m] <pid>
 ```
 
@@ -70,7 +70,7 @@ jstack -help
 
 输出的内容类似于:
 
-```
+```shell
 Usage:
     jstack [-l] <pid>
         (to connect to running process)
@@ -97,7 +97,7 @@ Options:
 
 例如, 获取线程转储并将结果输出到文件：
 
-```
+```shell
 jstack -F 17264 > /tmp/threaddump.txt
 ```
 
@@ -150,7 +150,7 @@ jcmd工具本质上是向目标JVM发送一串命令。 尽管支持很多功能
 
 其中一个命令是 `Thread.print`, 用来获取线程转储, 示例用法如下:
 
-```
+```shell
 jcmd 17264 Thread.print
 ```
 
@@ -209,7 +209,7 @@ Using our same pid from earlier examples, let's take a look at how to use kill t
 一般先通过 `jps` 找到JAVA进程对应的pid, `kill -3` 使用示例如下：
 
 
-```
+```shell
 kill -3 17264
 ```
 
@@ -241,7 +241,7 @@ JMX技术支持各种各样的花式操作。 可通过 `ThreadMxBean` 来执行
 
 示例代码如下：
 
-```
+```java
 private static String threadDump(boolean lockedMonitors, boolean lockedSynchronizers) {
     StringBuffer threadDump = new StringBuffer(System.lineSeparator());
     ThreadMXBean threadMXBean = ManagementFactory.getThreadMXBean();
