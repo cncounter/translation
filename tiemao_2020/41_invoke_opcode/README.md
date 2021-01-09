@@ -47,7 +47,7 @@ public class DemoInvokeOpcode {
               .collect(Collectors.toList());
       // 184; invokestatic
       String str = String.valueOf(upperKeys);
-      // 183; invokespecial
+      // 182; invokevirtual
       System.out.println(str);
   }
 
