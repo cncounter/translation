@@ -764,6 +764,133 @@ public static void testReferenceAddrLoad
 - `dup` 则是将栈顶元素复制一份并入栈。
 
 
+#### 2.8 testArrayLoad 方法
+
+这个方法演示从各种类型的数组中取值。
+
+部分关键代码是:
+
+```java
+// ......
+int num0 = array0[0];
+// ......
+Object obj4 = array4[4];
+// ......
+```
+
+反编译后的字节码信息为:
+
+```java
+
+public static void testArrayLoad(int[], long[],
+    float[], double[], java.lang.String[],
+    boolean[], byte[], char[], short[]);
+  descriptor: ([I[J[F[D[Ljava/lang/String;[Z[B[C[S)V
+  flags: ACC_PUBLIC, ACC_STATIC
+  Code:
+    stack=2, locals=20, args_size=9
+       0: aload_0
+       1: iconst_0
+       2: iaload
+       3: istore        9
+       5: aload_1
+       6: iconst_1
+       7: laload
+       8: lstore        10
+      10: aload_2
+      11: iconst_2
+      12: faload
+      13: fstore        12
+      15: aload_3
+      16: iconst_3
+      17: daload
+      18: dstore        13
+      20: aload         4
+      22: iconst_4
+      23: aaload
+      24: astore        15
+      26: aload         5
+      28: iconst_5
+      29: baload
+      30: istore        16
+      32: aload         6
+      34: bipush        6
+      36: baload
+      37: istore        17
+      39: aload         7
+      41: bipush        7
+      43: caload
+      44: istore        18
+      46: aload         8
+      48: bipush        8
+      50: saload
+      51: istore        19
+      53: return
+    LineNumberTable:
+      line 67: 0
+      line 69: 5
+      line 71: 10
+      line 73: 15
+      line 75: 20
+      line 77: 26
+      line 79: 32
+      line 81: 39
+      line 83: 46
+      line 84: 53
+    LocalVariableTable:
+      Start  Length  Slot  Name   Signature
+          0      54     0 array0   [I
+          0      54     1 array1   [J
+          0      54     2 array2   [F
+          0      54     3 array3   [D
+          0      54     4 array4   [Ljava/lang/String;
+          0      54     5 array5   [Z
+          0      54     6 array6   [B
+          0      54     7 array7   [C
+          0      54     8 array8   [S
+          5      49     9  num0   I
+         10      44    10  num1   J
+         15      39    12  num2   F
+         20      34    13  num3   D
+         26      28    15  obj4   Ljava/lang/Object;
+         32      22    16 bool5   Z
+         39      15    17 byte6   B
+         46       8    18 char7   C
+         53       1    19  num8   S
+```
+
+这段代码稍微有点长。
+
+简单解读一下:
+
+- `aload_0` 直到 `aload 8` 这些指令, 从局部变量表的0到8号槽位取值, 这里就是取不同的入参。
+- `iconst_0` 到 `iconst_5`, 以及 `bipush 8`, 对应我们在代码里面写的数组下标值。
+- `laload; faload; daload; aaload; baload; baload; caload; saload;` 这几个指令就是从不同的数组中取值;
+
+再来看看我们的代码和注释会更容易理解一些:
+
+```java
+// 这几个操作的字节码套路都是一样的:
+// 数组引用; 下标;     数组取值; 赋值给局部变量;
+// aload_0; iconst_0; iaload; istore 9;
+int num0 = array0[0];
+// aload_1; iconst_1; laload; lstore 10;
+long num1 = array1[1];
+// aload_2; iconst_2; faload; fstore 12;
+float num2 = array2[2];
+// aload_3; iconst_3; daload; dstore 13;
+double num3 = array3[3];
+// aload 4; iconst_4; aaload; astore 15;
+Object obj4 = array4[4];
+// aload 5; iconst_5; baload; istore 16;
+boolean bool5 = array5[5];
+// aload 6; bipush 6; baload; istore 17;
+byte byte6 = array6[6];
+// aload 7; bipush 7; caload; istore 18;
+char char7 = array7[7];
+// aload 8; bipush 8; saload; istore 19;
+short num8 = array8[8];
+```
 
 // TODO
 
