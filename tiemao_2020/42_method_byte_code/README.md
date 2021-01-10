@@ -8,9 +8,24 @@ Java虚拟机规范中, 定义了class文件中使用的各种字节码, 也就�
 另外，官方单独整理了一份操作码助记符, 对应的链接为: [Java Virtual Machine Specification: Chapter 7. Opcode Mnemonics by Opcode](https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-7.html)
 
 
+## 0. 局部变量表的规则
+
+在开始之前, 先简单介绍字节码文件中, 方法局部变量表的规则:
+
+- 如果是实例方法, 则局部变量表中第0号槽位中保存的是 this 指针。
+- 然后排列的是方法的入参。 前面的this, 以及入参都是方法执行前就已经设置好的。
+- 接下来就是按照局部变量定义的顺序, 依次分配槽位。
+- 注意 long 和 double 会占据2个槽位, 那么可以算出每个槽位是32bit，也就是4字节, 这是历史债了。
+- 可能存在匿名的局部变量以及槽位。
+- 可能存在变量槽位重用的情况，依据局部变量的作用域范围而定, 这都是编译器干的事。
+- 具体的汇总和映射信息, 在 class 文件中每个方法的局部变量表中进行描述。
+
+局部变量表, `LocalVariableTable`, 有时候也称为本地变量表，都是一回事，重点是理解其含义。
+
+
 下面依次进行讲解，并通过实际的例子来加深理解。
 
-## 常量(Constant)相关的操作符
+## 1. 常量(Constant)相关的操作符
 
 常量相关的操作符, 大部分都很简单。 表示直接从字节码中取值, 或者从本类的运行时常量池中取值, 然后压入操作数栈的栈顶。
 
@@ -219,12 +234,16 @@ java com.cncounter.opcode.DemoConstantsOpcode
            71       1    27   d00   D
 ```
 
+因为我们在javac编译时指定了 `-g` 参数, 生成详细的调试信息， 所以 javap 能看到行号映射表(LineNumberTable), 以及详细的局部变量表信息(LocalVariableTable)。
+
 简单参考一下即可, 重点关注本节介绍的指令, 暂时不进行详细的讲解。
 
 
-## 取值(Load)相关的操作符
+## 2. 取值(Load)相关的操作符
 
 取值操作(Load)是指从局部变量表之中取值, 然后压入操作数栈的栈顶。
+
+Load也可以称为加载。
 
 对应的操作码指令如下:
 
@@ -364,7 +383,220 @@ public class DemoLoadOpcode {
 
 字节码中, 每个指令后面附带的操作数, 其含义由操作码不同而不同, 分析时需要辨别。
 
-其实代码中的注释信息已经很明确了。 下面进行简单的汇总。
+其实代码中的注释信息已经很明确了。
+
+我们先编译和反编译代码。
+
+
+```shell
+# 带调试信息编译
+javac -g DemoLoadOpcode.java
+# 反编译
+javap -v DemoLoadOpcode.class
+```
+
+反编译之后查看到的字节码信息很多, 我们一个一个来看。
+
+#### 2.1 testIntLoad 方法
+
+这个方法演示从局部变量表取int值的指令。
+
+关键代码是:
+
+```java
+int total = num0 + num1 + num2 + num3 + num4;
+```
+
+反编译后的字节码信息为:
+
+```java
+public static void testIntLoad(int, int, int, int, int);
+  descriptor: (IIIII)V
+  flags: ACC_PUBLIC, ACC_STATIC
+  Code:
+    stack=2, locals=6, args_size=5
+       0: iload_0
+       1: iload_1
+       2: iadd
+       3: iload_2
+       4: iadd
+       5: iload_3
+       6: iadd
+       7: iload         4
+       9: iadd
+      10: istore        5
+      12: iload         5
+      14: invokestatic  #2                  // Method java/lang/Integer.valueOf:(I)Ljava/lang/Integer;
+      17: pop
+      18: return
+    LineNumberTable:
+      line 15: 0
+      line 18: 12
+      line 19: 18
+    LocalVariableTable:
+      Start  Length  Slot  Name   Signature
+          0      19     0  num0   I
+          0      19     1  num1   I
+          0      19     2  num2   I
+          0      19     3  num3   I
+          0      19     4  num4   I
+         12       7     5 total   I
+```
+
+和代码中的注释信息进行对照和验证。 可以发现套路都差不多, 记住1个就记住了5个。
+
+解读如下:
+
+- `iload_0`; `iload_1`; `iload_2`; `iload_3`; `iload 4`; 从对应的槽位加载int值。
+- `iadd`; 执行int相加; 消耗2个操作数栈中的int值, 压入一个int值。
+- `istore 5`; 前面介绍过, 将栈顶int值弹出并保存到局部变量表的 5 号槽位中。
+
+
+####  2.2 testLongLoad 方法
+
+这个方法演示从局部变量表取long值的指令。
+
+
+关键代码是:
+
+```java
+Long.valueOf(num0 + num1 + num2);
+```
+
+反编译后的字节码信息为:
+
+```java
+
+public static void testLongLoad(long, long, long);
+  descriptor: (JJJ)V
+  flags: ACC_PUBLIC, ACC_STATIC
+  Code:
+    stack=4, locals=6, args_size=3
+       0: lload_0
+       1: lload_2
+       2: ladd
+       3: lload         4
+       5: ladd
+       6: invokestatic  #3                  // Method java/lang/Long.valueOf:(J)Ljava/lang/Long;
+       9: pop
+      10: return
+    LineNumberTable:
+      line 24: 0
+      line 25: 10
+    LocalVariableTable:
+      Start  Length  Slot  Name   Signature
+          0      11     0  num0   J
+          0      11     2  num1   J
+          0      11     4  num2   J
+```
+
+解读如下:
+
+- 每个 long 类型的占2个槽位, 所以3个long类型入参占据了0号,2号,4号槽位;
+- `lload_0` 从0号槽位取值;
+- `lload_2` 从2号槽位取值;
+- `lload 4` 从4号槽位取值。
+- `pop` 则是因为我们调用的 `Long.valueOf` 方法有返回值, 这里没用到, 所以要扔掉, 也就是从操作数栈中弹出.
+
+那么如何从1号和3号槽位取long类型的值呢？
+
+
+#### 2.3 testInstanceLongLoad 方法
+
+这个方法演示从局部变量表取long值的指令, 注意这不是 static 方法, 而是一个实例方法。
+
+关键代码是:
+
+```java
+this.testInstanceDoubleLoad(num1, num2);
+```
+
+可以看到, 内部调用了另一个实例方法。
+
+反编译后的字节码信息为:
+
+
+```java
+public void testInstanceLongLoad(long, long);
+  descriptor: (JJ)V
+  flags: ACC_PUBLIC
+  Code:
+    stack=5, locals=5, args_size=3
+       0: aload_0
+       1: lload_1
+       2: l2d
+       3: lload_3
+       4: l2d
+       5: invokevirtual #4                  // Method testInstanceDoubleLoad:(DD)V
+       8: return
+    LineNumberTable:
+      line 31: 0
+      line 32: 8
+    LocalVariableTable:
+      Start  Length  Slot  Name   Signature
+          0       9     0  this   Lcom/cncounter/opcode/DemoLoadOpcode;
+          0       9     1  num1   J
+          0       9     3  num2   J
+```
+
+解读如下:
+
+- `aload_0` 加载0号槽位的引用, 也就是this指针。
+- `lload_1` 加载1号槽位的long值, 这里就是第一个方法入参。
+- `lload_3` 加载3号槽位的long值, 因为前一个局部变量(方法入参)是long, 所以不存在2号槽位。
+- `l2d` 是执行类型转换的, 学习Java基础时, 我们就知道long允许自动转型为 double。
+- `invokevirtual` 是执行普通的实例方法。
+
+
+#### 2.4 testFloatLoad 方法
+
+这个方法演示从局部变量表取float值的指令。
+
+关键代码是:
+
+```java
+Float.valueOf(num0 + num1 + num2 + num3 + num4);
+```
+
+反编译后的字节码信息为:
+
+
+```java
+public static void testFloatLoad(float, float, float, float, float);
+  descriptor: (FFFFF)V
+  flags: ACC_PUBLIC, ACC_STATIC
+  Code:
+    stack=2, locals=5, args_size=5
+       0: fload_0
+       1: fload_1
+       2: fadd
+       3: fload_2
+       4: fadd
+       5: fload_3
+       6: fadd
+       7: fload         4
+       9: fadd
+      10: invokestatic  #5                  // Method java/lang/Float.valueOf:(F)Ljava/lang/Float;
+      13: pop
+      14: return
+    LineNumberTable:
+      line 38: 0
+      line 39: 14
+    LocalVariableTable:
+      Start  Length  Slot  Name   Signature
+          0      15     0  num0   F
+          0      15     1  num1   F
+          0      15     2  num2   F
+          0      15     3  num3   F
+          0      15     4  num4   F
+```
+
+解读如下:
+
+- `fload_0`; `fload_1`; `fload_2`; `fload_3`; `fload  4`; 分别从各个槽位取float值, 压入栈顶。
+- `fadd`; 浮点数相加;
+- `pop`: 我们调用的方法有返回值, 却没用到, 所以要从操作数栈中弹出.
+
 
 // TODO
 
