@@ -395,7 +395,9 @@ javac -g DemoLoadOpcode.java
 javap -v DemoLoadOpcode.class
 ```
 
-反编译之后查看到的字节码信息很多, 我们一个一个来看。
+反编译之后查看到的字节码信息很多, 套路都是差不多的, 读者可以快速看一遍, 简单过一遍即可。
+
+一个一个来看。
 
 #### 2.1 testIntLoad 方法
 
@@ -684,6 +686,82 @@ public void testInstanceDoubleLoad(double, double);
 - `dload_1` 加载1号槽位的double值, 这里就是第一个方法入参。
 - `dload_3` 加载3号槽位的double值, 因为前一个局部变量(方法入参)是double, 所以不存在2号槽位。
 - `invokevirtual` 是执行普通的实例方法。
+
+
+#### 2.7 testReferenceAddrLoad 方法
+
+这个方法演示从局部变量表取对象引用地址的指令。
+
+关键代码是:
+
+```java
+Arrays.asList(str0, obj1, num2, num3, num4, num5);
+```
+
+反编译后的字节码信息为:
+
+```java
+public static void testReferenceAddrLoad
+   (java.lang.String, java.lang.Object, java.lang.Integer,
+    java.lang.Long, java.lang.Float, java.lang.Double);
+  descriptor: (Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Integer;
+               Ljava/lang/Long;Ljava/lang/Float;Ljava/lang/Double;)V
+  flags: ACC_PUBLIC, ACC_STATIC
+  Code:
+    stack=4, locals=6, args_size=6
+       0: bipush        6
+       2: anewarray     #7 // class java/lang/Object
+       5: dup
+       6: iconst_0
+       7: aload_0
+       8: aastore
+       9: dup
+      10: iconst_1
+      11: aload_1
+      12: aastore
+      13: dup
+      14: iconst_2
+      15: aload_2
+      16: aastore
+      17: dup
+      18: iconst_3
+      19: aload_3
+      20: aastore
+      21: dup
+      22: iconst_4
+      23: aload         4
+      25: aastore
+      26: dup
+      27: iconst_5
+      28: aload         5
+      30: aastore
+      31: invokestatic  #8 // Method java/util/Arrays.asList:([Ljava/lang/Object;)Ljava/util/List;
+      34: pop
+      35: return
+    LineNumberTable:
+      line 58: 0
+      line 59: 35
+    LocalVariableTable:
+      Start  Length  Slot  Name   Signature
+          0      36     0  str0   Ljava/lang/String;
+          0      36     1  obj1   Ljava/lang/Object;
+          0      36     2  num2   Ljava/lang/Integer;
+          0      36     3  num3   Ljava/lang/Long;
+          0      36     4  num4   Ljava/lang/Float;
+          0      36     5  num5   Ljava/lang/Double;
+```
+
+这里进行了一点点折行排版。不影响我们理解。
+
+解读如下:
+
+- `aload_0`; `aload_1`; `aload_2`; `aload_3`; `aload 4`; `aload 5`; 这几个指令是从局部变量表槽位中获取引用地址值。
+- 具体是什么引用类型不重要, 在字节码文件中都使用32位存储。
+- `Arrays.asList` 有点特殊, 接收的是动态参数: `public static <T> List<T> asList(T... a)`; 所以编译器会自动将这些参数转换为一个对象数组。
+- `anewarray #7 // class java/lang/Object`。
+- `iconst_0` 到 `iconst_5` 这些指令主要是构造数组的下标。
+- `aastore` 就是根据栈中的参数, 保存到对象数组之中(address array store).
+- `dup` 则是将栈顶元素复制一份并入栈。
 
 
 
