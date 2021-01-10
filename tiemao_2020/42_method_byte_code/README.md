@@ -173,13 +173,13 @@ java com.cncounter.opcode.DemoConstantsOpcode
         45: istore        19
         47: aconst_null
         48: astore        20
-        50: ldc           #2                  // float 5.2f
+        50: ldc           #2 // float 5.2f
         52: fstore        21
-        54: ldc           #3                  // String tiemao
+        54: ldc           #3 // String tiemao
         56: astore        22
-        58: ldc2_w        #4                  // long 65536l
+        58: ldc2_w        #4 // long 65536l
         61: lstore        23
-        63: ldc2_w        #6                  // double 86400.0d
+        63: ldc2_w        #6 // double 86400.0d
         66: dstore        25
         68: dconst_0
         69: dstore        27
@@ -426,7 +426,7 @@ public static void testIntLoad(int, int, int, int, int);
        9: iadd
       10: istore        5
       12: iload         5
-      14: invokestatic  #2                  // Method java/lang/Integer.valueOf:(I)Ljava/lang/Integer;
+      14: invokestatic  #2 // Method java/lang/Integer.valueOf:(I)Ljava/lang/Integer;
       17: pop
       18: return
     LineNumberTable:
@@ -477,7 +477,7 @@ public static void testLongLoad(long, long, long);
        2: ladd
        3: lload         4
        5: ladd
-       6: invokestatic  #3                  // Method java/lang/Long.valueOf:(J)Ljava/lang/Long;
+       6: invokestatic  #3 // Method java/lang/Long.valueOf:(J)Ljava/lang/Long;
        9: pop
       10: return
     LineNumberTable:
@@ -527,7 +527,7 @@ public void testInstanceLongLoad(long, long);
        2: l2d
        3: lload_3
        4: l2d
-       5: invokevirtual #4                  // Method testInstanceDoubleLoad:(DD)V
+       5: invokevirtual #4 // Method testInstanceDoubleLoad:(DD)V
        8: return
     LineNumberTable:
       line 31: 0
@@ -576,7 +576,7 @@ public static void testFloatLoad(float, float, float, float, float);
        6: fadd
        7: fload         4
        9: fadd
-      10: invokestatic  #5                  // Method java/lang/Float.valueOf:(F)Ljava/lang/Float;
+      10: invokestatic  #5 // Method java/lang/Float.valueOf:(F)Ljava/lang/Float;
       13: pop
       14: return
     LineNumberTable:
@@ -596,6 +596,53 @@ public static void testFloatLoad(float, float, float, float, float);
 - `fload_0`; `fload_1`; `fload_2`; `fload_3`; `fload  4`; 分别从各个槽位取float值, 压入栈顶。
 - `fadd`; 浮点数相加;
 - `pop`: 我们调用的方法有返回值, 却没用到, 所以要从操作数栈中弹出.
+
+
+
+#### 2.5 testDoubleLoad 方法
+
+这个方法演示从局部变量表取 double 值的指令。 注意这是一个实例方法。
+
+关键代码是:
+
+```java
+Double.valueOf(num0 + num1 + num2);
+```
+
+反编译后的字节码信息为:
+
+
+```java
+public static void testDoubleLoad(double, double, double);
+  descriptor: (DDD)V
+  flags: ACC_PUBLIC, ACC_STATIC
+  Code:
+    stack=4, locals=6, args_size=3
+       0: dload_0
+       1: dload_2
+       2: dadd
+       3: dload         4
+       5: dadd
+       6: invokestatic  #6 // Method java/lang/Double.valueOf:(D)Ljava/lang/Double;
+       9: pop
+      10: return
+    LineNumberTable:
+      line 44: 0
+      line 45: 10
+    LocalVariableTable:
+      Start  Length  Slot  Name   Signature
+          0      11     0  num0   D
+          0      11     2  num1   D
+          0      11     4  num2   D
+```
+
+解读如下:
+
+- `dload_0` 从局部变量表的0号槽位取double值
+- `dload_2` 从局部变量表的2号槽位取double值
+- `dload 4` 从局部变量表的4号槽位取double值
+- `dadd` 执行double值相加
+- `invokestatic` 执行静态方法;
 
 
 // TODO
