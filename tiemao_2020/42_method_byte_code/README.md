@@ -601,7 +601,7 @@ public static void testFloatLoad(float, float, float, float, float);
 
 #### 2.5 testDoubleLoad 方法
 
-这个方法演示从局部变量表取 double 值的指令。 注意这是一个实例方法。
+这个方法演示从局部变量表取 double 值的指令。
 
 关键代码是:
 
@@ -643,6 +643,48 @@ public static void testDoubleLoad(double, double, double);
 - `dload 4` 从局部变量表的4号槽位取double值
 - `dadd` 执行double值相加
 - `invokestatic` 执行静态方法;
+
+#### 2.6 testInstanceDoubleLoad 方法
+
+这个方法演示从局部变量表取 double 值的指令。 注意这是一个实例方法。
+
+关键代码是:
+
+```java
+Double.valueOf(num0 + num1 + num2);
+```
+
+反编译后的字节码信息为:
+
+
+```java
+public void testInstanceDoubleLoad(double, double);
+  descriptor: (DD)V
+  flags: ACC_PUBLIC
+  Code:
+    stack=5, locals=5, args_size=3
+       0: aload_0
+       1: dload_1
+       2: dload_3
+       3: invokevirtual #4 // Method testInstanceDoubleLoad:(DD)V
+       6: return
+    LineNumberTable:
+      line 51: 0
+      line 52: 6
+    LocalVariableTable:
+      Start  Length  Slot  Name   Signature
+          0       7     0  this   Lcom/cncounter/opcode/DemoLoadOpcode;
+          0       7     1  num1   D
+          0       7     3  num2   D
+```
+
+解读如下:
+
+- `aload_0` 加载0号槽位的引用, 也就是this指针。
+- `dload_1` 加载1号槽位的double值, 这里就是第一个方法入参。
+- `dload_3` 加载3号槽位的double值, 因为前一个局部变量(方法入参)是double, 所以不存在2号槽位。
+- `invokevirtual` 是执行普通的实例方法。
+
 
 
 // TODO
