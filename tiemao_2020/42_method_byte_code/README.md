@@ -3,14 +3,233 @@
 [TOC]
 
 
+## 1. 基础知识
+
 Java虚拟机规范中, 定义了class文件中使用的各种字节码, 也就是Java虚拟机指令集。 英文文档为: [Chapter 6. The Java Virtual Machine Instruction Set](https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-6.html)
 
 另外，官方单独整理了一份操作码助记符, 对应的链接为: [Java Virtual Machine Specification: Chapter 7. Opcode Mnemonics by Opcode](https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-7.html)
 
 
-## 0. 局部变量表的规则
+#### 1.1 javap反编译的字节码简单解读
 
-在开始之前, 先简单介绍字节码文件中, 方法局部变量表的规则:
+写一个简单的类, 其中包含main方法:
+
+```java
+package com.cncounter.opcode;
+
+/**
+ * 演示方法体字节码
+ */
+public class DemoMethodOpcode {
+    public static void main(String[] args) {
+    }
+}
+```
+
+代码很简单, 然后我们通过以下命令进行编译和反编译:
+
+```shell
+# 编译
+javac -g DemoMethodOpcode.java
+# 反编译
+javap -v DemoMethodOpcode.class
+```
+
+反编译工具 javap 输出的字节码信息如下：
+
+```java
+Classfile /Users/renfufei/src/com/cncounter/opcode/DemoMethodOpcode.class
+  Last modified 2021-1-10; size 433 bytes
+  MD5 checksum 222c8d4911e85ed9e5d7e0b46dc9af29
+  Compiled from "DemoMethodOpcode.java"
+public class com.cncounter.opcode.DemoMethodOpcode
+  minor version: 0
+  major version: 52
+  flags: ACC_PUBLIC, ACC_SUPER
+Constant pool:
+   #1 = Methodref          #3.#17         // java/lang/Object."<init>":()V
+   #2 = Class              #18            // com/cncounter/opcode/DemoMethodOpcode
+   #3 = Class              #19            // java/lang/Object
+   #4 = Utf8               <init>
+   #5 = Utf8               ()V
+   #6 = Utf8               Code
+   #7 = Utf8               LineNumberTable
+   #8 = Utf8               LocalVariableTable
+   #9 = Utf8               this
+  #10 = Utf8               Lcom/cncounter/opcode/DemoMethodOpcode;
+  #11 = Utf8               main
+  #12 = Utf8               ([Ljava/lang/String;)V
+  #13 = Utf8               args
+  #14 = Utf8               [Ljava/lang/String;
+  #15 = Utf8               SourceFile
+  #16 = Utf8               DemoMethodOpcode.java
+  #17 = NameAndType        #4:#5          // "<init>":()V
+  #18 = Utf8               com/cncounter/opcode/DemoMethodOpcode
+  #19 = Utf8               java/lang/Object
+{
+  public com.cncounter.opcode.DemoMethodOpcode();
+    descriptor: ()V
+    flags: ACC_PUBLIC
+    Code:
+      stack=1, locals=1, args_size=1
+         0: aload_0
+         1: invokespecial #1                  // Method java/lang/Object."<init>":()V
+         4: return
+      LineNumberTable:
+        line 6: 0
+      LocalVariableTable:
+        Start  Length  Slot  Name   Signature
+            0       5     0  this   Lcom/cncounter/opcode/DemoMethodOpcode;
+
+  public static void main(java.lang.String[]);
+    descriptor: ([Ljava/lang/String;)V
+    flags: ACC_PUBLIC, ACC_STATIC
+    Code:
+      stack=0, locals=1, args_size=1
+         0: return
+      LineNumberTable:
+        line 8: 0
+      LocalVariableTable:
+        Start  Length  Slot  Name   Signature
+            0       1     0  args   [Ljava/lang/String;
+}
+SourceFile: "DemoMethodOpcode.java"
+```
+
+下面分别对各个部分进行解读。
+
+1. 类文件信息:
+
+```java
+Classfile /Users/renfufei/src/com/cncounter/opcode/DemoMethodOpcode.class
+  Last modified 2021-1-10; size 433 bytes
+  MD5 checksum 222c8d4911e85ed9e5d7e0b46dc9af29
+  Compiled from "DemoMethodOpcode.java"
+```
+
+这里展示的信息包括:
+
+- class文件的路径
+- 修改时间, 文件大小。
+- MD5校验和
+- 源文件信息
+
+
+2. 类的信息:
+
+```java
+public class com.cncounter.opcode.DemoMethodOpcode
+  minor version: 0
+  major version: 52
+  flags: ACC_PUBLIC, ACC_SUPER
+```
+
+从中可以解读出的信息包括:
+
+- class的完全限定名信息
+- class文件的小版本号: `minor version: 0`
+- class文件的大版本号: `major version: 52`; 根据规则, `52-45=8`, 所以class格式的版本为 `8.0`；
+- class的可见性标识: `ACC_PUBLIC` 表示 public 类; `ACC_SUPER` 则是为了兼容性而生成的, 可以忽略。
+
+
+
+3. 常量池信息
+
+```java
+Constant pool:
+   #1 = Methodref          #3.#17         // java/lang/Object."<init>":()V
+   #2 = Class              #18            // com/cncounter/opcode/DemoMethodOpcode
+   #3 = Class              #19            // java/lang/Object
+   #4 = Utf8               <init>
+   #5 = Utf8               ()V
+   #6 = Utf8               Code
+   #7 = Utf8               LineNumberTable
+   #8 = Utf8               LocalVariableTable
+   #9 = Utf8               this
+  #10 = Utf8               Lcom/cncounter/opcode/DemoMethodOpcode;
+  #11 = Utf8               main
+  #12 = Utf8               ([Ljava/lang/String;)V
+  #13 = Utf8               args
+  #14 = Utf8               [Ljava/lang/String;
+  #15 = Utf8               SourceFile
+  #16 = Utf8               DemoMethodOpcode.java
+  #17 = NameAndType        #4:#5          // "<init>":()V
+  #18 = Utf8               com/cncounter/opcode/DemoMethodOpcode
+  #19 = Utf8               java/lang/Object
+```
+
+简单解读一下:
+
+- 左边的 `#1`, `#2` 等信息, 是常量池中item的编号。
+- item 编号后面的等号 `=` 则是为了展示方便，统一放置的。
+- `#1 = Methodref #3.#17` 包的是方法引用, 引用了 `#3`, `#17`, 也就是类名.方法名。
+- `#4 = Utf8 <init>` 表示的就是UTF8字符串, 后面的 `<init>` 就是此常量item的值。
+- `// java/lang/Object` 这种则是注释信息, 方便理解。
+
+
+4. 构造函数信息
+
+```java
+  public com.cncounter.opcode.DemoMethodOpcode();
+    descriptor: ()V
+    flags: ACC_PUBLIC
+    Code:
+      stack=1, locals=1, args_size=1
+         0: aload_0
+         1: invokespecial #1                  // Method java/lang/Object."<init>":()V
+         4: return
+      LineNumberTable:
+        line 6: 0
+      LocalVariableTable:
+        Start  Length  Slot  Name   Signature
+            0       5     0  this   Lcom/cncounter/opcode/DemoMethodOpcode;
+```
+
+简单解读一下:
+
+- `descriptor: ()V` 方法描述符: 括号里面什么都没有, 所以入参个数为0; `V`表示没有返回值。
+- `flags: ACC_PUBLIC` 访问标志, 表示这是一个public方法。
+- `stack=1, locals=1, args_size=1` 表示操作数栈深度1, 局部变量数量1, 参数数量1, 为什么都是1呢? 本质上, 构造函数很像是实例方法, 里面可以使用 `this`, 所以这几个值都是1.
+- `0: aload_0` 前面的0表示字节码的位置索引, 指令跳转的时候引用的就是这个值。
+- `1: invokespecial #1` 是位置=1的指令, 后面的 `#1` 是引用的常量池的值。 最后面的注释信息则是抽取信息出来展示给我们看。
+- `4: return` 方法结束; 为什么索引值是4, 2和3到哪里去了呢？ 注意前面的 `invokespecial` 指令, 在字节码中带了2个字节长度的操作数。
+- `LineNumberTable` 表示与源代码对应的行号映射信息, `line 6: 0` 是说字节码的0位置索引对应第6行源码。
+- `LocalVariableTable` 则是局部变量表;
+- 可以看到0号槽位(Slot)存的是this引用地址, 作用域范围则是(Start=0; Length=5;)
+
+
+
+5. main方法信息
+
+```java
+  public static void main(java.lang.String[]);
+    descriptor: ([Ljava/lang/String;)V
+    flags: ACC_PUBLIC, ACC_STATIC
+    Code:
+      stack=0, locals=1, args_size=1
+         0: return
+      LineNumberTable:
+        line 8: 0
+      LocalVariableTable:
+        Start  Length  Slot  Name   Signature
+            0       1     0  args   [Ljava/lang/String;
+```
+
+简单解读一下:
+
+- `descriptor: ([Ljava/lang/String;)V` 方法描述符: 括号里面是参数类型, L表示数组; `V`表示没有返回值。
+- `flags: ACC_PUBLIC, ACC_STATIC` 访问标志, 表示这是一个 public 的 static 方法。
+- `stack=0, locals=1, args_size=1` 表示操作数栈深度0, 局部变量数1, 参数数量1.
+- `0: return` 前面的0表示字节码的位置索引, return表示方法结束返回; 因为这是一个空方法, 什么也没有。
+- `LineNumberTable` 表示与源代码对应的行号映射信息, `line 8: 0` 是说此方法字节码的0索引对应第8行源码。
+- `LocalVariableTable` 则是局部变量表;
+- 可以看到0号槽位(Slot)存的是args, 作用域范围则是(Start=0; Length=1;)
+
+
+
+#### 1.2 局部变量表的规则
+
+在继续之前, 先简单介绍字节码文件中, 方法局部变量表的规则:
 
 - 如果是实例方法, 则局部变量表中第0号槽位中保存的是 this 指针。
 - 然后排列的是方法的入参。 前面的this, 以及入参都是方法执行前就已经设置好的。
@@ -23,11 +242,15 @@ Java虚拟机规范中, 定义了class文件中使用的各种字节码, 也就�
 局部变量表, `LocalVariableTable`, 有时候也称为本地变量表，都是一回事，重点是理解其含义。
 
 
+
 下面依次进行讲解，并通过实际的例子来加深理解。
 
-## 1. 常量(Constant)相关的操作符
+## 2. 常量(Constant)相关的操作符
 
 常量相关的操作符, 大部分都很简单。 表示直接从字节码中取值, 或者从本类的运行时常量池中取值, 然后压入操作数栈的栈顶。
+
+
+#### 2.1 操作符说明
 
 | 十进制 | 十六进制 | 助记符          |  说明           |
 | :---  | :---    | :---           | :---           |
@@ -56,7 +279,10 @@ Java虚拟机规范中, 定义了class文件中使用的各种字节码, 也就�
 
 这一块很简单，也很容易记忆。
 
-下面我们用代码来简单演示, 以加深印象:
+下面我们用代码来简单演示, 以加深印象。
+
+
+#### 2.2 示例代码
 
 ```java
 package com.cncounter.opcode;
@@ -113,6 +339,8 @@ public class DemoConstantsOpcode {
 
 其他的store指令也可以进行类似的理解。
 
+
+#### 2.3 操作码解读
 
 我们可以通过以下命令进行编译和反编译以验证:
 
@@ -239,11 +467,14 @@ java com.cncounter.opcode.DemoConstantsOpcode
 简单参考一下即可, 重点关注本节介绍的指令, 暂时不进行详细的讲解。
 
 
-## 2. 取值(Load)相关的操作符
+## 3. 取值(Load)相关的操作符
 
 取值操作(Load)是指从局部变量表之中取值, 然后压入操作数栈的栈顶。
 
 Load也可以称为加载。
+
+
+#### 3.1 操作码说明
 
 对应的操作码指令如下:
 
@@ -287,6 +518,9 @@ Load也可以称为加载。
 
 
 都是load相关的指令, 都是相同的套路，也很容易记忆。
+
+
+#### 3.2 示例代码
 
 下面我们构造一段代码, 用来演示这些指令, 个别的可能涵盖不到, 为了简单就不强行构造了, 读者照搬套路即可:
 
@@ -385,6 +619,9 @@ public class DemoLoadOpcode {
 
 其实代码中的注释信息已经很明确了。
 
+
+#### 3.3 操作码说明
+
 我们先编译和反编译代码。
 
 
@@ -399,7 +636,7 @@ javap -v DemoLoadOpcode.class
 
 一个一个来看。
 
-#### 2.1 testIntLoad 方法
+#### 3.3.1 testIntLoad 方法
 
 这个方法演示从局部变量表取int值的指令。
 
@@ -454,7 +691,7 @@ public static void testIntLoad(int, int, int, int, int);
 - `istore 5`; 前面介绍过, 将栈顶int值弹出并保存到局部变量表的 5 号槽位中。
 
 
-####  2.2 testLongLoad 方法
+#### 3.3.2 testLongLoad 方法
 
 这个方法演示从局部变量表取long值的指令。
 
@@ -503,7 +740,7 @@ public static void testLongLoad(long, long, long);
 那么如何从1号和3号槽位取long类型的值呢？
 
 
-#### 2.3 testInstanceLongLoad 方法
+#### 3.3.3 testInstanceLongLoad 方法
 
 这个方法演示从局部变量表取long值的指令, 注意这不是 static 方法, 而是一个实例方法。
 
@@ -550,7 +787,7 @@ public void testInstanceLongLoad(long, long);
 - `invokevirtual` 是执行普通的实例方法。
 
 
-#### 2.4 testFloatLoad 方法
+#### 3.3.4 testFloatLoad 方法
 
 这个方法演示从局部变量表取float值的指令。
 
@@ -601,7 +838,7 @@ public static void testFloatLoad(float, float, float, float, float);
 
 
 
-#### 2.5 testDoubleLoad 方法
+#### 3.3.5 testDoubleLoad 方法
 
 这个方法演示从局部变量表取 double 值的指令。
 
@@ -646,7 +883,7 @@ public static void testDoubleLoad(double, double, double);
 - `dadd` 执行double值相加
 - `invokestatic` 执行静态方法;
 
-#### 2.6 testInstanceDoubleLoad 方法
+#### 3.3.6 testInstanceDoubleLoad 方法
 
 这个方法演示从局部变量表取 double 值的指令。 注意这是一个实例方法。
 
@@ -688,7 +925,7 @@ public void testInstanceDoubleLoad(double, double);
 - `invokevirtual` 是执行普通的实例方法。
 
 
-#### 2.7 testReferenceAddrLoad 方法
+#### 3.3.7 testReferenceAddrLoad 方法
 
 这个方法演示从局部变量表取对象引用地址的指令。
 
@@ -764,7 +1001,7 @@ public static void testReferenceAddrLoad
 - `dup` 则是将栈顶元素复制一份并入栈。
 
 
-#### 2.8 testArrayLoad 方法
+#### 3.3.8 testArrayLoad 方法
 
 这个方法演示从各种类型的数组中取值。
 
