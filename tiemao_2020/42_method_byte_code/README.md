@@ -469,7 +469,7 @@ java com.cncounter.opcode.DemoConstantsOpcode
 
 ## 3. 取值(Load)相关的操作符
 
-取值操作(Load)是指从局部变量表之中取值, 然后压入操作数栈的栈顶。
+取值操作(Load)是指从局部变量或者数组元素之中取值, 然后压入操作数栈的栈顶。
 
 Load也可以称为加载。
 
@@ -1128,6 +1128,64 @@ char char7 = array7[7];
 // aload 8; bipush 8; saload; istore 19;
 short num8 = array8[8];
 ```
+
+
+
+## 4. 赋值(Store)相关的操作符
+
+赋值操作(Store)是指将操作数栈栈顶的元素弹出, 并赋值给局部变量或者数组元素。
+
+Store也可以称为保存。
+
+
+#### 4.1 操作码说明
+
+Store对应的操作码指令如下:
+
+
+| 十进制 | 十六进制 | 助记符    |  说明                                            |
+| :---  | :---    | :---     | :---                                            |
+| 54    | (0x36)  | istore   |                  |
+| 55    | (0x37)  | lstore   |                  |
+| 56    | (0x38)  | fstore   |                  |
+| 57    | (0x39)  | dstore   |                  |
+| 58    | (0x3a)  | astore   |                  |
+| 59    | (0x3b)  | istore_0 |                  |
+| 60    | (0x3c)  | istore_1 |                  |
+| 61    | (0x3d)  | istore_2 |                  |
+| 62    | (0x3e)  | istore_3 |                  |
+| 63    | (0x3f)  | lstore_0 |                  |
+| 64    | (0x40)  | lstore_1 |                  |
+| 65    | (0x41)  | lstore_2 |                  |
+| 66    | (0x42)  | lstore_3 |                  |
+| 67    | (0x43)  | fstore_0 |                  |
+| 68    | (0x44)  | fstore_1 |                  |
+| 69    | (0x45)  | fstore_2 |                  |
+| 70    | (0x46)  | fstore_3 |                  |
+| 71    | (0x47)  | dstore_0 |                  |
+| 72    | (0x48)  | dstore_1 |                  |
+| 73    | (0x49)  | dstore_2 |                  |
+| 74    | (0x4a)  | dstore_3 |                  |
+| 75    | (0x4b)  | astore_0 |                  |
+| 76    | (0x4c)  | astore_1 |                  |
+| 77    | (0x4d)  | astore_2 |                  |
+| 78    | (0x4e)  | astore_3 |                  |
+| 79    | (0x4f)  | iastore  |                  |
+| 80    | (0x50)  | lastore  |                  |
+| 81    | (0x51)  | fastore  |                  |
+| 82    | (0x52)  | dastore  |                  |
+| 83    | (0x53)  | aastore  |                  |
+| 84    | (0x54)  | bastore  |                  |
+| 85    | (0x55)  | castore  |                  |
+| 86    | (0x56)  | sastore  |                  |
+
+
+
+store相关的指令, 和load部分的指令基本上一一对应, 相同的套路，很容易记忆。
+
+
+#### 4.2 示例代码
+
 
 // TODO
 
