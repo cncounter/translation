@@ -120,12 +120,24 @@ CONTENTS
  (*) References.
 
 
+## 目录
+
+[TOC]
+
+
 ============================
 ABSTRACT MEMORY ACCESS MODEL
 ============================
 
 Consider the following abstract model of the system:
 
+
+## 内存访问模型抽象
+
+请看下面这个抽象的系统模型:
+
+
+```c
 		            :                :
 		            :                :
 		            :                :
@@ -148,30 +160,26 @@ Consider the following abstract model of the system:
 		            :   |        |   :
 		            :   +--------+   :
 		            :                :
+```
 
-Each CPU executes a program that generates memory access operations.  In the
-abstract CPU, memory operation ordering is very relaxed, and a CPU may actually
-perform the memory operations in any order it likes, provided program causality
-appears to be maintained.  Similarly, the compiler may also arrange the
-instructions it emits in any order it likes, provided it doesn't affect the
-apparent operation of the program.
+Each CPU executes a program that generates memory access operations.  In the abstract CPU, memory operation ordering is very relaxed, and a CPU may actually perform the memory operations in any order it likes, provided program causality appears to be maintained.  Similarly, the compiler may also arrange the instructions it emits in any order it likes, provided it doesn't affect the apparent operation of the program.
 
-So in the above diagram, the effects of the memory operations performed by a
-CPU are perceived by the rest of the system as the operations cross the
-interface between the CPU and rest of the system (the dotted lines).
+So in the above diagram, the effects of the memory operations performed by a CPU are perceived by the rest of the system as the operations cross the interface between the CPU and rest of the system (the dotted lines).
 
 
 For example, consider the following sequence of events:
 
+```c
 	CPU 1		CPU 2
 	===============	===============
 	{ A == 1; B == 2 }
 	A = 3;		x = B;
 	B = 4;		y = A;
+```
 
-The set of accesses as seen by the memory system in the middle can be arranged
-in 24 different combinations:
+The set of accesses as seen by the memory system in the middle can be arranged in 24 different combinations:
 
+```c
 	STORE A=3,	STORE B=4,	y=LOAD A->3,	x=LOAD B->4
 	STORE A=3,	STORE B=4,	x=LOAD B->4,	y=LOAD A->3
 	STORE A=3,	y=LOAD A->3,	STORE B=4,	x=LOAD B->4
@@ -181,60 +189,59 @@ in 24 different combinations:
 	STORE B=4,	STORE A=3,	y=LOAD A->3,	x=LOAD B->4
 	STORE B=4, ...
 	...
+```
 
 and can thus result in four different combinations of values:
 
+```c
 	x == 2, y == 1
 	x == 2, y == 3
 	x == 4, y == 1
 	x == 4, y == 3
+```
 
-
-Furthermore, the stores committed by a CPU to the memory system may not be
-perceived by the loads made by another CPU in the same order as the stores were
-committed.
+Furthermore, the stores committed by a CPU to the memory system may not be perceived by the loads made by another CPU in the same order as the stores were committed.
 
 
 As a further example, consider this sequence of events:
 
+```c
 	CPU 1		CPU 2
 	===============	===============
 	{ A == 1, B == 2, C == 3, P == &A, Q == &C }
 	B = 4;		Q = P;
 	P = &B;		D = *Q;
+```
 
-There is an obvious data dependency here, as the value loaded into D depends on
-the address retrieved from P by CPU 2.  At the end of the sequence, any of the
-following results are possible:
+There is an obvious data dependency here, as the value loaded into D depends on the address retrieved from P by CPU 2.  At the end of the sequence, any of the following results are possible:
 
+```c
 	(Q == &A) and (D == 1)
 	(Q == &B) and (D == 2)
 	(Q == &B) and (D == 4)
+```
 
-Note that CPU 2 will never try and load C into D because the CPU will load P
-into Q before issuing the load of *Q.
+Note that CPU 2 will never try and load C into D because the CPU will load P into Q before issuing the load of *Q.
 
 
 DEVICE OPERATIONS
 -----------------
 
-Some devices present their control interfaces as collections of memory
-locations, but the order in which the control registers are accessed is very
-important.  For instance, imagine an ethernet card with a set of internal
-registers that are accessed through an address port register (A) and a data
-port register (D).  To read internal register 5, the following code might then
-be used:
+Some devices present their control interfaces as collections of memory locations, but the order in which the control registers are accessed is very important.  For instance, imagine an ethernet card with a set of internal registers that are accessed through an address port register (A) and a data port register (D).  To read internal register 5, the following code might then be used:
 
+```c
 	*A = 5;
 	x = *D;
+```
 
 but this might show up as either of the following two sequences:
 
+```c
 	STORE *A = 5, x = LOAD *D
 	x = LOAD *D, STORE *A = 5
+```
 
-the second of which will almost certainly result in a malfunction, since it set
-the address _after_ attempting to read the register.
+the second of which will almost certainly result in a malfunction, since it set the address _after_ attempting to read the register.
 
 
 GUARANTEES
@@ -242,130 +249,114 @@ GUARANTEES
 
 There are some minimal guarantees that may be expected of a CPU:
 
- (*) On any given CPU, dependent memory accesses will be issued in order, with
-     respect to itself.  This means that for:
+ (*) On any given CPU, dependent memory accesses will be issued in order, with respect to itself.  This means that for:
 
+```c
 	Q = READ_ONCE(P); D = READ_ONCE(*Q);
+```
 
      the CPU will issue the following memory operations:
 
+```c
 	Q = LOAD P, D = LOAD *Q
+```
 
-     and always in that order.  However, on DEC Alpha, READ_ONCE() also
-     emits a memory-barrier instruction, so that a DEC Alpha CPU will
-     instead issue the following memory operations:
+     and always in that order.  However, on DEC Alpha, READ_ONCE() also emits a memory-barrier instruction, so that a DEC Alpha CPU will instead issue the following memory operations:
 
+```c
 	Q = LOAD P, MEMORY_BARRIER, D = LOAD *Q, MEMORY_BARRIER
+```
 
-     Whether on DEC Alpha or not, the READ_ONCE() also prevents compiler
-     mischief.
+     Whether on DEC Alpha or not, the READ_ONCE() also prevents compiler mischief.
 
- (*) Overlapping loads and stores within a particular CPU will appear to be
-     ordered within that CPU.  This means that for:
+ (*) Overlapping loads and stores within a particular CPU will appear to be ordered within that CPU.  This means that for:
 
+```c
 	a = READ_ONCE(*X); WRITE_ONCE(*X, b);
+```
 
      the CPU will only issue the following sequence of memory operations:
 
+```c
 	a = LOAD *X, STORE *X = b
+```
 
      And for:
 
+```c
 	WRITE_ONCE(*X, c); d = READ_ONCE(*X);
+```
 
      the CPU will only issue:
 
+```c
 	STORE *X = c, d = LOAD *X
+```
 
-     (Loads and stores overlap if they are targeted at overlapping pieces of
-     memory).
+     (Loads and stores overlap if they are targeted at overlapping pieces of memory).
 
 And there are a number of things that _must_ or _must_not_ be assumed:
 
- (*) It _must_not_ be assumed that the compiler will do what you want
-     with memory references that are not protected by READ_ONCE() and
-     WRITE_ONCE().  Without them, the compiler is within its rights to
-     do all sorts of "creative" transformations, which are covered in
-     the COMPILER BARRIER section.
+ (*) It _must_not_ be assumed that the compiler will do what you want with memory references that are not protected by READ_ONCE() and WRITE_ONCE().  Without them, the compiler is within its rights to do all sorts of "creative" transformations, which are covered in the COMPILER BARRIER section.
 
- (*) It _must_not_ be assumed that independent loads and stores will be issued
-     in the order given.  This means that for:
+ (*) It _must_not_ be assumed that independent loads and stores will be issued in the order given.  This means that for:
 
+```c
 	X = *A; Y = *B; *D = Z;
+```
 
      we may get any of the following sequences:
 
+```c
 	X = LOAD *A,  Y = LOAD *B,  STORE *D = Z
 	X = LOAD *A,  STORE *D = Z, Y = LOAD *B
 	Y = LOAD *B,  X = LOAD *A,  STORE *D = Z
 	Y = LOAD *B,  STORE *D = Z, X = LOAD *A
 	STORE *D = Z, X = LOAD *A,  Y = LOAD *B
 	STORE *D = Z, Y = LOAD *B,  X = LOAD *A
+```
 
- (*) It _must_ be assumed that overlapping memory accesses may be merged or
-     discarded.  This means that for:
+ (*) It _must_ be assumed that overlapping memory accesses may be merged or discarded.  This means that for:
 
+```c
 	X = *A; Y = *(A + 4);
+```
 
      we may get any one of the following sequences:
 
+```c
 	X = LOAD *A; Y = LOAD *(A + 4);
 	Y = LOAD *(A + 4); X = LOAD *A;
 	{X, Y} = LOAD {*A, *(A + 4) };
+```
 
      And for:
 
+```c
 	*A = X; *(A + 4) = Y;
+```
 
      we may get any of:
 
+```c
 	STORE *A = X; STORE *(A + 4) = Y;
 	STORE *(A + 4) = Y; STORE *A = X;
 	STORE {*A, *(A + 4) } = {X, Y};
+```
 
 And there are anti-guarantees:
 
- (*) These guarantees do not apply to bitfields, because compilers often
-     generate code to modify these using non-atomic read-modify-write
-     sequences.  Do not attempt to use bitfields to synchronize parallel
-     algorithms.
+ (*) These guarantees do not apply to bitfields, because compilers often generate code to modify these using non-atomic read-modify-write sequences.  Do not attempt to use bitfields to synchronize parallel algorithms.
 
- (*) Even in cases where bitfields are protected by locks, all fields
-     in a given bitfield must be protected by one lock.  If two fields
-     in a given bitfield are protected by different locks, the compiler's
-     non-atomic read-modify-write sequences can cause an update to one
-     field to corrupt the value of an adjacent field.
+ (*) Even in cases where bitfields are protected by locks, all fields in a given bitfield must be protected by one lock.  If two fields in a given bitfield are protected by different locks, the compiler's non-atomic read-modify-write sequences can cause an update to one field to corrupt the value of an adjacent field.
 
- (*) These guarantees apply only to properly aligned and sized scalar
-     variables.  "Properly sized" currently means variables that are
-     the same size as "char", "short", "int" and "long".  "Properly
-     aligned" means the natural alignment, thus no constraints for
-     "char", two-byte alignment for "short", four-byte alignment for
-     "int", and either four-byte or eight-byte alignment for "long",
-     on 32-bit and 64-bit systems, respectively.  Note that these
-     guarantees were introduced into the C11 standard, so beware when
-     using older pre-C11 compilers (for example, gcc 4.6).  The portion
-     of the standard containing this guarantee is Section 3.14, which
-     defines "memory location" as follows:
+ (*) These guarantees apply only to properly aligned and sized scalar variables.  "Properly sized" currently means variables that are the same size as "char", "short", "int" and "long".  "Properly aligned" means the natural alignment, thus no constraints for "char", two-byte alignment for "short", four-byte alignment for "int", and either four-byte or eight-byte alignment for "long", on 32-bit and 64-bit systems, respectively.  Note that these guarantees were introduced into the C11 standard, so beware when using older pre-C11 compilers (for example, gcc 4.6).  The portion of the standard containing this guarantee is Section 3.14, which defines "memory location" as follows:
 
-     	memory location
-		either an object of scalar type, or a maximal sequence
-		of adjacent bit-fields all having nonzero width
+     	memory location either an object of scalar type, or a maximal sequence of adjacent bit-fields all having nonzero width
 
-		NOTE 1: Two threads of execution can update and access
-		separate memory locations without interfering with
-		each other.
+		NOTE 1: Two threads of execution can update and access separate memory locations without interfering with each other.
 
-		NOTE 2: A bit-field and an adjacent non-bit-field member
-		are in separate memory locations. The same applies
-		to two bit-fields, if one is declared inside a nested
-		structure declaration and the other is not, or if the two
-		are separated by a zero-length bit-field declaration,
-		or if they are separated by a non-bit-field member
-		declaration. It is not safe to concurrently update two
-		bit-fields in the same structure if all members declared
-		between them are also bit-fields, no matter what the
-		sizes of those intervening bit-fields happen to be.
+		NOTE 2: A bit-field and an adjacent non-bit-field member are in separate memory locations. The same applies to two bit-fields, if one is declared inside a nested structure declaration and the other is not, or if the two are separated by a zero-length bit-field declaration, or if they are separated by a non-bit-field member declaration. It is not safe to concurrently update two bit-fields in the same structure if all members declared between them are also bit-fields, no matter what the sizes of those intervening bit-fields happen to be.
 
 
 =========================
