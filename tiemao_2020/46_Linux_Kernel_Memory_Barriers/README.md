@@ -38,11 +38,11 @@ Note also that it is possible that a barrier may be a no-op for an architecture 
 
 本文档并不是硬性规范；
 并且为了阅读方便, 做了一定程度的精简。
-目的是为Linux支持的各种内存屏障做一个使用参考，如果有不理解的地方, 可以到在线论坛和社区提问。
-某些问题可以参考源代码仓库中的 `tools/memory-model/` 目录，这里面定义了内存一致性模型的正式文档和相关说明。
-当然, “内存模型” 只是开发者和维护人员一致达成的共识，而不是硬性的规定。
+目的是为Linux支持的各种内存屏障做一个使用参考, 如果有不理解的地方, 可以到在线论坛和社区提问。
+某些问题可以参考源代码仓库中的 `tools/memory-model/` 目录, 这里面定义了内存一致性模型的正式文档和相关说明。
+当然, “内存模型” 只是开发者和维护人员一致达成的共识, 而不是硬性的规定。
 
-再强调一次，本文档不是 Linux 对硬件预期的规范。
+再强调一次, 本文档不是 Linux 对硬件预期的规范。
 
 编写本文档有下面两个目的：
 
@@ -50,9 +50,9 @@ Note also that it is possible that a barrier may be a no-op for an architecture 
 
 - （2）提供参考文档来介绍如何使用现有的各种内存屏障。
 
-请注意，各种CPU物理架构提供的内存屏障, 可能会比Linux规定的功能要多【副作用或额外功能】； 但如果某种CPU支持的功能少于最低要求， 那么我们可以说这种CPU架构不行。
+请注意, 各种CPU物理架构提供的内存屏障, 可能会比Linux规定的功能要多【副作用或额外功能】； 但如果某种CPU支持的功能少于最低要求,  那么我们可以说这种CPU架构不行。
 
-还需要注意，对于特定CPU体系结构而言，一个屏障指令可能没有对应的真实操作（no-op），因为根据这种CPU的运行机制, 可能就不需要使用这个内存屏障。
+还需要注意, 对于特定CPU体系结构而言, 一个屏障指令可能没有对应的真实操作（no-op）, 因为根据这种CPU的运行机制, 可能就不需要使用这个内存屏障。
 
 
 ========
@@ -166,8 +166,15 @@ Each CPU executes a program that generates memory access operations.  In the abs
 
 So in the above diagram, the effects of the memory operations performed by a CPU are perceived by the rest of the system as the operations cross the interface between the CPU and rest of the system (the dotted lines).
 
-
 For example, consider the following sequence of events:
+
+
+每一个CPU执行的程序都会生成访问内存的操作。 在抽象CPU中, 内存操作的顺序非常宽松, 而且每个CPU可以按自己喜欢的任意顺序来执行这些内存操作, 只要保证程序的因果关系即可。 同样, 编译器也可以按自己喜欢的顺序生成对应的指令, 只要不影响程序的表现即可。
+
+在上图中, 当某个操作越过CPU与系统其他部分之间的交界时（虚线部分）, 这个CPU对内存所执行的操作的效果, 就会被系统的其余部分感知到。
+
+
+例如, 考虑以下事件序列：
 
 ```c
 	CPU 1		CPU 2
