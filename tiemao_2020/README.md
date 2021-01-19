@@ -38,7 +38,7 @@
 * [31.DROP USER语句删除MySQL用户账号](./31_mysql_account_drop_user/README.md)【粗翻】
 * [32.Spring Boot 实战教程](./32_spring-boot-tutorials/README.md)
 * [33.数据结构与集合](./33_collection_intro/README.md)
-* [34.Word常用技巧](./34_word_skill/README.md)
+* [34.Word创建目录与导出技巧](./34_word_skill/README.md)【已完成】
 * [35.MySQL优化手册 - 官方文档[中文版]](./35_mysql_optimization/README.md)【系列文章】
 * [36.InnoDB引擎中AUTO_INCREMENT的处理机制](.//README.md)
 * [37.CompressedOops详解](./37_CompressedOops/README.md)

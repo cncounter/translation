@@ -56,7 +56,7 @@ GITHUB官方帮助文档(中文版): <https://docs.github.com/cn/free-pro-team@l
 * [31.DROP USER语句删除MySQL用户账号](./tiemao_2020/31_mysql_account_drop_user/README.md)【粗翻】
 * [32.Spring Boot 实战教程](./tiemao_2020/32_spring-boot-tutorials/README.md)
 * [33.数据结构与集合](./tiemao_2020/33_collection_intro/README.md)
-* [34.Word常用技巧](./tiemao_2020/34_word_skill/README.md)
+* [34.Word创建目录与导出技巧](./tiemao_2020/34_word_skill/README.md)【已完成】
 * [35.MySQL优化手册 - 官方文档[中文版]](./tiemao_2020/35_mysql_optimization/README.md)【系列文章】
 * [36.InnoDB引擎中AUTO_INCREMENT的处理机制](./tiemao_2020//README.md)
 * [37.CompressedOops详解](./tiemao_2020/37_CompressedOops/README.md)
