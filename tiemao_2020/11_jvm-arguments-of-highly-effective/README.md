@@ -1,13 +1,13 @@
 # 7 JVM arguments of Highly Effective Applications
 
 
-＃ 最重要的JVM性能调优参数
+＃ 高效提升系统性能的JVM调优参数
 
 At the time (March 2020) of writing this article there are 600+ arguments that you can pass to JVM just around Garbage collection and memory. If you include other aspects, total JVM arguments count will easily cross 1000+. It’s way too many arguments for anyone to digest and comprehend. In this article, we are highlighting seven important JVM arguments that you may find it useful.
 
-截止目前, 可配置的JVM参数已达1000多个，其中GC和内存相关的配置参数有600多个。
-参数太多是个麻烦，让我们难以下手，学习和理解起来也很费事。
-本文主要介绍最重要的七个JVM参数，学会之后你会发现水平提高了一大截。
+截止2020年, 可配置的JVM参数已有1000多个，其中GC和内存相关的配置参数有600个左右。
+参数太多很容易造成困扰，让人难以下手，学习和理解起来都很伤头发, 也很伤脑细胞。
+本文着重介绍其中最重要的几个JVM参数，学会之后,你的水平肯定会提高一大截。
 
 ## 1. `-Xmx` and `-XX:MaxMetaspaceSize`
 
