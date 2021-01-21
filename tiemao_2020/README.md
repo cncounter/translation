@@ -14,7 +14,7 @@
 * [08.获取JVM堆内存转储的常用方法](./08_java-heap-dump/README.md)【已完成】
 * [09.获取Java线程转储的常用方法](./09_java-thread-dump/README.md)【已完成】
 * [10.高级数据结构: 跳跃表（Skip List）](./10_skip-list/README.md)【粗翻】
-* [11.提高性能的JVM参数简介](./11_jvm-arguments-of-highly-effective/README.md)【粗翻】
+* [11.JVM最重要的性能调优参数](./11_jvm-arguments-of-highly-effective/README.md)【已完成】
 - [12.1 MAVEN基础系列（一） 构建生命周期](./12_introduction-to-the-pom/introduction-to-the-lifecycle.md)【粗翻】
 - [12.2 MAVEN基础系列（二） POM文件](./12_introduction-to-the-pom/README.md)【粗翻】
 * [13.为什么问题诊断和排查这么困难](./13_why-troubleshooting-so-hard/README.md)【已完成】
