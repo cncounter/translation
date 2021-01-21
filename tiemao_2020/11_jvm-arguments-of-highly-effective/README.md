@@ -400,19 +400,34 @@ To avoid these commotions, it’s highly recommended to set the time zone at the
 -Duser.timezone="Asia/Shanghai"
 ```
 
+如果你不知道可以设置哪些时区, 可以通过下面的代码来查看:
+
 或者 Java代码:
 
 ```java
 import java.util.*;
 // 查看可用的系统时区
 System.out.println(Arrays.toString(TimeZone.getAvailableIDs()));
-// 结果很多, 示例:
+// 结果很多, 节选如下:
 /*
-Etc/GMT, Etc/GMT+0, Etc/GMT+1, Etc/GMT+10, Etc/GMT+11, Etc/GMT+12,
-Etc/GMT+2, Etc/GMT+3, Etc/GMT+4, Etc/GMT+5, Etc/GMT+6, Etc/GMT+7, Etc/GMT+8, Etc/GMT+9,
-Etc/GMT-0, Etc/GMT-1, Etc/GMT-10, Etc/GMT-11, Etc/GMT-12, Etc/GMT-13, Etc/GMT-14,
-Etc/GMT-2, Etc/GMT-3, Etc/GMT-4, Etc/GMT-5, Etc/GMT-6, Etc/GMT-7, Etc/GMT-8, Etc/GMT-9,
-Etc/GMT0, Etc/Greenwich, Etc/UCT, Etc/UTC
+Africa/Abidjan
+America/Adak
+America/Mexico_City
+Antarctica/South_Pole
+Asia/Hong_Kong
+Asia/Shanghai
+Asia/Singapore
+Australia/Melbourne
+Etc/GMT
+Etc/GMT+0
+Etc/GMT+12
+Etc/GMT+8
+Etc/GMT-14
+Etc/UTC
+Europe/London
+GMT
+CST
+......
 */
 ```
 
