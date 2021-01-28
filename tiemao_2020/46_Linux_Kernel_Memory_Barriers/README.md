@@ -286,19 +286,19 @@ There are some minimal guarantees that may be expected of a CPU:
   Q = READ_ONCE(P); D = READ_ONCE(*Q);
 ```
 
-     the CPU will issue the following memory operations:
+the CPU will issue the following memory operations:
 
 ```c
   Q = LOAD P, D = LOAD *Q
 ```
 
-     and always in that order.  However, on DEC Alpha, READ_ONCE() also emits a memory-barrier instruction, so that a DEC Alpha CPU will instead issue the following memory operations:
+and always in that order.  However, on DEC Alpha, READ_ONCE() also emits a memory-barrier instruction, so that a DEC Alpha CPU will instead issue the following memory operations:
 
 ```c
   Q = LOAD P, MEMORY_BARRIER, D = LOAD *Q, MEMORY_BARRIER
 ```
 
-     Whether on DEC Alpha or not, the READ_ONCE() also prevents compiler mischief.
+Whether on DEC Alpha or not, the READ_ONCE() also prevents compiler mischief.
 
  (*) Overlapping loads and stores within a particular CPU will appear to be ordered within that CPU.  This means that for:
 
@@ -306,25 +306,25 @@ There are some minimal guarantees that may be expected of a CPU:
   a = READ_ONCE(*X); WRITE_ONCE(*X, b);
 ```
 
-     the CPU will only issue the following sequence of memory operations:
+the CPU will only issue the following sequence of memory operations:
 
 ```c
   a = LOAD *X, STORE *X = b
 ```
 
-     And for:
+And for:
 
 ```c
   WRITE_ONCE(*X, c); d = READ_ONCE(*X);
 ```
 
-     the CPU will only issue:
+the CPU will only issue:
 
 ```c
   STORE *X = c, d = LOAD *X
 ```
 
-     (Loads and stores overlap if they are targeted at overlapping pieces of memory).
+(Loads and stores overlap if they are targeted at overlapping pieces of memory).
 
 And there are a number of things that _must_ or _must_not_ be assumed:
 
@@ -336,7 +336,7 @@ And there are a number of things that _must_ or _must_not_ be assumed:
   X = *A; Y = *B; *D = Z;
 ```
 
-     we may get any of the following sequences:
+we may get any of the following sequences:
 
 ```c
   X = LOAD *A,  Y = LOAD *B,  STORE *D = Z
@@ -353,7 +353,7 @@ And there are a number of things that _must_ or _must_not_ be assumed:
   X = *A; Y = *(A + 4);
 ```
 
-     we may get any one of the following sequences:
+we may get any one of the following sequences:
 
 ```c
   X = LOAD *A; Y = LOAD *(A + 4);
@@ -361,13 +361,13 @@ And there are a number of things that _must_ or _must_not_ be assumed:
   {X, Y} = LOAD {*A, *(A + 4) };
 ```
 
-     And for:
+And for:
 
 ```c
   *A = X; *(A + 4) = Y;
 ```
 
-     we may get any of:
+we may get any of:
 
 ```c
   STORE *A = X; STORE *(A + 4) = Y;
@@ -383,7 +383,7 @@ And there are anti-guarantees:
 
  (*) These guarantees apply only to properly aligned and sized scalar variables.  "Properly sized" currently means variables that are the same size as "char", "short", "int" and "long".  "Properly aligned" means the natural alignment, thus no constraints for "char", two-byte alignment for "short", four-byte alignment for "int", and either four-byte or eight-byte alignment for "long", on 32-bit and 64-bit systems, respectively.  Note that these guarantees were introduced into the C11 standard, so beware when using older pre-C11 compilers (for example, gcc 4.6).  The portion of the standard containing this guarantee is Section 3.14, which defines "memory location" as follows:
 
-       memory location either an object of scalar type, or a maximal sequence of adjacent bit-fields all having nonzero width
+> memory location either an object of scalar type, or a maximal sequence of adjacent bit-fields all having nonzero width
 
     NOTE 1: Two threads of execution can update and access separate memory locations without interfering with each other.
 
@@ -417,127 +417,127 @@ Memory barriers come in four basic varieties:
 
  (1) Write (or store) memory barriers.
 
-     A write memory barrier gives a guarantee that all the STORE operations
-     specified before the barrier will appear to happen before all the STORE
-     operations specified after the barrier with respect to the other
-     components of the system.
+A write memory barrier gives a guarantee that all the STORE operations
+specified before the barrier will appear to happen before all the STORE
+operations specified after the barrier with respect to the other
+components of the system.
 
-     A write barrier is a partial ordering on stores only; it is not required
-     to have any effect on loads.
+A write barrier is a partial ordering on stores only; it is not required
+to have any effect on loads.
 
-     A CPU can be viewed as committing a sequence of store operations to the
-     memory system as time progresses.  All stores _before_ a write barrier
-     will occur _before_ all the stores after the write barrier.
+A CPU can be viewed as committing a sequence of store operations to the
+memory system as time progresses.  All stores _before_ a write barrier
+will occur _before_ all the stores after the write barrier.
 
-     [!] Note that write barriers should normally be paired with read or data
-     dependency barriers; see the "SMP barrier pairing" subsection.
-
-
- (2) Data dependency barriers.
-
-     A data dependency barrier is a weaker form of read barrier.  In the case
-     where two loads are performed such that the second depends on the result
-     of the first (eg: the first load retrieves the address to which the second
-     load will be directed), a data dependency barrier would be required to
-     make sure that the target of the second load is updated after the address
-     obtained by the first load is accessed.
-
-     A data dependency barrier is a partial ordering on interdependent loads
-     only; it is not required to have any effect on stores, independent loads
-     or overlapping loads.
-
-     As mentioned in (1), the other CPUs in the system can be viewed as
-     committing sequences of stores to the memory system that the CPU being
-     considered can then perceive.  A data dependency barrier issued by the CPU
-     under consideration guarantees that for any load preceding it, if that
-     load touches one of a sequence of stores from another CPU, then by the
-     time the barrier completes, the effects of all the stores prior to that
-     touched by the load will be perceptible to any loads issued after the data
-     dependency barrier.
-
-     See the "Examples of memory barrier sequences" subsection for diagrams
-     showing the ordering constraints.
-
-     [!] Note that the first load really has to have a _data_ dependency and
-     not a control dependency.  If the address for the second load is dependent
-     on the first load, but the dependency is through a conditional rather than
-     actually loading the address itself, then it's a _control_ dependency and
-     a full read barrier or better is required.  See the "Control dependencies"
-     subsection for more information.
-
-     [!] Note that data dependency barriers should normally be paired with
-     write barriers; see the "SMP barrier pairing" subsection.
+[!] Note that write barriers should normally be paired with read or data
+dependency barriers; see the "SMP barrier pairing" subsection.
 
 
- (3) Read (or load) memory barriers.
+(2) Data dependency barriers.
 
-     A read barrier is a data dependency barrier plus a guarantee that all the
-     LOAD operations specified before the barrier will appear to happen before
-     all the LOAD operations specified after the barrier with respect to the
-     other components of the system.
+A data dependency barrier is a weaker form of read barrier.  In the case
+where two loads are performed such that the second depends on the result
+of the first (eg: the first load retrieves the address to which the second
+load will be directed), a data dependency barrier would be required to
+make sure that the target of the second load is updated after the address
+obtained by the first load is accessed.
 
-     A read barrier is a partial ordering on loads only; it is not required to
-     have any effect on stores.
+A data dependency barrier is a partial ordering on interdependent loads
+only; it is not required to have any effect on stores, independent loads
+or overlapping loads.
 
-     Read memory barriers imply data dependency barriers, and so can substitute
-     for them.
+As mentioned in (1), the other CPUs in the system can be viewed as
+committing sequences of stores to the memory system that the CPU being
+considered can then perceive.  A data dependency barrier issued by the CPU
+under consideration guarantees that for any load preceding it, if that
+load touches one of a sequence of stores from another CPU, then by the
+time the barrier completes, the effects of all the stores prior to that
+touched by the load will be perceptible to any loads issued after the data
+dependency barrier.
 
-     [!] Note that read barriers should normally be paired with write barriers;
-     see the "SMP barrier pairing" subsection.
+See the "Examples of memory barrier sequences" subsection for diagrams
+showing the ordering constraints.
+
+[!] Note that the first load really has to have a _data_ dependency and
+not a control dependency.  If the address for the second load is dependent
+on the first load, but the dependency is through a conditional rather than
+actually loading the address itself, then it's a _control_ dependency and
+a full read barrier or better is required.  See the "Control dependencies"
+subsection for more information.
+
+[!] Note that data dependency barriers should normally be paired with
+write barriers; see the "SMP barrier pairing" subsection.
 
 
- (4) General memory barriers.
+(3) Read (or load) memory barriers.
 
-     A general memory barrier gives a guarantee that all the LOAD and STORE
-     operations specified before the barrier will appear to happen before all
-     the LOAD and STORE operations specified after the barrier with respect to
-     the other components of the system.
+A read barrier is a data dependency barrier plus a guarantee that all the
+LOAD operations specified before the barrier will appear to happen before
+all the LOAD operations specified after the barrier with respect to the
+other components of the system.
 
-     A general memory barrier is a partial ordering over both loads and stores.
+A read barrier is a partial ordering on loads only; it is not required to
+have any effect on stores.
 
-     General memory barriers imply both read and write memory barriers, and so
-     can substitute for either.
+Read memory barriers imply data dependency barriers, and so can substitute
+for them.
+
+[!] Note that read barriers should normally be paired with write barriers;
+see the "SMP barrier pairing" subsection.
+
+
+(4) General memory barriers.
+
+A general memory barrier gives a guarantee that all the LOAD and STORE
+operations specified before the barrier will appear to happen before all
+the LOAD and STORE operations specified after the barrier with respect to
+the other components of the system.
+
+A general memory barrier is a partial ordering over both loads and stores.
+
+General memory barriers imply both read and write memory barriers, and so
+can substitute for either.
 
 
 And a couple of implicit varieties:
 
- (5) ACQUIRE operations.
+(5) ACQUIRE operations.
 
-     This acts as a one-way permeable barrier.  It guarantees that all memory
-     operations after the ACQUIRE operation will appear to happen after the
-     ACQUIRE operation with respect to the other components of the system.
-     ACQUIRE operations include LOCK operations and both smp_load_acquire()
-     and smp_cond_load_acquire() operations.
+This acts as a one-way permeable barrier.  It guarantees that all memory
+operations after the ACQUIRE operation will appear to happen after the
+ACQUIRE operation with respect to the other components of the system.
+ACQUIRE operations include LOCK operations and both smp_load_acquire()
+and smp_cond_load_acquire() operations.
 
-     Memory operations that occur before an ACQUIRE operation may appear to
-     happen after it completes.
+Memory operations that occur before an ACQUIRE operation may appear to
+happen after it completes.
 
-     An ACQUIRE operation should almost always be paired with a RELEASE
-     operation.
+An ACQUIRE operation should almost always be paired with a RELEASE
+operation.
 
 
- (6) RELEASE operations.
+(6) RELEASE operations.
 
-     This also acts as a one-way permeable barrier.  It guarantees that all
-     memory operations before the RELEASE operation will appear to happen
-     before the RELEASE operation with respect to the other components of the
-     system. RELEASE operations include UNLOCK operations and
-     smp_store_release() operations.
+This also acts as a one-way permeable barrier.  It guarantees that all
+memory operations before the RELEASE operation will appear to happen
+before the RELEASE operation with respect to the other components of the
+system. RELEASE operations include UNLOCK operations and
+smp_store_release() operations.
 
-     Memory operations that occur after a RELEASE operation may appear to
-     happen before it completes.
+Memory operations that occur after a RELEASE operation may appear to
+happen before it completes.
 
-     The use of ACQUIRE and RELEASE operations generally precludes the need
-     for other sorts of memory barrier.  In addition, a RELEASE+ACQUIRE pair is
-     -not- guaranteed to act as a full memory barrier.  However, after an
-     ACQUIRE on a given variable, all memory accesses preceding any prior
-     RELEASE on that same variable are guaranteed to be visible.  In other
-     words, within a given variable's critical section, all accesses of all
-     previous critical sections for that variable are guaranteed to have
-     completed.
+The use of ACQUIRE and RELEASE operations generally precludes the need
+for other sorts of memory barrier.  In addition, a RELEASE+ACQUIRE pair is
+-not- guaranteed to act as a full memory barrier.  However, after an
+ACQUIRE on a given variable, all memory accesses preceding any prior
+RELEASE on that same variable are guaranteed to be visible.  In other
+words, within a given variable's critical section, all accesses of all
+previous critical sections for that variable are guaranteed to have
+completed.
 
-     This means that ACQUIRE acts as a minimal "acquire" operation and
-     RELEASE acts as a minimal "release" operation.
+This means that ACQUIRE acts as a minimal "acquire" operation and
+RELEASE acts as a minimal "release" operation.
 
 A subset of the atomic operations described in atomic_t.txt have ACQUIRE and
 RELEASE variants in addition to fully-ordered and relaxed (no barrier
@@ -602,6 +602,7 @@ The usage requirements of data dependency barriers are a little subtle, and
 it's not always obvious that they're needed.  To illustrate, consider the
 following sequence of events:
 
+```
   CPU 1          CPU 2
   ===============        ===============
   { A == 1, B == 2, C == 3, P == &A, Q == &C }
@@ -610,6 +611,7 @@ following sequence of events:
   WRITE_ONCE(P, &B);
             Q = READ_ONCE(P);
             D = *Q;
+```
 
 There's a clear data dependency here, and it would seem that by the end of the
 sequence, Q must be either &A or &B, and that:
