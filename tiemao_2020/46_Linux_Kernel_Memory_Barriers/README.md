@@ -241,13 +241,20 @@ There is an obvious data dependency here, as the value loaded into D depends on 
 
 Note that CPU 2 will never try and load C into D because the CPU will load P into Q before issuing the load of `*Q`.
 
-请注意，CPU 2 决不会尝试直接将C的值加载到D中，因为在发出加载 `*Q` 之前，会先将P加载到Q中。
+请注意，CPU 2 决不会尝试直接将C的值加载到D中，因为在发出 `*Q` 的加载指令前，会先将P加载到Q中。
 
 
-DEVICE OPERATIONS
+### DEVICE OPERATIONS
 -----------------
 
 Some devices present their control interfaces as collections of memory locations, but the order in which the control registers are accessed is very important.  For instance, imagine an ethernet card with a set of internal registers that are accessed through an address port register (A) and a data port register (D).  To read internal register 5, the following code might then be used:
+
+### 设备操作
+-----------------
+
+有些设备会映射一组内存位置来表示自身的控制接口，所以控制寄存器的访问顺序就非常重要了。
+例如，有一张网卡, 具有一组内部寄存器，可以通过地址端口寄存器 (A) 和数据端口寄存器 (D) 来访问这些寄存器。
+要读取内部寄存器 5，可以使用以下代码：
 
 ```c
 *A = 5;
@@ -256,12 +263,16 @@ x = *D;
 
 but this might show up as either of the following two sequences:
 
+但这可能会有两种不同的执行顺序:
+
 ```c
-STORE *A = 5, x = LOAD *D
-x = LOAD *D, STORE *A = 5
+STORE *A = 5,   x = LOAD *D
+x = LOAD *D,    STORE *A = 5
 ```
 
 the second of which will almost certainly result in a malfunction, since it set the address _after_ attempting to read the register.
+
+可以肯定, 第二种顺序会产生问题，因为在读取寄存器之后才去设置地址。
 
 
 GUARANTEES
