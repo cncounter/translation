@@ -11,7 +11,7 @@ JAR file is a file format based on the popular ZIP file format and is used for a
 
 ## JAR文件格式
 
-JAR文件格式基于ZIP文件规范，用于将多个文件聚合到一个文件中。
+JAR文件基于ZIP文件格式，用于将多个文件打包成一个压缩文件。
 本质上JAR文件就是一个zip文件，其中包含一个可选的 `META-INF` 目录。
 可以通过命令行工具 `jar` 打包jar文件, 也可以在程序中使用[`java.util.jar`](https://docs.oracle.com/en/java/javase/14/docs/api/java.base/java/util/jar/package-summary.html)里面的工具类来创建jar文件。
 JAR文件的名称没有限制，只要符合所在平台上的文件命名规则即可。
@@ -20,23 +20,23 @@ JAR文件的名称没有限制，只要符合所在平台上的文件命名规�
 
 ## Modular JAR files
 
-A modular JAR file is a JAR file that has a module descriptor, `module-info.class`, in the top-level directory (or root) directory. The module descriptor is the binary form of a module declaration. (Note the section on [multi-release JAR files](https://docs.oracle.com/en/java/javase/14/docs/specs/jar/jar.html#multi-release-jar-files) further refines the definition of modular JAR files.)
+A modular JAR file is a JAR file that has a module descriptor, `module-info.class`, in the top-level directory (or root) directory. The module descriptor is the binary form of a module declaration. (Note the section on [multi-release JAR files](#multi-release-jar-files) further refines the definition of modular JAR files.)
 
 A modular JAR file deployed on the module path, as opposed to the class path, is an *explicit* module. Dependences and service providers are declared in the module descriptor. If the modular JAR file is deployed on the class path then it behaves as if a non-modular JAR file.
 
-A non-modular JAR file deployed on the module path is an *automatic module*. If the JAR file has a main attribute `Automatic-Module-Name` (see [Main Attributes](https://docs.oracle.com/en/java/javase/14/docs/specs/jar/jar.html#main-attributes)) then the attribute's value is the module name, otherwise the module name is derived from the name of the JAR file as specified in [`ModuleFinder.of(Path...)`](https://docs.oracle.com/en/java/javase/14/docs/api/java.base/java/lang/module/ModuleFinder.html#automatic-modules).
+A non-modular JAR file deployed on the module path is an *automatic module*. If the JAR file has a main attribute `Automatic-Module-Name` (see [Main Attributes](#main-attributes)) then the attribute's value is the module name, otherwise the module name is derived from the name of the JAR file as specified in [`ModuleFinder.of(Path...)`](https://docs.oracle.com/en/java/javase/14/docs/api/java.base/java/lang/module/ModuleFinder.html#automatic-modules).
 
 ## 模块化JAR文件
 
 模块化JAR文件也是JAR文件格式，其内部的顶级路径（根路径）下有一个模块描述文件 `module-info.class`。
-模块描述文件是模块声明的二进制形式。  更详细的模块化JAR文件定义请参考: [multi-release JAR files](https://docs.oracle.com/en/java/javase/14/docs/specs/jar/jar.html#multi-release-jar-files)。
+模块描述文件是模块声明的二进制形式。  更详细的模块化JAR文件定义请参考: [multi-release JAR files](#multi-release-jar-files)。
 
 相对于类路径，部署在模块路径下的模块化JAR文件是 **显式的** 模块。
 依赖项和服务提供者都在模块描述符中声明。
 如果将模块化JAR文件部署到类路径中，则其行为就如同非模块化的JAR文件一样。
 
 部署在模块路径下的非模块化JAR文件则是 **自动模块**。
-如果这个JAR文件具有主属性 [`Automatic-Module-Name`](https://docs.oracle.com/en/java/javase/14/docs/specs/jar/jar.html#main-attributes)，那么模块名称就是该属性的值，否则模块名称根据 Jar 文件名推导得出，具体推导规则请参考: [`ModuleFinder.of(Path...)`](https://docs.oracle.com/en/java/javase/14/docs/api/java.base/java/lang/module/ModuleFinder.html#automatic-modules).
+如果JAR文件具有主属性 [`Automatic-Module-Name`](#main-attributes)，那么模块名称就是该属性的值，否则模块名称根据 Jar 文件名推导得出，具体推导规则请参考: [`ModuleFinder.of(Path...)`](https://docs.oracle.com/en/java/javase/14/docs/api/java.base/java/lang/module/ModuleFinder.html#automatic-modules).
 
 ## Multi-release JAR files
 
@@ -57,14 +57,14 @@ A multi-release JAR file is identified by the main attribute:
 Multi-Release: true
 ```
 
-declared in the main section of the [JAR Manifest](https://docs.oracle.com/en/java/javase/14/docs/specs/jar/jar.html#jar-manifest).
+declared in the main section of the [JAR Manifest](#jar-manifest).
 
-Classes and resource files dependent on a major version, 9 or greater, of a Java platform release may be located under a *versioned directory* instead of under the top-level (or root) directory. The versioned directory is located under the [the META-INF directory](https://docs.oracle.com/en/java/javase/14/docs/specs/jar/jar.html#the-meta-inf-directory) and is of the form:
+Classes and resource files dependent on a major version, 9 or greater, of a Java platform release may be located under a *versioned directory* instead of under the top-level (or root) directory. The versioned directory is located under the [the META-INF directory](#the-meta-inf-directory) and is of the form:
 
-在 [JAR Manifest](https://docs.oracle.com/en/java/javase/14/docs/specs/jar/jar.html#jar-manifest) 的main这一节中声明。
+在 [JAR Manifest](#jar-manifest) 的main这一节中声明。
 
 依赖于Java 9 或更高版本的类和资源文件可以放到 **特定版本目录** 下，而不是顶级目录中。
-版本目录位于 [META-INF](https://docs.oracle.com/en/java/javase/14/docs/specs/jar/jar.html#the-meta-inf-directory) 下面，其格式为：
+版本目录位于 [META-INF](#the-meta-inf-directory) 下面，其格式为：
 
 ```
 META-INF/versions/N
@@ -89,7 +89,7 @@ A class file under a versioned directory, of version `N` say, in a multi-release
 如果类文件中的类是 public 或 protected 的，那么根目录下也必须能够找到具有完全限定名和访问修饰符的class。
 通过逻辑扩展，这同样适用于版本小于“ N”的类文件。
 
-If a multi-release JAR file is deployed on the class path or module path (as an automatic module or an explicit [multi-release module](https://docs.oracle.com/en/java/javase/14/docs/specs/jar/jar.html#modular-multi-release-jar-files)) of major version `N` of a Java platform release runtime, then a class loader loading classes from that JAR file will first search for class files under the `N`th versioned directory, then prior versioned directories in descending order (if present), down to a lower major version bound of `9`, and finally under the top-level directory.
+If a multi-release JAR file is deployed on the class path or module path (as an automatic module or an explicit [multi-release module](#modular-multi-release-jar-files)) of major version `N` of a Java platform release runtime, then a class loader loading classes from that JAR file will first search for class files under the `N`th versioned directory, then prior versioned directories in descending order (if present), down to a lower major version bound of `9`, and finally under the top-level directory.
 
 The public API exported by the classes in a multi-release JAR file must be *exactly* the same across versions, hence at a minimum why versioned public or protected classes for class files under a versioned directory must preside over classes for class files under the top-level directory. It is difficult and costly to perform extensive API verification checks as such tooling, such as the `jar` tool, is not required to perform extensive verification and a Java runtime is not required to perform any verification. A future release of this specification may relax the exact same API constraint to support careful evolution.
 
@@ -117,7 +117,7 @@ Java运行时的引导类加载器（ boot class loader）不支持多版本JAR�
 
 ### Modular multi-release JAR files
 
-A modular multi-release JAR file is a multi-release JAR file that has a module descriptor, `module-info.class`, in the top-level directory (as for a [modular](https://docs.oracle.com/en/java/javase/14/docs/specs/jar/jar.html#modular-jar-files) JAR file), or directly in a versioned directory.
+A modular multi-release JAR file is a multi-release JAR file that has a module descriptor, `module-info.class`, in the top-level directory (as for a [modular](#modular-jar-files) JAR file), or directly in a versioned directory.
 
 A public or protected class in a non-exported package (that is not declared as exported in the module descriptor) need not preside over a class of the same fully qualified name and access modifier whose class file is present under the top-level directory.
 
@@ -129,6 +129,22 @@ Any versioned module descriptor that presides over a lesser versioned module des
 2. the presiding versioned descriptor can have different `uses` clauses, even of service types defined outside of `java.*` and `jdk.*` modules.
 
 Tooling, such as the `jar` tool, should perform such verification of versioned module descriptors but a Java runtime is not required to perform any verification.
+
+### 模块化的多版本JAR文件
+
+模块化的多版本JAR文件, 内部兼容多个JDK版本，通过描述模块信息的 `module-info.class` 文件来描述, 这个描述文件位于模块化JAR文件的顶层目录, 或者位于版本目录中。
+
+在模块描述符中未声明为导出的包称为非导出包, 其中的 public 或 protected 类, 不需要具有相同的完全限定名和访问修饰符的类，其 class 文件直接放到顶级目录下。
+
+模块描述符与其他的class文件或资源文件并不区别对待。 模块描述符可以存放在版本化区域下，而不必存放在顶级目录下。 这样就确保了只有 Java 8 版本的类会出现在顶级目录下，而Java 9版本的类（包括模块描述符）会出现在`9`版本目录下。
+
+更小版本的模块描述符, 或者顶层的模块描述符, 都必须与`M`相同，但有两个例外：
+
+1. 主版本描述符可以和 `java.*` 和 `jdk.*` 模块具有不同的 non-`transitive` `requires` 子句；
+2. 主导版本描述符可以具有不同的 `uses` 子句，即使是在 `java.*` 和 `jdk.*` 模块之外定义的服务类型也是如此。
+
+例如 `jar` 之类的工具，应该执行版本化模块描述符的验证，但 Java 运行时不需要执行任何验证。
+
 
 ## The META-INF directory
 
@@ -156,7 +172,7 @@ This directory stores all the service provider configuration files for JAR files
 
 - `versions/`
 
-This directory contains underneath it versioned class and resource files for a [multi-release](https://docs.oracle.com/en/java/javase/14/docs/specs/jar/jar.html#multi-release-jar-files) JAR file.
+This directory contains underneath it versioned class and resource files for a [multi-release](#multi-release-jar-files) JAR file.
 
 ## Name-Value pairs and Sections
 
@@ -223,9 +239,9 @@ Main attributes are the attributes that are present in the main section of the m
   - Manifest-Version: Defines the manifest file version. The value is a legitimate version number, as described in the above spec.
   - Created-By: Defines the version and the vendor of the java implementation on top of which this manifest file is generated. This attribute is generated by the `jar` tool.
   - Signature-Version: Defines the signature version of the jar file. The value should be a valid *version-number* string.
-  - Class-Path: The value of this attribute specifies the relative URLs of the libraries that this application needs. URLs are separated by one or more spaces. The application class loader uses the value of this attribute to construct its internal search path. See [Class-Path Attribute](https://docs.oracle.com/en/java/javase/14/docs/specs/jar/jar.html#class-path-attribute) section for details.
+  - Class-Path: The value of this attribute specifies the relative URLs of the libraries that this application needs. URLs are separated by one or more spaces. The application class loader uses the value of this attribute to construct its internal search path. See [Class-Path Attribute](#class-path-attribute) section for details.
   - Automatic-Module-Name: Defines the module name if this JAR file is deployed as an automatic module on the module path. For further details see the specification of [`automatic modules`](https://docs.oracle.com/en/java/javase/14/docs/api/java.base/java/lang/module/ModuleFinder.html#automatic-modules).
-  - Multi-Release: This attribute defines whether this JAR file is a [multi-release](https://docs.oracle.com/en/java/javase/14/docs/specs/jar/jar.html#modular-multi-release-jar-files) JAR file. If the value is "true" , case is ignored, then the JAR file will be processed by the Java runtime and tooling as a multi-release JAR file. Otherwise, if the value is anything other than "true" then this attribute is ignored.
+  - Multi-Release: This attribute defines whether this JAR file is a [multi-release](#modular-multi-release-jar-files) JAR file. If the value is "true" , case is ignored, then the JAR file will be processed by the Java runtime and tooling as a multi-release JAR file. Otherwise, if the value is anything other than "true" then this attribute is ignored.
 
 - attribute defined for stand-alone applications: This attribute is used by stand-alone applications that are bundled into executable jar files which can be invoked by the java runtime directly by running "
 
@@ -254,7 +270,7 @@ Main attributes are the attributes that are present in the main section of the m
   - Specification-Title: The value is a string that defines the title of the extension specification.
   - Specification-Version: The value is a string that defines the version of the extension specification.
   - Specification-Vendor: The value is a string that defines the organization that maintains the extension specification.
-  - Sealed: This attribute defines whether this JAR file is sealed or not. The value can be either "true" or "false", case is ignored. If it is set to "true", then all the packages in the JAR file are defaulted to be sealed, unless they are defined otherwise individually. See also the [Package Sealing](https://docs.oracle.com/en/java/javase/14/docs/specs/jar/jar.html#package-sealing) section.
+  - Sealed: This attribute defines whether this JAR file is sealed or not. The value can be either "true" or "false", case is ignored. If it is set to "true", then all the packages in the JAR file are defaulted to be sealed, unless they are defined otherwise individually. See also the [Package Sealing](#package-sealing) section.
 
 ### Per-Entry Attributes
 
@@ -297,11 +313,11 @@ Note that if such files are located in `META-INF` subdirectories, they are not c
 
 Subsets of a JAR file can be signed by using the `java.security` API. A signed JAR file is exactly the same as the original JAR file, except that its manifest is updated and two additional files are added to the `META-INF` directory: a signature file and a signature block file. When jarsigner is not used, the signing program has to construct both the signature file and the signature block file.
 
-For every file entry signed in the signed JAR file, an individual manifest entry is created for it as long as it does not already exist in the manifest. Each manifest entry lists one or more digest attributes and an optional [Magic attribute](https://docs.oracle.com/en/java/javase/14/docs/specs/jar/jar.html#the-magic-attribute).
+For every file entry signed in the signed JAR file, an individual manifest entry is created for it as long as it does not already exist in the manifest. Each manifest entry lists one or more digest attributes and an optional [Magic attribute](#the-magic-attribute).
 
 ### Signature File
 
-Each signer is represented by a signature file with extension `.SF`. The major part of the file is similar to the manifest file. It consists of a main section which includes information supplied by the signer but not specific to any particular jar file entry. In addition to the `Signature-Version` and `Created-By` attributes (see [Main Attributes](https://docs.oracle.com/en/java/javase/14/docs/specs/jar/jar.html#main-attributes)), the main section can also include the following security attributes:
+Each signer is represented by a signature file with extension `.SF`. The major part of the file is similar to the manifest file. It consists of a main section which includes information supplied by the signer but not specific to any particular jar file entry. In addition to the `Signature-Version` and `Created-By` attributes (see [Main Attributes](#main-attributes)), the main section can also include the following security attributes:
 
 - x-Digest-Manifest-Main-Attributes (where x is the standard name of a `java.security.MessageDigest` algorithm): The value of this attribute is the digest value of the main attributes of the manifest.
 - x-Digest-Manifest (where x is the standard name of a `java.security.MessageDigest` algorithm): The value of this attribute is the digest value of the entire manifest.
@@ -553,6 +569,6 @@ Package [java.util.zip](https://docs.oracle.com/en/java/javase/14/docs/api/java.
 
 
 
-- [JAR File Specification](https://docs.oracle.com/en/java/javase/14/docs/specs/jar/jar.html)
+- [JAR File Specification]()
 
 - [JDK 14 Documentation](https://docs.oracle.com/en/java/javase/14/)

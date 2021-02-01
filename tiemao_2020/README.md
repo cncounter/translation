@@ -44,7 +44,7 @@
 * [37.CompressedOops详解](./37_CompressedOops/README.md)
 * [38.如何选择机器学习平台](./38_how-to-choose-a-cloud-machine-learning-platform/README.md)
 * [39.辨析深度学习和机器学习](./39_deep-learning-vs-machine-learning/README.md)
-* [40.JDK 16新特性抢先看](./40_jdk-16-whats-coming-in-java-16/README.md)【粗翻】
+* [40.JDK16新特性（不断更新中）](./40_jdk-16-whats-coming-in-java-16/README.md)【粗翻】
 * [41.深入JVM - 实例详解invoke相关操作码](./41_invoke_opcode/README.md)【已完成】
 * [42.案例讲解JVM方法体字节码](./42_method_byte_code/README.md)
 * [43.Java多线程与并发面试题](./43_java_thread_conc_interview/README.md)【已完成】
@@ -52,10 +52,6 @@
 * [44.7 InnoDB的锁和事务模型](./44_innodb-storage-engine/14.7_innodb-locking-transaction-model_CN.md)【已完成】
 * [45.Java正则表达式入门与实战](./45_java_and_regex/README.md)
 * [46.Linux内核文档: 内存屏障](./46_Linux_Kernel_Memory_Barriers/README.md)
-* [47.](.//README.md)
-* [48.](.//README.md)
-* [49.](.//README.md)
-* [50.](.//README.md)
 
 
 
