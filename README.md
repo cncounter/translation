@@ -9,6 +9,13 @@ GitHub地址: <https://github.com/cncounter/translation>
 
 GITHUB官方帮助文档(中文版): <https://docs.github.com/cn/free-pro-team@latest/github>
 
+
+Star 增长曲线（URL换成你的账号和项目, 即可看项目的曲线）: <https://starchart.cc/cncounter/translation> 
+
+
+[![Stargazers over time](https://starchart.cc/cncounter/translation.svg)](https://starchart.cc/cncounter/translation)
+
+
 # 目录 #
 
 
