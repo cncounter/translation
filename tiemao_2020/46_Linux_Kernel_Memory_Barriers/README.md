@@ -44,7 +44,7 @@ Note also that it is possible that a barrier may be a no-op for an architecture 
 
 再强调一次, 本文档不是 Linux 对硬件预期的规范。
 
-编写本文档有下面两个目的：
+编写本文档有下面两个目的:
 
 - （1）确定每个内存屏障最少实现了哪些功能；
 
@@ -174,7 +174,7 @@ For example, consider the following sequence of events:
 在上图中, 当某个操作越过CPU与系统其他部分之间的交界时（虚线部分）, 这个CPU对内存所执行的操作的效果, 就会被系统的其余部分感知到。
 
 
-请分析以下事件的顺序：
+请分析以下事件的顺序:
 
 ```c
 CPU 1            CPU 2
@@ -186,7 +186,7 @@ B = 4;           y = A;
 
 The set of accesses as seen by the memory system in the middle can be arranged in 24 different combinations:
 
-位于中间的内存系统, 可能会收到下面的24种访问顺序(`4*3*2*1 = 24`)：
+位于中间的内存系统, 可能会收到下面的24种访问顺序(`4*3*2*1 = 24`):
 
 ```c
 STORE A=3,  STORE B=4,    y=LOAD A->3,  x=LOAD B->4
@@ -202,7 +202,7 @@ STORE B=4, ...
 
 and can thus result in four different combinations of values:
 
-因此x和y的值可能会有四种不同的组合：
+因此x和y的值可能会有四种不同的组合:
 
 ```c
 x == 2, y == 1
@@ -217,9 +217,9 @@ Furthermore, the stores committed by a CPU to the memory system may not be perce
 As a further example, consider this sequence of events:
 
 
-此外，由一个CPU提交给内存系统的store指令, 即使触发时机有先后顺序, 可能也不会被另一个CPU执行的load操作所感知到。
+此外, 由一个CPU提交给内存系统的store指令, 即使触发时机有先后顺序, 可能也不会被另一个CPU执行的load操作所感知到。
 
-再看另一个示例，考虑以下事件序列：
+再看另一个示例, 考虑以下事件序列:
 
 ```c
 CPU 1            CPU 2
@@ -231,7 +231,7 @@ P = &B;          D = *Q;
 
 There is an obvious data dependency here, as the value loaded into D depends on the address retrieved from P by CPU 2.  At the end of the sequence, any of the following results are possible:
 
-这里存在很明显的数据依赖性，因为加载到 D 中的值, 取决于CPU 2从P所取到的地址。 在这些事件执行完之后，可能出现以下任何一种结果：
+这里存在很明显的数据依赖性, 因为加载到 D 中的值, 取决于CPU 2从P所取到的地址。 在这些事件执行完之后, 可能出现以下任何一种结果:
 
 ```c
 (Q == &A) and (D == 1)
@@ -241,7 +241,7 @@ There is an obvious data dependency here, as the value loaded into D depends on 
 
 Note that CPU 2 will never try and load C into D because the CPU will load P into Q before issuing the load of `*Q`.
 
-请注意，CPU 2 决不会尝试直接将C的值加载到D中，因为在发出 `*Q` 的加载指令前，会先将P加载到Q中。
+请注意, CPU 2 决不会尝试直接将C的值加载到D中, 因为在发出 `*Q` 的加载指令前, 会先将P加载到Q中。
 
 
 ### DEVICE OPERATIONS
@@ -252,9 +252,9 @@ Some devices present their control interfaces as collections of memory locations
 ### 设备操作
 -----------------
 
-有些设备会映射一组内存位置来表示自身的控制接口，所以控制寄存器的访问顺序就非常重要了。
-例如，有一张网卡, 具有一组内部寄存器，可以通过地址端口寄存器 (A) 和数据端口寄存器 (D) 来访问这些寄存器。
-要读取内部寄存器 5，可以使用以下代码：
+有些设备会映射一组内存位置来表示自身的控制接口, 所以控制寄存器的访问顺序就非常重要了。
+例如, 有一张网卡, 具有一组内部寄存器, 可以通过地址端口寄存器 (A) 和数据端口寄存器 (D) 来访问这些寄存器。
+要读取内部寄存器 5, 可以使用以下代码:
 
 ```c
 *A = 5;
@@ -272,7 +272,7 @@ x = LOAD *D,    STORE *A = 5
 
 the second of which will almost certainly result in a malfunction, since it set the address _after_ attempting to read the register.
 
-可以肯定, 第二种顺序会产生问题，因为在读取寄存器之后才去设置地址。
+可以肯定, 第二种顺序会产生问题, 因为在读取寄存器之后才去设置地址。
 
 
 ### GUARANTEES
@@ -280,51 +280,83 @@ the second of which will almost certainly result in a malfunction, since it set 
 
 There are some minimal guarantees that may be expected of a CPU:
 
+### 保证
+----------
+
+CPU至少必须支持这些特征:
+
 - (*) On any given CPU, dependent memory accesses will be issued in order, with respect to itself.  This means that for:
 
+- (*) 在任何给定的CPU上, 将根据其自身顺序发出相关的内存访问。 这意味着:
+
 ```c
-Q = READ_ONCE(P);      D = READ_ONCE(*Q);
+Q = READ_ONCE(P);
+D = READ_ONCE(*Q);
 ```
 
 the CPU will issue the following memory operations:
 
+CPU将发出以下内存操作:
+
 ```c
-Q = LOAD P,            D = LOAD *Q
+Q = LOAD P,
+D = LOAD *Q
 ```
 
 and always in that order.  However, on DEC Alpha, READ_ONCE() also emits a memory-barrier instruction, so that a DEC Alpha CPU will instead issue the following memory operations:
 
+并始终按此顺序。 但是, 在 DEC Alpha 上,  `READ_ONCE()` 还会发出一条内存屏障指令, 因此 DEC Alpha CPU 将发出以下内存操作:
+
 ```c
-Q = LOAD P, MEMORY_BARRIER, D = LOAD *Q, MEMORY_BARRIER
+Q = LOAD P,
+MEMORY_BARRIER,
+D = LOAD *Q,
+MEMORY_BARRIER
 ```
 
 Whether on DEC Alpha or not, the READ_ONCE() also prevents compiler mischief.
 
+无论是否在 DEC Alpha 上, `READ_ONCE()` 都可以防止编译器乱序。
+
 - (*) Overlapping loads and stores within a particular CPU will appear to be ordered within that CPU.  This means that for:
 
+- (*) 特定CPU内的重叠loads和stores将在该CPU内排序。 这意味着:
+
 ```c
-  a = READ_ONCE(*X); WRITE_ONCE(*X, b);
+a = READ_ONCE(*X);
+WRITE_ONCE(*X, b);
 ```
 
 the CPU will only issue the following sequence of memory operations:
 
+CPU将仅发出以下顺序的内存操作:
+
 ```c
-  a = LOAD *X, STORE *X = b
+a = LOAD *X,
+STORE *X = b
 ```
 
 And for:
 
+对于:
+
 ```c
-  WRITE_ONCE(*X, c); d = READ_ONCE(*X);
+WRITE_ONCE(*X, c);
+d = READ_ONCE(*X);
 ```
 
 the CPU will only issue:
 
+CPU只发出:
+
 ```c
-  STORE *X = c, d = LOAD *X
+STORE *X = c,
+d = LOAD *X
 ```
 
 (Loads and stores overlap if they are targeted at overlapping pieces of memory).
+
+> 如果 load 和 store的目标内存地址一致，则会发生重叠。
 
 And there are a number of things that _must_ or _must_not_ be assumed:
 
@@ -332,47 +364,63 @@ And there are a number of things that _must_ or _must_not_ be assumed:
 
 - (*) It _must_not_ be assumed that independent loads and stores will be issued in the order given.  This means that for:
 
+而且有许多必须或不允许的假设因素:
+
+- (*) 对不受 `READ_ONCE()` 和 `WRITE_ONCE()` 保护的内存引用操作, 不能假设编译器会按你的预期处理。 没有这种保护，编译器将有权进行各种“创造性”的转换，这在后面的 “编译器屏障” 一节中介绍。
+
+- (*) 独立的 loads 和 stores操作, 不能假定他们会以给定的顺序触发。 这意味着:
+
 ```c
-  X = *A; Y = *B; *D = Z;
+X = *A; Y = *B; *D = Z;
 ```
 
 we may get any of the following sequences:
 
+可能会以任何一种顺序执行:
+
 ```c
-  X = LOAD *A,  Y = LOAD *B,  STORE *D = Z
-  X = LOAD *A,  STORE *D = Z, Y = LOAD *B
-  Y = LOAD *B,  X = LOAD *A,  STORE *D = Z
-  Y = LOAD *B,  STORE *D = Z, X = LOAD *A
-  STORE *D = Z, X = LOAD *A,  Y = LOAD *B
-  STORE *D = Z, Y = LOAD *B,  X = LOAD *A
+X = LOAD *A,  Y = LOAD *B,  STORE *D = Z
+X = LOAD *A,  STORE *D = Z, Y = LOAD *B
+Y = LOAD *B,  X = LOAD *A,  STORE *D = Z
+Y = LOAD *B,  STORE *D = Z, X = LOAD *A
+STORE *D = Z, X = LOAD *A,  Y = LOAD *B
+STORE *D = Z, Y = LOAD *B,  X = LOAD *A
 ```
 
 - (*) It _must_ be assumed that overlapping memory accesses may be merged or discarded.  This means that for:
 
+- (*) 重叠的内存访问, 必须假定为可以合并或丢弃。 这意味着:
+
 ```c
-  X = *A; Y = *(A + 4);
+X = *A; Y = *(A + 4);
 ```
 
 we may get any one of the following sequences:
 
+可能会以任何一种顺序执行:
+
 ```c
-  X = LOAD *A; Y = LOAD *(A + 4);
-  Y = LOAD *(A + 4); X = LOAD *A;
-  {X, Y} = LOAD {*A, *(A + 4) };
+X = LOAD *A; Y = LOAD *(A + 4);
+Y = LOAD *(A + 4); X = LOAD *A;
+{X, Y} = LOAD {*A, *(A + 4) };
 ```
 
 And for:
 
+对于:
+
 ```c
-  *A = X; *(A + 4) = Y;
+*A = X; *(A + 4) = Y;
 ```
 
 we may get any of:
 
+可能会以任何一种顺序执行:
+
 ```c
-  STORE *A = X; STORE *(A + 4) = Y;
-  STORE *(A + 4) = Y; STORE *A = X;
-  STORE {*A, *(A + 4) } = {X, Y};
+STORE *A = X;       STORE *(A + 4) = Y;
+STORE *(A + 4) = Y; STORE *A = X;
+STORE {*A, *(A + 4) } = {X, Y};
 ```
 
 And there are anti-guarantees:
@@ -383,12 +431,25 @@ And there are anti-guarantees:
 
 - (*) These guarantees apply only to properly aligned and sized scalar variables.  "Properly sized" currently means variables that are the same size as "char", "short", "int" and "long".  "Properly aligned" means the natural alignment, thus no constraints for "char", two-byte alignment for "short", four-byte alignment for "int", and either four-byte or eight-byte alignment for "long", on 32-bit and 64-bit systems, respectively.  Note that these guarantees were introduced into the C11 standard, so beware when using older pre-C11 compilers (for example, gcc 4.6).  The portion of the standard containing this guarantee is Section 3.14, which defines "memory location" as follows:
 
+并且存在担保的反例:
+
+- (*) 这些保证不适用于bit字段(bitfields)，因为编译器生成的代码, 通常会以非原子性的 read-modify-write 顺序对其进行修改。不要尝试使用bit字段来同步并行算法。
+
+- (*) 即使bit字段受锁保护的情况下，给定 bitfield 中的所有字段也必须由同一个锁保护。 如果给定 bitfield 中的两个域由不同的锁来保护，则编译器的非原子性 read-modify-write 顺序会导致对一个 field 的更新破坏相邻 field 的值。
+
+- (*) 这些保证仅适用于正确对齐且大小合适的标量变量。 “大小合适(Properly sized)” 的意思是指与 "char", "short", "int" and "long" 大小相同的变量。 “正确对齐(Properly aligned)” 是指自然对齐， 因此对 "char" 没有约束，对于 "short" 为两个字节对齐，对于 "int" 为四字节对齐，对于 "long" 为四字节或八字节对齐，分别对应在32位和64位系统上。 请注意，这些保证是C11标准中引入的，因此在使用C11之前的编译器时要当心（例如 gcc 4.6）。 标准中包含此保证的部分为 Section 3.14，其中对 “内存位置(memory location)” 的定义如下:
+
 > memory location either an object of scalar type, or a maximal sequence of adjacent bit-fields all having nonzero width
 
-    NOTE 1: Two threads of execution can update and access separate memory locations without interfering with each other.
+> NOTE 1: Two threads of execution can update and access separate memory locations without interfering with each other.
 
-    NOTE 2: A bit-field and an adjacent non-bit-field member are in separate memory locations. The same applies to two bit-fields, if one is declared inside a nested structure declaration and the other is not, or if the two are separated by a zero-length bit-field declaration, or if they are separated by a non-bit-field member declaration. It is not safe to concurrently update two bit-fields in the same structure if all members declared between them are also bit-fields, no matter what the sizes of those intervening bit-fields happen to be.
+> NOTE 2: A bit-field and an adjacent non-bit-field member are in separate memory locations. The same applies to two bit-fields, if one is declared inside a nested structure declaration and the other is not, or if the two are separated by a zero-length bit-field declaration, or if they are separated by a non-bit-field member declaration. It is not safe to concurrently update two bit-fields in the same structure if all members declared between them are also bit-fields, no matter what the sizes of those intervening bit-fields happen to be.
 
+> 内存位置(memory location)，要么是标量类型的对象，要么是宽度都为非零的相邻位字段的最大序列。
+
+> 提示1: 两个执行线程可以更新和访问单独的内存位置，而不会互相干扰。
+
+> 提示2: 一个 bit-field 字段, 和一个相邻的 non-bit-field 字段成员, 位于单独的内存位置中。 对于两个 bit-field ，如果有一个在嵌套结构声明中声明，而另一个则未声明，或者两个都被零长度bit-field声明所分隔，或者如果它们由non-bit-field成员分隔，则同样适用于这个规则。 如果在它们之间声明的所有成员都是 bit-field，则并发更新同一结构中的两个位域都是不安全的, 不管这些位域的大小是多少。
 
 =========================
 WHAT ARE MEMORY BARRIERS?
