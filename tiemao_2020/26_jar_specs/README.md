@@ -11,10 +11,10 @@ JAR file is a file format based on the popular ZIP file format and is used for a
 
 ## JAR文件格式
 
-JAR文件基于ZIP文件格式，用于将多个文件打包成一个压缩文件。
-本质上JAR文件就是一个zip文件，其中包含一个可选的 `META-INF` 目录。
+JAR文件基于ZIP文件格式, 用于将多个文件打包成一个压缩文件。
+本质上JAR文件就是一个zip文件, 其中包含一个可选的 `META-INF` 目录。
 可以通过命令行工具 `jar` 打包jar文件, 也可以在程序中使用[`java.util.jar`](https://docs.oracle.com/en/java/javase/14/docs/api/java.base/java/util/jar/package-summary.html)里面的工具类来创建jar文件。
-JAR文件的名称没有限制，只要符合所在平台上的文件命名规则即可。
+JAR文件的名称没有限制, 只要符合所在平台上的文件命名规则即可。
 
 ![](01_jar_meta_inf.jpg)
 
@@ -28,15 +28,15 @@ A non-modular JAR file deployed on the module path is an *automatic module*. If 
 
 ## 模块化JAR文件
 
-模块化JAR文件也是JAR文件格式，其内部的顶级路径（根路径）下有一个模块描述文件 `module-info.class`。
+模块化JAR文件也是JAR文件格式, 其内部的顶级路径（根路径）下有一个模块描述文件 `module-info.class`。
 模块描述文件是模块声明的二进制形式。  更详细的模块化JAR文件定义请参考: [multi-release JAR files](#multi-release-jar-files)。
 
-相对于类路径，部署在模块路径下的模块化JAR文件是 **显式的** 模块。
+相对于类路径, 部署在模块路径下的模块化JAR文件是 **显式的** 模块。
 依赖项和服务提供者都在模块描述符中声明。
-如果将模块化JAR文件部署到类路径中，则其行为就如同非模块化的JAR文件一样。
+如果将模块化JAR文件部署到类路径中, 则其行为就如同非模块化的JAR文件一样。
 
 部署在模块路径下的非模块化JAR文件则是 **自动模块**。
-如果JAR文件具有主属性 [`Automatic-Module-Name`](#main-attributes)，那么模块名称就是该属性的值，否则模块名称根据 Jar 文件名推导得出，具体推导规则请参考: [`ModuleFinder.of(Path...)`](https://docs.oracle.com/en/java/javase/14/docs/api/java.base/java/lang/module/ModuleFinder.html#automatic-modules).
+如果JAR文件具有主属性 [`Automatic-Module-Name`](#main-attributes), 那么模块名称就是该属性的值, 否则模块名称根据 Jar 文件名推导得出, 具体推导规则请参考: [`ModuleFinder.of(Path...)`](https://docs.oracle.com/en/java/javase/14/docs/api/java.base/java/lang/module/ModuleFinder.html#automatic-modules).
 
 ## Multi-release JAR files
 
@@ -46,10 +46,10 @@ A multi-release JAR file is identified by the main attribute:
 
 ## 多版本JAR文件
 
-多版本JAR文件，允许单个JAR文件支持多个JDK版本。
-例如，一个多版本的JAR文件可以同时依赖Java 8和Java 9版本，其中，有一些类文件是兼容Java 8中的API，另一些类文件则兼容Java 9的API。
-这个特性主要是第三方库和框架的开发人员在使用，以便兼容不同的JDK版本。
-第三方库和框架的开发人员可以逐步迁移并支持新的Java特性，同时也兼容旧的特性。
+多版本JAR文件, 允许单个JAR文件支持多个JDK版本。
+例如, 一个多版本的JAR文件可以同时依赖Java 8和Java 9版本, 其中, 有一些类文件是兼容Java 8中的API, 另一些类文件则兼容Java 9的API。
+这个特性主要是第三方库和框架的开发人员在使用, 以便兼容不同的JDK版本。
+第三方库和框架的开发人员可以逐步迁移并支持新的Java特性, 同时也兼容旧的特性。
 
 多版本JAR文件由main属性来标识：
 
@@ -63,8 +63,8 @@ Classes and resource files dependent on a major version, 9 or greater, of a Java
 
 在 [JAR Manifest](#jar-manifest) 的main这一节中声明。
 
-依赖于Java 9 或更高版本的类和资源文件可以放到 **特定版本目录** 下，而不是顶级目录中。
-版本目录位于 [META-INF](#the-meta-inf-directory) 下面，其格式为：
+依赖于Java 9 或更高版本的类和资源文件可以放到 **特定版本目录** 下, 而不是顶级目录中。
+版本目录位于 [META-INF](#the-meta-inf-directory) 下面, 其格式为：
 
 ```
 META-INF/versions/N
@@ -72,7 +72,7 @@ META-INF/versions/N
 
 where N is the string representation of the major version number of a Java platform release. Specifically `N` must conform to the specification:
 
-其中 `N` 是Java平台大版本号的字符串表示形式。 具体来说，`N`的格式需要满足：
+其中 `N` 是Java平台大版本号的字符串表示形式。 具体来说, `N`的格式需要满足：
 
 | N: | `{1-9}{0-9}*` |
 | :--- | ------------------ |
@@ -83,21 +83,21 @@ Any versioned directory whose value of `N` is less than `9` is ignored as is a s
 
 A class file under a versioned directory, of version `N` say, in a multi-release JAR must have a class file version less than or equal to the class file version associated with `N`th major version of a Java platform release. If the class of the class file is public or protected then that class must *preside over* a class of the same fully qualified name and access modifier whose class file is present under the top-level directory. By logical extension this applies to a class of a class file, if present, under a versioned directory whose version is less than `N`.
 
-如果N的值小于9 将被忽略，不符合上述规范的版本目录也会被忽略。
+如果N的值小于9 将被忽略, 不符合上述规范的版本目录也会被忽略。
 
-在多版本JAR中，版本目录`N`下面的 class 文件, 其 class file version 必须小于等于Java平台第N个大版本对应的 major version。
-如果类文件中的类是 public 或 protected 的，那么根目录下也必须能够找到具有完全限定名和访问修饰符的class。
-通过逻辑扩展，这同样适用于版本小于“ N”的类文件。
+在多版本JAR中, 版本目录`N`下面的 class 文件, 其 class file version 必须小于等于Java平台第N个大版本对应的 major version。
+如果类文件中的类是 public 或 protected 的, 那么根目录下也必须能够找到具有完全限定名和访问修饰符的class。
+通过逻辑扩展, 这同样适用于版本小于“ N”的类文件。
 
 If a multi-release JAR file is deployed on the class path or module path (as an automatic module or an explicit [multi-release module](#modular-multi-release-jar-files)) of major version `N` of a Java platform release runtime, then a class loader loading classes from that JAR file will first search for class files under the `N`th versioned directory, then prior versioned directories in descending order (if present), down to a lower major version bound of `9`, and finally under the top-level directory.
 
 The public API exported by the classes in a multi-release JAR file must be *exactly* the same across versions, hence at a minimum why versioned public or protected classes for class files under a versioned directory must preside over classes for class files under the top-level directory. It is difficult and costly to perform extensive API verification checks as such tooling, such as the `jar` tool, is not required to perform extensive verification and a Java runtime is not required to perform any verification. A future release of this specification may relax the exact same API constraint to support careful evolution.
 
-如果将多版本JAR文件部署到 class path 或 module path 中，假设JDK版本为 `N`， 那么类加载器从该JAR文件加载class的时候，将优先搜索版本目录`N`，找不到则递减，搜索 `N-1`，直到下限9为止，最后才会搜索顶级目录。
+如果将多版本JAR文件部署到 class path 或 module path 中, 假设JDK版本为 `N`,  那么类加载器从该JAR文件加载class的时候, 将优先搜索版本目录`N`, 找不到则递减, 搜索 `N-1`, 直到下限9为止, 最后才会搜索顶级目录。
 
-多版本JAR文件中, 各个版本暴露的 public API 必须 “完全一致”， 这就解释了为什么特定版本目录下的 public 和 protected 类文件，都必须在根目录下存在相同限定名的类。
-执行扩展API的校验非常困难而且开销很大，所以并不要求 `jar` 之类的工具来验证， 也不要求Java运行时来执行这类验证。
-本规范未来的版本可能会放宽完全一致的API约束，以支持谨慎的演进。
+多版本JAR文件中, 各个版本暴露的 public API 必须 “完全一致”,  这就解释了为什么特定版本目录下的 public 和 protected 类文件, 都必须在根目录下存在相同限定名的类。
+执行扩展API的校验非常困难而且开销很大, 所以并不要求 `jar` 之类的工具来验证,  也不要求Java运行时来执行这类验证。
+本规范未来的版本可能会放宽完全一致的API约束, 以支持谨慎的演进。
 
 
 Resources under the `META-INF` directory cannot be versioned (such as for service configuration).
@@ -113,7 +113,7 @@ Multi-release JAR files are not supported by the boot class loader of a Java run
 多版本JAR文件也可以进行签名。
 
 Java运行时的引导类加载器（ boot class loader）不支持多版本JAR文件。
-如果将多版本JAR文件放到引导类路径（使用 `-Xbootclasspath/a` 选项），则该JAR将被当做一个普通的JAR文件。
+如果将多版本JAR文件放到引导类路径（使用 `-Xbootclasspath/a` 选项）, 则该JAR将被当做一个普通的JAR文件。
 
 ### Modular multi-release JAR files
 
@@ -132,18 +132,18 @@ Tooling, such as the `jar` tool, should perform such verification of versioned m
 
 ### 模块化的多版本JAR文件
 
-模块化的多版本JAR文件, 内部兼容多个JDK版本，通过描述模块信息的 `module-info.class` 文件来描述, 这个描述文件位于模块化JAR文件的顶层目录, 或者位于版本目录中。
+模块化的多版本JAR文件, 内部兼容多个JDK版本, 通过描述模块信息的 `module-info.class` 文件来描述, 这个描述文件位于模块化JAR文件的顶层目录, 或者位于版本目录中。
 
-在模块描述符中未声明为导出的包称为非导出包, 其中的 public 或 protected 类, 不需要具有相同的完全限定名和访问修饰符的类，其 class 文件直接放到顶级目录下。
+在模块描述符中未声明为导出的包称为非导出包, 其中的 public 或 protected 类, 不需要具有相同的完全限定名和访问修饰符的类, 其 class 文件直接放到顶级目录下。
 
-模块描述符与其他的class文件或资源文件并不区别对待。 模块描述符可以存放在版本化区域下，而不必存放在顶级目录下。 这样就确保了只有 Java 8 版本的类会出现在顶级目录下，而Java 9版本的类（包括模块描述符）会出现在`9`版本目录下。
+模块描述符与其他的class文件或资源文件并不区别对待。 模块描述符可以存放在版本化区域下, 而不必存放在顶级目录下。 这样就确保了只有 Java 8 版本的类会出现在顶级目录下, 而Java 9版本的类（包括模块描述符）会出现在`9`版本目录下。
 
-更小版本的模块描述符, 或者顶层的模块描述符, 都必须与`M`相同，但有两个例外：
+更小版本的模块描述符, 或者顶层的模块描述符, 都必须与`M`相同, 但有两个例外：
 
 1. 主版本描述符可以和 `java.*` 和 `jdk.*` 模块具有不同的 non-`transitive` `requires` 子句；
-2. 主导版本描述符可以具有不同的 `uses` 子句，即使是在 `java.*` 和 `jdk.*` 模块之外定义的服务类型也是如此。
+2. 主导版本描述符可以具有不同的 `uses` 子句, 即使是在 `java.*` 和 `jdk.*` 模块之外定义的服务类型也是如此。
 
-例如 `jar` 之类的工具，应该执行版本化模块描述符的验证，但 Java 运行时不需要执行任何验证。
+例如 `jar` 之类的工具, 应该执行版本化模块描述符的验证, 但 Java 运行时不需要执行任何验证。
 
 
 ## The META-INF directory
@@ -152,7 +152,7 @@ The following files/directories in the META-INF directory are recognized and int
 
 ## `META-INF` 目录
 
-Java平台通过解析 `META-INF` 目录下的文件和目录，自动配置应用程序，类加载器以及服务：
+Java平台通过解析 `META-INF` 目录下的文件和目录, 自动配置应用程序, 类加载器以及服务：
 
 - `MANIFEST.MF`
 
@@ -164,7 +164,7 @@ Java平台通过解析 `META-INF` 目录下的文件和目录，自动配置应�
 
   This file is generated by the new "`-i`" option of the jar tool, which contains location information for packages defined in an application. It is part of the JarIndex implementation and used by class loaders to speed up their class loading process.
 
-  这个文件由 jar 工具的新选项 "`-i`" 生成，包含应用程序中定义的 package 的位置信息。 它是 JarIndex 实现的一部分，用来加快 class loader 的类加载过程。
+  这个文件由 jar 工具的新选项 "`-i`" 生成, 包含应用程序中定义的 package 的位置信息。 它是 JarIndex 实现的一部分, 用来加快 class loader 的类加载过程。
 
 - `xxx.SF`
 
@@ -202,6 +202,18 @@ Implementations shall support header values of up to 65535 bytes.
 
 All the specifications in this document use the same grammar in which terminal symbols are shown in fixed width font and non-terminal symbols are shown in italic type face.
 
+## 名-值对, 段(Section)
+
+在介绍每个配置文件内容之前, 需要明确一些格式约定。 清单文件和签名文件中包含的信息格式, 受RFC822标准启发, 在大部分情况下, 表示为 "名:值" 对。 我们也将其称为报头(header)或属性(attribute)。
+
+一组名/值对, 称为一“段(Section)”。 各段之间用空行分隔。
+
+任何形式的二进制数据都使用 base64 表示。 二进制数据需要连续, 这会导致行长超过72个字节。 例如摘要(digest)和签名(signature)。
+
+JVM实现需要支持最大65535字节的报头值。
+
+本文档中的所有规范都使用相同的语法, 其中终结符以固定宽度的字体显示, 非终结符以斜体显示。
+
 ### Specification:
 
 | *section:*          | **header +newline*                                |
@@ -216,9 +228,13 @@ All the specifications in this document use the same grammar in which terminal s
 | *headerchar:*       | *alphanum* \| `-` | `_`                           |
 | *otherchar:*        | *any UTF-8 character except* `NUL, CR` *and* `LF` |
 
-- Note: To prevent mangling of files sent via straight e-mail, no header will start with the four letters "From".
+> Note: To prevent mangling of files sent via straight e-mail, no header will start with the four letters "From".
 
 Non-terminal symbols defined in the above specification will be referenced in the following specifications.
+
+> 注意: 为防止直接通过电子邮件发送的文件损坏, 没有标题时则以四个字母 "From" 开头。
+
+以上规范中定义的非终结符, 将在后面的规范中引用。
 
 ## JAR Manifest
 
@@ -230,6 +246,17 @@ A JAR file manifest consists of a main section followed by a list of sections fo
 - The individual sections define various attributes for packages or files contained in this JAR file. Not all files in the JAR file need to be listed in the manifest as entries, but all files which are to be signed must be listed. The manifest file itself must not be listed. Each section must start with an attribute with the name as "`Name`", and the value must be a relative path to the file, or an absolute URL referencing data outside the archive.
 - If there are multiple individual sections for the same file entry, the attributes in these sections are merged. If a certain attribute have different values in different sections, the last one is recognized.
 - Attributes which are not understood are ignored. Such attributes may include implementation specific information used by applications.
+
+## JAR文件清单
+
+### 概述
+
+JAR文件的清单中,有一个 main section, 后面是各个条目的 section 列表, 各个部分之间用换行符分隔。 main section 和其他 section 都遵循上面指定的语法。 每个 section 都有自己特定的限制和规则。
+
+- main section 主要是安全和配置信息, 包含JAR文件以及应用程序的。 还定义了适用于每个清单实体的主要属性。 这部分的任何属性名, 都不能为“`Name`”。 以空行结束。
+- 各个部分定义了JAR文件中包含的程序包或文件的各种属性。 JAR文件中的所有文件并不是都要在清单条目中列出,  但所有要签名的文件都必须列出。 清单文件自身不能列出。 每个部分都必须以名为 "`Name`" 的属性开头, 对应的值必须是文件的相对路径, 或者是引用外部数据的绝对URL。
+- 如果同一文件条目有多个 section, 则这些section中的属性将被合并。 如果某个属性在不同section中具有不同的值, 则将取最后一个的值。
+- 无法解析的属性将被忽略。这样的属性主要用于保存某些特定实现的信息。
 
 ### Manifest Specification:
 
