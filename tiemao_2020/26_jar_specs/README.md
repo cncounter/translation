@@ -202,7 +202,7 @@ Implementations shall support header values of up to 65535 bytes.
 
 All the specifications in this document use the same grammar in which terminal symbols are shown in fixed width font and non-terminal symbols are shown in italic type face.
 
-## 名-值对, 段(Section)
+## 名值对与Section
 
 在介绍每个配置文件内容之前, 需要明确一些格式约定。 清单文件和签名文件中包含的信息格式, 受RFC822标准启发, 在大部分情况下, 表示为 "名:值" 对。 我们也将其称为报头(header)或属性(attribute)。
 
@@ -260,6 +260,8 @@ JAR文件的清单中,有一个 main section, 后面是各个条目的 section �
 
 ### Manifest Specification:
 
+### 清单格式
+
 | *manifest-file:*      | *main-section newline \*individual-section*     |
 | :-------------------- | ----------------------------------------------- |
 | *main-section:*       | *version-info newline \*main-attribute*         |
@@ -272,6 +274,8 @@ JAR文件的清单中,有一个 main section, 后面是各个条目的 section �
 | *digit:*              | `{0-9}`                                         |
 
 In the above specification, attributes that can appear in the main section are referred to as main attributes, whereas attributes that can appear in individual sections are referred to as per-entry attributes. Certain attributes can appear both in the main section and the individual sections, in which case the per-entry attribute value overrides the main attribute value for the specified entry. The two types of attributes are defined as follows.
+
+在以上格式中，可以出现在 main section 中的属性被称为主属性(main attribute)， 而出现在各个部分中的属性被称为每个条目的属性。 某些属性可以同时出现在 main section 和 单个部分 中，在这种情况下，每个条目的属性值将覆盖指定条目的主属性值。 两种属性的定义如下。
 
 ### Main Attributes
 
@@ -320,11 +324,11 @@ Main attributes are the attributes that are present in the main section of the m
 Per-entry attributes apply only to the individual JAR file entry to which the manifest entry is associated with. If the same attribute also appeared in the main section, then the value of the per-entry attribute overwrites the main attribute's value. For example, if JAR file a.jar has the following manifest content:
 
 ```
-    Manifest-Version: 1.0
-    Created-By: 1.8 (Oracle Inc.)
-    Sealed: true
-    Name: foo/bar/
-    Sealed: false
+Manifest-Version: 1.0
+Created-By: 1.8 (Oracle Inc.)
+Sealed: true
+Name: foo/bar/
+Sealed: false
 ```
 
 It means that all the packages archived in a.jar are sealed, except that package foo.bar is not.
@@ -403,15 +407,15 @@ Example manifest file:
 The corresponding signature file would be:
 
 ```
-    Signature-Version: 1.0
-    SHA-256-Digest-Manifest: (base64 representation of SHA-256 digest)
-    SHA-256-Digest-Manifest-Main-Attributes: (base64 representation of SHA-256 digest)
+Signature-Version: 1.0
+SHA-256-Digest-Manifest: (base64 representation of SHA-256 digest)
+SHA-256-Digest-Manifest-Main-Attributes: (base64 representation of SHA-256 digest)
 
-    Name: common/class1.class
-    SHA-256-Digest: (base64 representation of SHA-256 digest)
+Name: common/class1.class
+SHA-256-Digest: (base64 representation of SHA-256 digest)
 
-    Name: common/class2.class
-    SHA-256-Digest: (base64 representation of SHA-256 digest)
+Name: common/class2.class
+SHA-256-Digest: (base64 representation of SHA-256 digest)
 ```
 
 ### The Magic Attribute
@@ -425,15 +429,15 @@ The value or values of the Magic attribute are a set of comma-separated context-
 Here are two examples of the potential use of Magic attribute in the manifest file:
 
 ```
-        Name: http://www.example-scripts.com/index#script1
-        SHA-256-Digest: (base64 representation of SHA-256 hash)
-        Magic: JavaScript, Dynamic
+Name: http://www.example-scripts.com/index#script1
+SHA-256-Digest: (base64 representation of SHA-256 hash)
+Magic: JavaScript, Dynamic
 
-        Name: http://www.example-tourist.com/guide.html
-        SHA-256-Digest: (base64 representation of SHA-256 hash)
-        SHA-256-Digest-French: (base64 representation of SHA-256 hash)
-        SHA-256-Digest-German: (base64 representation of SHA-256 hash)
-        Magic: Multilingual
+Name: http://www.example-tourist.com/guide.html
+SHA-256-Digest: (base64 representation of SHA-256 hash)
+SHA-256-Digest-French: (base64 representation of SHA-256 hash)
+SHA-256-Digest-German: (base64 representation of SHA-256 hash)
+Magic: Multilingual
 ```
 
 In the first example, these Magic values may indicate that the result of an http query is the script embedded in the document, as opposed to the document itself, and also that the script is generated dynamically. These two pieces of information indicate how to compute the hash value against which to compare the manifest's digest value, thus comparing a valid signature.
@@ -575,8 +579,8 @@ A sealed JAR specifies that all packages defined by that JAR are sealed unless o
 A sealed package is specified via the manifest attribute, `Sealed`, whose value is `true` or `false` (case irrelevant). For example,
 
 ```
-    Name: javax/servlet/internal/
-    Sealed: true
+Name: javax/servlet/internal/
+Sealed: true
 ```
 
 specifies that the `javax.servlet.internal` package is sealed, and that all classes in that package must be loaded from the same JAR file.
@@ -586,7 +590,7 @@ If this attribute is missing, the package sealing attribute is that of the conta
 A sealed JAR is specified via the same manifest header, `Sealed`, with the value again of either `true` or `false`. For example,
 
 ```
-    Sealed: true
+Sealed: true
 ```
 
 specifies that all packages in this archive are sealed unless explicitly overridden for a particular package with the `Sealed` attribute in a manifest entry.
@@ -599,19 +603,19 @@ The unnamed package is not sealable, so classes that are to be sealed must be pl
 
 ## API Details
 
-Package [java.util.jar](https://docs.oracle.com/en/java/javase/14/docs/api/java.base/java/util/jar/package-summary.html)
+## API 详情
+
+- Package [java.util.jar](https://docs.oracle.com/en/java/javase/14/docs/api/java.base/java/util/jar/package-summary.html)
+
 
 ## See Also
 
-Package [java.security](https://docs.oracle.com/en/java/javase/14/docs/api/java.base/java/security/package-summary.html)
-Package [java.util.zip](https://docs.oracle.com/en/java/javase/14/docs/api/java.base/java/util/zip/package-summary.html)
+## 相关链接
+
+- Package [java.security](https://docs.oracle.com/en/java/javase/14/docs/api/java.base/java/security/package-summary.html)
+- Package [java.util.zip](https://docs.oracle.com/en/java/javase/14/docs/api/java.base/java/util/zip/package-summary.html)
 
 
-
-
-
-
-
-- [JAR File Specification]()
+- [JAR File Specification](https://docs.oracle.com/en/java/javase/14/docs/specs/jar/jar.html)
 
 - [JDK 14 Documentation](https://docs.oracle.com/en/java/javase/14/)
