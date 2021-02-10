@@ -281,6 +281,10 @@ In the above specification, attributes that can appear in the main section are r
 
 Main attributes are the attributes that are present in the main section of the manifest. They fall into the following different groups:
 
+### 主属性
+
+主属性是清单文件中, main section 部分中存在的属性。 它们可分为下面这些不同的组：
+
 - general main attributes
 
   - Manifest-Version: Defines the manifest file version. The value is a legitimate version number, as described in the above spec.
@@ -290,26 +294,12 @@ Main attributes are the attributes that are present in the main section of the m
   - Automatic-Module-Name: Defines the module name if this JAR file is deployed as an automatic module on the module path. For further details see the specification of [`automatic modules`](https://docs.oracle.com/en/java/javase/14/docs/api/java.base/java/lang/module/ModuleFinder.html#automatic-modules).
   - Multi-Release: This attribute defines whether this JAR file is a [multi-release](#modular-multi-release-jar-files) JAR file. If the value is "true" , case is ignored, then the JAR file will be processed by the Java runtime and tooling as a multi-release JAR file. Otherwise, if the value is anything other than "true" then this attribute is ignored.
 
-- attribute defined for stand-alone applications: This attribute is used by stand-alone applications that are bundled into executable jar files which can be invoked by the java runtime directly by running "
-
-  ```
-  java -jar x.jar
-  ```
-
-  ".
+- attribute defined for stand-alone applications: This attribute is used by stand-alone applications that are bundled into executable jar files which can be invoked by the java runtime directly by running "`java -jar x.jar`".
 
   - Main-Class: The value of this attribute is the class name of the main application class which the launcher will load at startup time. The value must *not* have the `.class` extension appended to the class name.
   - Launcher-Agent-Class: If this attribute is present then its value is the class name of a *java agent* that is started before the application main method is invoked. This attribute can be used for cases where a java agent is packaged in the same executable JAR file as the application. The agent class defines a public static method name `agentmain` in one of the two forms specified in the [`java.lang.instrument`](https://docs.oracle.com/en/java/javase/14/docs/api/java.instrument/java/lang/instrument/package-summary.html) package summary. Additional attributes (such as `Can-Retransform-Classes`) can be used to indicate capabilities needed by the agent.
 
-- attributes defined for
-
-
-
-  package versioning and sealing
-
-
-
-  information: The value of these attributes apply to all the packages in the JAR file, but can be overridden by per-entry attributes.
+- attributes defined for [package versioning and sealing](https://docs.oracle.com/en/java/javase/14/docs/api/java.base/java/lang/Package.html) information: The value of these attributes apply to all the packages in the JAR file, but can be overridden by per-entry attributes.
 
   - Implementation-Title: The value is a string that defines the title of the extension implementation.
   - Implementation-Version: The value is a string that defines the version of the extension implementation.
@@ -393,15 +383,15 @@ A successful JAR file verification occurs if the signature(s) are valid, and non
 Example manifest file:
 
 ```
-    Manifest-Version: 1.0
-    Created-By: 1.8.0 (Oracle Inc.)
+Manifest-Version: 1.0
+Created-By: 1.8.0 (Oracle Inc.)
 
-    Name: common/class1.class
-    SHA-256-Digest: (base64 representation of SHA-256 digest)
+Name: common/class1.class
+SHA-256-Digest: (base64 representation of SHA-256 digest)
 
-    Name: common/class2.class
-    SHA1-Digest: (base64 representation of SHA1 digest)
-    SHA-256-Digest: (base64 representation of SHA-256 digest)
+Name: common/class2.class
+SHA1-Digest: (base64 representation of SHA1 digest)
+SHA-256-Digest: (base64 representation of SHA-256 digest)
 ```
 
 The corresponding signature file would be:
