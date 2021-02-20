@@ -316,13 +316,23 @@ Main attributes are the attributes that are present in the main section of the m
 
 - attributes defined for [package versioning and sealing](https://docs.oracle.com/en/java/javase/14/docs/api/java.base/java/lang/Package.html) information: The value of these attributes apply to all the packages in the JAR file, but can be overridden by per-entry attributes.
 
-  - Implementation-Title: The value is a string that defines the title of the extension implementation.
-  - Implementation-Version: The value is a string that defines the version of the extension implementation.
-  - Implementation-Vendor: The value is a string that defines the organization that maintains the extension implementation.
-  - Specification-Title: The value is a string that defines the title of the extension specification.
-  - Specification-Version: The value is a string that defines the version of the extension specification.
-  - Specification-Vendor: The value is a string that defines the organization that maintains the extension specification.
-  - Sealed: This attribute defines whether this JAR file is sealed or not. The value can be either "true" or "false", case is ignored. If it is set to "true", then all the packages in the JAR file are defaulted to be sealed, unless they are defined otherwise individually. See also the [Package Sealing](#package-sealing) section.
+  - `Implementation-Title`: The value is a string that defines the title of the extension implementation.
+  - `Implementation-Version`: The value is a string that defines the version of the extension implementation.
+  - `Implementation-Vendor`: The value is a string that defines the organization that maintains the extension implementation.
+  - `Specification-Title`: The value is a string that defines the title of the extension specification.
+  - `Specification-Version`: The value is a string that defines the version of the extension specification.
+  - `Specification-Vendor`: The value is a string that defines the organization that maintains the extension specification.
+  - `Sealed`: This attribute defines whether this JAR file is sealed or not. The value can be either "true" or "false", case is ignored. If it is set to "true", then all the packages in the JAR file are defaulted to be sealed, unless they are defined otherwise individually. See also the [Package Sealing](#package-sealing) section.
+
+- 为 [package versioning and sealing](https://docs.oracle.com/en/java/javase/14/docs/api/java.base/java/lang/Package.html) 信息定义的属性：这些属性适用于JAR文件中的所有软件包，但是可以由各个条目的属性覆盖。
+
+  - `Implementation-Title`：该值是一个字符串，用于定义扩展实现的标题。
+  - `Implementation-Version`：该值是一个字符串，用于定义扩展实现的版本。
+  - `Implementation-Vendor`：该值是一个字符串，用于定义维护扩展实现的组织。
+  - `Specification-Title`：该值是一个字符串，用于定义扩展规范的标题。
+  - `Specification-Version`：该值是一个字符串，用于定义扩展规范的版本。
+  - `Specification-Vendor`：该值是一个字符串，用于定义维护扩展规范的组织。
+  - `Sealed`: 此属性定义此JAR文件是否密封。 值可以是  "true" or "false" ，忽略大小写。如果将其设置为"true"，则JAR文件中的所有程序包均默认为密封的，除非另行定义。 另请参见 [Package Sealing](#package-sealing) 一节。
 
 ### Per-Entry Attributes
 
