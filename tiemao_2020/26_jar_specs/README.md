@@ -1,6 +1,6 @@
 # JAR File Specification
 
-# Java规范系列：JAR文件规范
+# Java规范系列: JAR文件规范
 
 [TOC]
 
@@ -9,7 +9,7 @@
 
 JAR file is a file format based on the popular ZIP file format and is used for aggregating many files into one. A JAR file is essentially a zip file that contains an optional `META-INF` directory. A JAR file can be created by the command-line jar tool, or by using the [`java.util.jar`](https://docs.oracle.com/en/java/javase/14/docs/api/java.base/java/util/jar/package-summary.html) API in the Java platform. There is no restriction on the name of a JAR file, it can be any legal file name on a particular platform.
 
-## JAR文件格式
+## 1. JAR文件格式
 
 JAR文件基于ZIP文件格式, 用于将多个文件打包成一个压缩文件。
 本质上JAR文件就是一个zip文件, 其中包含一个可选的 `META-INF` 目录。
@@ -26,7 +26,7 @@ A modular JAR file deployed on the module path, as opposed to the class path, is
 
 A non-modular JAR file deployed on the module path is an *automatic module*. If the JAR file has a main attribute `Automatic-Module-Name` (see [Main Attributes](#main-attributes)) then the attribute's value is the module name, otherwise the module name is derived from the name of the JAR file as specified in [`ModuleFinder.of(Path...)`](https://docs.oracle.com/en/java/javase/14/docs/api/java.base/java/lang/module/ModuleFinder.html#automatic-modules).
 
-## 模块化JAR文件
+## 2. 模块化JAR文件
 
 模块化JAR文件也是JAR文件格式, 其内部的顶级路径（根路径）下有一个模块描述文件 `module-info.class`。
 模块描述文件是模块声明的二进制形式。  更详细的模块化JAR文件定义请参考: [multi-release JAR files](#multi-release-jar-files)。
@@ -44,14 +44,14 @@ A multi-release JAR file allows for a single JAR file to support multiple major 
 
 A multi-release JAR file is identified by the main attribute:
 
-## 多版本JAR文件
+## 3. 多版本JAR文件
 
 多版本JAR文件, 允许单个JAR文件支持多个JDK版本。
 例如, 一个多版本的JAR文件可以同时依赖Java 8和Java 9版本, 其中, 有一些类文件是兼容Java 8中的API, 另一些类文件则兼容Java 9的API。
 这个特性主要是第三方库和框架的开发人员在使用, 以便兼容不同的JDK版本。
 第三方库和框架的开发人员可以逐步迁移并支持新的Java特性, 同时也兼容旧的特性。
 
-多版本JAR文件由main属性来标识：
+多版本JAR文件由main属性来标识:
 
 ```
 Multi-Release: true
@@ -64,7 +64,7 @@ Classes and resource files dependent on a major version, 9 or greater, of a Java
 在 [JAR Manifest](#jar-manifest) 的main这一节中声明。
 
 依赖于Java 9 或更高版本的类和资源文件可以放到 **特定版本目录** 下, 而不是顶级目录中。
-版本目录位于 [META-INF](#the-meta-inf-directory) 下面, 其格式为：
+版本目录位于 [META-INF](#the-meta-inf-directory) 下面, 其格式为:
 
 ```
 META-INF/versions/N
@@ -72,7 +72,7 @@ META-INF/versions/N
 
 where N is the string representation of the major version number of a Java platform release. Specifically `N` must conform to the specification:
 
-其中 `N` 是Java平台大版本号的字符串表示形式。 具体来说, `N`的格式需要满足：
+其中 `N` 是Java平台大版本号的字符串表示形式。 具体来说, `N`的格式需要满足:
 
 | N: | `{1-9}{0-9}*` |
 | :--- | ------------------ |
@@ -138,7 +138,7 @@ Tooling, such as the `jar` tool, should perform such verification of versioned m
 
 模块描述符与其他的class文件或资源文件并不区别对待。 模块描述符可以存放在版本化区域下, 而不必存放在顶级目录下。 这样就确保了只有 Java 8 版本的类会出现在顶级目录下, 而Java 9版本的类（包括模块描述符）会出现在`9`版本目录下。
 
-更小版本的模块描述符, 或者顶层的模块描述符, 都必须与`M`相同, 但有两个例外：
+更小版本的模块描述符, 或者顶层的模块描述符, 都必须与`M`相同, 但有两个例外:
 
 1. 主版本描述符可以和 `java.*` 和 `jdk.*` 模块具有不同的 non-`transitive` `requires` 子句；
 2. 主导版本描述符可以具有不同的 `uses` 子句, 即使是在 `java.*` 和 `jdk.*` 模块之外定义的服务类型也是如此。
@@ -150,9 +150,9 @@ Tooling, such as the `jar` tool, should perform such verification of versioned m
 
 The following files/directories in the META-INF directory are recognized and interpreted by the Java Platform to configure applications, class loaders and services:
 
-## `META-INF` 目录
+## 4. `META-INF` 目录
 
-Java平台通过解析 `META-INF` 目录下的文件和目录, 自动配置应用程序, 类加载器以及服务：
+Java平台通过解析 `META-INF` 目录下的文件和目录, 自动配置应用程序, 类加载器以及服务:
 
 - `MANIFEST.MF`
 
@@ -202,7 +202,7 @@ Implementations shall support header values of up to 65535 bytes.
 
 All the specifications in this document use the same grammar in which terminal symbols are shown in fixed width font and non-terminal symbols are shown in italic type face.
 
-## 名值对与Section
+## 5. 名值对与Section
 
 在介绍每个配置文件内容之前, 需要明确一些格式约定。 清单文件和签名文件中包含的信息格式, 受RFC822标准启发, 在大部分情况下, 表示为 "名:值" 对。 我们也将其称为报头(header)或属性(attribute)。
 
@@ -247,7 +247,7 @@ A JAR file manifest consists of a main section followed by a list of sections fo
 - If there are multiple individual sections for the same file entry, the attributes in these sections are merged. If a certain attribute have different values in different sections, the last one is recognized.
 - Attributes which are not understood are ignored. Such attributes may include implementation specific information used by applications.
 
-## JAR文件清单
+## 6. JAR文件清单
 
 ### 概述
 
@@ -283,7 +283,7 @@ Main attributes are the attributes that are present in the main section of the m
 
 ### 主属性
 
-主属性是清单文件中, main section 部分中存在的属性。 它们可分为下面这些不同的组：
+主属性是清单文件中, main section 部分中存在的属性。 它们可分为下面这些不同的组:
 
 - general main attributes
 
@@ -296,22 +296,22 @@ Main attributes are the attributes that are present in the main section of the m
 
 - 一般属性
 
-  - `Manifest-Version`：定义清单文件版本。 对应的值是合法的版本号，如以上规范中所述。
-  - `Created-By`：定义生成清单文件的Java实现的版本和供应商。该属性由 `jar` 工具生成。
+  - `Manifest-Version`: 定义清单文件版本。 对应的值是合法的版本号，如以上规范中所述。
+  - `Created-By`: 定义生成清单文件的Java实现的版本和供应商。该属性由 `jar` 工具生成。
   - `Signature-Version`: 签名版本, 定义jar文件的签名版本。对应的值应为有效的 *version-number* 字符串。
   - `Class-Path`: 类路径, 此属性的值指定程序需要的库的相对URL。 URL用一个或多个空格分隔。 应用 class loader 使用此属性的值来构造其内部搜索路径。 有关详细信息，请参见 [Class-Path Attribute](#class-path-attribute) 部分。
   - `Automatic-Module-Name`: 自动模块名称, 如果将此JAR文件作为自动模块部署在模块路径上，则用来定义模块名称。 有关更多详细信息，请参见 [`automatic modules`](https://docs.oracle.com/en/java/javase/14/docs/api/java.base/java/lang/module/ModuleFinder.html#automatic-modules)。
-  - `Multi-Release`：此属性定义此JAR文件是否为[multi-release](#modular-multi-release-jar-files) JAR文件。 忽略大小写，如果值为 "true"， 则Java运行时和工具会将JAR文件当做多版本JAR文件进行处理。 如果该值不是"true"，则该属性将被忽略。
+  - `Multi-Release`: 此属性定义此JAR文件是否为[multi-release](#modular-multi-release-jar-files) JAR文件。 忽略大小写，如果值为 "true"， 则Java运行时和工具会将JAR文件当做多版本JAR文件进行处理。 如果该值不是"true"，则该属性将被忽略。
 
 - attribute defined for stand-alone applications: This attribute is used by stand-alone applications that are bundled into executable jar files which can be invoked by the java runtime directly by running "`java -jar x.jar`".
 
   - `Main-Class`: The value of this attribute is the class name of the main application class which the launcher will load at startup time. The value must *not* have the `.class` extension appended to the class name.
   - `Launcher-Agent-Class`: If this attribute is present then its value is the class name of a *java agent* that is started before the application main method is invoked. This attribute can be used for cases where a java agent is packaged in the same executable JAR file as the application. The agent class defines a public static method name `agentmain` in one of the two forms specified in the [`java.lang.instrument`](https://docs.oracle.com/en/java/javase/14/docs/api/java.instrument/java/lang/instrument/package-summary.html) package summary. Additional attributes (such as `Can-Retransform-Classes`) can be used to indicate capabilities needed by the agent.
 
-- 为独立应用程序定义的属性：这些属性由捆绑到可执行jar文件中的独立应用程序使用，该文件可以直接通过 "`java -jar xxx.jar`" 来调用和启动。
+- 为独立应用程序定义的属性: 这些属性由捆绑到可执行jar文件中的独立应用程序使用，该文件可以直接通过 "`java -jar xxx.jar`" 来调用和启动。
 
-  - `Main-Class`： 这个属性的值用来指定启动时加载的 main class 的类名。 注意类名不包含 `.class` 后缀。
-  - `Launcher-Agent-Class`：如果存在此属性，则其值是 *java agent* 的类名, 会在调用应用程序 main 方法之前先启动。 此属性用于当Java agent 与应用程序打包在同一个可执行JAR文件中的情况。  agent class 定义了一个公共静态方法 `agentmain`, 有两种形式, 具体规范参见: [`java.lang.instrument`](https://docs.oracle.com/en/java/javase/14/docs/api/java.instrument/java/lang/instrument/package-summary.html) 包描述信息。 其他属性（例如 `Can-Retransform-Classes`）可用于指示 agent 所依赖的功能。
+  - `Main-Class`:  这个属性的值用来指定启动时加载的 main class 的类名。 注意类名不包含 `.class` 后缀。
+  - `Launcher-Agent-Class`: 如果存在此属性，则其值是 *java agent* 的类名, 会在调用应用程序 main 方法之前先启动。 此属性用于当Java agent 与应用程序打包在同一个可执行JAR文件中的情况。  agent class 定义了一个公共静态方法 `agentmain`, 有两种形式, 具体规范参见: [`java.lang.instrument`](https://docs.oracle.com/en/java/javase/14/docs/api/java.instrument/java/lang/instrument/package-summary.html) 包描述信息。 其他属性（例如 `Can-Retransform-Classes`）可用于指示 agent 所依赖的功能。
 
 
 - attributes defined for [package versioning and sealing](https://docs.oracle.com/en/java/javase/14/docs/api/java.base/java/lang/Package.html) information: The value of these attributes apply to all the packages in the JAR file, but can be overridden by per-entry attributes.
@@ -324,19 +324,23 @@ Main attributes are the attributes that are present in the main section of the m
   - `Specification-Vendor`: The value is a string that defines the organization that maintains the extension specification.
   - `Sealed`: This attribute defines whether this JAR file is sealed or not. The value can be either "true" or "false", case is ignored. If it is set to "true", then all the packages in the JAR file are defaulted to be sealed, unless they are defined otherwise individually. See also the [Package Sealing](#package-sealing) section.
 
-- 为 [package versioning and sealing](https://docs.oracle.com/en/java/javase/14/docs/api/java.base/java/lang/Package.html) 信息定义的属性：这些属性适用于JAR文件中的所有软件包，但是可以由各个条目的属性覆盖。
+- 为 [package versioning and sealing](https://docs.oracle.com/en/java/javase/14/docs/api/java.base/java/lang/Package.html) 信息定义的属性: 这些属性适用于JAR文件中的所有软件包，但是可以由各个条目的属性覆盖。
 
-  - `Implementation-Title`：该值是一个字符串，用于定义扩展实现的标题。
-  - `Implementation-Version`：该值是一个字符串，用于定义扩展实现的版本。
-  - `Implementation-Vendor`：该值是一个字符串，用于定义维护扩展实现的组织。
-  - `Specification-Title`：该值是一个字符串，用于定义扩展规范的标题。
-  - `Specification-Version`：该值是一个字符串，用于定义扩展规范的版本。
-  - `Specification-Vendor`：该值是一个字符串，用于定义维护扩展规范的组织。
+  - `Implementation-Title`: 该值是一个字符串，用于定义扩展实现的标题。
+  - `Implementation-Version`: 该值是一个字符串，用于定义扩展实现的版本。
+  - `Implementation-Vendor`: 该值是一个字符串，用于定义维护扩展实现的组织。
+  - `Specification-Title`: 该值是一个字符串，用于定义扩展规范的标题。
+  - `Specification-Version`: 该值是一个字符串，用于定义扩展规范的版本。
+  - `Specification-Vendor`: 该值是一个字符串，用于定义维护扩展规范的组织。
   - `Sealed`: 此属性定义此JAR文件是否密封。 值可以是  "true" or "false" ，忽略大小写。如果将其设置为"true"，则JAR文件中的所有程序包均默认为密封的，除非另行定义。 另请参见 [Package Sealing](#package-sealing) 一节。
 
 ### Per-Entry Attributes
 
 Per-entry attributes apply only to the individual JAR file entry to which the manifest entry is associated with. If the same attribute also appeared in the main section, then the value of the per-entry attribute overwrites the main attribute's value. For example, if JAR file a.jar has the following manifest content:
+
+### 具体条目的属性
+
+具体条目的属性仅适用于清单条目与之关联的单个JAR文件条目。 如果相同的属性也出现在main部分中，则条目属性的值将覆盖 main 属性的值。 例如，如果JAR文件 `a.jar` 具有以下清单内容:
 
 ```
 Manifest-Version: 1.0
@@ -351,13 +355,26 @@ It means that all the packages archived in a.jar are sealed, except that package
 The per-entry attributes fall into the following groups:
 
 - attributes defined for file contents:
-  - Content-Type: This attribute can be used to specify the MIME type and subtype of data for a specific file entry in the JAR file. The value should be a string in the form of *type/subtype.* For example "image/bmp" is an image type with a subtype of bmp (representing bitmap). This would indicate the file entry as an image with the data stored as a bitmap. RFC [1521](http://www.ietf.org/rfc/rfc1521.txt) and [1522](http://www.ietf.org/rfc/rfc1522.txt) discuss and define the MIME types definition.
+  - `Content-Type`: This attribute can be used to specify the MIME type and subtype of data for a specific file entry in the JAR file. The value should be a string in the form of *type/subtype.* For example "image/bmp" is an image type with a subtype of bmp (representing bitmap). This would indicate the file entry as an image with the data stored as a bitmap. RFC [1521](http://www.ietf.org/rfc/rfc1521.txt) and [1522](http://www.ietf.org/rfc/rfc1522.txt) discuss and define the MIME types definition.
 - attributes defined for package versioning and sealing information: These are the same set of attributes defined above as main attributes that defines the extension package versioning and sealing information. When used as per-entry attributes, these attributes overwrites the main attributes but only apply to the individual file specified by the manifest entry.
 - attribute defined for beans objects:
-  - Java-Bean: Defines whether the specific jar file entry is a Java Beans object or not. The value should be either "true" or "false", case is ignored.
+  - `Java-Bean`: Defines whether the specific jar file entry is a Java Beans object or not. The value should be either "true" or "false", case is ignored.
 - attributes defined for signing: These attributes are used for signing and verifying purposes. More details here.
-  - x-Digest-y: The name of this attribute specifies the name of the digest algorithm used to compute the digest value for the corresponding jar file entry. The value of this attribute stores the actual digest value. The prefix 'x' specifies the algorithm name and the optional suffix 'y' indicates to which language the digest value should be verified against.
-  - Magic: This is an optional attribute that can be used by applications to indicate how verifier should compute the digest value contained in the manifest entry. The value of this attribute is a set of comma separated context specific strings. Detailed description is here.
+  - `x-Digest-y`: The name of this attribute specifies the name of the digest algorithm used to compute the digest value for the corresponding jar file entry. The value of this attribute stores the actual digest value. The prefix 'x' specifies the algorithm name and the optional suffix 'y' indicates to which language the digest value should be verified against.
+  - `Magic`: This is an optional attribute that can be used by applications to indicate how verifier should compute the digest value contained in the manifest entry. The value of this attribute is a set of comma separated context specific strings. Detailed description is here.
+
+这意味着 `a.jar` 中的所有软件包都是密封的，除了明确指定的 `foo/bar/` 目录不是。
+
+按条目属性分为以下几类:
+
+- 文件内容相关的属性:
+  - `Content-Type`: 用于为特定文件条目指定 MIME类型和子数据类型。 字符串值的形式为 *type/subtype*。 例如， "image/bmp" 表示 bmp类型的图像。 这指示该文件为图像，数据存储为位图。 RFC [1521](http://www.ietf.org/rfc/rfc1521.txt) 和 [1522](http://www.ietf.org/rfc/rfc1522.txt) 定义和探讨了MIME类型定义。
+- 软件包版本控制和密封信息相关的属性: 这些属性与上面定义的 main 属性相同， 定义了扩展软件包版本控制和密封信息。 当用作各项的属性时，这些属性将覆盖main属性，但仅用于清单条目指定的单个文件。
+- 为bean对象定义的属性:
+  - `Java-Bean`: 定义某个特定的文件条目是否为Java Bean对象。该值应为"true" or "false"，忽略大小写。
+- 用于签名相关的属性: 这些属性用于签名和验证。
+  - `x-Digest-y`: 属性名是用于计算相应文件条目的摘要值的摘要算法名称。 属性值则是实际的摘要值。 前缀 'x' 指定算法名称，可选后缀 'y' 表示摘要值应针对哪种语言进行验证。
+  - `Magic`: 这是一个可选属性，应用程序可以用该属性来指示验证者应如何计算清单条目中包含的摘要值。此属性的值是一组用逗号分隔的上下文特定的字符串。
 
 ## Signed JAR File
 
