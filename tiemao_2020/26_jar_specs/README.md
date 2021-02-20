@@ -305,8 +305,14 @@ Main attributes are the attributes that are present in the main section of the m
 
 - attribute defined for stand-alone applications: This attribute is used by stand-alone applications that are bundled into executable jar files which can be invoked by the java runtime directly by running "`java -jar x.jar`".
 
-  - Main-Class: The value of this attribute is the class name of the main application class which the launcher will load at startup time. The value must *not* have the `.class` extension appended to the class name.
-  - Launcher-Agent-Class: If this attribute is present then its value is the class name of a *java agent* that is started before the application main method is invoked. This attribute can be used for cases where a java agent is packaged in the same executable JAR file as the application. The agent class defines a public static method name `agentmain` in one of the two forms specified in the [`java.lang.instrument`](https://docs.oracle.com/en/java/javase/14/docs/api/java.instrument/java/lang/instrument/package-summary.html) package summary. Additional attributes (such as `Can-Retransform-Classes`) can be used to indicate capabilities needed by the agent.
+  - `Main-Class`: The value of this attribute is the class name of the main application class which the launcher will load at startup time. The value must *not* have the `.class` extension appended to the class name.
+  - `Launcher-Agent-Class`: If this attribute is present then its value is the class name of a *java agent* that is started before the application main method is invoked. This attribute can be used for cases where a java agent is packaged in the same executable JAR file as the application. The agent class defines a public static method name `agentmain` in one of the two forms specified in the [`java.lang.instrument`](https://docs.oracle.com/en/java/javase/14/docs/api/java.instrument/java/lang/instrument/package-summary.html) package summary. Additional attributes (such as `Can-Retransform-Classes`) can be used to indicate capabilities needed by the agent.
+
+- 为独立应用程序定义的属性：这些属性由捆绑到可执行jar文件中的独立应用程序使用，该文件可以直接通过 "`java -jar xxx.jar`" 来调用和启动。
+
+  - `Main-Class`： 这个属性的值用来指定启动时加载的 main class 的类名。 注意类名不包含 `.class` 后缀。
+  - `Launcher-Agent-Class`：如果存在此属性，则其值是 *java agent* 的类名, 会在调用应用程序 main 方法之前先启动。 此属性用于当Java agent 与应用程序打包在同一个可执行JAR文件中的情况。  agent class 定义了一个公共静态方法 `agentmain`, 有两种形式, 具体规范参见: [`java.lang.instrument`](https://docs.oracle.com/en/java/javase/14/docs/api/java.instrument/java/lang/instrument/package-summary.html) 包描述信息。 其他属性（例如 `Can-Retransform-Classes`）可用于指示 agent 所依赖的功能。
+
 
 - attributes defined for [package versioning and sealing](https://docs.oracle.com/en/java/javase/14/docs/api/java.base/java/lang/Package.html) information: The value of these attributes apply to all the packages in the JAR file, but can be overridden by per-entry attributes.
 
