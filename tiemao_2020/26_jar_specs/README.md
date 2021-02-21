@@ -382,6 +382,16 @@ The per-entry attributes fall into the following groups:
 
 A JAR file can be signed by using the command line jarsigner tool or directly through the `java.security` API. Every file entry, including non-signature related files in the `META-INF` directory, will be signed if the JAR file is signed by the jarsigner tool. The signature related files are:
 
+## 7. 签名JAR文件
+
+### 简述
+
+可以使用命令行工具 `jarsigner`, 或直接通过 `java.security` API对JAR文件进行签名。
+
+如果JAR文件由jarsigner工具签名，则其中的每一个文件条目都将被签名（也包括 `META-INF` 目录中与签名无关的其余文件）。
+
+签名相关的文件包括：
+
 - `META-INF/MANIFEST.MF`
 - `META-INF/*.SF`
 - `META-INF/*.DSA`
@@ -393,6 +403,18 @@ Note that if such files are located in `META-INF` subdirectories, they are not c
 Subsets of a JAR file can be signed by using the `java.security` API. A signed JAR file is exactly the same as the original JAR file, except that its manifest is updated and two additional files are added to the `META-INF` directory: a signature file and a signature block file. When jarsigner is not used, the signing program has to construct both the signature file and the signature block file.
 
 For every file entry signed in the signed JAR file, an individual manifest entry is created for it as long as it does not already exist in the manifest. Each manifest entry lists one or more digest attributes and an optional [Magic attribute](#the-magic-attribute).
+
+请注意，如果此类文件位于 `META-INF` 目录中，则它们不被视为与签名相关。 这些文件名不区分大小写, 也不会被签名。
+
+可以使用 `java.security` 包中的 API 对JAR文件的子集进行签名。 已签名的JAR文件与原始JAR文件完全相同，不同之处在于其清单文件被更新，并将两个文件添加到  `META-INF` 目录中：
+
+- 一个签名文件,
+- 以及一个签名块文件。
+
+不使用 jarsigner 时，签名程序必须构造签名文件和签名块文件。
+
+对于签名JAR中的每个签名文件条目，只要清单中不存在该条目，就会为其创建一个单独的清单条目。 每个清单条目列出一个或多个摘要属性以及一个可选的 [Magic属性](#the-magic-attribute)。
+
 
 ### Signature File
 
