@@ -390,7 +390,7 @@ A JAR file can be signed by using the command line jarsigner tool or directly th
 
 如果JAR文件由jarsigner工具签名，则其中的每一个文件条目都将被签名（也包括 `META-INF` 目录中与签名无关的其余文件）。
 
-签名相关的文件包括：
+签名相关的文件包括:
 
 - `META-INF/MANIFEST.MF`
 - `META-INF/*.SF`
@@ -406,7 +406,7 @@ For every file entry signed in the signed JAR file, an individual manifest entry
 
 请注意，如果此类文件位于 `META-INF` 目录中，则它们不被视为与签名相关。 这些文件名不区分大小写, 也不会被签名。
 
-可以使用 `java.security` 包中的 API 对JAR文件的子集进行签名。 已签名的JAR文件与原始JAR文件完全相同，不同之处在于其清单文件被更新，并将两个文件添加到  `META-INF` 目录中：
+可以使用 `java.security` 包中的 API 对JAR文件的子集进行签名。 已签名的JAR文件与原始JAR文件完全相同，不同之处在于其清单文件被更新，并将两个文件添加到  `META-INF` 目录中:
 
 - 一个签名文件,
 - 以及一个签名块文件。
@@ -420,12 +420,25 @@ For every file entry signed in the signed JAR file, an individual manifest entry
 
 Each signer is represented by a signature file with extension `.SF`. The major part of the file is similar to the manifest file. It consists of a main section which includes information supplied by the signer but not specific to any particular jar file entry. In addition to the `Signature-Version` and `Created-By` attributes (see [Main Attributes](#main-attributes)), the main section can also include the following security attributes:
 
-- x-Digest-Manifest-Main-Attributes (where x is the standard name of a `java.security.MessageDigest` algorithm): The value of this attribute is the digest value of the main attributes of the manifest.
-- x-Digest-Manifest (where x is the standard name of a `java.security.MessageDigest` algorithm): The value of this attribute is the digest value of the entire manifest.
+- `x-Digest-Manifest-Main-Attributes` (where x is the standard name of a `java.security.MessageDigest` algorithm): The value of this attribute is the digest value of the main attributes of the manifest.
+- `x-Digest-Manifest` (where x is the standard name of a `java.security.MessageDigest` algorithm): The value of this attribute is the digest value of the entire manifest.
 
 The main section is followed by a list of individual entries whose names must also be present in the manifest file. Each individual entry must contain at least the digest of its corresponding entry in the manifest file.
 
 Paths or URLs appearing in the manifest file but not in the signature file are not used in the calculation.
+
+### 签名文件
+
+每个签名者都由带有 `.SF` 后缀的签名文件表示。
+该文件大部分类似于清单文件。包括一个 main section，其中包括签名者提供的信息，但并不特定于任何特定的jar文件条目。
+加上`Signature-Version`和`Created-By` 属性，main section 还可以包含下面的安全属性:
+
+- `x-Digest-Manifest-Main-Attributes`（其中`x`是 `java.security.MessageDigest` 算法的标准名称）: 属性值是整个清单中的主要属性的摘要值。
+- `x-Digest-Manifest`（其中`x`是`java.security.MessageDigest`算法的标准名称）:  属性值是整个清单的摘要值。
+
+main section 后面是各个条目的列表，其名称也必须出现在清单文件中。每个单独的条目必须至少包含清单文件中相应条目的摘要。
+
+清单文件中的 Path 或者 URL, 如果计算中不使用, 则不出现在签名文件中。
 
 ### Signature Validation
 
