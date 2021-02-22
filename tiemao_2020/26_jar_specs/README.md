@@ -450,14 +450,35 @@ A successful JAR file verification occurs if the signature(s) are valid, and non
 
 3. If an `x-Digest-Manifest` attribute does not exist in the signature file or none of the digest values calculated in the previous step match, then a less optimized verification is performed:
 
-   1. If an `x-Digest-Manifest-Main-Attributes` entry exists in the signature file, verify the value against a digest calculated over the main attributes in the manifest file. If this calculation fails, then JAR file verification fails. This decision can be remembered for efficiency. If an `x-Digest-Manifest-Main-Attributes` entry does not exist in the signature file, its nonexistence does not affect JAR file verification and the manifest main attributes are not verified.
-   2. Verify the digest value in each source file information section in the signature file against a digest value calculated against the corresponding entry in the manifest file. If any of the digest values don't match, then JAR file verification fails.
+### 签名验证
+
+如果签名有效，则JAR文件验证成功，并且生成签名JAR文件之后其中的文件均未发生篡改。
+
+JAR文件验证涉及以下步骤:
+
+1. 首次解析清单时，验证签名文件上的签名。 为了提高效率，可以记住验证信息。 请注意，这个验证仅验证签名本身，而不验证实际的存档文件。
+
+2. 如果签名文件中存在 `x-Digest-Manifest` 属性，则根据在整个清单中计算出的摘要值来验证。 如果签名文件中存在多个 `x-Digest-Manifest` 属性，则至少验证一个与计算的摘要值相匹配。
+
+3. 如果签名文件中不存在 `x-Digest-Manifest` 属性，或者在上一步中计算出的所有摘要值都不匹配，则执行优化程度较低的验证:
+
+   - 3.1. If an `x-Digest-Manifest-Main-Attributes` entry exists in the signature file, verify the value against a digest calculated over the main attributes in the manifest file. If this calculation fails, then JAR file verification fails. This decision can be remembered for efficiency. If an `x-Digest-Manifest-Main-Attributes` entry does not exist in the signature file, its nonexistence does not affect JAR file verification and the manifest main attributes are not verified.
+   - 3.2. Verify the digest value in each source file information section in the signature file against a digest value calculated against the corresponding entry in the manifest file. If any of the digest values don't match, then JAR file verification fails.
 
    One reason the digest value of the manifest file that is stored in the `x-Digest-Manifest` attribute may not equal the digest value of the current manifest file is that it might contain sections for newly added files after the file was signed. For example, suppose one or more files were added to the JAR file (using the jar tool) after the signature (and thus the signature file) was generated. If the JAR file is signed again by a different signer, then the manifest file is changed (sections are added to it for the new files by the jarsigner tool) and a new signature file is created, but the original signature file is unchanged. A verification on the original signature is still considered successful if none of the files that were in the JAR file when the signature was generated have been changed since then, which is the case if the digest values in the non-header sections of the signature file equal the digest values of the corresponding sections in the manifest file.
+
+   - 3.1 如果签名文件中存在 `x-Digest-Manifest-Main-Attributes` 条目，则对照清单文件中的主要属性上计算摘要来验证该值。如果计算失败，那么JAR文件验证失败。 可以记住这一判断以提高效率。如果签名文件中不存在 `x-Digest-Manifest-Main-Attributes` 条目，则不会影响JAR文件验证，并且不会验证清单的主要属性。
+   - 3.2 根据清单文件中对应条目计算的摘要值，验证签名文件中每个源文件信息部分中的摘要值。 如果有任何摘要值不匹配，则JAR文件验证将失败。
+
+   存储在 `x-Digest-Manifest` 属性中的清单文件摘要值可能不等于当前清单文件的摘要值的一个原因是，文件签名之后，可能包含新添加文件的部分。 例如，假设在生成签名（并生成了签名文件）后, 使用jar工具将一个或多个文件添加到了JAR文件中。 如果JAR文件由其他签名者再次签名，则清单文件将更改（通过 jarsigner 工具将新文件添加到节中）并创建新的签名文件，但原始签名文件未更改。 如果自那时以来未更改生成签名时JAR文件中的所有文件，则原始签名的验证仍被认为是成功的，如果签名文件的非标头部分中的摘要值属于这种情况，则认为已成功等于清单文件中相应节的摘要值。
 
 4. For each entry in the manifest, verify the digest value in the manifest file against a digest calculated over the actual data referenced in the "Name:" attribute, which specifies either a relative file path or URL. If any of the digest values don't match, then JAR file verification fails.
 
 Example manifest file:
+
+4. 对于清单中的每个条目，根据 "Name:" 属性值（指定的相对 file path 或URL）引用的实际数据计算出摘要，来验证清单文件中的摘要值。 如果任何摘要值不匹配，则JAR文件验证将失败。
+
+清单文件示例:
 
 ```
 Manifest-Version: 1.0
@@ -472,6 +493,8 @@ SHA-256-Digest: (base64 representation of SHA-256 digest)
 ```
 
 The corresponding signature file would be:
+
+相应的签名文件为:
 
 ```
 Signature-Version: 1.0
