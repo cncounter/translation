@@ -518,6 +518,16 @@ The value or values of the Magic attribute are a set of comma-separated context-
 
 Here are two examples of the potential use of Magic attribute in the manifest file:
 
+### Magic属性
+
+另一个清单条目签名的验证要求是，验证者应理解该条目清单清单中的一个或多个 Magic key-pair 值。
+
+Magic属性是可选的，但如果要验证条目的签名，则解析器需要了解该条目的Magic key 的值。
+
+Magic属性的一个或多个值, 是一组用逗号分隔的特定于上下文的字符串，逗号前后的空格将被忽略，忽略大小写。 Magic属性的确切含义根据应用程序而确定。 这些值指示如何计算清单条目中包含的哈希值，因此对于正确验证签名至关重要。 关键字可用于动态或嵌入式内容，用于多语言文档的多个哈希等等。
+
+下面是清单文件中潜在使用Magic属性的两个示例：
+
 ```
 Name: http://www.example-scripts.com/index#script1
 SHA-256-Digest: (base64 representation of SHA-256 hash)
@@ -533,6 +543,10 @@ Magic: Multilingual
 In the first example, these Magic values may indicate that the result of an http query is the script embedded in the document, as opposed to the document itself, and also that the script is generated dynamically. These two pieces of information indicate how to compute the hash value against which to compare the manifest's digest value, thus comparing a valid signature.
 
 In the second example, the Magic value indicates that the document retrieved may have been content-negotiated for a specific language, and that the digest to verify against is dependent on which language the document retrieved is written in.
+
+在前一个示例中，这些Magic值可以指明http查询的结果是嵌入在文档中的脚本（而不是document），并且该脚本是动态生成的。 这两条信息指示如何计算与清单的摘要值进行比较的哈希值，从而比较签名的有效性。
+
+在第二个示例中，Magic值指示所获取的文档可能已针对特定语言进行了内容协商，并且要进行验证的摘要取决于所写入的文档使用的语言。
 
 ## Digital Signatures
 
