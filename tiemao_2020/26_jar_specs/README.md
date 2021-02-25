@@ -526,7 +526,7 @@ Magic属性是可选的，但如果要验证条目的签名，则解析器需要
 
 Magic属性的一个或多个值, 是一组用逗号分隔的特定于上下文的字符串，逗号前后的空格将被忽略，忽略大小写。 Magic属性的确切含义根据应用程序而确定。 这些值指示如何计算清单条目中包含的哈希值，因此对于正确验证签名至关重要。 关键字可用于动态或嵌入式内容，用于多语言文档的多个哈希等等。
 
-下面是清单文件中潜在使用Magic属性的两个示例：
+下面是清单文件中潜在使用Magic属性的两个示例:
 
 ```
 Name: http://www.example-scripts.com/index#script1
@@ -608,6 +608,32 @@ Following is a list of additional restrictions and rules that apply to manifest 
   - It is technically possible that different entities may use different signing algorithms to share a single signature file. This violates the standard, and the extra signature may be ignored.
 - Algorithms:
   - No digest algorithm or signature algorithm is mandated by this standard. However, at least one of SHA-256 and SHA1 digest algorithm must be supported.
+
+## 9. 清单和签名文件说明
+
+下面是适用于清单文件和签名文件的其他限制和规则。
+
+- 属性(Attributes):
+  - 所有section中, 不识别的属性, 在所有情况下都会被忽略。
+  - 属性名不区分大小写。 但是，生成清单和签名文件的程序, 应使用本规范中所示的案例。
+  - 属性名称在同一节中不能重复。
+- 版本(Versions):
+  - 必须先列出 `Manifest-Version` 和 `Signature-Version`，并且在这种情况下（这样才能很容易地将它们识别为 magic 字符串）。除此之外，main section 中的属性顺序并不重要。
+- 顺序(Ordering):
+  - 单个清单条目的顺序不重要。
+  - 各个签名条目的顺序并不重要，除了要签名的摘要按该顺序排列。
+- 每行的长度(Line length):
+  - 以UTF8编码的形式，每一行都不能超过72字节（注意不是字符）。如果某个值会使行的长度大于这个值，则应折到后续行（每行以单个英文空格开头）。
+- 错误(Errors):
+  - 如果文件无法根据此规范解析，则应输出警告，并且不信任任何签名。
+- 限制(Limitations):
+  - 因为 header names 不能续行，所以标头名称的最大长度为70个字节（名称后必须跟一个冒号和一个空格）。
+  - NUL, CR, 和 LF 不能嵌入标头的值中(header value)，而 NUL, CR, LF 和 ":" 不能嵌入标头名中(header name)。
+  - 实现应支持65535字节（注意不是字符）header value 值，以及每个文件支持65535个headers。 它们可能会耗尽内存，但是在这个值之下不应有硬编码限制。
+- 签名者(Signers):
+  - 从技术上讲，不同的实体可能会使用不同的签名算法来共享单个签名文件。 这违反了标准，多余的签名可能会被忽略。
+- 算法(Algorithms):
+  - 此标准不要求摘要算法或签名算法。但是，必须至少支持 SHA-256 和 SHA1 摘要算法之一。
 
 ## JAR Index
 
