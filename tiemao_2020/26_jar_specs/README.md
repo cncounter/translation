@@ -93,7 +93,7 @@ If a multi-release JAR file is deployed on the class path or module path (as an 
 
 The public API exported by the classes in a multi-release JAR file must be *exactly* the same across versions, hence at a minimum why versioned public or protected classes for class files under a versioned directory must preside over classes for class files under the top-level directory. It is difficult and costly to perform extensive API verification checks as such tooling, such as the `jar` tool, is not required to perform extensive verification and a Java runtime is not required to perform any verification. A future release of this specification may relax the exact same API constraint to support careful evolution.
 
-如果将多版本JAR文件部署到 class path 或 module path 中, 假设JDK版本为 `N`,  那么类加载器从该JAR文件加载class的时候, 将优先搜索版本目录`N`, 找不到则递减, 搜索 `N-1`, 直到下限9为止, 最后才会搜索顶级目录。
+如果将多版本JAR文件部署到 class path 或 module path 中, 假设JDK版本为 `N`,  那么class loader从该JAR文件加载class的时候, 将优先搜索版本目录`N`, 找不到则递减, 搜索 `N-1`, 直到下限9为止, 最后才会搜索顶级目录。
 
 多版本JAR文件中, 各个版本暴露的 public API 必须 “完全一致”,  这就解释了为什么特定版本目录下的 public 和 protected 类文件, 都必须在根目录下存在相同限定名的类。
 执行扩展API的校验非常困难而且开销很大, 所以并不要求 `jar` 之类的工具来验证,  也不要求Java运行时来执行这类验证。
@@ -639,13 +639,25 @@ Following is a list of additional restrictions and rules that apply to manifest 
 
 ### Overview
 
+## 10. JAR索引
+
+### 10.1 JAR索引简介
+
 Since 1.3, JarIndex is introduced to optimize the class searching process of class loaders for network applications, especially applets. Originally, an applet class loader uses a simple linear search algorithm to search each element on its internal search path, which is constructed from the "ARCHIVE" tag or the "Class-Path" main attribute. The class loader downloads and opens each element in its search path, until the class or resource is found. If the class loader tries to find a nonexistent resource, then all the jar files within the application or applet will have to be downloaded. For large network applications and applets this could result in slow startup, sluggish response and wasted network bandwidth. The JarIndex mechanism collects the contents of all the jar files defined in an applet and stores the information in an index file in the first jar file on the applet's class path. After the first jar file is downloaded, the applet class loader will use the collected content information for efficient downloading of jar files.
 
 The existing `jar` tool is enhanced to be able to examine a list of jar files and generate directory information as to which classes and resources reside in which jar file. This directory information is stored in a simple text file named `INDEX.LIST` in the `META-INF` directory of the root jar file. When the classloader loads the root jar file, it reads the `INDEX.LIST` file and uses it to construct a hash table of mappings from file and package names to lists of jar file names. In order to find a class or a resource, the class loader queries the hashtable to find the proper jar file and then downloads it if necessary.
 
+JDK1.3开始引入 JarIndex 来优化网络应用程序（尤其是applet），加快 class loader 的类搜索过程。最初，applet类加载器使用简单的线性搜索算法,从内部搜索路径中的搜索每个元素， 内部搜索路径是由 "ARCHIVE" 标签或 "Class-Path" 主属性构造的。class loader会下载并打开其搜索路径中的每一个元素，直到找到该类或资源为止。 如果class loader尝试查找不存在的资源，则必须下载应用程序或applet中的所有jar文件。对于大型网络应用程序和applet，可能会导致启动缓慢，响应缓慢以及浪费网络带宽。 JarIndex机制, 会收集applet中定义的所有jar文件的内容，并将信息保存在applet类路径上的第一个jar包的 index 文件中。 在下载第一个jar文件之后，applet类加载器将使用收集的信息来高效下载jar文件。
+
+现有的 `jar` 工具已得到增强，能够检查jar文件列表并生成哪些类和资源位于哪个jar文件的目录信息。 该目录信息存储在 root jar 文件的 `META-INF` 路径下的文本文件 `INDEX.LIST` 中。 当class loader加载根jar文件时，它将读取 `INDEX.LIST` 文件，并使用它来构建从资源文件和程序包, 到jar文件名称列表的哈希映射表。 要查找类或资源，class loader 先查询哈希表以找到正确的jar文件，然后在必要时下载它。
+
 Once the class loader finds a `INDEX.LIST` file in a particular jar file, it always trusts the information listed in it. If a mapping is found for a particular class, but the class loader fails to find it by following the link, an unspecified Error or RuntimeException is thrown. When this occurs, the application developer should rerun the `jar` tool on the extension to get the right information into the index file.
 
 To prevent adding too much space overhead to the application and to speed up the construction of the in-memory hash table, the INDEX.LIST file is kept as small as possible. For classes with non-null package names, mappings are recorded at the package level. Normally one package name is mapped to one jar file, but if a particular package spans more than one jar file, then the mapped value of this package will be a list of jar files. For resource files with non-empty directory prefixes, mappings are also recorded at the directory level. Only for classes with null package name, and resource files which reside in the root directory, will the mapping be recorded at the individual file level.
+
+一旦class loader在特定的jar文件中找到一个 `INDEX.LIST` 文件，就会始终信任其中列出的信息。 如果找到特定类的映射，但class loader无法通过链接找到它，则抛出未指定的 Error 或 RuntimeException。 发生这种情况时，应用程序开发人员应在扩展名上重新运行 `jar` 工具，以将正确的信息放入索引文件中。
+
+为了防止占用过多的内存空间, 并加快内存中哈希表的构建速度，INDEX.LIST 文件要尽可能地保持小巧。对于具有 package name 的类，映射记录到 package 级别。 通常，一个 package 名称映射到一个jar文件，但是如果某个特定的package分布在多个jar文件中，则此程序包的映射值将是jar文件列表。 对于具有目录前缀的资源文件，映射信息也只记录到目录级别。 仅对于包名称为空的类以及位于根目录中的资源文件，映射记录在单个文件级别。
 
 ### Index File Specification
 
@@ -653,7 +665,15 @@ The `INDEX.LIST` file contains one or more sections each separated by a single b
 
 The UTF-8 encoding is used to support non ASCII characters in file or package names in the index file.
 
+### 索引文件规范
+
+“ INDEX.LIST”文件包含一个或多个节，每个节由一个空白行分隔。 每个部分定义了一个特定jar文件的内容，其中的头定义了jar文件的路径名，后跟一个包或文件名的列表，每行一个。 所有的jar文件路径都相对于根jar文件的代码库。 这些路径名的解析方式与当前扩展机制对捆绑扩展名的解析方式相同。
+
+UTF-8编码用于支持索引文件中文件名或包名中的非ASCII字符。
+
 #### Specification
+
+#### 规范(Specification)
 
 | *index file:*     | *version-info blankline section**                         |
 | :---------------- | --------------------------------------------------------- |
@@ -670,15 +690,27 @@ The UTF-8 encoding is used to support non ASCII characters in file or package na
 
 The `INDEX.LIST` file is generated by running `jar -i.` See the jar man page for more details.
 
+`INDEX.LIST` 文件是通过运行jar -i生成的。有关更多详细信息，请参见jar手册页。
+
 ### Backward Compatibility
 
 The new class loading scheme is totally backward compatible with applications developed on top of the current extension mechanism. When the class loader loads the first jar file and an `INDEX.LIST` file is found in the `META-INF` directory, it would construct the index hash table and use the new loading scheme for the extension. Otherwise, the class loader will simply use the original linear search algorithm.
+
+### 向后兼容性
+
+新的类加载方案与在当前扩展机制之上开发的应用程序完全向后兼容。 当class loader加载第一个jar文件并且在`META-INF`目录中找到一个`INDEX.LIST`文件时，它将构造索引哈希表，并对扩展使用新的加载方案。 否则，class loader将仅使用原始的线性搜索算法。
 
 ## Class-Path Attribute
 
 The manifest for an application can specify one or more relative URLs referring to the JAR files and directories for other libraries that it needs. These relative URLs will be treated relative to the code base that the containing application was loaded from (the "*context JAR*").
 
 An application (or, more generally, JAR file) specifies the relative URLs of the libraries that it needs via the manifest attribute `Class-Path`. This attribute lists the URLs to search for implementations of other libraries if they cannot be found on the host Java Virtual Machine. These relative URLs may include JAR files and directories for any libraries or resources needed by the application. Relative URLs not ending with '/' are assumed to refer to JAR files. For example,
+
+## 11. 类路径属性
+
+应用程序的清单可以指定一个或多个相对URL，这些URL引用它需要的其他库的JAR文件和目录。 这些相对URL将相对于从中加载包含应用程序的代码库（“ * context JAR *”）进行处理。
+
+一个应用程序（或更普遍的说是JAR文件）通过清单属性“ Class-Path”指定所需的库的相对URL。 如果在主机Java虚拟机上找不到其他库的实现，则此属性列出了URL，以搜索这些库的实现。 这些相对URL可能包括应用程序所需的任何库或资源的JAR文件和目录。 假定不以'/'结尾的相对URL引用JAR文件。 例如，
 
 ```
 Class-Path: servlet.jar infobus.jar acme/beans.jar images/
@@ -696,11 +728,25 @@ Invalid entries are ignored. Valid entries are resolved against the context JAR.
 
 The resulting URLs are inserted into the class path, immediately following the URL of the context JAR. For example, given the following class path:
 
+JAR文件的清单中最多可以指定一个“ Class-Path”标头。
+
+如果满足以下条件，则“ Class-Path”条目有效：
+
+- 可用于创建[`URL`]（https://docs.oracle.com/en/java/javase/14/docs/api/java.base/java/net/URL.html#（java .net.URL，java.lang.String）），方法是根据上下文JAR的URL对其进行解析。
+- 它是相对的，不是[absolute]（https://docs.oracle.com/en/java/javase/14/docs/api/java.base/java/net/URI.html#isAbsolute（）），即除了从文件系统中加载上下文JAR的情况外，它不包含方案组件，在这种情况下，出于兼容性原因，允许使用“文件”方案。
+- 此条目表示的JAR文件或目录的位置包含在上下文JAR的包含目录中。除从文件系统加载上下文JAR的情况外，不允许使用“`../`”导航到父目录。
+
+无效的条目将被忽略。有效条目将根据上下文JAR进行解析。如果结果URL无效或引用了找不到的资源，则将其忽略。重复的URL将被忽略。
+
+生成的URL紧随上下文JAR的URL插入到类路径中。例如，给出以下类路径：
+
 ```
 a.jar b.jar
 ```
 
 If `b.jar` contained the following `Class-Path` manifest attribute:
+
+如果`b.jar`包含以下`Class-Path`清单属性：
 
 ```
 Class-Path: lib/x.jar a.jar
@@ -708,11 +754,15 @@ Class-Path: lib/x.jar a.jar
 
 Then the effective search path of such a `URLClassLoader` instance would be:
 
+那么，这样的“ URLClassLoader”实例的有效搜索路径将是：
+
 ```
 a.jar b.jar lib/x.jar
 ```
 
 Of course, if `x.jar` had dependencies of its own then these would be added according to the same rules and so on for each subsequent URL. In the actual implementation, JAR file dependencies are processed lazily so that the JAR files are not actually opened until needed.
+
+当然，如果x.jar具有自己的依赖关系，则将根据相同的规则添加这些依赖关系，依此类推，为每个后续URL添加依此类推。 在实际的实现中，对JAR文件的依赖关系被延迟处理，因此，直到需要时才实际打开JAR文件。
 
 ## Package Sealing
 
@@ -724,6 +774,16 @@ A sealed JAR specifies that all packages defined by that JAR are sealed unless o
 
 A sealed package is specified via the manifest attribute, `Sealed`, whose value is `true` or `false` (case irrelevant). For example,
 
+## 12. Package密封
+
+可以选择“密封” JAR文件和软件包，以便软件包可以在版本中强制保持一致性。
+
+密封在JAR中的程序包指定该程序包中定义的所有类都必须源自同一JAR。 否则，将抛出“ SecurityException”。
+
+密封的JAR指定密封该JAR定义的所有程序包，除非专门为程序包覆盖。
+
+密封的包通过清单属性“ Sealed”指定，其值为“ true”或“ false”（不区分大小写）。 例如，
+
 ```
 Name: javax/servlet/internal/
 Sealed: true
@@ -734,6 +794,12 @@ specifies that the `javax.servlet.internal` package is sealed, and that all clas
 If this attribute is missing, the package sealing attribute is that of the containing JAR file.
 
 A sealed JAR is specified via the same manifest header, `Sealed`, with the value again of either `true` or `false`. For example,
+
+指定密封javax.servlet.internal包，并且必须从同一JAR文件加载该包中的所有类。
+
+如果缺少此属性，则包密封属性为包含JAR文件的属性。
+
+密封的JAR是通过相同的清单标头“密封”指定的，其值再次为“ true”或“ false”。 例如，
 
 ```
 Sealed: true
@@ -747,16 +813,24 @@ Package sealing is also important for security, because it restricts access to p
 
 The unnamed package is not sealable, so classes that are to be sealed must be placed in their own packages.
 
+指定除非在清单条目中使用`Sealed`属性的特定软件包明确覆盖了该存档中的所有软件包，否则将对其进行密封。
+
+如果缺少此属性，则为了向后兼容，假定JAR文件不被密封。 然后，系统默认检查包装标头中的密封信息。
+
+程序包密封对于安全性也很重要，因为它限制了对程序包受保护成员的访问，仅限于在程序包中定义的源自同一JAR文件的那些类。
+
+未命名的程序包不可密封，因此必须将要密封的类放在自己的程序包中。
+
 ## API Details
 
-## 12. API 详情
+## 13. API 详情
 
 - Package [java.util.jar](https://docs.oracle.com/en/java/javase/14/docs/api/java.base/java/util/jar/package-summary.html)
 
 
 ## See Also
 
-## 13. 相关链接
+## 14. 相关链接
 
 - Package [java.security](https://docs.oracle.com/en/java/javase/14/docs/api/java.base/java/security/package-summary.html)
 - Package [java.util.zip](https://docs.oracle.com/en/java/javase/14/docs/api/java.base/java/util/zip/package-summary.html)
