@@ -87,7 +87,7 @@ A class file under a versioned directory, of version `N` say, in a multi-release
 
 在多版本JAR中, 版本目录`N`下面的 class 文件, 其 class file version 必须小于等于Java平台第N个大版本对应的 major version。
 如果类文件中的类是 public 或 protected 的, 那么根目录下也必须能够找到具有完全限定名和访问修饰符的class。
-通过逻辑扩展, 这同样适用于版本小于“ N”的类文件。
+通过逻辑扩展, 这同样适用于版本小于`N`的类文件。
 
 If a multi-release JAR file is deployed on the class path or module path (as an automatic module or an explicit [multi-release module](#modular-multi-release-jar-files)) of major version `N` of a Java platform release runtime, then a class loader loading classes from that JAR file will first search for class files under the `N`th versioned directory, then prior versioned directories in descending order (if present), down to a lower major version bound of `9`, and finally under the top-level directory.
 
@@ -95,7 +95,7 @@ The public API exported by the classes in a multi-release JAR file must be *exac
 
 如果将多版本JAR文件部署到 class path 或 module path 中, 假设JDK版本为 `N`,  那么class loader从该JAR文件加载class的时候, 将优先搜索版本目录`N`, 找不到则递减, 搜索 `N-1`, 直到下限9为止, 最后才会搜索顶级目录。
 
-多版本JAR文件中, 各个版本暴露的 public API 必须 “完全一致”,  这就解释了为什么特定版本目录下的 public 和 protected 类文件, 都必须在根目录下存在相同限定名的类。
+多版本JAR文件中, 各个版本暴露的 public API 必须 “完全一致`,  这就解释了为什么特定版本目录下的 public 和 protected 类文件, 都必须在根目录下存在相同限定名的类。
 执行扩展API的校验非常困难而且开销很大, 所以并不要求 `jar` 之类的工具来验证,  也不要求Java运行时来执行这类验证。
 本规范未来的版本可能会放宽完全一致的API约束, 以支持谨慎的演进。
 
@@ -206,7 +206,7 @@ All the specifications in this document use the same grammar in which terminal s
 
 在介绍每个配置文件内容之前, 需要明确一些格式约定。 清单文件和签名文件中包含的信息格式, 受RFC822标准启发, 在大部分情况下, 表示为 "名:值" 对。 我们也将其称为报头(header)或属性(attribute)。
 
-一组名/值对, 称为一“段(Section)”。 各段之间用空行分隔。
+一组名/值对, 称为一“段(Section)`。 各段之间用空行分隔。
 
 任何形式的二进制数据都使用 base64 表示。 二进制数据需要连续, 这会导致行长超过72个字节。 例如摘要(digest)和签名(signature)。
 
@@ -253,7 +253,7 @@ A JAR file manifest consists of a main section followed by a list of sections fo
 
 JAR文件的清单中,有一个 main section, 后面是各个条目的 section 列表, 各个部分之间用换行符分隔。 main section 和其他 section 都遵循上面指定的语法。 每个 section 都有自己特定的限制和规则。
 
-- main section 主要是安全和配置信息, 包含JAR文件以及应用程序的。 还定义了适用于每个清单实体的主要属性。 这部分的任何属性名, 都不能为“`Name`”。 以空行结束。
+- main section 主要是安全和配置信息, 包含JAR文件以及应用程序的。 还定义了适用于每个清单实体的主要属性。 这部分的任何属性名, 都不能为“`Name``。 以空行结束。
 - 各个部分定义了JAR文件中包含的程序包或文件的各种属性。 JAR文件中的所有文件并不是都要在清单条目中列出,  但所有要签名的文件都必须列出。 清单文件自身不能列出。 每个部分都必须以名为 "`Name`" 的属性开头, 对应的值必须是文件的相对路径, 或者是引用外部数据的绝对URL。
 - 如果同一文件条目有多个 section, 则这些section中的属性将被合并。 如果某个属性在不同section中具有不同的值, 则将取最后一个的值。
 - 无法解析的属性将被忽略。这样的属性主要用于保存某些特定实现的信息。
@@ -665,11 +665,11 @@ The `INDEX.LIST` file contains one or more sections each separated by a single b
 
 The UTF-8 encoding is used to support non ASCII characters in file or package names in the index file.
 
-### 索引文件规范
+### 10.2 索引文件规范
 
-“ INDEX.LIST”文件包含一个或多个节，每个节由一个空白行分隔。 每个部分定义了一个特定jar文件的内容，其中的头定义了jar文件的路径名，后跟一个包或文件名的列表，每行一个。 所有的jar文件路径都相对于根jar文件的代码库。 这些路径名的解析方式与当前扩展机制对捆绑扩展名的解析方式相同。
+`INDEX.LIST` 文件包含1到多节，各节之间由一个空行分隔。 1个section定义一个jar文件的内容，其中的头定义了jar文件的路径名，后面跟着包或文件名的列表，每行一个元素。 所有的jar文件路径都相对于根jar文件的代码库。 这些路径名的解析方式与当前扩展机制对捆绑扩展名的解析方式相同。
 
-UTF-8编码用于支持索引文件中文件名或包名中的非ASCII字符。
+UTF-8编码用于支持索引文件中, 文件名或包名中的非ASCII字符。
 
 #### Specification
 
@@ -708,9 +708,9 @@ An application (or, more generally, JAR file) specifies the relative URLs of the
 
 ## 11. 类路径属性
 
-应用程序的清单可以指定一个或多个相对URL，这些URL引用它需要的其他库的JAR文件和目录。 这些相对URL将相对于从中加载包含应用程序的代码库（“ * context JAR *”）进行处理。
+应用程序的清单可以指定一个或多个相对URL，这些URL引用它需要的其他库的JAR文件和目录。 这些相对URL将相对于从中加载包含应用程序的代码库（`* context JAR *`）进行处理。
 
-一个应用程序（或更普遍的说是JAR文件）通过清单属性“ Class-Path”指定所需的库的相对URL。 如果在主机Java虚拟机上找不到其他库的实现，则此属性列出了URL，以搜索这些库的实现。 这些相对URL可能包括应用程序所需的任何库或资源的JAR文件和目录。 假定不以'/'结尾的相对URL引用JAR文件。 例如，
+一个应用程序（或更普遍的说是JAR文件）通过清单属性`Class-Path`指定所需的库的相对URL。 如果在主机Java虚拟机上找不到其他库的实现，则此属性列出了URL，以搜索这些库的实现。 这些相对URL可能包括应用程序所需的任何库或资源的JAR文件和目录。 假定不以'/'结尾的相对URL引用JAR文件。 例如，
 
 ```
 Class-Path: servlet.jar infobus.jar acme/beans.jar images/
@@ -728,13 +728,13 @@ Invalid entries are ignored. Valid entries are resolved against the context JAR.
 
 The resulting URLs are inserted into the class path, immediately following the URL of the context JAR. For example, given the following class path:
 
-JAR文件的清单中最多可以指定一个“ Class-Path”标头。
+JAR文件的清单中最多可以指定一个`Class-Path`标头。
 
-如果满足以下条件，则“ Class-Path”条目有效：
+如果满足以下条件，则`Class-Path`条目有效：
 
 - 可用于创建[`URL`]（https://docs.oracle.com/en/java/javase/14/docs/api/java.base/java/net/URL.html#（java .net.URL，java.lang.String）），方法是根据上下文JAR的URL对其进行解析。
-- 它是相对的，不是[absolute]（https://docs.oracle.com/en/java/javase/14/docs/api/java.base/java/net/URI.html#isAbsolute（）），即除了从文件系统中加载上下文JAR的情况外，它不包含方案组件，在这种情况下，出于兼容性原因，允许使用“文件”方案。
-- 此条目表示的JAR文件或目录的位置包含在上下文JAR的包含目录中。除从文件系统加载上下文JAR的情况外，不允许使用“`../`”导航到父目录。
+- 它是相对的，不是[absolute]（https://docs.oracle.com/en/java/javase/14/docs/api/java.base/java/net/URI.html#isAbsolute（）），即除了从文件系统中加载上下文JAR的情况外，它不包含方案组件，在这种情况下，出于兼容性原因，允许使用“文件`方案。
+- 此条目表示的JAR文件或目录的位置包含在上下文JAR的包含目录中。除从文件系统加载上下文JAR的情况外，不允许使用“`../``导航到父目录。
 
 无效的条目将被忽略。有效条目将根据上下文JAR进行解析。如果结果URL无效或引用了找不到的资源，则将其忽略。重复的URL将被忽略。
 
@@ -754,7 +754,7 @@ Class-Path: lib/x.jar a.jar
 
 Then the effective search path of such a `URLClassLoader` instance would be:
 
-那么，这样的“ URLClassLoader”实例的有效搜索路径将是：
+那么，这样的`URLClassLoader`实例的有效搜索路径将是：
 
 ```
 a.jar b.jar lib/x.jar
@@ -776,13 +776,13 @@ A sealed package is specified via the manifest attribute, `Sealed`, whose value 
 
 ## 12. Package密封
 
-可以选择“密封” JAR文件和软件包，以便软件包可以在版本中强制保持一致性。
+可以选择“密封` JAR文件和软件包，以便软件包可以在版本中强制保持一致性。
 
-密封在JAR中的程序包指定该程序包中定义的所有类都必须源自同一JAR。 否则，将抛出“ SecurityException”。
+密封在JAR中的程序包指定该程序包中定义的所有类都必须源自同一JAR。 否则，将抛出`SecurityException`。
 
 密封的JAR指定密封该JAR定义的所有程序包，除非专门为程序包覆盖。
 
-密封的包通过清单属性“ Sealed”指定，其值为“ true”或“ false”（不区分大小写）。 例如，
+密封的包通过清单属性`Sealed`指定，其值为`true`或`false`（不区分大小写）。 例如，
 
 ```
 Name: javax/servlet/internal/
@@ -799,7 +799,7 @@ A sealed JAR is specified via the same manifest header, `Sealed`, with the value
 
 如果缺少此属性，则包密封属性为包含JAR文件的属性。
 
-密封的JAR是通过相同的清单标头“密封”指定的，其值再次为“ true”或“ false”。 例如，
+密封的JAR是通过相同的清单标头“密封`指定的，其值再次为`true`或`false`。 例如，
 
 ```
 Sealed: true
