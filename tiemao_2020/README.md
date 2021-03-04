@@ -30,8 +30,8 @@
 * [23.ZGC简介](./23_zgc_intro/README.md)【粗翻】
 * [24.Python Tutorial](./24_python-tutorial/README.md)【系列文章】
 * [25.系统设计最佳实践](./25_embedded-rules-of-thumb/README.md)【系列文章】
-* [26.Java规范系列：JAR文件规范](./26_jar_specs/README.md)
-* [27.vim与vi编辑器使用技巧](./27_vi-vim-editor-end-of-line/README.md)
+* [26.Java规范系列：JAR文件规范](./26_jar_specs/README.md)【粗翻】
+* [27.vim与vi跳到行尾的技巧](./27_vi-vim-editor-end-of-line/README.md)
 * [28.深入剖析JVM实现细节(系列)](./28_anatomy-quarks/README.md)【系列文章】
 * [29.通过线程调度延迟来探测CPU性能抖动](./29_sleep_test/README.md)【已完成】
 * [30.MySQL用户帐号命名规范](./30_mysql_account_username/README.md)【粗翻】
