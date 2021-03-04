@@ -464,7 +464,11 @@ Such enforcement is important because the CPUs and other devices in a system can
 
 ## 2. 内存屏障简介
 
+从上面可以看出，独立的内存操作实际上是按随机顺序执行的，但这对于CPU-CPU交互和I / O可能是个问题。 所需要的是一种干预方式，以指示编译器和CPU限制顺序。
 
+记忆障碍就是这种干预。 它们对屏障两侧的存储操作施加了感知的部分排序。
+
+这样的执行很重要，因为系统中的CPU和其他设备可以使用各种技巧来提高性能，包括重新排序，推迟和组合内存操作。 投机负荷； 投机分支预测和各种类型的缓存。 内存屏障用于覆盖或抑制这些技巧，从而使代码可以合理地控制多个CPU和/或设备的交互。
 
 
 VARIETIES OF MEMORY BARRIER
@@ -482,6 +486,20 @@ A CPU can be viewed as committing a sequence of store operations to the memory s
 
 [!] Note that write barriers should normally be paired with read or data dependency barriers; see the "SMP barrier pairing" subsection.
 
+### 2.1 各种内存屏障介绍
+
+内存屏障主要分为四类：
+
+####（1）写屏障(write/store memory barrier)
+
+写屏障可以保证: 对于系统的其他组件而言，屏障之前指定的所有 STORE 操作, 都会在屏障之后的所有STORE操作之前发生。
+
+写屏障仅对 store 部分排序； 不需要对 load 有任何影响。
+
+随着时间的流逝，CPU可以看作是向内存系统提交了一系列 store 操作。 在写屏障之前的所有 store, 都会在写屏障之后的任意 store 前完成。
+
+> [!] 请注意，写屏障通常要和读屏障,或者数据相关性屏障搭配使用； 请参阅 "SMP barrier pairing" 小节。
+
 
 (2) Data dependency barriers.
 
@@ -497,6 +515,20 @@ See the "Examples of memory barrier sequences" subsection for diagrams showing t
 
 [!] Note that data dependency barriers should normally be paired with write barriers; see the "SMP barrier pairing" subsection.
 
+####（2）数据依赖障碍。
+
+数据依存障碍是读取障碍的较弱形式。如果执行两个加载，使得第二个依赖于第一个加载的结果（例如：第一个加载检索第二个加载将定向到的地址），则将需要数据相关性屏障来确保在访问由第一次加载获得的地址之后，更新第二次加载的目标。
+
+数据依存障碍仅是相互依存的负载的部分排序；不需要对存储，独立负载或重叠负载有任何影响。
+
+如（1）中所述，可以将系统中的其他CPU视为将存储顺序提交给正在考虑的CPU可以感知的存储系统。所考虑的CPU发出的数据相关性屏障可确保对于在其之前的任何负载，如果该负载接触到另一个CPU的一系列存储中的一个，则在该屏障完成时，该接触之前的所有存储的影响在数据依赖屏障之后发出的任何负载都可以感知负载的变化。
+
+有关显示排序约束的图，请参见“内存屏障序列示例”小节。
+
+[！]请注意，第一次加载实际上必须具有_data_依赖关系，而不是控件依赖关系。如果第二次加载的地址依赖于第一次加载，但该依赖关系是通过条件加载而不是实际加载地址本身，则它是_control_依赖关系，因此需要完全读取屏障或更高要求。有关更多信息，请参见“控件依赖项”小节。
+
+[！]请注意，数据依赖障碍通常应与写障碍配对使用；请参阅“ SMP屏障配对”小节。
+
 
 (3) Read (or load) memory barriers.
 
@@ -507,6 +539,16 @@ A read barrier is a partial ordering on loads only; it is not required to have a
 Read memory barriers imply data dependency barriers, and so can substitute for them.
 
 [!] Note that read barriers should normally be paired with write barriers; see the "SMP barrier pairing" subsection.
+
+#### （3）读取（或加载）内存屏障。
+
+读屏障是数据依赖屏障，并保证相对于系统的其他组件，在屏障之前指定的所有LOAD操作似乎都将发生在屏障之后指定的所有LOAD操作之前。
+
+读取屏障是仅对负载的部分排序； 不需要对商店有任何影响。
+
+读内存障碍意味着数据依赖障碍，因此可以替代它们。
+
+[！]请注意，读取屏障通常应与写入屏障配对； 请参阅“ SMP屏障配对”小节。
 
 
 (4) General memory barriers.
@@ -520,6 +562,18 @@ General memory barriers imply both read and write memory barriers, and so can su
 
 And a couple of implicit varieties:
 
+#### （4）一般的记忆障碍。
+
+通用内存屏障可确保相对于系统的其他组件，屏障之前指定的所有LOAD和STORE操作似乎都发生在屏障之后指定的所有LOAD和STORE操作之前。
+
+一般的内存屏障是对加载和存储的部分排序。
+
+通用内存屏障意味着读和写内存屏障，因此可以替代任何一种。
+
+
+还有一些隐式变体：
+
+
 (5) ACQUIRE operations.
 
 This acts as a one-way permeable barrier.  It guarantees that all memory operations after the ACQUIRE operation will appear to happen after the ACQUIRE operation with respect to the other components of the system. ACQUIRE operations include LOCK operations and both smp_load_acquire() and smp_cond_load_acquire() operations.
@@ -527,6 +581,14 @@ This acts as a one-way permeable barrier.  It guarantees that all memory operati
 Memory operations that occur before an ACQUIRE operation may appear to happen after it completes.
 
 An ACQUIRE operation should almost always be paired with a RELEASE operation.
+
+#### （5）获取操作。
+
+这充当单向渗透屏障。 它保证了ACQUIRE操作之后的所有内存操作似乎都发生在ACQUIRE操作之后，相对于系统的其他组件。 ACQUIRE操作包括LOCK操作以及smp_load_acquire（）和smp_cond_load_acquire（）操作。
+
+在ACQUIRE操作之前发生的内存操作似乎在完成之后发生。
+
+几乎应该将ACQUIRE操作与RELEASE操作配对使用。
 
 
 (6) RELEASE operations.
@@ -547,18 +609,37 @@ Memory barriers are only required where there's a possibility of interaction bet
 Note that these are the _minimum_ guarantees.  Different architectures may give more substantial guarantees, but they may _not_ be relied upon outside of arch specific code.
 
 
+#### （6）释放操作。
+
+这也充当单向渗透屏障。它保证相对于系统的其他组件，RELEASE操作之前的所有内存操作似乎都发生在RELEASE操作之前。 RELEASE操作包括UNLOCK操作和smp_store_release（）操作。
+
+在RELEASE操作之后发生的内存操作可能似乎在其完成之前发生。
+
+使用ACQUIRE和RELEASE操作通常排除了对其他种类的内存屏障的需求。此外，不保证RELEASE + ACQUIRE对可充当完整的内存屏障。但是，在对给定变量执行ACQUIRE之后，可以保证对该变量进行任何先前的RELEASE之前的所有内存访问都是可见的。换句话说，在给定变量的关键部分内，可以保证对该变量的所有先前关键部分的所有访问均已完成。
+
+这意味着ACQUIRE充当最小的“获取”操作，RELEASE充当最小的“释放”操作。
+
+除了完全有序和宽松（无障碍语义）定义之外，atomic_t.txt中描述的原子操作的子集还具有ACQUIRE和RELEASE变体。对于同时执行加载和存储的复合原子，ACQUIRE语义仅适用于加载，而RELEASE语义仅适用于操作的存储部分。
+
+仅在两个CPU之间或CPU与设备之间可能存在交互的情况下才需要内存屏障。如果可以保证在任何特定的代码段中都不会发生任何此类交互，那么该代码段中就不需要内存屏障。
+
+
+请注意，这些是_minimum_保证。不同的体系结构可能会提供更多实质性保证，但是可能不会依赖于特定于体系结构的代码之外。
+
+
+
 WHAT MAY NOT BE ASSUMED ABOUT MEMORY BARRIERS?
 ----------------------------------------------
 
 There are certain things that the Linux kernel memory barriers do not guarantee:
 
-- (*) There is no guarantee that any of the memory accesses specified before a      memory barrier will be _complete_ by the completion of a memory barrier      instruction; the barrier can be considered to draw a line in that CPU's      access queue that accesses of the appropriate type may not cross.
+- (*) There is no guarantee that any of the memory accesses specified before a memory barrier will be _complete_ by the completion of a memory barrier instruction; the barrier can be considered to draw a line in that CPU's access queue that accesses of the appropriate type may not cross.
 
-- (*) There is no guarantee that issuing a memory barrier on one CPU will have      any direct effect on another CPU or any other hardware in the system.  The      indirect effect will be the order in which the second CPU sees the effects      of the first CPU's accesses occur, but see the next point:
+- (*) There is no guarantee that issuing a memory barrier on one CPU will have any direct effect on another CPU or any other hardware in the system.  The indirect effect will be the order in which the second CPU sees the effects of the first CPU's accesses occur, but see the next point:
 
-- (*) There is no guarantee that a CPU will see the correct order of effects      from a second CPU's accesses, even _if_ the second CPU uses a memory      barrier, unless the first CPU _also_ uses a matching memory barrier (see      the subsection on "SMP Barrier Pairing").
+- (*) There is no guarantee that a CPU will see the correct order of effects from a second CPU's accesses, even _if_ the second CPU uses a memory barrier, unless the first CPU _also_ uses a matching memory barrier (see the subsection on "SMP Barrier Pairing").
 
-- (*) There is no guarantee that some intervening piece of off-the-CPU      hardware[*] will not reorder the memory accesses.  CPU cache coherency      mechanisms should propagate the indirect effects of a memory barrier      between CPUs, but might not do so in order.
+- (*) There is no guarantee that some intervening piece of off-the-CPU hardware[*] will not reorder the memory accesses.  CPU cache coherency mechanisms should propagate the indirect effects of a memory barrier between CPUs, but might not do so in order.
 
   [*] For information on bus mastering DMA and coherency please read:
 
@@ -798,21 +879,21 @@ Note well that the ordering provided by a control dependency is local to the CPU
 
 In summary:
 
- - (*) Control dependencies can order prior loads against later stores.       However, they do -not- guarantee any other sort of ordering:       Not prior loads against later loads, nor prior stores against       later anything.  If you need these other forms of ordering,       use smp_rmb(), smp_wmb(), or, in the case of prior stores and       later loads, smp_mb().
+ - (*) Control dependencies can order prior loads against later stores.  However, they do -not- guarantee any other sort of ordering:  Not prior loads against later loads, nor prior stores against  later anything.  If you need these other forms of ordering,  use smp_rmb(), smp_wmb(), or, in the case of prior stores and  later loads, smp_mb().
 
- - (*) If both legs of the "if" statement begin with identical stores to       the same variable, then those stores must be ordered, either by       preceding both of them with smp_mb() or by using smp_store_release()       to carry out the stores.  Please note that it is -not- sufficient       to use barrier() at beginning of each leg of the "if" statement       because, as shown by the example above, optimizing compilers can       destroy the control dependency while respecting the letter of the       barrier() law.
+ - (*) If both legs of the "if" statement begin with identical stores to  the same variable, then those stores must be ordered, either by  preceding both of them with smp_mb() or by using smp_store_release()  to carry out the stores.  Please note that it is -not- sufficient  to use barrier() at beginning of each leg of the "if" statement  because, as shown by the example above, optimizing compilers can  destroy the control dependency while respecting the letter of the  barrier() law.
 
- - (*) Control dependencies require at least one run-time conditional       between the prior load and the subsequent store, and this       conditional must involve the prior load.  If the compiler is able       to optimize the conditional away, it will have also optimized       away the ordering.  Careful use of READ_ONCE() and WRITE_ONCE()       can help to preserve the needed conditional.
+ - (*) Control dependencies require at least one run-time conditional  between the prior load and the subsequent store, and this  conditional must involve the prior load.  If the compiler is able  to optimize the conditional away, it will have also optimized  away the ordering.  Careful use of READ_ONCE() and WRITE_ONCE()  can help to preserve the needed conditional.
 
- - (*) Control dependencies require that the compiler avoid reordering the       dependency into nonexistence.  Careful use of READ_ONCE() or       atomic{,64}_read() can help to preserve your control dependency.       Please see the COMPILER BARRIER section for more information.
+ - (*) Control dependencies require that the compiler avoid reordering the  dependency into nonexistence.  Careful use of READ_ONCE() or  atomic{,64}_read() can help to preserve your control dependency.  Please see the COMPILER BARRIER section for more information.
 
- - (*) Control dependencies apply only to the then-clause and else-clause       of the if-statement containing the control dependency, including       any functions that these two clauses call.  Control dependencies       do -not- apply to code following the if-statement containing the       control dependency.
+ - (*) Control dependencies apply only to the then-clause and else-clause  of the if-statement containing the control dependency, including  any functions that these two clauses call.  Control dependencies  do -not- apply to code following the if-statement containing the  control dependency.
 
  - (*) Control dependencies pair normally with other types of barriers.
 
- - (*) Control dependencies do -not- provide multicopy atomicity.  If you       need all the CPUs to see a given store at the same time, use smp_mb().
+ - (*) Control dependencies do -not- provide multicopy atomicity.  If you  need all the CPUs to see a given store at the same time, use smp_mb().
 
- - (*) Compilers do not understand control dependencies.  It is therefore       your job to ensure that they do not break your code.
+ - (*) Compilers do not understand control dependencies.  It is therefore  your job to ensure that they do not break your code.
 
 
 SMP BARRIER PAIRING
@@ -1321,30 +1402,30 @@ This is a general barrier -- there are no read-read or write-write variants of b
 
 The barrier() function has the following effects:
 
-- (*) Prevents the compiler from reordering accesses following the      barrier() to precede any accesses preceding the barrier().      One example use for this property is to ease communication between      interrupt-handler code and the code that was interrupted.
+- (*) Prevents the compiler from reordering accesses following the barrier() to precede any accesses preceding the barrier(). One example use for this property is to ease communication between interrupt-handler code and the code that was interrupted.
 
-- (*) Within a loop, forces the compiler to load the variables used      in that loop's conditional on each pass through that loop.
+- (*) Within a loop, forces the compiler to load the variables used in that loop's conditional on each pass through that loop.
 
 The READ_ONCE() and WRITE_ONCE() functions can prevent any number of optimizations that, while perfectly safe in single-threaded code, can be fatal in concurrent code.  Here are some examples of these sorts of optimizations:
 
-- (*) The compiler is within its rights to reorder loads and stores      to the same variable, and in some cases, the CPU is within its      rights to reorder loads to the same variable.  This means that      the following code:
+- (*) The compiler is within its rights to reorder loads and stores to the same variable, and in some cases, the CPU is within its rights to reorder loads to the same variable.  This means that the following code:
 
   a[0] = x;
   a[1] = x;
 
-     Might result in an older value of x stored in a[1] than in a[0].      Prevent both the compiler and the CPU from doing this as follows:
+     Might result in an older value of x stored in a[1] than in a[0]. Prevent both the compiler and the CPU from doing this as follows:
 
   a[0] = READ_ONCE(x);
   a[1] = READ_ONCE(x);
 
-     In short, READ_ONCE() and WRITE_ONCE() provide cache coherence for      accesses from multiple CPUs to a single variable.
+     In short, READ_ONCE() and WRITE_ONCE() provide cache coherence for accesses from multiple CPUs to a single variable.
 
-- (*) The compiler is within its rights to merge successive loads from      the same variable.  Such merging can cause the compiler to "optimize"      the following code:
+- (*) The compiler is within its rights to merge successive loads from the same variable.  Such merging can cause the compiler to "optimize" the following code:
 
   while (tmp = a)
     do_something_with(tmp);
 
-     into the following code, which, although in some sense legitimate      for single-threaded code, is almost certainly not what the developer      intended:
+     into the following code, which, although in some sense legitimate for single-threaded code, is almost certainly not what the developer intended:
 
   if (tmp = a)
     for (;;)
@@ -1355,26 +1436,26 @@ The READ_ONCE() and WRITE_ONCE() functions can prevent any number of optimizatio
   while (tmp = READ_ONCE(a))
     do_something_with(tmp);
 
-- (*) The compiler is within its rights to reload a variable, for example,      in cases where high register pressure prevents the compiler from      keeping all data of interest in registers.  The compiler might      therefore optimize the variable 'tmp' out of our previous example:
+- (*) The compiler is within its rights to reload a variable, for example, in cases where high register pressure prevents the compiler from keeping all data of interest in registers.  The compiler might therefore optimize the variable 'tmp' out of our previous example:
 
   while (tmp = a)
     do_something_with(tmp);
 
-     This could result in the following code, which is perfectly safe in      single-threaded code, but can be fatal in concurrent code:
+     This could result in the following code, which is perfectly safe in single-threaded code, but can be fatal in concurrent code:
 
   while (a)
     do_something_with(a);
 
-     For example, the optimized version of this code could result in      passing a zero to do_something_with() in the case where the variable      a was modified by some other CPU between the "while" statement and      the call to do_something_with().
+     For example, the optimized version of this code could result in passing a zero to do_something_with() in the case where the variable a was modified by some other CPU between the "while" statement and the call to do_something_with().
 
      Again, use READ_ONCE() to prevent the compiler from doing this:
 
   while (tmp = READ_ONCE(a))
     do_something_with(tmp);
 
-     Note that if the compiler runs short of registers, it might save      tmp onto the stack.  The overhead of this saving and later restoring      is why compilers reload variables.  Doing so is perfectly safe for      single-threaded code, so you need to tell the compiler about cases      where it is not safe.
+     Note that if the compiler runs short of registers, it might save tmp onto the stack.  The overhead of this saving and later restoring is why compilers reload variables.  Doing so is perfectly safe for single-threaded code, so you need to tell the compiler about cases where it is not safe.
 
-- (*) The compiler is within its rights to omit a load entirely if it knows      what the value will be.  For example, if the compiler can prove that      the value of variable 'a' is always zero, it can optimize this code:
+- (*) The compiler is within its rights to omit a load entirely if it knows what the value will be.  For example, if the compiler can prove that the value of variable 'a' is always zero, it can optimize this code:
 
   while (tmp = a)
     do_something_with(tmp);
