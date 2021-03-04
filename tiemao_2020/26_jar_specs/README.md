@@ -776,13 +776,13 @@ A sealed package is specified via the manifest attribute, `Sealed`, whose value 
 
 ## 12. Package密封
 
-可以选择“密封` JAR文件和软件包，以便软件包可以在版本中强制保持一致性。
+JAR文件和软件包可以选择 `密封` ，以便软件包可以在同一版本中强制保持一致性。
 
-密封在JAR中的程序包指定该程序包中定义的所有类都必须源自同一JAR。 否则，将抛出`SecurityException`。
+密封在JAR中的程序包, 指定该程序包中定义的所有类都必须源自同一JAR。 否则，将抛出 `SecurityException`。
 
-密封的JAR指定密封该JAR定义的所有程序包，除非专门为程序包覆盖。
+密封JAR包则指定该JAR定义的所有程序包都被密封，除非专门为程序包指定属性覆盖。
 
-密封的包通过清单属性`Sealed`指定，其值为`true`或`false`(不区分大小写)。 例如，
+密封的包通过清单属性 `Sealed` 指定，其值为`true`或`false`(不区分大小写)。 例如，
 
 ```
 Name: javax/servlet/internal/
@@ -795,11 +795,11 @@ If this attribute is missing, the package sealing attribute is that of the conta
 
 A sealed JAR is specified via the same manifest header, `Sealed`, with the value again of either `true` or `false`. For example,
 
-指定密封javax.servlet.internal包，并且必须从同一JAR文件加载该包中的所有类。
+指定 `javax.servlet.internal` 包密封，必须从同一JAR文件中加载该包下面的所有类。
 
-如果缺少此属性，则包密封属性为包含JAR文件的属性。
+如果缺少此属性，则包密封属性为所在JAR文件的属性。
 
-密封的JAR是通过相同的清单标头“密封`指定的，其值再次为`true`或`false`。 例如，
+密封的JAR包也是通过相同的清单标头 `Sealed` 指定的，其值再次为`true`或`false`。 例如，
 
 ```
 Sealed: true
@@ -813,9 +813,9 @@ Package sealing is also important for security, because it restricts access to p
 
 The unnamed package is not sealable, so classes that are to be sealed must be placed in their own packages.
 
-指定除非在清单条目中使用`Sealed`属性的特定软件包明确覆盖了该存档中的所有软件包，否则将对其进行密封。
+指定此JAR压缩文件中的所有软件包，都进行密封密封处理。除非在清单条目中使用 `Sealed` 属性对特定软件包单独指定。
 
-如果缺少此属性，则为了向后兼容，假定JAR文件不被密封。 然后，系统默认检查包装标头中的密封信息。
+如果缺少此属性，则为了向后兼容，假定JAR文件不被密封。 然后，系统默认检查包的标头中的密封信息。
 
 程序包密封对于安全性也很重要，因为它限制了对程序包受保护成员的访问，仅限于在程序包中定义的源自同一JAR文件的那些类。
 
