@@ -28,7 +28,7 @@ A non-modular JAR file deployed on the module path is an *automatic module*. If 
 
 ## 2. 模块化JAR文件
 
-模块化JAR文件也是JAR文件格式, 其内部的顶级路径（根路径）下有一个模块描述文件 `module-info.class`。
+模块化JAR文件也是JAR文件格式, 其内部的顶级路径(根路径)下有一个模块描述文件 `module-info.class`。
 模块描述文件是模块声明的二进制形式。  更详细的模块化JAR文件定义请参考: [multi-release JAR files](#multi-release-jar-files)。
 
 相对于类路径, 部署在模块路径下的模块化JAR文件是 **显式的** 模块。
@@ -108,12 +108,12 @@ Multi-release JAR files are not supported by the boot class loader of a Java run
 
 
 
-`META-INF` 目录下的资源无法进行版本控制（例如服务配置）。
+`META-INF` 目录下的资源无法进行版本控制(例如服务配置)。
 
 多版本JAR文件也可以进行签名。
 
-Java运行时的引导类加载器（ boot class loader）不支持多版本JAR文件。
-如果将多版本JAR文件放到引导类路径（使用 `-Xbootclasspath/a` 选项）, 则该JAR将被当做一个普通的JAR文件。
+Java运行时的引导类加载器( boot class loader)不支持多版本JAR文件。
+如果将多版本JAR文件放到引导类路径(使用 `-Xbootclasspath/a` 选项), 则该JAR将被当做一个普通的JAR文件。
 
 ### Modular multi-release JAR files
 
@@ -136,7 +136,7 @@ Tooling, such as the `jar` tool, should perform such verification of versioned m
 
 在模块描述符中未声明为导出的包称为非导出包, 其中的 public 或 protected 类, 不需要具有相同的完全限定名和访问修饰符的类, 其 class 文件直接放到顶级目录下。
 
-模块描述符与其他的class文件或资源文件并不区别对待。 模块描述符可以存放在版本化区域下, 而不必存放在顶级目录下。 这样就确保了只有 Java 8 版本的类会出现在顶级目录下, 而Java 9版本的类（包括模块描述符）会出现在`9`版本目录下。
+模块描述符与其他的class文件或资源文件并不区别对待。 模块描述符可以存放在版本化区域下, 而不必存放在顶级目录下。 这样就确保了只有 Java 8 版本的类会出现在顶级目录下, 而Java 9版本的类(包括模块描述符)会出现在`9`版本目录下。
 
 更小版本的模块描述符, 或者顶层的模块描述符, 都必须与`M`相同, 但有两个例外:
 
@@ -311,7 +311,7 @@ Main 属性是清单文件中, main section 部分中存在的属性。 它们�
 - 为独立应用程序定义的属性: 这些属性由捆绑到可执行jar文件中的独立应用程序使用，该文件可以直接通过 "`java -jar xxx.jar`" 来调用和启动。
 
   - `Main-Class`:  这个属性的值用来指定启动时加载的 main class 的类名。 注意类名不包含 `.class` 后缀。
-  - `Launcher-Agent-Class`: 如果存在此属性，则其值是 *java agent* 的类名, 会在调用应用程序 main 方法之前先启动。 此属性用于当Java agent 与应用程序打包在同一个可执行JAR文件中的情况。  agent class 定义了一个公共静态方法 `agentmain`, 有两种形式, 具体规范参见: [`java.lang.instrument`](https://docs.oracle.com/en/java/javase/14/docs/api/java.instrument/java/lang/instrument/package-summary.html) 包描述信息。 其他属性（例如 `Can-Retransform-Classes`）可用于指示 agent 所依赖的功能。
+  - `Launcher-Agent-Class`: 如果存在此属性，则其值是 *java agent* 的类名, 会在调用应用程序 main 方法之前先启动。 此属性用于当Java agent 与应用程序打包在同一个可执行JAR文件中的情况。  agent class 定义了一个公共静态方法 `agentmain`, 有两种形式, 具体规范参见: [`java.lang.instrument`](https://docs.oracle.com/en/java/javase/14/docs/api/java.instrument/java/lang/instrument/package-summary.html) 包描述信息。 其他属性(例如 `Can-Retransform-Classes`)可用于指示 agent 所依赖的功能。
 
 
 - attributes defined for [package versioning and sealing](https://docs.oracle.com/en/java/javase/14/docs/api/java.base/java/lang/Package.html) information: The value of these attributes apply to all the packages in the JAR file, but can be overridden by per-entry attributes.
@@ -388,7 +388,7 @@ A JAR file can be signed by using the command line jarsigner tool or directly th
 
 可以使用命令行工具 `jarsigner`, 或直接通过 `java.security` API对JAR文件进行签名。
 
-如果JAR文件由jarsigner工具签名，则其中的每一个文件条目都将被签名（也包括 `META-INF` 目录中与签名无关的其余文件）。
+如果JAR文件由jarsigner工具签名，则其中的每一个文件条目都将被签名(也包括 `META-INF` 目录中与签名无关的其余文件)。
 
 签名相关的文件包括:
 
@@ -433,8 +433,8 @@ Paths or URLs appearing in the manifest file but not in the signature file are n
 该文件大部分类似于清单文件。包括一个 main section，其中包括签名者提供的信息，但并不特定于任何特定的jar文件条目。
 加上`Signature-Version`和`Created-By` 属性，main section 还可以包含下面的安全属性:
 
-- `x-Digest-Manifest-Main-Attributes`（其中`x`是 `java.security.MessageDigest` 算法的标准名称）: 属性值是整个清单中的主要属性的摘要值。
-- `x-Digest-Manifest`（其中`x`是`java.security.MessageDigest`算法的标准名称）:  属性值是整个清单的摘要值。
+- `x-Digest-Manifest-Main-Attributes`(其中`x`是 `java.security.MessageDigest` 算法的标准名称): 属性值是整个清单中的主要属性的摘要值。
+- `x-Digest-Manifest`(其中`x`是`java.security.MessageDigest`算法的标准名称):  属性值是整个清单的摘要值。
 
 main section 后面是各个条目的列表，其名称也必须出现在清单文件中。每个单独的条目必须至少包含清单文件中相应条目的摘要。
 
@@ -470,13 +470,13 @@ JAR文件验证涉及以下步骤:
    - 3.1 如果签名文件中存在 `x-Digest-Manifest-Main-Attributes` 条目，则对照清单文件中的主要属性上计算摘要来验证该值。如果计算失败，那么JAR文件验证失败。 可以记住这一判断以提高效率。如果签名文件中不存在 `x-Digest-Manifest-Main-Attributes` 条目，则不会影响JAR文件验证，并且不会验证清单的主要属性。
    - 3.2 根据清单文件中对应条目计算的摘要值，验证签名文件中每个源文件信息部分中的摘要值。 如果有任何摘要值不匹配，则JAR文件验证将失败。
 
-   存储在 `x-Digest-Manifest` 属性中的清单文件摘要值可能不等于当前清单文件的摘要值的一个原因是，文件签名之后，可能包含新添加文件的部分。 例如，假设在生成签名（并生成了签名文件）后, 使用jar工具将一个或多个文件添加到了JAR文件中。 如果JAR文件由其他签名者再次签名，则清单文件将更改（通过 jarsigner 工具将新文件添加到节中）并创建新的签名文件，但原始签名文件未更改。 如果自那时以来未更改生成签名时JAR文件中的所有文件，则原始签名的验证仍被认为是成功的，如果签名文件的非标头部分中的摘要值属于这种情况，则认为已成功等于清单文件中相应节的摘要值。
+   存储在 `x-Digest-Manifest` 属性中的清单文件摘要值可能不等于当前清单文件的摘要值的一个原因是，文件签名之后，可能包含新添加文件的部分。 例如，假设在生成签名(并生成了签名文件)后, 使用jar工具将一个或多个文件添加到了JAR文件中。 如果JAR文件由其他签名者再次签名，则清单文件将更改(通过 jarsigner 工具将新文件添加到节中)并创建新的签名文件，但原始签名文件未更改。 如果自那时以来未更改生成签名时JAR文件中的所有文件，则原始签名的验证仍被认为是成功的，如果签名文件的非标头部分中的摘要值属于这种情况，则认为已成功等于清单文件中相应节的摘要值。
 
 4. For each entry in the manifest, verify the digest value in the manifest file against a digest calculated over the actual data referenced in the "Name:" attribute, which specifies either a relative file path or URL. If any of the digest values don't match, then JAR file verification fails.
 
 Example manifest file:
 
-4. 对于清单中的每个条目，根据 "Name:" 属性值（指定的相对 file path 或URL）引用的实际数据计算出摘要，来验证清单文件中的摘要值。 如果任何摘要值不匹配，则JAR文件验证将失败。
+4. 对于清单中的每个条目，根据 "Name:" 属性值(指定的相对 file path 或URL)引用的实际数据计算出摘要，来验证清单文件中的摘要值。 如果任何摘要值不匹配，则JAR文件验证将失败。
 
 清单文件示例:
 
@@ -544,7 +544,7 @@ In the first example, these Magic values may indicate that the result of an http
 
 In the second example, the Magic value indicates that the document retrieved may have been content-negotiated for a specific language, and that the digest to verify against is dependent on which language the document retrieved is written in.
 
-在前一个示例中，这些Magic值可以指明http查询的结果是嵌入在文档中的脚本（而不是document），并且该脚本是动态生成的。 这两条信息指示如何计算与清单的摘要值进行比较的哈希值，从而比较签名的有效性。
+在前一个示例中，这些Magic值可以指明http查询的结果是嵌入在文档中的脚本(而不是document)，并且该脚本是动态生成的。 这两条信息指示如何计算与清单的摘要值进行比较的哈希值，从而比较签名的有效性。
 
 在第二个示例中，Magic值指示所获取的文档可能已针对特定语言进行了内容协商，并且要进行验证的摘要取决于所写入的文档使用的语言。
 
@@ -618,18 +618,18 @@ Following is a list of additional restrictions and rules that apply to manifest 
   - 属性名不区分大小写。 但是，生成清单和签名文件的程序, 应使用本规范中所示的案例。
   - 属性名称在同一节中不能重复。
 - 版本(Versions):
-  - 必须先列出 `Manifest-Version` 和 `Signature-Version`，并且在这种情况下（这样才能很容易地将它们识别为 magic 字符串）。除此之外，main section 中的属性顺序并不重要。
+  - 必须先列出 `Manifest-Version` 和 `Signature-Version`，并且在这种情况下(这样才能很容易地将它们识别为 magic 字符串)。除此之外，main section 中的属性顺序并不重要。
 - 顺序(Ordering):
   - 单个清单条目的顺序不重要。
   - 各个签名条目的顺序并不重要，除了要签名的摘要按该顺序排列。
 - 每行的长度(Line length):
-  - 以UTF8编码的形式，每一行都不能超过72字节（注意不是字符）。如果某个值会使行的长度大于这个值，则应折到后续行（每行以单个英文空格开头）。
+  - 以UTF8编码的形式，每一行都不能超过72字节(注意不是字符)。如果某个值会使行的长度大于这个值，则应折到后续行(每行以单个英文空格开头)。
 - 错误(Errors):
   - 如果文件无法根据此规范解析，则应输出警告，并且不信任任何签名。
 - 限制(Limitations):
-  - 因为 header names 不能续行，所以标头名称的最大长度为70个字节（名称后必须跟一个冒号和一个空格）。
+  - 因为 header names 不能续行，所以标头名称的最大长度为70个字节(名称后必须跟一个冒号和一个空格)。
   - NUL, CR, 和 LF 不能嵌入标头的值中(header value)，而 NUL, CR, LF 和 ":" 不能嵌入标头名中(header name)。
-  - 实现应支持65535字节（注意不是字符）header value 值，以及每个文件支持65535个headers。 它们可能会耗尽内存，但是在这个值之下不应有硬编码限制。
+  - 实现应支持65535字节(注意不是字符)header value 值，以及每个文件支持65535个headers。 它们可能会耗尽内存，但是在这个值之下不应有硬编码限制。
 - 签名者(Signers):
   - 从技术上讲，不同的实体可能会使用不同的签名算法来共享单个签名文件。 这违反了标准，多余的签名可能会被忽略。
 - 算法(Algorithms):
@@ -647,7 +647,7 @@ Since 1.3, JarIndex is introduced to optimize the class searching process of cla
 
 The existing `jar` tool is enhanced to be able to examine a list of jar files and generate directory information as to which classes and resources reside in which jar file. This directory information is stored in a simple text file named `INDEX.LIST` in the `META-INF` directory of the root jar file. When the classloader loads the root jar file, it reads the `INDEX.LIST` file and uses it to construct a hash table of mappings from file and package names to lists of jar file names. In order to find a class or a resource, the class loader queries the hashtable to find the proper jar file and then downloads it if necessary.
 
-JDK1.3开始引入 JarIndex 来优化网络应用程序（尤其是applet），加快 class loader 的类搜索过程。最初，applet类加载器使用简单的线性搜索算法,从内部搜索路径中的搜索每个元素， 内部搜索路径是由 "ARCHIVE" 标签或 "Class-Path" 主属性构造的。class loader会下载并打开其搜索路径中的每一个元素，直到找到该类或资源为止。 如果class loader尝试查找不存在的资源，则必须下载应用程序或applet中的所有jar文件。对于大型网络应用程序和applet，可能会导致启动缓慢，响应缓慢以及浪费网络带宽。 JarIndex机制, 会收集applet中定义的所有jar文件的内容，并将信息保存在applet类路径上的第一个jar包的 index 文件中。 在下载第一个jar文件之后，applet类加载器将使用收集的信息来高效下载jar文件。
+JDK1.3开始引入 JarIndex 来优化网络应用程序(尤其是applet)，加快 class loader 的类搜索过程。最初，applet类加载器使用简单的线性搜索算法,从内部搜索路径中的搜索每个元素， 内部搜索路径是由 "ARCHIVE" 标签或 "Class-Path" 主属性构造的。class loader会下载并打开其搜索路径中的每一个元素，直到找到该类或资源为止。 如果class loader尝试查找不存在的资源，则必须下载应用程序或applet中的所有jar文件。对于大型网络应用程序和applet，可能会导致启动缓慢，响应缓慢以及浪费网络带宽。 JarIndex机制, 会收集applet中定义的所有jar文件的内容，并将信息保存在applet类路径上的第一个jar包的 index 文件中。 在下载第一个jar文件之后，applet类加载器将使用收集的信息来高效下载jar文件。
 
 现有的 `jar` 工具已得到增强，能够检查jar文件列表并生成哪些类和资源位于哪个jar文件的目录信息。 该目录信息存储在 root jar 文件的 `META-INF` 路径下的文本文件 `INDEX.LIST` 中。 当class loader加载根jar文件时，它将读取 `INDEX.LIST` 文件，并使用它来构建从资源文件和程序包, 到jar文件名称列表的哈希映射表。 要查找类或资源，class loader 先查询哈希表以找到正确的jar文件，然后在必要时下载它。
 
@@ -706,11 +706,11 @@ The manifest for an application can specify one or more relative URLs referring 
 
 An application (or, more generally, JAR file) specifies the relative URLs of the libraries that it needs via the manifest attribute `Class-Path`. This attribute lists the URLs to search for implementations of other libraries if they cannot be found on the host Java Virtual Machine. These relative URLs may include JAR files and directories for any libraries or resources needed by the application. Relative URLs not ending with '/' are assumed to refer to JAR files. For example,
 
-## 11. 类路径属性
+## 11. Class-Path属性
 
-应用程序的清单可以指定一个或多个相对URL，这些URL引用它需要的其他库的JAR文件和目录。 这些相对URL将相对于从中加载包含应用程序的代码库（`* context JAR *`）进行处理。
+应用程序的清单可以指定一个或多个相对URL，指向需要的其他库的JAR文件和目录。 这些相对URL以加载包含应用程序的代码库("context JAR")为基准进行处理。
 
-一个应用程序（或更普遍的说是JAR文件）通过清单属性`Class-Path`指定所需的库的相对URL。 如果在主机Java虚拟机上找不到其他库的实现，则此属性列出了URL，以搜索这些库的实现。 这些相对URL可能包括应用程序所需的任何库或资源的JAR文件和目录。 假定不以'/'结尾的相对URL引用JAR文件。 例如，
+一个应用程序(更普遍的说是JAR文件)通过清单属性 `Class-Path` 指定所需的库的相对URL。 如果JVM所在的宿主机上找不到其他库的实现，则使用此属性列出的URL，以搜索这些库的实现。 这些相对URL可能包括应用程序所需的任何库或资源的JAR文件和目录。 不以 '/' 结尾的相对URL都被视为JAR文件。 例如，
 
 ```
 Class-Path: servlet.jar infobus.jar acme/beans.jar images/
@@ -720,7 +720,7 @@ At most one `Class-Path` header may be specified in a JAR file's manifest.
 
 A `Class-Path` entry is valid if the following conditions are true:
 
-- It can be used to create a [`URL`](https://docs.oracle.com/en/java/javase/14/docs/api/java.base/java/net/URL.html#(java.net.URL,java.lang.String)), by resolving it against the context JAR’s URL.
+- It can be used to create a [`URL`](https://docs.oracle.com/en/java/javase/14/docs/api/java.base/java/net/URL.html), by resolving it against the context JAR’s URL.
 - It is relative, not [absolute](https://docs.oracle.com/en/java/javase/14/docs/api/java.base/java/net/URI.html#isAbsolute()), i.e. it does not contain a scheme component, except for the case when the context JAR is loaded from the file system, in which case the `file` scheme is permitted for compatibility reasons.
 - The location of the JAR file or directory represented by this entry is contained within the containing directory of the context JAR. Use of "`../`" to navigate to the parent directory is not permitted, except for the case when the context JAR is loaded from the file system.
 
@@ -728,15 +728,15 @@ Invalid entries are ignored. Valid entries are resolved against the context JAR.
 
 The resulting URLs are inserted into the class path, immediately following the URL of the context JAR. For example, given the following class path:
 
-JAR文件的清单中最多可以指定一个`Class-Path`标头。
+JAR文件的清单中最多可以指定一个 `Class-Path` 标头。
 
-如果满足以下条件，则`Class-Path`条目有效：
+如果满足以下条件，则 `Class-Path` 条目有效：
 
-- 可用于创建[`URL`]（https://docs.oracle.com/en/java/javase/14/docs/api/java.base/java/net/URL.html#（java .net.URL，java.lang.String）），方法是根据上下文JAR的URL对其进行解析。
-- 它是相对的，不是[absolute]（https://docs.oracle.com/en/java/javase/14/docs/api/java.base/java/net/URI.html#isAbsolute（）），即除了从文件系统中加载上下文JAR的情况外，它不包含方案组件，在这种情况下，出于兼容性原因，允许使用“文件`方案。
-- 此条目表示的JAR文件或目录的位置包含在上下文JAR的包含目录中。除从文件系统加载上下文JAR的情况外，不允许使用“`../``导航到父目录。
+- 可用于创建[`URL`](https://docs.oracle.com/en/java/javase/14/docs/api/java.base/java/net/URL.html)， 根据上下文JAR的URL对其进行解析。
+- 它是相对的，不是 [absolute](https://docs.oracle.com/en/java/javase/14/docs/api/java.base/java/net/URI.html#isAbsolute())，即除了从文件系统中加载JAR的情况外，URI不能包含 scheme(协议头) 部分，但出于兼容性原因，允许使用 `file` scheme。
+- 此条目表示的JAR文件或目录的位置包含在上下文JAR的包含目录中。 除从文件系统加载上下文JAR的情况外，不允许使用 "`../`" 导航到父目录。
 
-无效的条目将被忽略。有效条目将根据上下文JAR进行解析。如果结果URL无效或引用了找不到的资源，则将其忽略。重复的URL将被忽略。
+无效的条目将被忽略。有效条目将根据上下文JAR进行解析。 如果结果URL无效或引用了找不到的资源，则将其忽略。重复的URL将被忽略。
 
 生成的URL紧随上下文JAR的URL插入到类路径中。例如，给出以下类路径：
 
@@ -746,7 +746,7 @@ a.jar b.jar
 
 If `b.jar` contained the following `Class-Path` manifest attribute:
 
-如果`b.jar`包含以下`Class-Path`清单属性：
+如果 `b.jar` 包含以下`Class-Path`清单属性：
 
 ```
 Class-Path: lib/x.jar a.jar
@@ -754,7 +754,7 @@ Class-Path: lib/x.jar a.jar
 
 Then the effective search path of such a `URLClassLoader` instance would be:
 
-那么，这样的`URLClassLoader`实例的有效搜索路径将是：
+那么，`URLClassLoader` 实例的有效搜索路径将是：
 
 ```
 a.jar b.jar lib/x.jar
@@ -762,7 +762,7 @@ a.jar b.jar lib/x.jar
 
 Of course, if `x.jar` had dependencies of its own then these would be added according to the same rules and so on for each subsequent URL. In the actual implementation, JAR file dependencies are processed lazily so that the JAR files are not actually opened until needed.
 
-当然，如果x.jar具有自己的依赖关系，则将根据相同的规则添加这些依赖关系，依此类推，为每个后续URL添加依此类推。 在实际的实现中，对JAR文件的依赖关系被延迟处理，因此，直到需要时才实际打开JAR文件。
+当然，如果 `x.jar` 具有自己的依赖关系，则根据相同的规则添加这些依赖关系，依此类推，为每个后续URL添加依此类推。 在实际的实现中，对JAR文件的依赖关系将会延迟进行处理，因此，直到实际需要时才打开JAR文件。
 
 ## Package Sealing
 
@@ -782,7 +782,7 @@ A sealed package is specified via the manifest attribute, `Sealed`, whose value 
 
 密封的JAR指定密封该JAR定义的所有程序包，除非专门为程序包覆盖。
 
-密封的包通过清单属性`Sealed`指定，其值为`true`或`false`（不区分大小写）。 例如，
+密封的包通过清单属性`Sealed`指定，其值为`true`或`false`(不区分大小写)。 例如，
 
 ```
 Name: javax/servlet/internal/
