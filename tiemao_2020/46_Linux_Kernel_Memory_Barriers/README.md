@@ -464,11 +464,11 @@ Such enforcement is important because the CPUs and other devices in a system can
 
 ## 2. 内存屏障简介
 
-从上面可以看出, 独立的内存操作实际上是按随机顺序执行的, 但这对于CPU-CPU交互和I / O可能是个问题。 所需要的是一种干预方式, 以指示编译器和CPU限制顺序。
+从上面可以看出, 独立的内存操作实际上是按随机顺序执行的, 但这可能会造成CPU-CPU交互问题,或者是I/O问题。 所以需要一种干预方式, 以指示编译器和CPU来限制指令的执行顺序。
 
-记忆屏障就是这种干预。 它们对屏障两侧的存储操作施加了感知的部分排序。
+内存屏障就是这种干预。 它们对屏障两侧的内存访问操作施加了感知的部分排序。
 
-这样的执行很重要, 因为系统中的CPU和其他设备可以使用各种技巧来提高性能, 包括重新排序, 推迟和组合内存操作。 投机负荷； 投机分支预测和各种类型的缓存。 内存屏障用于覆盖或抑制这些技巧, 从而使代码可以合理地控制多个CPU和/或设备的交互。
+这种强制很重要, 因为系统中的CPU和其他设备可以使用各种技巧来提高性能, 包括指令重排序, 推迟和组合内存操作。 投机负荷； 投机分支预测和各种类型的缓存。 内存屏障用于覆盖或抑制这些技巧, 从而使代码可以合理地控制多个CPU和/或设备的交互。
 
 
 VARIETIES OF MEMORY BARRIER
@@ -486,9 +486,9 @@ A CPU can be viewed as committing a sequence of store operations to the memory s
 
 [!] Note that write barriers should normally be paired with read or data dependency barriers; see the "SMP barrier pairing" subsection.
 
-### 2.1 内存屏障类型简介
+### 2.1 内存屏障类型
 
-内存屏障主要分为四类：
+内存屏障主要分为四种基本类型：
 
 ####（1）写屏障(write/store memory barrier)
 
@@ -543,7 +543,7 @@ Read memory barriers imply data dependency barriers, and so can substitute for t
 
 #### （3）读屏障(Read/load memory barrier)。
 
-读屏障是数据依赖屏障, 并保证相对于系统的其他组件, 在屏障之前指定的所有LOAD操作似乎都将发生在屏障之后指定的所有LOAD操作之前。
+读屏障是一种数据依赖屏障, 再加上保证相对于系统的其他组件, 在屏障之前指定的所有LOAD操作似乎都将发生在屏障之后指定的所有LOAD操作之前。
 
 读屏障是仅对load的部分排序； 不需要对商店有任何影响。
 
@@ -563,7 +563,7 @@ General memory barriers imply both read and write memory barriers, and so can su
 
 And a couple of implicit varieties:
 
-#### （4）一般的记忆屏障。
+#### （4）一般的内存屏障。
 
 通用内存屏障可确保相对于系统的其他组件, 屏障之前指定的所有LOAD和STORE操作似乎都发生在屏障之后指定的所有LOAD和STORE操作之前。
 
