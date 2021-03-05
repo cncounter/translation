@@ -583,13 +583,13 @@ Memory operations that occur before an ACQUIRE operation may appear to happen af
 
 An ACQUIRE operation should almost always be paired with a RELEASE operation.
 
-#### （5）获取操作。
+#### （5）ACQUIRE操作
 
-这充当单向渗透屏障。 它保证了ACQUIRE操作之后的所有内存操作似乎都发生在ACQUIRE操作之后, 相对于系统的其他组件。 ACQUIRE操作包括LOCK操作以及smp_load_acquire（）和smp_cond_load_acquire（）操作。
+这充当单向渗透屏障(one-way permeable barrier)。 它保证了 ACQUIRE 操作之后的所有内存操作都发生在ACQUIRE操作之后, 相对于系统的其他组件。 ACQUIRE 操作包括LOCK操作以及 `smp_load_acquire()` 和 `smp_cond_load_acquire()` 操作。
 
-在ACQUIRE操作之前发生的内存操作似乎在完成之后发生。
+在ACQUIRE操作之前发生的内存操作有可能在 ACQUIRE 操作之后完成。
 
-几乎应该将ACQUIRE操作与RELEASE操作搭配使用。
+ACQUIRE 操作基本上都要与 RELEASE 操作搭配使用。
 
 
 (6) RELEASE operations.
@@ -610,7 +610,7 @@ Memory barriers are only required where there's a possibility of interaction bet
 Note that these are the _minimum_ guarantees.  Different architectures may give more substantial guarantees, but they may _not_ be relied upon outside of arch specific code.
 
 
-#### （6）释放操作。
+#### （6）RELEASE操作
 
 这也充当单向渗透屏障。它保证相对于系统的其他组件, RELEASE操作之前的所有内存操作似乎都发生在RELEASE操作之前。 RELEASE操作包括UNLOCK操作和smp_store_release（）操作。
 
