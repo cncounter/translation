@@ -241,7 +241,7 @@ There is an obvious data dependency here, as the value loaded into D depends on 
 
 Note that CPU 2 will never try and load C into D because the CPU will load P into Q before issuing the load of `*Q`.
 
-请注意, CPU 2 决不会尝试直接将C的值加载到D中, 因为在发出 `*Q` 的加载指令前, 会先将P加载到Q中。
+请注意, CPU 2 决不会尝试直接将C的值加载到D中, 因为在发出 `*Q` 的load指令前, 会先将P加载到Q中。
 
 
 ### DEVICE OPERATIONS
@@ -356,7 +356,7 @@ d = LOAD *X
 
 (Loads and stores overlap if they are targeted at overlapping pieces of memory).
 
-> 如果 load 和 store的目标内存地址一致，则会发生重叠。
+> 如果 load 和 store的目标内存地址一致, 则会发生重叠。
 
 And there are a number of things that _must_ or _must_not_ be assumed:
 
@@ -366,7 +366,7 @@ And there are a number of things that _must_ or _must_not_ be assumed:
 
 而且有许多必须或不允许的假设因素:
 
-- (*) 对不受 `READ_ONCE()` 和 `WRITE_ONCE()` 保护的内存引用操作, 不能假设编译器会按你的预期处理。 没有这种保护，编译器将有权进行各种“创造性”的转换，这在后面的 “编译器屏障” 一节中介绍。
+- (*) 对不受 `READ_ONCE()` 和 `WRITE_ONCE()` 保护的内存引用操作, 不能假设编译器会按你的预期处理。 没有这种保护, 编译器将有权进行各种“创造性”的转换, 这在后面的 “编译器屏障” 一节中介绍。
 
 - (*) 独立的 loads 和 stores操作, 不能假定他们会以给定的顺序触发。 这意味着:
 
@@ -433,11 +433,11 @@ And there are anti-guarantees:
 
 并且存在担保的反例:
 
-- (*) 这些保证不适用于bit字段(bitfields)，因为编译器生成的代码, 通常会以非原子性的 read-modify-write 顺序对其进行修改。不要尝试使用bit字段来同步并行算法。
+- (*) 这些保证不适用于bit字段(bitfields), 因为编译器生成的代码, 通常会以非原子性的 read-modify-write 顺序对其进行修改。不要尝试使用bit字段来同步并行算法。
 
-- (*) 即使bit字段受锁保护的情况下，给定 bitfield 中的所有字段也必须由同一个锁保护。 如果给定 bitfield 中的两个域由不同的锁来保护，则编译器的非原子性 read-modify-write 顺序会导致对一个 field 的更新破坏相邻 field 的值。
+- (*) 即使bit字段受锁保护的情况下, 给定 bitfield 中的所有字段也必须由同一个锁保护。 如果给定 bitfield 中的两个域由不同的锁来保护, 则编译器的非原子性 read-modify-write 顺序会导致对一个 field 的更新破坏相邻 field 的值。
 
-- (*) 这些保证仅适用于正确对齐且大小合适的标量变量。 “大小合适(Properly sized)” 的意思是指与 "char", "short", "int" and "long" 大小相同的变量。 “正确对齐(Properly aligned)” 是指自然对齐， 因此对 "char" 没有约束，对于 "short" 为两个字节对齐，对于 "int" 为四字节对齐，对于 "long" 为四字节或八字节对齐，分别对应在32位和64位系统上。 请注意，这些保证是C11标准中引入的，因此在使用C11之前的编译器时要当心（例如 gcc 4.6）。 标准中包含此保证的部分为 Section 3.14，其中对 “内存位置(memory location)” 的定义如下:
+- (*) 这些保证仅适用于正确对齐且大小合适的标量变量。 “大小合适(Properly sized)” 的意思是指与 "char", "short", "int" and "long" 大小相同的变量。 “正确对齐(Properly aligned)” 是指自然对齐,  因此对 "char" 没有约束, 对于 "short" 为两个字节对齐, 对于 "int" 为四字节对齐, 对于 "long" 为四字节或八字节对齐, 分别对应在32位和64位系统上。 请注意, 这些保证是C11标准中引入的, 因此在使用C11之前的编译器时要当心（例如 gcc 4.6）。 标准中包含此保证的部分为 Section 3.14, 其中对 “内存位置(memory location)” 的定义如下:
 
 > memory location either an object of scalar type, or a maximal sequence of adjacent bit-fields all having nonzero width
 
@@ -445,11 +445,11 @@ And there are anti-guarantees:
 
 > NOTE 2: A bit-field and an adjacent non-bit-field member are in separate memory locations. The same applies to two bit-fields, if one is declared inside a nested structure declaration and the other is not, or if the two are separated by a zero-length bit-field declaration, or if they are separated by a non-bit-field member declaration. It is not safe to concurrently update two bit-fields in the same structure if all members declared between them are also bit-fields, no matter what the sizes of those intervening bit-fields happen to be.
 
-> 内存位置(memory location)，要么是标量类型的对象，要么是宽度都为非零的相邻位字段的最大序列。
+> 内存位置(memory location), 要么是标量类型的对象, 要么是宽度都为非零的相邻位字段的最大序列。
 
-> 提示1: 两个执行线程可以更新和访问单独的内存位置，而不会互相干扰。
+> 提示1: 两个执行线程可以更新和访问单独的内存位置, 而不会互相干扰。
 
-> 提示2: 一个 bit-field 字段, 和一个相邻的 non-bit-field 字段成员, 位于单独的内存位置中。 对于两个 bit-field ，如果有一个在嵌套结构声明中声明，而另一个则未声明，或者两个都被零长度bit-field声明所分隔，或者如果它们由non-bit-field成员分隔，则同样适用于这个规则。 如果在它们之间声明的所有成员都是 bit-field，则并发更新同一结构中的两个位域都是不安全的, 不管这些位域的大小是多少。
+> 提示2: 一个 bit-field 字段, 和一个相邻的 non-bit-field 字段成员, 位于单独的内存位置中。 对于两个 bit-field , 如果有一个在嵌套结构声明中声明, 而另一个则未声明, 或者两个都被零长度bit-field声明所分隔, 或者如果它们由non-bit-field成员分隔, 则同样适用于这个规则。 如果在它们之间声明的所有成员都是 bit-field, 则并发更新同一结构中的两个位域都是不安全的, 不管这些位域的大小是多少。
 
 =========================
 WHAT ARE MEMORY BARRIERS?
@@ -464,11 +464,11 @@ Such enforcement is important because the CPUs and other devices in a system can
 
 ## 2. 内存屏障简介
 
-从上面可以看出，独立的内存操作实际上是按随机顺序执行的，但这对于CPU-CPU交互和I / O可能是个问题。 所需要的是一种干预方式，以指示编译器和CPU限制顺序。
+从上面可以看出, 独立的内存操作实际上是按随机顺序执行的, 但这对于CPU-CPU交互和I / O可能是个问题。 所需要的是一种干预方式, 以指示编译器和CPU限制顺序。
 
-记忆障碍就是这种干预。 它们对屏障两侧的存储操作施加了感知的部分排序。
+记忆屏障就是这种干预。 它们对屏障两侧的存储操作施加了感知的部分排序。
 
-这样的执行很重要，因为系统中的CPU和其他设备可以使用各种技巧来提高性能，包括重新排序，推迟和组合内存操作。 投机负荷； 投机分支预测和各种类型的缓存。 内存屏障用于覆盖或抑制这些技巧，从而使代码可以合理地控制多个CPU和/或设备的交互。
+这样的执行很重要, 因为系统中的CPU和其他设备可以使用各种技巧来提高性能, 包括重新排序, 推迟和组合内存操作。 投机负荷； 投机分支预测和各种类型的缓存。 内存屏障用于覆盖或抑制这些技巧, 从而使代码可以合理地控制多个CPU和/或设备的交互。
 
 
 VARIETIES OF MEMORY BARRIER
@@ -486,19 +486,19 @@ A CPU can be viewed as committing a sequence of store operations to the memory s
 
 [!] Note that write barriers should normally be paired with read or data dependency barriers; see the "SMP barrier pairing" subsection.
 
-### 2.1 各种内存屏障介绍
+### 2.1 内存屏障类型简介
 
 内存屏障主要分为四类：
 
 ####（1）写屏障(write/store memory barrier)
 
-写屏障可以保证: 对于系统的其他组件而言，屏障之前指定的所有 STORE 操作, 都会在屏障之后的所有STORE操作之前发生。
+写屏障可以保证: 对于系统的其他组件而言, 屏障之前指定的所有 STORE 操作, 都会在屏障之后的所有STORE操作之前发生。
 
 写屏障仅对 store 部分排序； 不需要对 load 有任何影响。
 
-随着时间的流逝，CPU可以看作是向内存系统提交了一系列 store 操作。 在写屏障之前的所有 store, 都会在写屏障之后的任意 store 前完成。
+随着时间的流逝, CPU可以看作是向内存系统提交了一系列 store 操作。 在写屏障之前的所有 store, 都会在写屏障之后的任意 store 前完成。
 
-> [!] 请注意，写屏障通常要和读屏障,或者数据相关性屏障搭配使用； 请参阅 "SMP barrier pairing" 小节。
+> [!] 请注意, 写屏障通常要和读屏障,或者数据相关性屏障搭配使用； 请参阅 ["SMP barrier pairing"](#SMP_BARRIER_PAIRING) 小节。
 
 
 (2) Data dependency barriers.
@@ -515,19 +515,20 @@ See the "Examples of memory barrier sequences" subsection for diagrams showing t
 
 [!] Note that data dependency barriers should normally be paired with write barriers; see the "SMP barrier pairing" subsection.
 
-####（2）数据依赖障碍。
+####（2）数据依赖屏障(Data dependency barrier)
 
-数据依存障碍是读取障碍的较弱形式。如果执行两个加载，使得第二个依赖于第一个加载的结果（例如：第一个加载检索第二个加载将定向到的地址），则将需要数据相关性屏障来确保在访问由第一次加载获得的地址之后，更新第二次加载的目标。
+数据依赖屏障是较弱形式的读屏障。 假设执行两个 load 操作, 第二个依赖第一个load的结果（例如：第一个 load 获取地址值, 第二个 load 将定向到此地址）, 则需要数据依赖屏障, 以确保第一个 load 获取到地址后, 先更新完第二个load的目标地址, 然后再执行第二个load操作。
 
-数据依存障碍仅是相互依存的负载的部分排序；不需要对存储，独立负载或重叠负载有任何影响。
+数据依赖屏障仅是相互依存的 load 的部分排序； 不需要影响 store, 独立的load，以及重叠加载(overlapping load)。
 
-如（1）中所述，可以将系统中的其他CPU视为将存储顺序提交给正在考虑的CPU可以感知的存储系统。所考虑的CPU发出的数据相关性屏障可确保对于在其之前的任何负载，如果该负载接触到另一个CPU的一系列存储中的一个，则在该屏障完成时，该接触之前的所有存储的影响在数据依赖屏障之后发出的任何负载都可以感知负载的变化。
+如（1）中所述, 可以将系统中的其他CPU视为顺序提交一连串 store 给内存系统, 而当前CPU可以感知到。
+某个CPU发出的数据相关性屏障, 可确保对于在其之前的任何load, 如果该load接触到了另一个CPU的一系列store中的一个, 则在该屏障完成时, 该接触之前的所有store的影响, 在数据依赖屏障之后发出的任何load都可以感知到这些变化。
 
-有关显示排序约束的图，请参见“内存屏障序列示例”小节。
+排序约束相关的图示, 请参见 "Examples of memory barrier sequences" 小节。
 
-[！]请注意，第一次加载实际上必须具有_data_依赖关系，而不是控件依赖关系。如果第二次加载的地址依赖于第一次加载，但该依赖关系是通过条件加载而不是实际加载地址本身，则它是_control_依赖关系，因此需要完全读取屏障或更高要求。有关更多信息，请参见“控件依赖项”小节。
+> [!] 请注意, 实际上第一个 load 必须具有数据依赖关系(data dependency), 而不是控制依赖关系(control dependency)。 如果第二个 load 的地址依赖于第一个load, 但并不去加载实际的地址本身, 这种依赖关系是通过条件来进行的, 那么它就是控制依赖关系, 这时候就需要使用完全读屏障或更高级别的屏障。 更多控制依赖的信息, 请参见 "Control dependencies" 小节。
 
-[！]请注意，数据依赖障碍通常应与写障碍配对使用；请参阅“ SMP屏障配对”小节。
+> [!] 请注意, 数据依赖屏障一般需要和写屏障配对使用；请参阅 ["SMP barrier pairing"](#SMP_BARRIER_PAIRING) 小节。
 
 
 (3) Read (or load) memory barriers.
@@ -540,15 +541,15 @@ Read memory barriers imply data dependency barriers, and so can substitute for t
 
 [!] Note that read barriers should normally be paired with write barriers; see the "SMP barrier pairing" subsection.
 
-#### （3）读取（或加载）内存屏障。
+#### （3）读屏障(Read/load memory barrier)。
 
-读屏障是数据依赖屏障，并保证相对于系统的其他组件，在屏障之前指定的所有LOAD操作似乎都将发生在屏障之后指定的所有LOAD操作之前。
+读屏障是数据依赖屏障, 并保证相对于系统的其他组件, 在屏障之前指定的所有LOAD操作似乎都将发生在屏障之后指定的所有LOAD操作之前。
 
-读取屏障是仅对负载的部分排序； 不需要对商店有任何影响。
+读屏障是仅对load的部分排序； 不需要对商店有任何影响。
 
-读内存障碍意味着数据依赖障碍，因此可以替代它们。
+读内存屏障意味着数据依赖屏障, 因此可以替代它们。
 
-[！]请注意，读取屏障通常应与写入屏障配对； 请参阅“ SMP屏障配对”小节。
+[！]请注意, 读屏障通常应与写入屏障配对； 请参阅 ["SMP barrier pairing"](#SMP_BARRIER_PAIRING) 小节。
 
 
 (4) General memory barriers.
@@ -562,13 +563,13 @@ General memory barriers imply both read and write memory barriers, and so can su
 
 And a couple of implicit varieties:
 
-#### （4）一般的记忆障碍。
+#### （4）一般的记忆屏障。
 
-通用内存屏障可确保相对于系统的其他组件，屏障之前指定的所有LOAD和STORE操作似乎都发生在屏障之后指定的所有LOAD和STORE操作之前。
+通用内存屏障可确保相对于系统的其他组件, 屏障之前指定的所有LOAD和STORE操作似乎都发生在屏障之后指定的所有LOAD和STORE操作之前。
 
 一般的内存屏障是对加载和存储的部分排序。
 
-通用内存屏障意味着读和写内存屏障，因此可以替代任何一种。
+通用内存屏障意味着读和写内存屏障, 因此可以替代任何一种。
 
 
 还有一些隐式变体：
@@ -584,7 +585,7 @@ An ACQUIRE operation should almost always be paired with a RELEASE operation.
 
 #### （5）获取操作。
 
-这充当单向渗透屏障。 它保证了ACQUIRE操作之后的所有内存操作似乎都发生在ACQUIRE操作之后，相对于系统的其他组件。 ACQUIRE操作包括LOCK操作以及smp_load_acquire（）和smp_cond_load_acquire（）操作。
+这充当单向渗透屏障。 它保证了ACQUIRE操作之后的所有内存操作似乎都发生在ACQUIRE操作之后, 相对于系统的其他组件。 ACQUIRE操作包括LOCK操作以及smp_load_acquire（）和smp_cond_load_acquire（）操作。
 
 在ACQUIRE操作之前发生的内存操作似乎在完成之后发生。
 
@@ -611,20 +612,20 @@ Note that these are the _minimum_ guarantees.  Different architectures may give 
 
 #### （6）释放操作。
 
-这也充当单向渗透屏障。它保证相对于系统的其他组件，RELEASE操作之前的所有内存操作似乎都发生在RELEASE操作之前。 RELEASE操作包括UNLOCK操作和smp_store_release（）操作。
+这也充当单向渗透屏障。它保证相对于系统的其他组件, RELEASE操作之前的所有内存操作似乎都发生在RELEASE操作之前。 RELEASE操作包括UNLOCK操作和smp_store_release（）操作。
 
 在RELEASE操作之后发生的内存操作可能似乎在其完成之前发生。
 
-使用ACQUIRE和RELEASE操作通常排除了对其他种类的内存屏障的需求。此外，不保证RELEASE + ACQUIRE对可充当完整的内存屏障。但是，在对给定变量执行ACQUIRE之后，可以保证对该变量进行任何先前的RELEASE之前的所有内存访问都是可见的。换句话说，在给定变量的关键部分内，可以保证对该变量的所有先前关键部分的所有访问均已完成。
+使用ACQUIRE和RELEASE操作通常排除了对其他种类的内存屏障的需求。此外, 不保证RELEASE + ACQUIRE对可充当完整的内存屏障。但是, 在对给定变量执行ACQUIRE之后, 可以保证对该变量进行任何先前的RELEASE之前的所有内存访问都是可见的。换句话说, 在给定变量的关键部分内, 可以保证对该变量的所有先前关键部分的所有访问均已完成。
 
-这意味着ACQUIRE充当最小的“获取”操作，RELEASE充当最小的“释放”操作。
+这意味着ACQUIRE充当最小的“获取”操作, RELEASE充当最小的“释放”操作。
 
-除了完全有序和宽松（无障碍语义）定义之外，atomic_t.txt中描述的原子操作的子集还具有ACQUIRE和RELEASE变体。对于同时执行加载和存储的复合原子，ACQUIRE语义仅适用于加载，而RELEASE语义仅适用于操作的存储部分。
+除了完全有序和宽松（无屏障语义）定义之外, atomic_t.txt中描述的原子操作的子集还具有ACQUIRE和RELEASE变体。对于同时执行load和存储的复合原子, ACQUIRE语义仅适用于load, 而RELEASE语义仅适用于操作的存储部分。
 
-仅在两个CPU之间或CPU与设备之间可能存在交互的情况下才需要内存屏障。如果可以保证在任何特定的代码段中都不会发生任何此类交互，那么该代码段中就不需要内存屏障。
+仅在两个CPU之间或CPU与设备之间可能存在交互的情况下才需要内存屏障。如果可以保证在任何特定的代码段中都不会发生任何此类交互, 那么该代码段中就不需要内存屏障。
 
 
-请注意，这些是_minimum_保证。不同的体系结构可能会提供更多实质性保证，但是可能不会依赖于特定于体系结构的代码之外。
+请注意, 这些是_minimum_保证。不同的体系结构可能会提供更多实质性保证, 但是可能不会依赖于特定于体系结构的代码之外。
 
 
 
@@ -895,6 +896,8 @@ In summary:
 
  - (*) Compilers do not understand control dependencies.  It is therefore  your job to ensure that they do not break your code.
 
+
+<a name="SMP_BARRIER_PAIRING"></a>
 
 SMP BARRIER PAIRING
 -------------------
