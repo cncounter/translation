@@ -612,20 +612,20 @@ Note that these are the _minimum_ guarantees.  Different architectures may give 
 
 #### （6）RELEASE操作
 
-这也充当单向渗透屏障。它保证相对于系统的其他组件, RELEASE操作之前的所有内存操作似乎都发生在RELEASE操作之前。 RELEASE操作包括UNLOCK操作和smp_store_release（）操作。
+RELEASE操作也充当单向渗透屏障。保证相对于系统的其他组件, RELEASE操作之前的所有内存操作都发生在RELEASE之前。 RELEASE操作包括 UNLOCK 操作和 smp_store_release() 操作。
 
-在RELEASE操作之后发生的内存操作可能似乎在其完成之前发生。
+在 RELEASE 操作之后发生的内存操作, 可能在其完成之前发生。
 
-使用ACQUIRE和RELEASE操作一般排除了对其他种类的内存屏障的需求。此外, 不保证RELEASE + ACQUIRE对可充当完整的内存屏障。但是, 在对给定变量执行ACQUIRE之后, 可以保证对该变量进行任何先前的RELEASE之前的所有内存访问都是可见的。换句话说, 在给定变量的关键部分内, 可以保证对该变量的所有先前关键部分的所有访问均已完成。
+使用 ACQUIRE 和 RELEASE 操作一般排除了对其他种类内存屏障的需求。此外, RELEASE+ACQUIRE 不保证可充当完整的内存屏障。 但是, 在对给定变量执行 ACQUIRE 之后, 可以保证对该变量进行任何RELEASE之前的内存访问都是可见的。 换句话说, 在给定变量的关键部分内, 可以保证对该变量的所有先前关键部分的所有访问均已完成。
 
-这意味着ACQUIRE充当最小的“获取”操作, RELEASE充当最小的“释放”操作。
+这意味着 ACQUIRE 充当最小 “获取” 操作, RELEASE充当最小 “释放” 操作。
 
-除了完全有序和宽松（无屏障语义）定义之外, atomic_t.txt中描述的原子操作的子集还具有ACQUIRE和RELEASE变体。对于同时执行load和存储的复合原子, ACQUIRE语义只适用于load, 而RELEASE语义只适用于操作的存储部分。
+除了完全有序和宽松（无屏障语义）定义之外,  `atomic_t.txt` 文件中描述的原子操作的子集还具有 ACQUIRE 和 RELEASE 变体。 对于同时执行load和store的复合原子操作, ACQUIRE语义只适用于load, 而RELEASE语义只适用于store部分的操作。
 
-仅在两个CPU之间或CPU与设备之间可能存在交互的情况下才需要内存屏障。如果可以保证在任何特定的代码段中都不会发生任何此类交互, 那么该代码段中就不需要内存屏障。
+仅在两个CPU之间,或CPU与设备之间可能存在交互的情况下才需要内存屏障。 如果可以保证在任何特定的代码段中都不会发生此类交互, 那么该代码段中就不需要内存屏障。
 
 
-请注意, 这些是_minimum_保证。不同的体系结构可能会提供更多实质性保证, 但是可能不会依赖于特定于体系结构的代码之外。
+请注意, 这些是最低保证。不同的体系结构可能会提供更多实质性保证, 但是特定于体系结构的代码之外可能不会可靠。
 
 
 
