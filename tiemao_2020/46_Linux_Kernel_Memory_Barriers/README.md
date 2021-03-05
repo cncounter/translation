@@ -488,7 +488,7 @@ A CPU can be viewed as committing a sequence of store operations to the memory s
 
 ### 2.1 内存屏障类型
 
-内存屏障主要分为四种基本类型：
+内存屏障主要分为四种基本类型:
 
 ####（1）写屏障(write/store memory barrier)
 
@@ -498,7 +498,7 @@ A CPU can be viewed as committing a sequence of store operations to the memory s
 
 随着时间的流逝, CPU可以看作是向内存系统提交了一系列 store 操作。 在写屏障之前的所有 store, 都会在写屏障之后的任意 store 前完成。
 
-> [!] 请注意, 写屏障通常要和读屏障,或者数据相关性屏障搭配使用； 请参阅 ["SMP barrier pairing"](#SMP_BARRIER_PAIRING) 小节。
+> [!] 请注意, 写屏障一般要和读屏障,或者数据相关性屏障搭配使用； 请参阅 ["SMP barrier pairing"](#SMP_BARRIER_PAIRING) 小节。
 
 
 (2) Data dependency barriers.
@@ -517,7 +517,7 @@ See the "Examples of memory barrier sequences" subsection for diagrams showing t
 
 ####（2）数据依赖屏障(Data dependency barrier)
 
-数据依赖屏障是较弱形式的读屏障。 假设执行两个 load 操作, 第二个依赖第一个load的结果（例如：第一个 load 获取地址值, 第二个 load 将定向到此地址）, 则需要数据依赖屏障, 以确保第一个 load 获取到地址后, 先更新完第二个load的目标地址, 然后再执行第二个load操作。
+数据依赖屏障是较弱形式的读屏障。 假设执行两个 load 操作, 第二个依赖第一个load的结果（例如:第一个 load 获取地址值, 第二个 load 将定向到此地址）, 则需要数据依赖屏障, 以确保第一个 load 获取到地址后, 先更新完第二个load的目标地址, 然后再执行第二个load操作。
 
 数据依赖屏障只是相互依存的 load 的局部排序； 不需要影响 store, 独立的load，以及重叠加载(overlapping load)。
 
@@ -549,7 +549,7 @@ Read memory barriers imply data dependency barriers, and so can substitute for t
 
 读屏障隐含了数据依赖屏障, 因此可以替代它们。
 
-> [!] 请注意, 读屏障通常与写屏障搭配使用； 请参阅 ["SMP barrier pairing"](#SMP_BARRIER_PAIRING) 小节。
+> [!] 请注意, 读屏障一般和写屏障搭配使用； 请参阅 ["SMP barrier pairing"](#SMP_BARRIER_PAIRING) 小节。
 
 
 (4) General memory barriers.
@@ -563,16 +563,16 @@ General memory barriers imply both read and write memory barriers, and so can su
 
 And a couple of implicit varieties:
 
-#### （4）一般的内存屏障。
+#### （4）通用内存屏障(General memory barrier)
 
-通用内存屏障可确保相对于系统的其他组件, 屏障之前指定的所有LOAD和STORE操作似乎都发生在屏障之后指定的所有LOAD和STORE操作之前。
+通用内存屏障可确保, 相对于系统的其他组件, 屏障之前指定的所有 LOAD 和 STORE 操作, 都发生在屏障之后指定的所有LOAD和STORE操作之前。
 
-一般的内存屏障是对加载和存储的局部排序。
+通用内存屏障对局部的 LOAD 和 STORE 进行顺序控制。
 
-通用内存屏障意味着读和写内存屏障, 因此可以替代任何一种。
+通用内存屏障蕴含着读屏障和写屏障, 因此可以替代任何一种。
 
 
-还有一些隐式变体：
+此外，还有两种隐式的屏障:
 
 
 (5) ACQUIRE operations.
@@ -616,7 +616,7 @@ Note that these are the _minimum_ guarantees.  Different architectures may give 
 
 在RELEASE操作之后发生的内存操作可能似乎在其完成之前发生。
 
-使用ACQUIRE和RELEASE操作通常排除了对其他种类的内存屏障的需求。此外, 不保证RELEASE + ACQUIRE对可充当完整的内存屏障。但是, 在对给定变量执行ACQUIRE之后, 可以保证对该变量进行任何先前的RELEASE之前的所有内存访问都是可见的。换句话说, 在给定变量的关键部分内, 可以保证对该变量的所有先前关键部分的所有访问均已完成。
+使用ACQUIRE和RELEASE操作一般排除了对其他种类的内存屏障的需求。此外, 不保证RELEASE + ACQUIRE对可充当完整的内存屏障。但是, 在对给定变量执行ACQUIRE之后, 可以保证对该变量进行任何先前的RELEASE之前的所有内存访问都是可见的。换句话说, 在给定变量的关键部分内, 可以保证对该变量的所有先前关键部分的所有访问均已完成。
 
 这意味着ACQUIRE充当最小的“获取”操作, RELEASE充当最小的“释放”操作。
 
