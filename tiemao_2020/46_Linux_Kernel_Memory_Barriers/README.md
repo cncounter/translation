@@ -642,11 +642,30 @@ There are certain things that the Linux kernel memory barriers do not guarantee:
 
 - (*) There is no guarantee that some intervening piece of off-the-CPU hardware[*] will not reorder the memory accesses.  CPU cache coherency mechanisms should propagate the indirect effects of a memory barrier between CPUs, but might not do so in order.
 
-  [*] For information on bus mastering DMA and coherency please read:
 
-      Documentation/driver-api/pci/pci.rst
-      Documentation/core-api/dma-api-howto.rst
-      Documentation/core-api/dma-api.rst
+
+### 2.2 内存屏障可能不包含什么？
+
+下面是Linux内核的内存屏障不能提供保证的事情:
+
+- (*) 不保证内存屏障之前的内存访问操作, 都能通过屏障指令的完成而完成。 可以认为屏障只是对CPU的访问队列划了一条线, 使特定类型的内存操作不会交叉。
+- (*) 不能保证在一个CPU上发出的内存屏障, 会对其他CPU或者其他硬件件产生直接影响。 间接效果则是其他CPU看到第一个CPU的操作效果发生的顺序，但请看下一点。
+- (*) 不能保证CPU会从第二个CPU的访问中看到正确的效果顺序，即使第二个CPU也使用了内存屏障, 除非第一个CPU也使用了匹配的内存屏障。 请参阅 ["SMP barrier pairing"](#SMP_BARRIER_PAIRING) 小节。
+- (*) 不能保证某些介于中间的非CPU硬件(off-the-CPU hardware), 不会对内存访问进行重排序。 CPU缓存一致性机制应在CPU之间传播内存屏障的间接影响，但也可能不这样做。
+
+
+#########################################################
+############# 到此处
+#########################################################
+
+
+> [*] For information on bus mastering DMA and coherency please read:
+
+```
+Documentation/driver-api/pci/pci.rst
+Documentation/core-api/dma-api-howto.rst
+Documentation/core-api/dma-api.rst
+```
 
 
 DATA DEPENDENCY BARRIERS (HISTORICAL)
