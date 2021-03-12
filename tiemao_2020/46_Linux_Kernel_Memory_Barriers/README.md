@@ -431,7 +431,7 @@ And there are anti-guarantees:
 
 - (*) These guarantees apply only to properly aligned and sized scalar variables.  "Properly sized" currently means variables that are the same size as "char", "short", "int" and "long".  "Properly aligned" means the natural alignment, thus no constraints for "char", two-byte alignment for "short", four-byte alignment for "int", and either four-byte or eight-byte alignment for "long", on 32-bit and 64-bit systems, respectively.  Note that these guarantees were introduced into the C11 standard, so beware when using older pre-C11 compilers (for example, gcc 4.6).  The portion of the standard containing this guarantee is Section 3.14, which defines "memory location" as follows:
 
-并且存在担保的反例:
+下面是一些反例:
 
 - (*) 这些保证不适用于bit字段(bitfields), 因为编译器生成的代码, 通常会以非原子性的 read-modify-write 顺序对其进行修改。不要尝试使用bit字段来同步并行算法。
 
@@ -445,7 +445,7 @@ And there are anti-guarantees:
 
 > NOTE 2: A bit-field and an adjacent non-bit-field member are in separate memory locations. The same applies to two bit-fields, if one is declared inside a nested structure declaration and the other is not, or if the two are separated by a zero-length bit-field declaration, or if they are separated by a non-bit-field member declaration. It is not safe to concurrently update two bit-fields in the same structure if all members declared between them are also bit-fields, no matter what the sizes of those intervening bit-fields happen to be.
 
-> 内存位置(memory location), 要么是标量类型的对象, 要么是宽度都为非零的相邻位字段的最大序列。
+> 内存位置(`memory location`), 要么是标量类型的对象, 要么是宽度都为非零的相邻位字段的最大序列。
 
 > 提示1: 两个执行线程可以更新和访问单独的内存位置, 而不会互相干扰。
 
@@ -490,7 +490,7 @@ A CPU can be viewed as committing a sequence of store operations to the memory s
 
 内存屏障主要分为四种基本类型:
 
-####（1）写屏障(write/store memory barrier)
+#### （1）写屏障(write/store memory barrier)
 
 写屏障可以保证: 对于系统的其他组件而言, 屏障之前指定的所有 STORE 操作, 都会在屏障之后的所有STORE操作之前发生。
 
@@ -515,7 +515,7 @@ See the "Examples of memory barrier sequences" subsection for diagrams showing t
 
 [!] Note that data dependency barriers should normally be paired with write barriers; see the "SMP barrier pairing" subsection.
 
-####（2）数据依赖屏障(Data dependency barrier)
+#### （2）数据依赖屏障(Data dependency barrier)
 
 数据依赖屏障是较弱形式的读屏障。 假设执行两个 load 操作, 第二个依赖第一个load的结果（例如:第一个 load 获取地址值, 第二个 load 将定向到此地址）, 则需要数据依赖屏障, 以确保第一个 load 获取到地址后, 先更新完第二个load的目标地址, 然后再执行第二个load操作。
 
@@ -541,7 +541,7 @@ Read memory barriers imply data dependency barriers, and so can substitute for t
 
 [!] Note that read barriers should normally be paired with write barriers; see the "SMP barrier pairing" subsection.
 
-#### （3）读屏障(Read/load memory barrier)
+####  （3）读屏障(Read/load memory barrier)
 
 读屏障是一种数据依赖屏障, 保证对于系统的其他组件而言, 在屏障之前指定的所有 LOAD 操作, 都在屏障后指定的所有LOAD操作之前完成。
 
@@ -563,7 +563,7 @@ General memory barriers imply both read and write memory barriers, and so can su
 
 And a couple of implicit varieties:
 
-#### （4）通用内存屏障(General memory barrier)
+####  （4）通用内存屏障(General memory barrier)
 
 通用内存屏障可确保, 相对于系统的其他组件, 屏障之前指定的所有 LOAD 和 STORE 操作, 都发生在屏障之后指定的所有LOAD和STORE操作之前。
 
@@ -583,7 +583,7 @@ Memory operations that occur before an ACQUIRE operation may appear to happen af
 
 An ACQUIRE operation should almost always be paired with a RELEASE operation.
 
-#### （5）ACQUIRE操作
+####  （5）ACQUIRE操作
 
 这充当单向渗透屏障(one-way permeable barrier)。 它保证了 ACQUIRE 操作之后的所有内存操作都发生在ACQUIRE操作之后, 相对于系统的其他组件。 ACQUIRE 操作包括LOCK操作以及 `smp_load_acquire()` 和 `smp_cond_load_acquire()` 操作。
 
@@ -602,13 +602,6 @@ The use of ACQUIRE and RELEASE operations generally precludes the need for other
 
 This means that ACQUIRE acts as a minimal "acquire" operation and RELEASE acts as a minimal "release" operation.
 
-A subset of the atomic operations described in atomic_t.txt have ACQUIRE and RELEASE variants in addition to fully-ordered and relaxed (no barrier semantics) definitions.  For compound atomics performing both a load and a store, ACQUIRE semantics apply only to the load and RELEASE semantics apply only to the store portion of the operation.
-
-Memory barriers are only required where there's a possibility of interaction between two CPUs or between a CPU and a device.  If it can be guaranteed that there won't be any such interaction in any particular piece of code, then memory barriers are unnecessary in that piece of code.
-
-
-Note that these are the _minimum_ guarantees.  Different architectures may give more substantial guarantees, but they may _not_ be relied upon outside of arch specific code.
-
 
 #### （6）RELEASE操作
 
@@ -619,6 +612,14 @@ RELEASE操作也充当单向渗透屏障。保证相对于系统的其他组件,
 使用 ACQUIRE 和 RELEASE 操作一般排除了对其他种类内存屏障的需求。此外, RELEASE+ACQUIRE 不保证可充当完整的内存屏障。 但是, 在对给定变量执行 ACQUIRE 之后, 可以保证对该变量进行任何RELEASE之前的内存访问都是可见的。 换句话说, 在给定变量的关键部分内, 可以保证对该变量的所有先前关键部分的所有访问均已完成。
 
 这意味着 ACQUIRE 充当最小 “获取” 操作, RELEASE充当最小 “释放” 操作。
+
+
+A subset of the atomic operations described in atomic_t.txt have ACQUIRE and RELEASE variants in addition to fully-ordered and relaxed (no barrier semantics) definitions.  For compound atomics performing both a load and a store, ACQUIRE semantics apply only to the load and RELEASE semantics apply only to the store portion of the operation.
+
+Memory barriers are only required where there's a possibility of interaction between two CPUs or between a CPU and a device.  If it can be guaranteed that there won't be any such interaction in any particular piece of code, then memory barriers are unnecessary in that piece of code.
+
+
+Note that these are the _minimum_ guarantees.  Different architectures may give more substantial guarantees, but they may _not_ be relied upon outside of arch specific code.
 
 除了完全有序和宽松（无屏障语义）定义之外,  `atomic_t.txt` 文件中描述的原子操作的子集还具有 ACQUIRE 和 RELEASE 变体。 对于同时执行load和store的复合原子操作, ACQUIRE语义只适用于load, 而RELEASE语义只适用于store部分的操作。
 
@@ -654,12 +655,9 @@ There are certain things that the Linux kernel memory barriers do not guarantee:
 - (*) 不能保证某些介于中间的非CPU硬件(off-the-CPU hardware), 不会对内存访问进行重排序。 CPU缓存一致性机制应在CPU之间传播内存屏障的间接影响，但也可能不这样做。
 
 
-#########################################################
-############# 到此处
-#########################################################
+> [ * ] For information on bus mastering DMA and coherency please read:
 
-
-> [*] For information on bus mastering DMA and coherency please read:
+> 总线主控DMA和一致性的有关信息，请阅读：
 
 ```
 Documentation/driver-api/pci/pci.rst
@@ -668,6 +666,11 @@ Documentation/core-api/dma-api.rst
 ```
 
 
+
+#########################################################
+############# 到此处
+#########################################################
+
 DATA DEPENDENCY BARRIERS (HISTORICAL)
 -------------------------------------
 
@@ -675,56 +678,89 @@ As of v4.15 of the Linux kernel, an smp_mb() was added to READ_ONCE() for DEC Al
 
 The usage requirements of data dependency barriers are a little subtle, and it's not always obvious that they're needed.  To illustrate, consider the following sequence of events:
 
-```
-  CPU 1          CPU 2
-  ===============        ===============
-  { A == 1, B == 2, C == 3, P == &A, Q == &C }
-  B = 4;
-  <write barrier>
-  WRITE_ONCE(P, &B);
-            Q = READ_ONCE(P);
-            D = *Q;
+
+### 2.3 数据依赖屏障（历史）
+
+从Linux内核v4.15开始，对 DEC Alpha 架构的 `READ_ONCE()` 添加了一个 `smp_mb()` 操作，也就是说只有从事 DEC Alpha 架构, 与 `READ_ONCE()` 打交道的人员才需要关注本节。 对于需要它以及对其历史感兴趣的人来说，不仅有数据依赖屏障, 还有故事。
+
+数据依赖屏障的使用要求有些微妙，并不一定总是需要它们。 为了演示说明，我们一起来看以下事件序列：
+
+
+```c
+CPU 1                  CPU 2
+===============        ===============
+初始值: { A == 1, B == 2, C == 3, P == &A, Q == &C }
+B = 4;
+<write barrier>
+WRITE_ONCE(P, &B);
+                        Q = READ_ONCE(P);
+                        D = *Q;
 ```
 
-There's a clear data dependency here, and it would seem that by the end of the sequence, Q must be either &A or &B, and that:
+There's a clear data dependency here, and it would seem that by the end of the sequence, `Q` must be either `&A` or `&B`, and that:
 
-  (Q == &A) implies (D == 1)
-  (Q == &B) implies (D == 4)
+这里存在明确的数据依赖，并且在事件序列结束时，`Q` 只能是 `&A` 或者 `&B`, 并且：
+
+```c
+(Q == &A) 则蕴含着 (D == 1)
+(Q == &B) 则蕴含着 (D == 4)
+```
 
 But!  CPU 2's perception of P may be updated _before_ its perception of B, thus leading to the following situation:
 
-  (Q == &B) and (D == 2) ????
+但是！ CPU 2对P的感知, 可能在对B感知之前被更新，从而导致这种情况：
+
+```c
+(Q == &B) and (D == 2) 什么鬼????
+```
 
 While this may seem like a failure of coherency or causality maintenance, it isn't, and this behaviour can be observed on certain real CPUs (such as the DEC Alpha).
 
 To deal with this, a data dependency barrier or better must be inserted between the address load and the data load:
 
-  CPU 1          CPU 2
-  ===============        ===============
-  { A == 1, B == 2, C == 3, P == &A, Q == &C }
-  B = 4;
-  <write barrier>
-  WRITE_ONCE(P, &B);
-            Q = READ_ONCE(P);
-            <data dependency barrier>
-            D = *Q;
+尽管看起来像是一致性或因果关系维护的失败，但事实并非如此，并且可以在某些实际的CPU上观察到此行为（例如DEC Alpha）。
+
+为了解决这个问题，必须在 address load 和 data load 之间插入数据依赖屏障或更好的屏障：
+
+
+```c
+CPU 1                  CPU 2
+===============        ===============
+初始值: { A == 1, B == 2, C == 3, P == &A, Q == &C }
+B = 4;
+<write barrier>
+WRITE_ONCE(P, &B);
+                        Q = READ_ONCE(P);
+                        <data dependency barrier>
+                        D = *Q;
+```
 
 This enforces the occurrence of one of the two implications, and prevents the third possibility from arising.
 
-
 [!] Note that this extremely counterintuitive situation arises most easily on machines with split caches, so that, for example, one cache bank processes even-numbered cache lines and the other bank processes odd-numbered cache lines.  The pointer P might be stored in an odd-numbered cache line, and the variable B might be stored in an even-numbered cache line.  Then, if the even-numbered bank of the reading CPU's cache is extremely busy while the odd-numbered bank is idle, one can see the new value of the pointer P (&B), but the old value of the variable B (2).
-
 
 A data-dependency barrier is not required to order dependent writes because the CPUs that the Linux kernel supports don't do writes until they are certain (1) that the write will actually happen, (2) of the location of the write, and (3) of the value to be written. But please carefully read the "CONTROL DEPENDENCIES" section and the Documentation/RCU/rcu_dereference.rst file:  The compiler can and does break dependencies in a great many highly creative ways.
 
-  CPU 1          CPU 2
-  ===============        ===============
-  { A == 1, B == 2, C = 3, P == &A, Q == &C }
-  B = 4;
-  <write barrier>
-  WRITE_ONCE(P, &B);
-            Q = READ_ONCE(P);
-            WRITE_ONCE(*Q, 5);
+
+这强制只会发生两种含义之中的一种，并阻止第三种可能性的出现。
+
+> [!] 请注意，这种非常违反直觉的情况, 在具有拆分式 cache 的计算机上最容易出现，因此，例如，一个缓存库处理偶数缓存行，另一缓存库处理奇数缓存行。指针P可以存储在奇数高速缓存行中，变量B可以存储在偶数高速缓存行中。然后，如果读取CPU的高速缓存中的偶数存储区非常忙，而奇数存储区则处于空闲状态，则可以看到指针P（＆B）的新值，但是变量B的旧值（2） 。
+
+
+排序依赖的写入不需要数据依赖屏障，因为Linux内核支持的CPU在确定（1）写入将实际发生，（2）写入的位置以及确定它们的位置之前不会进行写入。 （3）要写入的值。但是，请仔细阅读“控制依赖项”部分和Documentation / RCU / rcu_dereference.rst文件：编译器可以并且确实以许多极富创造力的方式打破了依赖关系。
+
+
+
+```c
+CPU 1                   CPU 2
+===============        ===============
+初始值: { A == 1, B == 2, C = 3, P == &A, Q == &C }
+B = 4;
+<write barrier>
+WRITE_ONCE(P, &B);
+                        Q = READ_ONCE(P);
+                        WRITE_ONCE(*Q, 5);
+```
 
 Therefore, no data-dependency barrier is required to order the read into Q with the store into *Q.  In other words, this outcome is prohibited, even without a data-dependency barrier:
 
