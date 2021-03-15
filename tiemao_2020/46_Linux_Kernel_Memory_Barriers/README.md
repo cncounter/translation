@@ -519,7 +519,7 @@ See the "Examples of memory barrier sequences" subsection for diagrams showing t
 
 数据依赖屏障是较弱形式的读屏障。 假设执行两个 load 操作, 第二个依赖第一个load的结果（例如:第一个 load 获取地址值, 第二个 load 将定向到此地址）, 则需要数据依赖屏障, 以确保第一个 load 获取到地址后, 先更新完第二个load的目标地址, 然后再执行第二个load操作。
 
-数据依赖屏障只是相互依存的 load 的局部排序； 不需要影响 store, 独立的load，以及重叠加载(overlapping load)。
+数据依赖屏障只是相互依存的 load 的局部排序； 不需要影响 store, 独立的load, 以及重叠加载(overlapping load)。
 
 如（1）中所述, 可以将系统中的其他CPU视为顺序提交一连串 store 给内存系统, 而当前CPU可以感知到。
 某个CPU发出的数据相关性屏障, 可确保对于在其之前的任何load, 如果该load接触到了另一个CPU的一系列store中的一个, 则在该屏障完成时, 该接触之前的所有store的影响, 在数据依赖屏障之后发出的任何load都可以感知到这些变化。
@@ -572,7 +572,7 @@ And a couple of implicit varieties:
 通用内存屏障蕴含着读屏障和写屏障, 因此可以替代任何一种。
 
 
-此外，还有两种隐式的屏障:
+此外, 还有两种隐式的屏障:
 
 
 (5) ACQUIRE operations.
@@ -650,14 +650,14 @@ There are certain things that the Linux kernel memory barriers do not guarantee:
 下面是Linux内核的内存屏障不能提供保证的事情:
 
 - (*) 不保证内存屏障之前的内存访问操作, 都能通过屏障指令的完成而完成。 可以认为屏障只是对CPU的访问队列划了一条线, 使特定类型的内存操作不会交叉。
-- (*) 不能保证在一个CPU上发出的内存屏障, 会对其他CPU或者其他硬件件产生直接影响。 间接效果则是其他CPU看到第一个CPU的操作效果发生的顺序，但请看下一点。
-- (*) 不能保证CPU会从第二个CPU的访问中看到正确的效果顺序，即使第二个CPU也使用了内存屏障, 除非第一个CPU也使用了匹配的内存屏障。 请参阅 ["SMP barrier pairing"](#SMP_BARRIER_PAIRING) 小节。
-- (*) 不能保证某些介于中间的非CPU硬件(off-the-CPU hardware), 不会对内存访问进行重排序。 CPU缓存一致性机制应在CPU之间传播内存屏障的间接影响，但也可能不这样做。
+- (*) 不能保证在一个CPU上发出的内存屏障, 会对其他CPU或者其他硬件件产生直接影响。 间接效果则是其他CPU看到第一个CPU的操作效果发生的顺序, 但请看下一点。
+- (*) 不能保证CPU会从第二个CPU的访问中看到正确的效果顺序, 即使第二个CPU也使用了内存屏障, 除非第一个CPU也使用了匹配的内存屏障。 请参阅 ["SMP barrier pairing"](#SMP_BARRIER_PAIRING) 小节。
+- (*) 不能保证某些介于中间的非CPU硬件(off-the-CPU hardware), 不会对内存访问进行重排序。 CPU缓存一致性机制应在CPU之间传播内存屏障的间接影响, 但也可能不这样做。
 
 
 > [ * ] For information on bus mastering DMA and coherency please read:
 
-> 总线主控DMA和一致性的有关信息，请阅读：
+> 总线主控DMA和一致性的有关信息, 请阅读:
 
 ```
 Documentation/driver-api/pci/pci.rst
@@ -681,9 +681,9 @@ The usage requirements of data dependency barriers are a little subtle, and it's
 
 ### 2.3 数据依赖屏障（历史）
 
-从Linux内核v4.15开始，对 DEC Alpha 架构的 `READ_ONCE()` 添加了一个 `smp_mb()` 操作，也就是说只有从事 DEC Alpha 架构, 与 `READ_ONCE()` 打交道的人员才需要关注本节。 对于需要它以及对其历史感兴趣的人来说，不仅有数据依赖屏障, 还有故事。
+从Linux内核v4.15开始, 对 DEC Alpha 架构的 `READ_ONCE()` 添加了一个 `smp_mb()` 操作, 也就是说只有从事 DEC Alpha 架构, 与 `READ_ONCE()` 打交道的人员才需要关注本节。 对于需要它以及对其历史感兴趣的人来说, 不仅有数据依赖屏障, 还有故事。
 
-数据依赖屏障的使用要求有些微妙，并不一定总是需要它们。 为了演示说明，我们一起来看以下事件序列：
+数据依赖屏障的使用要求有些微妙, 并不一定总是需要它们。 为了演示说明, 我们一起来看以下事件序列:
 
 
 ```c
@@ -699,7 +699,7 @@ WRITE_ONCE(P, &B);
 
 There's a clear data dependency here, and it would seem that by the end of the sequence, `Q` must be either `&A` or `&B`, and that:
 
-这里存在明确的数据依赖，并且在事件序列结束时，`Q` 只能是 `&A` 或者 `&B`, 并且：
+这里存在明确的数据依赖, 并且在事件序列结束时, `Q` 只能是 `&A` 或者 `&B`, 并且:
 
 ```c
 (Q == &A) 则蕴含着 (D == 1)
@@ -708,7 +708,7 @@ There's a clear data dependency here, and it would seem that by the end of the s
 
 But!  CPU 2's perception of P may be updated _before_ its perception of B, thus leading to the following situation:
 
-但是！ CPU 2对P的感知, 可能在对B感知之前被更新，从而导致这种情况：
+但是！ CPU 2对P的感知, 可能在对B感知之前被更新, 从而导致这种情况:
 
 ```c
 (Q == &B) and (D == 2) 什么鬼????
@@ -718,9 +718,9 @@ While this may seem like a failure of coherency or causality maintenance, it isn
 
 To deal with this, a data dependency barrier or better must be inserted between the address load and the data load:
 
-尽管看起来像是一致性或因果关系维护的失败，但事实并非如此，并且可以在某些实际的CPU上观察到此行为（例如DEC Alpha）。
+尽管看起来像是一致性或因果关系维护的失败, 但事实并非如此, 并且可以在某些实际的CPU上观察到此行为（例如DEC Alpha）。
 
-为了解决这个问题，必须在 address load 和 data load 之间插入数据依赖屏障或更好的屏障：
+为了解决这个问题, 必须在 address load 和 data load 之间插入数据依赖屏障或更好的屏障:
 
 
 ```c
@@ -742,12 +742,17 @@ This enforces the occurrence of one of the two implications, and prevents the th
 A data-dependency barrier is not required to order dependent writes because the CPUs that the Linux kernel supports don't do writes until they are certain (1) that the write will actually happen, (2) of the location of the write, and (3) of the value to be written. But please carefully read the "CONTROL DEPENDENCIES" section and the Documentation/RCU/rcu_dereference.rst file:  The compiler can and does break dependencies in a great many highly creative ways.
 
 
-这强制只会发生两种含义之中的一种，并阻止第三种可能性的出现。
+这样就强制了只能发生两种含义之中的一种, 并阻止第三种可能性的出现。
 
-> [!] 请注意，这种非常违反直觉的情况, 在具有拆分式 cache 的计算机上最容易出现，因此，例如，一个缓存库处理偶数缓存行，另一缓存库处理奇数缓存行。指针P可以存储在奇数高速缓存行中，变量B可以存储在偶数高速缓存行中。然后，如果读取CPU的高速缓存中的偶数存储区非常忙，而奇数存储区则处于空闲状态，则可以看到指针P（＆B）的新值，但是变量B的旧值（2） 。
+> [!] 请注意, 这种非常违反直觉的情况, 在具有拆分式 cache 的计算机上很容易出现, 例如, 一个缓存库处理偶数缓存行, 另一缓存库处理奇数缓存行。 指针`P`可能会存储在奇数缓存行中, 变量B可以存储在偶数缓存行中。 然后, 如果CPU的偶数缓存读取繁忙, 而奇数存储区处于空闲状态, 则可能会看到指针 `P (&B) `已经变成了新值,  但看到的变量`B`还是旧值 `2` 。
 
 
-排序依赖的写入不需要数据依赖屏障，因为Linux内核支持的CPU在确定（1）写入将实际发生，（2）写入的位置以及确定它们的位置之前不会进行写入。 （3）要写入的值。但是，请仔细阅读“控制依赖项”部分和Documentation / RCU / rcu_dereference.rst文件：编译器可以并且确实以许多极富创造力的方式打破了依赖关系。
+对于顺序依赖的写入, 不需要数据依赖屏障, 因为Linux内核支持以下情况发生前, CPU不会执行写入:
+- (1) 写入实际发生之前,
+- (2) 确定写入的位置之前,
+- (3) 确定要写入的具体值之前。
+
+但请仔细阅读 "CONTROL DEPENDENCIES" 部分和 `Documentation/RCU/rcu_dereference.rst` 文件: 编译器可能会以各种匪夷所思的优化手段来打破依赖关系。
 
 
 
