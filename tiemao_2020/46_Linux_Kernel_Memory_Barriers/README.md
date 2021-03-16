@@ -1,4 +1,4 @@
-# Linux内核文档: 内存屏障
+# Linux内核参考文档: 内存屏障
 
 在线版本地址(English): <https://www.kernel.org/doc/Documentation/memory-barriers.txt>
 
