@@ -437,7 +437,7 @@ And there are anti-guarantees:
 
 - (*) 即使bit字段受锁保护的情况下, 给定 bitfield 中的所有字段也必须由同一个锁保护。 如果给定 bitfield 中的两个域由不同的锁来保护, 则编译器的非原子性 read-modify-write 顺序会导致对一个 field 的更新破坏相邻 field 的值。
 
-- (*) 这些保证只适用于正确对齐且大小合适的标量变量。 “大小合适(Properly sized)” 的意思是指与 "char", "short", "int" and "long" 大小相同的变量。 “正确对齐(Properly aligned)” 是指自然对齐,  因此对 "char" 没有约束, 对于 "short" 为两个字节对齐, 对于 "int" 为四字节对齐, 对于 "long" 为四字节或八字节对齐, 分别对应在32位和64位系统上。 请注意, 这些保证是C11标准中引入的, 因此在使用C11之前的编译器时要当心（例如 gcc 4.6）。 标准中包含此保证的部分为 Section 3.14, 其中对 “内存位置(memory location)” 的定义如下:
+- (*) 这些保证只适用于正确对齐且大小合适的标量变量。 “大小合适(Properly sized)” 的意思是指与 "char", "short", "int" and "long" 大小相同的变量。 “正确对齐(Properly aligned)” 是指自然对齐,  因此对 "char" 没有约束, 对于 "short" 为两个字节对齐, 对于 "int" 为四字节对齐, 对于 "long" 为四字节或八字节对齐, 分别对应在32位和64位系统上。 请注意, 这些保证是C11标准中引入的, 因此在使用C11之前的编译器时要当心（例如 gcc 4.6）。 标准中包含此保证的章节为 Section 3.14, 其中对 “内存位置(memory location)” 的定义如下:
 
 > memory location either an object of scalar type, or a maximal sequence of adjacent bit-fields all having nonzero width
 
@@ -666,11 +666,6 @@ Documentation/core-api/dma-api.rst
 ```
 
 
-
-#########################################################
-############# 到此处
-#########################################################
-
 DATA DEPENDENCY BARRIERS (HISTORICAL)
 -------------------------------------
 
@@ -752,7 +747,7 @@ A data-dependency barrier is not required to order dependent writes because the 
 - (2) 确定写入的位置之前,
 - (3) 确定要写入的具体值之前。
 
-但请仔细阅读 "CONTROL DEPENDENCIES" 部分和 `Documentation/RCU/rcu_dereference.rst` 文件: 编译器可能会以各种匪夷所思的优化手段来打破依赖关系。
+但请仔细阅读 "CONTROL DEPENDENCIES" 章节, 以及 `Documentation/RCU/rcu_dereference.rst` 文件: 编译器可能会以各种匪夷所思的优化手段来打破依赖关系。
 
 
 
@@ -769,7 +764,11 @@ WRITE_ONCE(P, &B);
 
 Therefore, no data-dependency barrier is required to order the read into Q with the store into *Q.  In other words, this outcome is prohibited, even without a data-dependency barrier:
 
-  (Q == &B) && (B == 4)
+因此，不需要数据依赖屏障, 就可以保证先将数据读入`Q`, 然后再写入 `*Q` 的顺序。 换句话说，即使没有数据依赖屏障，也不会产生下面这种结果：
+
+```c
+(Q == &B) && (B == 4)
+```
 
 Please note that this pattern should be rare.  After all, the whole point of dependency ordering is to -prevent- writes to the data structure, along with the expensive cache misses associated with those writes.  This pattern can be used to record rare error conditions and the like, and the CPUs' naturally occurring ordering prevents such records from being lost.
 
@@ -777,9 +776,25 @@ Please note that this pattern should be rare.  After all, the whole point of dep
 Note well that the ordering provided by a data dependency is local to the CPU containing it.  See the section on "Multicopy atomicity" for more information.
 
 
-The data dependency barrier is very important to the RCU system, for example.  See rcu_assign_pointer() and rcu_dereference() in include/linux/rcupdate.h.  This permits the current target of an RCU'd pointer to be replaced with a new modified target, without the replacement target appearing to be incompletely initialised.
+The data dependency barrier is very important to the RCU system, for example.  See `rcu_assign_pointer()` and `rcu_dereference()` in `include/linux/rcupdate.h`.  This permits the current target of an RCU'd pointer to be replaced with a new modified target, without the replacement target appearing to be incompletely initialised.
 
 See also the subsection on "Cache Coherency" for a more thorough example.
+
+
+请注意，这种模式应该很少见。 毕竟，依存关系排序的全部要点是防止对数据结构的写入，以及与这些写入相关的高速缓存未命中。 此模式可用于记录罕见的错误情况等，并且CPU的自然排序也能防止此类记录丢失。
+
+请注意，数据依赖项提供的顺序是包含它的CPU的局部顺序。 有关更多信息，请参见 "Multicopy atomicity" 章节。
+
+
+例如，数据依赖屏障对于 RCU 系统非常重要。 请参阅 `include/linux/rcupdate.h` 中的 `rcu_assign_pointer()` 和 `rcu_dereference()`。 这允许将RCU指针的当前目标替换为新的修改后的目标，而替换目标并不会出现未完全初始化。
+
+另请参阅 "Cache Coherency" 小节，以获取更完整的示例。
+
+
+
+#########################################################
+############# 到此处
+#########################################################
 
 
 CONTROL DEPENDENCIES
