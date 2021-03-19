@@ -847,7 +847,7 @@ if (q) {
 
 However, stores are not speculated.  This means that ordering -is- provided for load-store control dependencies, as in the following example:
 
-但是，没有人猜测商店。 这意味着为负载存储控件依赖项提供了排序，如以下示例所示：
+但是，store 是不存在猜测的。 这意味着 load-store 控制依赖的执行顺序会得到保证，如以下示例所示：
 
 ```c
 q = READ_ONCE(a);
@@ -856,11 +856,11 @@ if (q) {
 }
 ```
 
-Control dependencies pair normally with other types of barriers. That said, please note that neither READ_ONCE() nor WRITE_ONCE() are optional! Without the READ_ONCE(), the compiler might combine the load from 'a' with other loads from 'a'.  Without the WRITE_ONCE(), the compiler might combine the store to 'b' with other stores to 'b'. Either can result in highly counterintuitive effects on ordering.
+Control dependencies pair normally with other types of barriers. That said, please note that neither `READ_ONCE()` nor `WRITE_ONCE()` are optional! Without the READ_ONCE(), the compiler might combine the load from 'a' with other loads from 'a'.  Without the WRITE_ONCE(), the compiler might combine the store to 'b' with other stores to 'b'. Either can result in highly counterintuitive effects on ordering.
 
 Worse yet, if the compiler is able to prove (say) that the value of variable 'a' is always non-zero, it would be well within its rights to optimize the original example by eliminating the "if" statement as follows:
 
-控制依赖项通常与其他类型的障碍配对。 也就是说，请注意，READ_ONCE（）和WRITE_ONCE（）都不是可选的！ 如果没有READ_ONCE（），则编译器可能会将“ a”的负载与“ a”的其他负载组合在一起。 如果没有WRITE_ONCE（），编译器可能会将存储区合并为“ b”，而将其他存储区合并为“ b”。 两者都会对订购产生高度违反直觉的影响。
+控制依赖项通常与其他类型屏障配对使用。 也就是说，请注意，`READ_ONCE()` 和 `WRITE_ONCE() 都不可选的！ 如果没有READ_ONCE（），则编译器可能会将“ a”的负载与“ a”的其他负载组合在一起。 如果没有WRITE_ONCE（），编译器可能会将存储区合并为“ b”，而将其他存储区合并为“ b”。 两者都会对订购产生高度违反直觉的影响。
 
 更糟糕的是，如果编译器能够证明（说）变量'a'的值始终为非零，那么通过消除如下所示的“ if”语句来优化原始示例将是其应有的权利：
 
@@ -968,7 +968,7 @@ do_something_else();
 
 Given this transformation, the CPU is not required to respect the ordering between the load from variable 'a' and the store to variable 'b'.  It is tempting to add a barrier(), but this does not help.  The conditional is gone, and the barrier won't bring it back.  Therefore, if you are relying on this ordering, you should make sure that MAX is greater than one, perhaps as follows:
 
-通过这种转换，不需要CPU遵守从变量“ a”到存储区到变量“ b”之间的加载顺序。 尝试添加barrier（）很诱人，但这无济于事。 有条件的已经消失，障碍也不会把它带回来。 因此，如果您依赖此顺序，则应确保MAX大于1，也许如下所示：
+通过这种转换，不需要CPU遵守从变量“ a”到存储区到变量“ b”之间的加载顺序。 尝试添加barrier（）很诱人，但这无济于事。 有条件的已经消失，屏障也不会把它带回来。 因此，如果您依赖此顺序，则应确保MAX大于1，也许如下所示：
 
 ```c
 q = READ_ONCE(a);
@@ -1064,9 +1064,9 @@ In summary:
 - (*) 控件依赖项可以针对以后的存储命令先前的加载。但是，它们不能保证任何其他排序方式：不能将先前的装载与以后的装载相对，也不能将先前的存储在以后的任何装载中。如果需要这些其他形式的订购，请使用smp_rmb（），smp_wmb（），或者，对于以前的商店和以后的加载，请使用smp_mb（）。
 - (*) 如果“ if”语句的两条腿都从相同的存储开始到相同的变量，则必须对这些存储进行排序，方法是在两个存储之前都加上smp_mb（）或使用smp_store_release（）来执行存储。请注意，在“ if”语句的每一行的开始处仅使用barrier（）是不够的，因为如上例所示，优化编译器可能会破坏控件的依赖关系，同时注意barrier（）的字母。法律。
 - (*) 控制依赖项要求在先前加载和后续存储之间至少有一个运行时条件，并且该条件必须涉及先前加载。如果编译器能够优化条件分离，那么它也将优化分离顺序。仔细使用READ_ONCE（）和WRITE_ONCE（）可以帮助保留所需的条件。
-- (*) 控制依赖项要求编译器避免将依赖项重新排序为不存在。仔细使用READ_ONCE（）或atomic {，64} _read（）可以有助于保留控件的依赖性。请参阅“编译器障碍”部分以获取更多信息。
+- (*) 控制依赖项要求编译器避免将依赖项重新排序为不存在。仔细使用READ_ONCE（）或atomic {，64} _read（）可以有助于保留控件的依赖性。请参阅“编译器屏障”部分以获取更多信息。
 - (*) 控制依赖项仅适用于包含控制依赖项的if语句的从句和else子句，包括这两个子句调用的任何函数。控件依赖项不适用于包含控件依赖项的if语句之后的代码。
-- (*) 控制依赖项通常与其他类型的障碍配对。
+- (*) 控制依赖项通常与其他类型的屏障配对。
 - (*) 控件依赖项不提供多副本原子性。如果需要所有CPU同时查看给定存储，请使用smp_mb（）。
 - (*) 编译器不了解控件依赖性。因此，确保它们不会破坏您的代码是您的工作。
 
