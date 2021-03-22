@@ -44,16 +44,16 @@ The worst case time complexity is number of nodes on “express lane” plus num
 
 ### 两层跳表的时间复杂度
 
-最坏情况下的时间复杂度, 是“快速通道”的节点数, 加上“正常通道”中一个分段的节点数量。 一个分段（segment）是指“正常通道”中, 两个快速节点之间的部分。
-如果“正常通道” 有`n`个节点, “快速通道”上有`√n`（根号n）个节点, 并且均匀地分布到“正常通道”节点上, 那么“正常通道”上的每个分段也就有`√n`个节点 ”。 `√n`实际上是两层跳表的最优除法, 通过这样划分, 遍历搜索节点的时间复杂度为`O(√n)`。 用空间换时间, 多了`O(√n)`的额外存储空间, 就可以将时间复杂度降低到 `O(√n)`。
+最坏情况下的时间复杂度, 是“快速通道”中走的节点数, 加上“正常通道”中一个分段的节点数。 一个分段（segment）是指“正常通道”中, 两个快速节点之间的部分。
+如果“正常通道” 有`n`个节点, “快速通道”上有`√n`（根号n）个节点, 并且均匀地分布到“正常通道”上, 那么“正常通道”上的每个分段就有`√n`个节点 ”。 `√n`实际上是两层跳表的最优除法, 通过这种划分, 搜索节点的时间复杂度为`O(√n)`。 用空间换时间, 多占用了`O(√n)`的额外存储空间, 就可以将时间复杂度降低到 `O(√n)`。
 
 ### Can we do better?
 
 The time complexity of skip lists can be reduced further by adding more layers. In fact, the time complexity of search, insert and delete can become `O(Logn)` in average case with `O(n)` extra space. We will soon be publishing more posts on Skip Lists.
 
-### 有没有更低的时间复杂度？
+### 有没有更优解？
 
-引入更多的层次, 可以进一步降低跳表的时间复杂度。 实际上, 具有额外空间 `O(n)` 的情况下,  查找, 插入和删除节点的时间复杂度可以变成 `O(Logn)`。
+引入更多的层, 可以进一步降低跳表的时间复杂度。 实际上, 使用额外空间 `O(n)` 的情况下,  查找, 插入和删除节点的时间复杂度可以优化到 `O(Logn)`。
 
 ### References
 
