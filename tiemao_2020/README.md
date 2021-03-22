@@ -13,7 +13,7 @@
 * [07.Java坑人面试题系列: 线程/线程池（高级难度）](./07_quiz-executor-service/README.md)【已完成】
 * [08.获取JVM堆内存转储的常用方法](./08_java-heap-dump/README.md)【已完成】
 * [09.获取Java线程转储的常用方法](./09_java-thread-dump/README.md)【已完成】
-* [10.高级数据结构: 跳跃表（Skip List）](./10_skip-list/README.md)【粗翻】
+* [10.高级数据结构: 跳表（Skip List）](./10_skip-list/README.md)【粗翻】
 * [11.JVM最重要的性能调优参数](./11_jvm-arguments-of-highly-effective/README.md)【已完成】
 - [12.1 MAVEN基础系列（一） 构建生命周期](./12_introduction-to-the-pom/introduction-to-the-lifecycle.md)【粗翻】
 - [12.2 MAVEN基础系列（二） POM文件](./12_introduction-to-the-pom/README.md)【粗翻】

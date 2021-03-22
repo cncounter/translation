@@ -1,6 +1,6 @@
 # Skip List
 
-# 高级数据结构: 跳跃表（Skip List）
+# 高级数据结构: 跳表（Skip List）
 
 [TOC]
 
@@ -12,37 +12,40 @@ The worst case search time for a sorted linked list is O(n) as we can only linea
 
 Can we augment sorted linked lists to make the search faster? The answer is Skip List. The idea is simple, we create multiple layers so that we can skip some nodes. See the following example list with 16 nodes and two layers. The upper layer works as an “express lane” which connects only main outer stations, and the lower layer works as a “normal lane” which connects every station. Suppose we want to search for 50, we start from first node of “express lane” and keep moving on “express lane” till we find a node whose next is greater than 50. Once we find such a node (30 is the node in following example) on “express lane”, we move to “normal lane” using pointer from this node, and linearly search for 50 on “normal lane”. In following example, we start from 30 on “normal lane” and with linear search, we find 50.
 
-## 一、跳跃表简介
+## 一、跳表简介
 
-### 单链表查找的时间复杂度 `O(n)`
+跳表, 对应的英语词汇为 Skip List。也称为跳跃表, 跳跃链表,
 
-已排序的简单链表, 进行元素查找的时间复杂度，最坏情况下为 `O(n)`，因为这时候只能遍历整个链表，在查找时不能跳过任何节点。
-对于平衡二叉查找树（Balanced Binary Search Tree），在与根元素进行一次比较后，就可以跳过差不多一半的节点。
-对于排好序的数组，因为能任意访问某个下标元素，可以使用二分查找算法(Binary Search)。
+### 查询单链表的时间复杂度 `O(n)`
 
-在排序链表的基础上,可不可以进行扩充以加快查找速度呢？
-答案是使用跳跃表（Skip List）。
-这种算法其实很简单，通过创建多个层（layer），以便查找时可以跳过一些节点。
-请看下图：
+在排好序的单链表中进行元素查找, 最坏情况下的时间复杂度为 `O(n)`。 因为我们只能挨个遍历链表, 在查找时不能跳过任何节点。
+
+对于平衡二叉查找树（Balanced Binary Search Tree）, 在与根元素进行一次比较后, 就可以跳过一半左右的节点。
+
+如果是有序数组, 可以任意访问某个下标位置的元素, 所以使用二分查找算法(Binary Search)。
+
+在有序链表的基础上,可不可以通过一些优化手段来加快查找速度呢？ 答案是使用跳表（Skip List）。 这种算法的思路其实很简单, 通过创建多个层（layer）, 在查找元素时就可以跳过一部分节点。
+
+请看下面的示意图：
 
 
 ![SkipList](01_01_SkipList1.png)
 
-图中展示的链表包含16个节点和两层。
-上面一层仅用作连接主要节点的“快速通道”，而下层则用作连接每个节点的“正常通道”。
-假设要查找 "50"，从“快速通道”的第一个节点开始，继续沿“快速通道”移动，找到满足 "下一个节点的值大于50" 的那个节点。
-一旦在“快速通道”中找到这样的节点， 则后续的查找过程挪到“正常通道”上执行， 然后执行线性查找。
-看图中的示例，对应节点的值是30，其下一个节点值为57。所以从值为30的节点开始，后面都是在 “正常通道” 上进行遍历，直到找到50（或者找不到，例如51）。
+图中展示的链表有16个元素节点, 总共有两层。 上面一层只用来作为连接主要节点的“快速通道”, 而下层则是连接每个数据节点的“正常通道”。
+
+假设要查找 "50" 这个数, 从“快速通道”的第一个节点开始, 沿“快速通道”移动, 先找到满足 "下一节点值大于50" 的“当前”节点。
+一旦在“快速通道”中找到这个节点,  则后续的查找过程就转到“正常通道”,  执行线性查找。
+以图中的数据为例, 第一层找到的快速节点值是30, 其下一节点的值为57。 所以从值为30的节点开始, 后面都是在 “正常通道” 上执行遍历, 直到找到50（或者找不到为止, 比如找51）。
 
 
 ### What is the time complexity with two layers?
 
 The worst case time complexity is number of nodes on “express lane” plus number of nodes in a segment (A segment is number of “normal lane” nodes between two “express lane” nodes) of “normal lane”. So if we have n nodes on “normal lane”, `√n` (square root of n) nodes on “express lane” and we equally divide the “normal lane”, then there will be `√n` nodes in every segment of “normal lane” . `√n` is actually optimal division with two layers. With this arrangement, the number of nodes traversed for a search will be `O(√n)`. Therefore, with `O(√n)` extra space, we are able to reduce the time complexity to `O(√n)`.
 
-### 两层跳跃表的时间复杂度
+### 两层跳表的时间复杂度
 
-最坏情况下的时间复杂度, 是“快速通道”的节点数，加上“正常通道”中一个分段的节点数量。 一个分段（segment）是指“正常通道”中，两个快速节点之间的部分。
-如果“正常通道” 有`n`个节点，“快速通道”上有`√n`（根号n）个节点，并且均匀地分布到“正常通道”节点上，那么“正常通道”上的每个分段也就有`√n`个节点 ”。 `√n`实际上是两层跳跃表的最优除法, 通过这样划分，遍历搜索节点的时间复杂度为`O(√n)`。 用空间换时间，多了`O(√n)`的额外存储空间，就可以将时间复杂度降低到 `O(√n)`。
+最坏情况下的时间复杂度, 是“快速通道”的节点数, 加上“正常通道”中一个分段的节点数量。 一个分段（segment）是指“正常通道”中, 两个快速节点之间的部分。
+如果“正常通道” 有`n`个节点, “快速通道”上有`√n`（根号n）个节点, 并且均匀地分布到“正常通道”节点上, 那么“正常通道”上的每个分段也就有`√n`个节点 ”。 `√n`实际上是两层跳表的最优除法, 通过这样划分, 遍历搜索节点的时间复杂度为`O(√n)`。 用空间换时间, 多了`O(√n)`的额外存储空间, 就可以将时间复杂度降低到 `O(√n)`。
 
 ### Can we do better?
 
@@ -50,13 +53,13 @@ The time complexity of skip lists can be reduced further by adding more layers. 
 
 ### 有没有更低的时间复杂度？
 
-引入更多的层次，可以进一步降低跳跃表的时间复杂度。 实际上，具有额外空间 `O(n)` 的情况下， 查找, 插入和删除节点的时间复杂度可以变成 `O(Logn)`。
+引入更多的层次, 可以进一步降低跳表的时间复杂度。 实际上, 具有额外空间 `O(n)` 的情况下,  查找, 插入和删除节点的时间复杂度可以变成 `O(Logn)`。
 
 ### References
 
 ### 更多阅读
 
-跳跃表的更多信息请参考:
+跳表的更多信息请参考:
 
 - [MIT Video Lecture on Skip Lists](https://ocw.mit.edu/courses/electrical-engineering-and-computer-science/6-046j-introduction-to-algorithms-sma-5503-fall-2005/video-lectures/lecture-12-skip-lists/)
 - <http://en.wikipedia.org/wiki/Skip_list>
@@ -70,8 +73,8 @@ Next, we will be discussing how to insert an element in Skip list.
 
 ## 二、插入操作
 
-前面介绍了跳跃表的概念及其工作方式。
-接下来，我们将讨论如何在“跳跃表”中插入元素。
+前面介绍了跳表的概念及其工作方式。
+接下来, 我们将讨论如何在“跳表”中插入元素。
 
 ### Deciding nodes level
 
@@ -81,7 +84,7 @@ Level does not depend on the number of elements in the node. The level for node 
 
 ### 确定节点级别
 
-列表中的每个元素都由一个节点来表示，在插入时会随机选择节点的级别。
+列表中的每个元素都由一个节点来表示, 在插入时会随机选择节点的级别。
 
 具体的级别与节点中元素的数量无关。 节点级别由以下算法决定-
 
@@ -100,13 +103,13 @@ MaxLevel is the upper bound on number of levels in the skip list.
 It can be determined as:
 
 
-MaxLevel 是跳跃表的最大层级。可以定义为：
+MaxLevel 是跳表的最大层级。可以定义为：
 
 ![](02_01_maxlevel.jpg)
 
 Above algorithm assure that random level will never be greater than MaxLevel. Here p is the fraction of the nodes with level i pointers also having level i+1 pointers and N is the number of nodes in the list.
 
-上面的算法确保随机层次永远不会大于MaxLevel。 在此，`p` 是具有 `i`层指针也具有 `i+1`层指针的节点的分数，`N` 是列表中节点的数量。
+上面的算法确保随机层次永远不会大于MaxLevel。 在此, `p` 是具有 `i`层指针也具有 `i+1`层指针的节点的分数, `N` 是列表中节点的数量。
 
 ### Node Structure
 
@@ -114,7 +117,7 @@ Each node carries a key and a forward array carrying pointers to nodes of a diff
 
 ### 节点数据结构
 
-每个节点都包含一个 key 和一个前向数组，其中包含指向不同层级节点的指针。 层级 `i` 的节点，具有从 0到i总共`i`个前向指针。
+每个节点都包含一个 key 和一个前向数组, 其中包含指向不同层级节点的指针。 层级 `i` 的节点, 具有从 0到i总共`i`个前向指针。
 
 ![Skip Node](02_02_Insertion-in-node.jpg)
 
@@ -122,7 +125,7 @@ Each node carries a key and a forward array carrying pointers to nodes of a diff
 
 ### Insertion in Skip List
 
-### 跳跃表的插入操作
+### 跳表的插入操作
 
 We will start from highest level in the list and compare key of next node of the current node with the key to be inserted. Basic idea is If:
 
@@ -131,12 +134,12 @@ We will start from highest level in the list and compare key of next node of the
 
 At the level 0, we will definitely find a position to insert given key. Following is the pseudo code for the insertion algorithm:
 
-首先从最高层级开始，将下一个节点的 key 与要插入的key比较。 基本思路是：
+首先从最高层级开始, 将下一个节点的 key 与要插入的key比较。 基本思路是：
 
-1. 如果下一个节点的 key 小于要插入的key， 继续在同一层级上前进。
-2. 如果下一个节点的 key 大于要插入的key， 在update[i]处保存指向当前节点i的指针， 向下移动一级并继续搜索。
+1. 如果下一个节点的 key 小于要插入的key,  继续在同一层级上前进。
+2. 如果下一个节点的 key 大于要插入的key,  在update[i]处保存指向当前节点i的指针,  向下移动一级并继续搜索。
 
-最终在第0级，肯定会找到一个合适的位置，来插入给定的key。 以下是插入算法的伪代码：
+最终在第0级, 肯定会找到一个合适的位置, 来插入给定的key。 以下是插入算法的伪代码：
 
 
 ```c++
@@ -160,7 +163,7 @@ for i := 0 to level do
 
 Here update[i] holds the pointer to node at level i from which we moved down to level i-1 and pointer of node left to insertion position at level 0. Consider this example where we want to insert key 17:
 
-在这里，`update[i]` 保存了指向第i层节点的指针，通过该指针我们可以向下移动到第`i-1`层， 最终将节点的指针保留到第0层的插入位置。 考虑以下示例，我们要插入的key=17：
+在这里, `update[i]` 保存了指向第i层节点的指针, 通过该指针我们可以向下移动到第`i-1`层,  最终将节点的指针保留到第0层的插入位置。 考虑以下示例, 我们要插入的key=17：
 
 ![Insert node](02_03_Skip-List-3-4.jpg)
 
@@ -168,7 +171,7 @@ Here update[i] holds the pointer to node at level i from which we moved down to 
 
 Following is the code for insertion of key in Skip list:
 
-下面是跳跃表插入的C++代码:
+下面是跳表插入的C++代码:
 
 ```cpp
 // C++ code for inserting element in skip list
@@ -390,12 +393,12 @@ Time complexity (Worst): `O(n)`
 
 In next article we will discuss searching and deletion in Skip List.
 
-注意： 节点的层级是随机决定的，因此输出可能会略有不同。
+注意： 节点的层级是随机决定的, 因此输出可能会略有不同。
 
 时间复杂度（平均）： `O(log n)`
 时间复杂度（最差）： `O(n)`
 
-下一节，我们将讨论“跳跃表”的查找和删除。
+下一节, 我们将讨论“跳表”的查找和删除。
 
 
 ## Skip List | Set 3 (Searching and Deletion)
@@ -405,11 +408,11 @@ we discussed the structure of skip nodes and how to insert an element in the ski
 we will discuss how to search and delete an element from skip list.
 
 
-## 三、跳跃表查找与删除操作
+## 三、跳表查找与删除操作
 
-上一节我们讨论了跳跃表节点的结构，以及如何在跳跃表中插入元素。
+上一节我们讨论了跳表节点的结构, 以及如何在跳表中插入元素。
 
-下面来看看如何从跳跃表查找与删除元素。
+下面来看看如何从跳表查找与删除元素。
 
 ### Searching an element in Skip list
 
@@ -422,15 +425,15 @@ At the lowest level (0), if the element next to the rightmost element (update[0]
 
 Following is the pseudo code for searching element:
 
-### 在跳跃表中查找元素
+### 在跳表中查找元素
 
 查找元素与插入元素的算法非常相似。 基本思想是：
 
-1. 如果下一个节点的 key 小于要查找的key， 继续在同一层级上前进。
-2. 如果下一个节点的 key 大于要查找的key， 在update[i]处保存指向当前节点i的指针， 向下移动一层并继续搜索。
+1. 如果下一个节点的 key 小于要查找的key,  继续在同一层级上前进。
+2. 如果下一个节点的 key 大于要查找的key,  在update[i]处保存指向当前节点i的指针,  向下移动一层并继续搜索。
 
 
-最终在第0级，一直往右边找，如果在某个位置找到等于搜索的key，则查找成功。否则就是找不到， 下面是伪代码:
+最终在第0级, 一直往右边找, 如果在某个位置找到等于搜索的key, 则查找成功。否则就是找不到,  下面是伪代码:
 
 ```c
 Search(list, searchKey)
@@ -455,13 +458,13 @@ Deletion of an element k is preceded by locating element in the Skip list using 
 
 After deletion of element there could be levels with no elements, so we will remove these levels as well by decrementing the level of Skip list. Following is the pseudo code for deletion:
 
-### 从跳跃表中删除元素
+### 从跳表中删除元素
 
-在删除元素k之前，使用前面介绍的搜索算法来定位元素。
-元素定位后，就像单链表操作一样，即可完成指针重排以删除元素。
-我们从最低级别开始进行重排，直到 update[i] 旁边的元素不是k。
+在删除元素k之前, 使用前面介绍的搜索算法来定位元素。
+元素定位后, 就像单链表操作一样, 即可完成指针重排以删除元素。
+我们从最低级别开始进行重排, 直到 update[i] 旁边的元素不是k。
 
-删除元素后，可能某些层会没有元素，因此需要减少“跳跃表”的层级来删除这些级别。 以下是删除的伪代码：
+删除元素后, 可能某些层会没有元素, 因此需要减少“跳表”的层级来删除这些级别。 以下是删除的伪代码：
 
 ```c
 Delete(list, searchKey)
@@ -491,9 +494,9 @@ Here at level 3, there is no element (arrow in red) after deleting element 6. So
 
 Following is the code for searching and deleting element from Skip List:
 
-可以看到，删除元素6之后，第3层一个元素都没有了（看红色箭头）。 因此，需要将跳跃表的层数减1。
+可以看到, 删除元素6之后, 第3层一个元素都没有了（看红色箭头）。 因此, 需要将跳表的层数减1。
 
-以下是用于从跳跃表中搜索和删除元素的代码：
+以下是用于从跳表中搜索和删除元素的代码：
 
 ```cpp
 // C++ code for searching and deleting element in skip list
