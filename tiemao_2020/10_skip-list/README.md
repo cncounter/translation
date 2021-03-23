@@ -16,7 +16,7 @@ Can we augment sorted linked lists to make the search faster? The answer is Skip
 
 跳表, 对应的英语词汇为 Skip List。也称为跳跃表, 跳跃链表,
 
-### 查询单链表的时间复杂度 `O(n)`
+### 1.1 查询单链表的时间复杂度 `O(n)`
 
 在排好序的单链表中进行元素查找, 最坏情况下的时间复杂度为 `O(n)`。 因为我们只能挨个遍历链表, 在查找时不能跳过任何节点。
 
@@ -42,7 +42,7 @@ Can we augment sorted linked lists to make the search faster? The answer is Skip
 
 The worst case time complexity is number of nodes on “express lane” plus number of nodes in a segment (A segment is number of “normal lane” nodes between two “express lane” nodes) of “normal lane”. So if we have n nodes on “normal lane”, `√n` (square root of n) nodes on “express lane” and we equally divide the “normal lane”, then there will be `√n` nodes in every segment of “normal lane” . `√n` is actually optimal division with two layers. With this arrangement, the number of nodes traversed for a search will be `O(√n)`. Therefore, with `O(√n)` extra space, we are able to reduce the time complexity to `O(√n)`.
 
-### 两层跳表的时间复杂度
+### 1.2 两层跳表的时间复杂度
 
 最坏情况下的时间复杂度, 是“快速通道”中走的节点数, 加上“正常通道”中一个分段的节点数。 一个分段（segment）是指“正常通道”中, 两个快速节点之间的部分。
 如果“正常通道” 有`n`个节点, “快速通道”上有`√n`（根号n）个节点, 并且均匀地分布到“正常通道”上, 那么“正常通道”上的每个分段就有`√n`个节点 ”。 `√n`实际上是两层跳表的最优除法, 通过这种划分, 搜索节点的时间复杂度为`O(√n)`。 用空间换时间, 多占用了`O(√n)`的额外存储空间, 就可以将时间复杂度降低到 `O(√n)`。
@@ -51,13 +51,13 @@ The worst case time complexity is number of nodes on “express lane” plus num
 
 The time complexity of skip lists can be reduced further by adding more layers. In fact, the time complexity of search, insert and delete can become `O(Logn)` in average case with `O(n)` extra space. We will soon be publishing more posts on Skip Lists.
 
-### 有没有更优解？
+### 1.3 有没有更优解？
 
 引入更多的层, 可以进一步降低跳表的时间复杂度。 实际上, 使用额外空间 `O(n)` 的情况下,  查找, 插入和删除节点的时间复杂度可以优化到 `O(Logn)`。
 
 ### References
 
-### 更多阅读
+### 1.4 更多阅读
 
 跳表的更多信息请参考:
 
@@ -82,7 +82,7 @@ Each element in the list is represented by a node, the level of the node is chos
 
 Level does not depend on the number of elements in the node. The level for node is decided by the following algorithm –
 
-### 确定节点级别
+### 2.1 确定节点级别
 
 链表中的每个元素都使用一个节点来表示, 节点的层级在插入时会随机选择。
 
@@ -115,7 +115,7 @@ Above algorithm assure that random level will never be greater than MaxLevel. He
 
 Each node carries a key and a forward array carrying pointers to nodes of a different level. A level i node carries i forward pointers indexed through 0 to i.
 
-### 节点的数据结构
+### 2.2 节点的数据结构
 
 每个跳表节点(Node)都包含一个 key 和一个指针数组, 数组中包含指向不同层级节点的指针。 层级 `i` 的节点, 指针数组中总共包含 [0...i), 共`i`个指针。
 
@@ -125,7 +125,7 @@ Each node carries a key and a forward array carrying pointers to nodes of a diff
 
 ### Insertion in Skip List
 
-### 插入元素
+### 2.3 插入元素
 
 We will start from highest level in the list and compare key of next node of the current node with the key to be inserted. Basic idea is If:
 
@@ -426,7 +426,7 @@ At the lowest level (0), if the element next to the rightmost element (update[0]
 
 Following is the pseudo code for searching element:
 
-### 查找元素
+### 3.1 查找元素
 
 查找元素与插入元素的算法很像。 基本思路是:
 
@@ -459,13 +459,14 @@ Deletion of an element k is preceded by locating element in the Skip list using 
 
 After deletion of element there could be levels with no elements, so we will remove these levels as well by decrementing the level of Skip list. Following is the pseudo code for deletion:
 
-### 从跳表中删除元素
+### 3.2 删除元素
 
-在删除元素k之前, 使用前面介绍的搜索算法来定位元素。
-元素定位后, 就像单链表操作一样, 即可完成指针重排以删除元素。
-我们从最低级别开始进行重排, 直到 update[i] 旁边的元素不是k。
+在删除元素k之前, 需要先定位元素, 使用前面介绍的搜索算法。
+元素定位后, 就像执行单链表的删除操作一样, 即可处理指针引用关系, 并删除元素。
+我们从最下面一层开始重排, 直到 update[i] 两边的元素不是k位置。
 
-删除元素后, 可能某些层会没有元素, 因此需要减少“跳表”的层级来删除这些级别。 以下是删除的伪代码:
+元素删除后, 可能某些层会一个元素都没有, 这时候就需要减少“跳表”的层数, 并删除这些层。
+下面是删除操作的伪代码:
 
 ```c
 Delete(list, searchKey)
@@ -495,9 +496,9 @@ Here at level 3, there is no element (arrow in red) after deleting element 6. So
 
 Following is the code for searching and deleting element from Skip List:
 
-可以看到, 删除元素6之后, 第3层一个元素都没有了（看红色箭头）。 因此, 需要将跳表的层数减1。
+可以看到, 删除key=6的元素之后, 第3层一个元素都没有了（看红色箭头）。 因此, 需要将跳表的层数减1。
 
-以下是用于从跳表中搜索和删除元素的代码:
+下面是从跳表中搜索和删除元素的代码:
 
 ```cpp
 // C++ code for searching and deleting element in skip list
@@ -821,7 +822,7 @@ Time complexity (Worst): `O(n)`
 
 ## References
 
-## 参考文档
+## 四、参考文档
 
 
 - PDF File: <ftp://ftp.cs.umd.edu/pub/skipLists/skiplists.pdf>

@@ -38,7 +38,7 @@ Star 增长曲线（URL换成你的账号和项目, 即可看项目的曲线）:
 * [07.Java坑人面试题系列: 线程/线程池（高级难度）](./tiemao_2020/07_quiz-executor-service/README.md)【已完成】
 * [08.获取JVM堆内存转储的常用方法](./tiemao_2020/08_java-heap-dump/README.md)【已完成】
 * [09.获取Java线程转储的常用方法](./tiemao_2020/09_java-thread-dump/README.md)【已完成】
-* [10.高级数据结构: 跳表（Skip List）](./tiemao_2020/10_skip-list/README.md)【粗翻】
+* [10.高级数据结构: 跳表（Skip List）](./tiemao_2020/10_skip-list/README.md)【已校对】
 * [11.JVM最重要的性能调优参数](./tiemao_2020/11_jvm-arguments-of-highly-effective/README.md)【已完成】
 - [12.1 MAVEN基础系列（一） 构建生命周期](./tiemao_2020/12_introduction-to-the-pom/introduction-to-the-lifecycle.md)【粗翻】
 - [12.2 MAVEN基础系列（二） POM文件](./tiemao_2020/12_introduction-to-the-pom/README.md)【粗翻】
