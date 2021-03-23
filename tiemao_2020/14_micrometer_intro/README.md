@@ -1,6 +1,6 @@
 # Micrometer Documentation
 
-# Spring应用监控 -- Micrometer
+# JVM性能指标监控工具 -- Micrometer
 
 Micrometer provides a simple facade over the instrumentation clients for the most popular monitoring systems, allowing you to instrument your JVM-based application code without vendor lock-in. Think SLF4J, but for application metrics! Application metrics recorded by Micrometer are intended to be used to observe, alert, and react to the current/recent operational state of your environment.
 
@@ -8,14 +8,14 @@ Micrometer provides a simple facade over the instrumentation clients for the mos
 Instructions for how to configure Micrometer for use with different monitoring systems. As a facade over multiple monitoring systems, the point of Micrometer is to allow you to instrument your code in the same way and be able to visualize the results in your monitoring system of choice.
 
 
-Micrometer 为大部分监控系统提供了一个基于客户端机器的指标系统， 像SLF4J一样简单的门面模式， 不需要关心具体的JVM版本和厂商。
-Micrometer 记录的指标主要是用于监控，告警，以及对当前的系统环境变化做出响应。
+Micrometer作为一个技术设备指标的采集客户端, 支持大部分的监控系统，提供了像SLF4J一样的简单门面模式，使用者不需要关心具体的JVM版本和厂商。
+Micrometer采集的指标主要是用于监控，告警，以及对当前系统环境的变化做出响应。
 
-Micrometer 作为指标采集的基础类库，目的是以相同的方式来配置，支持对接到不同的可视化监控系统服务。
+作为指标采集的基础类库，Micrometer以相同的方式来配置，支持对接到不同的可视化监控系统服务。
 
 
 - JMX. Micrometer provides a hierarchical mapping to JMX, primarily as a cheap and portable way to view metrics locally. Where JMX exporting is found in production, the same metrics are generally exported to another, more purpose-fit monitoring system.
-- JMX： Micrometer还会注册JMX相关的MBeans，非常简单和方便地在本地通过JMX来查看相关指标。 如果是生产环境中使用，则一般是将监控指标导出到其他监控系统中保存起来。
+- JMX:  Micrometer可以注册JMX相关的MBeans，这是一种非常简单和便捷的方式，可以通过JMX查看相关指标。 如果是生产环境中使用，则一般是将指标导出到其他监控系统中保存。
 
 
 - AppOptics. AppOptics is a dimensional time-series SAAS with built-in dashboarding. Micrometer supports shipping metrics to AppOptics directly via its API.
@@ -88,3 +88,8 @@ Micrometer 作为指标采集的基础类库，目的是以相同的方式来配
 - [StatsD](https://github.com/statsd/statsd), 开源的，简单但很强大的统计信息聚合服务器。
 
 - [Wavefront](https://www.wavefront.com/)，是基于SaaS的指标监视和分析平台，支持可视化查询，以及预警监控等功能， 包括系统性能、网络，自定义指标，业务KPI等等。
+
+
+## 相关链接
+
+- <https://micrometer.io/docs>

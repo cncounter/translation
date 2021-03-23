@@ -18,7 +18,7 @@
 - [12.1 MAVEN基础系列（一） 构建生命周期](./12_introduction-to-the-pom/introduction-to-the-lifecycle.md)【粗翻】
 - [12.2 MAVEN基础系列（二） POM文件](./12_introduction-to-the-pom/README.md)【粗翻】
 * [13.为什么问题诊断和排查这么困难](./13_why-troubleshooting-so-hard/README.md)【已完成】
-* [14.Spring应用监控 -- Micrometer](./14_micrometer_intro/README.md)【粗翻】
+* [14.JVM性能指标监控工具 -- Micrometer](./14_micrometer_intro/README.md)【已完成】
 * [15.DataDog集成MySQL的配置](./15_datadog_mysql/README.md)【已完成】
 * [16.迁移Ubuntu下MySQL的data目录](./16_mysql_data_dir/README.md)【已完成】
 * [17.Java坑人面试题系列: 变量声明（中级难度）](./17_quiz-variable-declaration/README.md)【已完成】
