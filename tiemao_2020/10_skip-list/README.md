@@ -125,7 +125,7 @@ Each node carries a key and a forward array carrying pointers to nodes of a diff
 
 ### Insertion in Skip List
 
-### 跳表元素的插入
+### 插入元素
 
 We will start from highest level in the list and compare key of next node of the current node with the key to be inserted. Basic idea is If:
 
@@ -409,11 +409,11 @@ we discussed the structure of skip nodes and how to insert an element in the ski
 we will discuss how to search and delete an element from skip list.
 
 
-## 三、跳表查找与删除操作
+## 三、查找与删除
 
-上一节我们讨论了跳表节点的结构, 以及如何在跳表中插入元素。
+上一节我们讨论了跳表节点的结构, 以及如何插入元素。
 
-下面来看看如何从跳表查找与删除元素。
+下面看看如何查找和删除元素。
 
 ### Searching an element in Skip list
 
@@ -426,17 +426,17 @@ At the lowest level (0), if the element next to the rightmost element (update[0]
 
 Following is the pseudo code for searching element:
 
-### 在跳表中查找元素
+### 查找元素
 
-查找元素与插入元素的算法非常相似。 基本思想是:
+查找元素与插入元素的算法很像。 基本思路是:
 
-1. 如果下一个节点的 key 小于要查找的key,  继续在同一层级上前进。
-2. 如果下一个节点的 key 大于要查找的key,  在update[i]处保存指向当前节点i的指针,  向下移动一层并继续搜索。
+1. 如果下一节点的 key 小于要查找的key,  则继续在同一层级前进。
+2. 如果下一节点的 key 大于要查找的key,  在update[i]处保存指向当前节点i的指针,  向下移动一层, 然后继续查找。
 
 
-最终在第0级, 一直往右边找, 如果在某个位置找到等于搜索的key, 则查找成功。否则就是找不到,  下面是伪代码:
+最终在第0级, 一直往右边找, 如果在某个位置找到等于搜索的key, 则查找成功。 否则就是找不到,  下面是伪代码:
 
-```c
+```cpp
 Search(list, searchKey)
 x := list -> header
 -- loop invariant: x -> key  level downto 0 do
