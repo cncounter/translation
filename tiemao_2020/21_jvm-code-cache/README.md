@@ -4,48 +4,48 @@
 
 In this tutorial, we're going to have a quick look at and learn about the JVM's code cache memory.
 
+# 深入JVM - Code Cache内存池
+
+## 1. 本文内容
+
+本文简要介绍JVM的 Code Cache(本地代码缓存池)。
+
 ## 2. What Is the Code Cache?
 
 Simply put, JVM Code Cache is an area where JVM stores its bytecode compiled into native code. We call each block of the executable native code a nmethod. The nmethod might be a complete or inlined Java method.
 
 The just-in-time (JIT) compiler is the biggest consumer of the code cache area. That's why some developers call this memory a JIT code cache.
 
-# 快速掌握JVM代码缓存区
+## 2. Code Cache 简要介绍
 
-## 1. 内容提要
+简单来说，JVM会将字节码编译为本地机器码，并使用 Code Cache 来保存。
+每一个可执行的本地代码块，称为一个 nmethod。
+nmethod 可能对应一个完整的Java方法，或者是内联后的方法。
 
-本文简要介绍JVM的代码缓存区（code cache memory）。
-
-## 2. 什么是Code Cache？
-
-简单来说，JVM会将字节码编译为本地机器码，并用 Code Cache 来保存。
-每一个可执行的本地机器代码块，称为一个 nmethod。
-nmethod 可能对应一个完整的Java方法，或者是方法内联后的代码。
-
-即时编译器（just-in-time，JIT）是代码缓存区最大的消耗者，有些开发者将此区域称为JIT代码缓存。
+即时编译器（just-in-time，JIT）是代码缓存区的最大消费者，所以此区域又被开发者称为 JIT code cache。
 
 ## 3. Code Cache Tuning
 
 > The code cache has a fixed size.
 
-Once it is full, the JVM won't compile any additional code as the JIT compiler is now off. Furthermore, we will receive the “CodeCache is full… The compiler has been disabled” warning message. As a result, we'll end up with degraded performance in our application. To avoid this, we can tune the code cache with the following size options:
+Once it is full, the JVM won't compile any additional code as the JIT compiler is now off. Furthermore, we will receive the "CodeCache is full… The compiler has been disabled" warning message. As a result, we'll end up with degraded performance in our application. To avoid this, we can tune the code cache with the following size options:
 
 - `InitialCodeCacheSize` – the initial code cache size, `160K` default
 - `ReservedCodeCacheSize` – the default maximum size is `48MB`
 - `CodeCacheExpansionSize` – the expansion size of the code cache, `32KB` or `64KB`
 
-## 3. Code Cache调优
+## 3. 对 Code Cache 进行调优
 
-> code cache区域的大小是固定的。
+> code cache 区域的大小是固定的。
 
-一旦此区域用满，这时候JIT编译器就会关闭, JVM就不再编译任何代码。
-此外，我们还会收到 “CodeCache is full… The compiler has been disabled” 之类的告警消息。
-JIT编译器关闭的结果，将导致系统性能急剧下降。
-为了避免这种情况，我们可以对Code Cache进行调优，例如使用以下参数：
+如果Code Cache区域用满了，就会停止JIT编译, 也就是说JVM不再编译任何代码。
+我们还会收到 "CodeCache is full… The compiler has been disabled" 之类的告警消息。
+JIT编译器关闭的结果，就是系统性能急剧下降。
+为了避免这种情况，我们需要对Code Cache进行调优，例如使用以下参数:
 
-- `InitialCodeCacheSize` – 初始大小, 默认值为 `160K`
-- `ReservedCodeCacheSize` – 默认的最大空间： `48MB`
-- `CodeCacheExpansionSize` – 每次扩充的空间, `32KB` 或者 `64KB`
+- `InitialCodeCacheSize` – 初始大小, 默认值为 `160KB`
+- `ReservedCodeCacheSize` – 保留给Code Cache的空间, 也就是最大空间, 默认值:  `48MB`
+- `CodeCacheExpansionSize` – 每次扩充的大小, 一般为 `32KB` 或者 `64KB`
 
 
 Increasing the ReservedCodeCacheSize can be a solution, but this is typically only a temporary workaround.
@@ -56,14 +56,17 @@ Fortunately, the JVM offers a UseCodeCacheFlushing option to control the flushin
 - the certain interval is passed since the last cleanup
 - the precompiled code isn't hot enough. For each compiled method the JVM keeps track of a special hotness counter. If the value of this counter is less than a computed threshold, the JVM frees this piece of precompiled code
 
-增加 `ReservedCodeCacheSize` 是一种解决方案，但很多时候这只是临时解决办法。
+合理地增加 `ReservedCodeCacheSize` 是一种解决办法， 毕竟现在很多应用加上依赖库的代码量一点都不少。
+但我们也不能无限制地增大这个区域的大小。
 
-幸运的是，JVM 提供了 `UseCodeCacheFlushing` 选项来控制代码缓存区的刷新。 其默认值为 `false`。
-如果将其开启，则会在满足以下条件时释放占用的区域：
+幸运的是，JVM提供了一个启动参数 `UseCodeCacheFlushing`, 用来控制Code Cache的刷新。 这个参数的默认值为 `false`。
+如果将其开启(`-XX:+UseCodeCacheFlushing`)，则会在满足以下条件时释放占用的区域:
 
-- 代码缓存已满； 如果该区域的大小超过某个阈值，则将其刷新。
-- 自上次清理以来过去一定的时间间隔。
-- 预编译的代码不够热。 对于每个被编译的方法，JVM都会有一个特殊的热度跟踪计数器。 如果计数器的值小于动态计算的阈值，则JVM会释放此段预编译的代码。
+- code cache用满； 如果该区域的大小超过某个阈值，则会刷新。
+- 自上次清理后经过了一定的时间间隔。
+- 预编译的代码不够热。 对于每个JIT编译的方法，JVM都会有一个热度跟踪计数器。 如果计数器的值小于动态阈值，则JVM会释放这段预编译的代码。
+
+> 提示: 除非Code Cache不够用了,否则不要乱开;
 
 ## 4. Code Cache Usage
 
@@ -71,12 +74,12 @@ In order to monitor the code cache usage, we need to track the size of the memor
 
 To get information on code cache usage, we can specify the –XX:+PrintCodeCache JVM option. After running our application, we'll see a similar output:
 
-## 4.代码缓存的占用情况
+## 4. 查看Code Cache的使用情况
 
-为了监控代码缓存的使用情况，我们需要跟踪当前使用的内存大小。
+想要监控代码缓存的使用情况，我们可以跟踪当前使用的内存大小。
 
-要获取代码缓存使用情况有关的信息，我们可以指定JVM启动参数: `–XX:+PrintCodeCache`。
-在应用程序启动之后，我们将看到类似的输出：
+指定JVM启动参数: `–XX:+PrintCodeCache`, 会打印Code Cache区的使用情况。
+程序执行过程中, 我们可以看到类似下面的输出:
 
 ```
 CodeCache: size=32768Kb used=542Kb max_used=542Kb free=32226Kb
@@ -94,17 +97,17 @@ The PrintCodeCache option is very useful, as we can:
 - see when the flushing happens
 - determine if we reached a critical memory usage point
 
-一起来分析下这些值的含义：
+一起来分析下各个部分数值的含义:
 
-- 输出内容中的 `size` 表示此内存区域的最大值，与 `ReservedCodeCacheSize` 相等。
-- `used` 是当前使用内存的实际大小。
-- `max_used` 是历史使用的最大值
-- `free` 是此区域尚未使用的内存空间
+- `size` 表示此内存区域的最大值，与 `ReservedCodeCacheSize` 相等。
+- `used` 是此区域当前实际使用的内存大小。
+- `max_used` 是程序启动以来的历史最大使用量
+- `free` 是此区域尚未使用的空闲空间
 
-`PrintCodeCache` 选项非常有用，因为我们可以：
+`PrintCodeCache` 选项非常有用，可以帮助我们:
 
-- 查看何时进行刷新
-- 确定我们是否达到了关键的内存使用点
+- 查看何时进行了刷新(flushing)
+- 确定内存使用量是否达到关键点位
 
 ## 5. Segmented Code Cache
 
@@ -118,18 +121,18 @@ This new structure treats various types of complied code differently, which lead
 
 For example, separating short-lived compiled code from long-lived code improves the method sweeper performance — mainly because it needs to scan a smaller region of memory.
 
-## 5. 代码缓存分段
+## 5. Code Cache分段
 
-从Java 9开始，JVM将代码缓存分为三个不同的分段，每个段包含一种类型的已编译代码。
-具体地说，分为三个部分：
+从Java 9开始，JVM将 Code Cache 细分为三个不同的段，每个段包含一种类型的编译代码。
+具体是:
 
-- 非方法段(non-method segment), 包含JVM内部相关的代码，例如字节码解释器。 默认情况下，此段约为 `5 MB`。 可通过 `-XX:NonNMethodCodeHeapSize` 参数进行调整。
-- 待分析代码段(profiled-code segment), 包含经过简单优化的代码，使用寿命很短。 此段的大小默认为 `122 MB`，我们也可以通过 `-XX:ProfiledCodeHeapSize` 参数进行调整。
-- 静态代码段(non-profiled segment), 包含经过全面优化的代码，使用寿命可能很长。 同样，默认情况下大小为 `122 MB`。 可以通过`-XX:NonProfiledCodeHeapSize` 参数进行调整。
+- 非方法段(non-method segment), 保存相关的JVM内部代码，例如字节码解释器。 默认情况下，此段约为 `5 MB`。 可通过 `-XX:NonNMethodCodeHeapSize` 参数进行调整。
+- 待分析代码段(profiled-code segment), 包含经过简单优化的代码，使用寿命很短。 此段的大小默认为 `122 MB`，可以通过 `-XX:ProfiledCodeHeapSize` 参数进行调整。
+- 静态代码段(non-profiled segment), 保存经过全面优化的本地代码，使用寿命可能很长。 默认大小同样是 `122 MB`。 可以通过`-XX:NonProfiledCodeHeapSize` 参数进行调整。
 
-这种新的分段结构，以不同方式对待各种类型的已编译代码，从而整体上具备更好的性能。
+这种新的分段结构，以不同方式处理各种类型的编译代码，整体上具有更好的性能。
 
-例如，将短命的已编译代码与长寿的代码分开，可以提高方法清除器的性能 - 因为需要扫描的内存区域很小。
+例如，将已编译的短命代码和长寿代码分开，提高方法清除器的性能 - 毕竟需要扫描的内存区域变小了。
 
 ## 6. Conclusion
 
@@ -139,8 +142,8 @@ Additionally, we presented some usage and tune-up options to monitor and diagnos
 
 ## 6. 小结
 
-本文简要介绍了 JVM Code Cache。
+本文简要介绍了JVM的Code Cache内存区域。
 
-还提供了一些监视和诊断此内存区域使用率的方法，以及优化选项。
+也介绍了一些监视和诊断此内存区使用情况的方法，以及相关的优化和配置选项。
 
-- https://www.baeldung.com/jvm-code-cache
+- 原文链接: <https://www.baeldung.com/jvm-code-cache>
