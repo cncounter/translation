@@ -9,7 +9,7 @@
 - [14.1 Introduction to InnoDB](14.1_innodb-introduction.md)【粗翻】
 - [14.2 InnoDB和ACID模型](14.2_mysql-acid.md)【粗翻】
 - [14.3 InnoDB与MVCC](14.3_innodb-multi-versioning.md)【粗翻】
-- [14.4 InnoDB存储结构](14.4_innodb-architecture.md)【已校对】
+- [14.4 InnoDB整体架构](14.4_innodb-architecture.md)【已校对】
 - [14.5 InnoDB In-Memory Structures](14.5_innodb-in-memory-structures.md)
 - [14.6 InnoDB On-Disk Structures](14.6_innodb-on-disk-structures.md)
 - [14.7 InnoDB的锁和事务模型](14.7_innodb-locking-transaction-model.md)【校对完成】
