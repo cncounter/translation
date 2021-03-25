@@ -775,7 +775,7 @@ WRITE_ONCE(P, &B);
 
 Therefore, no data-dependency barrier is required to order the read into Q with the store into *Q.  In other words, this outcome is prohibited, even without a data-dependency barrier:
 
-因此，不需要数据依赖屏障, 就可以保证先将数据读入`Q`, 然后再写入 `*Q` 的顺序。 换句话说，即使没有数据依赖屏障，也不会产生下面这种结果：
+因此, 不需要数据依赖屏障, 就可以保证先将数据读入`Q`, 然后再写入 `*Q` 的顺序。 换句话说, 即使没有数据依赖屏障, 也不会产生下面这种结果:
 
 ```c
 (Q == &B) && (B == 4)
@@ -792,14 +792,14 @@ The data dependency barrier is very important to the RCU system, for example.  S
 See also the subsection on "Cache Coherency" for a more thorough example.
 
 
-请注意，这种模式应该很少见。 毕竟，依存关系排序的全部要点是防止对数据结构的写入，以及与这些写入相关的高速缓存未命中。 此模式可用于记录罕见的错误情况等，并且CPU的自然排序也能防止此类记录丢失。
+请注意, 这种模式应该很少见。 毕竟, 依存关系排序的全部要点是防止对数据结构的写入, 以及与这些写入相关的高速缓存未命中。 此模式可用于记录罕见的错误情况等, 并且CPU的自然排序也能防止此类记录丢失。
 
-请注意，数据依赖项提供的顺序是包含它的CPU的局部顺序。 有关更多信息，请参见 "Multicopy atomicity" 章节。
+请注意, 数据依赖项提供的顺序是包含它的CPU的局部顺序。 有关更多信息, 请参见 "Multicopy atomicity" 章节。
 
 
-例如，数据依赖屏障对于 RCU 系统非常重要。 请参阅 `include/linux/rcupdate.h` 中的 `rcu_assign_pointer()` 和 `rcu_dereference()`。 这允许将RCU指针的当前目标替换为新的修改后的目标，而替换目标并不会出现未完全初始化。
+例如, 数据依赖屏障对于 RCU 系统非常重要。 请参阅 `include/linux/rcupdate.h` 中的 `rcu_assign_pointer()` 和 `rcu_dereference()`。 这允许将RCU指针的当前目标替换为新的修改后的目标, 而替换目标并不会出现未完全初始化。
 
-另请参阅 "Cache Coherency" 小节，以获取更完整的示例。
+另请参阅 "Cache Coherency" 小节, 以获取更完整的示例。
 
 
 CONTROL DEPENDENCIES
@@ -812,10 +812,10 @@ A load-load control dependency requires a full read memory barrier, not simply a
 <a name="CONTROL_DEPENDENCIES"></a>
 ### 2.4 控制依赖
 
-控制依赖有一点棘手，因为现在的编译器还无法理解。 本节的目的是帮助读者了解, 怎样防止由于编译器的无知而破坏代码。
+控制依赖有一点棘手, 因为现在的编译器还无法理解。 本节的目的是帮助读者了解, 怎样防止由于编译器的无知而破坏代码。
 
-load-load 控制依赖关系要正常维持, 需要使用完整的读屏障(full read memory barrier)，而不是简单的数据依赖屏障。
-请看以下代码：
+load-load 控制依赖关系要正常维持, 需要使用完整的读屏障(full read memory barrier), 而不是简单的数据依赖屏障。
+请看以下代码:
 
 ```c
 q = READ_ONCE(a);
@@ -827,9 +827,9 @@ if (q) {
 
 This will not have the desired effect because there is no actual data dependency, but rather a control dependency that the CPU may short-circuit by attempting to predict the outcome in advance, so that other CPUs see the load from b as having happened before the load from a.  In such a case what's actually required is:
 
-由于没有实际的数据依赖关系，因此不会产生预期的效果，这里实际上是一种控制依赖关系，CPU可能会尝试通过分支预测的结果而造成短路，这样的话使其他CPU可能会先看到b的load结果, 然后再看到a的load结果。
+由于没有实际的数据依赖关系, 因此不会产生预期的效果, 这里实际上是一种控制依赖关系, CPU可能会尝试通过分支预测的结果而造成短路, 这样的话使其他CPU可能会先看到b的load结果, 然后再看到a的load结果。
 
-在这种情况下，实际需要的是读屏障：
+在这种情况下, 实际需要的是读屏障:
 
 ```c
 q = READ_ONCE(a);
@@ -841,7 +841,7 @@ if (q) {
 
 However, stores are not speculated.  This means that ordering -is- provided for load-store control dependencies, as in the following example:
 
-但是，store 是不存在猜测的。 这意味着 load-store 控制依赖的执行顺序会得到保证，如以下示例所示：
+但是, store 是不存在预判的。 这意味着 load-store 控制依赖的执行顺序会得到保证, 如以下示例所示:
 
 ```c
 q = READ_ONCE(a);
@@ -851,31 +851,28 @@ if (q) {
 ```
 
 
-
-#########################################################
-############# 到此处
-#########################################################
-
 Control dependencies pair normally with other types of barriers. That said, please note that neither `READ_ONCE()` nor `WRITE_ONCE()` are optional! Without the READ_ONCE(), the compiler might combine the load from 'a' with other loads from 'a'.  Without the WRITE_ONCE(), the compiler might combine the store to 'b' with other stores to 'b'. Either can result in highly counterintuitive effects on ordering.
 
 Worse yet, if the compiler is able to prove (say) that the value of variable 'a' is always non-zero, it would be well within its rights to optimize the original example by eliminating the "if" statement as follows:
 
-控制依赖通常与其他类型屏障配对使用。 也就是说，请注意，`READ_ONCE()` 和 `WRITE_ONCE() 都是不可省略的！ 如果没有`READ_ONCE()`，则编译器可能会将“ a”的负载与“ a”的其他负载组合在一起。 如果没有 `WRITE_ONCE()`，编译器可能会将存储区合并为“ b”，而将其他存储区合并为“ b”。 两者都会对订购产生高度违反直觉的影响。
+控制依赖通常与其他屏障配对使用。 也就是说, `READ_ONCE()` 和 `WRITE_ONCE() 都是不可省略的！ 如果没有`READ_ONCE()`, 则编译器可能会将 'a' 的load 与 'a' 的其他load组合在一起。 如果没有 `WRITE_ONCE()`, 编译器可能会将 'b' 的 store 与'b'的其他 store 合并。 这两种情况都会造成违反预期顺序的影响。
 
-更糟糕的是，如果编译器能够证明（说）变量'a'的值始终为非零，那么通过消除如下所示的“ if”语句来优化原始示例将是其应有的权利：
+更糟糕的是, 如果能够证明变量'a'的值始终为非零, 那么按照约定, 编译器就可以通过消除 "if" 语句来进行优化, 然后就像下面这样:
 
 ```c
 q = a;
-b = 1;  /* BUG: Compiler and CPU can both reorder!!! */
-```c
+b = 1;  /* BUG: 编译器和CPU都可能会重排序!!! */
+```
 
-So don't leave out the READ_ONCE().
+So don't leave out the `READ_ONCE()`.
 
 It is tempting to try to enforce ordering on identical stores on both branches of the "if" statement as follows:
 
-因此，请不要忽略READ_ONCE（）。
+因此, 请不要忽略 `READ_ONCE()`。
 
-试图在“ if”语句的两个分支上的相同商店上强制执行排序是很诱人的，如下所示：
+编译器试图在 "if" 语句的两个分支上的相同 store 上强制执行排队。
+
+比如有下面的代码:
 
 ```c
 q = READ_ONCE(a);
@@ -892,7 +889,7 @@ if (q) {
 
 Unfortunately, current compilers will transform this as follows at high optimization levels:
 
-不幸的是，当前的编译器将在高优化级别上对此进行如下转换：
+不幸的是, 现在的编译器将在高优化级别上对此进行如下转换:
 
 ```c
 q = READ_ONCE(a);
@@ -907,9 +904,14 @@ if (q) {
 }
 ```
 
+
+#########################################################
+############# 到此处
+#########################################################
+
 Now there is no conditional between the load from 'a' and the store to 'b', which means that the CPU is within its rights to reorder them: The conditional is absolutely required, and must be present in the assembly code even after all compiler optimizations have been applied. Therefore, if you need ordering in this example, you need explicit memory barriers, for example, smp_store_release():
 
-现在，从'a'和存储到'b'的加载之间没有条件，这意味着CPU有权对其进行重新排序：绝对需要该条件，并且即使在毕竟汇编代码中也必须存在该条件 编译器优化已得到应用。 因此，如果在此示例中需要排序，则需要显式的内存屏障，例如smp_store_release（）：
+现在, 从'a'和存储到'b'的加载之间没有条件, 这意味着CPU有权对其进行重新排序: 绝对需要该条件, 并且即使在毕竟汇编代码中也必须存在该条件 编译器优化已得到应用。 因此, 如果在此示例中需要排序, 则需要显式的内存屏障, 例如smp_store_release（）:
 
 ```c
 q = READ_ONCE(a);
@@ -924,7 +926,7 @@ if (q) {
 
 In contrast, without explicit memory barriers, two-legged-if control ordering is guaranteed only when the stores differ, for example:
 
-相反，如果没有显式的内存屏障，则只有在存储区不同时才能保证两足的控制顺序，例如：
+相反, 如果没有显式的内存屏障, 则只有在存储区不同时才能保证两足的控制顺序, 例如:
 
 ```c
 q = READ_ONCE(a);
@@ -943,7 +945,7 @@ In addition, you need to be careful what you do with the local variable 'q', oth
 
 仍然需要初始READ_ONCE（）来防止编译器证明'a'的值。
 
-另外，您需要注意对局部变量“ q”的处理方式，否则编译器可能会猜测该值并再次删除所需的条件。 例如：
+另外, 您需要注意对局部变量“ q”的处理方式, 否则编译器可能会猜测该值并再次删除所需的条件。 例如:
 
 ```c
 q = READ_ONCE(a);
@@ -958,17 +960,17 @@ if (q % MAX) {
 
 If MAX is defined to be 1, then the compiler knows that (q % MAX) is equal to zero, in which case the compiler is within its rights to transform the above code into the following:
 
-如果将MAX定义为1，则编译器知道（q％MAX）等于零，在这种情况下，编译器有权利将上述代码转换为以下代码：
+如果将MAX定义为1, 则编译器知道（q％MAX）等于零, 在这种情况下, 编译器有权利将上述代码转换为以下代码:
 
 ```c
 q = READ_ONCE(a);
 WRITE_ONCE(b, 2);
 do_something_else();
-```c
+```
 
 Given this transformation, the CPU is not required to respect the ordering between the load from variable 'a' and the store to variable 'b'.  It is tempting to add a barrier(), but this does not help.  The conditional is gone, and the barrier won't bring it back.  Therefore, if you are relying on this ordering, you should make sure that MAX is greater than one, perhaps as follows:
 
-通过这种转换，不需要CPU遵守从变量“ a”到存储区到变量“ b”之间的加载顺序。 尝试添加barrier（）很诱人，但这无济于事。 有条件的已经消失，屏障也不会把它带回来。 因此，如果您依赖此顺序，则应确保MAX大于1，也许如下所示：
+通过这种转换, 不需要CPU遵守从变量“ a”到存储区到变量“ b”之间的加载顺序。 尝试添加barrier（）很诱人, 但这无济于事。 有条件的已经消失, 屏障也不会把它带回来。 因此, 如果您依赖此顺序, 则应确保MAX大于1, 也许如下所示:
 
 ```c
 q = READ_ONCE(a);
@@ -986,9 +988,9 @@ Please note once again that the stores to 'b' differ.  If they were identical, a
 
 You must also be careful not to rely too much on boolean short-circuit evaluation.  Consider this example:
 
-请再次注意，“ b”存储区有所不同。 如前所述，如果它们相同，则编译器可以将此存储拉到'if'语句之外。
+请再次注意, “ b”存储区有所不同。 如前所述, 如果它们相同, 则编译器可以将此存储拉到'if'语句之外。
 
-您还必须注意不要过多地依赖布尔短路评估。 考虑以下示例：
+您还必须注意不要过多地依赖布尔短路评估。 考虑以下示例:
 
 ```c
 q = READ_ONCE(a);
@@ -998,7 +1000,7 @@ if (q || 1 > 0)
 
 Because the first condition cannot fault and the second condition is always true, the compiler can transform this example as following, defeating control dependency:
 
-因为第一个条件不能出错，而第二个条件始终为真，所以编译器可以按如下所示变换此示例，从而消除了对控件的依赖：
+因为第一个条件不能出错, 而第二个条件始终为真, 所以编译器可以按如下所示变换此示例, 从而消除了对控件的依赖:
 
 ```c
 q = READ_ONCE(a);
@@ -1009,9 +1011,9 @@ This example underscores the need to ensure that the compiler cannot out-guess y
 
 In addition, control dependencies apply only to the then-clause and else-clause of the if-statement in question.  In particular, it does not necessarily apply to code following the if-statement:
 
-此示例强调了确保编译器不会猜测您的代码的需要。 更一般而言，尽管READ_ONCE（）确实会强制编译器针对给定的负载实际发出代码，但不会强制编译器使用结果。
+此示例强调了确保编译器不会猜测您的代码的需要。 更一般而言, 尽管READ_ONCE（）确实会强制编译器针对给定的负载实际发出代码, 但不会强制编译器使用结果。
 
-此外，控制依赖项仅适用于所讨论的if语句的子句和其他子句。 特别是，它不一定适用于if语句之后的代码：
+此外, 控制依赖项仅适用于所讨论的if语句的子句和其他子句。 特别是, 它不一定适用于if语句之后的代码:
 
 ```c
 q = READ_ONCE(a);
@@ -1025,7 +1027,7 @@ WRITE_ONCE(c, 1);  /* BUG: No ordering against the read from 'a'. */
 
 It is tempting to argue that there in fact is ordering because the compiler cannot reorder volatile accesses and also cannot reorder the writes to 'b' with the condition.  Unfortunately for this line of reasoning, the compiler might compile the two writes to 'b' as conditional-move instructions, as in this fanciful pseudo-assembly language:
 
-很有说服力的是，实际上是有序的，因为编译器无法对易失性访问进行重新排序，也无法根据条件对“ b”的写操作进行重新排序。 不幸的是，出于这种推理，编译器可能会将这两个对b的写操作作为条件移动指令进行编译，例如在这种奇妙的伪汇编语言中：
+很有说服力的是, 实际上是有序的, 因为编译器无法对易失性访问进行重新排序, 也无法根据条件对“ b”的写操作进行重新排序。 不幸的是, 出于这种推理, 编译器可能会将这两个对b的写操作作为条件移动指令进行编译, 例如在这种奇妙的伪汇编语言中:
 
 ```c
 ld r1,a
@@ -1042,10 +1044,10 @@ A weakly ordered CPU would have no dependency of any sort between the load from 
 Note well that the ordering provided by a control dependency is local to the CPU containing it.  See the section on "Multicopy atomicity" for more information.
 
 
-顺序较弱的CPU在从“ a”到存储到“ c”的负载之间将没有任何依赖关系。 控制依赖项将仅扩展到这对cmov指令和取决于它们的存储。 简而言之，控制依赖项仅适用于所讨论的if语句的then子句和else子句中的存储（包括由这两个子句调用的函数），而不适用于该if语句之后的代码。
+顺序较弱的CPU在从“ a”到存储到“ c”的负载之间将没有任何依赖关系。 控制依赖项将仅扩展到这对cmov指令和取决于它们的存储。 简而言之, 控制依赖项仅适用于所讨论的if语句的then子句和else子句中的存储（包括由这两个子句调用的函数）, 而不适用于该if语句之后的代码。
 
 
-请注意，控件依赖项提供的排序是包含它的CPU本地的。 有关更多信息，请参见“多份原子性”部分。
+请注意, 控件依赖项提供的排序是包含它的CPU本地的。 有关更多信息, 请参见“多份原子性”部分。
 
 
 In summary:
@@ -1059,16 +1061,16 @@ In summary:
 - (*) Control dependencies do -not- provide multicopy atomicity.  If you  need all the CPUs to see a given store at the same time, use smp_mb().
 - (*) Compilers do not understand control dependencies.  It is therefore  your job to ensure that they do not break your code.
 
-总结一下：
+总结一下:
 
-- (*) 控件依赖项可以针对以后的存储命令先前的加载。但是，它们不能保证任何其他排序方式：不能将先前的装载与以后的装载相对，也不能将先前的存储在以后的任何装载中。如果需要这些其他形式的订购，请使用smp_rmb（），smp_wmb（），或者，对于以前的商店和以后的加载，请使用smp_mb（）。
-- (*) 如果“ if”语句的两条腿都从相同的存储开始到相同的变量，则必须对这些存储进行排序，方法是在两个存储之前都加上smp_mb（）或使用smp_store_release（）来执行存储。请注意，在“ if”语句的每一行的开始处仅使用barrier（）是不够的，因为如上例所示，优化编译器可能会破坏控件的依赖关系，同时注意barrier（）的字母。法律。
-- (*) 控制依赖项要求在先前加载和后续存储之间至少有一个运行时条件，并且该条件必须涉及先前加载。如果编译器能够优化条件分离，那么它也将优化分离顺序。仔细使用READ_ONCE（）和WRITE_ONCE（）可以帮助保留所需的条件。
-- (*) 控制依赖项要求编译器避免将依赖项重新排序为不存在。仔细使用READ_ONCE（）或atomic {，64} _read（）可以有助于保留控件的依赖性。请参阅“编译器屏障”部分以获取更多信息。
-- (*) 控制依赖项仅适用于包含控制依赖项的if语句的从句和else子句，包括这两个子句调用的任何函数。控件依赖项不适用于包含控件依赖项的if语句之后的代码。
+- (*) 控件依赖项可以针对以后的存储命令先前的加载。但是, 它们不能保证任何其他排序方式: 不能将先前的装载与以后的装载相对, 也不能将先前的存储在以后的任何装载中。如果需要这些其他形式的订购, 请使用smp_rmb（）, smp_wmb（）, 或者, 对于以前的商店和以后的加载, 请使用smp_mb（）。
+- (*) 如果“ if”语句的两条腿都从相同的存储开始到相同的变量, 则必须对这些存储进行排序, 方法是在两个存储之前都加上smp_mb（）或使用smp_store_release（）来执行存储。请注意, 在“ if”语句的每一行的开始处仅使用barrier（）是不够的, 因为如上例所示, 优化编译器可能会破坏控件的依赖关系, 同时注意barrier（）的字母。法律。
+- (*) 控制依赖项要求在先前加载和后续存储之间至少有一个运行时条件, 并且该条件必须涉及先前加载。如果编译器能够优化条件分离, 那么它也将优化分离顺序。仔细使用READ_ONCE（）和WRITE_ONCE（）可以帮助保留所需的条件。
+- (*) 控制依赖项要求编译器避免将依赖项重新排序为不存在。仔细使用READ_ONCE（）或atomic {, 64} _read（）可以有助于保留控件的依赖性。请参阅“编译器屏障”部分以获取更多信息。
+- (*) 控制依赖项仅适用于包含控制依赖项的if语句的从句和else子句, 包括这两个子句调用的任何函数。控件依赖项不适用于包含控件依赖项的if语句之后的代码。
 - (*) 控制依赖项通常与其他类型的屏障配对。
-- (*) 控件依赖项不提供多副本原子性。如果需要所有CPU同时查看给定存储，请使用smp_mb（）。
-- (*) 编译器不了解控件依赖性。因此，确保它们不会破坏您的代码是您的工作。
+- (*) 控件依赖项不提供多副本原子性。如果需要所有CPU同时查看给定存储, 请使用smp_mb（）。
+- (*) 编译器不了解控件依赖性。因此, 确保它们不会破坏您的代码是您的工作。
 
 
 <a name="SMP_BARRIER_PAIRING"></a>
