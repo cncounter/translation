@@ -34,7 +34,7 @@
 * [27.vim与vi跳到行尾的技巧](./27_vi-vim-editor-end-of-line/README.md)
 * [28.深入剖析JVM实现细节(系列)](./28_anatomy-quarks/README.md)【系列文章】
 * [29.通过线程调度延迟来探测CPU性能抖动](./29_sleep_test/README.md)【已完成】
-* [30.MySQL的帐号命名规范](./30_mysql_account_username/README.md)【已完成】
+* [30.MySQL用户命名规范](./30_mysql_account_username/README.md)【已完成】
 * [31.DROP USER语句删除MySQL用户账号](./31_mysql_account_drop_user/README.md)【粗翻】
 * [32.Spring Boot 实战教程](./32_spring-boot-tutorials/README.md)
 * [33.数据结构与集合](./33_collection_intro/README.md)

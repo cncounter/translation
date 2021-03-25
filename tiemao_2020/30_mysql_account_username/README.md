@@ -1,4 +1,4 @@
-# MySQL的帐号命名规范
+# MySQL用户命名规范
 
 
 MySQL account names consist of a user name and a host name, which enables creation of distinct accounts for users with the same user name who can connect from different hosts. This section describes how to write account names, including special values and wildcard rules.
