@@ -60,7 +60,7 @@ Star 增长曲线（URL换成你的账号和项目, 即可看项目的曲线）:
 * [28.深入剖析JVM实现细节(系列)](./tiemao_2020/28_anatomy-quarks/README.md)【系列文章】
 * [29.通过线程调度延迟来探测CPU性能抖动](./tiemao_2020/29_sleep_test/README.md)【已完成】
 * [30.MySQL用户命名规范](./tiemao_2020/30_mysql_account_username/README.md)【已完成】
-* [31.DROP USER语句删除MySQL用户账号](./tiemao_2020/31_mysql_account_drop_user/README.md)【粗翻】
+* [31.删除MySQL用户帐号 - DROP USER语句简介](./tiemao_2020/31_mysql_account_drop_user/README.md)【已完成】
 * [32.Spring Boot 实战教程](./tiemao_2020/32_spring-boot-tutorials/README.md)
 * [33.数据结构与集合](./tiemao_2020/33_collection_intro/README.md)
 * [34.Word创建目录与导出技巧](./tiemao_2020/34_word_skill/README.md)【已完成】
