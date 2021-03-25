@@ -839,12 +839,6 @@ if (q) {
 }
 ```
 
-
-
-#########################################################
-############# 到此处
-#########################################################
-
 However, stores are not speculated.  This means that ordering -is- provided for load-store control dependencies, as in the following example:
 
 但是，store 是不存在猜测的。 这意味着 load-store 控制依赖的执行顺序会得到保证，如以下示例所示：
@@ -856,11 +850,17 @@ if (q) {
 }
 ```
 
+
+
+#########################################################
+############# 到此处
+#########################################################
+
 Control dependencies pair normally with other types of barriers. That said, please note that neither `READ_ONCE()` nor `WRITE_ONCE()` are optional! Without the READ_ONCE(), the compiler might combine the load from 'a' with other loads from 'a'.  Without the WRITE_ONCE(), the compiler might combine the store to 'b' with other stores to 'b'. Either can result in highly counterintuitive effects on ordering.
 
 Worse yet, if the compiler is able to prove (say) that the value of variable 'a' is always non-zero, it would be well within its rights to optimize the original example by eliminating the "if" statement as follows:
 
-控制依赖项通常与其他类型屏障配对使用。 也就是说，请注意，`READ_ONCE()` 和 `WRITE_ONCE() 都不可选的！ 如果没有READ_ONCE（），则编译器可能会将“ a”的负载与“ a”的其他负载组合在一起。 如果没有WRITE_ONCE（），编译器可能会将存储区合并为“ b”，而将其他存储区合并为“ b”。 两者都会对订购产生高度违反直觉的影响。
+控制依赖通常与其他类型屏障配对使用。 也就是说，请注意，`READ_ONCE()` 和 `WRITE_ONCE() 都是不可省略的！ 如果没有`READ_ONCE()`，则编译器可能会将“ a”的负载与“ a”的其他负载组合在一起。 如果没有 `WRITE_ONCE()`，编译器可能会将存储区合并为“ b”，而将其他存储区合并为“ b”。 两者都会对订购产生高度违反直觉的影响。
 
 更糟糕的是，如果编译器能够证明（说）变量'a'的值始终为非零，那么通过消除如下所示的“ if”语句来优化原始示例将是其应有的权利：
 
