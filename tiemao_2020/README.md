@@ -48,7 +48,7 @@
 * [41.深入JVM - 实例详解invoke相关操作码](./41_invoke_opcode/README.md)【已完成】
 * [42.案例讲解JVM方法体字节码](./42_method_byte_code/README.md)
 * [43.Java多线程与并发面试题](./43_java_thread_conc_interview/README.md)【已完成】
-* [44.InnoDB存储引擎官方文档中文翻译](./44_innodb-storage-engine/README.md)【系列文章】
+* [44.深入系列: InnoDB存储引擎](./44_innodb-storage-engine/README.md)【系列文章】
 * [44.7 InnoDB的锁和事务模型](./44_innodb-storage-engine/14.7_innodb-locking-transaction-model_CN.md)【已完成】
 * [45.Java正则表达式入门与实战](./45_java_and_regex/README.md)
 * [46.Linux内核文档: 内存屏障](./46_Linux_Kernel_Memory_Barriers/README.md)

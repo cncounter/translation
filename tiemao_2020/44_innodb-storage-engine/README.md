@@ -1,6 +1,6 @@
 # The InnoDB Storage Engine
 
-# InnoDB存储引擎官方文档中文翻译
+# 深入系列: InnoDB存储引擎
 
 ##### Table of Contents
 
