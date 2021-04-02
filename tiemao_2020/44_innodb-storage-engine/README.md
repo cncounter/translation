@@ -28,7 +28,7 @@
 - [14.20 InnoDB and MySQL Replication]()
 - [14.21 InnoDB memcached Plugin]()
 - [14.22 InnoDB Troubleshooting]()
-- [14.23 InnoDB Limits](14.23_innodb-limits.md)
+- [14.23 InnoDB的一些极限值](14.23_innodb-limits.md)【机翻】
 - [14.24 InnoDB Restrictions and Limitations]()
 
 ##### 相关链接
