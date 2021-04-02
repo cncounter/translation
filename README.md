@@ -7,14 +7,6 @@ CNCounter translation
 
 GitHub地址: <https://github.com/cncounter/translation>
 
-GITHUB官方帮助文档(中文版): <https://docs.github.com/cn/free-pro-team@latest/github>
-
-
-Star 增长曲线（URL换成你的账号和项目, 即可看项目的曲线）: <https://starchart.cc/cncounter/translation>
-
-
-[![Stargazers over time](https://starchart.cc/cncounter/translation.svg)](https://starchart.cc/cncounter/translation)
-
 
 # 目录 #
 
@@ -298,9 +290,23 @@ Star 增长曲线（URL换成你的账号和项目, 即可看项目的曲线）:
 
 ### 2014年
 
+<details>
+<summary>点击展开书三生2014年目录</summary>
+
 1. **[排斥所有液体的新型超疏水纳米材料](shusansheng/shusansheng_2014/superomniphobic/superomniphobic.md)**
 1. **[20纳米DDR4内存 —— 单条最大128GB](shusansheng/shusansheng_2014/Samsung20nmDDR4/Samsung20nmDDR4.md)**
 1. **[国际空间站即将开通当天送货服务](shusansheng/shusansheng_2014/SpaceStation/SpaceStation.md)**
 1. **[30米口径天文望远镜在夏威夷动工 —— 预算14亿美元](shusansheng/shusansheng_2014/telescope/telescope.md)**
 1. **[最小的矮星系中发现超级大黑洞](shusansheng/shusansheng_2014/blackhole/blackhole.md)**
 1. **[超级转基因香蕉研制成功](shusansheng/shusansheng_2014/superbanana/superbanana.md)**
+
+</details>
+
+
+GITHUB官方帮助文档(中文版): <https://docs.github.com/cn/free-pro-team@latest/github>
+
+
+Star 增长曲线（URL换成你的账号和项目, 即可看项目的曲线）: <https://starchart.cc/cncounter/translation>
+
+
+[![Stargazers over time](https://starchart.cc/cncounter/translation.svg)](https://starchart.cc/cncounter/translation)
