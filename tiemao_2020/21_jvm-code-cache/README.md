@@ -30,9 +30,9 @@ nmethod 可能对应一个完整的Java方法，或者是内联后的方法。
 
 Once it is full, the JVM won't compile any additional code as the JIT compiler is now off. Furthermore, we will receive the "CodeCache is full… The compiler has been disabled" warning message. As a result, we'll end up with degraded performance in our application. To avoid this, we can tune the code cache with the following size options:
 
-- `InitialCodeCacheSize` – the initial code cache size, `160K` default
-- `ReservedCodeCacheSize` – the default maximum size is `48MB`
-- `CodeCacheExpansionSize` – the expansion size of the code cache, `32KB` or `64KB`
+- `InitialCodeCacheSize` - the initial code cache size, `160K` default
+- `ReservedCodeCacheSize` - the default maximum size is `48MB`
+- `CodeCacheExpansionSize` - the expansion size of the code cache, `32KB` or `64KB`
 
 ## 3. 对 Code Cache 进行调优
 
@@ -43,9 +43,9 @@ Once it is full, the JVM won't compile any additional code as the JIT compiler i
 JIT编译器关闭的结果，就是系统性能急剧下降。
 为了避免这种情况，我们需要对Code Cache进行调优，例如使用以下参数:
 
-- `InitialCodeCacheSize` – 初始大小, 默认值为 `160KB`
-- `ReservedCodeCacheSize` – 保留给Code Cache的空间, 也就是最大空间, 默认值:  `48MB`
-- `CodeCacheExpansionSize` – 每次扩充的大小, 一般为 `32KB` 或者 `64KB`
+- `InitialCodeCacheSize` - 初始大小, 默认值为 `160KB`
+- `ReservedCodeCacheSize` - 保留给Code Cache的空间, 也就是最大空间, 默认值:  `48MB`
+- `CodeCacheExpansionSize` - 每次扩充的大小, 一般为 `32KB` 或者 `64KB`
 
 
 Increasing the ReservedCodeCacheSize can be a solution, but this is typically only a temporary workaround.
@@ -72,13 +72,13 @@ Fortunately, the JVM offers a UseCodeCacheFlushing option to control the flushin
 
 In order to monitor the code cache usage, we need to track the size of the memory currently in use.
 
-To get information on code cache usage, we can specify the –XX:+PrintCodeCache JVM option. After running our application, we'll see a similar output:
+To get information on code cache usage, we can specify the -XX:+PrintCodeCache JVM option. After running our application, we'll see a similar output:
 
 ## 4. 查看Code Cache的使用情况
 
 想要监控代码缓存的使用情况，我们可以跟踪当前使用的内存大小。
 
-指定JVM启动参数: `–XX:+PrintCodeCache`, 会打印Code Cache区的使用情况。
+指定JVM启动参数: `-XX:+PrintCodeCache`, 会打印Code Cache区的使用情况。
 程序执行过程中, 我们可以看到类似下面的输出:
 
 ```

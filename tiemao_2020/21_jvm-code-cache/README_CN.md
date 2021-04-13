@@ -21,9 +21,9 @@ nmethod 可能对应一个完整的Java方法，或者是内联后的方法。
 JIT编译器关闭的结果，就是系统性能急剧下降。
 为了避免这种情况，我们需要对Code Cache进行调优，例如使用以下参数:
 
-- `InitialCodeCacheSize` – 初始大小, 默认值为 `160KB`
-- `ReservedCodeCacheSize` – 保留给Code Cache的空间, 也就是最大空间, 默认值:  `48MB`
-- `CodeCacheExpansionSize` – 每次扩充的大小, 一般为 `32KB` 或者 `64KB`
+- `InitialCodeCacheSize` - 初始大小, 默认值为 `160KB`
+- `ReservedCodeCacheSize` - 保留给Code Cache的空间, 也就是最大空间, 默认值:  `48MB`
+- `CodeCacheExpansionSize` - 每次扩充的大小, 一般为 `32KB` 或者 `64KB`
 
 合理地增加 `ReservedCodeCacheSize` 是一种解决办法， 毕竟现在很多应用加上依赖库的代码量一点都不少。
 但我们也不能无限制地增大这个区域的大小。
@@ -41,7 +41,7 @@ JIT编译器关闭的结果，就是系统性能急剧下降。
 
 想要监控代码缓存的使用情况，我们可以跟踪当前使用的内存大小。
 
-指定JVM启动参数: `–XX:+PrintCodeCache`, 会打印Code Cache区的使用情况。
+指定JVM启动参数: `-XX:+PrintCodeCache`, 会打印Code Cache区的使用情况。
 程序执行过程中, 我们可以看到类似下面的输出:
 
 ```
