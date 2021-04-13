@@ -44,8 +44,10 @@ JIT编译器关闭的结果，就是系统性能急剧下降。
 指定JVM启动参数: `-XX:+PrintCodeCache`, 会打印Code Cache区的使用情况。
 程序执行过程中, 我们可以看到类似下面的输出:
 
-```
-CodeCache: size=32768Kb used=542Kb max_used=542Kb free=32226Kb
+```shell
+$ java -XX:+PrintCodeCache -XX:+UseCodeCacheFlushing -version
+
+CodeCache: size=245760Kb used=1060Kb max_used=1071Kb free=244699Kb
 ```
 
 一起来分析下各个部分数值的含义:
