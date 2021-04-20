@@ -34,7 +34,7 @@ GitHub地址: <https://github.com/cncounter/translation>
 * [11.JVM最重要的性能调优参数](./tiemao_2020/11_jvm-arguments-of-highly-effective/README.md)【已完成】
 - [12.1 MAVEN基础系列（一） 项目构建的各个阶段](./tiemao_2020/12_introduction-to-the-pom/introduction-to-the-lifecycle.md)【粗翻】
 - [12.2 MAVEN基础系列（二） POM文件](./tiemao_2020/12_introduction-to-the-pom/README.md)【粗翻】
-* [13.为什么问题诊断和排查这么困难](./tiemao_2020/13_why-troubleshooting-so-hard/README.md)【已完成】
+* [13.诊断问题和排查故障非常难？](./tiemao_2020/13_why-troubleshooting-so-hard/README.md)【已完成】
 * [14.JVM性能指标监控工具 -- Micrometer](./tiemao_2020/14_micrometer_intro/README.md)【已完成】
 * [15.DataDog集成MySQL的配置](./tiemao_2020/15_datadog_mysql/README.md)【已完成】
 * [16.迁移Ubuntu下MySQL的data目录](./tiemao_2020/16_mysql_data_dir/README.md)【已完成】

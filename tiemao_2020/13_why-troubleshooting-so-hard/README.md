@@ -1,6 +1,6 @@
 # Why is troubleshooting so hard?
 
-# 为什么问题诊断和故障排查这么困难？
+# 诊断问题和排查故障非常难？
 
 [By definition](https://en.wikipedia.org/wiki/Troubleshooting), troubleshooting is supposed to be a logical, systematic search for the source of a problem in order to solve it. Now if you recall the last time you had to troubleshoot a particular issue happening in a production system – would you call it logical and systematic? Or would you agree that words such as hectic and guess-driven are more likely to describe the process you went through?
 
