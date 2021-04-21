@@ -1,5 +1,17 @@
 ## Introduction to the Dependency Mechanism
 
+## MAVEN基础系列（五） 浅析pom依赖机制
+
+相关文章:
+
+- [MAVEN基础系列（〇） Maven五分钟入门教程](./maven-in-five-minutes.md)
+- [MAVEN基础系列（一） 项目构建的各个阶段](./introduction-to-the-lifecycle.md)
+- [MAVEN基础系列（二） POM文件](./README.md)
+- [MAVEN基础系列（三） 按环境Profiles打包](./introduction-to-profiles.md)
+- [MAVEN基础系列（四） 标准目录结构](./standard-directory-layout.md)
+- [MAVEN基础系列（五） 浅析pom依赖机制](./introduction-to-dependency-mechanism.md)
+- [MAVEN基础系列（六） 依赖项排除与可选依赖](./optional-and-excludes-dependencies.md)
+
 Dependency management is a core feature of Maven. Managing dependencies for a single project is easy. Managing dependencies for multi-module projects and applications that consist of hundreds of modules is possible. Maven helps a great deal in defining, creating, and maintaining reproducible builds with well-defined classpaths and library versions.
 
 Learn more about:

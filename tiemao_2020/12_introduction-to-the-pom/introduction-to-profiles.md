@@ -1,5 +1,17 @@
 ## Introduction to Build Profiles
 
+## MAVEN基础系列（三） 按环境Profiles打包
+
+相关文章:
+
+- [MAVEN基础系列（〇） Maven五分钟入门教程](./maven-in-five-minutes.md)
+- [MAVEN基础系列（一） 项目构建的各个阶段](./introduction-to-the-lifecycle.md)
+- [MAVEN基础系列（二） POM文件](./README.md)
+- [MAVEN基础系列（三） 按环境Profiles打包](./introduction-to-profiles.md)
+- [MAVEN基础系列（四） 标准目录结构](./standard-directory-layout.md)
+- [MAVEN基础系列（五） 浅析pom依赖机制](./introduction-to-dependency-mechanism.md)
+- [MAVEN基础系列（六） 依赖项排除与可选依赖](./optional-and-excludes-dependencies.md)
+
 Apache Maven goes to great lengths to ensure that builds are portable. Among other things, this means allowing build configuration inside the POM, avoiding **all** filesystem references (in inheritance, dependencies, and other places), and leaning much more heavily on the local repository to store the metadata needed to make this possible.
 
 However, sometimes portability is not entirely possible. Under certain conditions, plugins may need to be configured with local filesystem paths. Under other circumstances, a slightly different dependency set will be required, and the project's artifact name may need to be adjusted slightly. And at still other times, you may even need to include a whole plugin in the build lifecycle depending on the detected build environment.
