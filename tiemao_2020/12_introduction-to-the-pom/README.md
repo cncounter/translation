@@ -4,7 +4,7 @@
 
 相关文章:
 
-- [MAVEN基础系列（一） 构建生命周期](./introduction-to-the-lifecycle.md)
+- [MAVEN基础系列（一） 项目构建的各个阶段](./introduction-to-the-lifecycle.md)
 - [MAVEN基础系列（二） POM文件](./README.md)
 
 ### What is a POM?
