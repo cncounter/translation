@@ -31,11 +31,22 @@ Luckily, this came pretty naturally to me after a while, but early on it was a s
 
 Problem solving is essentially the same thing you learned in abstract in seventh or eighth grade or whenever you learned simple algebra. Remove all of the variables that you can, then solve for x.
 
-## 2. 不畏艰难、搞定问题
+## 2. 善用排错法
 
-幸运的是, 后来的我慢慢明白了这个道理。有个诀窍是使用排除法, 找3个推测去证明都错了,比证明某个推测正确要简单得多。此外,想一想可能的各种情况。比如说有提示说端口冲突, 但却怎么也找不到, 那也许是连接的网络不对,或者是IP地址未赋值,等等,也许连错误提示也是错误的。
+计算机软件是一个神奇的系统, 把错误都解决掉, 他就能正常运行了。
 
-解决问题的本质和中学时的代数很相似。消除所有可消除的变量,然后解出x。
+刚工作没几年的时候, 很多问题会让你抓狂、沮丧、欲死欲仙、秃头到顶。 幸运的是, 只要持续学习, 我们解决问题的能力会越来越强。
+
+排错法是一种非常有用的技巧, 找3个推测去证明都错了,比证明某个推测正确要简单得多。此外,想一想可能的各种情况。比如说有提示说端口冲突, 但却怎么也找不到, 那也许是连接的网络不对,或者是IP地址未赋值,等等,也许连错误提示也是错误的。
+
+解决特定问题的本质和中学时的代数很相似。消除所有可消除的变量,然后解出x。
+
+
+诀窍是，爱上该问题的任何一种理论。 选择三种理论，然后去证明它们是错误的，而不是试图证明自己是正确的。 另外，请倾向于其他理论。 如果有消息说存在端口冲突，而您找不到任何端口冲突，则可能是您连接到错误的网络设备或未分配的IP地址，并且错误是虚假的。
+
+解决问题本质上是您在七年级或八年级学习抽象的东西，或者每当您学习简单的代数时学到的东西。 删除所有可以的变量，然后求解x。
+
+
 
 ## 3. Pick your language or other technical specialties based on the market and your career goals.
 
