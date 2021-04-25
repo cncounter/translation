@@ -8,7 +8,7 @@
 - [MAVEN基础系列（一） 项目构建的各个阶段](./introduction-to-the-lifecycle.md)
 - [MAVEN基础系列（二） POM文件](./README.md)
 - [MAVEN基础系列（三） 按环境Profiles打包](./introduction-to-profiles.md)
-- [MAVEN基础系列（四） 标准目录结构](./standard-directory-layout.md)
+- [MAVEN基础系列（四） 标准的Maven项目结构](./standard-directory-layout.md)
 - [MAVEN基础系列（五） 浅析pom依赖机制](./introduction-to-dependency-mechanism.md)
 - [MAVEN基础系列（六） 依赖项排除与可选依赖](./optional-and-excludes-dependencies.md)
 

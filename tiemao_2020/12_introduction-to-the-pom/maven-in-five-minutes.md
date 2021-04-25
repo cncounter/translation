@@ -8,7 +8,7 @@
 - [MAVEN基础系列（一） 项目构建的各个阶段](./introduction-to-the-lifecycle.md)
 - [MAVEN基础系列（二） POM文件](./README.md)
 - [MAVEN基础系列（三） 按环境Profiles打包](./introduction-to-profiles.md)
-- [MAVEN基础系列（四） 标准目录结构](./standard-directory-layout.md)
+- [MAVEN基础系列（四） 标准的Maven项目结构](./standard-directory-layout.md)
 - [MAVEN基础系列（五） 浅析pom依赖机制](./introduction-to-dependency-mechanism.md)
 - [MAVEN基础系列（六） 依赖项排除与可选依赖](./optional-and-excludes-dependencies.md)
 
@@ -30,12 +30,12 @@ First, [download Maven](https://maven.apache.org/download.html) and follow the [
 
 Maven是一款Java工具, 因此必须先安装JDK, 可参考: [Windows下载安装JDK](https://github.com/cncounter/translation/blob/master/tiemao_2014/Win_JDK7/Win_JDK7.md)。
 
-安装步骤很简单, 细节信息可参考 [Apache Maven 安装说明](https://maven.apache.org/install.html) 页面:
+安装步骤很简单, 细节信息可参考 [Apache Maven 安装说明](https://maven.apache.org/install.html):
 
 - 1. 打开 [Maven下载页面](https://maven.apache.org/download.html)。
 - 2. 找到相关的文件, 例如 `apache-maven-3.8.1-bin.zip` 之类的文件, 记住是 bin, 不是src文件。
 - 3. 下载并解压到某个英文目录。
-- 4. 将Maven发行包解压后的bin目录加入到系统路径 `PATH` 中。
+- 4. 将Maven发行包解压后的bin目录加到系统路径 `PATH` 中。
 - 5. 验证安装, 在命令行或者shell终端执行以下脚本:
 
 ```
@@ -67,9 +67,9 @@ Depending upon your network setup, you may require extra configuration. Check ou
 
 You will need somewhere for your project to reside, create a directory somewhere and start a shell in that directory. On your command line, execute the following Maven goal:
 
-### 创建一个项目
+### 3. 初始化Maven项目
 
-您将需要将项目放置在某个地方, 在某个地方创建一个目录, 然后在该目录中启动Shell。 在命令行上, 执行以下Maven目标：
+首先需要准备好工作目录, 可以使用 `mkdir -p xxxxxx` 之类的命令。 然后在该目录中启动Shell。 在命令行中执行以下Maven目标:
 
 ```
 mvn archetype:generate -DgroupId=com.mycompany.app -DartifactId=my-app -DarchetypeArtifactId=maven-archetype-quickstart -DarchetypeVersion=1.4 -DinteractiveMode=false
@@ -79,9 +79,12 @@ If you have just installed Maven, it may take a while on the first run. This is 
 
 You will notice that the *generate* goal created a directory with the same name given as the artifactId. Change into that directory.
 
-如果您刚刚安装了Maven, 则第一次运行可能需要一段时间。 这是因为Maven正在将最新的工件（插件jar和其他文件）下载到本地存储库中。 您可能还需要执行几次命令才能成功。 这是因为远程服务器可能会在下载完成之前超时。 不用担心, 有解决此问题的方法。
+如果刚刚安装Maven, 则第一次执行需要等待一段时间。 因为Maven需要将最新的组件（artifact, 比如 plugin和其他文件）下载到本地。
+如果网络不好, 从远程服务器下载某些文件会超时, 可能需要重复执行几次才会成功。 当然, 这有其他解决办法, 这里先不管。
 
-您会注意到* generate *目标创建了一个目录, 该目录具有与artifactId相同的名称。 转到该目录。
+generate 目标命令执行成功后, 可以看到创建了一个目录,  目录名称就是 artifactId 的值。
+
+我们使用 cd 命令切换到这个目录。
 
 ```
 cd my-app
@@ -89,29 +92,32 @@ cd my-app
 
 Under this directory you will notice the following [standard project structure](https://maven.apache.org/guides/introduction/introduction-to-the-standard-directory-layout.html).
 
-在此目录下, 您会注意到以下[标准项目结构]（https://maven.apache.org/guides/introduction/introduction-to-the-standard-directory-layout.html）。
+使用 `ls -l` 或者 `dir` 命令, 或者通过文件查看器, 可以看到这是一个 [标准的Maven项目结构](./standard-directory-layout.md)。
 
 ```
 my-app
-|-- pom.xml
-`-- src
+~-- pom.xml
+|-- src
     |-- main
-    |   `-- java
-    |       `-- com
-    |           `-- mycompany
-    |               `-- app
-    |                   `-- App.java
-    `-- test
-        `-- java
-            `-- com
-                `-- mycompany
-                    `-- app
-                        `-- AppTest.java
+        |-- java
+        |   |-- com
+        |       |-- mycompany
+        |           |-- app
+        |               ~-- App.java
+    |-- test
+        |-- java
+        |    |-- com
+        |        |-- mycompany
+        |            |-- app
+        |                ~-- AppTest.java
 ```
 
 The `src/main/java` directory contains the project source code, the `src/test/java` directory contains the test source, and the `pom.xml` file is the project's Project Object Model, or POM.
 
-src / main / java目录包含项目源代码, src / test / java目录包含测试源, pom.xml文件是项目的项目对象模型或POM。
+- `src/main/java` 目录用于存放项目源代码
+- `src/test/java` 目录则用于存放测试代码
+- `pom.xml` 文件是项目的 Project Object Model(POM, 项目对象模型)。
+
 
 #### The POM
 
