@@ -169,14 +169,14 @@ You executed the Maven goal *archetype:generate*, and passed in various paramete
 #### 3.2 简单介绍生成项目的参数
 
 我们执行的Maven目标是 `archetype:generate`(原型:生成), 并传入了各种参数配置。
-目标前缀 `archetype` 表示执行这个目标(goal)的 [plugin](https://maven.apache.org/plugins/index.html) 名称。
+目标前缀 `archetype` 表示执行这个目标的 [plugin](https://maven.apache.org/plugins/index.html) 名称。
 如果用过 [Ant](http://ant.apache.org/) 构建工具, 可以将目标看成是一项 task。
 这个 `archetype:generate` 目标, 基于 [maven-archetype-quickstart](https://maven.apache.org/archetypes/maven-archetype-quickstart/) 原型创建了一个简单的项目。
-可以说, plugin 就是组合了具有通用目标的一堆 goals。 例如 jboss-maven-plugin, 其目的就是 "处理各种jboss事项"。
+可以说, plugin 就是组合了一堆 goals, 他们具有通用的目的。 例如 jboss-maven-plugin, 其目的就是 "处理各种jboss事项"。
 
 #### Build the Project
 
-####建立专案
+#### 3.3 执行项目构建
 
 ```
 mvn package
@@ -184,21 +184,24 @@ mvn package
 
 The command line will print out various actions, and end with the following:
 
-命令行将打印出各种操作, 并以以下内容结束:
+这个命令执行时, 会打印各种操作的信息, 如果构建成功, 最后的输出内容会类似这样:
 
 ```
  ...
 [INFO] ------------------------------------------------------------------------
 [INFO] BUILD SUCCESS
 [INFO] ------------------------------------------------------------------------
-[INFO] Total time:  2.953 s
-[INFO] Finished at: 2019-11-24T13:05:10+01:00
+[INFO] Total time:  15.336 s
+[INFO] Finished at: 2021-04-25T10:55:01+08:00
 [INFO] ------------------------------------------------------------------------
 ```
 
 Unlike the first command executed (*archetype:generate*) you may notice the second is simply a single word - *package*. Rather than a *goal*, this is a *phase*. A phase is a step in the [build lifecycle](https://maven.apache.org/guides/introduction/introduction-to-the-lifecycle.html), which is an ordered sequence of phases. When a phase is given, Maven will execute every phase in the sequence up to and including the one defined. For example, if we execute the *compile* phase, the phases that actually get executed are:
 
-与执行的第一个命令不同（* archetype:generate *）, 您可能会注意到第二个命令只是一个单词-* package *。 而不是目标, 这是一个阶段。 阶段是[构建生命周期]（https://maven.apache.org/guides/introduction/introduction-to-the-lifecycle.html）中的步骤, 这是阶段的有序序列。 当给出一个阶段时, Maven将执行序列中的每个阶段, 直到并包括所定义的阶段。 例如, 如果执行* compile *阶段, 则实际执行的阶段为:
+我们这次执行的命令很简单,只有一个 `package`, 与前面执行的原型生成命令 `archetype:generate` 不太一样。
+因为这不是目标(goal), 而是阶段(phase)。 阶段是[构建生命周期](https://maven.apache.org/guides/introduction/introduction-to-the-lifecycle.html) 中的一个步骤, 而且这些阶段是有顺序的。
+给定一个阶段时, Maven将会按顺序从前面开始执行每个阶段, 一直到我们所指定的阶段。
+例如, 执行 `compile` 阶段, 则实际执行的阶段包括:
 
 1. validate
 2. generate-sources
@@ -209,7 +212,7 @@ Unlike the first command executed (*archetype:generate*) you may notice the seco
 
 You may test the newly compiled and packaged JAR with the following command:
 
-您可以使用以下命令测试新编译和打包的JAR:
+我们可以用下面的命令来测试刚刚编译打包生成的JAR:
 
 ```
 java -cp target/my-app-1.0-SNAPSHOT.jar com.mycompany.app.App
@@ -217,7 +220,7 @@ java -cp target/my-app-1.0-SNAPSHOT.jar com.mycompany.app.App
 
 Which will print the quintessential:
 
-它将打印出最典型的内容:
+输出的内容很经典:
 
 ```
 Hello World!
