@@ -166,9 +166,13 @@ The `pom.xml` file is the core of a project's configuration in Maven. It is a si
 
 You executed the Maven goal *archetype:generate*, and passed in various parameters to that goal. The prefix *archetype* is the [plugin](https://maven.apache.org/plugins/index.html) that provides the goal. If you are familiar with [Ant](http://ant.apache.org/), you may conceive of this as similar to a task. This *archetype:generate* goal created a simple project based upon a [maven-archetype-quickstart](https://maven.apache.org/archetypes/maven-archetype-quickstart/) archetype. Suffice it to say for now that a *plugin* is a collection of *goals* with a general common purpose. For example the jboss-maven-plugin, whose purpose is "deal with various jboss items".
 
-#### 3.2 生成项目的过程执行了哪些操作？
+#### 3.2 简单介绍生成项目的参数
 
-您执行了Maven目标* archetype:generate *, 并将各种参数传递给该目标。 前缀* archetype *是提供目标的[plugin]（https://maven.apache.org/plugins/index.html）。 如果您熟悉[Ant]（http://ant.apache.org/）, 您可能会认为这类似于一项任务。 这个[原型:生成]目标基于[maven-archetype-quickstart]（https://maven.apache.org/archetypes/maven-archetype-quickstart/）原型创建了一个简单的项目。 现在就可以说* plugin *是具有通用目的的* goals *的集合。 例如jboss-maven-plugin, 其目的是“处理各种jboss项目”。
+我们执行的Maven目标是 `archetype:generate`(原型:生成), 并传入了各种参数配置。
+目标前缀 `archetype` 表示执行这个目标(goal)的 [plugin](https://maven.apache.org/plugins/index.html) 名称。
+如果用过 [Ant](http://ant.apache.org/) 构建工具, 可以将目标看成是一项 task。
+这个 `archetype:generate` 目标, 基于 [maven-archetype-quickstart](https://maven.apache.org/archetypes/maven-archetype-quickstart/) 原型创建了一个简单的项目。
+可以说, plugin 就是组合了具有通用目标的一堆 goals。 例如 jboss-maven-plugin, 其目的就是 "处理各种jboss事项"。
 
 #### Build the Project
 
@@ -227,7 +231,7 @@ In the following example, we have configured our Maven project to use version 3.
 
 ### Java 9或更高版本
 
-默认情况下, 您的Maven版本可能使用与Java 9或更高版本不兼容的旧版本的“ maven-compiler-plugin”。 要定位Java 9或更高版本, 您至少应使用`maven-compiler-plugin'的3.6.0版本, 并将`maven.compiler.release`属性设置为您要定位的Java版本（例如9、10、11）。 , 12等）。
+默认情况下, 您的Maven版本可能使用与Java 9或更高版本不兼容的旧版本的" maven-compiler-plugin"。 要定位Java 9或更高版本, 您至少应使用`maven-compiler-plugin'的3.6.0版本, 并将`maven.compiler.release`属性设置为您要定位的Java版本（例如9、10、11）。 , 12等）。
 
 在以下示例中, 我们已将Maven项目配置为使用`maven-compiler-plugin`版本3.8.1, 并以Java 11为目标:
 
@@ -321,7 +325,7 @@ mvn site
 
 This phase generates a site based upon information on the project's pom. You can look at the documentation generated under `target/site`.
 
-此阶段根据有关项目pom的信息生成一个站点。 您可以查看在“ target / site”下生成的文档。
+此阶段根据有关项目pom的信息生成一个站点。 您可以查看在" target / site"下生成的文档。
 
 ### Conclusion
 
