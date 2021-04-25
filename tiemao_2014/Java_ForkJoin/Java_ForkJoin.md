@@ -223,8 +223,6 @@ It is natural to write a simple fork-join program and compare its performance to
 
 原文链接: [Beginner's Introduction to Java's ForkJoin Framework](http://homes.cs.washington.edu/~djg/teachingMaterials/grossmanSPAC_forkJoinFramework.html)
 
-参考地址: [使用Java7 ForkJoin Framework进行并发编程](http://www.williamsang.com/archives/1724.html)
-
 翻译人员: [铁锚](http://blog.csdn.net/renfufei)
 
 翻译日期: 2014-12-19日
