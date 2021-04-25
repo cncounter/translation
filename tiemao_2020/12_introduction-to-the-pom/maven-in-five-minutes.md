@@ -16,7 +16,7 @@
 
 You must have an understanding of how to install software on your computer. If you do not know how to do this, please ask someone at your office, school, etc or pay someone to explain this to you. The Maven mailing lists are not the best place to ask for this advice.
 
-### 基础知识准备
+### 1. 基础知识准备
 
 要想使用Maven, 至少应该了解如何安装软件。 如果不知道怎么安装软件, 请咨询你的同事、同学、或者带你入门的人。
 
@@ -26,7 +26,7 @@ Maven is a Java tool, so you must have [Java](https://www.oracle.com/technetwork
 
 First, [download Maven](https://maven.apache.org/download.html) and follow the [installation instructions](https://maven.apache.org/install.html). After that, type the following in a terminal or in a command prompt:
 
-### Maven安装与配置
+### 2. Maven安装与配置
 
 Maven是一款Java工具, 因此必须先安装JDK, 可参考: [Windows下载安装JDK](https://github.com/cncounter/translation/blob/master/tiemao_2014/Win_JDK7/Win_JDK7.md)。
 
@@ -59,9 +59,9 @@ Depending upon your network setup, you may require extra configuration. Check ou
 
 > If you are using Windows, you should look at [Windows Prerequisites](https://maven.apache.org/guides/getting-started/windows-prerequisites.html) to ensure that you are prepared to use Maven on Windows.
 
-根据您的网络设置, 您可能需要额外的配置。 如有必要, 请查看[Maven配置指南]（https://maven.apache.org/guides/mini/guide-configuring-maven.html）。
+如果网络环境不同, 可能需要额外的配置。 有问题的话, 也可以参考 [Maven配置指南](https://maven.apache.org/guides/mini/guide-configuring-maven.html)。
 
-> 如果您使用的是Windows, 则应查看 [Windows先决条件]（https://maven.apache.org/guides/getting-started/windows-prerequisites.html）以确保已准备好使用 Windows上的Maven。
+> 如果使用的是 Windows 操作系统, 则需要查看 [Windows环境配置](https://maven.apache.org/guides/getting-started/windows-prerequisites.html), 确保配置好Maven。
 
 ### Creating a Project
 

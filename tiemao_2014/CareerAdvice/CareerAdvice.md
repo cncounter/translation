@@ -108,7 +108,7 @@ If you are unable to write properly in English (or the appropriate language for 
 Now it's your turn. If you're more than five years in, what do you wish you'd known at the start? If you're less than five years in, what advice have you found helpful?
 
 
-如果你工作超过五年, 你会给刚入行的同事什么建议呢?
+如果工作时间超过五年, 你会给刚入行的同事什么建议呢?
 
 > 附赠一句K神的劝勉: 只要把技术学精通了,迟早都能变现!
 
