@@ -1,16 +1,16 @@
 ## Maven in 5 Minutes
 
-## MAVEN基础系列(〇) Maven五分钟入门教程
+## MAVEN基础系列（〇）Maven五分钟入门教程
 
 相关文章:
 
-- [MAVEN基础系列(〇) Maven五分钟入门教程](./maven-in-five-minutes.md)
-- [MAVEN基础系列(一) 项目构建的各个阶段](./introduction-to-the-lifecycle.md)
-- [MAVEN基础系列(二) POM文件](./README.md)
-- [MAVEN基础系列(三) 按环境Profiles打包](./introduction-to-profiles.md)
-- [MAVEN基础系列(四) 标准的Maven项目结构](./standard-directory-layout.md)
-- [MAVEN基础系列(五) 浅析pom依赖机制](./introduction-to-dependency-mechanism.md)
-- [MAVEN基础系列(六) 依赖项排除与可选依赖](./optional-and-excludes-dependencies.md)
+- [MAVEN基础系列（〇）Maven五分钟入门教程](./maven-in-five-minutes.md)
+- [MAVEN基础系列（一）项目构建的各个阶段](./introduction-to-the-lifecycle.md)
+- [MAVEN基础系列（二）POM文件](./README.md)
+- [MAVEN基础系列（三）按环境Profiles打包](./introduction-to-profiles.md)
+- [MAVEN基础系列（四）标准的Maven项目结构](./standard-directory-layout.md)
+- [MAVEN基础系列（五）浅析pom依赖机制](./introduction-to-dependency-mechanism.md)
+- [MAVEN基础系列（六）依赖项排除与可选依赖](./optional-and-excludes-dependencies.md)
 
 ### Prerequisites
 
@@ -268,11 +268,11 @@ To learn more about `javac`'s `--release` option, see [JEP 247](https://openjdk.
 
 Although hardly a comprehensive list, these are the most common *default* lifecycle phases executed.
 
-### 运行Maven工具
+### 5. 运行Maven工具
 
-#### Maven阶段
+#### 5.1 Maven阶段
 
-尽管这不是一个完整的列表, 但它们是最常见的* default *生命周期阶段。
+下面列出了 `default` 生命周期最常用的阶段, 当然, 这不是完整的列表。
 
 - `validate`: validate the project is correct and all necessary information is available
 - `compile`: compile the source code of the project
@@ -283,14 +283,14 @@ Although hardly a comprehensive list, these are the most common *default* lifecy
 - `install`: install the package into the local repository, for use as a dependency in other projects locally
 - `deploy`: done in an integration or release environment, copies the final package to the remote repository for sharing with other developers and projects.
 
-- `validate`:验证项目是否正确并且所有必要的信息均可用
-- `compile`:编译项目的源代码
-- `test`:使用合适的单元测试框架测试编译后的源代码。 这些测试不应要求将代码打包或部署
-- `package`:获取编译后的代码并将其打包为可分发格式, 例如JAR。
-- `integration-test`:处理软件包并将其部署到可以运行集成测试的环境中
-- `verify`:运行任何检查以验证包装是否有效并符合质量标准
-- `install`:将软件包安装到本地存储库中, 以作为本地其他项目中的依赖项
-- `deploy`:在集成或发布环境中完成, 将最终软件包复制到远程存储库中, 以便与其他开发人员和项目共享。
+- `validate`: 验证项目是否正确, 以及所有必要的信息是否可用
+- `compile`: 编译项目的源代码
+- `test`: 使用合适的单元测试框架来测试编译后的代码。 这些测试不需要将代码打包或部署
+- `package`: 获取编译后的代码, 并将其打包为可分发格式, 例如JAR。
+- `integration-test`: 处理软件包, 并将其部署到可以运行集成测试的环境中
+- `verify`: 运行各种检查, 以验证软件包是否有效并符合质量标准
+- `install`: 将软件包安装到本地仓库中, 以作为其他本地项目的依赖项
+- `deploy`: 在集成环境或发布环境中, 将最终的软件包部署到远程仓库中, 以便其他开发人员和项目共享。
 
 There are two other Maven lifecycles of note beyond the *default* list above. They are
 
@@ -298,19 +298,21 @@ There are two other Maven lifecycles of note beyond the *default* list above. Th
 
 - `site`: generates site documentation for this project
 
-除了上面的* default *列表以外, 还有其他两个Maven生命周期值得注意。 他们是
+除了上面列出的 `default` 生命周期, 还有两个 Maven 生命周期需要关注:
 
-- `clean`:清理先前构建创建的工件
+- `clean`: 清理先前的项目构建所生成的文件
 
-- `site`:为该项目生成站点文档
+- `site`: 为该项目生成站点文档
 
 Phases are actually mapped to underlying goals. The specific goals executed per phase is dependant upon the packaging type of the project. For example, *package* executes *jar:jar* if the project type is a JAR, and *war:war* if the project type is - you guessed it - a WAR.
 
 An interesting thing to note is that phases and goals may be executed in sequence.
 
-阶段实际上映射到基本目标。 每个阶段执行的特定目标取决于项目的包装类型。 例如, 如果项目类型是JAR, * package *将执行* jar:jar *, 如果项目类型是-您猜到了-WAR, 则将执行* war:war *。
+这些阶段实际上都映射到了各种基本目标。
+每个阶段执行的特定目标取决于项目的打包类型。
+例如, 如果打包类型是JAR, 那么 `package` 将执行 `jar:jar`, 如果打包类型是WAR, 则将执行 `war:war`。
 
-需要注意的有趣一点是, 阶段和目标可以按顺序执行。
+需要注意的一点是, 阶段和目标可以按顺序执行。
 
 ```
 mvn clean dependency:copy-dependencies package
@@ -318,11 +320,11 @@ mvn clean dependency:copy-dependencies package
 
 This command will clean the project, copy dependencies, and package the project (executing all phases up to *package*, of course).
 
-该命令将清除项目, 复制依赖关系, 并对项目进行打包(当然, 执行所有阶段, 直到* package *为止)。
+该命令将清理项目, 复制依赖, 并对项目进行打包(当然, 会执行所有阶段, 直到 `package` 为止)。
 
 #### Generating the Site
 
-#### 生成站点
+#### 5.2 生成项目站点
 
 ```
 mvn site
@@ -330,16 +332,16 @@ mvn site
 
 This phase generates a site based upon information on the project's pom. You can look at the documentation generated under `target/site`.
 
-此阶段根据有关项目pom的信息生成一个站点。 您可以查看在" target / site"下生成的文档。
+此阶段根据项目pom信息生成一个站点。 可以在 `target/site` 下查看生成的文档。
 
 ### Conclusion
 
 We hope this quick overview has piqued your interest in the versatility of Maven. Note that this is a very truncated quick-start guide. Now you are ready for more comprehensive details concerning the actions you have just performed. Check out the [Maven Getting Started Guide](https://maven.apache.org/guides/getting-started/index.html).
 
-### 结论
+### 6. 小结
 
-我们希望这篇快速的概述引起您对Maven多功能性的兴趣。 请注意, 这是一本截短的快速入门指南。 现在, 您可以准备有关刚刚执行的操作的更全面的详细信息。 请查看[Maven入门指南](https://maven.apache.org/guides/getting-started/index.html)。
-
+希望这篇 Maven 快速入门的文章能引起您的兴趣。
+更全面的信息, 请阅读后续的章节。
 
 
 
