@@ -44,7 +44,7 @@ mvn --version
 
 It should print out your installed version of Maven, for example:
 
-如果配置正确, 会输出安装完成的Maven版本信息, 例如：
+如果配置正确, 会输出安装完成的Maven版本信息, 例如:
 
 ```
 $ mvn --version
@@ -123,11 +123,14 @@ The `src/main/java` directory contains the project source code, the `src/test/ja
 
 The `pom.xml` file is the core of a project's configuration in Maven. It is a single configuration file that contains the majority of information required to build a project in just the way you want. The POM is huge and can be daunting in its complexity, but it is not necessary to understand all of the intricacies just yet to use it effectively. This project's POM is:
 
-#### POM
+#### 3.1 项目对象模型(POM)
 
-pom.xml文件是Maven中项目配置的核心。 它是一个配置文件, 其中包含以所需方式构建项目所需的大多数信息。 POM非常庞大, 其复杂性可能令人生畏, 但不必有效地使用它就不必了解所有复杂性。 该项目的POM为：
+`pom.xml` 文件是Maven项目的核心配置。 这个配置文件中, 包含了构建Maven项目所需的大部分信息。
+有些项目的POM文件非常庞大, 复杂性也非常高, 但作为初学者, 不需要了解这些复杂性。
+我们生成的这个项目, POM大致如下:
 
 ```xml
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
@@ -136,7 +139,12 @@ pom.xml文件是Maven中项目配置的核心。 它是一个配置文件, 其�
   <artifactId>my-app</artifactId>
   <version>1.0-SNAPSHOT</version>
 
+  <name>my-app</name>
+  <!-- FIXME change it to the project's website -->
+  <url>http://www.example.com</url>
+
   <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>1.7</maven.compiler.source>
     <maven.compiler.target>1.7</maven.compiler.target>
   </properties>
@@ -145,10 +153,12 @@ pom.xml文件是Maven中项目配置的核心。 它是一个配置文件, 其�
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.12</version>
+      <version>4.11</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
+
+  <!-- ...... -->
 </project>
 ```
 
@@ -156,9 +166,9 @@ pom.xml文件是Maven中项目配置的核心。 它是一个配置文件, 其�
 
 You executed the Maven goal *archetype:generate*, and passed in various parameters to that goal. The prefix *archetype* is the [plugin](https://maven.apache.org/plugins/index.html) that provides the goal. If you are familiar with [Ant](http://ant.apache.org/), you may conceive of this as similar to a task. This *archetype:generate* goal created a simple project based upon a [maven-archetype-quickstart](https://maven.apache.org/archetypes/maven-archetype-quickstart/) archetype. Suffice it to say for now that a *plugin* is a collection of *goals* with a general common purpose. For example the jboss-maven-plugin, whose purpose is "deal with various jboss items".
 
-#### 我刚刚做了什么？
+#### 3.2 生成项目的过程执行了哪些操作？
 
-您执行了Maven目标* archetype：generate *, 并将各种参数传递给该目标。 前缀* archetype *是提供目标的[plugin]（https://maven.apache.org/plugins/index.html）。 如果您熟悉[Ant]（http://ant.apache.org/）, 您可能会认为这类似于一项任务。 这个[原型：生成]目标基于[maven-archetype-quickstart]（https://maven.apache.org/archetypes/maven-archetype-quickstart/）原型创建了一个简单的项目。 现在就可以说* plugin *是具有通用目的的* goals *的集合。 例如jboss-maven-plugin, 其目的是“处理各种jboss项目”。
+您执行了Maven目标* archetype:generate *, 并将各种参数传递给该目标。 前缀* archetype *是提供目标的[plugin]（https://maven.apache.org/plugins/index.html）。 如果您熟悉[Ant]（http://ant.apache.org/）, 您可能会认为这类似于一项任务。 这个[原型:生成]目标基于[maven-archetype-quickstart]（https://maven.apache.org/archetypes/maven-archetype-quickstart/）原型创建了一个简单的项目。 现在就可以说* plugin *是具有通用目的的* goals *的集合。 例如jboss-maven-plugin, 其目的是“处理各种jboss项目”。
 
 #### Build the Project
 
@@ -170,7 +180,7 @@ mvn package
 
 The command line will print out various actions, and end with the following:
 
-命令行将打印出各种操作, 并以以下内容结束：
+命令行将打印出各种操作, 并以以下内容结束:
 
 ```
  ...
@@ -184,7 +194,7 @@ The command line will print out various actions, and end with the following:
 
 Unlike the first command executed (*archetype:generate*) you may notice the second is simply a single word - *package*. Rather than a *goal*, this is a *phase*. A phase is a step in the [build lifecycle](https://maven.apache.org/guides/introduction/introduction-to-the-lifecycle.html), which is an ordered sequence of phases. When a phase is given, Maven will execute every phase in the sequence up to and including the one defined. For example, if we execute the *compile* phase, the phases that actually get executed are:
 
-与执行的第一个命令不同（* archetype：generate *）, 您可能会注意到第二个命令只是一个单词-* package *。 而不是目标, 这是一个阶段。 阶段是[构建生命周期]（https://maven.apache.org/guides/introduction/introduction-to-the-lifecycle.html）中的步骤, 这是阶段的有序序列。 当给出一个阶段时, Maven将执行序列中的每个阶段, 直到并包括所定义的阶段。 例如, 如果执行* compile *阶段, 则实际执行的阶段为：
+与执行的第一个命令不同（* archetype:generate *）, 您可能会注意到第二个命令只是一个单词-* package *。 而不是目标, 这是一个阶段。 阶段是[构建生命周期]（https://maven.apache.org/guides/introduction/introduction-to-the-lifecycle.html）中的步骤, 这是阶段的有序序列。 当给出一个阶段时, Maven将执行序列中的每个阶段, 直到并包括所定义的阶段。 例如, 如果执行* compile *阶段, 则实际执行的阶段为:
 
 1. validate
 2. generate-sources
@@ -195,7 +205,7 @@ Unlike the first command executed (*archetype:generate*) you may notice the seco
 
 You may test the newly compiled and packaged JAR with the following command:
 
-您可以使用以下命令测试新编译和打包的JAR：
+您可以使用以下命令测试新编译和打包的JAR:
 
 ```
 java -cp target/my-app-1.0-SNAPSHOT.jar com.mycompany.app.App
@@ -203,7 +213,7 @@ java -cp target/my-app-1.0-SNAPSHOT.jar com.mycompany.app.App
 
 Which will print the quintessential:
 
-它将打印出最典型的内容：
+它将打印出最典型的内容:
 
 ```
 Hello World!
@@ -219,7 +229,7 @@ In the following example, we have configured our Maven project to use version 3.
 
 默认情况下, 您的Maven版本可能使用与Java 9或更高版本不兼容的旧版本的“ maven-compiler-plugin”。 要定位Java 9或更高版本, 您至少应使用`maven-compiler-plugin'的3.6.0版本, 并将`maven.compiler.release`属性设置为您要定位的Java版本（例如9、10、11）。 , 12等）。
 
-在以下示例中, 我们已将Maven项目配置为使用`maven-compiler-plugin`版本3.8.1, 并以Java 11为目标：
+在以下示例中, 我们已将Maven项目配置为使用`maven-compiler-plugin`版本3.8.1, 并以Java 11为目标:
 
 ```xml
     <properties>
@@ -264,14 +274,14 @@ Although hardly a comprehensive list, these are the most common *default* lifecy
 - `install`: install the package into the local repository, for use as a dependency in other projects locally
 - `deploy`: done in an integration or release environment, copies the final package to the remote repository for sharing with other developers and projects.
 
-- `validate`：验证项目是否正确并且所有必要的信息均可用
-- `compile`：编译项目的源代码
-- `test`：使用合适的单元测试框架测试编译后的源代码。 这些测试不应要求将代码打包或部署
-- `package`：获取编译后的代码并将其打包为可分发格式, 例如JAR。
-- `integration-test`：处理软件包并将其部署到可以运行集成测试的环境中
-- `verify`：运行任何检查以验证包装是否有效并符合质量标准
-- `install`：将软件包安装到本地存储库中, 以作为本地其他项目中的依赖项
-- `deploy`：在集成或发布环境中完成, 将最终软件包复制到远程存储库中, 以便与其他开发人员和项目共享。
+- `validate`:验证项目是否正确并且所有必要的信息均可用
+- `compile`:编译项目的源代码
+- `test`:使用合适的单元测试框架测试编译后的源代码。 这些测试不应要求将代码打包或部署
+- `package`:获取编译后的代码并将其打包为可分发格式, 例如JAR。
+- `integration-test`:处理软件包并将其部署到可以运行集成测试的环境中
+- `verify`:运行任何检查以验证包装是否有效并符合质量标准
+- `install`:将软件包安装到本地存储库中, 以作为本地其他项目中的依赖项
+- `deploy`:在集成或发布环境中完成, 将最终软件包复制到远程存储库中, 以便与其他开发人员和项目共享。
 
 There are two other Maven lifecycles of note beyond the *default* list above. They are
 
@@ -281,15 +291,15 @@ There are two other Maven lifecycles of note beyond the *default* list above. Th
 
 除了上面的* default *列表以外, 还有其他两个Maven生命周期值得注意。 他们是
 
-- `clean`：清理先前构建创建的工件
+- `clean`:清理先前构建创建的工件
 
-- `site`：为该项目生成站点文档
+- `site`:为该项目生成站点文档
 
 Phases are actually mapped to underlying goals. The specific goals executed per phase is dependant upon the packaging type of the project. For example, *package* executes *jar:jar* if the project type is a JAR, and *war:war* if the project type is - you guessed it - a WAR.
 
 An interesting thing to note is that phases and goals may be executed in sequence.
 
-阶段实际上映射到基本目标。 每个阶段执行的特定目标取决于项目的包装类型。 例如, 如果项目类型是JAR, * package *将执行* jar：jar *, 如果项目类型是-您猜到了-WAR, 则将执行* war：war *。
+阶段实际上映射到基本目标。 每个阶段执行的特定目标取决于项目的包装类型。 例如, 如果项目类型是JAR, * package *将执行* jar:jar *, 如果项目类型是-您猜到了-WAR, 则将执行* war:war *。
 
 需要注意的有趣一点是, 阶段和目标可以按顺序执行。
 
