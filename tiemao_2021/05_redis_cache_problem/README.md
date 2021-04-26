@@ -161,3 +161,11 @@ public CacheManager localCacheManager() {
 
 ```java
 ```
+
+
+## Redis-Key名称相关的设计
+
+1. key一般使用全小写, 方便维护。
+2. 使用英文冒号分隔, 这算是使用规约。
+3. 特殊类型的数据结构在key中加上标识, 方便运维. 例如: `cnc:web:to_stop:zset`
+4. 输出监控指标时, 使用 key_pattern 而不输出可变key, 例如: `cnc:web:user:{userId}`, 再把花括号变为下划线。
