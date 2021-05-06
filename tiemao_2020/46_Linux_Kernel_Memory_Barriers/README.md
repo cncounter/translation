@@ -310,7 +310,7 @@ Q = LOAD P,
 D = LOAD *Q
 ```
 
-and always in that order.  However, on DEC Alpha, READ_ONCE() also emits a memory-barrier instruction, so that a DEC Alpha CPU will instead issue the following memory operations:
+and always in that order.  However, on DEC Alpha, `READ_ONCE()` also emits a memory-barrier instruction, so that a DEC Alpha CPU will instead issue the following memory operations:
 
 并始终按此顺序。 但是, 在 DEC Alpha 上,  `READ_ONCE()` 还会发出一条内存屏障指令, 因此 DEC Alpha CPU 将发出以下内存操作:
 
@@ -321,7 +321,7 @@ D = LOAD *Q,
 MEMORY_BARRIER
 ```
 
-Whether on DEC Alpha or not, the READ_ONCE() also prevents compiler mischief.
+Whether on DEC Alpha or not, the `READ_ONCE()` also prevents compiler mischief.
 
 无论是否在 DEC Alpha 上, `READ_ONCE()` 都可以防止编译器乱序。
 
@@ -367,7 +367,7 @@ d = LOAD *X
 
 And there are a number of things that _must_ or _must_not_ be assumed:
 
-- (*) It _must_not_ be assumed that the compiler will do what you want with memory references that are not protected by READ_ONCE() and WRITE_ONCE().  Without them, the compiler is within its rights to do all sorts of "creative" transformations, which are covered in the COMPILER BARRIER section.
+- (*) It _must_not_ be assumed that the compiler will do what you want with memory references that are not protected by `READ_ONCE()` and `WRITE_ONCE()`.  Without them, the compiler is within its rights to do all sorts of "creative" transformations, which are covered in the COMPILER BARRIER section.
 
 - (*) It _must_not_ be assumed that independent loads and stores will be issued in the order given.  This means that for:
 
@@ -603,7 +603,7 @@ ACQUIRE 操作基本上都要与 RELEASE 操作搭配使用。
 
 (6) RELEASE operations.
 
-This also acts as a one-way permeable barrier.  It guarantees that all memory operations before the RELEASE operation will appear to happen before the RELEASE operation with respect to the other components of the system. RELEASE operations include UNLOCK operations and smp_store_release() operations.
+This also acts as a one-way permeable barrier.  It guarantees that all memory operations before the RELEASE operation will appear to happen before the RELEASE operation with respect to the other components of the system. RELEASE operations include UNLOCK operations and `smp_store_release()` operations.
 
 Memory operations that occur after a RELEASE operation may appear to happen before it completes.
 
@@ -614,11 +614,11 @@ This means that ACQUIRE acts as a minimal "acquire" operation and RELEASE acts a
 
 #### （6）RELEASE操作
 
-RELEASE操作也充当单向渗透屏障。保证相对于系统的其他组件, RELEASE操作之前的所有内存操作都发生在RELEASE之前。 RELEASE操作包括 UNLOCK 操作和 smp_store_release() 操作。
+RELEASE操作也充当单向渗透屏障。保证相对于系统的其他组件, RELEASE操作之前的所有内存操作都发生在RELEASE之前。 RELEASE操作包括 UNLOCK 操作和 `smp_store_release()` 操作。
 
 在 RELEASE 操作之后发生的内存操作, 可能在其完成之前发生。
 
-使用 ACQUIRE 和 RELEASE 操作一般排除了对其他种类内存屏障的需求。此外, RELEASE+ACQUIRE 不保证可充当完整的内存屏障。 但是, 在对给定变量执行 ACQUIRE 之后, 可以保证对该变量进行任何RELEASE之前的内存访问都是可见的。 换句话说, 在给定变量的关键部分内, 可以保证对该变量的所有先前关键部分的所有访问均已完成。
+使用 ACQUIRE 和 RELEASE 操作一般排除了对其他种类内存屏障的需求。此外, RELEASE+ACQUIRE 不保证可充当完整的内存屏障。 但是, 在对给定变量执行 ACQUIRE 之后, 可以保证对该变量进行任何RELEASE之前的内存访问都是可见的。 换句话说, 在给定变量的关键部分内, 可以保证对该变量的所有前面关键部分的所有访问均已完成。
 
 这意味着 ACQUIRE 充当最小 “获取” 操作, RELEASE充当最小 “释放” 操作。
 
@@ -679,7 +679,7 @@ Documentation/core-api/dma-api.rst
 DATA DEPENDENCY BARRIERS (HISTORICAL)
 -------------------------------------
 
-As of v4.15 of the Linux kernel, an smp_mb() was added to READ_ONCE() for DEC Alpha, which means that about the only people who need to pay attention to this section are those working on DEC Alpha architecture-specific code and those working on READ_ONCE() itself.  For those who need it, and for those who are interested in the history, here is the story of data-dependency barriers.
+As of v4.15 of the Linux kernel, an `smp_mb()` was added to `READ_ONCE()` for DEC Alpha, which means that about the only people who need to pay attention to this section are those working on DEC Alpha architecture-specific code and those working on `READ_ONCE()` itself.  For those who need it, and for those who are interested in the history, here is the story of data-dependency barriers.
 
 The usage requirements of data dependency barriers are a little subtle, and it's not always obvious that they're needed.  To illustrate, consider the following sequence of events:
 
@@ -851,7 +851,7 @@ if (q) {
 ```
 
 
-Control dependencies pair normally with other types of barriers. That said, please note that neither `READ_ONCE()` nor `WRITE_ONCE()` are optional! Without the READ_ONCE(), the compiler might combine the load from 'a' with other loads from 'a'.  Without the WRITE_ONCE(), the compiler might combine the store to 'b' with other stores to 'b'. Either can result in highly counterintuitive effects on ordering.
+Control dependencies pair normally with other types of barriers. That said, please note that neither `READ_ONCE()` nor `WRITE_ONCE()` are optional! Without the `READ_ONCE()`, the compiler might combine the load from 'a' with other loads from 'a'.  Without the `WRITE_ONCE()`, the compiler might combine the store to 'b' with other stores to 'b'. Either can result in highly counterintuitive effects on ordering.
 
 Worse yet, if the compiler is able to prove (say) that the value of variable 'a' is always non-zero, it would be well within its rights to optimize the original example by eliminating the "if" statement as follows:
 
@@ -877,11 +877,11 @@ It is tempting to try to enforce ordering on identical stores on both branches o
 ```c
 q = READ_ONCE(a);
 if (q) {
-  barrier();
+  `barrier()`;
   WRITE_ONCE(b, 1);
   do_something();
 } else {
-  barrier();
+  `barrier()`;
   WRITE_ONCE(b, 1);
   do_something_else();
 }
@@ -904,14 +904,9 @@ if (q) {
 }
 ```
 
+Now there is no conditional between the load from 'a' and the store to 'b', which means that the CPU is within its rights to reorder them: The conditional is absolutely required, and must be present in the assembly code even after all compiler optimizations have been applied. Therefore, if you need ordering in this example, you need explicit memory barriers, for example, `smp_store_release()`:
 
-#########################################################
-############# 到此处
-#########################################################
-
-Now there is no conditional between the load from 'a' and the store to 'b', which means that the CPU is within its rights to reorder them: The conditional is absolutely required, and must be present in the assembly code even after all compiler optimizations have been applied. Therefore, if you need ordering in this example, you need explicit memory barriers, for example, smp_store_release():
-
-现在, 从'a'和存储到'b'的加载之间没有条件, 这意味着CPU有权对其进行重新排序: 绝对需要该条件, 并且即使在毕竟汇编代码中也必须存在该条件 编译器优化已得到应用。 因此, 如果在此示例中需要排序, 则需要显式的内存屏障, 例如smp_store_release（）:
+现在, load 'a' 和 store 'b' 之间没有条件, 这意味着CPU有权对其进行重排序:  条件是绝对需要的, 即使在编译器优化之后, 在汇编代码中也必须存在该条件。 因此, 如果在此示例中需要保证顺序, 则需要显式的内存屏障, 例如 `smp_store_release()`:
 
 ```c
 q = READ_ONCE(a);
@@ -926,7 +921,7 @@ if (q) {
 
 In contrast, without explicit memory barriers, two-legged-if control ordering is guaranteed only when the stores differ, for example:
 
-相反, 如果没有显式的内存屏障, 则只有在存储区不同时才能保证两足的控制顺序, 例如:
+相反, 如果没有显式的内存屏障, 则只有在 store 不同时才能保证if的两条腿之间的控制顺序, 例如:
 
 ```c
 q = READ_ONCE(a);
@@ -939,13 +934,13 @@ if (q) {
 }
 ```
 
-The initial READ_ONCE() is still required to prevent the compiler from proving the value of 'a'.
+The initial `READ_ONCE()` is still required to prevent the compiler from proving the value of 'a'.
 
 In addition, you need to be careful what you do with the local variable 'q', otherwise the compiler might be able to guess the value and again remove the needed conditional.  For example:
 
-仍然需要初始READ_ONCE（）来防止编译器证明'a'的值。
+仍然需要初始的 `READ_ONCE()` 来防止编译器 proving 'a' 的值。
 
-另外, 您需要注意对局部变量“ q”的处理方式, 否则编译器可能会猜测该值并再次删除所需的条件。 例如:
+另外, 需要注意对局部变量 'q' 的处理方式, 否则编译器可能会猜测该值并再次删除所需的条件。 例如:
 
 ```c
 q = READ_ONCE(a);
@@ -958,9 +953,9 @@ if (q % MAX) {
 }
 ```
 
-If MAX is defined to be 1, then the compiler knows that (q % MAX) is equal to zero, in which case the compiler is within its rights to transform the above code into the following:
+If MAX is defined to be 1, then the compiler knows that `(q % MAX)` is equal to zero, in which case the compiler is within its rights to transform the above code into the following:
 
-如果将MAX定义为1, 则编译器知道（q％MAX）等于零, 在这种情况下, 编译器有权利将上述代码转换为以下代码:
+如果将 MAX 指定为1, 则编译器知道 `(q % MAX)` 等于零, 在这种情况下, 编译器有权将上述代码转换为以下代码:
 
 ```c
 q = READ_ONCE(a);
@@ -968,9 +963,9 @@ WRITE_ONCE(b, 2);
 do_something_else();
 ```
 
-Given this transformation, the CPU is not required to respect the ordering between the load from variable 'a' and the store to variable 'b'.  It is tempting to add a barrier(), but this does not help.  The conditional is gone, and the barrier won't bring it back.  Therefore, if you are relying on this ordering, you should make sure that MAX is greater than one, perhaps as follows:
+Given this transformation, the CPU is not required to respect the ordering between the load from variable 'a' and the store to variable 'b'.  It is tempting to add a `barrier()`, but this does not help.  The conditional is gone, and the barrier won't bring it back.  Therefore, if you are relying on this ordering, you should make sure that MAX is greater than one, perhaps as follows:
 
-通过这种转换, 不需要CPU遵守从变量“ a”到存储区到变量“ b”之间的加载顺序。 尝试添加barrier（）很诱人, 但这无济于事。 有条件的已经消失, 屏障也不会把它带回来。 因此, 如果您依赖此顺序, 则应确保MAX大于1, 也许如下所示:
+这种转换之后, CPU就不需要遵守 load 变量 'a' 和 store 变量 'b' 之间的顺序。 尝试添加 `barrier()` 看起来很诱人, 但并没有用。 条件已经消失, 屏障也不能把它带回来。 因此, 如果您依赖此顺序, 则应确保MAX大于1, 也许如下所示:
 
 ```c
 q = READ_ONCE(a);
@@ -988,9 +983,9 @@ Please note once again that the stores to 'b' differ.  If they were identical, a
 
 You must also be careful not to rely too much on boolean short-circuit evaluation.  Consider this example:
 
-请再次注意, “ b”存储区有所不同。 如前所述, 如果它们相同, 则编译器可以将此存储拉到'if'语句之外。
+请再次注意, store 'b' 的值有所不同。 如前所述, 如果它们相同, 则编译器可以将此 store 拉到 'if' 语句之外。
 
-您还必须注意不要过多地依赖布尔短路评估。 考虑以下示例:
+您还必须注意, 不要过多地依赖布尔值的短路计算。 请看以下示例:
 
 ```c
 q = READ_ONCE(a);
@@ -1000,20 +995,20 @@ if (q || 1 > 0)
 
 Because the first condition cannot fault and the second condition is always true, the compiler can transform this example as following, defeating control dependency:
 
-因为第一个条件不能出错, 而第二个条件始终为真, 所以编译器可以按如下所示变换此示例, 从而消除了对控件的依赖:
+因为第一个条件不可能出错, 而第二个条件始终为 true, 所以编译器可以按如下所示来进行变换, 从而消除了控制依赖:
 
 ```c
 q = READ_ONCE(a);
 WRITE_ONCE(b, 1);
 ```
 
-This example underscores the need to ensure that the compiler cannot out-guess your code.  More generally, although READ_ONCE() does force the compiler to actually emit code for a given load, it does not force the compiler to use the results.
+This example underscores the need to ensure that the compiler cannot out-guess your code.  More generally, although `READ_ONCE()` does force the compiler to actually emit code for a given load, it does not force the compiler to use the results.
 
 In addition, control dependencies apply only to the then-clause and else-clause of the if-statement in question.  In particular, it does not necessarily apply to code following the if-statement:
 
-此示例强调了确保编译器不会猜测您的代码的需要。 更一般而言, 尽管READ_ONCE（）确实会强制编译器针对给定的负载实际发出代码, 但不会强制编译器使用结果。
+此示例强调了确保编译器不会猜测您的代码的需要。 更通用地讲, 尽管 `READ_ONCE()` 确实会强制编译器针对给定的 load 操作生成代码, 但不会强制编译器使用他的结果。
 
-此外, 控制依赖项仅适用于所讨论的if语句的子句和其他子句。 特别是, 它不一定适用于if语句之后的代码:
+此外, 控制依赖项仅适用于所讨论的if语句的子句和 else-子句。 特别是, 它不一定适用于 if 语句后面的代码:
 
 ```c
 q = READ_ONCE(a);
@@ -1027,7 +1022,7 @@ WRITE_ONCE(c, 1);  /* BUG: No ordering against the read from 'a'. */
 
 It is tempting to argue that there in fact is ordering because the compiler cannot reorder volatile accesses and also cannot reorder the writes to 'b' with the condition.  Unfortunately for this line of reasoning, the compiler might compile the two writes to 'b' as conditional-move instructions, as in this fanciful pseudo-assembly language:
 
-很有说服力的是, 实际上是有序的, 因为编译器无法对易失性访问进行重新排序, 也无法根据条件对“ b”的写操作进行重新排序。 不幸的是, 出于这种推理, 编译器可能会将这两个对b的写操作作为条件移动指令进行编译, 例如在这种奇妙的伪汇编语言中:
+这段代码试图想要说明代码是有序的, 因为编译器无法对 volatile 易失性访问进行重排序,  也无法根据条件对 'b' 的写操作进行重排序。 不幸的是, 出于这种推理, 编译器可能会将这两个对b的写操作作为条件移动指令进行编译, 例如在这种奇妙的伪汇编语言中:
 
 ```c
 ld r1,a
@@ -1036,7 +1031,7 @@ cmov,ne r4,$1
 cmov,eq r4,$2
 st r4,b
 st $1,c
-```c
+```
 
 A weakly ordered CPU would have no dependency of any sort between the load from 'a' and the store to 'c'.  The control dependencies would extend only to the pair of cmov instructions and the store depending on them. In short, control dependencies apply only to the stores in the then-clause and else-clause of the if-statement in question (including functions invoked by those two clauses), not to code following that if-statement.
 
@@ -1044,34 +1039,39 @@ A weakly ordered CPU would have no dependency of any sort between the load from 
 Note well that the ordering provided by a control dependency is local to the CPU containing it.  See the section on "Multicopy atomicity" for more information.
 
 
-顺序较弱的CPU在从“ a”到存储到“ c”的负载之间将没有任何依赖关系。 控制依赖项将仅扩展到这对cmov指令和取决于它们的存储。 简而言之, 控制依赖项仅适用于所讨论的if语句的then子句和else子句中的存储（包括由这两个子句调用的函数）, 而不适用于该if语句之后的代码。
+顺序较弱的CPU在从 'a' load, 和 store 到 'c' 之间将没有任何依赖关系。 控制依赖项将仅扩展到这对 cmov 指令和依赖它们的store。 简而言之, 控制依赖项仅适用于所讨论的if语句的子句和else子句中的store（包括由这两个子句调用的函数）, 而不适用于if语句之后的代码。
 
 
-请注意, 控件依赖项提供的排序是包含它的CPU本地的。 有关更多信息, 请参见“多份原子性”部分。
+请注意, 控制依赖项提供的排序是包含它的CPU本地的。 更多信息, 请参见 "Multicopy atomicity" 部分。
 
 
 In summary:
 
-- (*) Control dependencies can order prior loads against later stores.  However, they do -not- guarantee any other sort of ordering:  Not prior loads against later loads, nor prior stores against  later anything.  If you need these other forms of ordering,  use smp_rmb(), smp_wmb(), or, in the case of prior stores and  later loads, smp_mb().
-- (*) If both legs of the "if" statement begin with identical stores to  the same variable, then those stores must be ordered, either by  preceding both of them with smp_mb() or by using smp_store_release()  to carry out the stores.  Please note that it is -not- sufficient  to use barrier() at beginning of each leg of the "if" statement  because, as shown by the example above, optimizing compilers can  destroy the control dependency while respecting the letter of the  barrier() law.
-- (*) Control dependencies require at least one run-time conditional  between the prior load and the subsequent store, and this  conditional must involve the prior load.  If the compiler is able  to optimize the conditional away, it will have also optimized  away the ordering.  Careful use of READ_ONCE() and WRITE_ONCE()  can help to preserve the needed conditional.
-- (*) Control dependencies require that the compiler avoid reordering the  dependency into nonexistence.  Careful use of READ_ONCE() or  atomic{,64}_read() can help to preserve your control dependency.  Please see the COMPILER BARRIER section for more information.
+- (*) Control dependencies can order prior loads against later stores.  However, they do -not- guarantee any other sort of ordering:  Not prior loads against later loads, nor prior stores against  later anything.  If you need these other forms of ordering,  use `smp_rmb()`, `smp_wmb()`, or, in the case of prior stores and  later loads, `smp_mb()`.
+- (*) If both legs of the "if" statement begin with identical stores to  the same variable, then those stores must be ordered, either by  preceding both of them with `smp_mb()` or by using `smp_store_release()`  to carry out the stores.  Please note that it is -not- sufficient  to use `barrier()` at beginning of each leg of the "if" statement  because, as shown by the example above, optimizing compilers can  destroy the control dependency while respecting the letter of the  `barrier()` law.
+- (*) Control dependencies require at least one run-time conditional  between the prior load and the subsequent store, and this  conditional must involve the prior load.  If the compiler is able  to optimize the conditional away, it will have also optimized  away the ordering.  Careful use of `READ_ONCE()` and `WRITE_ONCE()`  can help to preserve the needed conditional.
+- (*) Control dependencies require that the compiler avoid reordering the  dependency into nonexistence.  Careful use of `READ_ONCE()` or  `atomic{,64}_read()` can help to preserve your control dependency.  Please see the COMPILER BARRIER section for more information.
 - (*) Control dependencies apply only to the then-clause and else-clause  of the if-statement containing the control dependency, including  any functions that these two clauses call.  Control dependencies  do -not- apply to code following the if-statement containing the  control dependency.
 - (*) Control dependencies pair normally with other types of barriers.
-- (*) Control dependencies do -not- provide multicopy atomicity.  If you  need all the CPUs to see a given store at the same time, use smp_mb().
+- (*) Control dependencies do -not- provide multicopy atomicity.  If you  need all the CPUs to see a given store at the same time, use `smp_mb()`.
 - (*) Compilers do not understand control dependencies.  It is therefore  your job to ensure that they do not break your code.
 
 总结一下:
 
-- (*) 控件依赖项可以针对以后的存储命令先前的加载。但是, 它们不能保证任何其他排序方式: 不能将先前的装载与以后的装载相对, 也不能将先前的存储在以后的任何装载中。如果需要这些其他形式的订购, 请使用smp_rmb（）, smp_wmb（）, 或者, 对于以前的商店和以后的加载, 请使用smp_mb（）。
-- (*) 如果“ if”语句的两条腿都从相同的存储开始到相同的变量, 则必须对这些存储进行排序, 方法是在两个存储之前都加上smp_mb（）或使用smp_store_release（）来执行存储。请注意, 在“ if”语句的每一行的开始处仅使用barrier（）是不够的, 因为如上例所示, 优化编译器可能会破坏控件的依赖关系, 同时注意barrier（）的字母。法律。
-- (*) 控制依赖项要求在先前加载和后续存储之间至少有一个运行时条件, 并且该条件必须涉及先前加载。如果编译器能够优化条件分离, 那么它也将优化分离顺序。仔细使用READ_ONCE（）和WRITE_ONCE（）可以帮助保留所需的条件。
-- (*) 控制依赖项要求编译器避免将依赖项重新排序为不存在。仔细使用READ_ONCE（）或atomic {, 64} _read（）可以有助于保留控件的依赖性。请参阅“编译器屏障”部分以获取更多信息。
-- (*) 控制依赖项仅适用于包含控制依赖项的if语句的从句和else子句, 包括这两个子句调用的任何函数。控件依赖项不适用于包含控件依赖项的if语句之后的代码。
-- (*) 控制依赖项通常与其他类型的屏障配对。
-- (*) 控件依赖项不提供多副本原子性。如果需要所有CPU同时查看给定存储, 请使用smp_mb（）。
-- (*) 编译器不了解控件依赖性。因此, 确保它们不会破坏您的代码是您的工作。
+- (*) 控制依赖项可以保证前面的 load和后面的 store 顺序。 但是, 它们不保证任何其他排序方式:  不保证前面的load与后面的load顺序, 也不能保证前面的store和后面的任何操作的顺序。 如果需要这些形式的顺序, 请使用 `smp_rmb()`, `smp_wmb()`, 或者保证前面 store 与后面 load 操作的 `smp_mb()`。
+- (*) 如果 "if" 语句的两条腿都把相同的值store到同一个变量, 又需要保证这些store的顺序, 则需要在两个 store 之前都加上 `smp_mb()`, 或使用 `smp_store_release()` 来执行store。 请注意, 只在"if"语句每个分支的开始处使用 `barrier()`是不够的, 因为如上例所示, 编译器优化在关注 `barrier()` 规则的同时, 可能会破坏控制依赖关系。
+- (*) 控制依赖项要求在前面的load和后续的store之间至少有一个运行时条件, 并且该条件必须涉及前面的load。如果编译器能够将条件判断优化掉, 那么它也会将顺序给优化掉。 仔细使用 `READ_ONCE()` 和`WRITE_ONCE()`可以帮助保留所需的条件。
+- (*) 控制依赖项要求编译器避免将依赖项重排序为不存在。仔细使用 `READ_ONCE()` 或 `atomic{,64}_read()` 可以有助于保留控制依赖。请参阅 COMPILER BARRIER 部分以获取更多信息。
+- (*) 控制依赖仅适用于包含控制依赖项的if语句的从句和else子句, 包括这两个子句调用的任何函数。 控制依赖不适用于包含控制依赖项的if语句之后的代码。
+- (*) 控制依赖通常与其他类型的屏障搭配使用。
+- (*) 控制依赖不提供多副本原子性。如果需要所有CPU同时看到给定store的结果, 请使用`smp_mb()`。
+- (*) 编译器不了解控制依赖。 因此, 确保它们不会破坏您的代码是您的责任。
 
+
+
+#########################################################
+############# 到此处
+#########################################################
 
 <a name="SMP_BARRIER_PAIRING"></a>
 
@@ -1528,11 +1528,11 @@ General barriers can compensate not only for non-multicopy atomicity, but can al
   void cpu3(void)
   {
     WRITE_ONCE(v, 1);
-    smp_mb();
+    `smp_mb()`;
     r3 = READ_ONCE(u);
   }
 
-Because cpu0(), cpu1(), and cpu2() participate in a chain of smp_store_release()/smp_load_acquire() pairs, the following outcome is prohibited:
+Because cpu0(), cpu1(), and cpu2() participate in a chain of `smp_store_release()`/smp_load_acquire() pairs, the following outcome is prohibited:
 
   r0 == 1 && r1 == 1 && r2 == 1
 
@@ -1548,7 +1548,7 @@ As an aside, the following outcome is also possible:
 
   r0 == 0 && r1 == 1 && r2 == 1 && r3 == 0 && r4 == 0 && r5 == 1
 
-Although cpu0(), cpu1(), and cpu2() will see their respective reads and writes in order, CPUs not involved in the release-acquire chain might well disagree on the order.  This disagreement stems from the fact that the weak memory-barrier instructions used to implement smp_load_acquire() and smp_store_release() are not required to order prior stores against subsequent loads in all cases.  This means that cpu3() can see cpu0()'s store to u as happening -after- cpu1()'s load from v, even though both cpu0() and cpu1() agree that these two operations occurred in the intended order.
+Although cpu0(), cpu1(), and cpu2() will see their respective reads and writes in order, CPUs not involved in the release-acquire chain might well disagree on the order.  This disagreement stems from the fact that the weak memory-barrier instructions used to implement smp_load_acquire() and `smp_store_release()` are not required to order prior stores against subsequent loads in all cases.  This means that cpu3() can see cpu0()'s store to u as happening -after- cpu1()'s load from v, even though both cpu0() and cpu1() agree that these two operations occurred in the intended order.
 
 However, please keep in mind that smp_load_acquire() is not magic. In particular, it simply reads from its argument with ordering.  It does -not- ensure that any particular value will be read.  Therefore, the following outcome is possible:
 
@@ -1575,17 +1575,17 @@ COMPILER BARRIER
 
 The Linux kernel has an explicit compiler barrier function that prevents the compiler from moving the memory accesses either side of it to the other side:
 
-  barrier();
+  `barrier()`;
 
-This is a general barrier -- there are no read-read or write-write variants of barrier().  However, READ_ONCE() and WRITE_ONCE() can be thought of as weak forms of barrier() that affect only the specific accesses flagged by the READ_ONCE() or WRITE_ONCE().
+This is a general barrier -- there are no read-read or write-write variants of `barrier()`.  However, `READ_ONCE()` and `WRITE_ONCE()` can be thought of as weak forms of `barrier()` that affect only the specific accesses flagged by the `READ_ONCE()` or `WRITE_ONCE()`.
 
-The barrier() function has the following effects:
+The `barrier()` function has the following effects:
 
-- (*) Prevents the compiler from reordering accesses following the barrier() to precede any accesses preceding the barrier(). One example use for this property is to ease communication between interrupt-handler code and the code that was interrupted.
+- (*) Prevents the compiler from reordering accesses following the `barrier()` to precede any accesses preceding the `barrier()`. One example use for this property is to ease communication between interrupt-handler code and the code that was interrupted.
 
 - (*) Within a loop, forces the compiler to load the variables used in that loop's conditional on each pass through that loop.
 
-The READ_ONCE() and WRITE_ONCE() functions can prevent any number of optimizations that, while perfectly safe in single-threaded code, can be fatal in concurrent code.  Here are some examples of these sorts of optimizations:
+The `READ_ONCE()` and `WRITE_ONCE()` functions can prevent any number of optimizations that, while perfectly safe in single-threaded code, can be fatal in concurrent code.  Here are some examples of these sorts of optimizations:
 
 - (*) The compiler is within its rights to reorder loads and stores to the same variable, and in some cases, the CPU is within its rights to reorder loads to the same variable.  This means that the following code:
 
@@ -1597,7 +1597,7 @@ The READ_ONCE() and WRITE_ONCE() functions can prevent any number of optimizatio
   a[0] = READ_ONCE(x);
   a[1] = READ_ONCE(x);
 
-     In short, READ_ONCE() and WRITE_ONCE() provide cache coherence for accesses from multiple CPUs to a single variable.
+     In short, `READ_ONCE()` and `WRITE_ONCE()` provide cache coherence for accesses from multiple CPUs to a single variable.
 
 - (*) The compiler is within its rights to merge successive loads from the same variable.  Such merging can cause the compiler to "optimize" the following code:
 
@@ -1610,7 +1610,7 @@ The READ_ONCE() and WRITE_ONCE() functions can prevent any number of optimizatio
     for (;;)
       do_something_with(tmp);
 
-     Use READ_ONCE() to prevent the compiler from doing this to you:
+     Use `READ_ONCE()` to prevent the compiler from doing this to you:
 
   while (tmp = READ_ONCE(a))
     do_something_with(tmp);
@@ -1627,7 +1627,7 @@ The READ_ONCE() and WRITE_ONCE() functions can prevent any number of optimizatio
 
      For example, the optimized version of this code could result in passing a zero to do_something_with() in the case where the variable a was modified by some other CPU between the "while" statement and the call to do_something_with().
 
-     Again, use READ_ONCE() to prevent the compiler from doing this:
+     Again, use `READ_ONCE()` to prevent the compiler from doing this:
 
   while (tmp = READ_ONCE(a))
     do_something_with(tmp);
@@ -1647,14 +1647,14 @@ The READ_ONCE() and WRITE_ONCE() functions can prevent any number of optimizatio
      gets rid of a load and a branch.  The problem is that the compiler
      will carry out its proof assuming that the current CPU is the only
      one updating variable 'a'.  If variable 'a' is shared, then the
-     compiler's proof will be erroneous.  Use READ_ONCE() to tell the
+     compiler's proof will be erroneous.  Use `READ_ONCE()` to tell the
      compiler that it doesn't know as much as it thinks it does:
 
   while (tmp = READ_ONCE(a))
     do_something_with(tmp);
 
      But please note that the compiler is also closely watching what you
-     do with the value after the READ_ONCE().  For example, suppose you
+     do with the value after the `READ_ONCE()`.  For example, suppose you
      do the following and MAX is a preprocessor macro with the value 1:
 
   while ((tmp = READ_ONCE(a)) % MAX)
@@ -1681,7 +1681,7 @@ The READ_ONCE() and WRITE_ONCE() functions can prevent any number of optimizatio
      surprise if some other CPU might have stored to variable 'a' in the
      meantime.
 
-     Use WRITE_ONCE() to prevent the compiler from making this sort of
+     Use `WRITE_ONCE()` to prevent the compiler from making this sort of
      wrong guess:
 
   WRITE_ONCE(a, 0);
@@ -1715,7 +1715,7 @@ The READ_ONCE() and WRITE_ONCE() functions can prevent any number of optimizatio
   }
 
      If the interrupt occurs between these two statement, then
-     interrupt_handler() might be passed a garbled msg.  Use WRITE_ONCE()
+     interrupt_handler() might be passed a garbled msg.  Use `WRITE_ONCE()`
      to prevent this as follows:
 
   void process_level(void)
@@ -1730,27 +1730,27 @@ The READ_ONCE() and WRITE_ONCE() functions can prevent any number of optimizatio
       process_message(READ_ONCE(msg));
   }
 
-     Note that the READ_ONCE() and WRITE_ONCE() wrappers in
+     Note that the `READ_ONCE()` and `WRITE_ONCE()` wrappers in
      interrupt_handler() are needed if this interrupt handler can itself
      be interrupted by something that also accesses 'flag' and 'msg',
-     for example, a nested interrupt or an NMI.  Otherwise, READ_ONCE()
-     and WRITE_ONCE() are not needed in interrupt_handler() other than
+     for example, a nested interrupt or an NMI.  Otherwise, `READ_ONCE()`
+     and `WRITE_ONCE()` are not needed in interrupt_handler() other than
      for documentation purposes.  (Note also that nested interrupts
      do not typically occur in modern Linux kernels, in fact, if an
      interrupt handler returns with interrupts enabled, you will get a
      WARN_ONCE() splat.)
 
-     You should assume that the compiler can move READ_ONCE() and
-     WRITE_ONCE() past code not containing READ_ONCE(), WRITE_ONCE(),
-     barrier(), or similar primitives.
+     You should assume that the compiler can move `READ_ONCE()` and
+     `WRITE_ONCE()` past code not containing `READ_ONCE()`, `WRITE_ONCE()`,
+     `barrier()`, or similar primitives.
 
-     This effect could also be achieved using barrier(), but READ_ONCE()
-     and WRITE_ONCE() are more selective:  With READ_ONCE() and
-     WRITE_ONCE(), the compiler need only forget the contents of the
-     indicated memory locations, while with barrier() the compiler must
+     This effect could also be achieved using `barrier()`, but `READ_ONCE()`
+     and `WRITE_ONCE()` are more selective:  With `READ_ONCE()` and
+     `WRITE_ONCE()`, the compiler need only forget the contents of the
+     indicated memory locations, while with `barrier()` the compiler must
      discard the value of all memory locations that it has currently
      cached in any machine registers.  Of course, the compiler must also
-     respect the order in which the READ_ONCE()s and WRITE_ONCE()s occur,
+     respect the order in which the `READ_ONCE()`s and `WRITE_ONCE()`s occur,
      though the CPU of course need not do so.
 
 - (*) The compiler is within its rights to invent stores to a variable,
@@ -1771,7 +1771,7 @@ The READ_ONCE() and WRITE_ONCE() functions can prevent any number of optimizatio
      a branch.  Unfortunately, in concurrent code, this optimization
      could cause some other CPU to see a spurious value of 42 -- even
      if variable 'a' was never zero -- when loading variable 'b'.
-     Use WRITE_ONCE() to prevent this as follows:
+     Use `WRITE_ONCE()` to prevent this as follows:
 
   if (a)
     WRITE_ONCE(b, a);
@@ -1780,7 +1780,7 @@ The READ_ONCE() and WRITE_ONCE() functions can prevent any number of optimizatio
 
      The compiler can also invent loads.  These are usually less
      damaging, but they can result in cache-line bouncing and thus in
-     poor performance and scalability.  Use READ_ONCE() to prevent
+     poor performance and scalability.  Use `READ_ONCE()` to prevent
      invented loads.
 
 - (*) For aligned memory locations whose size allows them to be accessed
@@ -1799,7 +1799,7 @@ The READ_ONCE() and WRITE_ONCE() functions can prevent any number of optimizatio
      This optimization can therefore be a win in single-threaded code.
      In fact, a recent bug (since fixed) caused GCC to incorrectly use
      this optimization in a volatile store.  In the absence of such bugs,
-     use of WRITE_ONCE() prevents store tearing in the following example:
+     use of `WRITE_ONCE()` prevents store tearing in the following example:
 
   WRITE_ONCE(p, 0x00010002);
 
@@ -1818,21 +1818,21 @@ The READ_ONCE() and WRITE_ONCE() functions can prevent any number of optimizatio
   foo2.b = foo1.b;
   foo2.c = foo1.c;
 
-     Because there are no READ_ONCE() or WRITE_ONCE() wrappers and no
+     Because there are no `READ_ONCE()` or `WRITE_ONCE()` wrappers and no
      volatile markings, the compiler would be well within its rights to
      implement these three assignment statements as a pair of 32-bit
      loads followed by a pair of 32-bit stores.  This would result in
-     load tearing on 'foo1.b' and store tearing on 'foo2.b'.  READ_ONCE()
-     and WRITE_ONCE() again prevent tearing in this example:
+     load tearing on 'foo1.b' and store tearing on 'foo2.b'.  `READ_ONCE()`
+     and `WRITE_ONCE()` again prevent tearing in this example:
 
   foo2.a = foo1.a;
   WRITE_ONCE(foo2.b, READ_ONCE(foo1.b));
   foo2.c = foo1.c;
 
-All that aside, it is never necessary to use READ_ONCE() and
+All that aside, it is never necessary to use `READ_ONCE()` and
 WRITE_ONCE() on a variable that has been marked volatile.  For example,
 because 'jiffies' is marked volatile, it is never necessary to
-say READ_ONCE(jiffies).  The reason for this is that READ_ONCE() and
+say READ_ONCE(jiffies).  The reason for this is that `READ_ONCE()` and
 WRITE_ONCE() are implemented as volatile casts, which has no effect when
 its argument is already marked volatile.
 
@@ -1847,10 +1847,10 @@ The Linux kernel has eight basic CPU memory barriers:
 
   TYPE    MANDATORY    SMP CONDITIONAL
   ===============  =======================  ===========================
-  GENERAL    mb()      smp_mb()
+  GENERAL    mb()      `smp_mb()`
   WRITE    wmb()      smp_wmb()
   READ    rmb()      smp_rmb()
-  DATA DEPENDENCY        READ_ONCE()
+  DATA DEPENDENCY        `READ_ONCE()`
 
 
 All memory barriers except the data dependency barriers imply a compiler
@@ -1863,7 +1863,7 @@ the C specification that the compiler may not speculate the value of b
 (eg. is equal to 1) and load a[b] before b (eg. tmp = a[1]; if (b != 1)
 tmp = a[b]; ).  There is also the problem of a compiler reloading b after
 having loaded a[b], thus having a newer copy of b than a[b].  A consensus
-has not yet been reached about these problems, however the READ_ONCE()
+has not yet been reached about these problems, however the `READ_ONCE()`
 macro is a good place to start looking.
 
 SMP memory barriers are reduced to compiler barriers on uniprocessor compiled
@@ -2228,7 +2228,7 @@ initially zero:
   CPU 1        CPU 2
   ===============================  ===============================
   X = 1;        Y = 1;
-  smp_mb();      wake_up();
+  `smp_mb()`;      wake_up();
   LOAD Y        LOAD X
 
 If a wakeup does occur, one (at least) of the two loads must see 1.  If, on
@@ -2444,7 +2444,7 @@ The way to deal with this is to insert a general SMP memory barrier:
 
   LOAD waiter->list.next;
   LOAD waiter->task;
-  smp_mb();
+  `smp_mb()`;
   STORE waiter->task;
   CALL wakeup
   RELEASE task
@@ -2455,7 +2455,7 @@ with respect to the other CPUs on the system.  It does _not_ guarantee that all
 the memory accesses before the barrier will be complete by the time the barrier
 instruction itself is complete.
 
-On a UP system - where this wouldn't be a problem - the smp_mb() is just a
+On a UP system - where this wouldn't be a problem - the `smp_mb()` is just a
 compiler barrier, thus making sure the compiler emits the instructions in the
 right order without actually intervening in the CPU.  Since there's only one
 CPU, that CPU's dependency ordering logic will take care of everything else.
@@ -2866,12 +2866,12 @@ accesses:
 
 in that order, but, without intervention, the sequence may have almost any
 combination of elements combined or discarded, provided the program's view
-of the world remains consistent.  Note that READ_ONCE() and WRITE_ONCE()
+of the world remains consistent.  Note that `READ_ONCE()` and `WRITE_ONCE()`
 are -not- optional in the above example, as there are architectures
 where a given CPU might reorder successive loads to the same location.
-On such architectures, READ_ONCE() and WRITE_ONCE() do whatever is
+On such architectures, `READ_ONCE()` and `WRITE_ONCE()` do whatever is
 necessary to prevent this, for example, on Itanium the volatile casts
-used by READ_ONCE() and WRITE_ONCE() cause GCC to emit the special ld.acq
+used by `READ_ONCE()` and `WRITE_ONCE()` cause GCC to emit the special ld.acq
 and st.rel instructions (respectively) that prevent such reordering.
 
 The compiler may also combine, discard or defer elements of the sequence before
@@ -2886,13 +2886,13 @@ may be reduced to:
 
   *A = W;
 
-since, without either a write barrier or an WRITE_ONCE(), it can be
+since, without either a write barrier or an `WRITE_ONCE()`, it can be
 assumed that the effect of the storage of V to *A is lost.  Similarly:
 
   *A = Y;
   Z = *A;
 
-may, without a memory barrier or an READ_ONCE() and WRITE_ONCE(), be
+may, without a memory barrier or an `READ_ONCE()` and `WRITE_ONCE()`, be
 reduced to:
 
   *A = Y;
@@ -2912,7 +2912,7 @@ caches with the memory coherence system, thus making it seem like pointer
 changes vs new data occur in the right order.
 
 The Alpha defines the Linux kernel's memory model, although as of v4.15
-the Linux kernel's addition of smp_mb() to READ_ONCE() on Alpha greatly
+the Linux kernel's addition of `smp_mb()` to `READ_ONCE()` on Alpha greatly
 reduced its impact on the memory model.
 
 
@@ -2925,12 +2925,12 @@ interfacing with an SMP host while running an UP kernel.  Using mandatory
 barriers for this use-case would be possible but is often suboptimal.
 
 To handle this case optimally, low-level virt_mb() etc macros are available.
-These have the same effect as smp_mb() etc when SMP is enabled, but generate
+These have the same effect as `smp_mb()` etc when SMP is enabled, but generate
 identical code for SMP and non-SMP systems.  For example, virtual machine guests
-should use virt_mb() rather than smp_mb() when synchronizing against a
+should use virt_mb() rather than `smp_mb()` when synchronizing against a
 (possibly SMP) host.
 
-These are equivalent to smp_mb() etc counterparts in all other respects,
+These are equivalent to `smp_mb()` etc counterparts in all other respects,
 in particular, they do not control MMIO effects: to control
 MMIO effects, use mandatory barriers.
 
