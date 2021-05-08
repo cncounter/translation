@@ -1,4 +1,4 @@
-# 允许多次读取的HttpServletRequest
+# HttpServletRequest多次获取InputStream
 
 
 
