@@ -1321,7 +1321,7 @@ And thirdly, a read barrier acts as a partial order on loads.  Consider the foll
 
 Without intervention, CPU 2 may then choose to perceive the events on CPU 1 in some effectively random order, despite the write barrier issued by CPU 1:
 
-如果没有干预,CPU 2 便可以选择以某种有效的随机顺序感知到CPU 1上的事件,尽管CPU 1发出了写屏障：
+如果没有干预,CPU 2 便可以选择以某种有效的随机顺序感知到CPU 1上的事件,尽管CPU 1发出了写屏障:    
 
 ```c
   +-------+       :      :                :       :
@@ -1347,7 +1347,7 @@ Without intervention, CPU 2 may then choose to perceive the events on CPU 1 in s
 
 If, however, a read barrier were to be placed between the load of B and the load of A on CPU 2:
 
-但如果在 CPU 2 上 `LOAD B` 和 `LOAD A` 之间放一个读屏障：
+但如果在 CPU 2 上 `LOAD B` 和 `LOAD A` 之间放一个读屏障:    
 
 ```c
   CPU 1                    CPU 2
@@ -1363,7 +1363,7 @@ If, however, a read barrier were to be placed between the load of B and the load
 
 then the partial ordering imposed by CPU 1 will be perceived correctly by CPU 2:
 
-那么 CPU 2 将正确感知到 CPU 1 施加的部分排序：
+那么 CPU 2 将正确感知到 CPU 1 施加的部分排序:    
 
 ```c
   +-------+       :      :                :       :
@@ -1389,7 +1389,7 @@ then the partial ordering imposed by CPU 1 will be perceived correctly by CPU 2:
 
 To illustrate this more completely, consider what could happen if the code contained a load of A either side of the read barrier:
 
-为了更完整地说明这一点, 请考虑在读屏障前后两侧的代码都包含`LOAD A`的情况下,将会发生什么：
+为了更完整地说明这一点, 请考虑在读屏障前后两侧的代码都包含`LOAD A`的情况下,将会发生什么:    
 
 
 ```c
@@ -1407,7 +1407,7 @@ To illustrate this more completely, consider what could happen if the code conta
 
 Even though the two loads of A both occur after the load of B, they may both come up with different values:
 
-虽然两个 `LOAD A` 都在 `LOAD B` 后面，但它们可能具有不同的值：
+虽然两个 `LOAD A` 都在 `LOAD B` 后面，但它们可能具有不同的值:    
 
 ```c
   +-------+       :      :                :       :
@@ -1437,7 +1437,7 @@ Even though the two loads of A both occur after the load of B, they may both com
 
 But it may be that the update to A from CPU 1 becomes perceptible to CPU 2 before the read barrier completes anyway:
 
-但无论如何，在读屏障完成之前，CPU 2 一定可以感知到 CPU 1 对 A 执行的更新：
+但无论如何，在读屏障完成之前，CPU 2 一定可以感知到 CPU 1 对 A 执行的更新:    
 
 ```c
   +-------+       :      :                :       :
@@ -1470,12 +1470,6 @@ The guarantee is that the second load will always come up with `A == 1` if the l
 而不保证第一个 load, 可能会得到 `A == 0` 或者 `A == 1`。
 
 
-
-
-#########################################################
-############# 到此处
-#########################################################
-
 READ MEMORY BARRIERS VS LOAD SPECULATION
 ----------------------------------------
 
@@ -1487,16 +1481,22 @@ Consider:
 
 
 <a name="READ_MEMORY_BARRIERS_VS_LOAD_SPECULATION"></a>
-#### 2.5.2
+#### 2.5.2 内存读屏障 VS. LOAD预加载
+
+许多CPU对load有预加载: 也就是说，如果看到需要从内存中加载一项数据，并且找到了一个其他load不使用总线的时间，因此提前进行 load 加载 - 即使CPU在指令执行流程中实际上还没有到达这个点。 这允许执行到实际的 load 指令时会立即完成，因为CPU已经得到了这个值。
+
+事实证明，CPU实际上可能并不需要这个值 - 可能是因为分支绕过了 load - 在这种情况下，CPU可以丢弃该值, 或将其缓存以备后用。
+
+请看:    
 
 
 ```c
-  CPU 1      CPU 2
+  CPU 1                    CPU 2
   =======================  =======================
-        LOAD B
-        DIVIDE    } Divide instructions generally
-        DIVIDE    } take a long time to perform
-        LOAD A
+                            LOAD B
+                            DIVIDE    } 除法指令的执行
+                            DIVIDE    } 通常比较耗时
+                            LOAD A
 ```
 
 Which might appear as this:
@@ -1508,32 +1508,36 @@ Which might appear as this:
                                           +-------+       | CPU 2 |
                                           :       :DIVIDE |       |
                                           +-------+       |       |
-  The CPU being busy doing a --->     --->| A->0  |~~~~   |       |
-  division speculates on the              +-------+   ~   |       |
-  LOAD of A                               :       :   ~   |       |
+  CPU流水线正在忙着进行除法运算  --->     --->| A->0  |~~~~   |       |
+  根据预判, 先把 LOAD A 执行了               +-------+   ~   |       |
+                                          :       :   ~   |       |
                                           :       :DIVIDE |       |
                                           :       :   ~   |       |
-  Once the divisions are complete -->     :       :   ~-->|       |
-  the CPU can then perform the            :       :       |       |
-  LOAD with immediate effect              :       :       +-------+
+  一旦除法计算完成，                 -->     :       :   ~-->|       |
+  LOAD即可触发立即完成的效果                  :       :       |       |
+                                          :       :       +-------+
 ```
 
 
 Placing a read barrier or a data dependency barrier just before the second load:
 
+在第二次 load 之前放置读屏障或数据依赖屏障：
 
 ```c
-  CPU 1      CPU 2
+  CPU 1                     CPU 2
   =======================  =======================
-        LOAD B
-        DIVIDE
-        DIVIDE
-        <read barrier>
-        LOAD A
+                            LOAD B
+                            DIVIDE
+                            DIVIDE
+                            <read barrier>
+                            LOAD A
 
 ```
 
 will force any value speculatively obtained to be reconsidered to an extent dependent on the type of barrier used.  If there was no change made to the speculated memory location, then the speculated value will just be used:
+
+将会迫使CPU重新考虑以推断方式获得的任何值，这取决于所使用的屏障的类型。
+如果对推断的内存位置没有进行任何更改，则直接使用提前取到的值：
 
 ```c
                                           :       :       +-------+
@@ -1542,9 +1546,9 @@ will force any value speculatively obtained to be reconsidered to an extent depe
                                           +-------+       | CPU 2 |
                                           :       :DIVIDE |       |
                                           +-------+       |       |
-  The CPU being busy doing a --->     --->| A->0  |~~~~   |       |
-  division speculates on the              +-------+   ~   |       |
-  LOAD of A                               :       :   ~   |       |
+  CPU忙于进行除法运算, --->              --->| A->0  |~~~~   |       |
+  推断着执行 LOAD A                         +-------+   ~   |       |
+                                          :       :   ~   |       |
                                           :       :DIVIDE |       |
                                           :       :   ~   |       |
                                           :       :   ~   |       |
@@ -1558,6 +1562,8 @@ will force any value speculatively obtained to be reconsidered to an extent depe
 
 but if there was an update or an invalidation from another CPU pending, then the speculation will be cancelled and the value reloaded:
 
+但如果另一个CPU执行了更新或者失效，那么将取消推测, 并重新加载该值：
+
 ```c
                                           :       :       +-------+
                                           +-------+       |       |
@@ -1565,19 +1571,27 @@ but if there was an update or an invalidation from another CPU pending, then the
                                           +-------+       | CPU 2 |
                                           :       :DIVIDE |       |
                                           +-------+       |       |
-  The CPU being busy doing a --->     --->| A->0  |~~~~   |       |
-  division speculates on the              +-------+   ~   |       |
-  LOAD of A                               :       :   ~   |       |
+  CPU忙于进行除法运算,          --->     --->| A->0  |~~~~   |       |
+  推断着执行 LOAD A                         +-------+   ~   |       |
+                                          :       :   ~   |       |
                                           :       :DIVIDE |       |
                                           :       :   ~   |       |
                                           :       :   ~   |       |
                                       rrrrrrrrrrrrrrrrr   |       |
                                           +-------+       |       |
-  The speculation is discarded --->   --->| A->1  |------>|       |
-  and an updated value is                 +-------+       |       |
-  retrieved                               :       :       +-------+
+  丢弃推断预加载的值              --->   --->| A->1  |------>|       |
+  并获取更新后的值                           +-------+       |       |
+                                          :       :       +-------+
 
 ```
+
+
+
+
+#########################################################
+############# 到此处
+#########################################################
+
 
 MULTICOPY ATOMICITY
 --------------------
