@@ -507,7 +507,7 @@ A CPU can be viewed as committing a sequence of store operations to the memory s
 
 随着时间的流逝, CPU可以看作是向内存系统提交了一系列 store 操作。 在写屏障之前的所有 store, 都会在写屏障之后的任意 store 前完成。
 
-> [!] 请注意, 写屏障一般要和读屏障,或者数据相关性屏障搭配使用； 请参阅 ["SMP barrier pairing"](#SMP_BARRIER_PAIRING) 小节。
+> [!] 请注意, 写屏障一般要和读屏障,或者数据依赖屏障搭配使用； 请参阅 ["SMP barrier pairing"](#SMP_BARRIER_PAIRING) 小节。
 
 
 (2) Data dependency barriers.
@@ -531,9 +531,9 @@ See the "Examples of memory barrier sequences" subsection for diagrams showing t
 数据依赖屏障只是相互依存的 load 的局部排序； 不需要影响 store, 独立的load, 以及重叠加载(overlapping load)。
 
 如（1）中所述, 可以将系统中的其他CPU视为顺序提交一连串 store 给内存系统, 而当前CPU可以感知到。
-某个CPU发出的数据相关性屏障, 可确保对于在其之前的任何load, 如果该load接触到了另一个CPU的一系列store中的一个, 则在该屏障完成时, 该接触之前的所有store的影响, 在数据依赖屏障之后发出的任何load都可以感知到这些变化。
+某个CPU发出的数据依赖屏障, 可确保对于在其之前的任何load, 如果该load接触到了另一个CPU的一系列store中的一个, 则在该屏障完成时, 该接触之前的所有store的影响, 在数据依赖屏障之后发出的任何load都可以感知到这些变化。
 
-排序约束相关的图示, 请参见 "Examples of memory barrier sequences" 小节。
+排序约束相关的图示, 请参见 [2.5.1 内存屏障序列的示例](#EXAMPLES_OF_MEMORY_BARRIER_SEQUENCES) 小节。
 
 > [!] 请注意, 实际上第一个 load 必须具有数据依赖关系(data dependency), 而不是控制依赖关系(control dependency)。 如果第二个 load 的地址依赖于第一个load, 但并不去加载实际的地址本身, 这种依赖关系是通过条件来进行的, 那么它就是控制依赖关系, 这时候就需要使用完全读屏障或更高级别的屏障。 更多控制依赖的信息, 请参见 "Control dependencies" 小节。
 
@@ -1069,55 +1069,75 @@ In summary:
 
 
 
-#########################################################
-############# 到此处
-#########################################################
-
-<a name="SMP_BARRIER_PAIRING"></a>
-
 SMP BARRIER PAIRING
 -------------------
 
 When dealing with CPU-CPU interactions, certain types of memory barrier should always be paired.  A lack of appropriate pairing is almost certainly an error.
 
-General barriers pair with each other, though they also pair with most other types of barriers, albeit without multicopy atomicity.  An acquire barrier pairs with a release barrier, but both may also pair with other barriers, including of course general barriers.  A write barrier pairs with a data dependency barrier, a control dependency, an acquire barrier, a release barrier, a read barrier, or a general barrier.  Similarly a read barrier, control dependency, or a data dependency barrier pairs with a write barrier, an acquire barrier, a release barrier, or a
-general barrier:
+General barriers pair with each other, though they also pair with most other types of barriers, albeit without multicopy atomicity.  An acquire barrier pairs with a release barrier, but both may also pair with other barriers, including of course general barriers.  A write barrier pairs with a data dependency barrier, a control dependency, an acquire barrier, a release barrier, a read barrier, or a general barrier.  Similarly a read barrier, control dependency, or a data dependency barrier pairs with a write barrier, an acquire barrier, a release barrier, or a general barrier:
 
-  CPU 1          CPU 2
+
+<a name="SMP_BARRIER_PAIRING"></a>
+### 2.5 SMP屏障搭配
+
+在处理CPU与CPU之间的交互时,应始终搭配使用某些类型的内存屏障。 如果没有合适的屏障, 可以肯定会存在错误。
+
+通用屏障彼此配对,尽管它们也可以和其他类型的大多数屏障配对,尽管没有多拷贝原子性。
+获取屏障与释放屏障彼此配对,但两者也可能与其他屏障配对,当然也包括一般屏障。
+写屏障可以和: 数据依赖屏障,控制依赖屏障,获取屏障,释放屏障,读屏障, 以及常规屏障配对。
+类似地,读屏障,控制依赖屏障,或数据依赖屏障, 也可以和写屏障,获取屏障,释放屏障或常规屏障配对:
+
+```c
+  CPU 1                  CPU 2
   ===============        ===============
   WRITE_ONCE(a, 1);
   <write barrier>
-  WRITE_ONCE(b, 2);     x = READ_ONCE(b);
-            <read barrier>
-            y = READ_ONCE(a);
+  WRITE_ONCE(b, 2);      x = READ_ONCE(b);
+                         <read barrier>
+                         y = READ_ONCE(a);
+```
 
 Or:
 
-  CPU 1          CPU 2
+或者是这样:
+
+```c
+  CPU 1                  CPU 2
   ===============        ===============================
   a = 1;
   <write barrier>
   WRITE_ONCE(b, &a);    x = READ_ONCE(b);
-            <data dependency barrier>
-            y = *x;
+                        <data dependency barrier>
+                        y = *x;
+```
 
 Or even:
 
-  CPU 1          CPU 2
+或者是这样:
+
+```c
+  CPU 1                  CPU 2
   ===============        ===============================
   r1 = READ_ONCE(y);
   <general barrier>
   WRITE_ONCE(x, 1);     if (r2 = READ_ONCE(x)) {
-               <implicit control dependency>
-               WRITE_ONCE(y, 1);
-            }
+                            <implicit control dependency>
+                            WRITE_ONCE(y, 1);
+                        }
 
   assert(r1 == 0 || r2 == 0);
+```
 
 Basically, the read barrier always has to be there, even though it can be of the "weaker" type.
 
-[!] Note that the stores before the write barrier would normally be expected to match the loads after the read barrier or the data dependency barrier, and vice versa:
+> [!] Note that the stores before the write barrier would normally be expected to match the loads after the read barrier or the data dependency barrier, and vice versa:
 
+一般来说,必须始终在其中放置读屏障, 即使它是一个 “较弱” 类型的屏障,
+
+> [!] 请注意,通常预期是: 写屏障之前的 store, 与读屏障或数据依赖屏障之后的 load 相匹配,反之亦然:
+
+
+```c
   CPU 1                               CPU 2
   ===================                 ===================
   WRITE_ONCE(a, 1);    }----   --->{  v = READ_ONCE(c);
@@ -1125,59 +1145,84 @@ Basically, the read barrier always has to be there, even though it can be of the
   <write barrier>            \        <read barrier>
   WRITE_ONCE(c, 3);    }    / \    {  x = READ_ONCE(a);
   WRITE_ONCE(d, 4);    }----   --->{  y = READ_ONCE(b);
-
+```
 
 EXAMPLES OF MEMORY BARRIER SEQUENCES
 ------------------------------------
 
 Firstly, write barriers act as partial orderings on store operations. Consider the following sequence of events:
 
-  CPU 1
-  =======================
-  STORE A = 1
-  STORE B = 2
-  STORE C = 3
-  <write barrier>
-  STORE D = 4
-  STORE E = 5
 
-This sequence of events is committed to the memory coherence system in an order that the rest of the system might perceive as the unordered set of { STORE A, STORE B, STORE C } all occurring before the unordered set of { STORE D, STORE E }:
 
+<a name="EXAMPLES_OF_MEMORY_BARRIER_SEQUENCES"></a>
+#### 2.5.1 内存屏障序列的示例
+
+首先, 写屏障(write barrier)充当了对 store 操作进行部分排序的角色。
+请看以下事件序列:
+
+```c
+CPU 1
+=======================
+STORE A = 1
+STORE B = 2
+STORE C = 3
+<write barrier>
+STORE D = 4
+STORE E = 5
+```
+
+This sequence of events is committed to the memory coherence system in an order that the rest of the system might perceive as the unordered set of `{ STORE A, STORE B, STORE C }` all occurring before the unordered set of `{ STORE D, STORE E }`:
+
+事件序列提交给内存一致性系统(memory coherence system):  而系统的其余部分可以将 `{ STORE A, STORE B, STORE C }` 视为无序的集合,只要它们都发生另一个无序集合 `{ STORE D, STORE E }` 之前:
+
+
+```c
   +-------+       :      :
   |       |       +------+
   |       |------>| C=3  |     }     /\
-  |       |  :    +------+     }-----  \  -----> Events perceptible to
-  |       |  :    | A=1  |     }        \/       the rest of the system
+  |       |  :    +------+     }-----  \  -----> 系统其余部分可能感知到
+  |       |  :    | A=1  |     }        \/       (perceptible)的事件顺序
   |       |  :    +------+     }
   | CPU 1 |  :    | B=2  |     }
   |       |       +------+     }
-  |       |   wwwwwwwwwwwwwwww }   <--- At this point the write barrier
-  |       |       +------+     }        requires all stores prior to the
-  |       |  :    | E=5  |     }        barrier to be committed before
-  |       |  :    +------+     }        further stores may take place
+  |       |   wwwwwwwwwwwwwwww }   <--- 写屏障在这个位置,
+  |       |       +------+     }        要求先进行(committed)屏障前面的所有 store,
+  |       |  :    | E=5  |     }        然后再进行后面的 store
+  |       |  :    +------+     }        
   |       |------>| D=4  |     }
   |       |       +------+
   +-------+       :      :
                      |
-                     | Sequence in which stores are committed to the
-                     | memory system by CPU 1
+                     | CPU 1 执行时,
+                     | 提交 store 给内存系统的顺序
                      V
+```
 
 
 Secondly, data dependency barriers act as partial orderings on data-dependent loads.  Consider the following sequence of events:
 
-  CPU 1      CPU 2
+其次, 数据依赖屏障(data dependency barriers)充当了数据依赖 load 的部分排序。
+请看以下事件序列:
+
+
+```c
+  CPU 1                    CPU 2
   =======================  =======================
-    { B = 7; X = 9; Y = 8; C = &Y }
+    初始值: { B = 7; X = 9; Y = 8; C = &Y }
   STORE A = 1
   STORE B = 2
   <write barrier>
-  STORE C = &B    LOAD X
-  STORE D = 4    LOAD C (gets &B)
-        LOAD *C (reads B)
+  STORE C = &B            LOAD X
+  STORE D = 4             LOAD C (期望gets &B)
+                          LOAD *C (期望reads B)
+```
 
 Without intervention, CPU 2 may perceive the events on CPU 1 in some effectively random order, despite the write barrier issued by CPU 1:
 
+如果没有干预(intervention), 即使 CPU 1 发出了写屏障, 但 CPU 2 还是可能会以某种优化的随机顺序感知到CPU 1上的事件。
+
+
+```c
   +-------+       :      :                :       :
   |       |       +------+                +-------+  | Sequence of update
   |       |------>| B=2  |-----       --->| Y->8  |  | of perception on
@@ -1203,25 +1248,35 @@ Without intervention, CPU 2 may perceive the events on CPU 1 in some effectively
       of coherence of B             ----->| B->2  |       +-------+
                                           +-------+
                                           :       :
+```
 
 
 In the above example, CPU 2 perceives that B is 7, despite the load of *C (which would be B) coming after the LOAD of C.
 
 If, however, a data dependency barrier were to be placed between the load of C and the load of *C (ie: B) on CPU 2:
 
-  CPU 1      CPU 2
+在上面的案例中, CPU 2 看到的 B 值为 7, 虽然 `LOAD *C`（可能为B）是在 `LOAD C` 之后出现。
+
+但如果在 CPU 2 的  `LOAD C` 和 `LOAD *C`（即: B）之间加一个数据依赖屏障:
+
+```c
+  CPU 1                    CPU 2
   =======================  =======================
-    { B = 7; X = 9; Y = 8; C = &Y }
+    初始值: { B = 7; X = 9; Y = 8; C = &Y }
   STORE A = 1
   STORE B = 2
   <write barrier>
-  STORE C = &B    LOAD X
-  STORE D = 4    LOAD C (gets &B)
-        <data dependency barrier>
-        LOAD *C (reads B)
+  STORE C = &B             LOAD X
+  STORE D = 4              LOAD C (gets &B)
+                           <data dependency barrier>
+                           LOAD *C (reads B)
+```
 
 then the following will occur:
 
+那么情况将会变成这样:
+
+```c
   +-------+       :      :                :       :
   |       |       +------+                +-------+
   |       |------>| B=2  |-----       --->| Y->8  |
@@ -1245,21 +1300,30 @@ then the following will occur:
     are perceptible to              ----->| B->2  |------>|       |
     subsequent loads                      +-------+       |       |
                                           :       :       +-------+
+```
 
 
 And thirdly, a read barrier acts as a partial order on loads.  Consider the following sequence of events:
 
-  CPU 1      CPU 2
+再次, 读屏障(read barrier)用作 load 的部分顺序。
+请看以下事件序列:
+
+```c
+  CPU 1                    CPU 2
   =======================  =======================
-    { A = 0, B = 9 }
+    初始值:  { A = 0, B = 9 }
   STORE A=1
   <write barrier>
   STORE B=2
-        LOAD B
-        LOAD A
+                           LOAD B
+                           LOAD A
+```
 
 Without intervention, CPU 2 may then choose to perceive the events on CPU 1 in some effectively random order, despite the write barrier issued by CPU 1:
 
+如果没有干预,CPU 2 便可以选择以某种有效的随机顺序感知到CPU 1上的事件,尽管CPU 1发出了写屏障：
+
+```c
   +-------+       :      :                :       :
   |       |       +------+                +-------+
   |       |------>| A=1  |------      --->| A->0  |
@@ -1279,22 +1343,29 @@ Without intervention, CPU 2 may then choose to perceive the events on CPU 1 in s
                                      ---->| A->1  |
                                           +-------+
                                           :       :
-
+```
 
 If, however, a read barrier were to be placed between the load of B and the load of A on CPU 2:
 
-  CPU 1      CPU 2
+但如果在 CPU 2 上 `LOAD B` 和 `LOAD A` 之间放一个读屏障：
+
+```c
+  CPU 1                    CPU 2
   =======================  =======================
     { A = 0, B = 9 }
   STORE A=1
   <write barrier>
   STORE B=2
-        LOAD B
-        <read barrier>
-        LOAD A
+                           LOAD B
+                           <read barrier>
+                           LOAD A
+```
 
 then the partial ordering imposed by CPU 1 will be perceived correctly by CPU 2:
 
+那么 CPU 2 将正确感知到 CPU 1 施加的部分排序：
+
+```c
   +-------+       :      :                :       :
   |       |       +------+                +-------+
   |       |------>| A=1  |------      --->| A->0  |
@@ -1313,23 +1384,32 @@ then the partial ordering imposed by CPU 1 will be perceived correctly by CPU 2:
     prior to the storage of B        ---->| A->1  |------>|       |
     to be perceptible to CPU 2            +-------+       |       |
                                           :       :       +-------+
+```
 
 
 To illustrate this more completely, consider what could happen if the code contained a load of A either side of the read barrier:
 
-  CPU 1      CPU 2
+为了更完整地说明这一点, 请考虑在读屏障前后两侧的代码都包含`LOAD A`的情况下,将会发生什么：
+
+
+```c
+  CPU 1                    CPU 2
   =======================  =======================
     { A = 0, B = 9 }
   STORE A=1
   <write barrier>
   STORE B=2
-        LOAD B
-        LOAD A [first load of A]
-        <read barrier>
-        LOAD A [second load of A]
+                           LOAD B
+                           LOAD A [first load of A]
+                           <read barrier>
+                           LOAD A [second load of A]
+```
 
 Even though the two loads of A both occur after the load of B, they may both come up with different values:
 
+虽然两个 `LOAD A` 都在 `LOAD B` 后面，但它们可能具有不同的值：
+
+```c
   +-------+       :      :                :       :
   |       |       +------+                +-------+
   |       |------>| A=1  |------      --->| A->0  |
@@ -1352,9 +1432,14 @@ Even though the two loads of A both occur after the load of B, they may both com
     to be perceptible to CPU 2            +-------+       |       |
                                           :       :       +-------+
 
+```
+
 
 But it may be that the update to A from CPU 1 becomes perceptible to CPU 2 before the read barrier completes anyway:
 
+但无论如何，在读屏障完成之前，CPU 2 一定可以感知到 CPU 1 对 A 执行的更新：
+
+```c
   +-------+       :      :                :       :
   |       |       +------+                +-------+
   |       |------>| A=1  |------      --->| A->0  |
@@ -1376,10 +1461,20 @@ But it may be that the update to A from CPU 1 becomes perceptible to CPU 2 befor
                                           | A->1  |------>| 2nd   |
                                           +-------+       |       |
                                           :       :       +-------+
+```
 
 
-The guarantee is that the second load will always come up with A == 1 if the load of B came up with B == 2.  No such guarantee exists for the first load of A; that may come up with either A == 0 or A == 1.
+The guarantee is that the second load will always come up with `A == 1` if the load of B came up with `B == 2`.  No such guarantee exists for the first load of A; that may come up with either `A == 0` or `A == 1`.
 
+这对屏障保证: 如果 load B 得到的是 `B == 2` ，则保证第二个 load 将始终得到 `A == 1`。
+而不保证第一个 load, 可能会得到 `A == 0` 或者 `A == 1`。
+
+
+
+
+#########################################################
+############# 到此处
+#########################################################
 
 READ MEMORY BARRIERS VS LOAD SPECULATION
 ----------------------------------------
@@ -1390,15 +1485,23 @@ It may turn out that the CPU didn't actually need the value - perhaps because a 
 
 Consider:
 
+
+<a name="READ_MEMORY_BARRIERS_VS_LOAD_SPECULATION"></a>
+#### 2.5.2
+
+
+```c
   CPU 1      CPU 2
   =======================  =======================
         LOAD B
         DIVIDE    } Divide instructions generally
         DIVIDE    } take a long time to perform
         LOAD A
+```
 
 Which might appear as this:
 
+```c
                                           :       :       +-------+
                                           +-------+       |       |
                                       --->| B->2  |------>|       |
@@ -1413,10 +1516,13 @@ Which might appear as this:
   Once the divisions are complete -->     :       :   ~-->|       |
   the CPU can then perform the            :       :       |       |
   LOAD with immediate effect              :       :       +-------+
+```
 
 
 Placing a read barrier or a data dependency barrier just before the second load:
 
+
+```c
   CPU 1      CPU 2
   =======================  =======================
         LOAD B
@@ -1425,8 +1531,11 @@ Placing a read barrier or a data dependency barrier just before the second load:
         <read barrier>
         LOAD A
 
+```
+
 will force any value speculatively obtained to be reconsidered to an extent dependent on the type of barrier used.  If there was no change made to the speculated memory location, then the speculated value will just be used:
 
+```c
                                           :       :       +-------+
                                           +-------+       |       |
                                       --->| B->2  |------>|       |
@@ -1445,9 +1554,11 @@ will force any value speculatively obtained to be reconsidered to an extent depe
                                           :       :       |       |
                                           :       :       +-------+
 
+```
 
 but if there was an update or an invalidation from another CPU pending, then the speculation will be cancelled and the value reloaded:
 
+```c
                                           :       :       +-------+
                                           +-------+       |       |
                                       --->| B->2  |------>|       |
@@ -1466,6 +1577,7 @@ but if there was an update or an invalidation from another CPU pending, then the
   and an updated value is                 +-------+       |       |
   retrieved                               :       :       +-------+
 
+```
 
 MULTICOPY ATOMICITY
 --------------------
@@ -1474,12 +1586,15 @@ Multicopy atomicity is a deeply intuitive notion about ordering that is not alwa
 
 The following example demonstrates multicopy atomicity:
 
-  CPU 1      CPU 2      CPU 3
+```c
+  CPU 1                    CPU 2                    CPU 3
   =======================  =======================  =======================
     { X = 0, Y = 0 }
   STORE X=1    r1=LOAD X (reads 1)  LOAD Y (reads 1)
         <general barrier>  <read barrier>
         STORE Y=r1    LOAD X
+
+```
 
 Suppose that CPU 2's load from X returns 1, which it then stores to Y, and CPU 3's load from Y returns 1.  This indicates that CPU 1's store to X precedes CPU 2's load from X and that CPU 2's store to Y precedes CPU 3's load from Y.  In addition, the memory barriers guarantee that CPU 2 executes its load before its store, and CPU 3 loads from Y before it loads from X.  The question is then "Can CPU 3's load from X return 0?"
 
@@ -1489,12 +1604,15 @@ The use of a general memory barrier in the example above compensates for any lac
 
 However, dependencies, read barriers, and write barriers are not always able to compensate for non-multicopy atomicity.  For example, suppose that CPU 2's general barrier is removed from the above example, leaving only the data dependency shown below:
 
-  CPU 1      CPU 2      CPU 3
+```c
+  CPU 1                    CPU 2                    CPU 3
   =======================  =======================  =======================
     { X = 0, Y = 0 }
   STORE X=1    r1=LOAD X (reads 1)  LOAD Y (reads 1)
         <data dependency>  <read barrier>
         STORE Y=r1    LOAD X (reads 0)
+
+```
 
 This substitution allows non-multicopy atomicity to run rampant: in this example, it is perfectly legal for CPU 2's load from X to return 1, CPU 3's load from Y to return 1, and its load from X to return 0.
 
@@ -1502,6 +1620,8 @@ The key point is that although CPU 2's data dependency orders its load and store
 
 General barriers can compensate not only for non-multicopy atomicity, but can also generate additional ordering that can ensure that -all- CPUs will perceive the same order of -all- operations.  In contrast, a chain of release-acquire pairs do not provide this additional ordering, which means that only those CPUs on the chain are guaranteed to agree on the combined order of the accesses.  For example, switching to C code in deference to the ghost of Herman Hollerith:
 
+
+```c
   int u, v, x, y, z;
 
   void cpu0(void)
@@ -1532,27 +1652,44 @@ General barriers can compensate not only for non-multicopy atomicity, but can al
     r3 = READ_ONCE(u);
   }
 
+```
+
 Because cpu0(), cpu1(), and cpu2() participate in a chain of `smp_store_release()`/smp_load_acquire() pairs, the following outcome is prohibited:
 
+```c
   r0 == 1 && r1 == 1 && r2 == 1
+
+```
 
 Furthermore, because of the release-acquire relationship between cpu0() and cpu1(), cpu1() must see cpu0()'s writes, so that the following outcome is prohibited:
 
+```c
   r1 == 1 && r5 == 0
+
+```
 
 However, the ordering provided by a release-acquire chain is local to the CPUs participating in that chain and does not apply to cpu3(), at least aside from stores.  Therefore, the following outcome is possible:
 
+```c
   r0 == 0 && r1 == 1 && r2 == 1 && r3 == 0 && r4 == 0
+
+```
 
 As an aside, the following outcome is also possible:
 
+```c
   r0 == 0 && r1 == 1 && r2 == 1 && r3 == 0 && r4 == 0 && r5 == 1
+
+```
 
 Although cpu0(), cpu1(), and cpu2() will see their respective reads and writes in order, CPUs not involved in the release-acquire chain might well disagree on the order.  This disagreement stems from the fact that the weak memory-barrier instructions used to implement smp_load_acquire() and `smp_store_release()` are not required to order prior stores against subsequent loads in all cases.  This means that cpu3() can see cpu0()'s store to u as happening -after- cpu1()'s load from v, even though both cpu0() and cpu1() agree that these two operations occurred in the intended order.
 
 However, please keep in mind that smp_load_acquire() is not magic. In particular, it simply reads from its argument with ordering.  It does -not- ensure that any particular value will be read.  Therefore, the following outcome is possible:
 
+```c
   r0 == 0 && r1 == 0 && r2 == 0 && r5 == 0
+
+```
 
 Note that this outcome can happen even on a mythical sequentially consistent system where nothing is ever reordered.
 
@@ -1575,7 +1712,10 @@ COMPILER BARRIER
 
 The Linux kernel has an explicit compiler barrier function that prevents the compiler from moving the memory accesses either side of it to the other side:
 
-  `barrier()`;
+```c
+  barrier();
+
+```  
 
 This is a general barrier -- there are no read-read or write-write variants of `barrier()`.  However, `READ_ONCE()` and `WRITE_ONCE()` can be thought of as weak forms of `barrier()` that affect only the specific accesses flagged by the `READ_ONCE()` or `WRITE_ONCE()`.
 
@@ -1589,31 +1729,46 @@ The `READ_ONCE()` and `WRITE_ONCE()` functions can prevent any number of optimiz
 
 - (*) The compiler is within its rights to reorder loads and stores to the same variable, and in some cases, the CPU is within its rights to reorder loads to the same variable.  This means that the following code:
 
+```c
   a[0] = x;
   a[1] = x;
 
+```
+
      Might result in an older value of x stored in a[1] than in a[0]. Prevent both the compiler and the CPU from doing this as follows:
 
+```c
   a[0] = READ_ONCE(x);
   a[1] = READ_ONCE(x);
+
+```
 
      In short, `READ_ONCE()` and `WRITE_ONCE()` provide cache coherence for accesses from multiple CPUs to a single variable.
 
 - (*) The compiler is within its rights to merge successive loads from the same variable.  Such merging can cause the compiler to "optimize" the following code:
 
+```c
   while (tmp = a)
     do_something_with(tmp);
 
+```
+
      into the following code, which, although in some sense legitimate for single-threaded code, is almost certainly not what the developer intended:
 
+```c
   if (tmp = a)
     for (;;)
       do_something_with(tmp);
 
+```
+
      Use `READ_ONCE()` to prevent the compiler from doing this to you:
 
+```c
   while (tmp = READ_ONCE(a))
     do_something_with(tmp);
+
+```
 
 - (*) The compiler is within its rights to reload a variable, for example, in cases where high register pressure prevents the compiler from keeping all data of interest in registers.  The compiler might therefore optimize the variable 'tmp' out of our previous example:
 
@@ -2111,6 +2266,7 @@ See also the section on "Inter-CPU acquiring barrier effects".
 
 As an example, consider the following:
 
+```c
   *A = a;
   *B = b;
   ACQUIRE
@@ -2119,6 +2275,7 @@ As an example, consider the following:
   RELEASE
   *E = e;
   *F = f;
+```
 
 The following sequence of events is acceptable:
 
