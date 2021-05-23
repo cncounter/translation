@@ -79,8 +79,8 @@ CREATE TABLE `t_risk_action_asset` (
   `f_begin_time` bigint(20) NOT NULL COMMENT '冻结开始时间，毫秒',
   `f_end_time` bigint(20) NOT NULL COMMENT '冻结结束时间，毫秒',
   `f_order_id` varchar(50) NOT NULL DEFAULT '' COMMENT '业务订单id',
-  `f_exchange_id` bigint(20) DEFAULT NULL COMMENT '交易所id',
-  `f_exchange_code` varchar(50) DEFAULT NULL COMMENT '交易所code',
+  `f_site_id` bigint(20) DEFAULT NULL COMMENT '站点id',
+  `f_site_code` varchar(50) DEFAULT NULL COMMENT '站点code',
   `f_reason_desc` varchar(500) NOT NULL DEFAULT '' COMMENT '添加原因',
   `f_state` tinyint(4) NOT NULL DEFAULT '1' COMMENT '状态.1:生效，2:失效',
   `f_source_from` varchar(100) NOT NULL DEFAULT '' COMMENT '添加来源',
@@ -89,7 +89,7 @@ CREATE TABLE `t_risk_action_asset` (
   PRIMARY KEY (`f_id`),
   KEY `idx_uniqueKey` (`f_type`, `f_order_id`),
   KEY `idx_user_id` (`f_user_id`),
-  KEY `idx_exchange_code` (`f_exchange_code`)
+  KEY `idx_site_code` (`f_site_code`)
 ) ENGINE = InnoDB AUTO_INCREMENT = 291899 DEFAULT CHARSET = utf8mb4 COMMENT = '用户资产冻结表'
 ```
 
