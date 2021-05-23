@@ -172,4 +172,36 @@ snowslide
 - 资源隔离; 将不同业务的数据库scheme迁移到不同的MySQL实例, 避免干扰。
 
 
+
+优化另一个业务的SQL代码。
+
+原来的SQL为:
+
+```sql
+select *
+from t_risk_user ru
+where exists (
+    select id from t_risk_user_action rua
+    where ru.uid = rua.uid
+    and rua.action_code = ?)
+# ......    
+```
+
+修改为JOIN查询:
+
+```sql
+select ru.*
+from t_risk_user ru
+        JOIN t_risk_user_action rua ON ru.uid = rua.uid
+        where rua.action_code = ?
+# ......    
+```
+
+已经有了相关的索引, 不用改动。
+
+管理端的查询SQL, 因为是人工查询, 执行次数不多, 并发不大, 所以不需要大动干戈, 够用就好。
+
+把资源用在其他更重要的事情上。
+
+
 时间: 2021年05月23日
