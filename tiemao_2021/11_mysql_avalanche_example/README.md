@@ -1,0 +1,148 @@
+# MySQL雪崩效应调优案例
+
+
+## 1. 现象描述
+
+有一个业务线, 数据库服务告警:
+
+```
+==警报==
+
+1c-94数据库监控告警: CPU平均使用率超过阈值
+value: 0.968
+```
+
+查看对应的监控指标。
+
+MySQL实例的1分钟CPU使用率平均值 - 超过告警线 0.85:
+
+![MySQL1分钟CPU使用率平均值 - 超过告警线 0.85](01_mysql_cpu_usage_avg.jpg)
+
+
+发现这个问题一直在持续，没有缓解的迹象。
+
+
+## 2. 问题紧急修复处理
+
+定位到近段时间的部分慢SQL:
+
+```sql
+# 执行总次数: 683
+# P95耗时为: 1.39秒
+# 执行总时长: 757.19秒
+
+select *
+from t_risk_action_asset
+where 1 = 1
+order by f_state, f_gmt_created desc
+LIMIT 248000, 1000
+```
+
+这里星号是为了排版方便; 实际上是MyBatis生成的列名。
+
+
+使用 `EXPLAIN` 查看执行计划, 结果为:
+
+```json
+{
+  "id": 1,
+  "select_type": "SIMPLE",
+  "table": "t_risk_action_asset",
+  "partitions": "",
+  "type": "ALL",
+  "possible_keys": "",
+  "key": "",
+  "key_len": "",
+  "ref": "",
+  "rows": 262487,
+  "filtered": 100,
+  "Extra": "Using filesort"
+}
+```
+
+可以看到使用了文件排序.
+
+我们有两个关注的重点:
+
+- 1. 排序语句: `order by f_state, f_gmt_created desc`
+- 2. 大分页问题: `LIMIT 248000, 1000`
+
+再看看建表语句:
+
+```sql
+CREATE TABLE `t_risk_action_asset` (
+  `f_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `f_type` varchar(20) NOT NULL DEFAULT '' COMMENT '业务类型 otctrace',
+  `f_user_id` bigint(20) NOT NULL COMMENT 'userId',
+  `f_coin` varchar(50) NOT NULL DEFAULT '' COMMENT '冻结币种',
+  `f_quantity` decimal(36, 18) NOT NULL COMMENT '冻结数量',
+  `f_begin_time` bigint(20) NOT NULL COMMENT '冻结开始时间，毫秒',
+  `f_end_time` bigint(20) NOT NULL COMMENT '冻结结束时间，毫秒',
+  `f_order_id` varchar(50) NOT NULL DEFAULT '' COMMENT '业务订单id',
+  `f_exchange_id` bigint(20) DEFAULT NULL COMMENT '交易所id',
+  `f_exchange_code` varchar(50) DEFAULT NULL COMMENT '交易所code',
+  `f_reason_desc` varchar(500) NOT NULL DEFAULT '' COMMENT '添加原因',
+  `f_state` tinyint(4) NOT NULL DEFAULT '1' COMMENT '状态.1:生效，2:失效',
+  `f_source_from` varchar(100) NOT NULL DEFAULT '' COMMENT '添加来源',
+  `f_gmt_modified` bigint(20) NOT NULL COMMENT '更新时间',
+  `f_gmt_created` bigint(20) NOT NULL COMMENT '入库时间',
+  PRIMARY KEY (`f_id`),
+  KEY `idx_uniqueKey` (`f_type`, `f_order_id`),
+  KEY `idx_user_id` (`f_user_id`),
+  KEY `idx_exchange_code` (`f_exchange_code`)
+) ENGINE = InnoDB AUTO_INCREMENT = 291899 DEFAULT CHARSET = utf8mb4 COMMENT = '用户资产冻结表'
+```
+
+发现没有联合索引。
+
+再根据代码排查，确定是定时任务执行的相关SQL语句。
+
+看看定时任务的配置:
+
+```
+# Cron表达式: 30秒执行一次
+*/30 * * * * ?
+```
+
+30秒执行一次，这个频率有点快。
+
+确定业务短时间内能容忍, 先降低定时任务的执行频率。
+
+修改之后的定时任务配置:
+
+```
+# Cron表达式: 5分钟执行一次
+20 */5 * * * ?
+```
+
+降低执行频率之后, MySQL服务器的CPU使用量有效降低。
+
+![MySQL1分钟CPU使用率平均值 - 有效降低](02_mysql_cpu_usage_ok.jpg)
+
+
+## 3. 原因分析
+
+
+![监控到的慢请求](03_tomcat_p99.jpg)
+
+
+
+![另一个慢SQL](04_other_slow_sql.jpg)
+
+雪崩效应。
+
+
+所以我们需要关注SQL的执行资源消耗。
+
+有些SQL可能执行时间不是很慢，但比较消耗资源。 碰上执行量和并发量增加、或者受到其他业务争抢资源等干扰之后，可能会造成连锁的雪崩效应。
+
+
+## 4. 进一步优化
+
+
+- 加联合索引
+- 根据最小id范围/id段进行分页
+- 资源隔离
+
+
+时间: 2021年05月23日
