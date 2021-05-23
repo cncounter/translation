@@ -794,7 +794,7 @@ See also the subsection on "Cache Coherency" for a more thorough example.
 
 请注意, 这种模式应该很少见。 毕竟, 依存关系排序的全部要点是防止对数据结构的写入, 以及与这些写入相关的高速缓存未命中。 此模式可用于记录罕见的错误情况等, 并且CPU的自然排序也能防止此类记录丢失。
 
-请注意, 数据依赖项提供的顺序是包含它的CPU的局部顺序。 有关更多信息, 请参见 "Multicopy atomicity" 章节。
+请注意, 数据依赖项提供的顺序是包含它的CPU的局部顺序。 有关更多信息, 请参见 [2.5.3 多副本原子性](#MULTICOPY_ATOMICITY) 章节。
 
 
 例如, 数据依赖屏障对于 RCU 系统非常重要。 请参阅 `include/linux/rcupdate.h` 中的 `rcu_assign_pointer()` 和 `rcu_dereference()`。 这允许将RCU指针的当前目标替换为新的修改后的目标, 而替换目标并不会出现未完全初始化。
@@ -1599,6 +1599,14 @@ MULTICOPY ATOMICITY
 Multicopy atomicity is a deeply intuitive notion about ordering that is not always provided by real computer systems, namely that a given store becomes visible at the same time to all CPUs, or, alternatively, that all CPUs agree on the order in which all stores become visible.  However, support of full multicopy atomicity would rule out valuable hardware optimizations, so a weaker form called ``other multicopy atomicity'' instead guarantees only that a given store becomes visible at the same time to all -other- CPUs.  The remainder of this document discusses this weaker form, but for brevity will call it simply ``multicopy atomicity''.
 
 The following example demonstrates multicopy atomicity:
+
+
+<a name="MULTICOPY_ATOMICITY"></a>
+#### 2.5.3 多副本原子性
+
+多副本原子性是关于排序的一种非常直观的概念，并不是真正的计算机系统总是会提供排序，即给定存储对所有CPU同时可见，或者，所有CPU同意所有存储成为存储的顺序 可见的。 但是，对完全多副本原子性的支持将排除有价值的硬件优化，因此称为``其他多副本原子性''的较弱形式只能保证一个给定的存储对所有其他CPU同时可见。 本文档的其余部分讨论了这种较弱的形式，但为简便起见，将其简称为``多副本原子性''。
+
+以下示例演示了多副本原子性：
 
 ```c
   CPU 1                    CPU 2                    CPU 3

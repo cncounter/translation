@@ -1,13 +1,13 @@
 ## Introduction to Build Profiles
 
-## MAVEN基础系列（三） 按环境Profiles打包
+## MAVEN基础系列（三） Profiles配置打包环境
 
 相关文章:
 
 - [MAVEN基础系列（〇） Maven五分钟入门教程](./maven-in-five-minutes.md)
 - [MAVEN基础系列（一） 项目构建的各个阶段](./introduction-to-the-lifecycle.md)
 - [MAVEN基础系列（二） POM文件](./README.md)
-- [MAVEN基础系列（三） 按环境Profiles打包](./introduction-to-profiles.md)
+- [MAVEN基础系列（三） Profiles配置打包环境](./introduction-to-profiles.md)
 - [MAVEN基础系列（四） 标准的Maven项目结构](./standard-directory-layout.md)
 - [MAVEN基础系列（五） 浅析pom依赖机制](./introduction-to-dependency-mechanism.md)
 - [MAVEN基础系列（六） 依赖项排除与可选依赖](./optional-and-excludes-dependencies.md)
@@ -17,6 +17,12 @@ Apache Maven goes to great lengths to ensure that builds are portable. Among oth
 However, sometimes portability is not entirely possible. Under certain conditions, plugins may need to be configured with local filesystem paths. Under other circumstances, a slightly different dependency set will be required, and the project's artifact name may need to be adjusted slightly. And at still other times, you may even need to include a whole plugin in the build lifecycle depending on the detected build environment.
 
 To address these circumstances, Maven supports build profiles. Profiles are specified using a subset of the elements available in the POM itself (plus one extra section), and are triggered in any of a variety of ways. They modify the POM at build time, and are meant to be used in complementary sets to give equivalent-but-different parameters for a set of target environments (providing, for example, the path of the appserver root in the development, testing, and production environments). As such, profiles can easily lead to differing build results from different members of your team. However, used properly, profiles can be used while still preserving project portability. This will also minimize the use of `-f` option of maven which allows user to create another POM with different parameters or configuration to build which makes it more maintainable since it is runnning with one POM only.
+
+Apache Maven 竭尽全力确保构建可移植。除其他外，这意味着允许在POM内进行配置配置，避免“所有”文件系统引用（在继承，依赖关系和其他位置），并更多地依赖于本地存储库来存储实现此目的所需的元数据。
+
+但是，有时不能完全实现可移植性。在某些情况下，可能需要使用本地文件系统路径来配置插件。在其他情况下，将需要稍微不同的依赖项集，并且项目的工件名称可能需要稍作调整。在其他时候，根据检测到的构建环境，您甚至可能需要在构建生命周期中包括整个插件。
+
+为了解决这些情况，Maven支持构建配置文件。配置文件是使用POM本身中可用元素的子集（加上一个额外的部分）指定的，并以多种方式触发。它们在构建时修改POM，并且打算在补充集中使用，以为一组目标环境提供等效但不同的参数（例如，在开发，测试和开发过程中提供appserver根的路径）生产环境）。因此，概要文件很容易导致团队中不同成员的构建结果不同。但是，如果使用得当，可以在保持项目可移植性的同时使用配置文件。这也将最小化maven的-f选项的使用，该选项允许用户创建具有不同参数或配置的另一个POM，这使其更易于维护，因为它仅使用一个POM运行。
 
 ### What are the different types of profile? Where is each defined?
 
