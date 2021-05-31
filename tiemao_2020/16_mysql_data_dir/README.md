@@ -319,7 +319,7 @@ service mysql restart
 STOP SLAVE;
 
 -- 停止 slave io thread
-STOP SLAVE IO_THREAD FOR CHANNEL ''；
+STOP SLAVE IO_THREAD FOR CHANNEL '';
 
 -- 设置主库信息; 未启动 SLAVE
 CHANGE MASTER TO MASTER_HOST='192.168.1.28',MASTER_PORT=3306,
@@ -374,12 +374,12 @@ SET GLOBAL read_only = OFF;
 -- 创建用户
 CREATE USER 'cnc_server'@'%' IDENTIFIED BY 'cnc666';
 
--- 授权; 不影响已连接会话的权限；
+-- 授权; 不影响已连接会话的权限;
 GRANT DELETE, INSERT, SELECT, UPDATE ON `cnc_server_test-1`.* TO 'cnc_server'@'%';
 GRANT DELETE, INSERT, SELECT, UPDATE ON `cnc_server_test-2`.* TO 'cnc_server'@'%';
 FLUSH PRIVILEGES;
 
--- 撤销写权限; 不影响已连接会话的权限；
+-- 撤销写权限; 不影响已连接会话的权限;
 
 revoke DELETE, INSERT, UPDATE ON `cnc_server_test-2`.* from 'cnc_server'@'%';
 FLUSH PRIVILEGES;
