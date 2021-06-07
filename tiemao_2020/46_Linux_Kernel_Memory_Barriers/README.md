@@ -1622,17 +1622,24 @@ Suppose that CPU 2's load from X returns 1, which it then stores to Y, and CPU 3
 
 Because CPU 3's load from X in some sense comes after CPU 2's load, it is natural to expect that CPU 3's load from X must therefore return 1. This expectation follows from multicopy atomicity: if a load executing on CPU B follows a load from the same variable executing on CPU A (and CPU A did not originally store the value which it read), then on multicopy-atomic systems, CPU B's load must return either the same value that CPU A's load did or some later value.  However, the Linux kernel does not require systems to be multicopy atomic.
 
-假设 CPU 2 从 X 的负载返回 1，然后将其存储到 Y，而 CPU 3 从 Y 的负载返回 1。这表明 CPU 1 到 X 的存储先于 CPU 2 从 X 的负载，而 CPU 2 到 Y 的存储先于 CPU 3从 Y 加载。此外，内存屏障保证 CPU 2 在存储之前执行它的加载，而 CPU 3 在从 X 加载之前从 Y 加载。那么问题是“CPU 3 从 X 的加载是否可以返回 0？”
+假设 CPU 2 执行 LOAD X 返回的值是 1，然后将这个值 store 到 Y，而 CPU 3 执行 LOAD Y 返回 1。
+这表明 CPU 1 的 `STORE X=1` 先于 CPU 2 的 `LOAD X` 执行，而 CPU 2 的 `STORE Y=r1` 又在 CPU 3 执行 `LOAD Y` 之前就已完成。
+此外，内存屏障保证 CPU 2 的 load 在 store 之前执行，而 CPU 3 的 `LOAD Y` 也保证在 `LOAD X` 之前。
+那么问题来了: “CPU 3 的 `LOAD X` 是否可能会返回 0 呢？”
 
-因为从某种意义上说，CPU 3 从 X 的负载是在 CPU 2 的负载之后发生的，所以很自然地期望 CPU 3 从 X 的负载必须返回 1。这个期望来自多副本原子性：如果在 CPU B 上执行的负载是从相同的变量在 CPU A 上执行（并且 CPU A 最初不存储它读取的值），然后在多副本原子系统上，CPU B 的负载必须返回与 CPU A 的负载相同的值或某个稍后的值。但是，Linux 内核不要求系统具有多副本原子性。
+因为从某种意义上说，CPU 3 的 `LOAD X` 是在 CPU 2 的 LOAD 之后发生的，所以很自然地期望 CPU 3 加载到的 X 值为1。
+这种期望来自多副本原子性：如果在 CPU B 上执行的 load, 是在 CPU A 从相同变量load之后执行（并且 CPU A 不写入它读取到的值），然后在多副本原子系统上，CPU B 的 load 必须返回与 CPU A 的load相同的值, 或之后的某个值。
+但是，Linux 内核不要求系统具有多副本原子性。
 
 The use of a general memory barrier in the example above compensates for any lack of multicopy atomicity.  In the example, if CPU 2's load from X returns 1 and CPU 3's load from Y returns 1, then CPU 3's load from X must indeed also return 1.
 
 However, dependencies, read barriers, and write barriers are not always able to compensate for non-multicopy atomicity.  For example, suppose that CPU 2's general barrier is removed from the above example, leaving only the data dependency shown below:
 
-在上面的例子中使用通用内存屏障弥补了多副本原子性的任何不足。在示例中，如果 CPU 2 从 X 的负载返回 1，而 CPU 3 从 Y 的负载返回 1，那么 CPU 3 从 X 的负载确实也必须返回 1。
+在上面的例子中, 使用通用内存屏障来弥补了多副本原子性的不足。
+在示例中，如果 CPU 2 从 X 加载到的值是 1，而 CPU 3 从 Y 加载到的值也是 1，那么 CPU 3 从 X 加载到的值也必定是 1。
 
-然而，依赖、读屏障和写屏障并不总是能够补偿非多副本原子性。例如，假设从上面的例子中去除了 CPU 2 的通用屏障，只留下如下所示的数据依赖：
+然而，依赖屏障、读屏障和写屏障并不总是能够补偿非多副本原子性。
+例如，假设从上面的例子中去除了 CPU 2 的通用屏障，只留下数据依赖, 如下所示：
 
 
 ```c
@@ -1652,11 +1659,15 @@ The key point is that although CPU 2's data dependency orders its load and store
 General barriers can compensate not only for non-multicopy atomicity, but can also generate additional ordering that can ensure that -all- CPUs will perceive the same order of -all- operations.  In contrast, a chain of release-acquire pairs do not provide this additional ordering, which means that only those CPUs on the chain are guaranteed to agree on the combined order of the accesses.  For example, switching to C code in deference to the ghost of Herman Hollerith:
 
 
-这种替换允许非多副本原子性猖獗：在这个例子中，CPU 2 从 X 的负载返回 1，CPU 3 从 Y 的负载返回 1，以及它从 X 的负载返回 0 是完全合法的。
+这种替换允许非多副本原子性比较放肆地运行：在这个例子中，CPU 2 从 X 读取到的值是 1，CPU 3 从 Y 读取到的值是 1，但它从 X 读取到 0 是完全合法的。
 
-关键是，虽然CPU 2的数据依赖对它的加载和存储进行了排序，但并不能保证对CPU 1的存储进行排序。因此，如果此示例在非多副本原子系统上运行，其中 CPU 1 和 2 共享存储缓冲区或缓存级别，则 CPU 2 可能会提前访问 CPU 1 的写入。因此，需要通用屏障来确保所有 CPU 就多次访问的组合顺序达成一致。
+关键是，虽然CPU 2的数据依赖屏障保证了load和store的执行顺序，但并不能保证对CPU 1的store进行排序。
+因此，如果此示例在非多副本原子系统上运行，其中 CPU 1 和 2 共享store buffer或同一级别的cache，则 CPU 2 可能会提前访问到 CPU 1 的写入。
+因此，需要通用屏障来确保所有 CPU 就多次访问的组合顺序达成一致。
 
-通用屏障不仅可以补偿非多副本原子性，还可以生成额外的排序，以确保所有 CPU 将感知到所有操作的相同顺序。相比之下，释放-获取对链不提供这种额外的排序，这意味着只有链上的 CPU 才能保证对访问的组合顺序达成一致。例如，根据 Herman Hollerith 的鬼魂切换到 C 代码：
+通用屏障不仅可以补偿非多副本原子性，还可以生成额外的排序，以确保所有 CPU 都以相同的顺序感知到各种操作。
+相比之下，具有 release-acquire 对的链不提供这种额外的排序，意味着只有链上的 CPU 才能保证对访问的组合顺序达成一致。
+例如，根据 Herman Hollerith 的鬼影迁移到 C 代码：
 
 
 ```c
@@ -1686,24 +1697,23 @@ General barriers can compensate not only for non-multicopy atomicity, but can al
   void cpu3(void)
   {
     WRITE_ONCE(v, 1);
-    `smp_mb()`;
+    smp_mb();
     r3 = READ_ONCE(u);
   }
 
 ```
 
-Because cpu0(), cpu1(), and cpu2() participate in a chain of `smp_store_release()`/smp_load_acquire() pairs, the following outcome is prohibited:
+Because cpu0(), cpu1(), and cpu2() participate in a chain of `smp_store_release()/smp_load_acquire()` pairs, the following outcome is prohibited:
 
-因为 cpu0()、cpu1() 和 cpu2() 参与了一个 `smp_store_release()`/smp_load_acquire() 对链，所以禁止以下结果：
+因为 cpu0(), cpu1(), 和 cpu2() 参与了一个 `smp_store_release()/smp_load_acquire()` 对组成的链，所以禁止出现以下结果：
 
 ```c
   r0 == 1 && r1 == 1 && r2 == 1
-
 ```
 
 Furthermore, because of the release-acquire relationship between cpu0() and cpu1(), cpu1() must see cpu0()'s writes, so that the following outcome is prohibited:
 
-此外，由于 cpu0() 和 cpu1() 之间的 release-acquire 关系，cpu1() 必须看到 cpu0() 的写入，从而禁止以下结果：
+此外，由于 cpu0() 和 cpu1() 之间的 release-acquire 关系，cpu1() 必须能看到 cpu0() 的写入，从而禁止出现以下结果：
 
 ```c
   r1 == 1 && r5 == 0
@@ -1712,7 +1722,7 @@ Furthermore, because of the release-acquire relationship between cpu0() and cpu1
 
 However, the ordering provided by a release-acquire chain is local to the CPUs participating in that chain and does not apply to cpu3(), at least aside from stores.  Therefore, the following outcome is possible:
 
-但是，发布-获取链提供的排序对于参与该链的 CPU 来说是本地的，并且不适用于 cpu3()，至少除了商店之外。 因此，以下结果是可能的：
+但是，release-acquire链提供的排序对于参与该链的 CPU 来说是局部的，所以不适用于 cpu3()，至少除了store之外。 因此，以下结果是可能的：
 
 ```c
   r0 == 0 && r1 == 1 && r2 == 1 && r3 == 0 && r4 == 0
@@ -1732,9 +1742,11 @@ Although cpu0(), cpu1(), and cpu2() will see their respective reads and writes i
 
 However, please keep in mind that smp_load_acquire() is not magic. In particular, it simply reads from its argument with ordering.  It does -not- ensure that any particular value will be read.  Therefore, the following outcome is possible:
 
-尽管 cpu0()、cpu1() 和 cpu2() 会按顺序看到它们各自的读取和写入，但不包含在释放-获取链中的 CPU 很可能在顺序上存在分歧。 这种分歧源于这样一个事实，即用于实现 smp_load_acquire() 和 `smp_store_release()` 的弱内存屏障指令不需要在所有情况下针对后续加载对先前存储进行排序。 这意味着 cpu3() 可以看到 cpu0() 对 u 的存储发生在 cpu1() 从 v 加载之后，即使 cpu0() 和 cpu1() 都同意这两个操作按预期顺序发生 .
+尽管 cpu0()、cpu1() 和 cpu2() 会按顺序看到它们各自的读取和写入，但不在 release-acquire 链中的 CPU 很可能在顺序上存在分歧。
+这种分歧源于这样一种事实，即用于实现 `smp_load_acquire()` 和 `smp_store_release()` 的弱内存屏障指令, 不需要在所有情况下针对后续load对先前store保证顺序。
+这意味着 cpu3() 可以看到 cpu0() 对 u 的 store 发生在 cpu1() 从 v 读取值之后，即使 cpu0() 和 cpu1() 都同意这两个操作按预期顺序发生.
 
-但是，请记住 smp_load_acquire() 不是魔术。 特别是，它只是从它的参数中按顺序读取。 它不 - 确保将读取任何特定值。 因此，以下结果是可能的：
+但请记住 `smp_load_acquire()` 并不魔幻。 它只是从参数中按顺序读取。 但不保证将读取到某个特定值。 因此，以下结果是可能的：
 
 ```c
   r0 == 0 && r1 == 0 && r2 == 0 && r5 == 0
@@ -1745,9 +1757,9 @@ Note that this outcome can happen even on a mythical sequentially consistent sys
 
 To reiterate, if your code requires full ordering of all operations, use general barriers throughout.
 
-请注意，即使在没有重新排序的神话般的顺序一致系统上，这种结果也可能发生。
+请注意，即便是在神话般的、没有重排序的顺序一致系统中，这种结果也可能发生。
 
-重申一下，如果您的代码需要对所有操作进行完全排序，请始终使用通用障碍。
+重申一下，如果您的代码需要对所有操作进行完整的排序，请务必使用通用屏障。
 
 
 ========================
@@ -1761,10 +1773,27 @@ The Linux kernel has a variety of different barriers that act at different level
  - (*) CPU memory barriers.
 
 
+
+<a name="EXPLICIT_KERNEL_BARRIERS"></a>
+## 3. 显式内核屏障
+
+Linux 内核有多种不同的屏障，它们作用于不同的级别：
+
+- (*) 编译器屏障
+
+- (*) CPU 内存屏障
+
+
 COMPILER BARRIER
 ----------------
 
 The Linux kernel has an explicit compiler barrier function that prevents the compiler from moving the memory accesses either side of it to the other side:
+
+
+<a name="COMPILER_BARRIER"></a>
+### 3.1 编译器屏障
+
+Linux 内核提供了一个显式的编译器屏障函数，可以防止编译器将内存访问移动到另一端：
 
 ```c
   barrier();
