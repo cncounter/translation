@@ -1793,7 +1793,7 @@ The Linux kernel has an explicit compiler barrier function that prevents the com
 <a name="COMPILER_BARRIER"></a>
 ### 3.1 编译器屏障
 
-Linux 内核提供了一个显式的编译器屏障函数，可以防止编译器将内存访问移动到另一端：
+Linux 内核提供了一个显式的编译器屏障函数，可以阻止编译器将内存访问优化到屏障的另一边：
 
 ```c
   barrier();
