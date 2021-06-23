@@ -1521,7 +1521,7 @@ Which might appear as this:
 
 Placing a read barrier or a data dependency barrier just before the second load:
 
-在第二次 load 之前放置读屏障或数据依赖屏障：
+在第二次 load 之前放置读屏障或数据依赖屏障:
 
 ```c
   CPU 1                     CPU 2
@@ -1537,7 +1537,7 @@ Placing a read barrier or a data dependency barrier just before the second load:
 will force any value speculatively obtained to be reconsidered to an extent dependent on the type of barrier used.  If there was no change made to the speculated memory location, then the speculated value will just be used:
 
 将会迫使CPU重新考虑以推断方式获得的任何值，这取决于所使用的屏障的类型。
-如果对推断的内存位置没有进行任何更改，则直接使用提前取到的值：
+如果对推断的内存位置没有进行任何更改，则直接使用提前取到的值:
 
 ```c
                                           :       :       +-------+
@@ -1562,7 +1562,7 @@ will force any value speculatively obtained to be reconsidered to an extent depe
 
 but if there was an update or an invalidation from another CPU pending, then the speculation will be cancelled and the value reloaded:
 
-但如果另一个CPU执行了更新或者失效，那么将取消推测, 并重新加载该值：
+但如果另一个CPU执行了更新或者失效，那么将取消推测, 并重新加载该值:
 
 ```c
                                           :       :       +-------+
@@ -1600,7 +1600,7 @@ The following example demonstrates multicopy atomicity:
 
 多副本原子性是一种关于排序的非常直观的概念，但并不是所有的计算机系统都提供支持；即某个 store 在同一时刻对所有CPU都可见； 或者，所有CPU同意某种顺序,让所有 store 都变为可见。 但是，对多副本原子性的完全支持, 将会排除硬件层面有价值的优化，因此 `other multicopy atomicity`(其他多副本原子性)的较弱形式, 只能保证一个给定的 store 对所有其他CPU同时可见。 本文档的其余部分讨论了这种较弱的形式，但为简便起见，将其简称为 `multicopy atomicity`(多副本原子性)。
 
-以下示例演示了多副本原子性：
+以下示例演示了多副本原子性:
 
 ```c
   CPU 1                    CPU 2                    CPU 3
@@ -1613,11 +1613,6 @@ The following example demonstrates multicopy atomicity:
 ```
 
 
-
-#########################################################
-############# 到此处
-#########################################################
-
 Suppose that CPU 2's load from X returns 1, which it then stores to Y, and CPU 3's load from Y returns 1.  This indicates that CPU 1's store to X precedes CPU 2's load from X and that CPU 2's store to Y precedes CPU 3's load from Y.  In addition, the memory barriers guarantee that CPU 2 executes its load before its store, and CPU 3 loads from Y before it loads from X.  The question is then "Can CPU 3's load from X return 0?"
 
 Because CPU 3's load from X in some sense comes after CPU 2's load, it is natural to expect that CPU 3's load from X must therefore return 1. This expectation follows from multicopy atomicity: if a load executing on CPU B follows a load from the same variable executing on CPU A (and CPU A did not originally store the value which it read), then on multicopy-atomic systems, CPU B's load must return either the same value that CPU A's load did or some later value.  However, the Linux kernel does not require systems to be multicopy atomic.
@@ -1628,7 +1623,7 @@ Because CPU 3's load from X in some sense comes after CPU 2's load, it is natura
 那么问题来了: “CPU 3 的 `LOAD X` 是否可能会返回 0 呢？”
 
 因为从某种意义上说，CPU 3 的 `LOAD X` 是在 CPU 2 的 LOAD 之后发生的，所以很自然地期望 CPU 3 加载到的 X 值为1。
-这种期望来自多副本原子性：如果在 CPU B 上执行的 load, 是在 CPU A 从相同变量load之后执行（并且 CPU A 不写入它读取到的值），然后在多副本原子系统上，CPU B 的 load 必须返回与 CPU A 的load相同的值, 或之后的某个值。
+这种期望来自多副本原子性:如果在 CPU B 上执行的 load, 是在 CPU A 从相同变量load之后执行（并且 CPU A 不写入它读取到的值），然后在多副本原子系统上，CPU B 的 load 必须返回与 CPU A 的load相同的值, 或之后的某个值。
 但是，Linux 内核不要求系统具有多副本原子性。
 
 The use of a general memory barrier in the example above compensates for any lack of multicopy atomicity.  In the example, if CPU 2's load from X returns 1 and CPU 3's load from Y returns 1, then CPU 3's load from X must indeed also return 1.
@@ -1639,7 +1634,7 @@ However, dependencies, read barriers, and write barriers are not always able to 
 在示例中，如果 CPU 2 从 X 加载到的值是 1，而 CPU 3 从 Y 加载到的值也是 1，那么 CPU 3 从 X 加载到的值也必定是 1。
 
 然而，依赖屏障、读屏障和写屏障并不总是能够补偿非多副本原子性。
-例如，假设从上面的例子中去除了 CPU 2 的通用屏障，只留下数据依赖, 如下所示：
+例如，假设从上面的例子中去除了 CPU 2 的通用屏障，只留下数据依赖, 如下所示:
 
 
 ```c
@@ -1659,7 +1654,7 @@ The key point is that although CPU 2's data dependency orders its load and store
 General barriers can compensate not only for non-multicopy atomicity, but can also generate additional ordering that can ensure that -all- CPUs will perceive the same order of -all- operations.  In contrast, a chain of release-acquire pairs do not provide this additional ordering, which means that only those CPUs on the chain are guaranteed to agree on the combined order of the accesses.  For example, switching to C code in deference to the ghost of Herman Hollerith:
 
 
-这种替换允许非多副本原子性比较放肆地运行：在这个例子中，CPU 2 从 X 读取到的值是 1，CPU 3 从 Y 读取到的值是 1，但它从 X 读取到 0 是完全合法的。
+这种替换允许非多副本原子性比较放肆地运行:在这个例子中，CPU 2 从 X 读取到的值是 1，CPU 3 从 Y 读取到的值是 1，但它从 X 读取到 0 是完全合法的。
 
 关键是，虽然CPU 2的数据依赖屏障保证了load和store的执行顺序，但并不能保证对CPU 1的store进行排序。
 因此，如果此示例在非多副本原子系统上运行，其中 CPU 1 和 2 共享store buffer或同一级别的cache，则 CPU 2 可能会提前访问到 CPU 1 的写入。
@@ -1667,7 +1662,7 @@ General barriers can compensate not only for non-multicopy atomicity, but can al
 
 通用屏障不仅可以补偿非多副本原子性，还可以生成额外的排序，以确保所有 CPU 都以相同的顺序感知到各种操作。
 相比之下，具有 release-acquire 对的链不提供这种额外的排序，意味着只有链上的 CPU 才能保证对访问的组合顺序达成一致。
-例如，根据 Herman Hollerith 的鬼影迁移到 C 代码：
+例如，根据 Herman Hollerith 的鬼影迁移到 C 代码:
 
 
 ```c
@@ -1705,7 +1700,7 @@ General barriers can compensate not only for non-multicopy atomicity, but can al
 
 Because cpu0(), cpu1(), and cpu2() participate in a chain of `smp_store_release()/smp_load_acquire()` pairs, the following outcome is prohibited:
 
-因为 cpu0(), cpu1(), 和 cpu2() 参与了一个 `smp_store_release()/smp_load_acquire()` 对组成的链，所以禁止出现以下结果：
+因为 cpu0(), cpu1(), 和 cpu2() 参与了一个 `smp_store_release()/smp_load_acquire()` 对组成的链，所以禁止出现以下结果:
 
 ```c
   r0 == 1 && r1 == 1 && r2 == 1
@@ -1713,7 +1708,7 @@ Because cpu0(), cpu1(), and cpu2() participate in a chain of `smp_store_release(
 
 Furthermore, because of the release-acquire relationship between cpu0() and cpu1(), cpu1() must see cpu0()'s writes, so that the following outcome is prohibited:
 
-此外，由于 cpu0() 和 cpu1() 之间的 release-acquire 关系，cpu1() 必须能看到 cpu0() 的写入，从而禁止出现以下结果：
+此外，由于 cpu0() 和 cpu1() 之间的 release-acquire 关系，cpu1() 必须能看到 cpu0() 的写入，从而禁止出现以下结果:
 
 ```c
   r1 == 1 && r5 == 0
@@ -1722,7 +1717,7 @@ Furthermore, because of the release-acquire relationship between cpu0() and cpu1
 
 However, the ordering provided by a release-acquire chain is local to the CPUs participating in that chain and does not apply to cpu3(), at least aside from stores.  Therefore, the following outcome is possible:
 
-但是，release-acquire链提供的排序对于参与该链的 CPU 来说是局部的，所以不适用于 cpu3()，至少除了store之外。 因此，以下结果是可能的：
+但是，release-acquire链提供的排序对于参与该链的 CPU 来说是局部的，所以不适用于 cpu3()，至少除了store之外。 因此，以下结果是可能的:
 
 ```c
   r0 == 0 && r1 == 1 && r2 == 1 && r3 == 0 && r4 == 0
@@ -1731,7 +1726,7 @@ However, the ordering provided by a release-acquire chain is local to the CPUs p
 
 As an aside, the following outcome is also possible:
 
-顺便说一句，以下结果也是可能的：
+顺便说一句，以下结果也是可能的:
 
 ```c
   r0 == 0 && r1 == 1 && r2 == 1 && r3 == 0 && r4 == 0 && r5 == 1
@@ -1746,7 +1741,7 @@ However, please keep in mind that smp_load_acquire() is not magic. In particular
 这种分歧源于这样一种事实，即用于实现 `smp_load_acquire()` 和 `smp_store_release()` 的弱内存屏障指令, 不需要在所有情况下针对后续load对先前store保证顺序。
 这意味着 cpu3() 可以看到 cpu0() 对 u 的 store 发生在 cpu1() 从 v 读取值之后，即使 cpu0() 和 cpu1() 都同意这两个操作按预期顺序发生.
 
-但请记住 `smp_load_acquire()` 并不魔幻。 它只是从参数中按顺序读取。 但不保证将读取到某个特定值。 因此，以下结果是可能的：
+但请记住 `smp_load_acquire()` 并不魔幻。 它只是从参数中按顺序读取。 但不保证将读取到某个特定值。 因此，以下结果是可能的:
 
 ```c
   r0 == 0 && r1 == 0 && r2 == 0 && r5 == 0
@@ -1777,11 +1772,12 @@ The Linux kernel has a variety of different barriers that act at different level
 <a name="EXPLICIT_KERNEL_BARRIERS"></a>
 ## 3. 显式内核屏障
 
-Linux 内核有多种不同的屏障，它们作用于不同的级别：
+Linux 内核有多种不同的屏障，它们作用于不同的级别:
 
 - (*) 编译器屏障
 
 - (*) CPU 内存屏障
+
 
 
 COMPILER BARRIER
@@ -1793,7 +1789,7 @@ The Linux kernel has an explicit compiler barrier function that prevents the com
 <a name="COMPILER_BARRIER"></a>
 ### 3.1 编译器屏障
 
-Linux 内核提供了一个显式的编译器屏障函数，可以阻止编译器将内存访问优化到屏障的另一边：
+Linux 内核提供了一个显式的编译器屏障函数，可以阻止编译器将内存访问操作优化到屏障的另一边:
 
 ```c
   barrier();
@@ -1812,13 +1808,28 @@ The `READ_ONCE()` and `WRITE_ONCE()` functions can prevent any number of optimiz
 
 - (*) The compiler is within its rights to reorder loads and stores to the same variable, and in some cases, the CPU is within its rights to reorder loads to the same variable.  This means that the following code:
 
+这是一个通用屏障 —— `barrier()` 没有 read-read 或者 write-write 变体。
+然而，`READ_ONCE()` 和 `WRITE_ONCE()` 可以被认为是 `barrier()` 的较弱形式，因为它们只影响由 `READ_ONCE()` 和 `WRITE_ONCE()` 标记的特定访问。
+
+`barrier()` 函数有以下几个作用:
+
+- (*) 阻止编译器将 `barrier()` 函数之后的内存访问操作给重排序到 `barrier()` 之前。 这种特性的一个示例用途, 是简化中断处理程序代码和被中断代码之间的通信。
+
+- (*) 在循环内，通知编译器在每次循环迭代时, 强制去加载循环条件中使用的变量。
+
+`READ_ONCE()` 和 `WRITE_ONCE()` 函数可以防止任意数量的优化，虽然在单线程代码中是完全安全，但在并发代码中可能是致命的。下面列出了一些优化的示例:
+
+- (*) 编译器有权对同一个变量的加载(load)和保存(store)进行重排序，在某些情况下，CPU 有权对同一变量的多次加载(load)进行重排序。 这意味着以下代码:
+
 ```c
   a[0] = x;
   a[1] = x;
 
 ```
 
-     Might result in an older value of x stored in a[1] than in a[0]. Prevent both the compiler and the CPU from doing this as follows:
+Might result in an older value of x stored in a[1] than in a[0]. Prevent both the compiler and the CPU from doing this as follows:
+
+可能会导致 `a[1]` 中存储的值比 `a[0]` 中要老。 要阻止编译器和 CPU 重排序，代码如下所示：
 
 ```c
   a[0] = READ_ONCE(x);
@@ -1826,9 +1837,13 @@ The `READ_ONCE()` and `WRITE_ONCE()` functions can prevent any number of optimiz
 
 ```
 
-     In short, `READ_ONCE()` and `WRITE_ONCE()` provide cache coherence for accesses from multiple CPUs to a single variable.
+In short, `READ_ONCE()` and `WRITE_ONCE()` provide cache coherence for accesses from multiple CPUs to a single variable.
+
+简而言之，`READ_ONCE()` 和 `WRITE_ONCE()` 为多个 CPU 访问单个变量提供了缓存一致性。
 
 - (*) The compiler is within its rights to merge successive loads from the same variable.  Such merging can cause the compiler to "optimize" the following code:
+
+- (*) 编译器有权合并来自同一个变量的多次加载(load)。 这种合并会导致编译器将下面的代码进行“优化”：
 
 ```c
   while (tmp = a)
@@ -1836,7 +1851,9 @@ The `READ_ONCE()` and `WRITE_ONCE()` functions can prevent any number of optimiz
 
 ```
 
-     into the following code, which, although in some sense legitimate for single-threaded code, is almost certainly not what the developer intended:
+into the following code, which, although in some sense legitimate for single-threaded code, is almost certainly not what the developer intended:
+
+变成下面这样的等价形式，虽然在某种意义上对于单线程代码来说是合法的，但几乎可以肯定这不是开发人员的意图：
 
 ```c
   if (tmp = a)
@@ -1845,7 +1862,9 @@ The `READ_ONCE()` and `WRITE_ONCE()` functions can prevent any number of optimiz
 
 ```
 
-     Use `READ_ONCE()` to prevent the compiler from doing this to you:
+Use `READ_ONCE()` to prevent the compiler from doing this to you:
+
+使用 `READ_ONCE()` 可以阻止编译器这样做, 例如：
 
 ```c
   while (tmp = READ_ONCE(a))
@@ -1853,83 +1872,124 @@ The `READ_ONCE()` and `WRITE_ONCE()` functions can prevent any number of optimiz
 
 ```
 
+#########################################################
+############# 到此处
+#########################################################
+
+
 - (*) The compiler is within its rights to reload a variable, for example, in cases where high register pressure prevents the compiler from keeping all data of interest in registers.  The compiler might therefore optimize the variable 'tmp' out of our previous example:
 
+- (*) 编译器有权重新加载变量，例如，在高寄存器压力阻止编译器将所有感兴趣的数据保存在寄存器中的情况下。 因此，编译器可能会优化我们之前示例中的变量“tmp”：
+
+
+```c
   while (tmp = a)
     do_something_with(tmp);
 
-     This could result in the following code, which is perfectly safe in single-threaded code, but can be fatal in concurrent code:
+```
 
+This could result in the following code, which is perfectly safe in single-threaded code, but can be fatal in concurrent code:
+
+这可能导致以下代码，这在单线程代码中是完全安全的，但在并发代码中可能是致命的：
+
+```c
   while (a)
     do_something_with(a);
 
-     For example, the optimized version of this code could result in passing a zero to do_something_with() in the case where the variable a was modified by some other CPU between the "while" statement and the call to do_something_with().
+```
 
-     Again, use `READ_ONCE()` to prevent the compiler from doing this:
+For example, the optimized version of this code could result in passing a zero to do_something_with() in the case where the variable a was modified by some other CPU between the "while" statement and the call to do_something_with().
 
+Again, use `READ_ONCE()` to prevent the compiler from doing this:
+
+例如，在“while”语句和调用 do_something_with() 之间变量 a 被其他 CPU 修改的情况下，此代码的优化版本可能导致向 do_something_with() 传递零。
+
+同样，使用 `READ_ONCE()` 来防止编译器这样做：
+
+```c
   while (tmp = READ_ONCE(a))
     do_something_with(tmp);
 
-     Note that if the compiler runs short of registers, it might save tmp onto the stack.  The overhead of this saving and later restoring is why compilers reload variables.  Doing so is perfectly safe for single-threaded code, so you need to tell the compiler about cases where it is not safe.
+```
+
+Note that if the compiler runs short of registers, it might save tmp onto the stack.  The overhead of this saving and later restoring is why compilers reload variables.  Doing so is perfectly safe for single-threaded code, so you need to tell the compiler about cases where it is not safe.
 
 - (*) The compiler is within its rights to omit a load entirely if it knows what the value will be.  For example, if the compiler can prove that the value of variable 'a' is always zero, it can optimize this code:
 
+请注意，如果编译器缺少寄存器，它可能会将 tmp 保存到堆栈中。 这种保存和稍后恢复的开销是编译器重新加载变量的原因。 这样做对于单线程代码是完全安全的，因此您需要告诉编译器它不安全的情况。
+
+- (*) 如果编译器知道值是什么，则它有权完全省略加载。 例如，如果编译器可以证明变量 'a' 的值始终为零，则可以优化此代码：
+
+```c
   while (tmp = a)
     do_something_with(tmp);
 
-     Into this:
+```
 
+Into this:
+
+进入这个：
+
+```c
   do { } while (0);
 
-     This transformation is a win for single-threaded code because it
-     gets rid of a load and a branch.  The problem is that the compiler
-     will carry out its proof assuming that the current CPU is the only
-     one updating variable 'a'.  If variable 'a' is shared, then the
-     compiler's proof will be erroneous.  Use `READ_ONCE()` to tell the
-     compiler that it doesn't know as much as it thinks it does:
+```
 
+This transformation is a win for single-threaded code because it gets rid of a load and a branch.  The problem is that the compiler will carry out its proof assuming that the current CPU is the only one updating variable 'a'.  If variable 'a' is shared, then the compiler's proof will be erroneous.  Use `READ_ONCE()` to tell the compiler that it doesn't know as much as it thinks it does:
+
+这种转换对于单线程代码来说是一个胜利，因为它摆脱了负载和分支。 问题是编译器将执行其证明假设当前 CPU 是唯一一个更新变量“a”。 如果变量 'a' 是共享的，那么编译器的证明将是错误的。 使用 `READ_ONCE()` 告诉编译器它并不像它认为的那样知道：
+
+```c
   while (tmp = READ_ONCE(a))
     do_something_with(tmp);
 
-     But please note that the compiler is also closely watching what you
-     do with the value after the `READ_ONCE()`.  For example, suppose you
-     do the following and MAX is a preprocessor macro with the value 1:
+```
 
+But please note that the compiler is also closely watching what you do with the value after the `READ_ONCE()`.  For example, suppose you do the following and MAX is a preprocessor macro with the value 1:
+
+但请注意，编译器也在密切关注你对 `READ_ONCE()` 之后的值做了什么。 例如，假设您执行以下操作并且 MAX 是值为 1 的预处理器宏：
+
+```c
   while ((tmp = READ_ONCE(a)) % MAX)
     do_something_with(tmp);
 
-     Then the compiler knows that the result of the "%" operator applied
-     to MAX will always be zero, again allowing the compiler to optimize
-     the code into near-nonexistence.  (It will still load from the
-     variable 'a'.)
+```
 
-- (*) Similarly, the compiler is within its rights to omit a store entirely
-     if it knows that the variable already has the value being stored.
-     Again, the compiler assumes that the current CPU is the only one
-     storing into the variable, which can cause the compiler to do the
-     wrong thing for shared variables.  For example, suppose you have
-     the following:
+Then the compiler knows that the result of the "%" operator applied to MAX will always be zero, again allowing the compiler to optimize the code into near-nonexistence.  (It will still load from the variable 'a'.)
 
+- (*) Similarly, the compiler is within its rights to omit a store entirely if it knows that the variable already has the value being stored. Again, the compiler assumes that the current CPU is the only one storing into the variable, which can cause the compiler to do the wrong thing for shared variables.  For example, suppose you have the following:
+
+然后编译器知道应用于 MAX 的“%”运算符的结果将始终为零，再次允许编译器将代码优化为几乎不存在。 （它仍然会从变量 'a' 加载。）
+
+- (*) 同样，如果编译器知道变量已经具有要存储的值，则它有权完全省略存储。 同样，编译器假定当前 CPU 是唯一一个存储到变量中的 CPU，这可能导致编译器对共享变量做错误的事情。 例如，假设您有以下内容：
+
+```c
   a = 0;
   ... Code that does not store to variable a ...
   a = 0;
 
-     The compiler sees that the value of variable 'a' is already zero, so
-     it might well omit the second store.  This would come as a fatal
-     surprise if some other CPU might have stored to variable 'a' in the
-     meantime.
+```
 
-     Use `WRITE_ONCE()` to prevent the compiler from making this sort of
-     wrong guess:
+The compiler sees that the value of variable 'a' is already zero, so it might well omit the second store.  This would come as a fatal surprise if some other CPU might have stored to variable 'a' in the meantime.
 
+Use `WRITE_ONCE()` to prevent the compiler from making this sort of wrong guess:
+
+编译器发现变量“a”的值已经为零，因此很可能会忽略第二个存储。 如果在此期间其他 CPU 可能已经存储到变量 'a' 中，这将是一个致命的惊喜。
+
+使用 `WRITE_ONCE()` 来防止编译器做出这种错误的猜测：
+
+```c
   WRITE_ONCE(a, 0);
   ... Code that does not store to variable a ...
   WRITE_ONCE(a, 0);
 
-- (*) The compiler is within its rights to reorder memory accesses unless
-     you tell it not to.  For example, consider the following interaction
-     between process-level code and an interrupt handler:
+```
 
+- (*) The compiler is within its rights to reorder memory accesses unless you tell it not to.  For example, consider the following interaction between process-level code and an interrupt handler:
+
+- (*) 编译器有权对内存访问进行重新排序，除非您告诉它不要这样做。 例如，考虑以下进程级代码和中断处理程序之间的交互：
+
+```c
   void process_level(void)
   {
     msg = get_message();
@@ -1942,20 +2002,26 @@ The `READ_ONCE()` and `WRITE_ONCE()` functions can prevent any number of optimiz
       process_message(msg);
   }
 
-     There is nothing to prevent the compiler from transforming
-     process_level() to the following, in fact, this might well be a
-     win for single-threaded code:
+```
 
+There is nothing to prevent the compiler from transforming process_level() to the following, in fact, this might well be a win for single-threaded code:
+
+没有什么可以阻止编译器将 process_level() 转换为以下内容，实际上，这很可能是单线程代码的胜利：
+
+```c
   void process_level(void)
   {
     flag = true;
     msg = get_message();
   }
 
-     If the interrupt occurs between these two statement, then
-     interrupt_handler() might be passed a garbled msg.  Use `WRITE_ONCE()`
-     to prevent this as follows:
+```
 
+If the interrupt occurs between these two statement, then interrupt_handler() might be passed a garbled msg.  Use `WRITE_ONCE()` to prevent this as follows:
+
+如果中断发生在这两个语句之间，则interrupt_handler() 可能会传递一个乱码。 使用 `WRITE_ONCE()` 来防止这种情况如下：
+
+```c
   void process_level(void)
   {
     WRITE_ONCE(msg, get_message());
@@ -1968,82 +2034,83 @@ The `READ_ONCE()` and `WRITE_ONCE()` functions can prevent any number of optimiz
       process_message(READ_ONCE(msg));
   }
 
-     Note that the `READ_ONCE()` and `WRITE_ONCE()` wrappers in
-     interrupt_handler() are needed if this interrupt handler can itself
-     be interrupted by something that also accesses 'flag' and 'msg',
-     for example, a nested interrupt or an NMI.  Otherwise, `READ_ONCE()`
-     and `WRITE_ONCE()` are not needed in interrupt_handler() other than
-     for documentation purposes.  (Note also that nested interrupts
-     do not typically occur in modern Linux kernels, in fact, if an
-     interrupt handler returns with interrupts enabled, you will get a
-     WARN_ONCE() splat.)
+```
 
-     You should assume that the compiler can move `READ_ONCE()` and
-     `WRITE_ONCE()` past code not containing `READ_ONCE()`, `WRITE_ONCE()`,
-     `barrier()`, or similar primitives.
+Note that the `READ_ONCE()` and `WRITE_ONCE()` wrappers in interrupt_handler() are needed if this interrupt handler can itself be interrupted by something that also accesses 'flag' and 'msg', for example, a nested interrupt or an NMI.  Otherwise, `READ_ONCE()` and `WRITE_ONCE()` are not needed in interrupt_handler() other than for documentation purposes.  (Note also that nested interrupts do not typically occur in modern Linux kernels, in fact, if an interrupt handler returns with interrupts enabled, you will get a WARN_ONCE() splat.)
 
-     This effect could also be achieved using `barrier()`, but `READ_ONCE()`
-     and `WRITE_ONCE()` are more selective:  With `READ_ONCE()` and
-     `WRITE_ONCE()`, the compiler need only forget the contents of the
-     indicated memory locations, while with `barrier()` the compiler must
-     discard the value of all memory locations that it has currently
-     cached in any machine registers.  Of course, the compiler must also
-     respect the order in which the `READ_ONCE()`s and `WRITE_ONCE()`s occur,
-     though the CPU of course need not do so.
+You should assume that the compiler can move `READ_ONCE()` and `WRITE_ONCE()` past code not containing `READ_ONCE()`, `WRITE_ONCE()`, `barrier()`, or similar primitives.
 
-- (*) The compiler is within its rights to invent stores to a variable,
-     as in the following example:
+This effect could also be achieved using `barrier()`, but `READ_ONCE()` and `WRITE_ONCE()` are more selective:  With `READ_ONCE()` and `WRITE_ONCE()`, the compiler need only forget the contents of the indicated memory locations, while with `barrier()` the compiler must discard the value of all memory locations that it has currently cached in any machine registers.  Of course, the compiler must also respect the order in which the `READ_ONCE()`s and `WRITE_ONCE()`s occur, though the CPU of course need not do so.
 
+请注意，如果此中断处理程序本身可以被也访问 'flag' 和 'msg' 的东西中断，例如嵌套中断或中断处理程序，则需要中断处理程序（）中的 `READ_ONCE()` 和 `WRITE_ONCE()` 包装器NMI。否则，除了用于文档目的之外，interrupt_handler() 中不需要 `READ_ONCE()` 和 `WRITE_ONCE()`。 （还要注意，嵌套中断通常不会出现在现代 Linux 内核中，事实上，如果中断处理程序在启用中断的情况下返回，您将得到一个 WARN_ONCE() splat。）
+
+你应该假设编译器可以将 `READ_ONCE()` 和 `WRITE_ONCE()` 移动到不包含 `READ_ONCE()`、`WRITE_ONCE()`、`barrier()` 或类似原语的代码之后。
+
+使用`barrier()`也可以实现这种效果，但是`READ_ONCE()`和`WRITE_ONCE()`更具选择性：使用`READ_ONCE()`和`WRITE_ONCE()`，编译器只需忘记其中的内容指定的内存位置，而使用 `barrier()` 时，编译器必须丢弃它当前缓存在任何机器寄存器中的所有内存位置的值。当然，编译器也必须尊重 READ_ONCE() 和 WRITE_ONCE() 出现的顺序，当然 CPU 不需要这样做。
+
+- (*) The compiler is within its rights to invent stores to a variable, as in the following example:
+
+- (*) 编译器有权对变量进行存储，如下例所示：
+
+```c
   if (a)
     b = a;
   else
     b = 42;
 
-     The compiler might save a branch by optimizing this as follows:
+```
 
+The compiler might save a branch by optimizing this as follows:
+
+编译器可能会通过如下优化来保存分支：
+
+```c
   b = 42;
   if (a)
     b = a;
 
-     In single-threaded code, this is not only safe, but also saves
-     a branch.  Unfortunately, in concurrent code, this optimization
-     could cause some other CPU to see a spurious value of 42 -- even
-     if variable 'a' was never zero -- when loading variable 'b'.
-     Use `WRITE_ONCE()` to prevent this as follows:
+```
 
+In single-threaded code, this is not only safe, but also saves a branch.  Unfortunately, in concurrent code, this optimization could cause some other CPU to see a spurious value of 42 -- even if variable 'a' was never zero -- when loading variable 'b'. Use `WRITE_ONCE()` to prevent this as follows:
+
+在单线程代码中，这不仅安全，而且还节省了一个分支。 不幸的是，在并发代码中，这种优化可能会导致其他 CPU 在加载变量“b”时看到虚假值 42——即使变量“a”从不为零。 使用 `WRITE_ONCE()` 来防止这种情况如下：
+
+```c
   if (a)
     WRITE_ONCE(b, a);
   else
     WRITE_ONCE(b, 42);
 
-     The compiler can also invent loads.  These are usually less
-     damaging, but they can result in cache-line bouncing and thus in
-     poor performance and scalability.  Use `READ_ONCE()` to prevent
-     invented loads.
+```
 
-- (*) For aligned memory locations whose size allows them to be accessed
-     with a single memory-reference instruction, prevents "load tearing"
-     and "store tearing," in which a single large access is replaced by
-     multiple smaller accesses.  For example, given an architecture having
-     16-bit store instructions with 7-bit immediate fields, the compiler
-     might be tempted to use two 16-bit store-immediate instructions to
-     implement the following 32-bit store:
+The compiler can also invent loads.  These are usually less damaging, but they can result in cache-line bouncing and thus in poor performance and scalability.  Use `READ_ONCE()` to prevent invented loads.
 
+编译器还可以发明负载。 这些通常破坏性较小，但它们会导致缓存行反弹，从而降低性能和可扩展性。 使用 `READ_ONCE()` 来防止发明加载。
+
+
+- (*) For aligned memory locations whose size allows them to be accessed with a single memory-reference instruction, prevents "load tearing" and "store tearing," in which a single large access is replaced by multiple smaller accesses.  For example, given an architecture having 16-bit store instructions with 7-bit immediate fields, the compiler might be tempted to use two 16-bit store-immediate instructions to implement the following 32-bit store:
+
+- (*) 对于大小允许使用单个内存引用指令访问的对齐内存位置，防止“加载撕裂”和“存储撕裂”，其中单个大访问被多个较小访问替换。 例如，给定具有 7 位立即数字段的 16 位存储指令的体系结构，编译器可能会尝试使用两个 16 位立即存储指令来实现以下 32 位存储：
+
+```c
   p = 0x00010002;
 
-     Please note that GCC really does use this sort of optimization,
-     which is not surprising given that it would likely take more
-     than two instructions to build the constant and then store it.
-     This optimization can therefore be a win in single-threaded code.
-     In fact, a recent bug (since fixed) caused GCC to incorrectly use
-     this optimization in a volatile store.  In the absence of such bugs,
-     use of `WRITE_ONCE()` prevents store tearing in the following example:
+```
 
+Please note that GCC really does use this sort of optimization, which is not surprising given that it would likely take more than two instructions to build the constant and then store it. This optimization can therefore be a win in single-threaded code. In fact, a recent bug (since fixed) caused GCC to incorrectly use this optimization in a volatile store.  In the absence of such bugs, use of `WRITE_ONCE()` prevents store tearing in the following example:
+
+请注意 GCC 确实使用了这种优化，这并不奇怪，因为构建常量然后存储它可能需要两条以上的指令。 因此，这种优化可以在单线程代码中获胜。 事实上，最近的一个错误（自修复以来）导致 GCC 在易失性存储中错误地使用此优化。 在没有此类错误的情况下，在以下示例中使用 `WRITE_ONCE()` 可以防止存储撕裂：
+
+```c
   WRITE_ONCE(p, 0x00010002);
 
-     Use of packed structures can also result in load and store tearing,
-     as in this example:
+```
 
+Use of packed structures can also result in load and store tearing, as in this example:
+
+使用压缩结构也会导致加载和存储撕裂，如下例所示：
+
+```c
   struct __attribute__((__packed__)) foo {
     short a;
     int b;
@@ -2056,26 +2123,26 @@ The `READ_ONCE()` and `WRITE_ONCE()` functions can prevent any number of optimiz
   foo2.b = foo1.b;
   foo2.c = foo1.c;
 
-     Because there are no `READ_ONCE()` or `WRITE_ONCE()` wrappers and no
-     volatile markings, the compiler would be well within its rights to
-     implement these three assignment statements as a pair of 32-bit
-     loads followed by a pair of 32-bit stores.  This would result in
-     load tearing on 'foo1.b' and store tearing on 'foo2.b'.  `READ_ONCE()`
-     and `WRITE_ONCE()` again prevent tearing in this example:
+```
 
+Because there are no `READ_ONCE()` or `WRITE_ONCE()` wrappers and no volatile markings, the compiler would be well within its rights to implement these three assignment statements as a pair of 32-bit loads followed by a pair of 32-bit stores.  This would result in load tearing on 'foo1.b' and store tearing on 'foo2.b'.  `READ_ONCE()` and `WRITE_ONCE()` again prevent tearing in this example:
+
+因为没有 `READ_ONCE()` 或 `WRITE_ONCE()` 包装器，也没有易失性标记，编译器完全可以将这三个赋值语句实现为一对 32 位加载，然后是一对 32- 位商店。 这将导致“foo1.b”上的负载撕裂和“foo2.b”上的存储撕裂。 `READ_ONCE()` 和 `WRITE_ONCE()` 在这个例子中再次防止撕裂：
+
+```c
   foo2.a = foo1.a;
   WRITE_ONCE(foo2.b, READ_ONCE(foo1.b));
   foo2.c = foo1.c;
 
-All that aside, it is never necessary to use `READ_ONCE()` and
-WRITE_ONCE() on a variable that has been marked volatile.  For example,
-because 'jiffies' is marked volatile, it is never necessary to
-say READ_ONCE(jiffies).  The reason for this is that `READ_ONCE()` and
-WRITE_ONCE() are implemented as volatile casts, which has no effect when
-its argument is already marked volatile.
+```
 
-Please note that these compiler barriers have no direct effect on the CPU,
-which may then reorder things however it wishes.
+All that aside, it is never necessary to use `READ_ONCE()` and WRITE_ONCE() on a variable that has been marked volatile.  For example, because 'jiffies' is marked volatile, it is never necessary to say READ_ONCE(jiffies).  The reason for this is that `READ_ONCE()` and WRITE_ONCE() are implemented as volatile casts, which has no effect when its argument is already marked volatile.
+
+Please note that these compiler barriers have no direct effect on the CPU, which may then reorder things however it wishes.
+
+除此之外，永远没有必要在已标记为 volatile 的变量上使用 `READ_ONCE()` 和 WRITE_ONCE()。 例如，因为 'jiffies' 被标记为 volatile，所以没有必要说 READ_ONCE(jiffies)。 这样做的原因是 `READ_ONCE()` 和 WRITE_ONCE() 被实现为 volatile 类型转换，当它的参数已经被标记为 volatile 时，它不起作用。
+
+请注意，这些编译器屏障对 CPU 没有直接影响，CPU 可能会按照自己的意愿重新排序。
 
 
 CPU MEMORY BARRIERS
@@ -2091,68 +2158,38 @@ The Linux kernel has eight basic CPU memory barriers:
   DATA DEPENDENCY        `READ_ONCE()`
 
 
-All memory barriers except the data dependency barriers imply a compiler
-barrier.  Data dependencies do not impose any additional compiler ordering.
+All memory barriers except the data dependency barriers imply a compiler barrier.  Data dependencies do not impose any additional compiler ordering.
 
-Aside: In the case of data dependencies, the compiler would be expected
-to issue the loads in the correct order (eg. `a[b]` would have to load
-the value of b before loading a[b]), however there is no guarantee in
-the C specification that the compiler may not speculate the value of b
-(eg. is equal to 1) and load a[b] before b (eg. tmp = a[1]; if (b != 1)
-tmp = a[b]; ).  There is also the problem of a compiler reloading b after
-having loaded a[b], thus having a newer copy of b than a[b].  A consensus
-has not yet been reached about these problems, however the `READ_ONCE()`
-macro is a good place to start looking.
+Aside: In the case of data dependencies, the compiler would be expected to issue the loads in the correct order (eg. `a[b]` would have to load the value of b before loading a[b]), however there is no guarantee in the C specification that the compiler may not speculate the value of b (eg. is equal to 1) and load a[b] before b (eg. tmp = a[1]; if (b != 1) tmp = a[b]; ).  There is also the problem of a compiler reloading b after having loaded a[b], thus having a newer copy of b than a[b].  A consensus has not yet been reached about these problems, however the `READ_ONCE()` macro is a good place to start looking.
 
-SMP memory barriers are reduced to compiler barriers on uniprocessor compiled
-systems because it is assumed that a CPU will appear to be self-consistent,
-and will order overlapping accesses correctly with respect to itself.
-However, see the subsection on "Virtual Machine Guests" below.
+SMP memory barriers are reduced to compiler barriers on uniprocessor compiled systems because it is assumed that a CPU will appear to be self-consistent, and will order overlapping accesses correctly with respect to itself. However, see the subsection on "Virtual Machine Guests" below.
 
-[!] Note that SMP memory barriers _must_ be used to control the ordering of
-references to shared memory on SMP systems, though the use of locking instead
-is sufficient.
+[!] Note that SMP memory barriers _must_ be used to control the ordering of references to shared memory on SMP systems, though the use of locking instead is sufficient.
 
-Mandatory barriers should not be used to control SMP effects, since mandatory
-barriers impose unnecessary overhead on both SMP and UP systems. They may,
-however, be used to control MMIO effects on accesses through relaxed memory I/O
-windows.  These barriers are required even on non-SMP systems as they affect
-the order in which memory operations appear to a device by prohibiting both the
-compiler and the CPU from reordering them.
+Mandatory barriers should not be used to control SMP effects, since mandatory barriers impose unnecessary overhead on both SMP and UP systems. They may, however, be used to control MMIO effects on accesses through relaxed memory I/O windows.  These barriers are required even on non-SMP systems as they affect the order in which memory operations appear to a device by prohibiting both the compiler and the CPU from reordering them.
 
 
 There are some more advanced barrier functions:
 
 - (*) smp_store_mb(var, value)
 
-     This assigns the value to the variable and then inserts a full memory
-     barrier after it.  It isn't guaranteed to insert anything more than a
-     compiler barrier in a UP compilation.
+     This assigns the value to the variable and then inserts a full memory barrier after it.  It isn't guaranteed to insert anything more than a compiler barrier in a UP compilation.
 
 
 - (*) smp_mb__before_atomic();
 - (*) smp_mb__after_atomic();
 
-     These are for use with atomic RMW functions that do not imply memory
-     barriers, but where the code needs a memory barrier. Examples for atomic
-     RMW functions that do not imply are memory barrier are e.g. add,
-     subtract, (failed) conditional operations, _relaxed functions,
-     but not atomic_read or atomic_set. A common example where a memory
-     barrier may be required is when atomic ops are used for reference
-     counting.
+     These are for use with atomic RMW functions that do not imply memory barriers, but where the code needs a memory barrier. Examples for atomic RMW functions that do not imply are memory barrier are e.g. add, subtract, (failed) conditional operations, _relaxed functions, but not atomic_read or atomic_set. A common example where a memory barrier may be required is when atomic ops are used for reference counting.
 
-     These are also used for atomic RMW bitop functions that do not imply a
-     memory barrier (such as set_bit and clear_bit).
+     These are also used for atomic RMW bitop functions that do not imply a memory barrier (such as set_bit and clear_bit).
 
-     As an example, consider a piece of code that marks an object as being dead
-     and then decrements the object's reference count:
+     As an example, consider a piece of code that marks an object as being dead and then decrements the object's reference count:
 
   obj->dead = 1;
   smp_mb__before_atomic();
   atomic_dec(&obj->ref_count);
 
-     This makes sure that the death mark on the object is perceived to be set
-     *before* the reference counter is decremented.
+     This makes sure that the death mark on the object is perceived to be set *before* the reference counter is decremented.
 
      See Documentation/atomic_{t,bitops}.txt for more information.
 
@@ -2160,14 +2197,9 @@ There are some more advanced barrier functions:
 - (*) dma_wmb();
 - (*) dma_rmb();
 
-     These are for use with consistent memory to guarantee the ordering
-     of writes or reads of shared memory accessible to both the CPU and a
-     DMA capable device.
+     These are for use with consistent memory to guarantee the ordering of writes or reads of shared memory accessible to both the CPU and a DMA capable device.
 
-     For example, consider a device driver that shares memory with a device
-     and uses a descriptor status value to indicate if the descriptor belongs
-     to the device or the CPU, and a doorbell to notify it when new
-     descriptors are available:
+     For example, consider a device driver that shares memory with a device and uses a descriptor status value to indicate if the descriptor belongs to the device or the CPU, and a doorbell to notify it when new descriptors are available:
 
   if (desc->status != DEVICE_OWN) {
     /* do not read data until we own descriptor */
@@ -2187,44 +2219,25 @@ There are some more advanced barrier functions:
     writel(DESC_NOTIFY, doorbell);
   }
 
-     The dma_rmb() allows us guarantee the device has released ownership
-     before we read the data from the descriptor, and the dma_wmb() allows
-     us to guarantee the data is written to the descriptor before the device
-     can see it now has ownership.  Note that, when using writel(), a prior
-     wmb() is not needed to guarantee that the cache coherent memory writes
-     have completed before writing to the MMIO region.  The cheaper
-     writel_relaxed() does not provide this guarantee and must not be used
-     here.
+     The dma_rmb() allows us guarantee the device has released ownership before we read the data from the descriptor, and the dma_wmb() allows us to guarantee the data is written to the descriptor before the device can see it now has ownership.  Note that, when using writel(), a prior wmb() is not needed to guarantee that the cache coherent memory writes have completed before writing to the MMIO region.  The cheaper writel_relaxed() does not provide this guarantee and must not be used here.
 
-     See the subsection "Kernel I/O barrier effects" for more information on
-     relaxed I/O accessors and the Documentation/core-api/dma-api.rst file for
-     more information on consistent memory.
+     See the subsection "Kernel I/O barrier effects" for more information on relaxed I/O accessors and the Documentation/core-api/dma-api.rst file for more information on consistent memory.
 
 - (*) pmem_wmb();
 
-     This is for use with persistent memory to ensure that stores for which
-     modifications are written to persistent storage reached a platform
-     durability domain.
+     This is for use with persistent memory to ensure that stores for which modifications are written to persistent storage reached a platform durability domain.
 
-     For example, after a non-temporal write to pmem region, we use pmem_wmb()
-     to ensure that stores have reached a platform durability domain. This ensures
-     that stores have updated persistent storage before any data access or
-     data transfer caused by subsequent instructions is initiated. This is
-     in addition to the ordering done by wmb().
+     For example, after a non-temporal write to pmem region, we use pmem_wmb() to ensure that stores have reached a platform durability domain. This ensures that stores have updated persistent storage before any data access or data transfer caused by subsequent instructions is initiated. This is in addition to the ordering done by wmb().
 
-     For load from persistent memory, existing read memory barriers are sufficient
-     to ensure read ordering.
+     For load from persistent memory, existing read memory barriers are sufficient to ensure read ordering.
 
 ===============================
 IMPLICIT KERNEL MEMORY BARRIERS
 ===============================
 
-Some of the other functions in the linux kernel imply memory barriers, amongst
-which are locking and scheduling functions.
+Some of the other functions in the linux kernel imply memory barriers, amongst which are locking and scheduling functions.
 
-This specification is a _minimum_ guarantee; any particular architecture may
-provide more substantial guarantees, but these may not be relied upon outside
-of arch specific code.
+This specification is a _minimum_ guarantee; any particular architecture may provide more substantial guarantees, but these may not be relied upon outside of arch specific code.
 
 
 LOCK ACQUISITION FUNCTIONS
