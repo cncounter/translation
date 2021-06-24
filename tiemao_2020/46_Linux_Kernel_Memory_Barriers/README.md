@@ -1872,14 +1872,10 @@ Use `READ_ONCE()` to prevent the compiler from doing this to you:
 
 ```
 
-#########################################################
-############# 到此处
-#########################################################
-
 
 - (*) The compiler is within its rights to reload a variable, for example, in cases where high register pressure prevents the compiler from keeping all data of interest in registers.  The compiler might therefore optimize the variable 'tmp' out of our previous example:
 
-- (*) 编译器有权重新加载变量，例如，在高寄存器压力阻止编译器将所有感兴趣的数据保存在寄存器中的情况下。 因此，编译器可能会优化我们之前示例中的变量“tmp”：
+- (*) 编译器有权重新加载某个变量，例如，在寄存器压力较大时,阻止了编译器将所有感兴趣的数据都保存到寄存器的情况下。 因此，编译器可能会将之前示例中的变量 'tmp' 进行优化：
 
 
 ```c
@@ -1890,7 +1886,7 @@ Use `READ_ONCE()` to prevent the compiler from doing this to you:
 
 This could result in the following code, which is perfectly safe in single-threaded code, but can be fatal in concurrent code:
 
-这可能导致以下代码，这在单线程代码中是完全安全的，但在并发代码中可能是致命的：
+这可能导致以下代码，这在单线程环境中是完全安全的，但在并发环境下则可能是致命的：
 
 ```c
   while (a)
@@ -1898,13 +1894,14 @@ This could result in the following code, which is perfectly safe in single-threa
 
 ```
 
+
 For example, the optimized version of this code could result in passing a zero to do_something_with() in the case where the variable a was modified by some other CPU between the "while" statement and the call to do_something_with().
 
 Again, use `READ_ONCE()` to prevent the compiler from doing this:
 
-例如，在“while”语句和调用 do_something_with() 之间变量 a 被其他 CPU 修改的情况下，此代码的优化版本可能导致向 do_something_with() 传递零。
+例如，在 "while" 语句和 `do_something_with()` 语句调用之间, 如果变量 a 被其他 CPU 修改了，这种优化后的代码, 可能导致传递给 `do_something_with()` 的参数为零。
 
-同样，使用 `READ_ONCE()` 来防止编译器这样做：
+同样，使用 `READ_ONCE()` 可以阻止编译器画蛇添足：
 
 ```c
   while (tmp = READ_ONCE(a))
@@ -1914,11 +1911,11 @@ Again, use `READ_ONCE()` to prevent the compiler from doing this:
 
 Note that if the compiler runs short of registers, it might save tmp onto the stack.  The overhead of this saving and later restoring is why compilers reload variables.  Doing so is perfectly safe for single-threaded code, so you need to tell the compiler about cases where it is not safe.
 
+请注意，如果编译器发现寄存器不够，可能会将 tmp 保存到栈中。 这种保存到stack以及稍后从stack恢复的开销是编译器重新加载变量的原因。 这样做对于单线程代码是完全安全的，因此我们需要告诉编译器什么时候是不安全的。
+
 - (*) The compiler is within its rights to omit a load entirely if it knows what the value will be.  For example, if the compiler can prove that the value of variable 'a' is always zero, it can optimize this code:
 
-请注意，如果编译器缺少寄存器，它可能会将 tmp 保存到堆栈中。 这种保存和稍后恢复的开销是编译器重新加载变量的原因。 这样做对于单线程代码是完全安全的，因此您需要告诉编译器它不安全的情况。
-
-- (*) 如果编译器知道值是什么，则它有权完全省略加载。 例如，如果编译器可以证明变量 'a' 的值始终为零，则可以优化此代码：
+- (*) 如果编译器已经知道变量值是什么，则它有权完全省略load操作。 例如，如果编译器可以证明变量 'a' 的值始终为零，则可以将下面的代码：
 
 ```c
   while (tmp = a)
@@ -1928,12 +1925,17 @@ Note that if the compiler runs short of registers, it might save tmp onto the st
 
 Into this:
 
-进入这个：
+优化为：
 
 ```c
   do { } while (0);
 
 ```
+
+
+#########################################################
+############# 到此处
+#########################################################
 
 This transformation is a win for single-threaded code because it gets rid of a load and a branch.  The problem is that the compiler will carry out its proof assuming that the current CPU is the only one updating variable 'a'.  If variable 'a' is shared, then the compiler's proof will be erroneous.  Use `READ_ONCE()` to tell the compiler that it doesn't know as much as it thinks it does:
 
