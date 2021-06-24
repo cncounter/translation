@@ -1933,13 +1933,12 @@ Into this:
 ```
 
 
-#########################################################
-############# 到此处
-#########################################################
-
 This transformation is a win for single-threaded code because it gets rid of a load and a branch.  The problem is that the compiler will carry out its proof assuming that the current CPU is the only one updating variable 'a'.  If variable 'a' is shared, then the compiler's proof will be erroneous.  Use `READ_ONCE()` to tell the compiler that it doesn't know as much as it thinks it does:
 
-这种转换对于单线程代码来说是一个胜利，因为它摆脱了负载和分支。 问题是编译器将执行其证明假设当前 CPU 是唯一一个更新变量“a”。 如果变量 'a' 是共享的，那么编译器的证明将是错误的。 使用 `READ_ONCE()` 告诉编译器它并不像它认为的那样知道：
+这种转换对于单线程代码来说是优势，因为它摆脱了负载和分支的开销。
+问题是编译器将执行其证明，假设当前 CPU 是唯一会更新变量“a”的存在。
+如果变量 'a' 是共享的，那么编译器的证明将是错误的。
+使用 `READ_ONCE()` 可以告诉编译器不能推断它的值：
 
 ```c
   while (tmp = READ_ONCE(a))
@@ -1949,7 +1948,8 @@ This transformation is a win for single-threaded code because it gets rid of a l
 
 But please note that the compiler is also closely watching what you do with the value after the `READ_ONCE()`.  For example, suppose you do the following and MAX is a preprocessor macro with the value 1:
 
-但请注意，编译器也在密切关注你对 `READ_ONCE()` 之后的值做了什么。 例如，假设您执行以下操作并且 MAX 是值为 1 的预处理器宏：
+但请注意，编译器也在密切关注 `READ_ONCE()` 之后你对这个值做了什么操作。
+例如，假设您执行以下操作并且 MAX 是值为 1 的预处理器宏：
 
 ```c
   while ((tmp = READ_ONCE(a)) % MAX)
@@ -1959,11 +1959,11 @@ But please note that the compiler is also closely watching what you do with the 
 
 Then the compiler knows that the result of the "%" operator applied to MAX will always be zero, again allowing the compiler to optimize the code into near-nonexistence.  (It will still load from the variable 'a'.)
 
+那么编译器就知道对 MAX 进行取模运算("%")的结果将始终为零，再次允许编译器将代码优化为几乎不存在。 （它仍然会从变量 'a' 加载。）
+
 - (*) Similarly, the compiler is within its rights to omit a store entirely if it knows that the variable already has the value being stored. Again, the compiler assumes that the current CPU is the only one storing into the variable, which can cause the compiler to do the wrong thing for shared variables.  For example, suppose you have the following:
 
-然后编译器知道应用于 MAX 的“%”运算符的结果将始终为零，再次允许编译器将代码优化为几乎不存在。 （它仍然会从变量 'a' 加载。）
-
-- (*) 同样，如果编译器知道变量已经具有要存储的值，则它有权完全省略存储。 同样，编译器假定当前 CPU 是唯一一个存储到变量中的 CPU，这可能导致编译器对共享变量做错误的事情。 例如，假设您有以下内容：
+- (*) 同样，如果编译器知道变量已经具有要存储的值，则它有权完全省略存储操作。 同样，编译器假定当前 CPU 是唯一一个存储到变量的 CPU，这可能导致编译器对共享变量做错误的事情。 例如，假设您有以下内容：
 
 ```c
   a = 0;
@@ -1976,7 +1976,8 @@ The compiler sees that the value of variable 'a' is already zero, so it might we
 
 Use `WRITE_ONCE()` to prevent the compiler from making this sort of wrong guess:
 
-编译器发现变量“a”的值已经为零，因此很可能会忽略第二个存储。 如果在此期间其他 CPU 可能已经存储到变量 'a' 中，这将是一个致命的惊喜。
+编译器发现变量“a”的值已经为零，因此很可能会忽略第二次存储操作。
+如果在此期间有其他 CPU 将新数据存储到变量 'a' 中，这将是一个致命的惊喜。
 
 使用 `WRITE_ONCE()` 来防止编译器做出这种错误的猜测：
 
@@ -1989,7 +1990,7 @@ Use `WRITE_ONCE()` to prevent the compiler from making this sort of wrong guess:
 
 - (*) The compiler is within its rights to reorder memory accesses unless you tell it not to.  For example, consider the following interaction between process-level code and an interrupt handler:
 
-- (*) 编译器有权对内存访问进行重新排序，除非您告诉它不要这样做。 例如，考虑以下进程级代码和中断处理程序之间的交互：
+- (*) 编译器有权对内存访问进行重排序，除非您告诉它不要这样做。 例如，考虑以下进程级代码和中断处理程序之间的交互：
 
 ```c
   void process_level(void)
@@ -2008,7 +2009,7 @@ Use `WRITE_ONCE()` to prevent the compiler from making this sort of wrong guess:
 
 There is nothing to prevent the compiler from transforming process_level() to the following, in fact, this might well be a win for single-threaded code:
 
-没有什么可以阻止编译器将 process_level() 转换为以下内容，实际上，这很可能是单线程代码的胜利：
+这里没有什么东西可以阻止编译器将 `process_level()` 转换为以下内容：
 
 ```c
   void process_level(void)
@@ -2019,9 +2020,11 @@ There is nothing to prevent the compiler from transforming process_level() to th
 
 ```
 
-If the interrupt occurs between these two statement, then interrupt_handler() might be passed a garbled msg.  Use `WRITE_ONCE()` to prevent this as follows:
+实际上，这很可能是单线程代码的优势。
 
-如果中断发生在这两个语句之间，则interrupt_handler() 可能会传递一个乱码。 使用 `WRITE_ONCE()` 来防止这种情况如下：
+If the interrupt occurs between these two statement, then `interrupt_handler()` might be passed a garbled msg.  Use `WRITE_ONCE()` to prevent this as follows:
+
+如果在这两个语句之间发生中断，则 `interrupt_handler()` 中的函数调用可能会传如一个乱码参数。 使用 `WRITE_ONCE()` 来防止这种情况：
 
 ```c
   void process_level(void)
@@ -2037,6 +2040,10 @@ If the interrupt occurs between these two statement, then interrupt_handler() mi
   }
 
 ```
+
+#########################################################
+############# 到此处
+#########################################################
 
 Note that the `READ_ONCE()` and `WRITE_ONCE()` wrappers in interrupt_handler() are needed if this interrupt handler can itself be interrupted by something that also accesses 'flag' and 'msg', for example, a nested interrupt or an NMI.  Otherwise, `READ_ONCE()` and `WRITE_ONCE()` are not needed in interrupt_handler() other than for documentation purposes.  (Note also that nested interrupts do not typically occur in modern Linux kernels, in fact, if an interrupt handler returns with interrupts enabled, you will get a WARN_ONCE() splat.)
 
