@@ -403,3 +403,4 @@ We have proposed a system for electronic transactions without relying on trust. 
 - [GitHub中英文对照版翻译](https://github.com/cncounter/translation/tree/master/shusansheng_2019/04_bitcoin_white_paper)
 - [比特币白皮书（英文版）.pdf](https://bitcoin.org/bitcoin.pdf)
 - [李笑来版本](https://github.com/xiaolai/bitcoin-whitepaper-chinese-translation)
+- [The Bitcoin design guide](https://bitcoin.design/guide/)
