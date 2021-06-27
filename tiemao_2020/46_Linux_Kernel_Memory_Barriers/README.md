@@ -62,12 +62,12 @@ Note also that it is possible that a barrier may be a no-op for an architecture 
 CONTENTS
 ========
 
-- (*) Abstract memory access model.
+- (`*`) Abstract memory access model.
 
      - Device operations.
      - Guarantees.
 
-- (*) What are memory barriers?
+- (`*`) What are memory barriers?
 
      - Varieties of memory barrier.
      - What may not be assumed about memory barriers?
@@ -78,49 +78,49 @@ CONTENTS
      - Read memory barriers vs load speculation.
      - Multicopy atomicity.
 
-- (*) Explicit kernel barriers.
+- (`*`) Explicit kernel barriers.
 
      - Compiler barrier.
      - CPU memory barriers.
 
-- (*) Implicit kernel memory barriers.
+- (`*`) Implicit kernel memory barriers.
 
      - Lock acquisition functions.
      - Interrupt disabling functions.
      - Sleep and wake-up functions.
      - Miscellaneous functions.
 
-- (*) Inter-CPU acquiring barrier effects.
+- (`*`) Inter-CPU acquiring barrier effects.
 
      - Acquires vs memory accesses.
 
-- (*) Where are memory barriers needed?
+- (`*`) Where are memory barriers needed?
 
      - Interprocessor interaction.
      - Atomic operations.
      - Accessing devices.
      - Interrupts.
 
-- (*) Kernel I/O barrier effects.
+- (`*`) Kernel I/O barrier effects.
 
-- (*) Assumed minimum execution ordering model.
+- (`*`) Assumed minimum execution ordering model.
 
-- (*) The effects of the cpu cache.
+- (`*`) The effects of the cpu cache.
 
      - Cache coherency.
      - Cache coherency vs DMA.
      - Cache coherency vs MMIO.
 
-- (*) The things CPUs get up to.
+- (`*`) The things CPUs get up to.
 
      - And then there's the Alpha.
      - Virtual Machine Guests.
 
-- (*) Example uses.
+- (`*`) Example uses.
 
      - Circular buffers.
 
-- (*) References.
+- (`*`) References.
 
 
 <a name="CONTENTS"></a>
@@ -292,9 +292,9 @@ There are some minimal guarantees that may be expected of a CPU:
 
 CPU至少必须支持这些特征:
 
-- (*) On any given CPU, dependent memory accesses will be issued in order, with respect to itself.  This means that for:
+- (`*`) On any given CPU, dependent memory accesses will be issued in order, with respect to itself.  This means that for:
 
-- (*) 在任何给定的CPU上, 将根据其自身顺序发出相关的内存访问。 这意味着:
+- (`*`) 在任何给定的CPU上, 将根据其自身顺序发出相关的内存访问。 这意味着:
 
 ```c
 Q = READ_ONCE(P);
@@ -325,9 +325,9 @@ Whether on DEC Alpha or not, the `READ_ONCE()` also prevents compiler mischief.
 
 无论是否在 DEC Alpha 上, `READ_ONCE()` 都可以防止编译器乱序。
 
-- (*) Overlapping loads and stores within a particular CPU will appear to be ordered within that CPU.  This means that for:
+- (`*`) Overlapping loads and stores within a particular CPU will appear to be ordered within that CPU.  This means that for:
 
-- (*) 特定CPU内的重叠loads和stores将在该CPU内排序。 这意味着:
+- (`*`) 特定CPU内的重叠loads和stores将在该CPU内排序。 这意味着:
 
 ```c
 a = READ_ONCE(*X);
@@ -367,15 +367,15 @@ d = LOAD *X
 
 And there are a number of things that _must_ or _must_not_ be assumed:
 
-- (*) It _must_not_ be assumed that the compiler will do what you want with memory references that are not protected by `READ_ONCE()` and `WRITE_ONCE()`.  Without them, the compiler is within its rights to do all sorts of "creative" transformations, which are covered in the COMPILER BARRIER section.
+- (`*`) It _must_not_ be assumed that the compiler will do what you want with memory references that are not protected by `READ_ONCE()` and `WRITE_ONCE()`.  Without them, the compiler is within its rights to do all sorts of "creative" transformations, which are covered in the COMPILER BARRIER section.
 
-- (*) It _must_not_ be assumed that independent loads and stores will be issued in the order given.  This means that for:
+- (`*`) It _must_not_ be assumed that independent loads and stores will be issued in the order given.  This means that for:
 
 而且有许多必须或不允许的假设因素:
 
-- (*) 对不受 `READ_ONCE()` 和 `WRITE_ONCE()` 保护的内存引用操作, 不能假设编译器会按你的预期处理。 没有这种保护, 编译器将有权进行各种“创造性”的转换, 这在后面的 “编译器屏障” 一节中介绍。
+- (`*`) 对不受 `READ_ONCE()` 和 `WRITE_ONCE()` 保护的内存引用操作, 不能假设编译器会按你的预期处理。 没有这种保护, 编译器将有权进行各种“创造性”的转换, 这在后面的 “编译器屏障” 一节中介绍。
 
-- (*) 独立的 loads 和 stores操作, 不能假定他们会以给定的顺序触发。 这意味着:
+- (`*`) 独立的 loads 和 stores操作, 不能假定他们会以给定的顺序触发。 这意味着:
 
 ```c
 X = *A; Y = *B; *D = Z;
@@ -394,9 +394,9 @@ STORE *D = Z, X = LOAD *A,  Y = LOAD *B
 STORE *D = Z, Y = LOAD *B,  X = LOAD *A
 ```
 
-- (*) It _must_ be assumed that overlapping memory accesses may be merged or discarded.  This means that for:
+- (`*`) It _must_ be assumed that overlapping memory accesses may be merged or discarded.  This means that for:
 
-- (*) 重叠的内存访问, 必须假定为可以合并或丢弃。 这意味着:
+- (`*`) 重叠的内存访问, 必须假定为可以合并或丢弃。 这意味着:
 
 ```c
 X = *A; Y = *(A + 4);
@@ -432,19 +432,19 @@ STORE {*A, *(A + 4) } = {X, Y};
 
 And there are anti-guarantees:
 
-- (*) These guarantees do not apply to bitfields, because compilers often generate code to modify these using non-atomic read-modify-write sequences.  Do not attempt to use bitfields to synchronize parallel algorithms.
+- (`*`) These guarantees do not apply to bitfields, because compilers often generate code to modify these using non-atomic read-modify-write sequences.  Do not attempt to use bitfields to synchronize parallel algorithms.
 
-- (*) Even in cases where bitfields are protected by locks, all fields in a given bitfield must be protected by one lock.  If two fields in a given bitfield are protected by different locks, the compiler's non-atomic read-modify-write sequences can cause an update to one field to corrupt the value of an adjacent field.
+- (`*`) Even in cases where bitfields are protected by locks, all fields in a given bitfield must be protected by one lock.  If two fields in a given bitfield are protected by different locks, the compiler's non-atomic read-modify-write sequences can cause an update to one field to corrupt the value of an adjacent field.
 
-- (*) These guarantees apply only to properly aligned and sized scalar variables.  "Properly sized" currently means variables that are the same size as "char", "short", "int" and "long".  "Properly aligned" means the natural alignment, thus no constraints for "char", two-byte alignment for "short", four-byte alignment for "int", and either four-byte or eight-byte alignment for "long", on 32-bit and 64-bit systems, respectively.  Note that these guarantees were introduced into the C11 standard, so beware when using older pre-C11 compilers (for example, gcc 4.6).  The portion of the standard containing this guarantee is Section 3.14, which defines "memory location" as follows:
+- (`*`) These guarantees apply only to properly aligned and sized scalar variables.  "Properly sized" currently means variables that are the same size as "char", "short", "int" and "long".  "Properly aligned" means the natural alignment, thus no constraints for "char", two-byte alignment for "short", four-byte alignment for "int", and either four-byte or eight-byte alignment for "long", on 32-bit and 64-bit systems, respectively.  Note that these guarantees were introduced into the C11 standard, so beware when using older pre-C11 compilers (for example, gcc 4.6).  The portion of the standard containing this guarantee is Section 3.14, which defines "memory location" as follows:
 
 下面是一些反例:
 
-- (*) 这些保证不适用于bit字段(bitfields), 因为编译器生成的代码, 通常会以非原子性的 read-modify-write 顺序对其进行修改。不要尝试使用bit字段来同步并行算法。
+- (`*`) 这些保证不适用于bit字段(bitfields), 因为编译器生成的代码, 通常会以非原子性的 read-modify-write 顺序对其进行修改。不要尝试使用bit字段来同步并行算法。
 
-- (*) 即使bit字段受锁保护的情况下, 给定 bitfield 中的所有字段也必须由同一个锁保护。 如果给定 bitfield 中的两个域由不同的锁来保护, 则编译器的非原子性 read-modify-write 顺序会导致对一个 field 的更新破坏相邻 field 的值。
+- (`*`) 即使bit字段受锁保护的情况下, 给定 bitfield 中的所有字段也必须由同一个锁保护。 如果给定 bitfield 中的两个域由不同的锁来保护, 则编译器的非原子性 read-modify-write 顺序会导致对一个 field 的更新破坏相邻 field 的值。
 
-- (*) 这些保证只适用于正确对齐且大小合适的标量变量。 “大小合适(Properly sized)” 的意思是指与 "char", "short", "int" and "long" 大小相同的变量。 “正确对齐(Properly aligned)” 是指自然对齐,  因此对 "char" 没有约束, 对于 "short" 为两个字节对齐, 对于 "int" 为四字节对齐, 对于 "long" 为四字节或八字节对齐, 分别对应在32位和64位系统上。 请注意, 这些保证是C11标准中引入的, 因此在使用C11之前的编译器时要当心（例如 gcc 4.6）。 标准中包含此保证的章节为 Section 3.14, 其中对 “内存位置(memory location)” 的定义如下:
+- (`*`) 这些保证只适用于正确对齐且大小合适的标量变量。 “大小合适(Properly sized)” 的意思是指与 "char", "short", "int" and "long" 大小相同的变量。 “正确对齐(Properly aligned)” 是指自然对齐,  因此对 "char" 没有约束, 对于 "short" 为两个字节对齐, 对于 "int" 为四字节对齐, 对于 "long" 为四字节或八字节对齐, 分别对应在32位和64位系统上。 请注意, 这些保证是C11标准中引入的, 因此在使用C11之前的编译器时要当心（例如 gcc 4.6）。 标准中包含此保证的章节为 Section 3.14, 其中对 “内存位置(memory location)” 的定义如下:
 
 > memory location either an object of scalar type, or a maximal sequence of adjacent bit-fields all having nonzero width
 
@@ -644,13 +644,13 @@ WHAT MAY NOT BE ASSUMED ABOUT MEMORY BARRIERS?
 
 There are certain things that the Linux kernel memory barriers do not guarantee:
 
-- (*) There is no guarantee that any of the memory accesses specified before a memory barrier will be _complete_ by the completion of a memory barrier instruction; the barrier can be considered to draw a line in that CPU's access queue that accesses of the appropriate type may not cross.
+- (`*`) There is no guarantee that any of the memory accesses specified before a memory barrier will be _complete_ by the completion of a memory barrier instruction; the barrier can be considered to draw a line in that CPU's access queue that accesses of the appropriate type may not cross.
 
-- (*) There is no guarantee that issuing a memory barrier on one CPU will have any direct effect on another CPU or any other hardware in the system.  The indirect effect will be the order in which the second CPU sees the effects of the first CPU's accesses occur, but see the next point:
+- (`*`) There is no guarantee that issuing a memory barrier on one CPU will have any direct effect on another CPU or any other hardware in the system.  The indirect effect will be the order in which the second CPU sees the effects of the first CPU's accesses occur, but see the next point:
 
-- (*) There is no guarantee that a CPU will see the correct order of effects from a second CPU's accesses, even _if_ the second CPU uses a memory barrier, unless the first CPU _also_ uses a matching memory barrier (see the subsection on "SMP Barrier Pairing").
+- (`*`) There is no guarantee that a CPU will see the correct order of effects from a second CPU's accesses, even _if_ the second CPU uses a memory barrier, unless the first CPU _also_ uses a matching memory barrier (see the subsection on "SMP Barrier Pairing").
 
-- (*) There is no guarantee that some intervening piece of off-the-CPU hardware[*] will not reorder the memory accesses.  CPU cache coherency mechanisms should propagate the indirect effects of a memory barrier between CPUs, but might not do so in order.
+- (`*`) There is no guarantee that some intervening piece of off-the-CPU hardware[*] will not reorder the memory accesses.  CPU cache coherency mechanisms should propagate the indirect effects of a memory barrier between CPUs, but might not do so in order.
 
 
 
@@ -659,10 +659,10 @@ There are certain things that the Linux kernel memory barriers do not guarantee:
 
 下面是Linux内核的内存屏障不能提供保证的事情:
 
-- (*) 不保证内存屏障之前的内存访问操作, 都能通过屏障指令的完成而完成。 可以认为屏障只是对CPU的访问队列划了一条线, 使特定类型的内存操作不会交叉。
-- (*) 不能保证在一个CPU上发出的内存屏障, 会对其他CPU或者其他硬件件产生直接影响。 间接效果则是其他CPU看到第一个CPU的操作效果发生的顺序, 但请看下一点。
-- (*) 不能保证CPU会从第二个CPU的访问中看到正确的效果顺序, 即使第二个CPU也使用了内存屏障, 除非第一个CPU也使用了匹配的内存屏障。 请参阅 ["SMP barrier pairing"](#SMP_BARRIER_PAIRING) 小节。
-- (*) 不能保证某些介于中间的非CPU硬件(off-the-CPU hardware), 不会对内存访问进行重排序。 CPU缓存一致性机制应在CPU之间传播内存屏障的间接影响, 但也可能不这样做。
+- (`*`) 不保证内存屏障之前的内存访问操作, 都能通过屏障指令的完成而完成。 可以认为屏障只是对CPU的访问队列划了一条线, 使特定类型的内存操作不会交叉。
+- (`*`) 不能保证在一个CPU上发出的内存屏障, 会对其他CPU或者其他硬件件产生直接影响。 间接效果则是其他CPU看到第一个CPU的操作效果发生的顺序, 但请看下一点。
+- (`*`) 不能保证CPU会从第二个CPU的访问中看到正确的效果顺序, 即使第二个CPU也使用了内存屏障, 除非第一个CPU也使用了匹配的内存屏障。 请参阅 ["SMP barrier pairing"](#SMP_BARRIER_PAIRING) 小节。
+- (`*`) 不能保证某些介于中间的非CPU硬件(off-the-CPU hardware), 不会对内存访问进行重排序。 CPU缓存一致性机制应在CPU之间传播内存屏障的间接影响, 但也可能不这样做。
 
 
 > [ * ] For information on bus mastering DMA and coherency please read:
@@ -1047,25 +1047,25 @@ Note well that the ordering provided by a control dependency is local to the CPU
 
 In summary:
 
-- (*) Control dependencies can order prior loads against later stores.  However, they do -not- guarantee any other sort of ordering:  Not prior loads against later loads, nor prior stores against  later anything.  If you need these other forms of ordering,  use `smp_rmb()`, `smp_wmb()`, or, in the case of prior stores and  later loads, `smp_mb()`.
-- (*) If both legs of the "if" statement begin with identical stores to  the same variable, then those stores must be ordered, either by  preceding both of them with `smp_mb()` or by using `smp_store_release()`  to carry out the stores.  Please note that it is -not- sufficient  to use `barrier()` at beginning of each leg of the "if" statement  because, as shown by the example above, optimizing compilers can  destroy the control dependency while respecting the letter of the  `barrier()` law.
-- (*) Control dependencies require at least one run-time conditional  between the prior load and the subsequent store, and this  conditional must involve the prior load.  If the compiler is able  to optimize the conditional away, it will have also optimized  away the ordering.  Careful use of `READ_ONCE()` and `WRITE_ONCE()`  can help to preserve the needed conditional.
-- (*) Control dependencies require that the compiler avoid reordering the  dependency into nonexistence.  Careful use of `READ_ONCE()` or  `atomic{,64}_read()` can help to preserve your control dependency.  Please see the COMPILER BARRIER section for more information.
-- (*) Control dependencies apply only to the then-clause and else-clause  of the if-statement containing the control dependency, including  any functions that these two clauses call.  Control dependencies  do -not- apply to code following the if-statement containing the  control dependency.
-- (*) Control dependencies pair normally with other types of barriers.
-- (*) Control dependencies do -not- provide multicopy atomicity.  If you  need all the CPUs to see a given store at the same time, use `smp_mb()`.
-- (*) Compilers do not understand control dependencies.  It is therefore  your job to ensure that they do not break your code.
+- (`*`) Control dependencies can order prior loads against later stores.  However, they do -not- guarantee any other sort of ordering:  Not prior loads against later loads, nor prior stores against  later anything.  If you need these other forms of ordering,  use `smp_rmb()`, `smp_wmb()`, or, in the case of prior stores and  later loads, `smp_mb()`.
+- (`*`) If both legs of the "if" statement begin with identical stores to  the same variable, then those stores must be ordered, either by  preceding both of them with `smp_mb()` or by using `smp_store_release()`  to carry out the stores.  Please note that it is -not- sufficient  to use `barrier()` at beginning of each leg of the "if" statement  because, as shown by the example above, optimizing compilers can  destroy the control dependency while respecting the letter of the  `barrier()` law.
+- (`*`) Control dependencies require at least one run-time conditional  between the prior load and the subsequent store, and this  conditional must involve the prior load.  If the compiler is able  to optimize the conditional away, it will have also optimized  away the ordering.  Careful use of `READ_ONCE()` and `WRITE_ONCE()`  can help to preserve the needed conditional.
+- (`*`) Control dependencies require that the compiler avoid reordering the  dependency into nonexistence.  Careful use of `READ_ONCE()` or  `atomic{,64}_read()` can help to preserve your control dependency.  Please see the COMPILER BARRIER section for more information.
+- (`*`) Control dependencies apply only to the then-clause and else-clause  of the if-statement containing the control dependency, including  any functions that these two clauses call.  Control dependencies  do -not- apply to code following the if-statement containing the  control dependency.
+- (`*`) Control dependencies pair normally with other types of barriers.
+- (`*`) Control dependencies do -not- provide multicopy atomicity.  If you  need all the CPUs to see a given store at the same time, use `smp_mb()`.
+- (`*`) Compilers do not understand control dependencies.  It is therefore  your job to ensure that they do not break your code.
 
 总结一下:
 
-- (*) 控制依赖项可以保证前面的 load和后面的 store 顺序。 但是, 它们不保证任何其他排序方式:  不保证前面的load与后面的load顺序, 也不能保证前面的store和后面的任何操作的顺序。 如果需要这些形式的顺序, 请使用 `smp_rmb()`, `smp_wmb()`, 或者保证前面 store 与后面 load 操作的 `smp_mb()`。
-- (*) 如果 "if" 语句的两条腿都把相同的值store到同一个变量, 又需要保证这些store的顺序, 则需要在两个 store 之前都加上 `smp_mb()`, 或使用 `smp_store_release()` 来执行store。 请注意, 只在"if"语句每个分支的开始处使用 `barrier()`是不够的, 因为如上例所示, 编译器优化在关注 `barrier()` 规则的同时, 可能会破坏控制依赖关系。
-- (*) 控制依赖项要求在前面的load和后续的store之间至少有一个运行时条件, 并且该条件必须涉及前面的load。如果编译器能够将条件判断优化掉, 那么它也会将顺序给优化掉。 仔细使用 `READ_ONCE()` 和`WRITE_ONCE()`可以帮助保留所需的条件。
-- (*) 控制依赖项要求编译器避免将依赖项重排序为不存在。仔细使用 `READ_ONCE()` 或 `atomic{,64}_read()` 可以有助于保留控制依赖。请参阅 COMPILER BARRIER 部分以获取更多信息。
-- (*) 控制依赖仅适用于包含控制依赖项的if语句的从句和else子句, 包括这两个子句调用的任何函数。 控制依赖不适用于包含控制依赖项的if语句之后的代码。
-- (*) 控制依赖通常与其他类型的屏障搭配使用。
-- (*) 控制依赖不提供多副本原子性。如果需要所有CPU同时看到给定store的结果, 请使用`smp_mb()`。
-- (*) 编译器不了解控制依赖。 因此, 确保它们不会破坏您的代码是您的责任。
+- (`*`) 控制依赖项可以保证前面的 load和后面的 store 顺序。 但是, 它们不保证任何其他排序方式:  不保证前面的load与后面的load顺序, 也不能保证前面的store和后面的任何操作的顺序。 如果需要这些形式的顺序, 请使用 `smp_rmb()`, `smp_wmb()`, 或者保证前面 store 与后面 load 操作的 `smp_mb()`。
+- (`*`) 如果 "if" 语句的两条腿都把相同的值store到同一个变量, 又需要保证这些store的顺序, 则需要在两个 store 之前都加上 `smp_mb()`, 或使用 `smp_store_release()` 来执行store。 请注意, 只在"if"语句每个分支的开始处使用 `barrier()`是不够的, 因为如上例所示, 编译器优化在关注 `barrier()` 规则的同时, 可能会破坏控制依赖关系。
+- (`*`) 控制依赖项要求在前面的load和后续的store之间至少有一个运行时条件, 并且该条件必须涉及前面的load。如果编译器能够将条件判断优化掉, 那么它也会将顺序给优化掉。 仔细使用 `READ_ONCE()` 和`WRITE_ONCE()`可以帮助保留所需的条件。
+- (`*`) 控制依赖项要求编译器避免将依赖项重排序为不存在。仔细使用 `READ_ONCE()` 或 `atomic{,64}_read()` 可以有助于保留控制依赖。请参阅 COMPILER BARRIER 部分以获取更多信息。
+- (`*`) 控制依赖仅适用于包含控制依赖项的if语句的从句和else子句, 包括这两个子句调用的任何函数。 控制依赖不适用于包含控制依赖项的if语句之后的代码。
+- (`*`) 控制依赖通常与其他类型的屏障搭配使用。
+- (`*`) 控制依赖不提供多副本原子性。如果需要所有CPU同时看到给定store的结果, 请使用`smp_mb()`。
+- (`*`) 编译器不了解控制依赖。 因此, 确保它们不会破坏您的代码是您的责任。
 
 
 
@@ -1155,7 +1155,7 @@ Firstly, write barriers act as partial orderings on store operations. Consider t
 
 
 <a name="EXAMPLES_OF_MEMORY_BARRIER_SEQUENCES"></a>
-#### 2.5.1 内存屏障序列的示例
+### 2.6 内存屏障序列的示例
 
 首先, 写屏障(write barrier)充当了对 store 操作进行部分排序的角色。
 请看以下事件序列:
@@ -1481,7 +1481,7 @@ Consider:
 
 
 <a name="READ_MEMORY_BARRIERS_VS_LOAD_SPECULATION"></a>
-#### 2.5.2 内存读屏障 VS. LOAD预加载
+### 2.7 内存读屏障 VS. LOAD预加载
 
 许多CPU对load有预加载: 也就是说, 如果看到需要从内存中加载一项数据, 并且找到了一个其他load不使用总线的时间, 因此提前进行 load 加载 - 即使CPU在指令执行流程中实际上还没有到达这个点。 这允许执行到实际的 load 指令时会立即完成, 因为CPU已经得到了这个值。
 
@@ -1596,7 +1596,7 @@ The following example demonstrates multicopy atomicity:
 
 
 <a name="MULTICOPY_ATOMICITY"></a>
-#### 2.5.3 多副本原子性
+#### 2.8 多副本原子性
 
 多副本原子性是一种关于排序的非常直观的概念, 但并不是所有的计算机系统都提供支持；即某个 store 在同一时刻对所有CPU都可见； 或者, 所有CPU同意某种顺序,让所有 store 都变为可见。 但是, 对多副本原子性的完全支持, 将会排除硬件层面有价值的优化, 因此 `other multicopy atomicity`(其他多副本原子性)的较弱形式, 只能保证一个给定的 store 对所有其他CPU同时可见。 本文档的其余部分讨论了这种较弱的形式, 但为简便起见, 将其简称为 `multicopy atomicity`(多副本原子性)。
 
@@ -1763,9 +1763,9 @@ EXPLICIT KERNEL BARRIERS
 
 The Linux kernel has a variety of different barriers that act at different levels:
 
- - (*) Compiler barrier.
+- (`*`) Compiler barrier.
 
- - (*) CPU memory barriers.
+- (`*`) CPU memory barriers.
 
 
 
@@ -1774,9 +1774,9 @@ The Linux kernel has a variety of different barriers that act at different level
 
 Linux 内核有多种不同的屏障, 它们作用于不同的级别:
 
-- (*) 编译器屏障
+- (`*`) 编译器屏障
 
-- (*) CPU 内存屏障
+- (`*`) CPU 内存屏障
 
 
 
@@ -1800,26 +1800,26 @@ This is a general barrier -- there are no read-read or write-write variants of `
 
 The `barrier()` function has the following effects:
 
-- (*) Prevents the compiler from reordering accesses following the `barrier()` to precede any accesses preceding the `barrier()`. One example use for this property is to ease communication between interrupt-handler code and the code that was interrupted.
+- (`*`) Prevents the compiler from reordering accesses following the `barrier()` to precede any accesses preceding the `barrier()`. One example use for this property is to ease communication between interrupt-handler code and the code that was interrupted.
 
-- (*) Within a loop, forces the compiler to load the variables used in that loop's conditional on each pass through that loop.
+- (`*`) Within a loop, forces the compiler to load the variables used in that loop's conditional on each pass through that loop.
 
 The `READ_ONCE()` and `WRITE_ONCE()` functions can prevent any number of optimizations that, while perfectly safe in single-threaded code, can be fatal in concurrent code.  Here are some examples of these sorts of optimizations:
 
-- (*) The compiler is within its rights to reorder loads and stores to the same variable, and in some cases, the CPU is within its rights to reorder loads to the same variable.  This means that the following code:
+- (`*`) The compiler is within its rights to reorder loads and stores to the same variable, and in some cases, the CPU is within its rights to reorder loads to the same variable.  This means that the following code:
 
 这是一个通用屏障 —— `barrier()` 没有 read-read 或者 write-write 变体。
 然而, `READ_ONCE()` 和 `WRITE_ONCE()` 可以被认为是 `barrier()` 的较弱形式, 因为它们只影响由 `READ_ONCE()` 和 `WRITE_ONCE()` 标记的特定访问。
 
 `barrier()` 函数有以下几个作用:
 
-- (*) 阻止编译器将 `barrier()` 函数之后的内存访问操作给重排序到 `barrier()` 之前。 这种特性的一个示例用途, 是简化中断处理程序代码和被中断代码之间的通信。
+- (`*`) 阻止编译器将 `barrier()` 函数之后的内存访问操作给重排序到 `barrier()` 之前。 这种特性的一个示例用途, 是简化中断处理程序代码和被中断代码之间的通信。
 
-- (*) 在循环内, 通知编译器在每次循环迭代时, 强制去加载循环条件中使用的变量。
+- (`*`) 在循环内, 通知编译器在每次循环迭代时, 强制去加载循环条件中使用的变量。
 
 `READ_ONCE()` 和 `WRITE_ONCE()` 函数可以防止任意数量的优化, 虽然在单线程代码中是完全安全, 但在并发代码中可能是致命的。下面列出了一些优化的示例:
 
-- (*) 编译器有权对同一个变量的加载(load)和保存(store)进行重排序, 在某些情况下, CPU 有权对同一变量的多次加载(load)进行重排序。 这意味着以下代码:
+- (`*`) 编译器有权对同一个变量的加载(load)和保存(store)进行重排序, 在某些情况下, CPU 有权对同一变量的多次加载(load)进行重排序。 这意味着以下代码:
 
 ```c
   a[0] = x;
@@ -1841,9 +1841,9 @@ In short, `READ_ONCE()` and `WRITE_ONCE()` provide cache coherence for accesses 
 
 简而言之, `READ_ONCE()` 和 `WRITE_ONCE()` 为多个 CPU 访问单个变量提供了缓存一致性。
 
-- (*) The compiler is within its rights to merge successive loads from the same variable.  Such merging can cause the compiler to "optimize" the following code:
+- (`*`) The compiler is within its rights to merge successive loads from the same variable.  Such merging can cause the compiler to "optimize" the following code:
 
-- (*) 编译器有权合并来自同一个变量的多次加载(load)。 这种合并会导致编译器将下面的代码进行“优化”:
+- (`*`) 编译器有权合并来自同一个变量的多次加载(load)。 这种合并会导致编译器将下面的代码进行“优化”:
 
 ```c
   while (tmp = a)
@@ -1873,9 +1873,9 @@ Use `READ_ONCE()` to prevent the compiler from doing this to you:
 ```
 
 
-- (*) The compiler is within its rights to reload a variable, for example, in cases where high register pressure prevents the compiler from keeping all data of interest in registers.  The compiler might therefore optimize the variable 'tmp' out of our previous example:
+- (`*`) The compiler is within its rights to reload a variable, for example, in cases where high register pressure prevents the compiler from keeping all data of interest in registers.  The compiler might therefore optimize the variable 'tmp' out of our previous example:
 
-- (*) 编译器有权重新加载某个变量, 例如, 在寄存器压力较大时,阻止了编译器将所有感兴趣的数据都保存到寄存器的情况下。 因此, 编译器可能会将之前示例中的变量 'tmp' 进行优化:
+- (`*`) 编译器有权重新加载某个变量, 例如, 在寄存器压力较大时,阻止了编译器将所有感兴趣的数据都保存到寄存器的情况下。 因此, 编译器可能会将之前示例中的变量 'tmp' 进行优化:
 
 
 ```c
@@ -1913,9 +1913,9 @@ Note that if the compiler runs short of registers, it might save tmp onto the st
 
 请注意, 如果编译器发现寄存器不够, 可能会将 tmp 保存到栈中。 这种保存到stack以及稍后从stack恢复的开销是编译器重新加载变量的原因。 这样做对于单线程代码是完全安全的, 因此我们需要告诉编译器什么时候是不安全的。
 
-- (*) The compiler is within its rights to omit a load entirely if it knows what the value will be.  For example, if the compiler can prove that the value of variable 'a' is always zero, it can optimize this code:
+- (`*`) The compiler is within its rights to omit a load entirely if it knows what the value will be.  For example, if the compiler can prove that the value of variable 'a' is always zero, it can optimize this code:
 
-- (*) 如果编译器已经知道变量值是什么, 则它有权完全省略load操作。 例如, 如果编译器可以证明变量 'a' 的值始终为零, 则可以将下面的代码:
+- (`*`) 如果编译器已经知道变量值是什么, 则它有权完全省略load操作。 例如, 如果编译器可以证明变量 'a' 的值始终为零, 则可以将下面的代码:
 
 ```c
   while (tmp = a)
@@ -1961,9 +1961,9 @@ Then the compiler knows that the result of the "%" operator applied to MAX will 
 
 那么编译器就知道对 MAX 进行取模运算("%")的结果将始终为零, 再次允许编译器将代码优化为几乎不存在。 （它仍然会从变量 'a' 加载。）
 
-- (*) Similarly, the compiler is within its rights to omit a store entirely if it knows that the variable already has the value being stored. Again, the compiler assumes that the current CPU is the only one storing into the variable, which can cause the compiler to do the wrong thing for shared variables.  For example, suppose you have the following:
+- (`*`) Similarly, the compiler is within its rights to omit a store entirely if it knows that the variable already has the value being stored. Again, the compiler assumes that the current CPU is the only one storing into the variable, which can cause the compiler to do the wrong thing for shared variables.  For example, suppose you have the following:
 
-- (*) 同样, 如果编译器知道变量已经具有要存储的值, 则它有权完全省略存储操作。 同样, 编译器假定当前 CPU 是唯一一个存储到变量的 CPU, 这可能导致编译器对共享变量做错误的事情。 例如, 假设您有以下内容:
+- (`*`) 同样, 如果编译器知道变量已经具有要存储的值, 则它有权完全省略存储操作。 同样, 编译器假定当前 CPU 是唯一一个存储到变量的 CPU, 这可能导致编译器对共享变量做错误的事情。 例如, 假设您有以下内容:
 
 ```c
   a = 0;
@@ -1988,9 +1988,9 @@ Use `WRITE_ONCE()` to prevent the compiler from making this sort of wrong guess:
 
 ```
 
-- (*) The compiler is within its rights to reorder memory accesses unless you tell it not to.  For example, consider the following interaction between process-level code and an interrupt handler:
+- (`*`) The compiler is within its rights to reorder memory accesses unless you tell it not to.  For example, consider the following interaction between process-level code and an interrupt handler:
 
-- (*) 编译器有权对内存访问进行重排序, 除非您告诉它不要这样做。 例如, 考虑以下进程级代码和中断处理程序之间的交互:
+- (`*`) 编译器有权对内存访问进行重排序, 除非您告诉它不要这样做。 例如, 考虑以下进程级代码和中断处理程序之间的交互:
 
 ```c
   void process_level(void)
@@ -2056,9 +2056,9 @@ This effect could also be achieved using `barrier()`, but `READ_ONCE()` and `WRI
 使用`barrier()`也可以实现这种效果, 但是`READ_ONCE()`和`WRITE_ONCE()`更具有指向性: 使用`READ_ONCE()`和`WRITE_ONCE()`, 编译器只需忘记其指定的内存位置的内容, 而使用 `barrier()` 时, 编译器必须丢弃当前在所有CPU寄存器中缓存的所有内存位置的值。
 当然, 编译器也必须尊重 `READ_ONCE()`和`WRITE_ONCE()` 出现的顺序, 而 CPU 不需要这样做。
 
-- (*) The compiler is within its rights to invent stores to a variable, as in the following example:
+- (`*`) The compiler is within its rights to invent stores to a variable, as in the following example:
 
-- (*) 编译器有权拼凑出对变量的store操作, 比如:
+- (`*`) 编译器有权拼凑出对变量的store操作, 比如:
 
 ```c
   if (a)
@@ -2098,9 +2098,9 @@ The compiler can also invent loads.  These are usually less damaging, but they c
 编译器还会拼凑出 load 代码。 破坏性一般很小, 但可能会导致缓存行反弹, 从而降低性能和可扩展性。 使用 `READ_ONCE()` 来防止 load 拼凑。
 
 
-- (*) For aligned memory locations whose size allows them to be accessed with a single memory-reference instruction, prevents "load tearing" and "store tearing," in which a single large access is replaced by multiple smaller accesses.  For example, given an architecture having 16-bit store instructions with 7-bit immediate fields, the compiler might be tempted to use two 16-bit store-immediate instructions to implement the following 32-bit store:
+- (`*`) For aligned memory locations whose size allows them to be accessed with a single memory-reference instruction, prevents "load tearing" and "store tearing," in which a single large access is replaced by multiple smaller accesses.  For example, given an architecture having 16-bit store instructions with 7-bit immediate fields, the compiler might be tempted to use two 16-bit store-immediate instructions to implement the following 32-bit store:
 
-- (*) 对于允许使用单个内存引用指令来访问的, 对齐过的内存位置, 防止“load撕裂”和“store撕裂”, 其中单个大访问被多个较小访问替换。 例如, 在某种体系结构下, 用 16 位store指令, 和 7 位是即时数字段,  编译器可能会尝试使用两个 16 位的即时存储指令(store-immediate)来实现以下 32 位store:
+- (`*`) 对于允许使用单个内存引用指令来访问的, 对齐过的内存位置, 防止“load撕裂”和“store撕裂”, 其中单个大访问被多个较小访问替换。 例如, 在某种体系结构下, 用 16 位store指令, 和 7 位是即时数字段,  编译器可能会尝试使用两个 16 位的即时存储指令(store-immediate)来实现以下 32 位store:
 
 ```c
   p = 0x00010002;
@@ -2167,14 +2167,20 @@ Please note that these compiler barriers have no direct effect on the CPU, which
 CPU MEMORY BARRIERS
 -------------------
 
+
+<a name="CPU_MEMORY_BARRIERS"></a>
+### 3.2 CPU 内存屏障
+
 The Linux kernel has eight basic CPU memory barriers:
 
-  TYPE    MANDATORY    SMP CONDITIONAL
-  ===============  =======================  ===========================
-  GENERAL    mb()      `smp_mb()`
-  WRITE    wmb()      smp_wmb()
-  READ    rmb()      smp_rmb()
-  DATA DEPENDENCY        `READ_ONCE()`
+Linux内核支持8种基础的CPU内存屏障:
+
+| TYPE         |    MANDATORY   |     SMP CONDITIONAL |
+| ------------ | -------------- | --------------- |   
+| GENERAL      |      mb()      |     smp_mb()    |
+| WRITE        |      wmb()     |     smp_wmb()   |
+| READ         |      rmb()     |     smp_rmb()   |
+| DATA DEPENDENCY |             |     READ_ONCE() |
 
 
 All memory barriers except the data dependency barriers imply a compiler barrier.  Data dependencies do not impose any additional compiler ordering.
@@ -2183,43 +2189,69 @@ Aside: In the case of data dependencies, the compiler would be expected to issue
 
 SMP memory barriers are reduced to compiler barriers on uniprocessor compiled systems because it is assumed that a CPU will appear to be self-consistent, and will order overlapping accesses correctly with respect to itself. However, see the subsection on "Virtual Machine Guests" below.
 
+除了数据依赖障碍之外的所有内存障碍都意味着编译器障碍。数据相关性不会强加任何额外的编译器排序。
+
+旁白：在数据依赖的情况下，编译器应该以正确的顺序发出加载（例如，`a[b]` 必须在加载 a[b] 之前加载 b 的值），但是有C 规范中不保证编译器不会推测 b 的值（例如等于 1）并在 b 之前加载 a[b]（例如 tmp = a[1]; if (b != 1) tmp = a[b];)。还有一个问题是编译器在加载 a[b] 后重新加载 b，因此 b 的副本比 a[b] 更新。尚未就这些问题达成共识，但是 `READ_ONCE()` 宏是一个开始寻找的好地方。
+
+在单处理器编译系统上，SMP 内存屏障减少为编译器屏障，因为假设 CPU 看起来是自洽的，并且会相对于自身正确地对重叠访问进行排序。但是，请参阅下面有关“虚拟机来宾”的小节。
+
 [!] Note that SMP memory barriers _must_ be used to control the ordering of references to shared memory on SMP systems, though the use of locking instead is sufficient.
 
 Mandatory barriers should not be used to control SMP effects, since mandatory barriers impose unnecessary overhead on both SMP and UP systems. They may, however, be used to control MMIO effects on accesses through relaxed memory I/O windows.  These barriers are required even on non-SMP systems as they affect the order in which memory operations appear to a device by prohibiting both the compiler and the CPU from reordering them.
 
+[!] 请注意，SMP 内存屏障_必须_用于控制对 SMP 系统上共享内存的引用的顺序，尽管使用锁定来代替就足够了。
+
+不应使用强制性障碍来控制 SMP 的影响，因为强制性障碍会对 SMP 和 UP 系统造成不必要的开销。 但是，它们可用于通过宽松的内存 I/O 窗口控制 MMIO 对访问的影响。 即使在非 SMP 系统上也需要这些屏障，因为它们通过禁止编译器和 CPU 重新排序来影响内存操作出现在设备上的顺序。
 
 There are some more advanced barrier functions:
 
-- (*) smp_store_mb(var, value)
+下面是一些高级的屏障函数：
 
-     This assigns the value to the variable and then inserts a full memory barrier after it.  It isn't guaranteed to insert anything more than a compiler barrier in a UP compilation.
+- `smp_store_mb(var, value)`
+
+  This assigns the value to the variable and then inserts a full memory barrier after it.  It isn't guaranteed to insert anything more than a compiler barrier in a UP compilation.
+
+  这将值分配给变量，然后在它之后插入一个完整的内存屏障。 不能保证在 UP 编译中插入比编译器屏障更多的东西。
 
 
-- (*) smp_mb__before_atomic();
-- (*) smp_mb__after_atomic();
+- `smp_mb__before_atomic()`
+- `smp_mb__after_atomic()`
 
-     These are for use with atomic RMW functions that do not imply memory barriers, but where the code needs a memory barrier. Examples for atomic RMW functions that do not imply are memory barrier are e.g. add, subtract, (failed) conditional operations, _relaxed functions, but not atomic_read or atomic_set. A common example where a memory barrier may be required is when atomic ops are used for reference counting.
+  These are for use with atomic RMW functions that do not imply memory barriers, but where the code needs a memory barrier. Examples for atomic RMW functions that do not imply are memory barrier are e.g. add, subtract, (failed) conditional operations, _relaxed functions, but not atomic_read or atomic_set. A common example where a memory barrier may be required is when atomic ops are used for reference counting.
 
-     These are also used for atomic RMW bitop functions that do not imply a memory barrier (such as set_bit and clear_bit).
+  These are also used for atomic RMW bitop functions that do not imply a memory barrier (such as set_bit and clear_bit).
 
-     As an example, consider a piece of code that marks an object as being dead and then decrements the object's reference count:
+  As an example, consider a piece of code that marks an object as being dead and then decrements the object's reference count:
 
+  这些用于不暗示内存屏障但代码需要内存屏障的原子 RMW 函数。 不暗示内存屏障的原子 RMW 函数的示例是例如 加、减、（失败）条件操作、_relaxed 函数，但不是 atomic_read 或 atomic_set。 可能需要内存屏障的一个常见示例是原子操作用于引用计数。
+
+  这些也用于不暗示内存屏障的原子 RMW bittop 函数（例如 set_bit 和 clear_bit）。
+
+  举个例子，考虑一段代码，将一个对象标记为死亡，然后递减该对象的引用计数：
+
+  ```c
   obj->dead = 1;
   smp_mb__before_atomic();
   atomic_dec(&obj->ref_count);
+  ```
 
-     This makes sure that the death mark on the object is perceived to be set *before* the reference counter is decremented.
+  This makes sure that the death mark on the object is perceived to be set *before* the reference counter is decremented.
 
-     See Documentation/atomic_{t,bitops}.txt for more information.
+  See Documentation/atomic_{t,bitops}.txt for more information.
+
+  这确保在对象上的死亡标记被感知为*在*引用计数器递减之前设置。
+
+  更多信息请参阅 `Documentation/atomic_{t,bitops}.txt` 等文档。
 
 
-- (*) dma_wmb();
-- (*) dma_rmb();
+- `dma_wmb()`
+- `dma_rmb()`
 
-     These are for use with consistent memory to guarantee the ordering of writes or reads of shared memory accessible to both the CPU and a DMA capable device.
+  These are for use with consistent memory to guarantee the ordering of writes or reads of shared memory accessible to both the CPU and a DMA capable device.
 
-     For example, consider a device driver that shares memory with a device and uses a descriptor status value to indicate if the descriptor belongs to the device or the CPU, and a doorbell to notify it when new descriptors are available:
+  For example, consider a device driver that shares memory with a device and uses a descriptor status value to indicate if the descriptor belongs to the device or the CPU, and a doorbell to notify it when new descriptors are available:
 
+  ```c
   if (desc->status != DEVICE_OWN) {
     /* do not read data until we own descriptor */
     dma_rmb();
@@ -2237,22 +2269,37 @@ There are some more advanced barrier functions:
     /* notify device of new descriptors */
     writel(DESC_NOTIFY, doorbell);
   }
+  ```
 
-     The dma_rmb() allows us guarantee the device has released ownership before we read the data from the descriptor, and the dma_wmb() allows us to guarantee the data is written to the descriptor before the device can see it now has ownership.  Note that, when using writel(), a prior wmb() is not needed to guarantee that the cache coherent memory writes have completed before writing to the MMIO region.  The cheaper writel_relaxed() does not provide this guarantee and must not be used here.
+  The dma_rmb() allows us guarantee the device has released ownership before we read the data from the descriptor, and the dma_wmb() allows us to guarantee the data is written to the descriptor before the device can see it now has ownership.  Note that, when using writel(), a prior wmb() is not needed to guarantee that the cache coherent memory writes have completed before writing to the MMIO region.  The cheaper writel_relaxed() does not provide this guarantee and must not be used here.
 
-     See the subsection "Kernel I/O barrier effects" for more information on relaxed I/O accessors and the Documentation/core-api/dma-api.rst file for more information on consistent memory.
+  See the subsection "Kernel I/O barrier effects" for more information on relaxed I/O accessors and the Documentation/core-api/dma-api.rst file for more information on consistent memory.
 
-- (*) pmem_wmb();
+  dma_rmb() 允许我们在从描述符读取数据之前保证设备已释放所有权，而 dma_wmb() 允许我们保证数据在设备可以看到它现在拥有所有权之前写入描述符。 请注意，在使用 writel() 时，不需要先前的 wmb() 来保证在写入 MMIO 区域之前已完成缓存一致性内存写入。 更便宜的 writel_relaxed() 不提供此保证，不得在此处使用。
 
-     This is for use with persistent memory to ensure that stores for which modifications are written to persistent storage reached a platform durability domain.
+  有关宽松 I/O 访问器的更多信息，请参阅“内核 I/O 屏障效应”小节，有关一致内存的更多信息，请参阅 Documentation/core-api/dma-api.rst 文件。
 
-     For example, after a non-temporal write to pmem region, we use pmem_wmb() to ensure that stores have reached a platform durability domain. This ensures that stores have updated persistent storage before any data access or data transfer caused by subsequent instructions is initiated. This is in addition to the ordering done by wmb().
+- `pmem_wmb()`
 
-     For load from persistent memory, existing read memory barriers are sufficient to ensure read ordering.
+  This is for use with persistent memory to ensure that stores for which modifications are written to persistent storage reached a platform durability domain.
+
+  For example, after a non-temporal write to pmem region, we use pmem_wmb() to ensure that stores have reached a platform durability domain. This ensures that stores have updated persistent storage before any data access or data transfer caused by subsequent instructions is initiated. This is in addition to the ordering done by wmb().
+
+  For load from persistent memory, existing read memory barriers are sufficient to ensure read ordering.
+
+  这与持久内存一起使用，以确保将修改写入持久存储的存储到达平台持久域。
+
+  例如，在对 pmem 区域进行非临时写入后，我们使用 pmem_wmb() 来确保商店已达到平台持久性域。 这确保在启动由后续指令引起的任何数据访问或数据传输之前，存储已更新持久存储。 这是 wmb() 完成的排序的补充。
+
+  对于从持久内存加载，现有的读取内存屏障足以确保读取顺序。
 
 ===============================
 IMPLICIT KERNEL MEMORY BARRIERS
 ===============================
+
+
+<a name="IMPLICIT_KERNEL_MEMORY_BARRIERS"></a>
+## 4. 隐式内存屏障
 
 Some of the other functions in the linux kernel imply memory barriers, amongst which are locking and scheduling functions.
 
@@ -2262,13 +2309,16 @@ This specification is a _minimum_ guarantee; any particular architecture may pro
 LOCK ACQUISITION FUNCTIONS
 --------------------------
 
+<a name="LOCK_ACQUISITION_FUNCTIONS"></a>
+### 4.1 获取锁的函数
+
 The Linux kernel has a number of locking constructs:
 
-- (*) spin locks
-- (*) R/W spin locks
-- (*) mutexes
-- (*) semaphores
-- (*) R/W semaphores
+- (`*`) spin locks
+- (`*`) R/W spin locks
+- (`*`) mutexes
+- (`*`) semaphores
+- (`*`) R/W semaphores
 
 In all cases there are variants on "ACQUIRE" operations and "RELEASE" operations
 for each construct.  These operations all imply certain barriers:
@@ -2335,10 +2385,12 @@ not imply a full memory barrier.  Therefore, the CPU's execution of the
 critical sections corresponding to the RELEASE and the ACQUIRE can cross,
 so that:
 
+```c
   *A = a;
   RELEASE M
   ACQUIRE N
   *B = b;
+```
 
 could occur as:
 
@@ -2348,28 +2400,28 @@ It might appear that this reordering could introduce a deadlock.
 However, this cannot happen because if such a deadlock threatened,
 the RELEASE would simply complete, thereby avoiding the deadlock.
 
-  Why does this work?
+> Why does this work?
 
-  One key point is that we are only talking about the CPU doing
-  the reordering, not the compiler.  If the compiler (or, for
-  that matter, the developer) switched the operations, deadlock
-  -could- occur.
+One key point is that we are only talking about the CPU doing
+the reordering, not the compiler.  If the compiler (or, for
+that matter, the developer) switched the operations, deadlock
+-could- occur.
 
-  But suppose the CPU reordered the operations.  In this case,
-  the unlock precedes the lock in the assembly code.  The CPU
-  simply elected to try executing the later lock operation first.
-  If there is a deadlock, this lock operation will simply spin (or
-  try to sleep, but more on that later).  The CPU will eventually
-  execute the unlock operation (which preceded the lock operation
-  in the assembly code), which will unravel the potential deadlock,
-  allowing the lock operation to succeed.
+But suppose the CPU reordered the operations.  In this case,
+the unlock precedes the lock in the assembly code.  The CPU
+simply elected to try executing the later lock operation first.
+If there is a deadlock, this lock operation will simply spin (or
+try to sleep, but more on that later).  The CPU will eventually
+execute the unlock operation (which preceded the lock operation
+in the assembly code), which will unravel the potential deadlock,
+allowing the lock operation to succeed.
 
-  But what if the lock is a sleeplock?  In that case, the code will
-  try to enter the scheduler, where it will eventually encounter
-  a memory barrier, which will force the earlier unlock operation
-  to complete, again unraveling the deadlock.  There might be
-  a sleep-unlock race, but the locking primitive needs to resolve
-  such races properly in any case.
+But what if the lock is a sleeplock?  In that case, the code will
+try to enter the scheduler, where it will eventually encounter
+a memory barrier, which will force the earlier unlock operation
+to complete, again unraveling the deadlock.  There might be
+a sleep-unlock race, but the locking primitive needs to resolve
+such races properly in any case.
 
 Locks and semaphores may not provide any guarantee of ordering on UP compiled
 systems, and so cannot be counted on in such a situation to actually achieve
@@ -2394,21 +2446,28 @@ As an example, consider the following:
 
 The following sequence of events is acceptable:
 
+```c
   ACQUIRE, {*F,*A}, *E, {*C,*D}, *B, RELEASE
+```
 
   [+] Note that {*F,*A} indicates a combined access.
 
 But none of the following are:
 
+```c
   {*F,*A}, *B,  ACQUIRE, *C, *D,  RELEASE, *E
   *A, *B, *C,  ACQUIRE, *D,    RELEASE, *E, *F
   *A, *B,    ACQUIRE, *C,    RELEASE, *D, *E, *F
   *B,    ACQUIRE, *C, *D,  RELEASE, {*F,*A}, *E
-
+```
 
 
 INTERRUPT DISABLING FUNCTIONS
 -----------------------------
+
+
+<a name="INTERRUPT_DISABLING_FUNCTIONS"></a>
+### 4.2 禁止中断的函数
 
 Functions that disable interrupts (ACQUIRE equivalent) and enable interrupts
 (RELEASE equivalent) will act as compiler barriers only.  So if memory or I/O
@@ -2419,6 +2478,10 @@ other means.
 SLEEP AND WAKE-UP FUNCTIONS
 ---------------------------
 
+
+<a name="SLEEP_AND_WAKE-UP_FUNCTIONS"></a>
+### 4.3 睡眠和唤醒函数
+
 Sleeping and waking on an event flagged in global data can be viewed as an
 interaction between two pieces of data: the task state of the task waiting for
 the event and the global data used to indicate the event.  To make sure that
@@ -2428,16 +2491,19 @@ barriers.
 
 Firstly, the sleeper normally follows something like this sequence of events:
 
+```c
   for (;;) {
     set_current_state(TASK_UNINTERRUPTIBLE);
     if (event_indicated)
       break;
     schedule();
   }
+```
 
 A general memory barrier is interpolated automatically by set_current_state()
 after it has altered the task state:
 
+```c
   CPU 1
   ===============================
   set_current_state();
@@ -2445,6 +2511,7 @@ after it has altered the task state:
       STORE current->state
       <general barrier>
   LOAD event_indicated
+```
 
 set_current_state() may be wrapped by:
 
@@ -2571,9 +2638,13 @@ and the waker should do:
 MISCELLANEOUS FUNCTIONS
 -----------------------
 
+
+<a name="MISCELLANEOUS_FUNCTIONS"></a>
+### 4.4 其他函数
+
 Other functions that imply barriers:
 
-- (*) schedule() and similar imply full memory barriers.
+- (`*`) schedule() and similar imply full memory barriers.
 
 
 ===================================
@@ -2585,8 +2656,15 @@ that does affect memory access ordering on other CPUs, within the context of
 conflict on any particular lock.
 
 
+<a name="INTER-CPU_ACQUIRING_BARRIER_EFFECTS"></a>
+## 5. CPU之间获取屏障的效果
+
+
 ACQUIRES VS MEMORY ACCESSES
 ---------------------------
+
+<a name="ACQUIRES_VS_MEMORY_ACCESSES"></a>
+### 5.1 ACQUIRES vs. 内存访问
 
 Consider the following: the system has a pair of spinlocks (M) and (Q), and
 three CPUs; then should the following sequence of events occur:
@@ -2618,22 +2696,30 @@ But it won't see any of:
 WHERE ARE MEMORY BARRIERS NEEDED?
 =================================
 
+
+<a name="WHERE_ARE_MEMORY_BARRIERS_NEEDED"></a>
+## 6. 什么地方需要内存屏障
+
 Under normal operation, memory operation reordering is generally not going to
 be a problem as a single-threaded linear piece of code will still appear to
 work correctly, even if it's in an SMP kernel.  There are, however, four
 circumstances in which reordering definitely _could_ be a problem:
 
-- (*) Interprocessor interaction.
+- (`*`) Interprocessor interaction.
 
-- (*) Atomic operations.
+- (`*`) Atomic operations.
 
-- (*) Accessing devices.
+- (`*`) Accessing devices.
 
-- (*) Interrupts.
+- (`*`) Interrupts.
 
 
 INTERPROCESSOR INTERACTION
 --------------------------
+
+
+<a name="INTERPROCESSOR_INTERACTION"></a>
+### 6.1 处理器之间的交互
 
 When there's a system with more than one processor, more than one CPU in the
 system may be working on the same data set at the same time.  This can cause
@@ -2736,6 +2822,10 @@ CPU, that CPU's dependency ordering logic will take care of everything else.
 ATOMIC OPERATIONS
 -----------------
 
+
+<a name="ATOMIC_OPERATIONS"></a>
+### 6.2 原子操作
+
 While they are technically interprocessor interaction considerations, atomic
 operations are noted specially as some of them imply full memory barriers and
 some don't, but they're very heavily relied on as a group throughout the
@@ -2746,6 +2836,9 @@ See Documentation/atomic_t.txt for more information.
 
 ACCESSING DEVICES
 -----------------
+
+<a name="ACCESSING_DEVICES"></a>
+### 6.3 设备访问
 
 Many devices can be memory mapped, and so appear to the CPU as if they're just
 a set of memory locations.  To control such a device, the driver usually has to
@@ -2769,6 +2862,9 @@ See Documentation/driver-api/device-io.rst for more information.
 
 INTERRUPTS
 ----------
+
+<a name="INTERRUPTS"></a>
+### 6.4 中断
 
 A driver may be interrupted by its own interrupt service routine, and thus the
 two parts of the driver may interfere with each other's attempts to control or
@@ -2819,6 +2915,11 @@ likely, then interrupt-disabling locks should be used to guarantee ordering.
 KERNEL I/O BARRIER EFFECTS
 ==========================
 
+
+
+<a name="KERNEL_IO_BARRIER_EFFECTS"></a>
+## 7. 内核IO屏障的效果
+
 Interfacing with peripherals via I/O accesses is deeply architecture and device
 specific. Therefore, drivers which are inherently non-portable may rely on
 specific behaviours of their target systems in order to achieve synchronization
@@ -2827,7 +2928,7 @@ between multiple architectures and bus implementations, the kernel offers a
 series of accessor functions that provide various degrees of ordering
 guarantees:
 
-- (*) readX(), writeX():
+- (`*`) readX(), writeX():
 
   The readX() and writeX() MMIO accessors take a pointer to the
   peripheral being accessed as an __iomem * parameter. For pointers
@@ -2877,7 +2978,7 @@ guarantees:
   underlying architecture and therefore the guarantees listed above cannot
   generally be relied upon for accesses to these types of mappings.
 
-- (*) readX_relaxed(), writeX_relaxed():
+- (`*`) readX_relaxed(), writeX_relaxed():
 
   These are similar to readX() and writeX(), but provide weaker memory
   ordering guarantees. Specifically, they do not guarantee ordering with
@@ -2887,14 +2988,14 @@ guarantees:
   peripheral when operating on __iomem pointers mapped with the default
   I/O attributes.
 
-- (*) readsX(), writesX():
+- (`*`) readsX(), writesX():
 
   The readsX() and writesX() MMIO accessors are designed for accessing
   register-based, memory-mapped FIFOs residing on peripherals that are not
   capable of performing DMA. Consequently, they provide only the ordering
   guarantees of readX_relaxed() and writeX_relaxed(), as documented above.
 
-- (*) inX(), outX():
+- (`*`) inX(), outX():
 
   The inX() and outX() accessors are intended to access legacy port-mapped
   I/O peripherals, which may require special instructions on some
@@ -2912,13 +3013,13 @@ guarantees:
   returning. This is not guaranteed by all architectures and is therefore
   not part of the portable ordering semantics.
 
-- (*) insX(), outsX():
+- (`*`) insX(), outsX():
 
   As above, the insX() and outsX() accessors provide the same ordering
   guarantees as readsX() and writesX() respectively when accessing a
   mapping with the default I/O attributes.
 
-- (*) ioreadX(), iowriteX():
+- (`*`) ioreadX(), iowriteX():
 
   These will perform appropriately for the type of access they're actually
   doing, be it inX()/outX() or readX()/writeX().
@@ -2932,6 +3033,10 @@ architectures.
 ========================================
 ASSUMED MINIMUM EXECUTION ORDERING MODEL
 ========================================
+
+
+<a name="ASSUMED_MINIMUM_EXECUTION_ORDERING_MODEL"></a>
+## 8. 假定的最小执行顺序模型
 
 It has to be assumed that the conceptual CPU is weakly-ordered but that it will
 maintain the appearance of program causality with respect to itself.  Some CPUs
@@ -2964,6 +3069,9 @@ maintained.
 THE EFFECTS OF THE CPU CACHE
 ============================
 
+<a name="THE_EFFECTS_OF_THE_CPU_CACHE"></a>
+## 9. CPU高速缓存的效果
+
 The way cached memory operations are perceived across the system is affected to
 a certain extent by the caches that lie between CPUs and memory, and by the
 memory coherence system that maintains the consistency of state in the system.
@@ -2973,6 +3081,7 @@ caches goes, the memory system has to include the CPU's caches, and memory
 barriers for the most part act at the interface between the CPU and its cache
 (memory barriers logically act on the dotted line in the following diagram):
 
+```c
       <--- CPU --->         :       <----------- Memory ----------->
                             :
   +--------+    +--------+  :   +--------+    +-----------+
@@ -2994,6 +3103,7 @@ barriers for the most part act at the interface between the CPU and its cache
   +--------+    +--------+  :   +--------+    +-----------+
                             :
                             :
+```
 
 Although any particular load or store may not actually appear outside of the
 CPU that issued it since it may have been satisfied within the CPU's own cache,
@@ -3024,6 +3134,9 @@ the use of any special device communication instructions the CPU may have.
 CACHE COHERENCY VS DMA
 ----------------------
 
+<a name="CACHE_COHERENCY_VS_DMA"></a>
+### 9.2 缓存一致性与DMS
+
 Not all systems maintain cache coherency with respect to devices doing DMA.  In
 such cases, a device attempting DMA may obtain stale data from RAM because
 dirty cache lines may be resident in the caches of various CPUs, and may not
@@ -3045,6 +3158,9 @@ See Documentation/core-api/cachetlb.rst for more information on cache management
 CACHE COHERENCY VS MMIO
 -----------------------
 
+<a name="CACHE_COHERENCY_VS_MMIO"></a>
+### 9.3 缓存一致性与MMIO
+
 Memory mapped I/O usually takes place through memory locations that are part of
 a window in the CPU's memory space that has different properties assigned than
 the usual RAM directed window.
@@ -3060,6 +3176,9 @@ any way dependent.
 =========================
 THE THINGS CPUS GET UP TO
 =========================
+
+<a name="THE_THINGS_CPUS_GET_UP_TO"></a>
+## 10. CPU达成的一些东西
 
 A programmer might take it for granted that the CPU will perform memory
 operations in exactly the order specified, so that if the CPU is, for example,
@@ -3081,25 +3200,25 @@ operations as seen by external observers in the system:
 Reality is, of course, much messier.  With many CPUs and compilers, the above
 assumption doesn't hold because:
 
-- (*) loads are more likely to need to be completed immediately to permit
+- (`*`) loads are more likely to need to be completed immediately to permit
      execution progress, whereas stores can often be deferred without a
      problem;
 
-- (*) loads may be done speculatively, and the result discarded should it prove
+- (`*`) loads may be done speculatively, and the result discarded should it prove
      to have been unnecessary;
 
-- (*) loads may be done speculatively, leading to the result having been fetched
+- (`*`) loads may be done speculatively, leading to the result having been fetched
      at the wrong time in the expected sequence of events;
 
-- (*) the order of the memory accesses may be rearranged to promote better use
+- (`*`) the order of the memory accesses may be rearranged to promote better use
      of the CPU buses and caches;
 
-- (*) loads and stores may be combined to improve performance when talking to
+- (`*`) loads and stores may be combined to improve performance when talking to
      memory or I/O hardware that can do batched accesses of adjacent locations,
      thus cutting down on transaction setup costs (memory and PCI devices may
      both be able to do this); and
 
-- (*) the CPU's data cache may affect the ordering, and while cache-coherency
+- (`*`) the CPU's data cache may affect the ordering, and while cache-coherency
      mechanisms may alleviate this - once the store has actually hit the cache
      - there's no guarantee that the coherency management will be propagated in
      order to other CPUs.
@@ -3176,6 +3295,9 @@ and the LOAD operation never appear outside of the CPU.
 AND THEN THERE'S THE ALPHA
 --------------------------
 
+<a name="AND_THEN_THERE_S_THE_ALPHA"></a>
+### 10.1 ALPHA上的一些注意事项
+
 The DEC Alpha CPU is one of the most relaxed CPUs there is.  Not only that,
 some versions of the Alpha CPU have a split data cache, permitting them to have
 two semantically-related cache lines updated at separate times.  This is where
@@ -3190,6 +3312,10 @@ reduced its impact on the memory model.
 
 VIRTUAL MACHINE GUESTS
 ----------------------
+
+
+<a name="VIRTUAL_MACHINE_GUESTS"></a>
+### 10.2 虚拟的机器访客
 
 Guests running within virtual machines might be affected by SMP effects even if
 the guest itself is compiled without SMP support.  This is an artifact of
@@ -3211,8 +3337,15 @@ MMIO effects, use mandatory barriers.
 EXAMPLE USES
 ============
 
+
+<a name="EXAMPLE_USES"></a>
+## 11. 使用案例
+
 CIRCULAR BUFFERS
 ----------------
+
+<a name="CIRCULAR_BUFFERS"></a>
+### 11.1 循环Buffer
 
 Memory barriers can be used to implement circular buffering without the need
 of a lock to serialise the producer with the consumer.  See:
@@ -3225,6 +3358,10 @@ for details.
 ==========
 REFERENCES
 ==========
+
+
+<a name="REFERENCES"></a>
+## 12. 参考文档
 
 Alpha AXP Architecture Reference Manual, Second Edition (Sites & Witek,
 Digital Press)
