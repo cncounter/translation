@@ -41,7 +41,7 @@ Note also that it is possible that a barrier may be a no-op for an architecture 
 并且为了阅读方便, 做了一定程度的精简。
 目的是为Linux支持的各种内存屏障做一个使用参考, 如果有不理解的地方, 可以到在线论坛和社区提问。
 某些问题可以参考源代码仓库中的 `tools/memory-model/` 目录, 这里面定义了内存一致性模型的正式文档和相关说明。
-当然, “内存模型” 只是开发者和维护人员一致达成的共识, 而不是硬性的规定。
+当然, "内存模型" 只是开发者和维护人员一致达成的共识, 而不是硬性的规定。
 
 再强调一次, 本文档不是 Linux 对硬件预期的规范。
 
@@ -373,7 +373,7 @@ And there are a number of things that _must_ or _must_not_ be assumed:
 
 而且有许多必须或不允许的假设因素:
 
-- (`*`) 对不受 `READ_ONCE()` 和 `WRITE_ONCE()` 保护的内存引用操作, 不能假设编译器会按你的预期处理。 没有这种保护, 编译器将有权进行各种“创造性”的转换, 这在后面的 “编译器屏障” 一节中介绍。
+- (`*`) 对不受 `READ_ONCE()` 和 `WRITE_ONCE()` 保护的内存引用操作, 不能假设编译器会按你的预期处理。 没有这种保护, 编译器将有权进行各种"创造性"的转换, 这在后面的 "编译器屏障" 一节中介绍。
 
 - (`*`) 独立的 loads 和 stores操作, 不能假定他们会以给定的顺序触发。 这意味着:
 
@@ -444,7 +444,7 @@ And there are anti-guarantees:
 
 - (`*`) 即使bit字段受锁保护的情况下, 给定 bitfield 中的所有字段也必须由同一个锁保护。 如果给定 bitfield 中的两个域由不同的锁来保护, 则编译器的非原子性 read-modify-write 顺序会导致对一个 field 的更新破坏相邻 field 的值。
 
-- (`*`) 这些保证只适用于正确对齐且大小合适的标量变量。 “大小合适(Properly sized)” 的意思是指与 "char", "short", "int" and "long" 大小相同的变量。 “正确对齐(Properly aligned)” 是指自然对齐,  因此对 "char" 没有约束, 对于 "short" 为两个字节对齐, 对于 "int" 为四字节对齐, 对于 "long" 为四字节或八字节对齐, 分别对应在32位和64位系统上。 请注意, 这些保证是C11标准中引入的, 因此在使用C11之前的编译器时要当心（例如 gcc 4.6）。 标准中包含此保证的章节为 Section 3.14, 其中对 “内存位置(memory location)” 的定义如下:
+- (`*`) 这些保证只适用于正确对齐且大小合适的标量变量。 "大小合适(Properly sized)" 的意思是指与 "char", "short", "int" and "long" 大小相同的变量。 "正确对齐(Properly aligned)" 是指自然对齐,  因此对 "char" 没有约束, 对于 "short" 为两个字节对齐, 对于 "int" 为四字节对齐, 对于 "long" 为四字节或八字节对齐, 分别对应在32位和64位系统上。 请注意, 这些保证是C11标准中引入的, 因此在使用C11之前的编译器时要当心（例如 gcc 4.6）。 标准中包含此保证的章节为 Section 3.14, 其中对 "内存位置(memory location)" 的定义如下:
 
 > memory location either an object of scalar type, or a maximal sequence of adjacent bit-fields all having nonzero width
 
@@ -584,53 +584,53 @@ And a couple of implicit varieties:
 此外, 还有两种隐式的屏障:
 
 
-(5) ACQUIRE operations.
+(5) `ACQUIRE` operations.
 
-This acts as a one-way permeable barrier.  It guarantees that all memory operations after the ACQUIRE operation will appear to happen after the ACQUIRE operation with respect to the other components of the system. ACQUIRE operations include LOCK operations and both smp_load_acquire() and smp_cond_load_acquire() operations.
+This acts as a one-way permeable barrier.  It guarantees that all memory operations after the `ACQUIRE` operation will appear to happen after the `ACQUIRE` operation with respect to the other components of the system. `ACQUIRE` operations include LOCK operations and both smp_load_acquire() and smp_cond_load_acquire() operations.
 
-Memory operations that occur before an ACQUIRE operation may appear to happen after it completes.
+Memory operations that occur before an `ACQUIRE` operation may appear to happen after it completes.
 
-An ACQUIRE operation should almost always be paired with a RELEASE operation.
+An `ACQUIRE` operation should almost always be paired with a `RELEASE` operation.
 
-####  （5）ACQUIRE操作
+####  （5）`ACQUIRE`操作
 
-这充当单向渗透屏障(one-way permeable barrier)。 它保证了 ACQUIRE 操作之后的所有内存操作都发生在ACQUIRE操作之后, 相对于系统的其他组件。 ACQUIRE 操作包括LOCK操作以及 `smp_load_acquire()` 和 `smp_cond_load_acquire()` 操作。
+这充当单向渗透屏障(one-way permeable barrier)。 它保证了 `ACQUIRE` 操作之后的所有内存操作都发生在`ACQUIRE`操作之后, 相对于系统的其他组件。 `ACQUIRE` 操作包括LOCK操作以及 `smp_load_acquire()` 和 `smp_cond_load_acquire()` 操作。
 
-在ACQUIRE操作之前发生的内存操作有可能在 ACQUIRE 操作之后完成。
+在`ACQUIRE`操作之前发生的内存操作有可能在 `ACQUIRE` 操作之后完成。
 
-ACQUIRE 操作基本上都要与 RELEASE 操作搭配使用。
-
-
-(6) RELEASE operations.
-
-This also acts as a one-way permeable barrier.  It guarantees that all memory operations before the RELEASE operation will appear to happen before the RELEASE operation with respect to the other components of the system. RELEASE operations include UNLOCK operations and `smp_store_release()` operations.
-
-Memory operations that occur after a RELEASE operation may appear to happen before it completes.
-
-The use of ACQUIRE and RELEASE operations generally precludes the need for other sorts of memory barrier.  In addition, a RELEASE+ACQUIRE pair is -not- guaranteed to act as a full memory barrier.  However, after an ACQUIRE on a given variable, all memory accesses preceding any prior RELEASE on that same variable are guaranteed to be visible.  In other words, within a given variable's critical section, all accesses of all previous critical sections for that variable are guaranteed to have completed.
-
-This means that ACQUIRE acts as a minimal "acquire" operation and RELEASE acts as a minimal "release" operation.
+`ACQUIRE` 操作基本上都要与 `RELEASE` 操作搭配使用。
 
 
-#### （6）RELEASE操作
+(6) `RELEASE` operations.
 
-RELEASE操作也充当单向渗透屏障。保证相对于系统的其他组件, RELEASE操作之前的所有内存操作都发生在RELEASE之前。 RELEASE操作包括 UNLOCK 操作和 `smp_store_release()` 操作。
+This also acts as a one-way permeable barrier.  It guarantees that all memory operations before the `RELEASE` operation will appear to happen before the `RELEASE` operation with respect to the other components of the system. `RELEASE` operations include UNLOCK operations and `smp_store_release()` operations.
 
-在 RELEASE 操作之后发生的内存操作, 可能在其完成之前发生。
+Memory operations that occur after a `RELEASE` operation may appear to happen before it completes.
 
-使用 ACQUIRE 和 RELEASE 操作一般排除了对其他种类内存屏障的需求。此外, RELEASE+ACQUIRE 不保证可充当完整的内存屏障。 但是, 在对给定变量执行 ACQUIRE 之后, 可以保证对该变量进行任何RELEASE之前的内存访问都是可见的。 换句话说, 在给定变量的关键部分内, 可以保证对该变量的所有前面关键部分的所有访问均已完成。
+The use of `ACQUIRE` and `RELEASE` operations generally precludes the need for other sorts of memory barrier.  In addition, a RELEASE+ACQUIRE pair is -not- guaranteed to act as a full memory barrier.  However, after an `ACQUIRE` on a given variable, all memory accesses preceding any prior `RELEASE` on that same variable are guaranteed to be visible.  In other words, within a given variable's critical section, all accesses of all previous critical sections for that variable are guaranteed to have completed.
 
-这意味着 ACQUIRE 充当最小 “获取” 操作, RELEASE充当最小 “释放” 操作。
+This means that `ACQUIRE` acts as a minimal "acquire" operation and `RELEASE` acts as a minimal "release" operation.
 
 
-A subset of the atomic operations described in atomic_t.txt have ACQUIRE and RELEASE variants in addition to fully-ordered and relaxed (no barrier semantics) definitions.  For compound atomics performing both a load and a store, ACQUIRE semantics apply only to the load and RELEASE semantics apply only to the store portion of the operation.
+#### （6）`RELEASE`操作
+
+`RELEASE`操作也充当单向渗透屏障。保证相对于系统的其他组件, `RELEASE`操作之前的所有内存操作都发生在`RELEASE`之前。 `RELEASE`操作包括 UNLOCK 操作和 `smp_store_release()` 操作。
+
+在 `RELEASE` 操作之后发生的内存操作, 可能在其完成之前发生。
+
+使用 `ACQUIRE` 和 `RELEASE` 操作一般排除了对其他种类内存屏障的需求。此外, RELEASE+ACQUIRE 不保证可充当完整的内存屏障。 但是, 在对给定变量执行 `ACQUIRE` 之后, 可以保证对该变量进行任何`RELEASE`之前的内存访问都是可见的。 换句话说, 在给定变量的关键部分内, 可以保证对该变量的所有前面关键部分的所有访问均已完成。
+
+这意味着 `ACQUIRE` 充当最小 "获取" 操作, `RELEASE`充当最小 "释放" 操作。
+
+
+A subset of the atomic operations described in atomic_t.txt have `ACQUIRE` and `RELEASE` variants in addition to fully-ordered and relaxed (no barrier semantics) definitions.  For compound atomics performing both a load and a store, `ACQUIRE` semantics apply only to the load and `RELEASE` semantics apply only to the store portion of the operation.
 
 Memory barriers are only required where there's a possibility of interaction between two CPUs or between a CPU and a device.  If it can be guaranteed that there won't be any such interaction in any particular piece of code, then memory barriers are unnecessary in that piece of code.
 
 
 Note that these are the _minimum_ guarantees.  Different architectures may give more substantial guarantees, but they may _not_ be relied upon outside of arch specific code.
 
-除了完全有序和宽松（无屏障语义）定义之外,  `atomic_t.txt` 文件中描述的原子操作的子集还具有 ACQUIRE 和 RELEASE 变体。 对于同时执行load和store的复合原子操作, ACQUIRE语义只适用于load, 而RELEASE语义只适用于store部分的操作。
+除了完全有序和宽松（无屏障语义）定义之外,  `atomic_t.txt` 文件中描述的原子操作的子集还具有 `ACQUIRE` 和 `RELEASE` 变体。 对于同时执行load和store的复合原子操作, `ACQUIRE`语义只适用于load, 而`RELEASE`语义只适用于store部分的操作。
 
 仅在两个CPU之间,或CPU与设备之间可能存在交互的情况下才需要内存屏障。 如果可以保证在任何特定的代码段中都不会发生此类交互, 那么该代码段中就不需要内存屏障。
 
@@ -1132,7 +1132,7 @@ Basically, the read barrier always has to be there, even though it can be of the
 
 > [!] Note that the stores before the write barrier would normally be expected to match the loads after the read barrier or the data dependency barrier, and vice versa:
 
-一般来说,必须始终在其中放置读屏障, 即使它是一个 “较弱” 类型的屏障,
+一般来说,必须始终在其中放置读屏障, 即使它是一个 "较弱" 类型的屏障,
 
 > [!] 请注意,通常预期是: 写屏障之前的 store, 与读屏障或数据依赖屏障之后的 load 相匹配,反之亦然:
 
@@ -1620,7 +1620,7 @@ Because CPU 3's load from X in some sense comes after CPU 2's load, it is natura
 假设 CPU 2 执行 LOAD X 返回的值是 1, 然后将这个值 store 到 Y, 而 CPU 3 执行 LOAD Y 返回 1。
 这表明 CPU 1 的 `STORE X=1` 先于 CPU 2 的 `LOAD X` 执行, 而 CPU 2 的 `STORE Y=r1` 又在 CPU 3 执行 `LOAD Y` 之前就已完成。
 此外, 内存屏障保证 CPU 2 的 load 在 store 之前执行, 而 CPU 3 的 `LOAD Y` 也保证在 `LOAD X` 之前。
-那么问题来了: “CPU 3 的 `LOAD X` 是否可能会返回 0 呢？”
+那么问题来了: "CPU 3 的 `LOAD X` 是否可能会返回 0 呢？"
 
 因为从某种意义上说, CPU 3 的 `LOAD X` 是在 CPU 2 的 LOAD 之后发生的, 所以很自然地期望 CPU 3 加载到的 X 值为1。
 这种期望来自多副本原子性:如果在 CPU B 上执行的 load, 是在 CPU A 从相同变量load之后执行（并且 CPU A 不写入它读取到的值）, 然后在多副本原子系统上, CPU B 的 load 必须返回与 CPU A 的load相同的值, 或之后的某个值。
@@ -1843,7 +1843,7 @@ In short, `READ_ONCE()` and `WRITE_ONCE()` provide cache coherence for accesses 
 
 - (`*`) The compiler is within its rights to merge successive loads from the same variable.  Such merging can cause the compiler to "optimize" the following code:
 
-- (`*`) 编译器有权合并来自同一个变量的多次加载(load)。 这种合并会导致编译器将下面的代码进行“优化”:
+- (`*`) 编译器有权合并来自同一个变量的多次加载(load)。 这种合并会导致编译器将下面的代码进行"优化":
 
 ```c
   while (tmp = a)
@@ -1936,7 +1936,7 @@ Into this:
 This transformation is a win for single-threaded code because it gets rid of a load and a branch.  The problem is that the compiler will carry out its proof assuming that the current CPU is the only one updating variable 'a'.  If variable 'a' is shared, then the compiler's proof will be erroneous.  Use `READ_ONCE()` to tell the compiler that it doesn't know as much as it thinks it does:
 
 这种转换对于单线程代码来说是优势, 因为它摆脱了负载和分支的开销。
-问题是编译器将执行其证明, 假设当前 CPU 是唯一会更新变量“a”的存在。
+问题是编译器将执行其证明, 假设当前 CPU 是唯一会更新变量"a"的存在。
 如果变量 'a' 是共享的, 那么编译器的证明将是错误的。
 使用 `READ_ONCE()` 可以告诉编译器不能推断它的值:
 
@@ -1976,7 +1976,7 @@ The compiler sees that the value of variable 'a' is already zero, so it might we
 
 Use `WRITE_ONCE()` to prevent the compiler from making this sort of wrong guess:
 
-编译器发现变量“a”的值已经为零, 因此很可能会忽略第二次存储操作。
+编译器发现变量"a"的值已经为零, 因此很可能会忽略第二次存储操作。
 如果在此期间有其他 CPU 将新数据存储到变量 'a' 中, 这将是一个致命的惊喜。
 
 使用 `WRITE_ONCE()` 来防止编译器做出这种错误的猜测:
@@ -2082,7 +2082,7 @@ The compiler might save a branch by optimizing this as follows:
 In single-threaded code, this is not only safe, but also saves a branch.  Unfortunately, in concurrent code, this optimization could cause some other CPU to see a spurious value of 42 -- even if variable 'a' was never zero -- when loading variable 'b'. Use `WRITE_ONCE()` to prevent this as follows:
 
 在单线程代码中, 这不仅安全, 而且还减少了一个分支。
-不幸的是, 在并发代码中, 这种优化可能会导致其他 CPU 在加载变量“b”时看到一个虚幻的值 42 —— 即使变量 'a' 永不为零。
+不幸的是, 在并发代码中, 这种优化可能会导致其他 CPU 在加载变量"b"时看到一个虚幻的值 42 —— 即使变量 'a' 永不为零。
 我们可以使用 `WRITE_ONCE()` 来阻止这种情况发生:
 
 ```c
@@ -2100,7 +2100,7 @@ The compiler can also invent loads.  These are usually less damaging, but they c
 
 - (`*`) For aligned memory locations whose size allows them to be accessed with a single memory-reference instruction, prevents "load tearing" and "store tearing," in which a single large access is replaced by multiple smaller accesses.  For example, given an architecture having 16-bit store instructions with 7-bit immediate fields, the compiler might be tempted to use two 16-bit store-immediate instructions to implement the following 32-bit store:
 
-- (`*`) 对于允许使用单个内存引用指令来访问的, 对齐过的内存位置, 防止“load撕裂”和“store撕裂”, 其中单个大访问被多个较小访问替换。 例如, 在某种体系结构下, 用 16 位store指令, 和 7 位是即时数字段,  编译器可能会尝试使用两个 16 位的即时存储指令(store-immediate)来实现以下 32 位store:
+- (`*`) 对于允许使用单个内存引用指令来访问的, 对齐过的内存位置, 防止"load撕裂"和"store撕裂", 其中单个大访问被多个较小访问替换。 例如, 在某种体系结构下, 用 16 位store指令, 和 7 位是即时数字段,  编译器可能会尝试使用两个 16 位的即时存储指令(store-immediate)来实现以下 32 位store:
 
 ```c
   p = 0x00010002;
@@ -2251,7 +2251,7 @@ There are some more advanced barrier functions:
 
   这两个函数与一致内存一起使用，以保证 CPU 和支持 DMA 的设备, 均可访问共享内存, 并保证写入或读取的顺序。
 
-  例如，考虑一个设备驱动程序，它与设备共享内存, 并使用描述符状态值来指示描述符是属于设备还是 CPU，并在新描述符可用时使用门铃来通知它：
+  例如，考虑一个设备驱动程序，它与设备共享内存, 并使用描述符状态值来指示描述符是属于设备还是 CPU，并在新描述符可用时使用门铃来通知它:
 
   ```c
   if (desc->status != DEVICE_OWN) {
@@ -2316,6 +2316,9 @@ Some of the other functions in the linux kernel imply memory barriers, amongst w
 
 This specification is a _minimum_ guarantee; any particular architecture may provide more substantial guarantees, but these may not be relied upon outside of arch specific code.
 
+Linux内核中的一些函数隐含了内存屏障，包括锁定和调度函数。
+
+此规范是 最低 保证； 任何特定的体系结构都可能提供更实质性的保证，但这些保证可能在特定体系结构之外的代码不可用。
 
 LOCK ACQUISITION FUNCTIONS
 --------------------------
@@ -2331,70 +2334,88 @@ The Linux kernel has a number of locking constructs:
 - (`*`) semaphores
 - (`*`) R/W semaphores
 
-In all cases there are variants on "ACQUIRE" operations and "RELEASE" operations
-for each construct.  These operations all imply certain barriers:
+In all cases there are variants on "`ACQUIRE`" operations and "`RELEASE`" operations for each construct.  These operations all imply certain barriers:
 
- (1) ACQUIRE operation implication:
+Linux 内核有许多锁结构:
 
-     Memory operations issued after the ACQUIRE will be completed after the
-     ACQUIRE operation has completed.
+- (`*`) 自旋锁(spin lock)
+- (`*`) 自旋读/写锁(R/W spin lock)
+- (`*`) 互斥锁(mutex)
+- (`*`) 信号量(semaphore)
+- (`*`) 读/写信号量(R/W semaphore)
 
-     Memory operations issued before the ACQUIRE may be completed after
-     the ACQUIRE operation has completed.
+在所有情况下，每个锁结构都有类似的 "`ACQUIRE`" 操作和 "`RELEASE`"操作。 这些操作都蕴含了内存屏障:
 
- (2) RELEASE operation implication:
+- (1) `ACQUIRE` operation implication:
 
-     Memory operations issued before the RELEASE will be completed before the
-     RELEASE operation has completed.
+  Memory operations issued after the `ACQUIRE` will be completed after the `ACQUIRE` operation has completed.
 
-     Memory operations issued after the RELEASE may be completed before the
-     RELEASE operation has completed.
+  Memory operations issued before the `ACQUIRE` may be completed after the `ACQUIRE` operation has completed.
 
- (3) ACQUIRE vs ACQUIRE implication:
+- (1) `ACQUIRE`操作含义：
 
-     All ACQUIRE operations issued before another ACQUIRE operation will be
-     completed before that ACQUIRE operation.
+  `ACQUIRE` 之后发出的内存操作将在 `ACQUIRE` 操作完成后完成。
 
- (4) ACQUIRE vs RELEASE implication:
+  `ACQUIRE` 之前发出的内存操作可以在 `ACQUIRE` 操作完成后完成。
 
-     All ACQUIRE operations issued before a RELEASE operation will be
-     completed before the RELEASE operation.
+- (2) `RELEASE` operation implication:
 
- (5) Failed conditional ACQUIRE implication:
+  Memory operations issued before the `RELEASE` will be completed before the `RELEASE` operation has completed.
 
-     Certain locking variants of the ACQUIRE operation may fail, either due to
-     being unable to get the lock immediately, or due to receiving an unblocked
-     signal while asleep waiting for the lock to become available.  Failed
-     locks do not imply any sort of barrier.
+  Memory operations issued after the `RELEASE` may be completed before the `RELEASE` operation has completed.
 
-[!] Note: one of the consequences of lock ACQUIREs and RELEASEs being only
-one-way barriers is that the effects of instructions outside of a critical
-section may seep into the inside of the critical section.
+- (2) `RELEASE` 操作含义：
 
-An ACQUIRE followed by a RELEASE may not be assumed to be full memory barrier
-because it is possible for an access preceding the ACQUIRE to happen after the
-ACQUIRE, and an access following the RELEASE to happen before the RELEASE, and
-the two accesses can themselves then cross:
+  `RELEASE` 之前发出的内存操作将在 `RELEASE` 操作完成之前完成。
 
+  `RELEASE` 之后发出的内存操作可能会在 `RELEASE` 操作完成之前完成。
+
+- (3) `ACQUIRE` vs `ACQUIRE` implication:
+
+  All `ACQUIRE` operations issued before another `ACQUIRE` operation will be completed before that `ACQUIRE` operation.
+
+- (3) `ACQUIRE` vs `ACQUIRE` 含义：
+
+  在另一个 `ACQUIRE` 操作之前发出的所有 `ACQUIRE` 操作将在该 `ACQUIRE` 操作之前完成。
+
+- (4) `ACQUIRE` vs `RELEASE` implication:
+
+  All `ACQUIRE` operations issued before a `RELEASE` operation will be completed before the `RELEASE` operation.
+
+- (4) 获取与释放的含义：
+
+  在 `RELEASE` 操作之前发出的所有 `ACQUIRE` 操作都将在 `RELEASE` 操作之前完成。
+
+- (5) Failed conditional `ACQUIRE` implication:
+
+  Certain locking variants of the `ACQUIRE` operation may fail, either due to being unable to get the lock immediately, or due to receiving an unblocked signal while asleep waiting for the lock to become available.  Failed locks do not imply any sort of barrier.
+
+- (5) 失败的条件 `ACQUIRE` 含义：
+
+  `ACQUIRE` 操作的某些锁定变体可能会失败，原因可能是无法立即获得锁，或者是由于在睡眠等待锁可用时收到未阻塞的信号。失败的锁并不意味着任何类型的障碍。
+
+> [!] Note: one of the consequences of lock ACQUIREs and RELEASEs being only one-way barriers is that the effects of instructions outside of a critical section may seep into the inside of the critical section.
+
+An `ACQUIRE` followed by a `RELEASE` may not be assumed to be full memory barrier because it is possible for an access preceding the `ACQUIRE` to happen after the `ACQUIRE`, and an access following the `RELEASE` to happen before the `RELEASE`, and the two accesses can themselves then cross:
+
+```c
   *A = a;
   ACQUIRE M
   RELEASE M
   *B = b;
 
+```
+
 may occur as:
 
+```c
   ACQUIRE M, STORE *B, STORE *A, RELEASE M
 
-When the ACQUIRE and RELEASE are a lock acquisition and release,
-respectively, this same reordering can occur if the lock's ACQUIRE and
-RELEASE are to the same lock variable, but only from the perspective of
-another CPU not holding that lock.  In short, a ACQUIRE followed by an
-RELEASE may -not- be assumed to be a full memory barrier.
+```
 
-Similarly, the reverse case of a RELEASE followed by an ACQUIRE does
-not imply a full memory barrier.  Therefore, the CPU's execution of the
-critical sections corresponding to the RELEASE and the ACQUIRE can cross,
-so that:
+When the `ACQUIRE` and `RELEASE` are a lock acquisition and release, respectively, this same reordering can occur if the lock's `ACQUIRE` and `RELEASE` are to the same lock variable, but only from the perspective of another CPU not holding that lock.  In short, a `ACQUIRE` followed by an `RELEASE` may -not- be assumed to be a full memory barrier.
+
+Similarly, the reverse case of a `RELEASE` followed by an `ACQUIRE` does not imply a full memory barrier.  Therefore, the CPU's execution of the critical sections corresponding to the `RELEASE` and the `ACQUIRE` can cross, so that:
 
 ```c
   *A = a;
@@ -2405,39 +2426,22 @@ so that:
 
 could occur as:
 
+```c
   ACQUIRE N, STORE *B, STORE *A, RELEASE M
 
-It might appear that this reordering could introduce a deadlock.
-However, this cannot happen because if such a deadlock threatened,
-the RELEASE would simply complete, thereby avoiding the deadlock.
+```
+
+It might appear that this reordering could introduce a deadlock. However, this cannot happen because if such a deadlock threatened, the `RELEASE` would simply complete, thereby avoiding the deadlock.
 
 > Why does this work?
 
-One key point is that we are only talking about the CPU doing
-the reordering, not the compiler.  If the compiler (or, for
-that matter, the developer) switched the operations, deadlock
--could- occur.
+One key point is that we are only talking about the CPU doing the reordering, not the compiler. If the compiler (or, for that matter, the developer) switched the operations, deadlock -could- occur.
 
-But suppose the CPU reordered the operations.  In this case,
-the unlock precedes the lock in the assembly code.  The CPU
-simply elected to try executing the later lock operation first.
-If there is a deadlock, this lock operation will simply spin (or
-try to sleep, but more on that later).  The CPU will eventually
-execute the unlock operation (which preceded the lock operation
-in the assembly code), which will unravel the potential deadlock,
-allowing the lock operation to succeed.
+But suppose the CPU reordered the operations. In this case, the unlock precedes the lock in the assembly code. The CPU simply elected to try executing the later lock operation first. If there is a deadlock, this lock operation will simply spin (or try to sleep, but more on that later). The CPU will eventually execute the unlock operation (which preceded the lock operation in the assembly code), which will unravel the potential deadlock, allowing the lock operation to succeed.
 
-But what if the lock is a sleeplock?  In that case, the code will
-try to enter the scheduler, where it will eventually encounter
-a memory barrier, which will force the earlier unlock operation
-to complete, again unraveling the deadlock.  There might be
-a sleep-unlock race, but the locking primitive needs to resolve
-such races properly in any case.
+But what if the lock is a sleeplock? In that case, the code will try to enter the scheduler, where it will eventually encounter a memory barrier, which will force the earlier unlock operation to complete, again unraveling the deadlock. There might be a sleep-unlock race, but the locking primitive needs to resolve such races properly in any case.
 
-Locks and semaphores may not provide any guarantee of ordering on UP compiled
-systems, and so cannot be counted on in such a situation to actually achieve
-anything at all - especially with respect to I/O accesses - unless combined
-with interrupt disabling operations.
+Locks and semaphores may not provide any guarantee of ordering on UP compiled systems, and so cannot be counted on in such a situation to actually achieve anything at all - especially with respect to I/O accesses - unless combined with interrupt disabling operations.
 
 See also the section on "Inter-CPU acquiring barrier effects".
 
@@ -2480,8 +2484,8 @@ INTERRUPT DISABLING FUNCTIONS
 <a name="INTERRUPT_DISABLING_FUNCTIONS"></a>
 ### 4.2 禁止中断的函数
 
-Functions that disable interrupts (ACQUIRE equivalent) and enable interrupts
-(RELEASE equivalent) will act as compiler barriers only.  So if memory or I/O
+Functions that disable interrupts (`ACQUIRE` equivalent) and enable interrupts
+(`RELEASE` equivalent) will act as compiler barriers only.  So if memory or I/O
 barriers are required in such a situation, they must be provided from some
 other means.
 
@@ -2675,7 +2679,7 @@ ACQUIRES VS MEMORY ACCESSES
 ---------------------------
 
 <a name="ACQUIRES_VS_MEMORY_ACCESSES"></a>
-### 5.1 ACQUIRES vs. 内存访问
+### 5.1 `ACQUIRE`S vs. 内存访问
 
 Consider the following: the system has a pair of spinlocks (M) and (Q), and
 three CPUs; then should the following sequence of events occur:
@@ -2693,15 +2697,18 @@ Then there is no guarantee as to what order CPU 3 will see the accesses to *A
 through *H occur in, other than the constraints imposed by the separate locks
 on the separate CPUs.  It might, for example, see:
 
+```c
   *E, ACQUIRE M, ACQUIRE Q, *G, *C, *F, *A, *B, RELEASE Q, *D, *H, RELEASE M
+```
 
 But it won't see any of:
 
+```
   *B, *C or *D preceding ACQUIRE M
   *A, *B or *C following RELEASE M
   *F, *G or *H preceding ACQUIRE Q
   *E, *F or *G following RELEASE Q
-
+```
 
 =================================
 WHERE ARE MEMORY BARRIERS NEEDED?
@@ -2770,11 +2777,13 @@ To wake up a particular waiter, the up_read() or up_write() functions have to:
 
 In other words, it has to perform this sequence of events:
 
+```
   LOAD waiter->list.next;
   LOAD waiter->task;
   STORE waiter->task;
   CALL wakeup
   RELEASE task
+```
 
 and if any of these steps occur out of order, then the whole thing may
 malfunction.
@@ -2811,12 +2820,14 @@ function has to needlessly get the spinlock again after being woken up.
 
 The way to deal with this is to insert a general SMP memory barrier:
 
+```
   LOAD waiter->list.next;
   LOAD waiter->task;
   `smp_mb()`;
   STORE waiter->task;
   CALL wakeup
   RELEASE task
+```
 
 In this case, the barrier makes a guarantee that all memory accesses before the
 barrier will appear to happen before all the memory accesses after the barrier
