@@ -2207,15 +2207,15 @@ There are some more advanced barrier functions:
 
 下面是一些高级的屏障函数：
 
-- `smp_store_mb(var, value)`
+- (`*`) `smp_store_mb(var, value)`
 
   This assigns the value to the variable and then inserts a full memory barrier after it.  It isn't guaranteed to insert anything more than a compiler barrier in a UP compilation.
 
   这将值分配给变量，然后在它之后插入一个完整的内存屏障。 不能保证在 UP 编译中插入比编译器屏障更多的东西。
 
 
-- `smp_mb__before_atomic()`
-- `smp_mb__after_atomic()`
+- (`*`) `smp_mb__before_atomic()`
+- (`*`) `smp_mb__after_atomic()`
 
   These are for use with atomic RMW functions that do not imply memory barriers, but where the code needs a memory barrier. Examples for atomic RMW functions that do not imply are memory barrier are e.g. add, subtract, (failed) conditional operations, _relaxed functions, but not atomic_read or atomic_set. A common example where a memory barrier may be required is when atomic ops are used for reference counting.
 
@@ -2244,8 +2244,8 @@ There are some more advanced barrier functions:
   更多信息请参阅 `Documentation/atomic_{t,bitops}.txt` 等文档。
 
 
-- `dma_wmb()`
-- `dma_rmb()`
+- (`*`) `dma_wmb()`
+- (`*`) `dma_rmb()`
 
   These are for use with consistent memory to guarantee the ordering of writes or reads of shared memory accessible to both the CPU and a DMA capable device.
 
@@ -2279,7 +2279,7 @@ There are some more advanced barrier functions:
 
   有关宽松 I/O 访问器的更多信息，请参阅“内核 I/O 屏障效应”小节，有关一致内存的更多信息，请参阅 Documentation/core-api/dma-api.rst 文件。
 
-- `pmem_wmb()`
+- (`*`) `pmem_wmb()`
 
   This is for use with persistent memory to ensure that stores for which modifications are written to persistent storage reached a platform durability domain.
 
