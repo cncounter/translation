@@ -37,7 +37,7 @@ Note also that it is possible that a barrier may be a no-op for an architecture 
 <a name="DISCLAIMER"></a>
 ## 免责声明
 
-本文档并不是硬性规范；
+本文档并不是硬性规范;
 并且为了阅读方便, 做了一定程度的精简。
 目的是为Linux支持的各种内存屏障做一个使用参考, 如果有不理解的地方, 可以到在线论坛和社区提问。
 某些问题可以参考源代码仓库中的 `tools/memory-model/` 目录, 这里面定义了内存一致性模型的正式文档和相关说明。
@@ -47,11 +47,11 @@ Note also that it is possible that a barrier may be a no-op for an architecture 
 
 编写本文档有下面两个目的:
 
-- （1）确定每个内存屏障最少实现了哪些功能；
+- （1）确定每个内存屏障最少实现了哪些功能;
 
 - （2）提供参考文档来介绍如何使用现有的各种内存屏障。
 
-请注意, 各种CPU物理架构提供的内存屏障, 可能会比Linux规定的功能要多【副作用或额外功能】； 但如果某种CPU支持的功能少于最低要求,  那么我们可以说这种CPU架构不行。
+请注意, 各种CPU物理架构提供的内存屏障, 可能会比Linux规定的功能要多【副作用或额外功能】;  但如果某种CPU支持的功能少于最低要求,  那么我们可以说这种CPU架构不行。
 
 还需要注意, 对于特定CPU体系结构而言, 一个屏障指令可能没有对应的真实操作（no-op）, 因为根据这种CPU的运行机制, 可能就不需要使用这个内存屏障。
 
@@ -476,7 +476,7 @@ Such enforcement is important because the CPUs and other devices in a system can
 
 内存屏障就是这种干预。 它们对屏障两侧的内存访问操作施加了感知的局部排序。
 
-这种强制很重要, 因为系统中的CPU和其他设备可以使用各种技巧来提高性能, 包括指令重排序, 推迟和组合内存操作。 投机负荷； 投机分支预测和各种类型的缓存。 内存屏障用于覆盖或抑制这些技巧, 从而使代码可以合理地控制多个CPU和/或设备的交互。
+这种强制很重要, 因为系统中的CPU和其他设备可以使用各种技巧来提高性能, 包括指令重排序, 推迟和组合内存操作。 投机负荷;  投机分支预测和各种类型的缓存。 内存屏障用于覆盖或抑制这些技巧, 从而使代码可以合理地控制多个CPU和/或设备的交互。
 
 
 VARIETIES OF MEMORY BARRIER
@@ -503,11 +503,11 @@ A CPU can be viewed as committing a sequence of store operations to the memory s
 
 写屏障可以保证: 对于系统的其他组件而言, 屏障之前指定的所有 STORE 操作, 都会在屏障之后的所有STORE操作之前发生。
 
-写屏障只对 store 局部排序； 不需要对 load 有任何影响。
+写屏障只对 store 局部排序;  不需要对 load 有任何影响。
 
 随着时间的流逝, CPU可以看作是向内存系统提交了一系列 store 操作。 在写屏障之前的所有 store, 都会在写屏障之后的任意 store 前完成。
 
-> [!] 请注意, 写屏障一般要和读屏障,或者数据依赖屏障搭配使用； 请参阅 ["SMP barrier pairing"](#SMP_BARRIER_PAIRING) 小节。
+> [!] 请注意, 写屏障一般要和读屏障,或者数据依赖屏障搭配使用;  请参阅 ["SMP barrier pairing"](#SMP_BARRIER_PAIRING) 小节。
 
 
 (2) Data dependency barriers.
@@ -528,7 +528,7 @@ See the "Examples of memory barrier sequences" subsection for diagrams showing t
 
 数据依赖屏障是较弱形式的读屏障。 假设执行两个 load 操作, 第二个依赖第一个load的结果（例如:第一个 load 获取地址值, 第二个 load 将定向到此地址）, 则需要数据依赖屏障, 以确保第一个 load 获取到地址后, 先更新完第二个load的目标地址, 然后再执行第二个load操作。
 
-数据依赖屏障只是相互依存的 load 的局部排序； 不需要影响 store, 独立的load, 以及重叠加载(overlapping load)。
+数据依赖屏障只是相互依存的 load 的局部排序;  不需要影响 store, 独立的load, 以及重叠加载(overlapping load)。
 
 如（1）中所述, 可以将系统中的其他CPU视为顺序提交一连串 store 给内存系统, 而当前CPU可以感知到。
 某个CPU发出的数据依赖屏障, 可确保对于在其之前的任何load, 如果该load接触到了另一个CPU的一系列store中的一个, 则在该屏障完成时, 该接触之前的所有store的影响, 在数据依赖屏障之后发出的任何load都可以感知到这些变化。
@@ -537,7 +537,7 @@ See the "Examples of memory barrier sequences" subsection for diagrams showing t
 
 > [!] 请注意, 实际上第一个 load 必须具有数据依赖关系(data dependency), 而不是控制依赖关系(control dependency)。 如果第二个 load 的地址依赖于第一个load, 但并不去加载实际的地址本身, 这种依赖关系是通过条件来进行的, 那么它就是控制依赖关系, 这时候就需要使用完全读屏障或更高级别的屏障。 更多控制依赖的信息, 请参见 "Control dependencies" 小节。
 
-> [!] 请注意, 数据依赖屏障一般需要和写屏障搭配使用；请参阅 ["SMP barrier pairing"](#SMP_BARRIER_PAIRING) 小节。
+> [!] 请注意, 数据依赖屏障一般需要和写屏障搭配使用; 请参阅 ["SMP barrier pairing"](#SMP_BARRIER_PAIRING) 小节。
 
 
 (3) Read (or load) memory barriers.
@@ -554,11 +554,11 @@ Read memory barriers imply data dependency barriers, and so can substitute for t
 
 读屏障是一种数据依赖屏障, 保证对于系统的其他组件而言, 在屏障之前指定的所有 LOAD 操作, 都在屏障后指定的所有LOAD操作之前完成。
 
-读屏障只规定对load操作的顺序； 不需要对store有任何影响。
+读屏障只规定对load操作的顺序;  不需要对store有任何影响。
 
 读屏障隐含了数据依赖屏障, 因此可以替代它们。
 
-> [!] 请注意, 读屏障一般和写屏障搭配使用； 请参阅 ["SMP barrier pairing"](#SMP_BARRIER_PAIRING) 小节。
+> [!] 请注意, 读屏障一般和写屏障搭配使用;  请参阅 ["SMP barrier pairing"](#SMP_BARRIER_PAIRING) 小节。
 
 
 (4) General memory barriers.
@@ -1598,7 +1598,7 @@ The following example demonstrates multicopy atomicity:
 <a name="MULTICOPY_ATOMICITY"></a>
 #### 2.8 多副本原子性
 
-多副本原子性是一种关于排序的非常直观的概念, 但并不是所有的计算机系统都提供支持；即某个 store 在同一时刻对所有CPU都可见； 或者, 所有CPU同意某种顺序,让所有 store 都变为可见。 但是, 对多副本原子性的完全支持, 将会排除硬件层面有价值的优化, 因此 `other multicopy atomicity`(其他多副本原子性)的较弱形式, 只能保证一个给定的 store 对所有其他CPU同时可见。 本文档的其余部分讨论了这种较弱的形式, 但为简便起见, 将其简称为 `multicopy atomicity`(多副本原子性)。
+多副本原子性是一种关于排序的非常直观的概念, 但并不是所有的计算机系统都提供支持; 即某个 store 在同一时刻对所有CPU都可见;  或者, 所有CPU同意某种顺序,让所有 store 都变为可见。 但是, 对多副本原子性的完全支持, 将会排除硬件层面有价值的优化, 因此 `other multicopy atomicity`(其他多副本原子性)的较弱形式, 只能保证一个给定的 store 对所有其他CPU同时可见。 本文档的其余部分讨论了这种较弱的形式, 但为简便起见, 将其简称为 `multicopy atomicity`(多副本原子性)。
 
 以下示例演示了多副本原子性:
 
@@ -2160,10 +2160,6 @@ Please note that these compiler barriers have no direct effect on the CPU, which
 请注意, 这些编译器屏障对 CPU 没有直接影响, CPU 可能会按照自己的意愿进行指令重排序。
 
 
-#########################################################
-############# 到此处
-#########################################################
-
 CPU MEMORY BARRIERS
 -------------------
 
@@ -2185,33 +2181,34 @@ Linux内核支持8种基础的CPU内存屏障:
 
 All memory barriers except the data dependency barriers imply a compiler barrier.  Data dependencies do not impose any additional compiler ordering.
 
-Aside: In the case of data dependencies, the compiler would be expected to issue the loads in the correct order (eg. `a[b]` would have to load the value of b before loading a[b]), however there is no guarantee in the C specification that the compiler may not speculate the value of b (eg. is equal to 1) and load a[b] before b (eg. tmp = a[1]; if (b != 1) tmp = a[b]; ).  There is also the problem of a compiler reloading b after having loaded a[b], thus having a newer copy of b than a[b].  A consensus has not yet been reached about these problems, however the `READ_ONCE()` macro is a good place to start looking.
+Aside: In the case of data dependencies, the compiler would be expected to issue the loads in the correct order (eg. `a[b]` would have to load the value of b before loading a[b]), however there is no guarantee in the C specification that the compiler may not speculate the value of b (eg. is equal to 1) and load a[b] before b (eg. `tmp = a[1]; if (b != 1) tmp = a[b];` ).  There is also the problem of a compiler reloading b after having loaded a[b], thus having a newer copy of b than a[b].  A consensus has not yet been reached about these problems, however the `READ_ONCE()` macro is a good place to start looking.
 
-SMP memory barriers are reduced to compiler barriers on uniprocessor compiled systems because it is assumed that a CPU will appear to be self-consistent, and will order overlapping accesses correctly with respect to itself. However, see the subsection on "Virtual Machine Guests" below.
+SMP memory barriers are reduced to compiler barriers on uniprocessor compiled systems because it is assumed that a CPU will appear to be self-consistent, and will order overlapping accesses correctly with respect to itself. However, see the subsection on ["Virtual Machine Guests"](#VIRTUAL_MACHINE_GUESTS) below.
 
-除了数据依赖障碍之外的所有内存障碍都意味着编译器障碍。数据相关性不会强加任何额外的编译器排序。
+除数据依赖屏障之外, 所有内存屏障都蕴含了编译器屏障。 数据依赖不会强加任何额外的编译器排序。
 
-旁白：在数据依赖的情况下，编译器应该以正确的顺序发出加载（例如，`a[b]` 必须在加载 a[b] 之前加载 b 的值），但是有C 规范中不保证编译器不会推测 b 的值（例如等于 1）并在 b 之前加载 a[b]（例如 tmp = a[1]; if (b != 1) tmp = a[b];)。还有一个问题是编译器在加载 a[b] 后重新加载 b，因此 b 的副本比 a[b] 更新。尚未就这些问题达成共识，但是 `READ_ONCE()` 宏是一个开始寻找的好地方。
+另外: 在有数据依赖的情况下, 编译器应该以正确的顺序发出 load 指令（例如, 获取 `a[b]` 就必须在加载 a[b] 之前加载 b 的值）, 但是 C语言规范中不保证编译器不会推测 b 的值（例如等于 1）并在 b 之前加载 a[b]。（例如 `tmp = a[1]; if (b != 1) tmp = a[b];`)。
+还有一个问题是, 编译器在加载 a[b] 之后重新加载 b, 因此 b 的副本比 a[b] 要新。 目前尚未就这些问题达成共识, 但是 `READ_ONCE()` 宏是一个开始查找的好地方。
 
-在单处理器编译系统上，SMP 内存屏障减少为编译器屏障，因为假设 CPU 看起来是自洽的，并且会相对于自身正确地对重叠访问进行排序。但是，请参阅下面有关“虚拟机来宾”的小节。
+在单处理器编译系统上, SMP 内存屏障降级为编译器屏障, 因为它假设 CPU 看起来是自身一致的, 并且会相对于自身正确地对重叠访问进行排序。 但是, 请参阅后面的 [10.2 虚拟机访客](#VIRTUAL_MACHINE_GUESTS) 一节。
 
-[!] Note that SMP memory barriers _must_ be used to control the ordering of references to shared memory on SMP systems, though the use of locking instead is sufficient.
+> [!] Note that SMP memory barriers _must_ be used to control the ordering of references to shared memory on SMP systems, though the use of locking instead is sufficient.
 
 Mandatory barriers should not be used to control SMP effects, since mandatory barriers impose unnecessary overhead on both SMP and UP systems. They may, however, be used to control MMIO effects on accesses through relaxed memory I/O windows.  These barriers are required even on non-SMP systems as they affect the order in which memory operations appear to a device by prohibiting both the compiler and the CPU from reordering them.
 
-[!] 请注意，SMP 内存屏障_必须_用于控制对 SMP 系统上共享内存的引用的顺序，尽管使用锁定来代替就足够了。
+> [!] 请注意, SMP内存屏障 必须 用于控制对 SMP 系统上共享内存引用的顺序, 尽管使用锁定来代替就足够了。
 
-不应使用强制性障碍来控制 SMP 的影响，因为强制性障碍会对 SMP 和 UP 系统造成不必要的开销。 但是，它们可用于通过宽松的内存 I/O 窗口控制 MMIO 对访问的影响。 即使在非 SMP 系统上也需要这些屏障，因为它们通过禁止编译器和 CPU 重新排序来影响内存操作出现在设备上的顺序。
+不应使用强制性屏障来控制 SMP 的影响, 因为强制性屏障会对 SMP 和 UP 系统造成不必要的开销。 但是, 它们可用于通过宽松的内存 I/O 窗口来控制 MMIO 对访问的影响。 即使在非 SMP 系统上也需要这些屏障, 因为它们通过禁止编译器和 CPU 重排序, 来影响内存操作出现在设备上的顺序。
 
 There are some more advanced barrier functions:
 
-下面是一些高级的屏障函数：
+下面是一些高级屏障函数:
 
 - (`*`) `smp_store_mb(var, value)`
 
   This assigns the value to the variable and then inserts a full memory barrier after it.  It isn't guaranteed to insert anything more than a compiler barrier in a UP compilation.
 
-  这将值分配给变量，然后在它之后插入一个完整的内存屏障。 不能保证在 UP 编译中插入比编译器屏障更多的东西。
+  这个函数将值赋给变量, 并在它之后插入一个完整的内存屏障。 不能保证在 UP 编译中插入比编译器屏障更多的东西。
 
 
 - (`*`) `smp_mb__before_atomic()`
@@ -2223,11 +2220,12 @@ There are some more advanced barrier functions:
 
   As an example, consider a piece of code that marks an object as being dead and then decrements the object's reference count:
 
-  这些用于不暗示内存屏障但代码需要内存屏障的原子 RMW 函数。 不暗示内存屏障的原子 RMW 函数的示例是例如 加、减、（失败）条件操作、_relaxed 函数，但不是 atomic_read 或 atomic_set。 可能需要内存屏障的一个常见示例是原子操作用于引用计数。
+  这两个函数用于原子 RMW 函数, 不包含隐式的内存屏障, 但代码需要内存屏障的的情况。
+  不包含隐式内存屏障的原子 RMW 函数的示例, 比如 加、减、（失败）条件操作、 _relaxed 函数, 但不是 `atomic_read` 或 `atomic_set`。 可能需要内存屏障的一个常见例子, 是用于引用计数的原子操作。
 
-  这些也用于不暗示内存屏障的原子 RMW bittop 函数（例如 set_bit 和 clear_bit）。
+  这些也用于不隐含内存屏障的RMW 原子位操作函数（例如 `set_bit` 和 `clear_bit`）。
 
-  举个例子，考虑一段代码，将一个对象标记为死亡，然后递减该对象的引用计数：
+  举个例子, 考虑一段代码, 将一个对象标记为死亡, 然后递减该对象的引用计数:
 
   ```c
   obj->dead = 1;
@@ -2239,7 +2237,7 @@ There are some more advanced barrier functions:
 
   See Documentation/atomic_{t,bitops}.txt for more information.
 
-  这确保在对象上的死亡标记被感知为*在*引用计数器递减之前设置。
+  这确保在引用计数器递减之前, 对象上的死亡标记先被感知。
 
   更多信息请参阅 `Documentation/atomic_{t,bitops}.txt` 等文档。
 
@@ -2251,47 +2249,60 @@ There are some more advanced barrier functions:
 
   For example, consider a device driver that shares memory with a device and uses a descriptor status value to indicate if the descriptor belongs to the device or the CPU, and a doorbell to notify it when new descriptors are available:
 
+  这两个函数与一致内存一起使用，以保证 CPU 和支持 DMA 的设备, 均可访问共享内存, 并保证写入或读取的顺序。
+
+  例如，考虑一个设备驱动程序，它与设备共享内存, 并使用描述符状态值来指示描述符是属于设备还是 CPU，并在新描述符可用时使用门铃来通知它：
+
   ```c
   if (desc->status != DEVICE_OWN) {
-    /* do not read data until we own descriptor */
+    /* 在拥有描述符之前, 都不读取数据 */
     dma_rmb();
 
-    /* read/modify data */
+    /* 读取/修改数据 */
     read_data = desc->data;
     desc->data = write_data;
 
-    /* flush modifications before status update */
+    /* 在更新状态前, 先刷新变更 */
     dma_wmb();
 
-    /* assign ownership */
+    /* 指定所有权 */
     desc->status = DEVICE_OWN;
 
-    /* notify device of new descriptors */
+    /* 通知设备新的描述符 */
     writel(DESC_NOTIFY, doorbell);
   }
   ```
 
-  The dma_rmb() allows us guarantee the device has released ownership before we read the data from the descriptor, and the dma_wmb() allows us to guarantee the data is written to the descriptor before the device can see it now has ownership.  Note that, when using writel(), a prior wmb() is not needed to guarantee that the cache coherent memory writes have completed before writing to the MMIO region.  The cheaper writel_relaxed() does not provide this guarantee and must not be used here.
+  The `dma_rmb()` allows us guarantee the device has released ownership before we read the data from the descriptor, and the `dma_wmb()` allows us to guarantee the data is written to the descriptor before the device can see it now has ownership.  Note that, when using `writel()`, a prior `wmb()` is not needed to guarantee that the cache coherent memory writes have completed before writing to the MMIO region.  The cheaper  `writel_relaxed()` does not provide this guarantee and must not be used here.
 
-  See the subsection "Kernel I/O barrier effects" for more information on relaxed I/O accessors and the Documentation/core-api/dma-api.rst file for more information on consistent memory.
+  See the subsection "[Kernel I/O barrier effects](#KERNEL_IO_BARRIER_EFFECTS) " for more information on relaxed I/O accessors and the `Documentation/core-api/dma-api.rst` file for more information on consistent memory.
 
-  dma_rmb() 允许我们在从描述符读取数据之前保证设备已释放所有权，而 dma_wmb() 允许我们保证数据在设备可以看到它现在拥有所有权之前写入描述符。 请注意，在使用 writel() 时，不需要先前的 wmb() 来保证在写入 MMIO 区域之前已完成缓存一致性内存写入。 更便宜的 writel_relaxed() 不提供此保证，不得在此处使用。
+  `dma_rmb()` 允许我们保证: 从描述符读取数据之前, 设备已释放了所有权;
+  而 `dma_wmb()` 允许我们保证: 在设备看到之前, 就将数据写入了描述符。
+  请注意, 在使用 `writel()` 时, 不需要在前面的 `wmb()` 来保证在写入 MMIO 区域之前已完成缓存一致性内存写入。
+  更便宜的  `writel_relaxed()` 不提供此保证, 不能在此处使用。
 
-  有关宽松 I/O 访问器的更多信息，请参阅“内核 I/O 屏障效应”小节，有关一致内存的更多信息，请参阅 Documentation/core-api/dma-api.rst 文件。
+  有关宽松 I/O 访问器的更多信息, 请参阅 [7. 内核IO屏障的效果](#KERNEL_IO_BARRIER_EFFECTS) 小节, 有关一致内存的更多信息, 请参阅 `Documentation/core-api/dma-api.rst` 文件。
 
 - (`*`) `pmem_wmb()`
 
   This is for use with persistent memory to ensure that stores for which modifications are written to persistent storage reached a platform durability domain.
 
-  For example, after a non-temporal write to pmem region, we use pmem_wmb() to ensure that stores have reached a platform durability domain. This ensures that stores have updated persistent storage before any data access or data transfer caused by subsequent instructions is initiated. This is in addition to the ordering done by wmb().
+  For example, after a non-temporal write to pmem region, we use `pmem_wmb()` to ensure that stores have reached a platform durability domain. This ensures that stores have updated persistent storage before any data access or data transfer caused by subsequent instructions is initiated. This is in addition to the ordering done by `wmb()`.
 
   For load from persistent memory, existing read memory barriers are sufficient to ensure read ordering.
 
-  这与持久内存一起使用，以确保将修改写入持久存储的存储到达平台持久域。
+  这个函数与持久内存一起使用, 以确保将修改对应的store写入持久存储, 到达平台持久域。
 
-  例如，在对 pmem 区域进行非临时写入后，我们使用 pmem_wmb() 来确保商店已达到平台持久性域。 这确保在启动由后续指令引起的任何数据访问或数据传输之前，存储已更新持久存储。 这是 wmb() 完成的排序的补充。
+  例如, 在对 pmem 区域进行非临时写入后, 我们使用 `pmem_wmb()` 来确保store已达到平台持久性域。
+  这确保在初始化任何由后续指令引起的数据访问或数据传输之前, store已更新到持久存储。 这是 `wmb()` 完成的排序的补充。
 
-  对于从持久内存加载，现有的读取内存屏障足以确保读取顺序。
+  对于从持久内存load, 现有的内存读屏障足以确保读取顺序。
+
+
+#########################################################
+############# 到此处
+#########################################################
 
 ===============================
 IMPLICIT KERNEL MEMORY BARRIERS
@@ -2851,7 +2862,7 @@ efficient to reorder, combine or merge accesses - something that would cause
 the device to malfunction.
 
 Inside of the Linux kernel, I/O should be done through the appropriate accessor
-routines - such as inb() or writel() - which know how to make such accesses
+routines - such as inb() or `writel()` - which know how to make such accesses
 appropriately sequential.  While this, for the most part, renders the explicit
 use of memory barriers unnecessary, if the accessor functions are used to refer
 to an I/O memory window with relaxed memory access properties, then _mandatory_
@@ -3315,7 +3326,7 @@ VIRTUAL MACHINE GUESTS
 
 
 <a name="VIRTUAL_MACHINE_GUESTS"></a>
-### 10.2 虚拟的机器访客
+### 10.2 虚拟机访客
 
 Guests running within virtual machines might be affected by SMP effects even if
 the guest itself is compiled without SMP support.  This is an artifact of
