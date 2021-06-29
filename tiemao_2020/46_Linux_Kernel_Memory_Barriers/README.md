@@ -2300,10 +2300,6 @@ There are some more advanced barrier functions:
   对于从持久内存load, 现有的内存读屏障足以确保读取顺序。
 
 
-#########################################################
-############# 到此处
-#########################################################
-
 ===============================
 IMPLICIT KERNEL MEMORY BARRIERS
 ===============================
@@ -2344,7 +2340,7 @@ Linux 内核有许多锁结构:
 - (`*`) 信号量(semaphore)
 - (`*`) 读/写信号量(R/W semaphore)
 
-在所有情况下，每个锁结构都有类似的 "`ACQUIRE`" 操作和 "`RELEASE`"操作。 这些操作都蕴含了内存屏障:
+在所有情况下，每个锁结构都有类似的 "`ACQUIRE`" 操作和 "`RELEASE`"操作。 这些操作蕴含了内存屏障:
 
 - (1) `ACQUIRE` operation implication:
 
@@ -2352,11 +2348,11 @@ Linux 内核有许多锁结构:
 
   Memory operations issued before the `ACQUIRE` may be completed after the `ACQUIRE` operation has completed.
 
-- (1) `ACQUIRE`操作含义：
+- (1) `ACQUIRE`操作隐含的屏障:
 
-  `ACQUIRE` 之后发出的内存操作将在 `ACQUIRE` 操作完成后完成。
+  `ACQUIRE` 之后发出的内存操作必须在 `ACQUIRE` 操作完成后结束。
 
-  `ACQUIRE` 之前发出的内存操作可以在 `ACQUIRE` 操作完成后完成。
+  `ACQUIRE` 之前发出的内存操作可以在 `ACQUIRE` 操作完成后结束。
 
 - (2) `RELEASE` operation implication:
 
@@ -2364,39 +2360,44 @@ Linux 内核有许多锁结构:
 
   Memory operations issued after the `RELEASE` may be completed before the `RELEASE` operation has completed.
 
-- (2) `RELEASE` 操作含义：
+- (2) `RELEASE` 操作隐含的屏障:
 
-  `RELEASE` 之前发出的内存操作将在 `RELEASE` 操作完成之前完成。
+  `RELEASE` 之前发出的内存操作必须在 `RELEASE` 操作完成之前结束。
 
-  `RELEASE` 之后发出的内存操作可能会在 `RELEASE` 操作完成之前完成。
+  `RELEASE` 之后发出的内存操作可能会在 `RELEASE` 操作完成之前结束。
 
 - (3) `ACQUIRE` vs `ACQUIRE` implication:
 
   All `ACQUIRE` operations issued before another `ACQUIRE` operation will be completed before that `ACQUIRE` operation.
 
-- (3) `ACQUIRE` vs `ACQUIRE` 含义：
+- (3) `ACQUIRE` 与 `ACQUIRE` 操作隐含的屏障:
 
-  在另一个 `ACQUIRE` 操作之前发出的所有 `ACQUIRE` 操作将在该 `ACQUIRE` 操作之前完成。
+  在某个 `ACQUIRE` 操作之前发出的所有 `ACQUIRE` 操作, 都必须在该 `ACQUIRE` 操作完成之前结束。
 
 - (4) `ACQUIRE` vs `RELEASE` implication:
 
   All `ACQUIRE` operations issued before a `RELEASE` operation will be completed before the `RELEASE` operation.
 
-- (4) 获取与释放的含义：
+- (4) `ACQUIRE` 与 `RELEASE` 操作隐含的屏障:
 
-  在 `RELEASE` 操作之前发出的所有 `ACQUIRE` 操作都将在 `RELEASE` 操作之前完成。
+  在某个 `RELEASE` 操作之前发出的所有 `ACQUIRE` 操作, 都必须在 `RELEASE` 操作之前结束。
 
 - (5) Failed conditional `ACQUIRE` implication:
 
   Certain locking variants of the `ACQUIRE` operation may fail, either due to being unable to get the lock immediately, or due to receiving an unblocked signal while asleep waiting for the lock to become available.  Failed locks do not imply any sort of barrier.
 
-- (5) 失败的条件 `ACQUIRE` 含义：
+- (5) 失败的条件 `ACQUIRE` 操作隐含的屏障:
 
-  `ACQUIRE` 操作的某些锁定变体可能会失败，原因可能是无法立即获得锁，或者是由于在睡眠等待锁可用时收到未阻塞的信号。失败的锁并不意味着任何类型的障碍。
+  `ACQUIRE` 操作的某些锁定变体可能会失败，原因可能是无法立即获得锁，或者是由于在睡眠等待锁可用时收到未阻塞的信号。 失败的锁并不隐含任何类型的屏障。
+
 
 > [!] Note: one of the consequences of lock ACQUIREs and RELEASEs being only one-way barriers is that the effects of instructions outside of a critical section may seep into the inside of the critical section.
 
 An `ACQUIRE` followed by a `RELEASE` may not be assumed to be full memory barrier because it is possible for an access preceding the `ACQUIRE` to happen after the `ACQUIRE`, and an access following the `RELEASE` to happen before the `RELEASE`, and the two accesses can themselves then cross:
+
+> [!] 注意：锁的 ACQUIRE 和 RELEASE 的结果只是单向屏障, 临界区之外的指令的影响可能会渗入临界区内部。
+
+一个 `ACQUIRE` 后跟一个 `RELEASE` 可能不被认为是完整的内存屏障，因为在 `ACQUIRE` 之前的访问可能发生在 `ACQUIRE` 之后，而在 `RELEASE` 之后的访问也可能在 `RELEASE` 之前发生，然后两个访问本身就可能交叉：
 
 ```c
   *A = a;
@@ -2408,6 +2409,8 @@ An `ACQUIRE` followed by a `RELEASE` may not be assumed to be full memory barrie
 
 may occur as:
 
+实际执行的顺序可能是：
+
 ```c
   ACQUIRE M, STORE *B, STORE *A, RELEASE M
 
@@ -2416,6 +2419,10 @@ may occur as:
 When the `ACQUIRE` and `RELEASE` are a lock acquisition and release, respectively, this same reordering can occur if the lock's `ACQUIRE` and `RELEASE` are to the same lock variable, but only from the perspective of another CPU not holding that lock.  In short, a `ACQUIRE` followed by an `RELEASE` may -not- be assumed to be a full memory barrier.
 
 Similarly, the reverse case of a `RELEASE` followed by an `ACQUIRE` does not imply a full memory barrier.  Therefore, the CPU's execution of the critical sections corresponding to the `RELEASE` and the `ACQUIRE` can cross, so that:
+
+当 `ACQUIRE` 和 `RELEASE` 分别是锁的获取和释放时，如果锁的 `ACQUIRE` 和 `RELEASE` 是同一个锁变量，那么同样的重排序可以发生，但只有从另一个不持有那个锁的 CPU 角度来看是这样。 简而言之，一个 `ACQUIRE` 后跟一个 `RELEASE` 可能`不`被认为是一个完整的内存屏障。
+
+类似地, 顺序调过来，先是 `ACQUIRE`, 后面跟着 `RELEASE` 的情况也不代表完整的内存屏障。 因此，CPU 对 `RELEASE` 和 `ACQUIRE` 对应的临界区的执行可能会交叉，例如下面的代码：
 
 ```c
   *A = a;
@@ -2426,6 +2433,8 @@ Similarly, the reverse case of a `RELEASE` followed by an `ACQUIRE` does not imp
 
 could occur as:
 
+实际执行的顺序可能是：
+
 ```c
   ACQUIRE N, STORE *B, STORE *A, RELEASE M
 
@@ -2433,20 +2442,41 @@ could occur as:
 
 It might appear that this reordering could introduce a deadlock. However, this cannot happen because if such a deadlock threatened, the `RELEASE` would simply complete, thereby avoiding the deadlock.
 
+看起来这种重排序可能会导致死锁。 但这是不可能发生的， 因为如果有这种死锁的可能，`RELEASE` 就会简单地完成，从而避免死锁。
+
 > Why does this work?
+
+> 为什么呢?
 
 One key point is that we are only talking about the CPU doing the reordering, not the compiler. If the compiler (or, for that matter, the developer) switched the operations, deadlock -could- occur.
 
 But suppose the CPU reordered the operations. In this case, the unlock precedes the lock in the assembly code. The CPU simply elected to try executing the later lock operation first. If there is a deadlock, this lock operation will simply spin (or try to sleep, but more on that later). The CPU will eventually execute the unlock operation (which preceded the lock operation in the assembly code), which will unravel the potential deadlock, allowing the lock operation to succeed.
 
+一个关键点是我们只讨论了 CPU 重排序，而没有讨论编译器重排序。如果编译器调换了操作顺序（对开发人员有影响），则可能会发生死锁。
+
+但是假设 CPU 执行了重排序操作。 在这种情况下，在汇编代码中解锁先于锁定。
+CPU 只是选择先尝试执行后面的锁定操作。
+如果出现死锁，锁定操作将简单地自旋（或尝试休眠，稍后会详细介绍）。
+CPU 最终会执行解锁操作（在汇编代码中先于锁定操作），这将解除潜在的死锁，从而允许锁定操作成功。
+
+
 But what if the lock is a sleeplock? In that case, the code will try to enter the scheduler, where it will eventually encounter a memory barrier, which will force the earlier unlock operation to complete, again unraveling the deadlock. There might be a sleep-unlock race, but the locking primitive needs to resolve such races properly in any case.
 
 Locks and semaphores may not provide any guarantee of ordering on UP compiled systems, and so cannot be counted on in such a situation to actually achieve anything at all - especially with respect to I/O accesses - unless combined with interrupt disabling operations.
 
-See also the section on "Inter-CPU acquiring barrier effects".
+
+但如果是睡眠锁呢？ 在这种情况下，代码将尝试进入调度程序，在那里最终会遇到内存屏障，这将强制较早的解锁操作先完成，再次解除死锁。 可能存在睡眠解锁竞争，但在任何情况下锁定原语都需要正确解决此类竞争。
+
+锁和信号量在 UP 编译的系统上可能无法保证排序，因此在这种情况下不能指望达成任何实际目标 - 特别是在 I/O 访问方面 - 除非与中断禁用操作相结合。
+
+See also the section on "[Inter-CPU acquiring barrier effects](#CPU_ACQUIRING_BARRIER_EFFECTS)".
+
+另请参见: [5. CPU之间获取屏障的效果](#CPU_ACQUIRING_BARRIER_EFFECTS)
 
 
 As an example, consider the following:
+
+请看下面的示例代码:
 
 ```c
   *A = a;
@@ -2461,13 +2491,19 @@ As an example, consider the following:
 
 The following sequence of events is acceptable:
 
+那么，以下的事件执行顺序是可以接受的:
+
 ```c
   ACQUIRE, {*F,*A}, *E, {*C,*D}, *B, RELEASE
 ```
 
-  [+] Note that {*F,*A} indicates a combined access.
+> [+] Note that `{*F,*A}` indicates a combined access.
+
+> 请注意: `{*F,*A}` 这种形式指定了一组访问操作。
 
 But none of the following are:
+
+但下面的任何一种执行顺序都不行:
 
 ```c
   {*F,*A}, *B,  ACQUIRE, *C, *D,  RELEASE, *E
@@ -2475,6 +2511,11 @@ But none of the following are:
   *A, *B,    ACQUIRE, *C,    RELEASE, *D, *E, *F
   *B,    ACQUIRE, *C, *D,  RELEASE, {*F,*A}, *E
 ```
+
+
+#########################################################
+############# 到此处
+#########################################################
 
 
 INTERRUPT DISABLING FUNCTIONS
