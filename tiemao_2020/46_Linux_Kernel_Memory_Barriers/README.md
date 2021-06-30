@@ -2513,39 +2513,36 @@ But none of the following are:
 ```
 
 
-#########################################################
-############# 到此处
-#########################################################
-
 
 INTERRUPT DISABLING FUNCTIONS
 -----------------------------
 
 
 <a name="INTERRUPT_DISABLING_FUNCTIONS"></a>
-### 4.2 禁止中断的函数
+### 4.2 中断禁用函数
 
-Functions that disable interrupts (`ACQUIRE` equivalent) and enable interrupts
-(`RELEASE` equivalent) will act as compiler barriers only.  So if memory or I/O
-barriers are required in such a situation, they must be provided from some
-other means.
+Functions that disable interrupts (`ACQUIRE` equivalent) and enable interrupts (`RELEASE` equivalent) will act as compiler barriers only.  So if memory or I/O barriers are required in such a situation, they must be provided from some other means.
+
+禁用中断（等效于`ACQUIRE`）和启用中断（等效于`RELEASE`）的函数仅作为编译器屏障。
+因此，如果在这种情况下需要内存屏障或 I/O 屏障，则必须通过其他方式提供。
 
 
 SLEEP AND WAKE-UP FUNCTIONS
 ---------------------------
 
+Sleeping and waking on an event flagged in global data can be viewed as an interaction between two pieces of data: the task state of the task waiting for the event and the global data used to indicate the event.  
+To make sure that these appear to happen in the right order, the primitives to begin the process of going to sleep, and the primitives to initiate a wake up imply certain barriers.
+
+Firstly, the sleeper normally follows something like this sequence of events:
+
 
 <a name="SLEEP_AND_WAKE-UP_FUNCTIONS"></a>
 ### 4.3 睡眠和唤醒函数
 
-Sleeping and waking on an event flagged in global data can be viewed as an
-interaction between two pieces of data: the task state of the task waiting for
-the event and the global data used to indicate the event.  To make sure that
-these appear to happen in the right order, the primitives to begin the process
-of going to sleep, and the primitives to initiate a wake up imply certain
-barriers.
+在全局数据中标记的事件上睡眠和唤醒, 可以被视为两个数据之间的交互： 等待事件的任务的状态, 以及用于指示事件的全局数据。
+为了确保他们以正确的顺序发生，开始进入睡眠过程的原语和启动唤醒过程的原语蕴含着某些屏障。
 
-Firstly, the sleeper normally follows something like this sequence of events:
+首先，睡眠者通常跟在某些操作后面, 例如以下事件序列：
 
 ```c
   for (;;) {
@@ -2556,8 +2553,9 @@ Firstly, the sleeper normally follows something like this sequence of events:
   }
 ```
 
-A general memory barrier is interpolated automatically by set_current_state()
-after it has altered the task state:
+A general memory barrier is interpolated automatically by `set_current_state()` after it has altered the task state:
+
+在更改任务状态后，`set_current_state()` 会自动插入通用内存屏障：
 
 ```c
   CPU 1
@@ -2569,15 +2567,20 @@ after it has altered the task state:
   LOAD event_indicated
 ```
 
-set_current_state() may be wrapped by:
+`set_current_state()` may be wrapped by:
 
+`set_current_state()` 可能由以下函数包装:
+
+```c
   prepare_to_wait();
   prepare_to_wait_exclusive();
+```
 
-which therefore also imply a general memory barrier after setting the state.
-The whole sequence above is available in various canned forms, all of which
-interpolate the memory barrier in the right place:
+which therefore also imply a general memory barrier after setting the state. The whole sequence above is available in various canned forms, all of which interpolate the memory barrier in the right place:
 
+因此，这也意味着设置任务状态之后一般都会有通用内存屏障。 上面的整个序列有各种固定形式，所有这些都会在正确的位置插入内存屏障：
+
+```c
   wait_event();
   wait_event_interruptible();
   wait_event_interruptible_exclusive();
@@ -2586,17 +2589,30 @@ interpolate the memory barrier in the right place:
   wait_event_timeout();
   wait_on_bit();
   wait_on_bit_lock();
-
+```
 
 Secondly, code that performs a wake up normally follows something like this:
 
+其次，执行唤醒的代码通常是跟着某些操作, 比如：
+
+```c
   event_indicated = 1;
   wake_up(&event_wait_queue);
+```
 
 or:
 
+或者是这种样子:
+
+```c
   event_indicated = 1;
   wake_up_process(event_daemon);
+```
+
+
+#########################################################
+############# 到此处
+#########################################################
 
 A general memory barrier is executed by wake_up() if it wakes something up.
 If it doesn't wake anything up then a memory barrier may or may not be
