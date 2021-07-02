@@ -2614,44 +2614,40 @@ or:
 ############# 到此处
 #########################################################
 
-A general memory barrier is executed by wake_up() if it wakes something up.
-If it doesn't wake anything up then a memory barrier may or may not be
-executed; you must not rely on it.  The barrier occurs before the task state
-is accessed, in particular, it sits between the STORE to indicate the event
-and the STORE to set TASK_RUNNING:
+A general memory barrier is executed by wake_up() if it wakes something up. If it doesn't wake anything up then a memory barrier may or may not be executed; you must not rely on it.  The barrier occurs before the task state is accessed, in particular, it sits between the STORE to indicate the event and the STORE to set TASK_RUNNING:
 
-  CPU 1 (Sleeper)      CPU 2 (Waker)
+如果唤醒某些东西，则由wake_up() 执行通用内存屏障。 如果它没有唤醒任何东西，那么内存屏障可能会或可能不会被执行； 你不能依赖它。 屏障发生在访问任务状态之前，特别是它位于 STORE 之间以指示事件和 STORE 以设置 TASK_RUNNING：
+
+```c
+  CPU 1 (Sleeper)                   CPU 2 (Waker)
   ===============================  ===============================
-  set_current_state();    STORE event_indicated
-    smp_store_mb();    wake_up();
-      STORE current->state    ...
-      <general barrier>      <general barrier>
-  LOAD event_indicated      if ((LOAD task->state) & TASK_NORMAL)
-              STORE task->state
+  set_current_state();              STORE event_indicated
+    smp_store_mb();                 wake_up();
+      STORE current->state            ...
+      <general barrier>               <general barrier>
+  LOAD event_indicated                if ((LOAD task->state) & TASK_NORMAL)
+                                        STORE task->state
+```
 
 where "task" is the thread being woken up and it equals CPU 1's "current".
 
-To repeat, a general memory barrier is guaranteed to be executed by wake_up()
-if something is actually awakened, but otherwise there is no such guarantee.
-To see this, consider the following sequence of events, where X and Y are both
-initially zero:
+To repeat, a general memory barrier is guaranteed to be executed by wake_up() if something is actually awakened, but otherwise there is no such guarantee.  To see this, consider the following sequence of events, where X and Y are both initially zero:
 
-  CPU 1        CPU 2
+```c
+  CPU 1                             CPU 2
   ===============================  ===============================
-  X = 1;        Y = 1;
-  `smp_mb()`;      wake_up();
-  LOAD Y        LOAD X
+  X = 1;                            Y = 1;
+  smp_mb();                       wake_up();
+  LOAD Y                             LOAD X
+```
 
-If a wakeup does occur, one (at least) of the two loads must see 1.  If, on
-the other hand, a wakeup does not occur, both loads might see 0.
+If a wakeup does occur, one (at least) of the two loads must see 1.  If, on the other hand, a wakeup does not occur, both loads might see 0.
 
-wake_up_process() always executes a general memory barrier.  The barrier again
-occurs before the task state is accessed.  In particular, if the wake_up() in
-the previous snippet were replaced by a call to wake_up_process() then one of
-the two loads would be guaranteed to see 1.
+wake_up_process() always executes a general memory barrier.  The barrier again occurs before the task state is accessed.  In particular, if the wake_up() in the previous snippet were replaced by a call to wake_up_process() then one of the two loads would be guaranteed to see 1.
 
 The available waker functions include:
 
+```c
   complete();
   wake_up();
   wake_up_all();
@@ -2667,44 +2663,46 @@ The available waker functions include:
   wake_up_nr();
   wake_up_poll();
   wake_up_process();
+```
 
-In terms of memory ordering, these functions all provide the same guarantees of
-a wake_up() (or stronger).
+In terms of memory ordering, these functions all provide the same guarantees of a wake_up() (or stronger).
 
-[!] Note that the memory barriers implied by the sleeper and the waker do _not_
-order multiple stores before the wake-up with respect to loads of those stored
-values after the sleeper has called set_current_state().  For instance, if the
-sleeper does:
+[!] Note that the memory barriers implied by the sleeper and the waker do _not_ order multiple stores before the wake-up with respect to loads of those stored values after the sleeper has called set_current_state().  For instance, if the sleeper does:
 
+```c
   set_current_state(TASK_INTERRUPTIBLE);
   if (event_indicated)
     break;
   __set_current_state(TASK_RUNNING);
   do_something(my_data);
+```
 
 and the waker does:
 
+```c
   my_data = value;
   event_indicated = 1;
   wake_up(&event_wait_queue);
+```
 
-there's no guarantee that the change to event_indicated will be perceived by
-the sleeper as coming after the change to my_data.  In such a circumstance, the
-code on both sides must interpolate its own memory barriers between the
-separate data accesses.  Thus the above sleeper ought to do:
+there's no guarantee that the change to event_indicated will be perceived by the sleeper as coming after the change to my_data.  In such a circumstance, the code on both sides must interpolate its own memory barriers between the separate data accesses.  Thus the above sleeper ought to do:
 
+```c
   set_current_state(TASK_INTERRUPTIBLE);
   if (event_indicated) {
     smp_rmb();
     do_something(my_data);
   }
+```
 
 and the waker should do:
 
+```c
   my_data = value;
   smp_wmb();
   event_indicated = 1;
   wake_up(&event_wait_queue);
+```
 
 
 MISCELLANEOUS FUNCTIONS
@@ -2723,9 +2721,7 @@ Other functions that imply barriers:
 INTER-CPU ACQUIRING BARRIER EFFECTS
 ===================================
 
-On SMP systems locking primitives give a more substantial form of barrier: one
-that does affect memory access ordering on other CPUs, within the context of
-conflict on any particular lock.
+On SMP systems locking primitives give a more substantial form of barrier: one that does affect memory access ordering on other CPUs, within the context of conflict on any particular lock.
 
 
 <a name="INTER-CPU_ACQUIRING_BARRIER_EFFECTS"></a>
@@ -2738,21 +2734,20 @@ ACQUIRES VS MEMORY ACCESSES
 <a name="ACQUIRES_VS_MEMORY_ACCESSES"></a>
 ### 5.1 `ACQUIRE`S vs. 内存访问
 
-Consider the following: the system has a pair of spinlocks (M) and (Q), and
-three CPUs; then should the following sequence of events occur:
+Consider the following: the system has a pair of spinlocks (M) and (Q), and three CPUs; then should the following sequence of events occur:
 
-  CPU 1        CPU 2
+```c
+  CPU 1                             CPU 2
   ===============================  ===============================
-  WRITE_ONCE(*A, a);    WRITE_ONCE(*E, e);
-  ACQUIRE M      ACQUIRE Q
-  WRITE_ONCE(*B, b);    WRITE_ONCE(*F, f);
-  WRITE_ONCE(*C, c);    WRITE_ONCE(*G, g);
-  RELEASE M      RELEASE Q
-  WRITE_ONCE(*D, d);    WRITE_ONCE(*H, h);
+  WRITE_ONCE(*A, a);                WRITE_ONCE(*E, e);
+  ACQUIRE M                         ACQUIRE Q
+  WRITE_ONCE(*B, b);                WRITE_ONCE(*F, f);
+  WRITE_ONCE(*C, c);                WRITE_ONCE(*G, g);
+  RELEASE M                         RELEASE Q
+  WRITE_ONCE(*D, d);                WRITE_ONCE(*H, h);
+```
 
-Then there is no guarantee as to what order CPU 3 will see the accesses to *A
-through *H occur in, other than the constraints imposed by the separate locks
-on the separate CPUs.  It might, for example, see:
+Then there is no guarantee as to what order CPU 3 will see the accesses to *A through *H occur in, other than the constraints imposed by the separate locks on the separate CPUs.  It might, for example, see:
 
 ```c
   *E, ACQUIRE M, ACQUIRE Q, *G, *C, *F, *A, *B, RELEASE Q, *D, *H, RELEASE M
@@ -2760,7 +2755,7 @@ on the separate CPUs.  It might, for example, see:
 
 But it won't see any of:
 
-```
+```c
   *B, *C or *D preceding ACQUIRE M
   *A, *B or *C following RELEASE M
   *F, *G or *H preceding ACQUIRE Q
@@ -2775,10 +2770,7 @@ WHERE ARE MEMORY BARRIERS NEEDED?
 <a name="WHERE_ARE_MEMORY_BARRIERS_NEEDED"></a>
 ## 6. 什么地方需要内存屏障
 
-Under normal operation, memory operation reordering is generally not going to
-be a problem as a single-threaded linear piece of code will still appear to
-work correctly, even if it's in an SMP kernel.  There are, however, four
-circumstances in which reordering definitely _could_ be a problem:
+Under normal operation, memory operation reordering is generally not going to be a problem as a single-threaded linear piece of code will still appear to work correctly, even if it's in an SMP kernel.  There are, however, four circumstances in which reordering definitely _could_ be a problem:
 
 - (`*`) Interprocessor interaction.
 
@@ -2796,18 +2788,11 @@ INTERPROCESSOR INTERACTION
 <a name="INTERPROCESSOR_INTERACTION"></a>
 ### 6.1 处理器之间的交互
 
-When there's a system with more than one processor, more than one CPU in the
-system may be working on the same data set at the same time.  This can cause
-synchronisation problems, and the usual way of dealing with them is to use
-locks.  Locks, however, are quite expensive, and so it may be preferable to
-operate without the use of a lock if at all possible.  In such a case
-operations that affect both CPUs may have to be carefully ordered to prevent
-a malfunction.
+When there's a system with more than one processor, more than one CPU in the system may be working on the same data set at the same time.  This can cause synchronisation problems, and the usual way of dealing with them is to use locks.  Locks, however, are quite expensive, and so it may be preferable to operate without the use of a lock if at all possible.  In such a case operations that affect both CPUs may have to be carefully ordered to prevent a malfunction.
 
-Consider, for example, the R/W semaphore slow path.  Here a waiting process is
-queued on the semaphore, by virtue of it having a piece of its stack linked to
-the semaphore's list of waiting processes:
+Consider, for example, the R/W semaphore slow path.  Here a waiting process is queued on the semaphore, by virtue of it having a piece of its stack linked to the semaphore's list of waiting processes:
 
+```c
   struct rw_semaphore {
     ...
     spinlock_t lock;
@@ -2818,11 +2803,11 @@ the semaphore's list of waiting processes:
     struct list_head list;
     struct task_struct *task;
   };
+```
 
 To wake up a particular waiter, the up_read() or up_write() functions have to:
 
- (1) read the next pointer from this waiter's record to know as to where the
-     next waiter record is;
+ (1) read the next pointer from this waiter's record to know as to where the      next waiter record is;
 
  (2) read the pointer to the waiter's task structure;
 
@@ -2834,7 +2819,7 @@ To wake up a particular waiter, the up_read() or up_write() functions have to:
 
 In other words, it has to perform this sequence of events:
 
-```
+```c
   LOAD waiter->list.next;
   LOAD waiter->task;
   STORE waiter->task;
@@ -2842,42 +2827,37 @@ In other words, it has to perform this sequence of events:
   RELEASE task
 ```
 
-and if any of these steps occur out of order, then the whole thing may
-malfunction.
+and if any of these steps occur out of order, then the whole thing may malfunction.
 
-Once it has queued itself and dropped the semaphore lock, the waiter does not
-get the lock again; it instead just waits for its task pointer to be cleared
-before proceeding.  Since the record is on the waiter's stack, this means that
-if the task pointer is cleared _before_ the next pointer in the list is read,
-another CPU might start processing the waiter and might clobber the waiter's
-stack before the up*() function has a chance to read the next pointer.
+Once it has queued itself and dropped the semaphore lock, the waiter does not get the lock again; it instead just waits for its task pointer to be cleared before proceeding.  Since the record is on the waiter's stack, this means that if the task pointer is cleared _before_ the next pointer in the list is read, another CPU might start processing the waiter and might clobber the waiter's stack before the up*() function has a chance to read the next pointer.
 
 Consider then what might happen to the above sequence of events:
 
-  CPU 1        CPU 2
+```c
+  CPU 1                             CPU 2
   ===============================  ===============================
-          down_xxx()
-          Queue waiter
-          Sleep
+                                      down_xxx()
+                                      Queue waiter
+                                      Sleep
   up_yyy()
   LOAD waiter->task;
   STORE waiter->task;
-          Woken up by other event
+                                      Woken up by other event
   <preempt>
-          Resume processing
-          down_xxx() returns
-          call foo()
-          foo() clobbers *waiter
+                                      Resume processing
+                                      down_xxx() returns
+                                      call foo()
+                                      foo() clobbers *waiter
   </preempt>
   LOAD waiter->list.next;
   --- OOPS ---
+```
 
-This could be dealt with using the semaphore lock, but then the down_xxx()
-function has to needlessly get the spinlock again after being woken up.
+This could be dealt with using the semaphore lock, but then the down_xxx() function has to needlessly get the spinlock again after being woken up.
 
 The way to deal with this is to insert a general SMP memory barrier:
 
-```
+```c
   LOAD waiter->list.next;
   LOAD waiter->task;
   `smp_mb()`;
@@ -2886,16 +2866,9 @@ The way to deal with this is to insert a general SMP memory barrier:
   RELEASE task
 ```
 
-In this case, the barrier makes a guarantee that all memory accesses before the
-barrier will appear to happen before all the memory accesses after the barrier
-with respect to the other CPUs on the system.  It does _not_ guarantee that all
-the memory accesses before the barrier will be complete by the time the barrier
-instruction itself is complete.
+In this case, the barrier makes a guarantee that all memory accesses before the barrier will appear to happen before all the memory accesses after the barrier with respect to the other CPUs on the system.  It does _not_ guarantee that all the memory accesses before the barrier will be complete by the time the barrier instruction itself is complete.
 
-On a UP system - where this wouldn't be a problem - the `smp_mb()` is just a
-compiler barrier, thus making sure the compiler emits the instructions in the
-right order without actually intervening in the CPU.  Since there's only one
-CPU, that CPU's dependency ordering logic will take care of everything else.
+On a UP system - where this wouldn't be a problem - the `smp_mb()` is just a compiler barrier, thus making sure the compiler emits the instructions in the right order without actually intervening in the CPU.  Since there's only one CPU, that CPU's dependency ordering logic will take care of everything else.
 
 
 ATOMIC OPERATIONS
@@ -2905,9 +2878,7 @@ ATOMIC OPERATIONS
 <a name="ATOMIC_OPERATIONS"></a>
 ### 6.2 原子操作
 
-While they are technically interprocessor interaction considerations, atomic
-operations are noted specially as some of them imply full memory barriers and
-some don't, but they're very heavily relied on as a group throughout the
+While they are technically interprocessor interaction considerations, atomic operations are noted specially as some of them imply full memory barriers and some don't, but they're very heavily relied on as a group throughout the
 kernel.
 
 See Documentation/atomic_t.txt for more information.
@@ -2919,22 +2890,11 @@ ACCESSING DEVICES
 <a name="ACCESSING_DEVICES"></a>
 ### 6.3 设备访问
 
-Many devices can be memory mapped, and so appear to the CPU as if they're just
-a set of memory locations.  To control such a device, the driver usually has to
-make the right memory accesses in exactly the right order.
+Many devices can be memory mapped, and so appear to the CPU as if they're just a set of memory locations.  To control such a device, the driver usually has to make the right memory accesses in exactly the right order.
 
-However, having a clever CPU or a clever compiler creates a potential problem
-in that the carefully sequenced accesses in the driver code won't reach the
-device in the requisite order if the CPU or the compiler thinks it is more
-efficient to reorder, combine or merge accesses - something that would cause
-the device to malfunction.
+However, having a clever CPU or a clever compiler creates a potential problem in that the carefully sequenced accesses in the driver code won't reach the device in the requisite order if the CPU or the compiler thinks it is more efficient to reorder, combine or merge accesses - something that would cause the device to malfunction.
 
-Inside of the Linux kernel, I/O should be done through the appropriate accessor
-routines - such as inb() or `writel()` - which know how to make such accesses
-appropriately sequential.  While this, for the most part, renders the explicit
-use of memory barriers unnecessary, if the accessor functions are used to refer
-to an I/O memory window with relaxed memory access properties, then _mandatory_
-memory barriers are required to enforce ordering.
+Inside of the Linux kernel, I/O should be done through the appropriate accessor routines - such as inb() or `writel()` - which know how to make such accesses appropriately sequential.  While this, for the most part, renders the explicit use of memory barriers unnecessary, if the accessor functions are used to refer to an I/O memory window with relaxed memory access properties, then _mandatory_ memory barriers are required to enforce ordering.
 
 See Documentation/driver-api/device-io.rst for more information.
 
@@ -2945,21 +2905,13 @@ INTERRUPTS
 <a name="INTERRUPTS"></a>
 ### 6.4 中断
 
-A driver may be interrupted by its own interrupt service routine, and thus the
-two parts of the driver may interfere with each other's attempts to control or
-access the device.
+A driver may be interrupted by its own interrupt service routine, and thus the two parts of the driver may interfere with each other's attempts to control or access the device.
 
-This may be alleviated - at least in part - by disabling local interrupts (a
-form of locking), such that the critical operations are all contained within
-the interrupt-disabled section in the driver.  While the driver's interrupt
-routine is executing, the driver's core may not run on the same CPU, and its
-interrupt is not permitted to happen again until the current interrupt has been
-handled, thus the interrupt handler does not need to lock against that.
+This may be alleviated - at least in part - by disabling local interrupts (a form of locking), such that the critical operations are all contained within the interrupt-disabled section in the driver.  While the driver's interrupt routine is executing, the driver's core may not run on the same CPU, and its interrupt is not permitted to happen again until the current interrupt has been handled, thus the interrupt handler does not need to lock against that.
 
-However, consider a driver that was talking to an ethernet card that sports an
-address register and a data register.  If that driver's core talks to the card
-under interrupt-disablement and then the driver's interrupt handler is invoked:
+However, consider a driver that was talking to an ethernet card that sports an address register and a data register.  If that driver's core talks to the card under interrupt-disablement and then the driver's interrupt handler is invoked:
 
+```c
   LOCAL IRQ DISABLE
   writew(ADDR, 3);
   writew(DATA, y);
@@ -2968,26 +2920,22 @@ under interrupt-disablement and then the driver's interrupt handler is invoked:
   writew(ADDR, 4);
   q = readw(DATA);
   </interrupt>
+```
 
 The store to the data register might happen after the second store to the
 address register if ordering rules are sufficiently relaxed:
 
+```c
   STORE *ADDR = 3, STORE *ADDR = 4, STORE *DATA = y, q = LOAD *DATA
+```
 
 
-If ordering rules are relaxed, it must be assumed that accesses done inside an
-interrupt disabled section may leak outside of it and may interleave with
-accesses performed in an interrupt - and vice versa - unless implicit or
-explicit barriers are used.
+If ordering rules are relaxed, it must be assumed that accesses done inside an interrupt disabled section may leak outside of it and may interleave with accesses performed in an interrupt - and vice versa - unless implicit or explicit barriers are used.
 
-Normally this won't be a problem because the I/O accesses done inside such
-sections will include synchronous load operations on strictly ordered I/O
-registers that form implicit I/O barriers.
+Normally this won't be a problem because the I/O accesses done inside such sections will include synchronous load operations on strictly ordered I/O registers that form implicit I/O barriers.
 
 
-A similar situation may occur between an interrupt routine and two routines
-running on separate CPUs that communicate with each other.  If such a case is
-likely, then interrupt-disabling locks should be used to guarantee ordering.
+A similar situation may occur between an interrupt routine and two routines running on separate CPUs that communicate with each other.  If such a case is likely, then interrupt-disabling locks should be used to guarantee ordering.
 
 
 ==========================
@@ -2999,114 +2947,55 @@ KERNEL I/O BARRIER EFFECTS
 <a name="KERNEL_IO_BARRIER_EFFECTS"></a>
 ## 7. 内核IO屏障的效果
 
-Interfacing with peripherals via I/O accesses is deeply architecture and device
-specific. Therefore, drivers which are inherently non-portable may rely on
-specific behaviours of their target systems in order to achieve synchronization
-in the most lightweight manner possible. For drivers intending to be portable
-between multiple architectures and bus implementations, the kernel offers a
-series of accessor functions that provide various degrees of ordering
+Interfacing with peripherals via I/O accesses is deeply architecture and device specific. Therefore, drivers which are inherently non-portable may rely on specific behaviours of their target systems in order to achieve synchronization in the most lightweight manner possible. For drivers intending to be portable between multiple architectures and bus implementations, the kernel offers a series of accessor functions that provide various degrees of ordering
 guarantees:
 
 - (`*`) readX(), writeX():
 
-  The readX() and writeX() MMIO accessors take a pointer to the
-  peripheral being accessed as an __iomem * parameter. For pointers
-  mapped with the default I/O attributes (e.g. those returned by
-  ioremap()), the ordering guarantees are as follows:
+  The readX() and writeX() MMIO accessors take a pointer to the   peripheral being accessed as an __iomem * parameter. For pointers   mapped with the default I/O attributes (e.g. those returned by   ioremap()), the ordering guarantees are as follows:
 
-  1. All readX() and writeX() accesses to the same peripheral are ordered
-     with respect to each other. This ensures that MMIO register accesses
-     by the same CPU thread to a particular device will arrive in program
-     order.
+  1. All readX() and writeX() accesses to the same peripheral are ordered      with respect to each other. This ensures that MMIO register accesses      by the same CPU thread to a particular device will arrive in program      order.
 
-  2. A writeX() issued by a CPU thread holding a spinlock is ordered
-     before a writeX() to the same peripheral from another CPU thread
-     issued after a later acquisition of the same spinlock. This ensures
-     that MMIO register writes to a particular device issued while holding
-     a spinlock will arrive in an order consistent with acquisitions of
-     the lock.
+  2. A writeX() issued by a CPU thread holding a spinlock is ordered      before a writeX() to the same peripheral from another CPU thread      issued after a later acquisition of the same spinlock. This ensures      that MMIO register writes to a particular device issued while holding      a spinlock will arrive in an order consistent with acquisitions of      the lock.
 
-  3. A writeX() by a CPU thread to the peripheral will first wait for the
-     completion of all prior writes to memory either issued by, or
-     propagated to, the same thread. This ensures that writes by the CPU
-     to an outbound DMA buffer allocated by dma_alloc_coherent() will be
-     visible to a DMA engine when the CPU writes to its MMIO control
-     register to trigger the transfer.
+  3. A writeX() by a CPU thread to the peripheral will first wait for the      completion of all prior writes to memory either issued by, or      propagated to, the same thread. This ensures that writes by the CPU      to an outbound DMA buffer allocated by dma_alloc_coherent() will be      visible to a DMA engine when the CPU writes to its MMIO control      register to trigger the transfer.
 
-  4. A readX() by a CPU thread from the peripheral will complete before
-     any subsequent reads from memory by the same thread can begin. This
-     ensures that reads by the CPU from an incoming DMA buffer allocated
-     by dma_alloc_coherent() will not see stale data after reading from
-     the DMA engine's MMIO status register to establish that the DMA
-     transfer has completed.
+  4. A readX() by a CPU thread from the peripheral will complete before      any subsequent reads from memory by the same thread can begin. This      ensures that reads by the CPU from an incoming DMA buffer allocated      by dma_alloc_coherent() will not see stale data after reading from      the DMA engine's MMIO status register to establish that the DMA      transfer has completed.
 
-  5. A readX() by a CPU thread from the peripheral will complete before
-     any subsequent delay() loop can begin execution on the same thread.
-     This ensures that two MMIO register writes by the CPU to a peripheral
-     will arrive at least 1us apart if the first write is immediately read
-     back with readX() and udelay(1) is called prior to the second
-     writeX():
+  5. A readX() by a CPU thread from the peripheral will complete before      any subsequent delay() loop can begin execution on the same thread.      This ensures that two MMIO register writes by the CPU to a peripheral      will arrive at least 1us apart if the first write is immediately read      back with readX() and udelay(1) is called prior to the second      writeX():
 
     writel(42, DEVICE_REGISTER_0); // Arrives at the device...
     readl(DEVICE_REGISTER_0);
     udelay(1);
     writel(42, DEVICE_REGISTER_1); // ...at least 1us before this.
 
-  The ordering properties of __iomem pointers obtained with non-default
-  attributes (e.g. those returned by ioremap_wc()) are specific to the
-  underlying architecture and therefore the guarantees listed above cannot
-  generally be relied upon for accesses to these types of mappings.
+  The ordering properties of __iomem pointers obtained with non-default   attributes (e.g. those returned by ioremap_wc()) are specific to the   underlying architecture and therefore the guarantees listed above cannot   generally be relied upon for accesses to these types of mappings.
 
 - (`*`) readX_relaxed(), writeX_relaxed():
 
-  These are similar to readX() and writeX(), but provide weaker memory
-  ordering guarantees. Specifically, they do not guarantee ordering with
-  respect to locking, normal memory accesses or delay() loops (i.e.
-  bullets 2-5 above) but they are still guaranteed to be ordered with
-  respect to other accesses from the same CPU thread to the same
-  peripheral when operating on __iomem pointers mapped with the default
-  I/O attributes.
+  These are similar to readX() and writeX(), but provide weaker memory   ordering guarantees. Specifically, they do not guarantee ordering with   respect to locking, normal memory accesses or delay() loops (i.e.   bullets 2-5 above) but they are still guaranteed to be ordered with   respect to other accesses from the same CPU thread to the same   peripheral when operating on __iomem pointers mapped with the default   I/O attributes.
 
 - (`*`) readsX(), writesX():
 
-  The readsX() and writesX() MMIO accessors are designed for accessing
-  register-based, memory-mapped FIFOs residing on peripherals that are not
-  capable of performing DMA. Consequently, they provide only the ordering
-  guarantees of readX_relaxed() and writeX_relaxed(), as documented above.
+  The readsX() and writesX() MMIO accessors are designed for accessing   register-based, memory-mapped FIFOs residing on peripherals that are not   capable of performing DMA. Consequently, they provide only the ordering   guarantees of readX_relaxed() and writeX_relaxed(), as documented above.
 
 - (`*`) inX(), outX():
 
-  The inX() and outX() accessors are intended to access legacy port-mapped
-  I/O peripherals, which may require special instructions on some
-  architectures (notably x86). The port number of the peripheral being
-  accessed is passed as an argument.
+  The inX() and outX() accessors are intended to access legacy port-mapped   I/O peripherals, which may require special instructions on some   architectures (notably x86). The port number of the peripheral being   accessed is passed as an argument.
 
-  Since many CPU architectures ultimately access these peripherals via an
-  internal virtual memory mapping, the portable ordering guarantees
-  provided by inX() and outX() are the same as those provided by readX()
-  and writeX() respectively when accessing a mapping with the default I/O
-  attributes.
+  Since many CPU architectures ultimately access these peripherals via an   internal virtual memory mapping, the portable ordering guarantees   provided by inX() and outX() are the same as those provided by readX()   and writeX() respectively when accessing a mapping with the default I/O   attributes.
 
-  Device drivers may expect outX() to emit a non-posted write transaction
-  that waits for a completion response from the I/O peripheral before
-  returning. This is not guaranteed by all architectures and is therefore
-  not part of the portable ordering semantics.
+  Device drivers may expect outX() to emit a non-posted write transaction   that waits for a completion response from the I/O peripheral before   returning. This is not guaranteed by all architectures and is therefore   not part of the portable ordering semantics.
 
 - (`*`) insX(), outsX():
 
-  As above, the insX() and outsX() accessors provide the same ordering
-  guarantees as readsX() and writesX() respectively when accessing a
-  mapping with the default I/O attributes.
+  As above, the insX() and outsX() accessors provide the same ordering   guarantees as readsX() and writesX() respectively when accessing a   mapping with the default I/O attributes.
 
 - (`*`) ioreadX(), iowriteX():
 
-  These will perform appropriately for the type of access they're actually
-  doing, be it inX()/outX() or readX()/writeX().
+  These will perform appropriately for the type of access they're actually   doing, be it inX()/outX() or readX()/writeX().
 
-With the exception of the string accessors (insX(), outsX(), readsX() and
-writesX()), all of the above assume that the underlying peripheral is
-little-endian and will therefore perform byte-swapping operations on big-endian
-architectures.
+With the exception of the string accessors (insX(), outsX(), readsX() and writesX()), all of the above assume that the underlying peripheral is little-endian and will therefore perform byte-swapping operations on big-endian architectures.
 
 
 ========================================
@@ -3117,31 +3006,16 @@ ASSUMED MINIMUM EXECUTION ORDERING MODEL
 <a name="ASSUMED_MINIMUM_EXECUTION_ORDERING_MODEL"></a>
 ## 8. 假定的最小执行顺序模型
 
-It has to be assumed that the conceptual CPU is weakly-ordered but that it will
-maintain the appearance of program causality with respect to itself.  Some CPUs
-(such as i386 or x86_64) are more constrained than others (such as powerpc or
-frv), and so the most relaxed case (namely DEC Alpha) must be assumed outside
-of arch-specific code.
+It has to be assumed that the conceptual CPU is weakly-ordered but that it will maintain the appearance of program causality with respect to itself.  Some CPUs (such as i386 or x86_64) are more constrained than others (such as powerpc or frv), and so the most relaxed case (namely DEC Alpha) must be assumed outside of arch-specific code.
 
-This means that it must be considered that the CPU will execute its instruction
-stream in any order it feels like - or even in parallel - provided that if an
-instruction in the stream depends on an earlier instruction, then that
-earlier instruction must be sufficiently complete[*] before the later
-instruction may proceed; in other words: provided that the appearance of
-causality is maintained.
+This means that it must be considered that the CPU will execute its instruction stream in any order it feels like - or even in parallel - provided that if an instruction in the stream depends on an earlier instruction, then that earlier instruction must be sufficiently complete[*] before the later instruction may proceed; in other words: provided that the appearance of causality is maintained.
 
- [*] Some instructions have more than one effect - such as changing the
-     condition codes, changing registers or changing memory - and different
-     instructions may depend on different effects.
+ [*] Some instructions have more than one effect - such as changing the      condition codes, changing registers or changing memory - and different      instructions may depend on different effects.
 
-A CPU may also discard any instruction sequence that winds up having no
-ultimate effect.  For example, if two adjacent instructions both load an
-immediate value into the same register, the first may be discarded.
+A CPU may also discard any instruction sequence that winds up having no ultimate effect.  For example, if two adjacent instructions both load an immediate value into the same register, the first may be discarded.
 
 
-Similarly, it has to be assumed that compiler might reorder the instruction
-stream in any way it sees fit, again provided the appearance of causality is
-maintained.
+Similarly, it has to be assumed that compiler might reorder the instruction stream in any way it sees fit, again provided the appearance of causality is maintained.
 
 
 ============================
@@ -3151,14 +3025,9 @@ THE EFFECTS OF THE CPU CACHE
 <a name="THE_EFFECTS_OF_THE_CPU_CACHE"></a>
 ## 9. CPU高速缓存的效果
 
-The way cached memory operations are perceived across the system is affected to
-a certain extent by the caches that lie between CPUs and memory, and by the
-memory coherence system that maintains the consistency of state in the system.
+The way cached memory operations are perceived across the system is affected to a certain extent by the caches that lie between CPUs and memory, and by the memory coherence system that maintains the consistency of state in the system.
 
-As far as the way a CPU interacts with another part of the system through the
-caches goes, the memory system has to include the CPU's caches, and memory
-barriers for the most part act at the interface between the CPU and its cache
-(memory barriers logically act on the dotted line in the following diagram):
+As far as the way a CPU interacts with another part of the system through the caches goes, the memory system has to include the CPU's caches, and memory barriers for the most part act at the interface between the CPU and its cache (memory barriers logically act on the dotted line in the following diagram):
 
 ```c
       <--- CPU --->         :       <----------- Memory ----------->
@@ -3184,30 +3053,15 @@ barriers for the most part act at the interface between the CPU and its cache
                             :
 ```
 
-Although any particular load or store may not actually appear outside of the
-CPU that issued it since it may have been satisfied within the CPU's own cache,
-it will still appear as if the full memory access had taken place as far as the
-other CPUs are concerned since the cache coherency mechanisms will migrate the
-cacheline over to the accessing CPU and propagate the effects upon conflict.
+Although any particular load or store may not actually appear outside of the CPU that issued it since it may have been satisfied within the CPU's own cache, it will still appear as if the full memory access had taken place as far as the other CPUs are concerned since the cache coherency mechanisms will migrate the cacheline over to the accessing CPU and propagate the effects upon conflict.
 
-The CPU core may execute instructions in any order it deems fit, provided the
-expected program causality appears to be maintained.  Some of the instructions
-generate load and store operations which then go into the queue of memory
-accesses to be performed.  The core may place these in the queue in any order
-it wishes, and continue execution until it is forced to wait for an instruction
-to complete.
+The CPU core may execute instructions in any order it deems fit, provided the expected program causality appears to be maintained.  Some of the instructions generate load and store operations which then go into the queue of memory accesses to be performed.  The core may place these in the queue in any order it wishes, and continue execution until it is forced to wait for an instruction to complete.
 
-What memory barriers are concerned with is controlling the order in which
-accesses cross from the CPU side of things to the memory side of things, and
-the order in which the effects are perceived to happen by the other observers
-in the system.
+What memory barriers are concerned with is controlling the order in which accesses cross from the CPU side of things to the memory side of things, and the order in which the effects are perceived to happen by the other observers in the system.
 
-[!] Memory barriers are _not_ needed within a given CPU, as CPUs always see
-their own loads and stores as if they had happened in program order.
+[!] Memory barriers are _not_ needed within a given CPU, as CPUs always see their own loads and stores as if they had happened in program order.
 
-[!] MMIO or other device accesses may bypass the cache system.  This depends on
-the properties of the memory window through which devices are accessed and/or
-the use of any special device communication instructions the CPU may have.
+[!] MMIO or other device accesses may bypass the cache system.  This depends on the properties of the memory window through which devices are accessed and/or the use of any special device communication instructions the CPU may have.
 
 
 CACHE COHERENCY VS DMA
@@ -3216,20 +3070,9 @@ CACHE COHERENCY VS DMA
 <a name="CACHE_COHERENCY_VS_DMA"></a>
 ### 9.2 缓存一致性与DMS
 
-Not all systems maintain cache coherency with respect to devices doing DMA.  In
-such cases, a device attempting DMA may obtain stale data from RAM because
-dirty cache lines may be resident in the caches of various CPUs, and may not
-have been written back to RAM yet.  To deal with this, the appropriate part of
-the kernel must flush the overlapping bits of cache on each CPU (and maybe
-invalidate them as well).
+Not all systems maintain cache coherency with respect to devices doing DMA.  In such cases, a device attempting DMA may obtain stale data from RAM because dirty cache lines may be resident in the caches of various CPUs, and may not have been written back to RAM yet.  To deal with this, the appropriate part of the kernel must flush the overlapping bits of cache on each CPU (and maybe invalidate them as well).
 
-In addition, the data DMA'd to RAM by a device may be overwritten by dirty
-cache lines being written back to RAM from a CPU's cache after the device has
-installed its own data, or cache lines present in the CPU's cache may simply
-obscure the fact that RAM has been updated, until at such time as the cacheline
-is discarded from the CPU's cache and reloaded.  To deal with this, the
-appropriate part of the kernel must invalidate the overlapping bits of the
-cache on each CPU.
+In addition, the data DMA'd to RAM by a device may be overwritten by dirty cache lines being written back to RAM from a CPU's cache after the device has installed its own data, or cache lines present in the CPU's cache may simply obscure the fact that RAM has been updated, until at such time as the cacheline is discarded from the CPU's cache and reloaded.  To deal with this, the appropriate part of the kernel must invalidate the overlapping bits of the cache on each CPU.
 
 See Documentation/core-api/cachetlb.rst for more information on cache management.
 
@@ -3240,16 +3083,9 @@ CACHE COHERENCY VS MMIO
 <a name="CACHE_COHERENCY_VS_MMIO"></a>
 ### 9.3 缓存一致性与MMIO
 
-Memory mapped I/O usually takes place through memory locations that are part of
-a window in the CPU's memory space that has different properties assigned than
-the usual RAM directed window.
+Memory mapped I/O usually takes place through memory locations that are part of a window in the CPU's memory space that has different properties assigned than the usual RAM directed window.
 
-Amongst these properties is usually the fact that such accesses bypass the
-caching entirely and go directly to the device buses.  This means MMIO accesses
-may, in effect, overtake accesses to cached memory that were emitted earlier.
-A memory barrier isn't sufficient in such a case, but rather the cache must be
-flushed between the cached memory write and the MMIO access if the two are in
-any way dependent.
+Amongst these properties is usually the fact that such accesses bypass the caching entirely and go directly to the device buses.  This means MMIO accesses may, in effect, overtake accesses to cached memory that were emitted earlier. A memory barrier isn't sufficient in such a case, but rather the cache must be flushed between the cached memory write and the MMIO access if the two are in any way dependent.
 
 
 =========================
@@ -3259,9 +3095,7 @@ THE THINGS CPUS GET UP TO
 <a name="THE_THINGS_CPUS_GET_UP_TO"></a>
 ## 10. CPU达成的一些东西
 
-A programmer might take it for granted that the CPU will perform memory
-operations in exactly the order specified, so that if the CPU is, for example,
-given the following piece of code to execute:
+A programmer might take it for granted that the CPU will perform memory operations in exactly the order specified, so that if the CPU is, for example, given the following piece of code to execute:
 
   a = READ_ONCE(*A);
   WRITE_ONCE(*B, b);
@@ -3269,50 +3103,33 @@ given the following piece of code to execute:
   d = READ_ONCE(*D);
   WRITE_ONCE(*E, e);
 
-they would then expect that the CPU will complete the memory operation for each
-instruction before moving on to the next one, leading to a definite sequence of
-operations as seen by external observers in the system:
+they would then expect that the CPU will complete the memory operation for each instruction before moving on to the next one, leading to a definite sequence of operations as seen by external observers in the system:
 
   LOAD *A, STORE *B, LOAD *C, LOAD *D, STORE *E.
 
 
-Reality is, of course, much messier.  With many CPUs and compilers, the above
-assumption doesn't hold because:
+Reality is, of course, much messier.  With many CPUs and compilers, the above assumption doesn't hold because:
 
-- (`*`) loads are more likely to need to be completed immediately to permit
-     execution progress, whereas stores can often be deferred without a
-     problem;
+- (`*`) loads are more likely to need to be completed immediately to permit      execution progress, whereas stores can often be deferred without a      problem;
 
-- (`*`) loads may be done speculatively, and the result discarded should it prove
-     to have been unnecessary;
+- (`*`) loads may be done speculatively, and the result discarded should it prove      to have been unnecessary;
 
-- (`*`) loads may be done speculatively, leading to the result having been fetched
-     at the wrong time in the expected sequence of events;
+- (`*`) loads may be done speculatively, leading to the result having been fetched      at the wrong time in the expected sequence of events;
 
-- (`*`) the order of the memory accesses may be rearranged to promote better use
-     of the CPU buses and caches;
+- (`*`) the order of the memory accesses may be rearranged to promote better use      of the CPU buses and caches;
 
-- (`*`) loads and stores may be combined to improve performance when talking to
-     memory or I/O hardware that can do batched accesses of adjacent locations,
-     thus cutting down on transaction setup costs (memory and PCI devices may
-     both be able to do this); and
+- (`*`) loads and stores may be combined to improve performance when talking to      memory or I/O hardware that can do batched accesses of adjacent locations,      thus cutting down on transaction setup costs (memory and PCI devices may      both be able to do this); and
 
-- (`*`) the CPU's data cache may affect the ordering, and while cache-coherency
-     mechanisms may alleviate this - once the store has actually hit the cache
-     - there's no guarantee that the coherency management will be propagated in
-     order to other CPUs.
+- (`*`) the CPU's data cache may affect the ordering, and while cache-coherency      mechanisms may alleviate this - once the store has actually hit the cache      - there's no guarantee that the coherency management will be propagated in      order to other CPUs.
 
-So what another CPU, say, might actually observe from the above piece of code
-is:
+So what another CPU, say, might actually observe from the above piece of code is:
 
   LOAD *A, ..., LOAD {*C,*D}, STORE *E, STORE *B
 
   (Where "LOAD {*C,*D}" is a combined load)
 
 
-However, it is guaranteed that a CPU will be self-consistent: it will see its
-_own_ accesses appear to be correctly ordered, without the need for a memory
-barrier.  For instance with the following code:
+However, it is guaranteed that a CPU will be self-consistent: it will see its _own_ accesses appear to be correctly ordered, without the need for a memory barrier.  For instance with the following code:
 
   U = READ_ONCE(*A);
   WRITE_ONCE(*A, V);
@@ -3321,31 +3138,20 @@ barrier.  For instance with the following code:
   WRITE_ONCE(*A, Y);
   Z = READ_ONCE(*A);
 
-and assuming no intervention by an external influence, it can be assumed that
-the final result will appear to be:
+and assuming no intervention by an external influence, it can be assumed that the final result will appear to be:
 
   U == the original value of *A
   X == W
   Z == Y
   *A == Y
 
-The code above may cause the CPU to generate the full sequence of memory
-accesses:
+The code above may cause the CPU to generate the full sequence of memory accesses:
 
   U=LOAD *A, STORE *A=V, STORE *A=W, X=LOAD *A, STORE *A=Y, Z=LOAD *A
 
-in that order, but, without intervention, the sequence may have almost any
-combination of elements combined or discarded, provided the program's view
-of the world remains consistent.  Note that `READ_ONCE()` and `WRITE_ONCE()`
-are -not- optional in the above example, as there are architectures
-where a given CPU might reorder successive loads to the same location.
-On such architectures, `READ_ONCE()` and `WRITE_ONCE()` do whatever is
-necessary to prevent this, for example, on Itanium the volatile casts
-used by `READ_ONCE()` and `WRITE_ONCE()` cause GCC to emit the special ld.acq
-and st.rel instructions (respectively) that prevent such reordering.
+in that order, but, without intervention, the sequence may have almost any combination of elements combined or discarded, provided the program's view of the world remains consistent.  Note that `READ_ONCE()` and `WRITE_ONCE()` are -not- optional in the above example, as there are architectures where a given CPU might reorder successive loads to the same location. On such architectures, `READ_ONCE()` and `WRITE_ONCE()` do whatever is necessary to prevent this, for example, on Itanium the volatile casts used by `READ_ONCE()` and `WRITE_ONCE()` cause GCC to emit the special ld.acq and st.rel instructions (respectively) that prevent such reordering.
 
-The compiler may also combine, discard or defer elements of the sequence before
-the CPU even sees them.
+The compiler may also combine, discard or defer elements of the sequence before the CPU even sees them.
 
 For instance:
 
@@ -3356,14 +3162,12 @@ may be reduced to:
 
   *A = W;
 
-since, without either a write barrier or an `WRITE_ONCE()`, it can be
-assumed that the effect of the storage of V to *A is lost.  Similarly:
+since, without either a write barrier or an `WRITE_ONCE()`, it can be assumed that the effect of the storage of V to *A is lost.  Similarly:
 
   *A = Y;
   Z = *A;
 
-may, without a memory barrier or an `READ_ONCE()` and `WRITE_ONCE()`, be
-reduced to:
+may, without a memory barrier or an `READ_ONCE()` and `WRITE_ONCE()`, be reduced to:
 
   *A = Y;
   Z = Y;
@@ -3377,16 +3181,9 @@ AND THEN THERE'S THE ALPHA
 <a name="AND_THEN_THERE_S_THE_ALPHA"></a>
 ### 10.1 ALPHA上的一些注意事项
 
-The DEC Alpha CPU is one of the most relaxed CPUs there is.  Not only that,
-some versions of the Alpha CPU have a split data cache, permitting them to have
-two semantically-related cache lines updated at separate times.  This is where
-the data dependency barrier really becomes necessary as this synchronises both
-caches with the memory coherence system, thus making it seem like pointer
-changes vs new data occur in the right order.
+The DEC Alpha CPU is one of the most relaxed CPUs there is.  Not only that, some versions of the Alpha CPU have a split data cache, permitting them to have two semantically-related cache lines updated at separate times.  This is where the data dependency barrier really becomes necessary as this synchronises both caches with the memory coherence system, thus making it seem like pointer changes vs new data occur in the right order.
 
-The Alpha defines the Linux kernel's memory model, although as of v4.15
-the Linux kernel's addition of `smp_mb()` to `READ_ONCE()` on Alpha greatly
-reduced its impact on the memory model.
+The Alpha defines the Linux kernel's memory model, although as of v4.15 the Linux kernel's addition of `smp_mb()` to `READ_ONCE()` on Alpha greatly reduced its impact on the memory model.
 
 
 VIRTUAL MACHINE GUESTS
@@ -3396,20 +3193,11 @@ VIRTUAL MACHINE GUESTS
 <a name="VIRTUAL_MACHINE_GUESTS"></a>
 ### 10.2 虚拟机访客
 
-Guests running within virtual machines might be affected by SMP effects even if
-the guest itself is compiled without SMP support.  This is an artifact of
-interfacing with an SMP host while running an UP kernel.  Using mandatory
-barriers for this use-case would be possible but is often suboptimal.
+Guests running within virtual machines might be affected by SMP effects even if the guest itself is compiled without SMP support.  This is an artifact of interfacing with an SMP host while running an UP kernel.  Using mandatory barriers for this use-case would be possible but is often suboptimal.
 
-To handle this case optimally, low-level virt_mb() etc macros are available.
-These have the same effect as `smp_mb()` etc when SMP is enabled, but generate
-identical code for SMP and non-SMP systems.  For example, virtual machine guests
-should use virt_mb() rather than `smp_mb()` when synchronizing against a
-(possibly SMP) host.
+To handle this case optimally, low-level virt_mb() etc macros are available. These have the same effect as `smp_mb()` etc when SMP is enabled, but generate identical code for SMP and non-SMP systems.  For example, virtual machine guests should use virt_mb() rather than `smp_mb()` when synchronizing against a (possibly SMP) host.
 
-These are equivalent to `smp_mb()` etc counterparts in all other respects,
-in particular, they do not control MMIO effects: to control
-MMIO effects, use mandatory barriers.
+These are equivalent to `smp_mb()` etc counterparts in all other respects, in particular, they do not control MMIO effects: to control MMIO effects, use mandatory barriers.
 
 
 ============
@@ -3426,8 +3214,7 @@ CIRCULAR BUFFERS
 <a name="CIRCULAR_BUFFERS"></a>
 ### 11.1 循环Buffer
 
-Memory barriers can be used to implement circular buffering without the need
-of a lock to serialise the producer with the consumer.  See:
+Memory barriers can be used to implement circular buffering without the need of a lock to serialise the producer with the consumer.  See:
 
   Documentation/core-api/circular-buffers.rst
 
@@ -3442,8 +3229,7 @@ REFERENCES
 <a name="REFERENCES"></a>
 ## 12. 参考文档
 
-Alpha AXP Architecture Reference Manual, Second Edition (Sites & Witek,
-Digital Press)
+Alpha AXP Architecture Reference Manual, Second Edition (Sites & Witek, Digital Press)
   Chapter 5.2: Physical Address Space Characteristics
   Chapter 5.4: Caches and Write Buffers
   Chapter 5.5: Data Sharing
@@ -3456,8 +3242,7 @@ AMD64 Architecture Programmer's Manual Volume 2: System Programming
 ARM Architecture Reference Manual (ARMv8, for ARMv8-A architecture profile)
   Chapter B2: The AArch64 Application Level Memory Model
 
-IA-32 Intel Architecture Software Developer's Manual, Volume 3:
-System Programming Guide
+IA-32 Intel Architecture Software Developer's Manual, Volume 3: System Programming Guide
   Chapter 7.1: Locked Atomic Operations
   Chapter 7.2: Memory Ordering
   Chapter 7.4: Serializing Instructions
@@ -3491,8 +3276,7 @@ Solaris Internals, Core Kernel Architecture, p63-68:
   Chapter 3.3: Hardware Considerations for Locks and
       Synchronization
 
-Unix Systems for Modern Architectures, Symmetric Multiprocessing and Caching
-for Kernel Programmers:
+Unix Systems for Modern Architectures, Symmetric Multiprocessing and Caching for Kernel Programmers:
   Chapter 13: Other Memory Models
 
 Intel Itanium Architecture Software Developer's Manual: Volume 1:
