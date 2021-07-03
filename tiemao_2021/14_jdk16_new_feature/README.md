@@ -23,6 +23,17 @@ jenv versions
 jenv local 16
 javac -g TestNull.java
 java TestNull
+
+
+// 如果不加 -g
+rm -f TestNull.class
+javac TestNull.java
+java TestNull
+
+// 如果不加 -g, 局部变量表中没有存名字, 提示变为 "<local1>", "<local2>" 之类的
+Exception in thread "main" java.lang.NullPointerException: Cannot invoke "Object.toString()" because "<local1>" is null
+	at TestNull.main(TestNull.java:7)
+
 ```
 
 
