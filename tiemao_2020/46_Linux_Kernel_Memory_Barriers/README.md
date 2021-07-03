@@ -2395,9 +2395,9 @@ Linux 内核有许多锁结构:
 
 An `ACQUIRE` followed by a `RELEASE` may not be assumed to be full memory barrier because it is possible for an access preceding the `ACQUIRE` to happen after the `ACQUIRE`, and an access following the `RELEASE` to happen before the `RELEASE`, and the two accesses can themselves then cross:
 
-> [!] 注意：锁的 ACQUIRE 和 RELEASE 的结果只是单向屏障, 临界区之外的指令的影响可能会渗入临界区内部。
+> [!] 注意: 锁的 ACQUIRE 和 RELEASE 的结果只是单向屏障, 临界区之外的指令的影响可能会渗入临界区内部。
 
-一个 `ACQUIRE` 后跟一个 `RELEASE` 可能不被认为是完整的内存屏障，因为在 `ACQUIRE` 之前的访问可能发生在 `ACQUIRE` 之后，而在 `RELEASE` 之后的访问也可能在 `RELEASE` 之前发生，然后两个访问本身就可能交叉：
+一个 `ACQUIRE` 后跟一个 `RELEASE` 可能不被认为是完整的内存屏障，因为在 `ACQUIRE` 之前的访问可能发生在 `ACQUIRE` 之后，而在 `RELEASE` 之后的访问也可能在 `RELEASE` 之前发生，然后两个访问本身就可能交叉:
 
 ```c
   *A = a;
@@ -2409,7 +2409,7 @@ An `ACQUIRE` followed by a `RELEASE` may not be assumed to be full memory barrie
 
 may occur as:
 
-实际执行的顺序可能是：
+实际执行的顺序可能是:
 
 ```c
   ACQUIRE M, STORE *B, STORE *A, RELEASE M
@@ -2422,7 +2422,7 @@ Similarly, the reverse case of a `RELEASE` followed by an `ACQUIRE` does not imp
 
 当 `ACQUIRE` 和 `RELEASE` 分别是锁的获取和释放时，如果锁的 `ACQUIRE` 和 `RELEASE` 是同一个锁变量，那么同样的重排序可以发生，但只有从另一个不持有那个锁的 CPU 角度来看是这样。 简而言之，一个 `ACQUIRE` 后跟一个 `RELEASE` 可能`不`被认为是一个完整的内存屏障。
 
-类似地, 顺序调过来，先是 `ACQUIRE`, 后面跟着 `RELEASE` 的情况也不代表完整的内存屏障。 因此，CPU 对 `RELEASE` 和 `ACQUIRE` 对应的临界区的执行可能会交叉，例如下面的代码：
+类似地, 顺序调过来，先是 `ACQUIRE`, 后面跟着 `RELEASE` 的情况也不代表完整的内存屏障。 因此，CPU 对 `RELEASE` 和 `ACQUIRE` 对应的临界区的执行可能会交叉，例如下面的代码:
 
 ```c
   *A = a;
@@ -2433,7 +2433,7 @@ Similarly, the reverse case of a `RELEASE` followed by an `ACQUIRE` does not imp
 
 could occur as:
 
-实际执行的顺序可能是：
+实际执行的顺序可能是:
 
 ```c
   ACQUIRE N, STORE *B, STORE *A, RELEASE M
@@ -2539,10 +2539,10 @@ Firstly, the sleeper normally follows something like this sequence of events:
 <a name="SLEEP_AND_WAKE-UP_FUNCTIONS"></a>
 ### 4.3 睡眠和唤醒函数
 
-在全局数据中标记的事件上睡眠和唤醒, 可以被视为两个数据之间的交互： 等待事件的任务的状态, 以及用于指示事件的全局数据。
+在全局数据中标记的事件上睡眠和唤醒, 可以被视为两个数据之间的交互:  等待事件的任务的状态, 以及用于指示事件的全局数据。
 为了确保他们以正确的顺序发生，开始进入睡眠过程的原语和启动唤醒过程的原语蕴含着某些屏障。
 
-首先，睡眠者通常跟在某些操作后面, 例如以下事件序列：
+首先，睡眠者通常跟在某些操作后面, 例如以下事件序列:
 
 ```c
   for (;;) {
@@ -2555,7 +2555,7 @@ Firstly, the sleeper normally follows something like this sequence of events:
 
 A general memory barrier is interpolated automatically by `set_current_state()` after it has altered the task state:
 
-在更改任务状态后，`set_current_state()` 会自动插入通用内存屏障：
+在更改任务状态后，`set_current_state()` 会自动插入通用内存屏障:
 
 ```c
   CPU 1
@@ -2578,7 +2578,7 @@ A general memory barrier is interpolated automatically by `set_current_state()` 
 
 which therefore also imply a general memory barrier after setting the state. The whole sequence above is available in various canned forms, all of which interpolate the memory barrier in the right place:
 
-因此，这也意味着设置任务状态之后一般都会有通用内存屏障。 上面的整个序列有各种固定形式，所有这些都会在正确的位置插入内存屏障：
+因此，这也意味着设置任务状态之后一般都会有通用内存屏障。 上面的整个序列有各种固定形式，所有这些都会在正确的位置插入内存屏障:
 
 ```c
   wait_event();
@@ -2593,7 +2593,7 @@ which therefore also imply a general memory barrier after setting the state. The
 
 Secondly, code that performs a wake up normally follows something like this:
 
-其次，执行唤醒的代码通常是跟着某些操作, 比如：
+其次，执行唤醒的代码通常是跟着某些操作, 比如:
 
 ```c
   event_indicated = 1;
@@ -2610,13 +2610,9 @@ or:
 ```
 
 
-#########################################################
-############# 到此处
-#########################################################
-
 A general memory barrier is executed by wake_up() if it wakes something up. If it doesn't wake anything up then a memory barrier may or may not be executed; you must not rely on it.  The barrier occurs before the task state is accessed, in particular, it sits between the STORE to indicate the event and the STORE to set TASK_RUNNING:
 
-如果唤醒某些东西，则由wake_up() 执行通用内存屏障。 如果它没有唤醒任何东西，那么内存屏障可能会或可能不会被执行； 你不能依赖它。 屏障发生在访问任务状态之前，特别是它位于 STORE 之间以指示事件和 STORE 以设置 TASK_RUNNING：
+如果唤醒某些东西，则由 wake_up() 执行通用内存屏障。 如果它没有唤醒任何东西，那么内存屏障可能会也可能不会被执行； 你不能依赖它。 屏障发生在访问任务状态之前，特别是，位于指示事件的 STORE 和设置 TASK_RUNNING 的 STORE 之间:
 
 ```c
   CPU 1 (Sleeper)                   CPU 2 (Waker)
@@ -2633,12 +2629,16 @@ where "task" is the thread being woken up and it equals CPU 1's "current".
 
 To repeat, a general memory barrier is guaranteed to be executed by wake_up() if something is actually awakened, but otherwise there is no such guarantee.  To see this, consider the following sequence of events, where X and Y are both initially zero:
 
+其中 "task" 是被唤醒的线程，它等于 CPU 1 的 "current"。
+
+重复一遍，如果确实唤醒了某些东西，则通过 wake_up() 可确保会执行通用内存屏障，否则就没有这样的保证。 要演示这一点，请看下面的事件序列，其中 X 和 Y 的初始值都为零:
+
 ```c
   CPU 1                             CPU 2
   ===============================  ===============================
   X = 1;                            Y = 1;
-  smp_mb();                       wake_up();
-  LOAD Y                             LOAD X
+  smp_mb();                         wake_up();
+  LOAD Y                            LOAD X
 ```
 
 If a wakeup does occur, one (at least) of the two loads must see 1.  If, on the other hand, a wakeup does not occur, both loads might see 0.
@@ -2646,6 +2646,12 @@ If a wakeup does occur, one (at least) of the two loads must see 1.  If, on the 
 wake_up_process() always executes a general memory barrier.  The barrier again occurs before the task state is accessed.  In particular, if the wake_up() in the previous snippet were replaced by a call to wake_up_process() then one of the two loads would be guaranteed to see 1.
 
 The available waker functions include:
+
+如果确实发生了唤醒，则两次 load 中（至少）有一个肯定会读取到 1。 另一方面，如果没有发生唤醒，则两次 load 看到的可能都是 0。
+
+wake_up_process() 总是执行一个通用内存屏障。 在访问任务状态之前再次出现屏障。 特别是，如果前一个代码段中的 wake_up() 被替换为 wake_up_process() ，那么两次 load 中的一个将保证看到1。
+
+可用的唤醒函数包括:
 
 ```c
   complete();
@@ -2667,7 +2673,13 @@ The available waker functions include:
 
 In terms of memory ordering, these functions all provide the same guarantees of a wake_up() (or stronger).
 
-[!] Note that the memory barriers implied by the sleeper and the waker do _not_ order multiple stores before the wake-up with respect to loads of those stored values after the sleeper has called set_current_state().  For instance, if the sleeper does:
+> [!] Note that the memory barriers implied by the sleeper and the waker do _not_ order multiple stores before the wake-up with respect to loads of those stored values after the sleeper has called set_current_state().  For instance, if the sleeper does:
+
+在内存排序方面，这些函数都提供了与 wake_up() 相同的(或更强的）保证。
+
+> [!] 请注意，睡眠者和唤醒者隐含的内存屏障【不会】在唤醒之前对多个 store 进行排序，这些 store 在睡眠者调用 `set_current_state()` 之后加载这些保存的值。
+
+例如，如果睡眠者的操作为:
 
 ```c
   set_current_state(TASK_INTERRUPTIBLE);
@@ -2679,6 +2691,8 @@ In terms of memory ordering, these functions all provide the same guarantees of 
 
 and the waker does:
 
+唤醒者执行的操作为:
+
 ```c
   my_data = value;
   event_indicated = 1;
@@ -2686,6 +2700,8 @@ and the waker does:
 ```
 
 there's no guarantee that the change to event_indicated will be perceived by the sleeper as coming after the change to my_data.  In such a circumstance, the code on both sides must interpolate its own memory barriers between the separate data accesses.  Thus the above sleeper ought to do:
+
+不能保证对 event_indicated 的更改会被睡眠者感知为在更改 my_data 之后发生。 在这种情况下，双方的代码必须在单独的数据访问之间插入自己的内存屏障。 因此上面的 sleeper 应该这样做:
 
 ```c
   set_current_state(TASK_INTERRUPTIBLE);
@@ -2696,6 +2712,8 @@ there's no guarantee that the change to event_indicated will be perceived by the
 ```
 
 and the waker should do:
+
+waker 应该这样做:
 
 ```c
   my_data = value;
@@ -2709,13 +2727,22 @@ MISCELLANEOUS FUNCTIONS
 -----------------------
 
 
-<a name="MISCELLANEOUS_FUNCTIONS"></a>
-### 4.4 其他函数
-
 Other functions that imply barriers:
 
 - (`*`) schedule() and similar imply full memory barriers.
 
+
+<a name="MISCELLANEOUS_FUNCTIONS"></a>
+### 4.4 其他函数
+
+其他隐含内存屏障的函数还有:
+
+- (`*`) schedule() 和类似蕴含完全内存屏障的函数。
+
+
+#########################################################
+############# 到此处
+#########################################################
 
 ===================================
 INTER-CPU ACQUIRING BARRIER EFFECTS
