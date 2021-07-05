@@ -30,7 +30,7 @@ While modern application architectures and frequent code pushes help accelerate 
 
 > Figure 1: Top Pressures to Improve Application Performance Monitoring
 
-> 改进应用程序性能监控的最大压力
+> 图1：APM系统升级和改造的最大压力
 
 
 Analyzing the data from Figure 1, we find that while many businesses are still driven by the need to reduce the costs associated with application development, another major pressure to improve how they monitor and optimize applications is the rapid pace of technological innovation, and the additional complexity that accompanies it.
@@ -55,7 +55,7 @@ Leaders also want APM solutions that are as based on open standards as the tools
 
 > Figure 2: How AI-driven Intelligent Monitoring is Adopted
 
-> 图 2：如何采用 AI 驱动的智能监控
+> 图 2：AI驱动-智能监控系统的接受程度
 
 Looking at this data, we see that adoption of monitoring that utilizes AI to provide faster and better analysis and outcomes is nearly universal among leaders. By implementing AI as part of an overall upgrade to modern, cloud-native APM, leaders are achieving the highest levels of application performance and reliability, and keeping users and customers free from the frustrations of slow and unavailable applications.
 
@@ -70,7 +70,7 @@ We discovered that application development organizations that adopt modern APM (
 
 > Figure 3: Modern APM Leads to Better End-to-End Application Management
 
-> 图 3：现代 APM 带来更好的端到端应用管理
+> 图 3：新一代APM可带来更好的端到端应用管理
 
 With a modern APM powering their monitoring and troubleshooting capabilities, development organizations are reaping the benefits of realtime alerting, meaning that they are likely to have the capability to identify issues in seconds rather than the minutes or hours businesses with legacy APM experience. A modern APM also leads to better adoption of strong application performance monitoring across the board, and AI enables the ability to perform deep and accurate root-cause analysis for application issues.
 
