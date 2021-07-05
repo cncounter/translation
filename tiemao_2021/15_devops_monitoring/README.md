@@ -142,7 +142,7 @@ As founding members and active contributors to the CNCF OpenTelemetry project, S
 
 We find that customers who leverage our modern approach to APM are able to achieve things that were impossible with legacy APM tools. Many of them have been able to cut down troubleshooting issues from hours or even days to just a few minutes. By leveraging 100% of trace data they can understand the conditions that cause even the rarest of anomalies, and at a scale unmatched by other solutions. Finally, with our open standards approach to instrumentation they are able to eliminate the overhead of heavy, proprietary agents and maintain full control over their own data.
 
-Today’s end users expect instant gratification and superb application experience. Only by taking a modern approach to APM can organizations elevate end user experience, bring applications to market faster, and future-proof their code.
+Today’s end users expect instant gratification and superb application experience. Only by taking a modern approach to APM can organizations elevate end user experience, bring applications to market faster, and future-proof their code.
 
 
 
