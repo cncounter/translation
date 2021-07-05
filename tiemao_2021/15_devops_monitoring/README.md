@@ -26,10 +26,11 @@ New technologies and trends are bringing significant changes to all application 
 While modern application architectures and frequent code pushes help accelerate organizational responsiveness and innovation, they are adding new complexities and challenges to monitoring. IT Ops and DevOps teams are limited by traditional APM tools, which have only become more difficult to use given the many new changes to application environments. In our research into application development, Aberdeen asked organizations to list the top drivers pushing them to upgrade and improve their application monitoring as a result of more modern infrastructure and application environments.
 
 
-![]()
+![](01_figure1_improve_apm_top_pressures.jpg)
 
-> Figure 1: Top Pressures to Improve Application Performance
-Monitoring
+> Figure 1: Top Pressures to Improve Application Performance Monitoring
+
+> 改进应用程序性能监控的最大压力
 
 
 Analyzing the data from Figure 1, we find that while many businesses are still driven by the need to reduce the costs associated with application development, another major pressure to improve how they monitor and optimize applications is the rapid pace of technological innovation, and the additional complexity that accompanies it.
@@ -50,9 +51,11 @@ They are identifying APM that can give them analytics in seconds, as they unders
 
 Leaders also want APM solutions that are as based on open standards as the tools and systems that they are using to build and deploy microservices and modern cloud-native applications. By embracing open tools, leading businesses can avoid vendor lock-in and take advantage of high levels of integration and flexibility.
 
-![]()
+![](02_figure2_ai_driven_intelligent_monitoring.jpg)
 
 > Figure 2: How AI-driven Intelligent Monitoring is Adopted
+
+> 图 2：如何采用 AI 驱动的智能监控
 
 Looking at this data, we see that adoption of monitoring that utilizes AI to provide faster and better analysis and outcomes is nearly universal among leaders. By implementing AI as part of an overall upgrade to modern, cloud-native APM, leaders are achieving the highest levels of application performance and reliability, and keeping users and customers free from the frustrations of slow and unavailable applications.
 
@@ -63,9 +66,11 @@ Leaders in application development are taking advantage of APM with powerful rea
 We discovered that application development organizations that adopt modern APM (as defined on page 2), outpace their peers in a number of key capabilities for understanding and managing today’s complex cloudnative applications and microservices.
 
 
-![]()
+![](03_figure3_modern_apm_leads_better_management.jpg)
 
 > Figure 3: Modern APM Leads to Better End-to-End Application Management
+
+> 图 3：现代 APM 带来更好的端到端应用管理
 
 With a modern APM powering their monitoring and troubleshooting capabilities, development organizations are reaping the benefits of realtime alerting, meaning that they are likely to have the capability to identify issues in seconds rather than the minutes or hours businesses with legacy APM experience. A modern APM also leads to better adoption of strong application performance monitoring across the board, and AI enables the ability to perform deep and accurate root-cause analysis for application issues.
 
@@ -77,7 +82,7 @@ When Aberdeen looked at the benefits that application development organizations 
 
 > Table 1: Meeting Complex Application Demands with a Modern APM Organizations with a modern APM are:
 
-| :-- | :-- |
+| --- | --- |
 | 95% | more likely to speed the resolution of application issues |
 | 45% | more likely to see high levels of application availability |
 | 80% | more likely to have lowered the costs for application development |
