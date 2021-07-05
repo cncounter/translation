@@ -82,6 +82,7 @@ When Aberdeen looked at the benefits that application development organizations 
 
 > Table 1: Meeting Complex Application Demands with a Modern APM Organizations with a modern APM are:
 
+| 比例 | 说明 |
 | --- | --- |
 | 95% | more likely to speed the resolution of application issues |
 | 45% | more likely to see high levels of application availability |
