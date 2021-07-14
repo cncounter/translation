@@ -224,7 +224,7 @@ As a further example, consider this sequence of events:
 
 此外, 由一个CPU提交给内存系统的store指令, 即使触发时机有先后顺序, 可能也不会被另一个CPU执行的load操作所感知到。
 
-再看另一个示例, 考虑以下事件序列:
+再看另一个示例, 请看以下事件序列:
 
 ```c
 CPU 1            CPU 2
@@ -1389,7 +1389,7 @@ then the partial ordering imposed by CPU 1 will be perceived correctly by CPU 2:
 
 To illustrate this more completely, consider what could happen if the code contained a load of A either side of the read barrier:
 
-为了更完整地说明这一点, 请考虑在读屏障前后两侧的代码都包含`LOAD A`的情况下,将会发生什么:    
+为了更完整地说明这一点, 请思考在读屏障前后两侧的代码都包含`LOAD A`的情况下,将会发生什么:    
 
 
 ```c
@@ -1536,7 +1536,7 @@ Placing a read barrier or a data dependency barrier just before the second load:
 
 will force any value speculatively obtained to be reconsidered to an extent dependent on the type of barrier used.  If there was no change made to the speculated memory location, then the speculated value will just be used:
 
-将会迫使CPU重新考虑以推断方式获得的任何值, 这取决于所使用的屏障的类型。
+将会迫使CPU重新权衡以推断方式获得的任何值, 这取决于所使用的屏障的类型。
 如果对推断的内存位置没有进行任何更改, 则直接使用提前取到的值:
 
 ```c
@@ -1990,7 +1990,7 @@ Use `WRITE_ONCE()` to prevent the compiler from making this sort of wrong guess:
 
 - (`*`) The compiler is within its rights to reorder memory accesses unless you tell it not to.  For example, consider the following interaction between process-level code and an interrupt handler:
 
-- (`*`) 编译器有权对内存访问进行重排序, 除非您告诉它不要这样做。 例如, 考虑以下进程级代码和中断处理程序之间的交互:
+- (`*`) 编译器有权对内存访问进行重排序, 除非您告诉它不要这样做。 例如, 请看以下进程级代码和中断处理程序之间的交互:
 
 ```c
   void process_level(void)
@@ -2225,7 +2225,7 @@ There are some more advanced barrier functions:
 
   这些也用于不隐含内存屏障的RMW 原子位操作函数（例如 `set_bit` 和 `clear_bit`）。
 
-  举个例子, 考虑一段代码, 将一个对象标记为死亡, 然后递减该对象的引用计数:
+  举个例子, 请看一段代码, 将一个对象标记为死亡, 然后递减该对象的引用计数:
 
   ```c
   obj->dead = 1;
@@ -2251,7 +2251,7 @@ There are some more advanced barrier functions:
 
   这两个函数与一致内存一起使用，以保证 CPU 和支持 DMA 的设备, 均可访问共享内存, 并保证写入或读取的顺序。
 
-  例如，考虑一个设备驱动程序，它与设备共享内存, 并使用描述符状态值来指示描述符是属于设备还是 CPU，并在新描述符可用时使用门铃来通知它:
+  例如，假设有一个设备驱动程序，它与设备共享内存, 并使用描述符状态值来指示描述符是属于设备还是 CPU，并在新描述符可用时使用门铃来通知它:
 
   ```c
   if (desc->status != DEVICE_OWN) {
@@ -2471,7 +2471,7 @@ Locks and semaphores may not provide any guarantee of ordering on UP compiled sy
 
 See also the section on "[Inter-CPU acquiring barrier effects](#CPU_ACQUIRING_BARRIER_EFFECTS)".
 
-另请参见: [5. CPU之间获取屏障的效果](#CPU_ACQUIRING_BARRIER_EFFECTS)
+另请参见: [5. 多个CPU之间加锁的屏障效果](#CPU_ACQUIRING_BARRIER_EFFECTS)
 
 
 As an example, consider the following:
@@ -2740,10 +2740,6 @@ Other functions that imply barriers:
 - (`*`) schedule() 和类似蕴含完全内存屏障的函数。
 
 
-#########################################################
-############# 到此处
-#########################################################
-
 ===================================
 INTER-CPU ACQUIRING BARRIER EFFECTS
 ===================================
@@ -2752,7 +2748,9 @@ On SMP systems locking primitives give a more substantial form of barrier: one t
 
 
 <a name="INTER-CPU_ACQUIRING_BARRIER_EFFECTS"></a>
-## 5. CPU之间获取屏障的效果
+## 5. 多个CPU之间加锁的屏障效果
+
+在SMP系统上， 锁定原语提供了一种更实质的屏障形式：在任何一个具体的锁发生冲突的情况下，会真正地影响其他 CPU 上的内存访问顺序。
 
 
 ACQUIRES VS MEMORY ACCESSES
@@ -2762,6 +2760,8 @@ ACQUIRES VS MEMORY ACCESSES
 ### 5.1 `ACQUIRE`S vs. 内存访问
 
 Consider the following: the system has a pair of spinlocks (M) and (Q), and three CPUs; then should the following sequence of events occur:
+
+请看以下情况：系统中有一对自旋锁（M）和（Q），以及三个 CPU； 那么就可能会发生以下事件序列：
 
 ```c
   CPU 1                             CPU 2
@@ -2776,11 +2776,15 @@ Consider the following: the system has a pair of spinlocks (M) and (Q), and thre
 
 Then there is no guarantee as to what order CPU 3 will see the accesses to *A through *H occur in, other than the constraints imposed by the separate locks on the separate CPUs.  It might, for example, see:
 
+然后，除了由单独的 CPU 上的单独锁强加的约束之外，无法保证 CPU 3 将看到对 *A 到 *H 发生的访问顺序。 例如，它可能会看到：
+
 ```c
   *E, ACQUIRE M, ACQUIRE Q, *G, *C, *F, *A, *B, RELEASE Q, *D, *H, RELEASE M
 ```
 
 But it won't see any of:
+
+但它不会看到以下的任何一种：
 
 ```c
   *B, *C or *D preceding ACQUIRE M
@@ -2788,6 +2792,11 @@ But it won't see any of:
   *F, *G or *H preceding ACQUIRE Q
   *E, *F or *G following RELEASE Q
 ```
+
+
+#########################################################
+############# 到此处
+#########################################################
 
 =================================
 WHERE ARE MEMORY BARRIERS NEEDED?
