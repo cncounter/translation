@@ -2794,17 +2794,10 @@ But it won't see any of:
 ```
 
 
-#########################################################
-############# 到此处
-#########################################################
-
 =================================
 WHERE ARE MEMORY BARRIERS NEEDED?
 =================================
 
-
-<a name="WHERE_ARE_MEMORY_BARRIERS_NEEDED"></a>
-## 6. 什么地方需要内存屏障
 
 Under normal operation, memory operation reordering is generally not going to be a problem as a single-threaded linear piece of code will still appear to work correctly, even if it's in an SMP kernel.  There are, however, four circumstances in which reordering definitely _could_ be a problem:
 
@@ -2816,6 +2809,25 @@ Under normal operation, memory operation reordering is generally not going to be
 
 - (`*`) Interrupts.
 
+
+<a name="WHERE_ARE_MEMORY_BARRIERS_NEEDED"></a>
+## 6. 什么地方需要内存屏障
+
+在正常操作下，内存操作重排序通常不会成为问题，因为单线程线性代码段仍然可以正常工作，即使它在 SMP 内核中。
+但是，在下面的四种情况下，重排序肯定会造成一些问题：
+
+- (`*`) 处理器之间的交互。
+
+- (`*`) 原子操作。
+
+- (`*`) 访问设备。
+
+- (`*`) 中断。
+
+
+#########################################################
+############# 到此处
+#########################################################
 
 INTERPROCESSOR INTERACTION
 --------------------------
