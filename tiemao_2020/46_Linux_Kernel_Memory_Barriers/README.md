@@ -2968,16 +2968,9 @@ See Documentation/atomic_t.txt for more information.
 更多信息，请参阅 `Documentation/atomic_t.txt`。
 
 
-#########################################################
-############# 到此处
-#########################################################
-
-
 ACCESSING DEVICES
 -----------------
 
-<a name="ACCESSING_DEVICES"></a>
-### 6.3 设备访问
 
 Many devices can be memory mapped, and so appear to the CPU as if they're just a set of memory locations.  To control such a device, the driver usually has to make the right memory accesses in exactly the right order.
 
@@ -2986,6 +2979,26 @@ However, having a clever CPU or a clever compiler creates a potential problem in
 Inside of the Linux kernel, I/O should be done through the appropriate accessor routines - such as inb() or `writel()` - which know how to make such accesses appropriately sequential.  While this, for the most part, renders the explicit use of memory barriers unnecessary, if the accessor functions are used to refer to an I/O memory window with relaxed memory access properties, then _mandatory_ memory barriers are required to enforce ordering.
 
 See Documentation/driver-api/device-io.rst for more information.
+
+
+<a name="ACCESSING_DEVICES"></a>
+### 6.3 访问设备
+
+许多设备都可以进行内存映射，因此对于 CPU 来说，它们就像是一组内存位置。
+为了控制这样的设备，驱动程序通常必须以完全正确的顺序进行内存访问操作。
+
+然而，拥有一个聪明的 CPU 或者一个聪明的编译器会产生一个潜在的问题，因为如果 CPU 或编译器认为进行重新排序、组合或合并操作之后效率更高，那么驱动程序代码中仔细排列的内存访问操作, 将不会以预期的顺序到达设备。 这就导致设备出现故障。
+
+在 Linux 内核中，I/O 操作应该通过适当的访问器例程来完成 - 例如 `inb()` 或 `writel()`。
+它们知道如何让此类访问操作按适当的顺序进行。
+虽然在大多数情况下不需要显式使用内存屏障，但如果访问函数被用来引用具有宽松内存访问属性的 I/O 内存窗口，则需要使用强内存屏障来进行强制排序。
+
+有关更多信息，请参阅 `Documentation/driver-api/device-io.rst`。
+
+
+#########################################################
+############# 到此处
+#########################################################
 
 
 INTERRUPTS
