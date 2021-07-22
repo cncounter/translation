@@ -2951,23 +2951,26 @@ On a UP system - where this wouldn't be a problem - the `smp_mb()` is just a com
 在 UP 系统上 - 这不会成为问题 - `smp_mb()` 只是一个编译器屏障，这时候只需要确保编译器以正确的顺序发出指令，而无需实际干预 CPU。 由于只有一个 CPU，该 CPU 的依赖排序逻辑会处理其他的所有事情。
 
 
-#########################################################
-############# 到此处
-#########################################################
-
-
-
 ATOMIC OPERATIONS
 -----------------
+
+
+While they are technically interprocessor interaction considerations, atomic operations are noted specially as some of them imply full memory barriers and some don't, but they're very heavily relied on as a group throughout the kernel.
+
+See Documentation/atomic_t.txt for more information.
 
 
 <a name="ATOMIC_OPERATIONS"></a>
 ### 6.2 原子操作
 
-While they are technically interprocessor interaction considerations, atomic operations are noted specially as some of them imply full memory barriers and some don't, but they're very heavily relied on as a group throughout the
-kernel.
+虽然在技术上, 这是处理器间交互的考虑因素，但需要特别说一下原子操作: 其中一些原子操作隐式包含着完整的内存屏障，另一些没有，但它们在整个过程中作为系统内核的一个组被高度依赖。
 
-See Documentation/atomic_t.txt for more information.
+更多信息，请参阅 `Documentation/atomic_t.txt`。
+
+
+#########################################################
+############# 到此处
+#########################################################
 
 
 ACCESSING DEVICES
