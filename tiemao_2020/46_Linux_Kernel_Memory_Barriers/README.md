@@ -2471,7 +2471,7 @@ Locks and semaphores may not provide any guarantee of ordering on UP compiled sy
 
 See also the section on "[Inter-CPU acquiring barrier effects](#CPU_ACQUIRING_BARRIER_EFFECTS)".
 
-另请参见: [5. 多个CPU之间加锁的屏障效果](#CPU_ACQUIRING_BARRIER_EFFECTS)
+另请参见: [5. 多个CPU之间ACQUIRE屏障的效果](#CPU_ACQUIRING_BARRIER_EFFECTS)
 
 
 As an example, consider the following:
@@ -2748,7 +2748,7 @@ On SMP systems locking primitives give a more substantial form of barrier: one t
 
 
 <a name="INTER-CPU_ACQUIRING_BARRIER_EFFECTS"></a>
-## 5. 多个CPU之间加锁的屏障效果
+## 5. 多个CPU之间ACQUIRE屏障的效果
 
 在SMP系统上， 锁定原语提供了一种更实质的屏障形式：在任何一个具体的锁发生冲突的情况下，会真正地影响其他 CPU 上的内存访问顺序。
 
@@ -2811,10 +2811,10 @@ Under normal operation, memory operation reordering is generally not going to be
 
 
 <a name="WHERE_ARE_MEMORY_BARRIERS_NEEDED"></a>
-## 6. 什么地方需要内存屏障
+## 6. 哪些地方需要内存屏障
 
-在正常操作下，内存操作重排序通常不会成为问题，因为单线程线性代码段仍然可以正常工作，即使它在 SMP 内核中。
-但是，在下面的四种情况下，重排序肯定会造成一些问题：
+在正常操作时，内存操作重排序通常不会成为问题，因为单线程的线性代码仍然可以正常工作，即使它在 SMP 内核中。
+但是，在下面四种情况下，重排序肯定会造成一些问题：
 
 - (`*`) 处理器之间的交互。
 
@@ -2824,10 +2824,6 @@ Under normal operation, memory operation reordering is generally not going to be
 
 - (`*`) 中断。
 
-
-#########################################################
-############# 到此处
-#########################################################
 
 INTERPROCESSOR INTERACTION
 --------------------------
@@ -2839,6 +2835,13 @@ INTERPROCESSOR INTERACTION
 When there's a system with more than one processor, more than one CPU in the system may be working on the same data set at the same time.  This can cause synchronisation problems, and the usual way of dealing with them is to use locks.  Locks, however, are quite expensive, and so it may be preferable to operate without the use of a lock if at all possible.  In such a case operations that affect both CPUs may have to be carefully ordered to prevent a malfunction.
 
 Consider, for example, the R/W semaphore slow path.  Here a waiting process is queued on the semaphore, by virtue of it having a piece of its stack linked to the semaphore's list of waiting processes:
+
+如果一个系统具有多个处理器，那么在同一时刻, 可能有多个 CPU 对同一份数据集进行处理。
+这可能会引起同步问题，一般的处理方法是使用锁。
+但是锁操作的代价非常高， 因此如果有可能的话，最好是在不使用锁的情况下进行操作。
+这时候，必须仔细安排影响多个 CPU 的操作，以防止出现故障。
+
+例如, 在 R/W 信号量的慢路径。 有一个等待进程在信号量上排队，它的栈上有一部分内容链接到信号量的等待进程列表：
 
 ```c
   struct rw_semaphore {
@@ -2855,7 +2858,7 @@ Consider, for example, the R/W semaphore slow path.  Here a waiting process is q
 
 To wake up a particular waiter, the up_read() or up_write() functions have to:
 
- (1) read the next pointer from this waiter's record to know as to where the      next waiter record is;
+ (1) read the next pointer from this waiter's record to know as to where the next waiter record is;
 
  (2) read the pointer to the waiter's task structure;
 
@@ -2866,6 +2869,20 @@ To wake up a particular waiter, the up_read() or up_write() functions have to:
  (5) release the reference held on the waiter's task struct.
 
 In other words, it has to perform this sequence of events:
+
+要唤醒特定的等待者， `up_read()` 或 `up_write()` 函数必须：
+
+- (1) 从这个waiter的记录中读取next指针，才能知道下一个 waiter 记录在哪里；
+
+- (2) 读取waiter任务结构的指针；
+
+- (3) 清空任务指针，告诉等待者已经把信号量赋予了它；
+
+- (4) 对任务调用 `wake_up_process()`; 并且
+
+- (5) 释放在等待者 task struct 上持有的引用。
+
+换句话说，它必须执行以下事件序列：
 
 ```c
   LOAD waiter->list.next;
@@ -2880,6 +2897,13 @@ and if any of these steps occur out of order, then the whole thing may malfuncti
 Once it has queued itself and dropped the semaphore lock, the waiter does not get the lock again; it instead just waits for its task pointer to be cleared before proceeding.  Since the record is on the waiter's stack, this means that if the task pointer is cleared _before_ the next pointer in the list is read, another CPU might start processing the waiter and might clobber the waiter's stack before the up*() function has a chance to read the next pointer.
 
 Consider then what might happen to the above sequence of events:
+
+如果这些步骤中的任何一个出错，那么整个设备都可能出现故障。
+
+一旦它把自己加入队列并放弃信号量锁，等待者就不会再次获得锁； 它在继续之前只是等待其任务指针被清除。
+由于记录是存放在 waiter 的栈上，这意味着: 假如在读取列表中的后续指针之前, 任务指针就先被清除了，则另一个 CPU 可能会开始处理 waiter 并可能在 `up*()` 函数有机会阅读后续指针之前, 破坏 waiter 的栈。
+
+那么考虑上述事件序列可能会发生什么：
 
 ```c
   CPU 1                             CPU 2
@@ -2905,6 +2929,10 @@ This could be dealt with using the semaphore lock, but then the down_xxx() funct
 
 The way to deal with this is to insert a general SMP memory barrier:
 
+这种情况可以使用信号量锁来处理，但是 down_xxx() 函数在被唤醒后只能（不必要地)再次获取自旋锁。
+
+处理这种情况的方法是插入一个通用的 SMP 内存屏障：
+
 ```c
   LOAD waiter->list.next;
   LOAD waiter->task;
@@ -2917,6 +2945,16 @@ The way to deal with this is to insert a general SMP memory barrier:
 In this case, the barrier makes a guarantee that all memory accesses before the barrier will appear to happen before all the memory accesses after the barrier with respect to the other CPUs on the system.  It does _not_ guarantee that all the memory accesses before the barrier will be complete by the time the barrier instruction itself is complete.
 
 On a UP system - where this wouldn't be a problem - the `smp_mb()` is just a compiler barrier, thus making sure the compiler emits the instructions in the right order without actually intervening in the CPU.  Since there's only one CPU, that CPU's dependency ordering logic will take care of everything else.
+
+在这种情况下，屏障可以保证：相对于系统上的其他 CPU, 屏障前面的所有内存访问, 都发生在屏障后面的任何内存访问之前。 但它不保证屏障之前的所有内存访问都会在屏障指令本身完成时完成。
+
+在 UP 系统上 - 这不会成为问题 - `smp_mb()` 只是一个编译器屏障，这时候只需要确保编译器以正确的顺序发出指令，而无需实际干预 CPU。 由于只有一个 CPU，该 CPU 的依赖排序逻辑会处理其他的所有事情。
+
+
+#########################################################
+############# 到此处
+#########################################################
+
 
 
 ATOMIC OPERATIONS
@@ -3002,15 +3040,15 @@ guarantees:
 
   The readX() and writeX() MMIO accessors take a pointer to the   peripheral being accessed as an __iomem * parameter. For pointers   mapped with the default I/O attributes (e.g. those returned by   ioremap()), the ordering guarantees are as follows:
 
-  1. All readX() and writeX() accesses to the same peripheral are ordered      with respect to each other. This ensures that MMIO register accesses      by the same CPU thread to a particular device will arrive in program      order.
+  1. All readX() and writeX() accesses to the same peripheral are ordered with respect to each other. This ensures that MMIO register accesses by the same CPU thread to a particular device will arrive in program order.
 
-  2. A writeX() issued by a CPU thread holding a spinlock is ordered      before a writeX() to the same peripheral from another CPU thread      issued after a later acquisition of the same spinlock. This ensures      that MMIO register writes to a particular device issued while holding      a spinlock will arrive in an order consistent with acquisitions of      the lock.
+  2. A writeX() issued by a CPU thread holding a spinlock is ordered before a writeX() to the same peripheral from another CPU thread issued after a later acquisition of the same spinlock. This ensures that MMIO register writes to a particular device issued while holding a spinlock will arrive in an order consistent with acquisitions of the lock.
 
-  3. A writeX() by a CPU thread to the peripheral will first wait for the      completion of all prior writes to memory either issued by, or      propagated to, the same thread. This ensures that writes by the CPU      to an outbound DMA buffer allocated by dma_alloc_coherent() will be      visible to a DMA engine when the CPU writes to its MMIO control      register to trigger the transfer.
+  3. A writeX() by a CPU thread to the peripheral will first wait for the completion of all prior writes to memory either issued by, or propagated to, the same thread. This ensures that writes by the CPU to an outbound DMA buffer allocated by dma_alloc_coherent() will be visible to a DMA engine when the CPU writes to its MMIO control register to trigger the transfer.
 
-  4. A readX() by a CPU thread from the peripheral will complete before      any subsequent reads from memory by the same thread can begin. This      ensures that reads by the CPU from an incoming DMA buffer allocated      by dma_alloc_coherent() will not see stale data after reading from      the DMA engine's MMIO status register to establish that the DMA      transfer has completed.
+  4. A readX() by a CPU thread from the peripheral will complete before any subsequent reads from memory by the same thread can begin. This ensures that reads by the CPU from an incoming DMA buffer allocated by dma_alloc_coherent() will not see stale data after reading from the DMA engine's MMIO status register to establish that the DMA transfer has completed.
 
-  5. A readX() by a CPU thread from the peripheral will complete before      any subsequent delay() loop can begin execution on the same thread.      This ensures that two MMIO register writes by the CPU to a peripheral      will arrive at least 1us apart if the first write is immediately read      back with readX() and udelay(1) is called prior to the second      writeX():
+  5. A readX() by a CPU thread from the peripheral will complete before any subsequent delay() loop can begin execution on the same thread. This ensures that two MMIO register writes by the CPU to a peripheral will arrive at least 1us apart if the first write is immediately read back with readX() and udelay(1) is called prior to the second writeX():
 
     writel(42, DEVICE_REGISTER_0); // Arrives at the device...
     readl(DEVICE_REGISTER_0);
@@ -3058,7 +3096,7 @@ It has to be assumed that the conceptual CPU is weakly-ordered but that it will 
 
 This means that it must be considered that the CPU will execute its instruction stream in any order it feels like - or even in parallel - provided that if an instruction in the stream depends on an earlier instruction, then that earlier instruction must be sufficiently complete[*] before the later instruction may proceed; in other words: provided that the appearance of causality is maintained.
 
- [*] Some instructions have more than one effect - such as changing the      condition codes, changing registers or changing memory - and different      instructions may depend on different effects.
+ [*] Some instructions have more than one effect - such as changing the condition codes, changing registers or changing memory - and different instructions may depend on different effects.
 
 A CPU may also discard any instruction sequence that winds up having no ultimate effect.  For example, if two adjacent instructions both load an immediate value into the same register, the first may be discarded.
 
@@ -3158,17 +3196,17 @@ they would then expect that the CPU will complete the memory operation for each 
 
 Reality is, of course, much messier.  With many CPUs and compilers, the above assumption doesn't hold because:
 
-- (`*`) loads are more likely to need to be completed immediately to permit      execution progress, whereas stores can often be deferred without a      problem;
+- (`*`) loads are more likely to need to be completed immediately to permit execution progress, whereas stores can often be deferred without a problem;
 
-- (`*`) loads may be done speculatively, and the result discarded should it prove      to have been unnecessary;
+- (`*`) loads may be done speculatively, and the result discarded should it prove to have been unnecessary;
 
-- (`*`) loads may be done speculatively, leading to the result having been fetched      at the wrong time in the expected sequence of events;
+- (`*`) loads may be done speculatively, leading to the result having been fetched at the wrong time in the expected sequence of events;
 
-- (`*`) the order of the memory accesses may be rearranged to promote better use      of the CPU buses and caches;
+- (`*`) the order of the memory accesses may be rearranged to promote better use of the CPU buses and caches;
 
-- (`*`) loads and stores may be combined to improve performance when talking to      memory or I/O hardware that can do batched accesses of adjacent locations,      thus cutting down on transaction setup costs (memory and PCI devices may      both be able to do this); and
+- (`*`) loads and stores may be combined to improve performance when talking to memory or I/O hardware that can do batched accesses of adjacent locations, thus cutting down on transaction setup costs (memory and PCI devices may both be able to do this); and
 
-- (`*`) the CPU's data cache may affect the ordering, and while cache-coherency      mechanisms may alleviate this - once the store has actually hit the cache      - there's no guarantee that the coherency management will be propagated in      order to other CPUs.
+- (`*`) the CPU's data cache may affect the ordering, and while cache-coherency mechanisms may alleviate this - once the store has actually hit the cache - there's no guarantee that the coherency management will be propagated in order to other CPUs.
 
 So what another CPU, say, might actually observe from the above piece of code is:
 
