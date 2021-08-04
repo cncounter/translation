@@ -60,6 +60,17 @@ Spring网关, 全称叫做 Spring Cloud Gateway; 官方项目地址为: <https:/
 ## 2. 导入并启动项目
 
 
+2.1 解压项目
+
+将我们刚才下载的文件解压。 因为选择的项目结构是Maven, 解压后是一个标准的Maven项目。
+
+2.2 导入项目
+
+我们使用的开发工具是 Idea, 需要先导入项目。
+
+![](02_import_project.jpg)
+
+
 
 
 
