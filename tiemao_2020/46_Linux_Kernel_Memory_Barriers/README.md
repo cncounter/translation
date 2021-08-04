@@ -2996,22 +2996,25 @@ See Documentation/driver-api/device-io.rst for more information.
 有关更多信息，请参阅 `Documentation/driver-api/device-io.rst`。
 
 
-#########################################################
-############# 到此处
-#########################################################
-
-
 INTERRUPTS
 ----------
 
 <a name="INTERRUPTS"></a>
-### 6.4 中断
+### 6.4 中断（INTERRUPTS）
 
 A driver may be interrupted by its own interrupt service routine, and thus the two parts of the driver may interfere with each other's attempts to control or access the device.
 
 This may be alleviated - at least in part - by disabling local interrupts (a form of locking), such that the critical operations are all contained within the interrupt-disabled section in the driver.  While the driver's interrupt routine is executing, the driver's core may not run on the same CPU, and its interrupt is not permitted to happen again until the current interrupt has been handled, thus the interrupt handler does not need to lock against that.
 
 However, consider a driver that was talking to an ethernet card that sports an address register and a data register.  If that driver's core talks to the card under interrupt-disablement and then the driver's interrupt handler is invoked:
+
+驱动程序可能会被自己的中断服务例程所中断，因此驱动程序的两个部分可能会干扰对方控制或访问设备的尝试。
+
+这可以通过禁用本地中断来缓解, 至少部分缓解（通过一种锁定形式）, 使得关键操作都包含在驱动程序中的中断禁用部分中。
+驱动程序的中断例程正在执行时，驱动程序的核心可能不会运行在同一个 CPU 上，并且在当前中断处理完成之前, 不允许再次发生它的中断，因此中断处理程序不需要锁定。
+
+然而，考虑一个驱动程序正在与一个带有地址寄存器和数据寄存器的以太网卡通信。
+如果该驱动程序的核心在中断禁用下与网卡对话，然后调用驱动程序的中断处理程序：
 
 ```c
   LOCAL IRQ DISABLE
@@ -3024,11 +3027,13 @@ However, consider a driver that was talking to an ethernet card that sports an a
   </interrupt>
 ```
 
-The store to the data register might happen after the second store to the
-address register if ordering rules are sufficiently relaxed:
+The store to the data register might happen after the second store to the address register if ordering rules are sufficiently relaxed:
+
+如果排序规则足够宽松，则第一次存储到数据寄存器的store操作, 可能发生在第二次存储到地址寄存器的 store 之后：
+
 
 ```c
-  STORE *ADDR = 3, STORE *ADDR = 4, STORE *DATA = y, q = LOAD *DATA
+STORE *ADDR = 3, STORE *ADDR = 4, STORE *DATA = y, q = LOAD *DATA
 ```
 
 
@@ -3038,6 +3043,18 @@ Normally this won't be a problem because the I/O accesses done inside such secti
 
 
 A similar situation may occur between an interrupt routine and two routines running on separate CPUs that communicate with each other.  If such a case is likely, then interrupt-disabling locks should be used to guarantee ordering.
+
+如果排序规则放宽，则必须假设在中断禁用部分内进行的访问可能会泄漏到其外部，并且可能与在中断中执行的访问交错 - 反之亦然 - 除非使用隐式或显式屏障。
+
+通常这不会成为问题，因为在这些部分内完成的 I/O 访问将包括对形成隐式 I/O 屏障的严格有序 I/O 寄存器的同步加载操作。
+
+
+类似的情况可能发生在中断例程和两个运行在彼此通信的独立 CPU 上的例程之间。 如果可能出现这种情况，则应使用禁止中断的锁来保证排序。
+
+
+#########################################################
+############# 到此处
+#########################################################
 
 
 ==========================
