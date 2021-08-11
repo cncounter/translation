@@ -2249,9 +2249,9 @@ There are some more advanced barrier functions:
 
   For example, consider a device driver that shares memory with a device and uses a descriptor status value to indicate if the descriptor belongs to the device or the CPU, and a doorbell to notify it when new descriptors are available:
 
-  这两个函数与一致内存一起使用，以保证 CPU 和支持 DMA 的设备, 均可访问共享内存, 并保证写入或读取的顺序。
+  这两个函数与一致内存一起使用, 以保证 CPU 和支持 DMA 的设备, 均可访问共享内存, 并保证写入或读取的顺序。
 
-  例如，假设有一个设备驱动程序，它与设备共享内存, 并使用描述符状态值来指示描述符是属于设备还是 CPU，并在新描述符可用时使用门铃来通知它:
+  例如, 假设有一个设备驱动程序, 它与设备共享内存, 并使用描述符状态值来指示描述符是属于设备还是 CPU, 并在新描述符可用时使用门铃来通知它:
 
   ```c
   if (desc->status != DEVICE_OWN) {
@@ -2312,9 +2312,9 @@ Some of the other functions in the linux kernel imply memory barriers, amongst w
 
 This specification is a _minimum_ guarantee; any particular architecture may provide more substantial guarantees, but these may not be relied upon outside of arch specific code.
 
-Linux内核中的一些函数隐含了内存屏障，包括锁定和调度函数。
+Linux内核中的一些函数隐含了内存屏障, 包括锁定和调度函数。
 
-此规范是 最低 保证； 任何特定的体系结构都可能提供更实质性的保证，但这些保证可能在特定体系结构之外的代码不可用。
+此规范是 最低 保证； 任何特定的体系结构都可能提供更实质性的保证, 但这些保证可能在特定体系结构之外的代码不可用。
 
 LOCK ACQUISITION FUNCTIONS
 --------------------------
@@ -2340,7 +2340,7 @@ Linux 内核有许多锁结构:
 - (`*`) 信号量(semaphore)
 - (`*`) 读/写信号量(R/W semaphore)
 
-在所有情况下，每个锁结构都有类似的 "`ACQUIRE`" 操作和 "`RELEASE`"操作。 这些操作蕴含了内存屏障:
+在所有情况下, 每个锁结构都有类似的 "`ACQUIRE`" 操作和 "`RELEASE`"操作。 这些操作蕴含了内存屏障:
 
 - (1) `ACQUIRE` operation implication:
 
@@ -2388,7 +2388,7 @@ Linux 内核有许多锁结构:
 
 - (5) 失败的条件 `ACQUIRE` 操作隐含的屏障:
 
-  `ACQUIRE` 操作的某些锁定变体可能会失败，原因可能是无法立即获得锁，或者是由于在睡眠等待锁可用时收到未阻塞的信号。 失败的锁并不隐含任何类型的屏障。
+  `ACQUIRE` 操作的某些锁定变体可能会失败, 原因可能是无法立即获得锁, 或者是由于在睡眠等待锁可用时收到未阻塞的信号。 失败的锁并不隐含任何类型的屏障。
 
 
 > [!] Note: one of the consequences of lock ACQUIREs and RELEASEs being only one-way barriers is that the effects of instructions outside of a critical section may seep into the inside of the critical section.
@@ -2397,7 +2397,7 @@ An `ACQUIRE` followed by a `RELEASE` may not be assumed to be full memory barrie
 
 > [!] 注意: 锁的 ACQUIRE 和 RELEASE 的结果只是单向屏障, 临界区之外的指令的影响可能会渗入临界区内部。
 
-一个 `ACQUIRE` 后跟一个 `RELEASE` 可能不被认为是完整的内存屏障，因为在 `ACQUIRE` 之前的访问可能发生在 `ACQUIRE` 之后，而在 `RELEASE` 之后的访问也可能在 `RELEASE` 之前发生，然后两个访问本身就可能交叉:
+一个 `ACQUIRE` 后跟一个 `RELEASE` 可能不被认为是完整的内存屏障, 因为在 `ACQUIRE` 之前的访问可能发生在 `ACQUIRE` 之后, 而在 `RELEASE` 之后的访问也可能在 `RELEASE` 之前发生, 然后两个访问本身就可能交叉:
 
 ```c
   *A = a;
@@ -2420,9 +2420,9 @@ When the `ACQUIRE` and `RELEASE` are a lock acquisition and release, respectivel
 
 Similarly, the reverse case of a `RELEASE` followed by an `ACQUIRE` does not imply a full memory barrier.  Therefore, the CPU's execution of the critical sections corresponding to the `RELEASE` and the `ACQUIRE` can cross, so that:
 
-当 `ACQUIRE` 和 `RELEASE` 分别是锁的获取和释放时，如果锁的 `ACQUIRE` 和 `RELEASE` 是同一个锁变量，那么同样的重排序可以发生，但只有从另一个不持有那个锁的 CPU 角度来看是这样。 简而言之，一个 `ACQUIRE` 后跟一个 `RELEASE` 可能`不`被认为是一个完整的内存屏障。
+当 `ACQUIRE` 和 `RELEASE` 分别是锁的获取和释放时, 如果锁的 `ACQUIRE` 和 `RELEASE` 是同一个锁变量, 那么同样的重排序可以发生, 但只有从另一个不持有那个锁的 CPU 角度来看是这样。 简而言之, 一个 `ACQUIRE` 后跟一个 `RELEASE` 可能`不`被认为是一个完整的内存屏障。
 
-类似地, 顺序调过来，先是 `ACQUIRE`, 后面跟着 `RELEASE` 的情况也不代表完整的内存屏障。 因此，CPU 对 `RELEASE` 和 `ACQUIRE` 对应的临界区的执行可能会交叉，例如下面的代码:
+类似地, 顺序调过来, 先是 `ACQUIRE`, 后面跟着 `RELEASE` 的情况也不代表完整的内存屏障。 因此, CPU 对 `RELEASE` 和 `ACQUIRE` 对应的临界区的执行可能会交叉, 例如下面的代码:
 
 ```c
   *A = a;
@@ -2442,7 +2442,7 @@ could occur as:
 
 It might appear that this reordering could introduce a deadlock. However, this cannot happen because if such a deadlock threatened, the `RELEASE` would simply complete, thereby avoiding the deadlock.
 
-看起来这种重排序可能会导致死锁。 但这是不可能发生的， 因为如果有这种死锁的可能，`RELEASE` 就会简单地完成，从而避免死锁。
+看起来这种重排序可能会导致死锁。 但这是不可能发生的,  因为如果有这种死锁的可能, `RELEASE` 就会简单地完成, 从而避免死锁。
 
 > Why does this work?
 
@@ -2452,12 +2452,12 @@ One key point is that we are only talking about the CPU doing the reordering, no
 
 But suppose the CPU reordered the operations. In this case, the unlock precedes the lock in the assembly code. The CPU simply elected to try executing the later lock operation first. If there is a deadlock, this lock operation will simply spin (or try to sleep, but more on that later). The CPU will eventually execute the unlock operation (which preceded the lock operation in the assembly code), which will unravel the potential deadlock, allowing the lock operation to succeed.
 
-一个关键点是我们只讨论了 CPU 重排序，而没有讨论编译器重排序。如果编译器调换了操作顺序（对开发人员有影响），则可能会发生死锁。
+一个关键点是我们只讨论了 CPU 重排序, 而没有讨论编译器重排序。如果编译器调换了操作顺序（对开发人员有影响）, 则可能会发生死锁。
 
-但是假设 CPU 执行了重排序操作。 在这种情况下，在汇编代码中解锁先于锁定。
+但是假设 CPU 执行了重排序操作。 在这种情况下, 在汇编代码中解锁先于锁定。
 CPU 只是选择先尝试执行后面的锁定操作。
-如果出现死锁，锁定操作将简单地自旋（或尝试休眠，稍后会详细介绍）。
-CPU 最终会执行解锁操作（在汇编代码中先于锁定操作），这将解除潜在的死锁，从而允许锁定操作成功。
+如果出现死锁, 锁定操作将简单地自旋（或尝试休眠, 稍后会详细介绍）。
+CPU 最终会执行解锁操作（在汇编代码中先于锁定操作）, 这将解除潜在的死锁, 从而允许锁定操作成功。
 
 
 But what if the lock is a sleeplock? In that case, the code will try to enter the scheduler, where it will eventually encounter a memory barrier, which will force the earlier unlock operation to complete, again unraveling the deadlock. There might be a sleep-unlock race, but the locking primitive needs to resolve such races properly in any case.
@@ -2465,9 +2465,9 @@ But what if the lock is a sleeplock? In that case, the code will try to enter th
 Locks and semaphores may not provide any guarantee of ordering on UP compiled systems, and so cannot be counted on in such a situation to actually achieve anything at all - especially with respect to I/O accesses - unless combined with interrupt disabling operations.
 
 
-但如果是睡眠锁呢？ 在这种情况下，代码将尝试进入调度程序，在那里最终会遇到内存屏障，这将强制较早的解锁操作先完成，再次解除死锁。 可能存在睡眠解锁竞争，但在任何情况下锁定原语都需要正确解决此类竞争。
+但如果是睡眠锁呢？ 在这种情况下, 代码将尝试进入调度程序, 在那里最终会遇到内存屏障, 这将强制较早的解锁操作先完成, 再次解除死锁。 可能存在睡眠解锁竞争, 但在任何情况下锁定原语都需要正确解决此类竞争。
 
-锁和信号量在 UP 编译的系统上可能无法保证排序，因此在这种情况下不能指望达成任何实际目标 - 特别是在 I/O 访问方面 - 除非与中断禁用操作相结合。
+锁和信号量在 UP 编译的系统上可能无法保证排序, 因此在这种情况下不能指望达成任何实际目标 - 特别是在 I/O 访问方面 - 除非与中断禁用操作相结合。
 
 See also the section on "[Inter-CPU acquiring barrier effects](#CPU_ACQUIRING_BARRIER_EFFECTS)".
 
@@ -2491,7 +2491,7 @@ As an example, consider the following:
 
 The following sequence of events is acceptable:
 
-那么，以下的事件执行顺序是可以接受的:
+那么, 以下的事件执行顺序是可以接受的:
 
 ```c
   ACQUIRE, {*F,*A}, *E, {*C,*D}, *B, RELEASE
@@ -2524,7 +2524,7 @@ INTERRUPT DISABLING FUNCTIONS
 Functions that disable interrupts (`ACQUIRE` equivalent) and enable interrupts (`RELEASE` equivalent) will act as compiler barriers only.  So if memory or I/O barriers are required in such a situation, they must be provided from some other means.
 
 禁用中断（等效于`ACQUIRE`）和启用中断（等效于`RELEASE`）的函数仅作为编译器屏障。
-因此，如果在这种情况下需要内存屏障或 I/O 屏障，则必须通过其他方式提供。
+因此, 如果在这种情况下需要内存屏障或 I/O 屏障, 则必须通过其他方式提供。
 
 
 SLEEP AND WAKE-UP FUNCTIONS
@@ -2540,9 +2540,9 @@ Firstly, the sleeper normally follows something like this sequence of events:
 ### 4.3 睡眠和唤醒函数
 
 在全局数据中标记的事件上睡眠和唤醒, 可以被视为两个数据之间的交互:  等待事件的任务的状态, 以及用于指示事件的全局数据。
-为了确保他们以正确的顺序发生，开始进入睡眠过程的原语和启动唤醒过程的原语蕴含着某些屏障。
+为了确保他们以正确的顺序发生, 开始进入睡眠过程的原语和启动唤醒过程的原语蕴含着某些屏障。
 
-首先，睡眠者通常跟在某些操作后面, 例如以下事件序列:
+首先, 睡眠者通常跟在某些操作后面, 例如以下事件序列:
 
 ```c
   for (;;) {
@@ -2555,7 +2555,7 @@ Firstly, the sleeper normally follows something like this sequence of events:
 
 A general memory barrier is interpolated automatically by `set_current_state()` after it has altered the task state:
 
-在更改任务状态后，`set_current_state()` 会自动插入通用内存屏障:
+在更改任务状态后, `set_current_state()` 会自动插入通用内存屏障:
 
 ```c
   CPU 1
@@ -2578,7 +2578,7 @@ A general memory barrier is interpolated automatically by `set_current_state()` 
 
 which therefore also imply a general memory barrier after setting the state. The whole sequence above is available in various canned forms, all of which interpolate the memory barrier in the right place:
 
-因此，这也意味着设置任务状态之后一般都会有通用内存屏障。 上面的整个序列有各种固定形式，所有这些都会在正确的位置插入内存屏障:
+因此, 这也意味着设置任务状态之后一般都会有通用内存屏障。 上面的整个序列有各种固定形式, 所有这些都会在正确的位置插入内存屏障:
 
 ```c
   wait_event();
@@ -2593,7 +2593,7 @@ which therefore also imply a general memory barrier after setting the state. The
 
 Secondly, code that performs a wake up normally follows something like this:
 
-其次，执行唤醒的代码通常是跟着某些操作, 比如:
+其次, 执行唤醒的代码通常是跟着某些操作, 比如:
 
 ```c
   event_indicated = 1;
@@ -2612,7 +2612,7 @@ or:
 
 A general memory barrier is executed by wake_up() if it wakes something up. If it doesn't wake anything up then a memory barrier may or may not be executed; you must not rely on it.  The barrier occurs before the task state is accessed, in particular, it sits between the STORE to indicate the event and the STORE to set TASK_RUNNING:
 
-如果唤醒某些东西，则由 wake_up() 执行通用内存屏障。 如果它没有唤醒任何东西，那么内存屏障可能会也可能不会被执行； 你不能依赖它。 屏障发生在访问任务状态之前，特别是，位于指示事件的 STORE 和设置 TASK_RUNNING 的 STORE 之间:
+如果唤醒某些东西, 则由 wake_up() 执行通用内存屏障。 如果它没有唤醒任何东西, 那么内存屏障可能会也可能不会被执行； 你不能依赖它。 屏障发生在访问任务状态之前, 特别是, 位于指示事件的 STORE 和设置 TASK_RUNNING 的 STORE 之间:
 
 ```c
   CPU 1 (Sleeper)                   CPU 2 (Waker)
@@ -2629,9 +2629,9 @@ where "task" is the thread being woken up and it equals CPU 1's "current".
 
 To repeat, a general memory barrier is guaranteed to be executed by wake_up() if something is actually awakened, but otherwise there is no such guarantee.  To see this, consider the following sequence of events, where X and Y are both initially zero:
 
-其中 "task" 是被唤醒的线程，它等于 CPU 1 的 "current"。
+其中 "task" 是被唤醒的线程, 它等于 CPU 1 的 "current"。
 
-重复一遍，如果确实唤醒了某些东西，则通过 wake_up() 可确保会执行通用内存屏障，否则就没有这样的保证。 要演示这一点，请看下面的事件序列，其中 X 和 Y 的初始值都为零:
+重复一遍, 如果确实唤醒了某些东西, 则通过 wake_up() 可确保会执行通用内存屏障, 否则就没有这样的保证。 要演示这一点, 请看下面的事件序列, 其中 X 和 Y 的初始值都为零:
 
 ```c
   CPU 1                             CPU 2
@@ -2647,9 +2647,9 @@ wake_up_process() always executes a general memory barrier.  The barrier again o
 
 The available waker functions include:
 
-如果确实发生了唤醒，则两次 load 中（至少）有一个肯定会读取到 1。 另一方面，如果没有发生唤醒，则两次 load 看到的可能都是 0。
+如果确实发生了唤醒, 则两次 load 中（至少）有一个肯定会读取到 1。 另一方面, 如果没有发生唤醒, 则两次 load 看到的可能都是 0。
 
-wake_up_process() 总是执行一个通用内存屏障。 在访问任务状态之前再次出现屏障。 特别是，如果前一个代码段中的 wake_up() 被替换为 wake_up_process() ，那么两次 load 中的一个将保证看到1。
+wake_up_process() 总是执行一个通用内存屏障。 在访问任务状态之前再次出现屏障。 特别是, 如果前一个代码段中的 wake_up() 被替换为 wake_up_process() , 那么两次 load 中的一个将保证看到1。
 
 可用的唤醒函数包括:
 
@@ -2675,11 +2675,11 @@ In terms of memory ordering, these functions all provide the same guarantees of 
 
 > [!] Note that the memory barriers implied by the sleeper and the waker do _not_ order multiple stores before the wake-up with respect to loads of those stored values after the sleeper has called set_current_state().  For instance, if the sleeper does:
 
-在内存排序方面，这些函数都提供了与 wake_up() 相同的(或更强的）保证。
+在内存排序方面, 这些函数都提供了与 wake_up() 相同的(或更强的）保证。
 
-> [!] 请注意，睡眠者和唤醒者隐含的内存屏障【不会】在唤醒之前对多个 store 进行排序，这些 store 在睡眠者调用 `set_current_state()` 之后加载这些保存的值。
+> [!] 请注意, 睡眠者和唤醒者隐含的内存屏障【不会】在唤醒之前对多个 store 进行排序, 这些 store 在睡眠者调用 `set_current_state()` 之后加载这些保存的值。
 
-例如，如果睡眠者的操作为:
+例如, 如果睡眠者的操作为:
 
 ```c
   set_current_state(TASK_INTERRUPTIBLE);
@@ -2701,7 +2701,7 @@ and the waker does:
 
 there's no guarantee that the change to event_indicated will be perceived by the sleeper as coming after the change to my_data.  In such a circumstance, the code on both sides must interpolate its own memory barriers between the separate data accesses.  Thus the above sleeper ought to do:
 
-不能保证对 event_indicated 的更改会被睡眠者感知为在更改 my_data 之后发生。 在这种情况下，双方的代码必须在单独的数据访问之间插入自己的内存屏障。 因此上面的 sleeper 应该这样做:
+不能保证对 event_indicated 的更改会被睡眠者感知为在更改 my_data 之后发生。 在这种情况下, 双方的代码必须在单独的数据访问之间插入自己的内存屏障。 因此上面的 sleeper 应该这样做:
 
 ```c
   set_current_state(TASK_INTERRUPTIBLE);
@@ -2750,7 +2750,7 @@ On SMP systems locking primitives give a more substantial form of barrier: one t
 <a name="INTER-CPU_ACQUIRING_BARRIER_EFFECTS"></a>
 ## 5. 多个CPU之间ACQUIRE屏障的效果
 
-在SMP系统上， 锁定原语提供了一种更实质的屏障形式：在任何一个具体的锁发生冲突的情况下，会真正地影响其他 CPU 上的内存访问顺序。
+在SMP系统上,  锁定原语提供了一种更实质的屏障形式：在任何一个具体的锁发生冲突的情况下, 会真正地影响其他 CPU 上的内存访问顺序。
 
 
 ACQUIRES VS MEMORY ACCESSES
@@ -2761,7 +2761,7 @@ ACQUIRES VS MEMORY ACCESSES
 
 Consider the following: the system has a pair of spinlocks (M) and (Q), and three CPUs; then should the following sequence of events occur:
 
-请看以下情况：系统中有一对自旋锁（M）和（Q），以及三个 CPU； 那么就可能会发生以下事件序列：
+请看以下情况：系统中有一对自旋锁（M）和（Q）, 以及三个 CPU； 那么就可能会发生以下事件序列：
 
 ```c
   CPU 1                             CPU 2
@@ -2776,7 +2776,7 @@ Consider the following: the system has a pair of spinlocks (M) and (Q), and thre
 
 Then there is no guarantee as to what order CPU 3 will see the accesses to *A through *H occur in, other than the constraints imposed by the separate locks on the separate CPUs.  It might, for example, see:
 
-然后，除了由单独的 CPU 上的单独锁强加的约束之外，无法保证 CPU 3 将看到对 *A 到 *H 发生的访问顺序。 例如，它可能会看到：
+然后, 除了由单独的 CPU 上的单独锁强加的约束之外, 无法保证 CPU 3 将看到对 *A 到 *H 发生的访问顺序。 例如, 它可能会看到：
 
 ```c
   *E, ACQUIRE M, ACQUIRE Q, *G, *C, *F, *A, *B, RELEASE Q, *D, *H, RELEASE M
@@ -2813,8 +2813,8 @@ Under normal operation, memory operation reordering is generally not going to be
 <a name="WHERE_ARE_MEMORY_BARRIERS_NEEDED"></a>
 ## 6. 哪些地方需要内存屏障
 
-在正常操作时，内存操作重排序通常不会成为问题，因为单线程的线性代码仍然可以正常工作，即使它在 SMP 内核中。
-但是，在下面四种情况下，重排序肯定会造成一些问题：
+在正常操作时, 内存操作重排序通常不会成为问题, 因为单线程的线性代码仍然可以正常工作, 即使它在 SMP 内核中。
+但是, 在下面四种情况下, 重排序肯定会造成一些问题：
 
 - (`*`) 处理器之间的交互。
 
@@ -2836,12 +2836,12 @@ When there's a system with more than one processor, more than one CPU in the sys
 
 Consider, for example, the R/W semaphore slow path.  Here a waiting process is queued on the semaphore, by virtue of it having a piece of its stack linked to the semaphore's list of waiting processes:
 
-如果一个系统具有多个处理器，那么在同一时刻, 可能有多个 CPU 对同一份数据集进行处理。
-这可能会引起同步问题，一般的处理方法是使用锁。
-但是锁操作的代价非常高， 因此如果有可能的话，最好是在不使用锁的情况下进行操作。
-这时候，必须仔细安排影响多个 CPU 的操作，以防止出现故障。
+如果一个系统具有多个处理器, 那么在同一时刻, 可能有多个 CPU 对同一份数据集进行处理。
+这可能会引起同步问题, 一般的处理方法是使用锁。
+但是锁操作的代价非常高,  因此如果有可能的话, 最好是在不使用锁的情况下进行操作。
+这时候, 必须仔细安排影响多个 CPU 的操作, 以防止出现故障。
 
-例如, 在 R/W 信号量的慢路径。 有一个等待进程在信号量上排队，它的栈上有一部分内容链接到信号量的等待进程列表：
+例如, 在 R/W 信号量的慢路径。 有一个等待进程在信号量上排队, 它的栈上有一部分内容链接到信号量的等待进程列表：
 
 ```c
   struct rw_semaphore {
@@ -2870,19 +2870,19 @@ To wake up a particular waiter, the up_read() or up_write() functions have to:
 
 In other words, it has to perform this sequence of events:
 
-要唤醒特定的等待者， `up_read()` 或 `up_write()` 函数必须：
+要唤醒特定的等待者,  `up_read()` 或 `up_write()` 函数必须：
 
-- (1) 从这个waiter的记录中读取next指针，才能知道下一个 waiter 记录在哪里；
+- (1) 从这个waiter的记录中读取next指针, 才能知道下一个 waiter 记录在哪里；
 
 - (2) 读取waiter任务结构的指针；
 
-- (3) 清空任务指针，告诉等待者已经把信号量赋予了它；
+- (3) 清空任务指针, 告诉等待者已经把信号量赋予了它；
 
 - (4) 对任务调用 `wake_up_process()`; 并且
 
 - (5) 释放在等待者 task struct 上持有的引用。
 
-换句话说，它必须执行以下事件序列：
+换句话说, 它必须执行以下事件序列：
 
 ```c
   LOAD waiter->list.next;
@@ -2898,10 +2898,10 @@ Once it has queued itself and dropped the semaphore lock, the waiter does not ge
 
 Consider then what might happen to the above sequence of events:
 
-如果这些步骤中的任何一个出错，那么整个设备都可能出现故障。
+如果这些步骤中的任何一个出错, 那么整个设备都可能出现故障。
 
-一旦它把自己加入队列并放弃信号量锁，等待者就不会再次获得锁； 它在继续之前只是等待其任务指针被清除。
-由于记录是存放在 waiter 的栈上，这意味着: 假如在读取列表中的后续指针之前, 任务指针就先被清除了，则另一个 CPU 可能会开始处理 waiter 并可能在 `up*()` 函数有机会阅读后续指针之前, 破坏 waiter 的栈。
+一旦它把自己加入队列并放弃信号量锁, 等待者就不会再次获得锁； 它在继续之前只是等待其任务指针被清除。
+由于记录是存放在 waiter 的栈上, 这意味着: 假如在读取列表中的后续指针之前, 任务指针就先被清除了, 则另一个 CPU 可能会开始处理 waiter 并可能在 `up*()` 函数有机会阅读后续指针之前, 破坏 waiter 的栈。
 
 那么考虑上述事件序列可能会发生什么：
 
@@ -2929,7 +2929,7 @@ This could be dealt with using the semaphore lock, but then the down_xxx() funct
 
 The way to deal with this is to insert a general SMP memory barrier:
 
-这种情况可以使用信号量锁来处理，但是 down_xxx() 函数在被唤醒后只能（不必要地)再次获取自旋锁。
+这种情况可以使用信号量锁来处理, 但是 down_xxx() 函数在被唤醒后只能（不必要地)再次获取自旋锁。
 
 处理这种情况的方法是插入一个通用的 SMP 内存屏障：
 
@@ -2946,9 +2946,9 @@ In this case, the barrier makes a guarantee that all memory accesses before the 
 
 On a UP system - where this wouldn't be a problem - the `smp_mb()` is just a compiler barrier, thus making sure the compiler emits the instructions in the right order without actually intervening in the CPU.  Since there's only one CPU, that CPU's dependency ordering logic will take care of everything else.
 
-在这种情况下，屏障可以保证：相对于系统上的其他 CPU, 屏障前面的所有内存访问, 都发生在屏障后面的任何内存访问之前。 但它不保证屏障之前的所有内存访问都会在屏障指令本身完成时完成。
+在这种情况下, 屏障可以保证：相对于系统上的其他 CPU, 屏障前面的所有内存访问, 都发生在屏障后面的任何内存访问之前。 但它不保证屏障之前的所有内存访问都会在屏障指令本身完成时完成。
 
-在 UP 系统上 - 这不会成为问题 - `smp_mb()` 只是一个编译器屏障，这时候只需要确保编译器以正确的顺序发出指令，而无需实际干预 CPU。 由于只有一个 CPU，该 CPU 的依赖排序逻辑会处理其他的所有事情。
+在 UP 系统上 - 这不会成为问题 - `smp_mb()` 只是一个编译器屏障, 这时候只需要确保编译器以正确的顺序发出指令, 而无需实际干预 CPU。 由于只有一个 CPU, 该 CPU 的依赖排序逻辑会处理其他的所有事情。
 
 
 ATOMIC OPERATIONS
@@ -2963,9 +2963,9 @@ See Documentation/atomic_t.txt for more information.
 <a name="ATOMIC_OPERATIONS"></a>
 ### 6.2 原子操作
 
-虽然在技术上, 这是处理器间交互的考虑因素，但需要特别说一下原子操作: 其中一些原子操作隐式包含着完整的内存屏障，另一些没有，但它们在整个过程中作为系统内核的一个组被高度依赖。
+虽然在技术上, 这是处理器间交互的考虑因素, 但需要特别说一下原子操作: 其中一些原子操作隐式包含着完整的内存屏障, 另一些没有, 但它们在整个过程中作为系统内核的一个组被高度依赖。
 
-更多信息，请参阅 `Documentation/atomic_t.txt`。
+更多信息, 请参阅 `Documentation/atomic_t.txt`。
 
 
 ACCESSING DEVICES
@@ -2984,16 +2984,16 @@ See Documentation/driver-api/device-io.rst for more information.
 <a name="ACCESSING_DEVICES"></a>
 ### 6.3 访问设备
 
-许多设备都可以进行内存映射，因此对于 CPU 来说，它们就像是一组内存位置。
-为了控制这样的设备，驱动程序通常必须以完全正确的顺序进行内存访问操作。
+许多设备都可以进行内存映射, 因此对于 CPU 来说, 它们就像是一组内存位置。
+为了控制这样的设备, 驱动程序通常必须以完全正确的顺序进行内存访问操作。
 
-然而，拥有一个聪明的 CPU 或者一个聪明的编译器会产生一个潜在的问题，因为如果 CPU 或编译器认为进行重新排序、组合或合并操作之后效率更高，那么驱动程序代码中仔细排列的内存访问操作, 将不会以预期的顺序到达设备。 这就导致设备出现故障。
+然而, 拥有一个聪明的 CPU 或者一个聪明的编译器会产生一个潜在的问题, 因为如果 CPU 或编译器认为进行重新排序、组合或合并操作之后效率更高, 那么驱动程序代码中仔细排列的内存访问操作, 将不会以预期的顺序到达设备。 这就导致设备出现故障。
 
-在 Linux 内核中，I/O 操作应该通过适当的访问器例程来完成 - 例如 `inb()` 或 `writel()`。
+在 Linux 内核中, I/O 操作应该通过适当的访问器例程来完成 - 例如 `inb()` 或 `writel()`。
 它们知道如何让此类访问操作按适当的顺序进行。
-虽然在大多数情况下不需要显式使用内存屏障，但如果访问函数被用来引用具有宽松内存访问属性的 I/O 内存窗口，则需要使用强内存屏障来进行强制排序。
+虽然在大多数情况下不需要显式使用内存屏障, 但如果访问函数被用来引用具有宽松内存访问属性的 I/O 内存窗口, 则需要使用强内存屏障来进行强制排序。
 
-有关更多信息，请参阅 `Documentation/driver-api/device-io.rst`。
+有关更多信息, 请参阅 `Documentation/driver-api/device-io.rst`。
 
 
 INTERRUPTS
@@ -3008,13 +3008,13 @@ This may be alleviated - at least in part - by disabling local interrupts (a for
 
 However, consider a driver that was talking to an ethernet card that sports an address register and a data register.  If that driver's core talks to the card under interrupt-disablement and then the driver's interrupt handler is invoked:
 
-驱动程序可能会被自己的中断服务例程所中断，因此驱动程序的两个部分可能会干扰对方控制或访问设备的尝试。
+驱动程序可能会被自己的中断服务例程所中断, 因此驱动程序的两个部分可能会干扰对方控制或访问设备的尝试。
 
 这可以通过禁用本地中断来缓解, 至少部分缓解（通过一种锁定形式）, 使得关键操作都包含在驱动程序中的中断禁用部分中。
-驱动程序的中断例程正在执行时，驱动程序的核心可能不会运行在同一个 CPU 上，并且在当前中断处理完成之前, 不允许再次发生它的中断，因此中断处理程序不需要锁定。
+驱动程序的中断例程正在执行时, 驱动程序的核心可能不会运行在同一个 CPU 上, 并且在当前中断处理完成之前, 不允许再次发生它的中断, 因此中断处理程序不需要锁定。
 
-然而，考虑一个驱动程序正在与一个带有地址寄存器和数据寄存器的以太网卡通信。
-如果该驱动程序的核心在中断禁用下与网卡对话，然后调用驱动程序的中断处理程序：
+然而, 考虑一个驱动程序正在与一个带有地址寄存器和数据寄存器的以太网卡通信。
+如果该驱动程序的核心在中断禁用下与网卡对话, 然后调用驱动程序的中断处理程序：
 
 ```c
   LOCAL IRQ DISABLE
@@ -3029,7 +3029,7 @@ However, consider a driver that was talking to an ethernet card that sports an a
 
 The store to the data register might happen after the second store to the address register if ordering rules are sufficiently relaxed:
 
-如果排序规则足够宽松，则第一次存储到数据寄存器的store操作, 可能发生在第二次存储到地址寄存器的 store 之后：
+如果排序规则足够宽松, 则第一次存储到数据寄存器的store操作, 可能发生在第二次存储到地址寄存器的 store 之后：
 
 
 ```c
@@ -3044,17 +3044,13 @@ Normally this won't be a problem because the I/O accesses done inside such secti
 
 A similar situation may occur between an interrupt routine and two routines running on separate CPUs that communicate with each other.  If such a case is likely, then interrupt-disabling locks should be used to guarantee ordering.
 
-如果排序规则放宽，则必须假设在中断禁用部分内进行的访问可能会泄漏到其外部，并且可能与在中断中执行的访问交错 - 反之亦然 - 除非使用隐式或显式屏障。
+如果排序规则放宽, 则必须假设在中断禁用部分内进行的访问可能会泄漏到其外部, 并且可能与在中断中执行的访问交错 - 反之亦然 - 除非使用隐式或显式屏障。
 
-通常这不会成为问题，因为在这些部分内完成的 I/O 访问将包括对形成隐式 I/O 屏障的严格有序 I/O 寄存器的同步加载操作。
-
-
-类似的情况可能发生在中断例程和两个运行在彼此通信的独立 CPU 上的例程之间。 如果可能出现这种情况，则应使用禁止中断的锁来保证排序。
+通常这不会成为问题, 因为在这些部分内完成的 I/O 访问将包括对形成隐式 I/O 屏障的严格有序 I/O 寄存器的同步加载操作。
 
 
-#########################################################
-############# 到此处
-#########################################################
+类似的情况可能发生在中断例程和两个运行在彼此通信的独立 CPU 上的例程之间。 如果可能出现这种情况, 则应使用禁止中断的锁来保证排序。
+
 
 
 ==========================
@@ -3066,55 +3062,100 @@ KERNEL I/O BARRIER EFFECTS
 <a name="KERNEL_IO_BARRIER_EFFECTS"></a>
 ## 7. 内核IO屏障的效果
 
-Interfacing with peripherals via I/O accesses is deeply architecture and device specific. Therefore, drivers which are inherently non-portable may rely on specific behaviours of their target systems in order to achieve synchronization in the most lightweight manner possible. For drivers intending to be portable between multiple architectures and bus implementations, the kernel offers a series of accessor functions that provide various degrees of ordering
-guarantees:
+Interfacing with peripherals via I/O accesses is deeply architecture and device specific. Therefore, drivers which are inherently non-portable may rely on specific behaviours of their target systems in order to achieve synchronization in the most lightweight manner possible. For drivers intending to be portable between multiple architectures and bus implementations, the kernel offers a series of accessor functions that provide various degrees of ordering guarantees:
 
-- (`*`) readX(), writeX():
+通过I/O访问与外围设备交互的接口, 是与硬件架构和设备深度绑定的。
+因此, 本质上不可移植的驱动程序, 可能依赖于目标系统的特定行为, 以便以最轻量级的方式实现同步。
+对于打算在多个体系结构和总线实现之间进行移植的驱动程序, 内核提供了一系列的访问函数, 提供不同程度的排序保证：
 
-  The readX() and writeX() MMIO accessors take a pointer to the   peripheral being accessed as an __iomem * parameter. For pointers   mapped with the default I/O attributes (e.g. those returned by   ioremap()), the ordering guarantees are as follows:
+### (`*`) `readX()`, `writeX()`:
 
-  1. All readX() and writeX() accesses to the same peripheral are ordered with respect to each other. This ensures that MMIO register accesses by the same CPU thread to a particular device will arrive in program order.
+The `readX()` and `writeX()` MMIO accessors take a pointer to the peripheral being accessed as an `__iomem *` parameter. For pointers mapped with the default I/O attributes (e.g. those returned by `ioremap()`), the ordering guarantees are as follows:
 
-  2. A writeX() issued by a CPU thread holding a spinlock is ordered before a writeX() to the same peripheral from another CPU thread issued after a later acquisition of the same spinlock. This ensures that MMIO register writes to a particular device issued while holding a spinlock will arrive in an order consistent with acquisitions of the lock.
+`readX()` 和 `writeX()` 这两个 MMIO 访问器都有一个 `__iomem *` 参数, 作为指向要访问的外围设备的指针。
+对于使用默认 I/O 属性映射的指针（例如, 由 `ioremap()` 返回的指针）, 排序保证如下：
 
-  3. A writeX() by a CPU thread to the peripheral will first wait for the completion of all prior writes to memory either issued by, or propagated to, the same thread. This ensures that writes by the CPU to an outbound DMA buffer allocated by dma_alloc_coherent() will be visible to a DMA engine when the CPU writes to its MMIO control register to trigger the transfer.
+1. All `readX()` and `writeX()` accesses to the same peripheral are ordered with respect to each other. This ensures that MMIO register accesses by the same CPU thread to a particular device will arrive in program order.
 
-  4. A readX() by a CPU thread from the peripheral will complete before any subsequent reads from memory by the same thread can begin. This ensures that reads by the CPU from an incoming DMA buffer allocated by dma_alloc_coherent() will not see stale data after reading from the DMA engine's MMIO status register to establish that the DMA transfer has completed.
+1. 对同一个外设的所有 `readX()` 和 `writeX()` 访问都是有序的。 这确保了同一 CPU 线程对特定设备的 MMIO 寄存器访问将按程序指定的顺序到达。
 
-  5. A readX() by a CPU thread from the peripheral will complete before any subsequent delay() loop can begin execution on the same thread. This ensures that two MMIO register writes by the CPU to a peripheral will arrive at least 1us apart if the first write is immediately read back with readX() and udelay(1) is called prior to the second writeX():
+2. A `writeX()` issued by a CPU thread holding a spinlock is ordered before a `writeX()` to the same peripheral from another CPU thread issued after a later acquisition of the same spinlock. This ensures that MMIO register writes to a particular device issued while holding a spinlock will arrive in an order consistent with acquisitions of the lock.
 
-    writel(42, DEVICE_REGISTER_0); // Arrives at the device...
-    readl(DEVICE_REGISTER_0);
-    udelay(1);
-    writel(42, DEVICE_REGISTER_1); // ...at least 1us before this.
+2. 持有自旋锁的 CPU 线程发出的 `writeX()`, 会被排在, 稍后获得相同自旋锁的另一个 CPU 线程, 在获取自旋锁之后发出的, 对同一外围设备的 `writeX()` 之前。 这确保了在持有自旋锁的同时向特定设备发出的 MMIO 寄存器写入, 将按照与锁获取顺序一致的顺序到达。
 
-  The ordering properties of __iomem pointers obtained with non-default   attributes (e.g. those returned by ioremap_wc()) are specific to the   underlying architecture and therefore the guarantees listed above cannot   generally be relied upon for accesses to these types of mappings.
+3. A `writeX()` by a CPU thread to the peripheral will first wait for the completion of all prior writes to memory either issued by, or propagated to, the same thread. This ensures that writes by the CPU to an outbound DMA buffer allocated by `dma_alloc_coherent()` will be visible to a DMA engine when the CPU writes to its MMIO control register to trigger the transfer.
 
-- (`*`) readX_relaxed(), writeX_relaxed():
+3. CPU 线程对外围设备的 `writeX()` 会先等待先前的所有内存写入完成, 无论是由同一线程发出的, 还是传播到同一线程的。 这确保了当 CPU 写入其 MMIO 控制寄存器以触发传输时, ​​CPU 对由 `dma_alloc_coherent()` 分配的出站 DMA 缓冲区的写入, 对 DMA 引擎可见。
 
-  These are similar to readX() and writeX(), but provide weaker memory   ordering guarantees. Specifically, they do not guarantee ordering with   respect to locking, normal memory accesses or delay() loops (i.e.   bullets 2-5 above) but they are still guaranteed to be ordered with   respect to other accesses from the same CPU thread to the same   peripheral when operating on __iomem pointers mapped with the default   I/O attributes.
+4. A `readX()` by a CPU thread from the peripheral will complete before any subsequent reads from memory by the same thread can begin. This ensures that reads by the CPU from an incoming DMA buffer allocated by `dma_alloc_coherent()` will not see stale data after reading from the DMA engine's MMIO status register to establish that the DMA transfer has completed.
 
-- (`*`) readsX(), writesX():
+4. CPU 线程对外设的 `readX()`, 将在同一线程开始从内存中读取任何后续内容之前完成。 这确保了 CPU 从 `dma_alloc_coherent()` 分配的传入 DMA 缓冲区读取的数据, 在读取 DMA 引擎的 MMIO 状态寄存器, 以确定 DMA 传输已完成之后, 不会看到过时的数据。
 
-  The readsX() and writesX() MMIO accessors are designed for accessing   register-based, memory-mapped FIFOs residing on peripherals that are not   capable of performing DMA. Consequently, they provide only the ordering   guarantees of readX_relaxed() and writeX_relaxed(), as documented above.
 
-- (`*`) inX(), outX():
+5. A `readX()` by a CPU thread from the peripheral will complete before any subsequent `delay()` loop can begin execution on the same thread. This ensures that two MMIO register writes by the CPU to a peripheral will arrive at least 1us apart if the first write is immediately read back with `readX()` and `udelay(1)` is called prior to the second `writeX()`:
 
-  The inX() and outX() accessors are intended to access legacy port-mapped   I/O peripherals, which may require special instructions on some   architectures (notably x86). The port number of the peripheral being   accessed is passed as an argument.
+5. CPU 线程从外围设备执行的  `readX()` 读取,  将在同一线程上的任何后续的 `delay()` 循环开始执行之前完成。 这确保了 CPU 对外围设备的两次 MMIO 寄存器写入至少相隔 1us, 如果第一次写入使用 `readX()` 立即回读, 并且在第二次 `writeX() 之前调用 `udelay(1)`：
 
-  Since many CPU architectures ultimately access these peripherals via an   internal virtual memory mapping, the portable ordering guarantees   provided by inX() and outX() are the same as those provided by readX()   and writeX() respectively when accessing a mapping with the default I/O   attributes.
 
-  Device drivers may expect outX() to emit a non-posted write transaction   that waits for a completion response from the I/O peripheral before   returning. This is not guaranteed by all architectures and is therefore   not part of the portable ordering semantics.
+```c
+writel(42, DEVICE_REGISTER_0); // Arrives at the device...
+readl(DEVICE_REGISTER_0);
+udelay(1);
+writel(42, DEVICE_REGISTER_1); // ...at least 1us before this.
+```
 
-- (`*`) insX(), outsX():
+The ordering properties of `__iomem` pointers obtained with non-default attributes (e.g. those returned by `ioremap_wc()`) are specific to the underlying architecture and therefore the guarantees listed above cannot generally be relied upon for accesses to these types of mappings.
 
-  As above, the insX() and outsX() accessors provide the same ordering   guarantees as readsX() and writesX() respectively when accessing a   mapping with the default I/O attributes.
+使用非默认属性获得的 `__iomem` 指针（例如, 由 `ioremap_wc()` 返回的指针）, 其排序属性特定于底层架构, 因此通常不能依赖上面列出的保证来对这些类型的映射进行访问。
 
-- (`*`) ioreadX(), iowriteX():
 
-  These will perform appropriately for the type of access they're actually   doing, be it inX()/outX() or readX()/writeX().
+#########################################################
+############# 到此处
+#########################################################
 
-With the exception of the string accessors (insX(), outsX(), readsX() and writesX()), all of the above assume that the underlying peripheral is little-endian and will therefore perform byte-swapping operations on big-endian architectures.
+
+### (`*`) `readX_relaxed()`, `writeX_relaxed()`:
+
+These are similar to `readX()` and `writeX()`, but provide weaker memory   ordering guarantees. Specifically, they do not guarantee ordering with   respect to locking, normal memory accesses or `delay()` loops (i.e.   bullets 2-5 above) but they are still guaranteed to be ordered with   respect to other accesses from the same CPU thread to the same   peripheral when operating on `__iomem` pointers mapped with the default   I/O attributes.
+
+它们类似于 `readX()` 和 `writeX()`, 但提供较弱的内存排序保证。 具体来说, 它们不保证关于锁定、正常内存访问或 `delay()` 循环（即上面的第 2-5 条）的排序, 但它们仍然保证关于从同一 CPU 线程到 操作使用默认 I/O 属性映射的 `__iomem` 指针时相同的外围设备。
+
+### (`*`) `readsX()`, `writesX()`:
+
+The `readsX()` and `writesX()` MMIO accessors are designed for accessing   register-based, memory-mapped FIFOs residing on peripherals that are not   capable of performing DMA. Consequently, they provide only the ordering   guarantees of `readX_relaxed()` and `writeX_relaxed()`, as documented above.
+
+`readsX()` 和 `writesX()` MMIO 访问器设计用于访问驻留在不能执行 DMA 的外设上的基于寄存器的内存映射 FIFO。 因此, 它们仅提供“readX_relaxed()”和“writeX_relaxed()”的排序保证, 如上文所述。
+
+### (`*`) `inX()`, `outX()`:
+
+The `inX()` and `outX()` accessors are intended to access legacy port-mapped   I/O peripherals, which may require special instructions on some   architectures (notably x86). The port number of the peripheral being   accessed is passed as an argument.
+
+Since many CPU architectures ultimately access these peripherals via an   internal virtual memory mapping, the portable ordering guarantees   provided by `inX()` and `outX()` are the same as those provided by `readX()`   and `writeX()` respectively when accessing a mapping with the default I/O   attributes.
+
+Device drivers may expect `outX()` to emit a non-posted write transaction   that waits for a completion response from the I/O peripheral before   returning. This is not guaranteed by all architectures and is therefore   not part of the portable ordering semantics.
+
+`inX()` 和 `outX()` 访问器旨在访问传统的端口映射 I/O 外设, 这可能需要在某些体系结构（特别是 x86）上的特殊指令。 被访问的外围设备的端口号作为参数传递。
+
+由于许多 CPU 架构最终通过内部虚拟内存映射访问这些外设, 因此 `inX()` 和 `outX()` 提供的可移植顺序保证与 `readX()` 和 `writeX()` 提供的保证相同 分别在访问具有默认 I/O 属性的映射时。
+
+设备驱动程序可能期望 `outX()` 发出一个非发布的写事务, 在返回之前等待来自 I/O 外设的完成响应。 这不是所有架构都能保证的, 因此不是可移植排序语义的一部分。
+
+### (`*`) `insX()`, `outsX()`:
+
+As above, the `insX()` and `outsX()` accessors provide the same ordering   guarantees as `readsX()` and `writesX()` respectively when accessing a   mapping with the default I/O attributes.
+
+如上所述, 当访问具有默认 I/O 属性的映射时, `insX()` 和 `outsX()` 访问器分别提供与 `readsX()` 和 `writesX()` 相同的顺序保证。
+
+
+### (`*`) `ioreadX()`, `iowriteX()`:
+
+These will perform appropriately for the type of access they're actually   doing, be it `inX()`/`outX()` or `readX()`/`writeX()`.
+
+With the exception of the string accessors (`insX()`, `outsX()`, `readsX()` and `writesX()`), all of the above assume that the underlying peripheral is little-endian and will therefore perform byte-swapping operations on big-endian architectures.
+
+这些将根据他们实际执行的访问类型适当地执行, 无论是 `inX()`/`outX()` 或 `readX()`/`writeX()`。
+
+除了字符串访问器（`insX()`、`outsX()`、`readsX()` 和`writesX()`）, 以上所有这些都假设底层外设是小端的, 因此将执行 大端架构上的字节交换操作。
 
 
 ========================================
@@ -3129,12 +3170,23 @@ It has to be assumed that the conceptual CPU is weakly-ordered but that it will 
 
 This means that it must be considered that the CPU will execute its instruction stream in any order it feels like - or even in parallel - provided that if an instruction in the stream depends on an earlier instruction, then that earlier instruction must be sufficiently complete[*] before the later instruction may proceed; in other words: provided that the appearance of causality is maintained.
 
- [*] Some instructions have more than one effect - such as changing the condition codes, changing registers or changing memory - and different instructions may depend on different effects.
+必须假设概念 CPU 是弱有序的, 但它会保持程序因果关系的外观。 某些 CPU（例如 i386 或 x86_64）比其他 CPU（例如 powerpc 或 frv）受到更多限制, 因此必须在特定于架构的代码之外假设最宽松的情况（即 DEC Alpha）。
+
+这意味着必须考虑 CPU 将按照它感觉的任何顺序执行其指令流 - 甚至并行 - 前提是如果流中的指令依赖于较早的指令, 则该较早的指令必须足够完整[ *] 在后面的指令可以进行之前； 换句话说：只要保持因果关系的外观。
+
+> [*] Some instructions have more than one effect - such as changing the condition codes, changing registers or changing memory - and different instructions may depend on different effects.
+
+> [*] 一些指令有不止一种效果——比如改变条件代码、改变寄存器或改变内存——不同的指令可能取决于不同的效果。
 
 A CPU may also discard any instruction sequence that winds up having no ultimate effect.  For example, if two adjacent instructions both load an immediate value into the same register, the first may be discarded.
 
 
 Similarly, it has to be assumed that compiler might reorder the instruction stream in any way it sees fit, again provided the appearance of causality is maintained.
+
+CPU 还可以丢弃任何最终没有最终效果的指令序列。 例如, 如果两个相邻的指令都将一个立即数加载到同一个寄存器中, 则第一个可能会被丢弃。
+
+
+同样, 必须假设编译器可能会以它认为合适的任何方式重新排序指令流, 再次提供因果关系的外观。
 
 
 ============================
@@ -3147,6 +3199,10 @@ THE EFFECTS OF THE CPU CACHE
 The way cached memory operations are perceived across the system is affected to a certain extent by the caches that lie between CPUs and memory, and by the memory coherence system that maintains the consistency of state in the system.
 
 As far as the way a CPU interacts with another part of the system through the caches goes, the memory system has to include the CPU's caches, and memory barriers for the most part act at the interface between the CPU and its cache (memory barriers logically act on the dotted line in the following diagram):
+
+跨系统感知缓存内存操作的方式在一定程度上受到位于 CPU 和内存之间的缓存以及维护系统中状态一致性的内存一致性系统的影响。
+
+就 CPU 通过缓存与系统的另一部分进行交互的方式而言, 内存系统必须包括 CPU 的缓存, 并且大部分内存屏障作用于 CPU 与其缓存之间的接口（逻辑上的内存屏障） 在下图中的虚线上操作）：
 
 ```c
       <--- CPU --->         :       <----------- Memory ----------->
@@ -3178,9 +3234,20 @@ The CPU core may execute instructions in any order it deems fit, provided the ex
 
 What memory barriers are concerned with is controlling the order in which accesses cross from the CPU side of things to the memory side of things, and the order in which the effects are perceived to happen by the other observers in the system.
 
-[!] Memory barriers are _not_ needed within a given CPU, as CPUs always see their own loads and stores as if they had happened in program order.
+尽管任何特定的加载或存储实际上可能不会出现在发出它的 CPU 之外, 因为它可能已经在 CPU 自己的缓存中得到满足, 但就其他 CPU 而言, 它仍然看起来好像已经发生了完整的内存访问因为缓存一致性机制会将缓存行迁移到访问 CPU 并传播冲突时的影响。
 
-[!] MMIO or other device accesses may bypass the cache system.  This depends on the properties of the memory window through which devices are accessed and/or the use of any special device communication instructions the CPU may have.
+CPU 内核可以按照它认为合适的任何顺序执行指令, 前提是预期的程序因果关系似乎保持不变。一些指令生成加载和存储操作, 然后进入要执行的内存访问队列。内核可以按照它希望的任何顺序将它们放在队列中, 并继续执行直到它被迫等待指令完成。
+
+内存屏障所关心的是控制从事物的 CPU 端到事物的内存端的访问顺序, 以及系统中其他观察者感知影响发生的顺序。
+
+
+> [!] Memory barriers are _not_ needed within a given CPU, as CPUs always see their own loads and stores as if they had happened in program order.
+
+> [!] MMIO or other device accesses may bypass the cache system.  This depends on the properties of the memory window through which devices are accessed and/or the use of any special device communication instructions the CPU may have.
+
+> [!] 在给定的 CPU 中_不需要_内存屏障, 因为 CPU 总是看到自己的加载和存储, 就好像它们是按照程序顺序发生的一样。
+
+> [!] MMIO 或其他设备访问可能会绕过缓存系统。这取决于访问设备的内存窗口的属性和/或 CPU 可能具有的任何特殊设备通信指令的使用。
 
 
 CACHE COHERENCY VS DMA
@@ -3195,6 +3262,12 @@ In addition, the data DMA'd to RAM by a device may be overwritten by dirty cache
 
 See Documentation/core-api/cachetlb.rst for more information on cache management.
 
+并非所有系统都保持与执行 DMA 的设备相关的缓存一致性。 在这种情况下, 尝试 DMA 的设备可能会从 RAM 获取陈旧数据, 因为脏缓存行可能驻留在各种 CPU 的缓存中, 并且可能尚未写回 RAM。 为了解决这个问题, 内核的适当部分必须刷新每个 CPU 上缓存的重叠位（也可能使它们无效）。
+
+此外, 设备 DMA 到 RAM 的数据可能会被设备安装自己的数据后从 CPU 的缓存写回 RAM 的脏缓存行覆盖, 或者 CPU 缓存中存在的缓存行可能只是掩盖了 RAM 已经更新的事实, 直到缓存行从 CPU 的缓存中被丢弃并重新加载。 为了解决这个问题, 内核的适当部分必须使每个 CPU 上缓存的重叠位无效。
+
+有关缓存管理的更多信息, 请参阅 Documentation/core-api/cachetlb.rst。
+
 
 CACHE COHERENCY VS MMIO
 -----------------------
@@ -3206,6 +3279,10 @@ Memory mapped I/O usually takes place through memory locations that are part of 
 
 Amongst these properties is usually the fact that such accesses bypass the caching entirely and go directly to the device buses.  This means MMIO accesses may, in effect, overtake accesses to cached memory that were emitted earlier. A memory barrier isn't sufficient in such a case, but rather the cache must be flushed between the cached memory write and the MMIO access if the two are in any way dependent.
 
+内存映射 I/O 通常通过内存位置发生, 这些内存位置是 CPU 内存空间中窗口的一部分, 该窗口具有与通常的 RAM 定向窗口不同的属性。
+
+在这些属性中, 通常这样的访问完全绕过缓存并直接进入设备总线。 这意味着 MMIO 访问实际上可能会超过对先前发出的缓存内存的访问。 在这种情况下, 内存屏障是不够的, 而是必须在缓存内存写入和 MMIO 访问之间刷新缓存, 如果两者有任何依赖关系。
+
 
 =========================
 THE THINGS CPUS GET UP TO
@@ -3216,16 +3293,23 @@ THE THINGS CPUS GET UP TO
 
 A programmer might take it for granted that the CPU will perform memory operations in exactly the order specified, so that if the CPU is, for example, given the following piece of code to execute:
 
-  a = READ_ONCE(*A);
-  WRITE_ONCE(*B, b);
-  c = READ_ONCE(*C);
-  d = READ_ONCE(*D);
-  WRITE_ONCE(*E, e);
+程序员可能理所当然地认为 CPU 将完全按照指定的顺序执行内存操作, 因此, 例如, 如果给定 CPU 执行以下代码段：
+
+```c
+a = READ_ONCE(*A);
+WRITE_ONCE(*B, b);
+c = READ_ONCE(*C);
+d = READ_ONCE(*D);
+WRITE_ONCE(*E, e);
+```
 
 they would then expect that the CPU will complete the memory operation for each instruction before moving on to the next one, leading to a definite sequence of operations as seen by external observers in the system:
 
-  LOAD *A, STORE *B, LOAD *C, LOAD *D, STORE *E.
+然后他们会期望 CPU 将在继续执行下一条指令之前完成每条指令的内存操作, 从而导致系统中的外部观察者看到的确定的操作序列：
 
+```c
+LOAD *A, STORE *B, LOAD *C, LOAD *D, STORE *E.
+```
 
 Reality is, of course, much messier.  With many CPUs and compilers, the above assumption doesn't hold because:
 
@@ -3241,32 +3325,61 @@ Reality is, of course, much messier.  With many CPUs and compilers, the above as
 
 - (`*`) the CPU's data cache may affect the ordering, and while cache-coherency mechanisms may alleviate this - once the store has actually hit the cache - there's no guarantee that the coherency management will be propagated in order to other CPUs.
 
+当然, 现实要混乱得多。对于许多 CPU 和编译器, 上述假设不成立, 因为：
+
+- (`*`) 加载更有可能需要立即完成以允许执行进度, 而存储通常可以毫无问题地推迟；
+
+- (`*`) 加载可能是推测性的, 如果结果被证明是不必要的, 则将其丢弃；
+
+- (`*`) 加载可能是推测性的, 导致在预期的事件序列中的错误时间获取结果；
+
+- (`*`) 内存访问的顺序可能会重新排列, 以促进更好地使用 CPU 总线和缓存；
+
+- (`*`) 在与内存或 I/O 硬件交谈时可以组合加载和存储以提高性能, 这些硬件可以对相邻位置进行批量访问, 从而降低事务设置成本（内存和 PCI 设备都可以做这个）;和
+
+- (`*`) CPU 的数据缓存可能会影响排序, 虽然缓存一致性机制可以缓解这种情况 - 一旦存储实际命中缓存 - 不能保证一致性管理将传播到其他 CPU。
+
 So what another CPU, say, might actually observe from the above piece of code is:
 
-  LOAD *A, ..., LOAD {*C,*D}, STORE *E, STORE *B
+那么另一个 CPU 可能从上面的代码中实际观察到的是：
 
-  (Where "LOAD {*C,*D}" is a combined load)
+```c
+LOAD *A, ..., LOAD {*C,*D}, STORE *E, STORE *B
 
+(Where "LOAD {*C,*D}" is a combined load)
+```
 
 However, it is guaranteed that a CPU will be self-consistent: it will see its _own_ accesses appear to be correctly ordered, without the need for a memory barrier.  For instance with the following code:
 
-  U = READ_ONCE(*A);
-  WRITE_ONCE(*A, V);
-  WRITE_ONCE(*A, W);
-  X = READ_ONCE(*A);
-  WRITE_ONCE(*A, Y);
-  Z = READ_ONCE(*A);
+但是, 可以保证 CPU 将是自洽的：它会看到它的 _own_ 访问似乎是正确排序的, 而无需内存屏障。 例如使用以下代码：
+
+```c
+U = READ_ONCE(*A);
+WRITE_ONCE(*A, V);
+WRITE_ONCE(*A, W);
+X = READ_ONCE(*A);
+WRITE_ONCE(*A, Y);
+Z = READ_ONCE(*A);
+```
 
 and assuming no intervention by an external influence, it can be assumed that the final result will appear to be:
 
-  U == the original value of *A
-  X == W
-  Z == Y
-  *A == Y
+假设没有外部影响的干预, 可以假设最终结果将是：
+
+```c
+U == the original value of *A
+X == W
+Z == Y
+*A == Y
+```
 
 The code above may cause the CPU to generate the full sequence of memory accesses:
 
-  U=LOAD *A, STORE *A=V, STORE *A=W, X=LOAD *A, STORE *A=Y, Z=LOAD *A
+上面的代码可能会导致 CPU 生成完整的内存访问序列：
+
+```c
+U=LOAD *A, STORE *A=V, STORE *A=W, X=LOAD *A, STORE *A=Y, Z=LOAD *A
+```
 
 in that order, but, without intervention, the sequence may have almost any combination of elements combined or discarded, provided the program's view of the world remains consistent.  Note that `READ_ONCE()` and `WRITE_ONCE()` are -not- optional in the above example, as there are architectures where a given CPU might reorder successive loads to the same location. On such architectures, `READ_ONCE()` and `WRITE_ONCE()` do whatever is necessary to prevent this, for example, on Itanium the volatile casts used by `READ_ONCE()` and `WRITE_ONCE()` cause GCC to emit the special ld.acq and st.rel instructions (respectively) that prevent such reordering.
 
@@ -3274,24 +3387,46 @@ The compiler may also combine, discard or defer elements of the sequence before 
 
 For instance:
 
+按照这个顺序, 但是如果没有干预, 只要程序的世界观保持一致, 这个序列几乎可以组合或丢弃元素的任何组合。 请注意, 在上面的示例中, “READ_ONCE()”和“WRITE_ONCE()”不是可选的, 因为在某些架构中, 给定的 CPU 可能会将连续加载重新排序到同一位置。 在这样的体系结构上, `READ_ONCE()` 和`WRITE_ONCE()` 会做任何必要的事情来防止这种情况, 例如, 在 Itanium 上, `READ_ONCE()` 和 `WRITE_ONCE()` 使用的易失性转换会导致 GCC 发出特殊的 ld.acq 和 st.rel 指令（分别）防止这种重新排序。
+
+编译器也可能在 CPU 看到它们之前组合、丢弃或推迟序列的元素。
+
+例如：
+
+```c
   *A = V;
   *A = W;
+```
 
 may be reduced to:
 
+可以简化为：
+
+```c
   *A = W;
+```
 
 since, without either a write barrier or an `WRITE_ONCE()`, it can be assumed that the effect of the storage of V to *A is lost.  Similarly:
 
+因为, 如果没有写屏障或`WRITE_ONCE()`, 可以假设将 V 存储到 *A 的效果会丢失。 相似地：
+
+```c
   *A = Y;
   Z = *A;
+```
 
 may, without a memory barrier or an `READ_ONCE()` and `WRITE_ONCE()`, be reduced to:
 
+在没有内存屏障或 `READ_ONCE()` 和 `WRITE_ONCE()` 的情况下, 可以简化为：
+
+```c
   *A = Y;
   Z = Y;
+```
 
 and the LOAD operation never appear outside of the CPU.
+
+并且 LOAD 操作永远不会出现在 CPU 之外。
 
 
 AND THEN THERE'S THE ALPHA
@@ -3303,6 +3438,10 @@ AND THEN THERE'S THE ALPHA
 The DEC Alpha CPU is one of the most relaxed CPUs there is.  Not only that, some versions of the Alpha CPU have a split data cache, permitting them to have two semantically-related cache lines updated at separate times.  This is where the data dependency barrier really becomes necessary as this synchronises both caches with the memory coherence system, thus making it seem like pointer changes vs new data occur in the right order.
 
 The Alpha defines the Linux kernel's memory model, although as of v4.15 the Linux kernel's addition of `smp_mb()` to `READ_ONCE()` on Alpha greatly reduced its impact on the memory model.
+
+DEC Alpha CPU 是目前最轻松的 CPU 之一。 不仅如此, 某些版本的 Alpha CPU 具有拆分数据缓存, 允许它们在不同时间更新两个语义相关的缓存行。 这就是数据依赖屏障真正变得必要的地方, 因为这将两个缓存与内存一致性系统同步, 从而使指针更改与新数据看起来以正确的顺序发生。
+
+Alpha 定义了 Linux 内核的内存模型, 尽管从 v4.15 开始, Linux 内核在 Alpha 上将 `smp_mb()` 添加到 `READ_ONCE()` 大大减少了它对内存模型的影响。
 
 
 VIRTUAL MACHINE GUESTS
@@ -3318,6 +3457,11 @@ To handle this case optimally, low-level virt_mb() etc macros are available. The
 
 These are equivalent to `smp_mb()` etc counterparts in all other respects, in particular, they do not control MMIO effects: to control MMIO effects, use mandatory barriers.
 
+即使在没有 SMP 支持的情况下编译来宾本身, 在虚拟机中运行的来宾也可能会受到 SMP 效果的影响。 这是在运行 UP 内核时与 SMP 主机接口的人工制品。 对此用例使用强制性障碍是可能的, 但通常不是最理想的。
+
+为了最佳地处理这种情况, 可以使用低级 virt_mb() 等宏。 当启用 SMP 时, 它们与 `smp_mb()` 等具有相同的效果, 但为 SMP 和非 SMP 系统生成相同的代码。 例如, 虚拟机来宾在与（可能是 SMP）主机同步时应该使用 virt_mb() 而不是 `smp_mb()`。
+
+这些在所有其他方面都等同于 `smp_mb()` 等对应物, 特别是, 它们不控制 MMIO 效果：要控制 MMIO 效果, 请使用强制障碍。
 
 ============
 EXAMPLE USES
@@ -3333,11 +3477,9 @@ CIRCULAR BUFFERS
 <a name="CIRCULAR_BUFFERS"></a>
 ### 11.1 循环Buffer
 
-Memory barriers can be used to implement circular buffering without the need of a lock to serialise the producer with the consumer.  See:
+Memory barriers can be used to implement circular buffering without the need of a lock to serialise the producer with the consumer.  See: `Documentation/core-api/circular-buffers.rst` for details.
 
-  Documentation/core-api/circular-buffers.rst
-
-for details.
+内存屏障可用于实现循环缓冲, 而无需锁定将生产者与消费者序列化。 有关详细信息, 请参阅：`Documentation/core-api/circular-buffers.rst`。
 
 
 ==========

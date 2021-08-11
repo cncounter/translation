@@ -132,7 +132,7 @@ public class com.cncounter.opcode.DemoMethodOpcode
 
 - class的完全限定名信息
 - class文件的小版本号: `minor version: 0`
-- class文件的大版本号: `major version: 52`; 根据规则, `52-45=8`, 所以class格式的版本为 `8.0`；
+- class文件的大版本号: `major version: 52`; 根据规则, `52-45(+1.0)=8`, 所以class格式的版本为 `8.0`；
 - class的可见性标识: `ACC_PUBLIC` 表示 public 类; `ACC_SUPER` 则是为了兼容性而生成的, 可以忽略。
 
 
@@ -1140,7 +1140,7 @@ short num8 = array8[8];
 
 赋值操作(Store)是指将操作数栈栈顶的元素弹出, 并赋值给局部变量或者数组元素。
 
-Store也可以称为保存。
+Store也可以称为保存, 本质是将CPU寄存器中的值保存到主内存中。 当然这里面存在一些映射和缓存关系，比如 "操作数栈 -- 数据寄存器", "CPU高速缓存 -- 内存/方法栈/局部变量表" 等等。
 
 
 #### 4.1 Store操作码列表
@@ -1231,6 +1231,8 @@ Stack在这里明显是指的操作数栈。
 
 #### 5.2 示例代码
 
+
+// 方法返回值不保存
 
 // TODO
 
