@@ -2282,7 +2282,7 @@ There are some more advanced barrier functions:
   请注意, 在使用 `writel()` 时, 不需要在前面的 `wmb()` 来保证在写入 MMIO 区域之前已完成缓存一致性内存写入。
   更便宜的  `writel_relaxed()` 不提供此保证, 不能在此处使用。
 
-  有关宽松 I/O 访问器的更多信息, 请参阅 [7. 内核IO屏障的效果](#KERNEL_IO_BARRIER_EFFECTS) 小节, 有关一致内存的更多信息, 请参阅 `Documentation/core-api/dma-api.rst` 文件。
+  有关宽松 I/O 访问器的更多信息, 请参阅 [7. Linux内核提供的IO屏障效果](#KERNEL_IO_BARRIER_EFFECTS) 小节, 有关一致内存的更多信息, 请参阅 `Documentation/core-api/dma-api.rst` 文件。
 
 - (`*`) `pmem_wmb()`
 
@@ -3060,7 +3060,7 @@ KERNEL I/O BARRIER EFFECTS
 
 
 <a name="KERNEL_IO_BARRIER_EFFECTS"></a>
-## 7. 内核IO屏障的效果
+## 7. Linux内核提供的IO屏障效果
 
 Interfacing with peripherals via I/O accesses is deeply architecture and device specific. Therefore, drivers which are inherently non-portable may rely on specific behaviours of their target systems in order to achieve synchronization in the most lightweight manner possible. For drivers intending to be portable between multiple architectures and bus implementations, the kernel offers a series of accessor functions that provide various degrees of ordering guarantees:
 
@@ -3109,53 +3109,54 @@ The ordering properties of `__iomem` pointers obtained with non-default attribut
 使用非默认属性获得的 `__iomem` 指针（例如, 由 `ioremap_wc()` 返回的指针）, 其排序属性特定于底层架构, 因此通常不能依赖上面列出的保证来对这些类型的映射进行访问。
 
 
-#########################################################
-############# 到此处
-#########################################################
-
-
 ### (`*`) `readX_relaxed()`, `writeX_relaxed()`:
 
-These are similar to `readX()` and `writeX()`, but provide weaker memory   ordering guarantees. Specifically, they do not guarantee ordering with   respect to locking, normal memory accesses or `delay()` loops (i.e.   bullets 2-5 above) but they are still guaranteed to be ordered with   respect to other accesses from the same CPU thread to the same   peripheral when operating on `__iomem` pointers mapped with the default   I/O attributes.
+These are similar to `readX()` and `writeX()`, but provide weaker memory ordering guarantees. Specifically, they do not guarantee ordering with respect to locking, normal memory accesses or `delay()` loops (i.e. bullets 2-5 above) but they are still guaranteed to be ordered with respect to other accesses from the same CPU thread to the same peripheral when operating on `__iomem` pointers mapped with the default I/O attributes.
 
-它们类似于 `readX()` 和 `writeX()`, 但提供较弱的内存排序保证。 具体来说, 它们不保证关于锁定、正常内存访问或 `delay()` 循环（即上面的第 2-5 条）的排序, 但它们仍然保证关于从同一 CPU 线程到 操作使用默认 I/O 属性映射的 `__iomem` 指针时相同的外围设备。
+这两个函数类似于 `readX()` 和 `writeX()`, 但提供较弱的内存排序保证。 具体来说, 它们不保证由锁定、正常内存访问或 `delay()` 循环（即上面的第 2-5 条）达成的排序; 但仍然保证从同一 CPU 线程到相同的外围设备的顺序, 如果这些操作是使用默认 I/O 属性映射的 `__iomem` 指针的话。
+
 
 ### (`*`) `readsX()`, `writesX()`:
 
-The `readsX()` and `writesX()` MMIO accessors are designed for accessing   register-based, memory-mapped FIFOs residing on peripherals that are not   capable of performing DMA. Consequently, they provide only the ordering   guarantees of `readX_relaxed()` and `writeX_relaxed()`, as documented above.
+The `readsX()` and `writesX()` MMIO accessors are designed for accessing register-based, memory-mapped FIFOs residing on peripherals that are not capable of performing DMA. Consequently, they provide only the ordering guarantees of `readX_relaxed()` and `writeX_relaxed()`, as documented above.
 
-`readsX()` 和 `writesX()` MMIO 访问器设计用于访问驻留在不能执行 DMA 的外设上的基于寄存器的内存映射 FIFO。 因此, 它们仅提供“readX_relaxed()”和“writeX_relaxed()”的排序保证, 如上文所述。
+`readsX()` 和 `writesX()` 这两个MMIO访问器专门设计了用来访问, 基于寄存器的, 内存映射 FIFO的, 不能执行 DMA 驻留的外设。 因此, 它们仅提供 `readX_relaxed()` 和 `writeX_relaxed()` 的排序保证, 如上文所述。
 
 ### (`*`) `inX()`, `outX()`:
 
-The `inX()` and `outX()` accessors are intended to access legacy port-mapped   I/O peripherals, which may require special instructions on some   architectures (notably x86). The port number of the peripheral being   accessed is passed as an argument.
+The `inX()` and `outX()` accessors are intended to access legacy port-mapped I/O peripherals, which may require special instructions on some architectures (notably x86). The port number of the peripheral being accessed is passed as an argument.
 
-Since many CPU architectures ultimately access these peripherals via an   internal virtual memory mapping, the portable ordering guarantees   provided by `inX()` and `outX()` are the same as those provided by `readX()`   and `writeX()` respectively when accessing a mapping with the default I/O   attributes.
+Since many CPU architectures ultimately access these peripherals via an internal virtual memory mapping, the portable ordering guarantees provided by `inX()` and `outX()` are the same as those provided by `readX()` and `writeX()` respectively when accessing a mapping with the default I/O attributes.
 
-Device drivers may expect `outX()` to emit a non-posted write transaction   that waits for a completion response from the I/O peripheral before   returning. This is not guaranteed by all architectures and is therefore   not part of the portable ordering semantics.
+Device drivers may expect `outX()` to emit a non-posted write transaction that waits for a completion response from the I/O peripheral before returning. This is not guaranteed by all architectures and is therefore not part of the portable ordering semantics.
 
-`inX()` 和 `outX()` 访问器旨在访问传统的端口映射 I/O 外设, 这可能需要在某些体系结构（特别是 x86）上的特殊指令。 被访问的外围设备的端口号作为参数传递。
+`inX()` 和 `outX()` 这两个访问器旨在访问传统的端口映射 I/O 外设, 在某些体系结构（特别是x86架构）上这可能需要特殊指令。 被访问的外围设备端口号通过函数参数来传递。
 
-由于许多 CPU 架构最终通过内部虚拟内存映射访问这些外设, 因此 `inX()` 和 `outX()` 提供的可移植顺序保证与 `readX()` 和 `writeX()` 提供的保证相同 分别在访问具有默认 I/O 属性的映射时。
+由于许多 CPU 架构最终通过内部虚拟内存来映射这些外设访问, 因此 `inX()` 和 `outX()` 提供的可移植排序保证与 `readX()` 和 `writeX()` 提供的保证相同, 区别只在这两个函数是用来访问具有默认 I/O 属性的映射。
 
 设备驱动程序可能期望 `outX()` 发出一个非发布的写事务, 在返回之前等待来自 I/O 外设的完成响应。 这不是所有架构都能保证的, 因此不是可移植排序语义的一部分。
 
 ### (`*`) `insX()`, `outsX()`:
 
-As above, the `insX()` and `outsX()` accessors provide the same ordering   guarantees as `readsX()` and `writesX()` respectively when accessing a   mapping with the default I/O attributes.
+As above, the `insX()` and `outsX()` accessors provide the same ordering guarantees as `readsX()` and `writesX()` respectively when accessing a mapping with the default I/O attributes.
 
-如上所述, 当访问具有默认 I/O 属性的映射时, `insX()` 和 `outsX()` 访问器分别提供与 `readsX()` 和 `writesX()` 相同的顺序保证。
+如上所述, 当访问具有默认 I/O 属性的映射时, `insX()` 和 `outsX()` 访问器分别提供与 `readsX()` 和 `writesX()` 相同的排序保证。
 
 
 ### (`*`) `ioreadX()`, `iowriteX()`:
 
-These will perform appropriately for the type of access they're actually   doing, be it `inX()`/`outX()` or `readX()`/`writeX()`.
+These will perform appropriately for the type of access they're actually doing, be it `inX()`/`outX()` or `readX()`/`writeX()`.
 
 With the exception of the string accessors (`insX()`, `outsX()`, `readsX()` and `writesX()`), all of the above assume that the underlying peripheral is little-endian and will therefore perform byte-swapping operations on big-endian architectures.
 
 这些将根据他们实际执行的访问类型适当地执行, 无论是 `inX()`/`outX()` 或 `readX()`/`writeX()`。
 
-除了字符串访问器（`insX()`、`outsX()`、`readsX()` 和`writesX()`）, 以上所有这些都假设底层外设是小端的, 因此将执行 大端架构上的字节交换操作。
+除了字符串访问器（`insX()`、`outsX()`、`readsX()` 和`writesX()` ）, 以上列出的其他函数都假设底层外设是小端排序的(little-endian), 因此将在大端排列的架构上将要执行的字节交换操作(byte-swapping)。
+
+
+#########################################################
+############# 到此处
+#########################################################
 
 
 ========================================
