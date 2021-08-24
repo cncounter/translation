@@ -2471,7 +2471,7 @@ Locks and semaphores may not provide any guarantee of ordering on UP compiled sy
 
 See also the section on "[Inter-CPU acquiring barrier effects](#CPU_ACQUIRING_BARRIER_EFFECTS)".
 
-另请参见: [5. 多个CPU之间ACQUIRE屏障的效果](#CPU_ACQUIRING_BARRIER_EFFECTS)
+另请参见: [5. 多个CPU之间ACQUIRE屏障的影响](#CPU_ACQUIRING_BARRIER_EFFECTS)
 
 
 As an example, consider the following:
@@ -2748,7 +2748,7 @@ On SMP systems locking primitives give a more substantial form of barrier: one t
 
 
 <a name="INTER-CPU_ACQUIRING_BARRIER_EFFECTS"></a>
-## 5. 多个CPU之间ACQUIRE屏障的效果
+## 5. 多个CPU之间ACQUIRE屏障的影响
 
 在SMP系统上,  锁定原语提供了一种更实质的屏障形式：在任何一个具体的锁发生冲突的情况下, 会真正地影响其他 CPU 上的内存访问顺序。
 
@@ -3154,11 +3154,6 @@ With the exception of the string accessors (`insX()`, `outsX()`, `readsX()` and 
 除了字符串访问器（`insX()`、`outsX()`、`readsX()` 和`writesX()` ）, 以上列出的其他函数都假设底层外设是小端排序的(little-endian), 因此将在大端排列的架构上将要执行的字节交换操作(byte-swapping)。
 
 
-#########################################################
-############# 到此处
-#########################################################
-
-
 ========================================
 ASSUMED MINIMUM EXECUTION ORDERING MODEL
 ========================================
@@ -3171,23 +3166,28 @@ It has to be assumed that the conceptual CPU is weakly-ordered but that it will 
 
 This means that it must be considered that the CPU will execute its instruction stream in any order it feels like - or even in parallel - provided that if an instruction in the stream depends on an earlier instruction, then that earlier instruction must be sufficiently complete[*] before the later instruction may proceed; in other words: provided that the appearance of causality is maintained.
 
-必须假设概念 CPU 是弱有序的, 但它会保持程序因果关系的外观。 某些 CPU（例如 i386 或 x86_64）比其他 CPU（例如 powerpc 或 frv）受到更多限制, 因此必须在特定于架构的代码之外假设最宽松的情况（即 DEC Alpha）。
+我们心里必须要有一个概念: CPU 执行指令的顺序基本上是乱的(weakly-ordered), 但对外会保持程序基本的因果关系。
+某些 CPU（例如 i386 或 x86_64）比其他 CPU（例如 powerpc 或 frv）受到更多限制, 因此必须在特定于架构的代码之外假设最宽松的情况（如 DEC Alpha）。
 
-这意味着必须考虑 CPU 将按照它感觉的任何顺序执行其指令流 - 甚至并行 - 前提是如果流中的指令依赖于较早的指令, 则该较早的指令必须足够完整[ *] 在后面的指令可以进行之前； 换句话说：只要保持因果关系的外观。
+也就是说必须考虑的情况是: CPU 将按它自己喜欢的任何顺序来执行其指令流 - 甚至可以并行执行。 当然，指令乱序执行有一个前提是: 如果指令流中有一个指令依赖于前面的指令, 那么前面的那个指令必须执行完(或者执行的足够完整), 才可以进行后面的这个指令； 换句话说：只要对外能保持因果关系即可。
 
 > [*] Some instructions have more than one effect - such as changing the condition codes, changing registers or changing memory - and different instructions may depend on different effects.
 
-> [*] 一些指令有不止一种效果——比如改变条件代码、改变寄存器或改变内存——不同的指令可能取决于不同的效果。
+> [*] 某些指令不止一种效果 —— 比如改变条件判断的代码、改变寄存器的代码, 或者改变内存的代码 —— 而且不同的指令又可能取决于不同的效果。
 
 A CPU may also discard any instruction sequence that winds up having no ultimate effect.  For example, if two adjacent instructions both load an immediate value into the same register, the first may be discarded.
 
 
 Similarly, it has to be assumed that compiler might reorder the instruction stream in any way it sees fit, again provided the appearance of causality is maintained.
 
-CPU 还可以丢弃任何最终没有最终效果的指令序列。 例如, 如果两个相邻的指令都将一个立即数加载到同一个寄存器中, 则第一个可能会被丢弃。
+CPU还可以丢弃那些没有最终效果的指令串。 比如, 如果相邻的两条指令都是将某个值(immediate value)加载到同一个寄存器中, 则第一条指令可能会被丢弃。
+
+同样的道理, 也需要预期: 编译器也可能会以它认为合适的任何方式对指令流进行重排序, 只要是对外保证符合因果关系的顺序即可。
 
 
-同样, 必须假设编译器可能会以它认为合适的任何方式重新排序指令流, 再次提供因果关系的外观。
+#########################################################
+############# 到此处
+#########################################################
 
 
 ============================
@@ -3195,15 +3195,15 @@ THE EFFECTS OF THE CPU CACHE
 ============================
 
 <a name="THE_EFFECTS_OF_THE_CPU_CACHE"></a>
-## 9. CPU高速缓存的效果
+## 9. CPU高速缓存的影响
 
 The way cached memory operations are perceived across the system is affected to a certain extent by the caches that lie between CPUs and memory, and by the memory coherence system that maintains the consistency of state in the system.
 
 As far as the way a CPU interacts with another part of the system through the caches goes, the memory system has to include the CPU's caches, and memory barriers for the most part act at the interface between the CPU and its cache (memory barriers logically act on the dotted line in the following diagram):
 
-跨系统感知缓存内存操作的方式在一定程度上受到位于 CPU 和内存之间的缓存以及维护系统中状态一致性的内存一致性系统的影响。
+被cache缓存的内存操作, 其感知在一定程度上受到位于 CPU 和内存之间的缓存, 以及内存一致性系统的影响。
 
-就 CPU 通过缓存与系统的另一部分进行交互的方式而言, 内存系统必须包括 CPU 的缓存, 并且大部分内存屏障作用于 CPU 与其缓存之间的接口（逻辑上的内存屏障） 在下图中的虚线上操作）：
+就 CPU 与系统的其他部分, 通过缓存进行交互这种方式来说, 内存系统必须包括 CPU 缓存, 并且大部分的内存屏障作用于 CPU 与其缓存之间的接口（逻辑上，内存屏障在下图中用冒号构成的虚线这里）：
 
 ```c
       <--- CPU --->         :       <----------- Memory ----------->
@@ -3231,11 +3231,12 @@ As far as the way a CPU interacts with another part of the system through the ca
 
 Although any particular load or store may not actually appear outside of the CPU that issued it since it may have been satisfied within the CPU's own cache, it will still appear as if the full memory access had taken place as far as the other CPUs are concerned since the cache coherency mechanisms will migrate the cacheline over to the accessing CPU and propagate the effects upon conflict.
 
+虽然有可能所有的 load 或者 store 都不会在发出它的 CPU 之外出现, 因为在这个 CPU 自己的cache中可能就达成了。
+但因为缓存一致性机制, 会将缓存行(cacheline)迁移到访问的 CPU 并传播冲突时的影响, 就其他 CPU 而言, 仍然看起来好像已经发生了完整的内存访问。
+
 The CPU core may execute instructions in any order it deems fit, provided the expected program causality appears to be maintained.  Some of the instructions generate load and store operations which then go into the queue of memory accesses to be performed.  The core may place these in the queue in any order it wishes, and continue execution until it is forced to wait for an instruction to complete.
 
 What memory barriers are concerned with is controlling the order in which accesses cross from the CPU side of things to the memory side of things, and the order in which the effects are perceived to happen by the other observers in the system.
-
-尽管任何特定的加载或存储实际上可能不会出现在发出它的 CPU 之外, 因为它可能已经在 CPU 自己的缓存中得到满足, 但就其他 CPU 而言, 它仍然看起来好像已经发生了完整的内存访问因为缓存一致性机制会将缓存行迁移到访问 CPU 并传播冲突时的影响。
 
 CPU 内核可以按照它认为合适的任何顺序执行指令, 前提是预期的程序因果关系似乎保持不变。一些指令生成加载和存储操作, 然后进入要执行的内存访问队列。内核可以按照它希望的任何顺序将它们放在队列中, 并继续执行直到它被迫等待指令完成。
 
@@ -3255,7 +3256,7 @@ CACHE COHERENCY VS DMA
 ----------------------
 
 <a name="CACHE_COHERENCY_VS_DMA"></a>
-### 9.2 缓存一致性与DMS
+### 9.1 缓存一致性与DMS
 
 Not all systems maintain cache coherency with respect to devices doing DMA.  In such cases, a device attempting DMA may obtain stale data from RAM because dirty cache lines may be resident in the caches of various CPUs, and may not have been written back to RAM yet.  To deal with this, the appropriate part of the kernel must flush the overlapping bits of cache on each CPU (and maybe invalidate them as well).
 
@@ -3274,7 +3275,7 @@ CACHE COHERENCY VS MMIO
 -----------------------
 
 <a name="CACHE_COHERENCY_VS_MMIO"></a>
-### 9.3 缓存一致性与MMIO
+### 9.2 缓存一致性与MMIO
 
 Memory mapped I/O usually takes place through memory locations that are part of a window in the CPU's memory space that has different properties assigned than the usual RAM directed window.
 
