@@ -3233,7 +3233,7 @@ The CPU core may execute instructions in any order it deems fit, provided the ex
 
 What memory barriers are concerned with is controlling the order in which accesses cross from the CPU side of things to the memory side of things, and the order in which the effects are perceived to happen by the other observers in the system.
 
-CPU内核可以按照它认为合适的任何顺序执行指令, 前提是预期的程序因果关系保持不变。 一些指令生成 load 和 store 操作, 然后进入内存访问队列等待执行。 CPU内核可以按照它希望的任何顺序将这些指令放在队列中, 并继续往下执行, 直到某些操作, 强制它等待某条指令执行完成。
+CPU核心可以按照它认为合适的任何顺序执行指令, 前提是预期的程序因果关系保持不变。 一些指令生成 load 和 store 操作, 然后进入内存访问队列等待执行。 CPU核心可以按照它希望的任何顺序将这些指令放在队列中, 并继续往下执行, 直到某些操作, 强制它等待某条指令执行完成。
 
 内存屏障所关心的是, 控制从 CPU 侧到内存侧的访问执行顺序, 以及系统中其他观察者感知到影响发生的顺序。
 
@@ -3247,16 +3247,11 @@ CPU内核可以按照它认为合适的任何顺序执行指令, 前提是预期
 > [!] MMIO 或其他设备访问可能会绕过 CPU cache。这取决于访问设备的内存窗口的属性, 以及 CPU 可能具有的某些特殊设备通信指令。
 
 
-
-#########################################################
-############# 到此处
-#########################################################
-
 CACHE COHERENCY VS DMA
 ----------------------
 
 <a name="CACHE_COHERENCY_VS_DMA"></a>
-### 9.1 缓存一致性与DMS
+### 9.1 缓存一致性与 DMA
 
 Not all systems maintain cache coherency with respect to devices doing DMA.  In such cases, a device attempting DMA may obtain stale data from RAM because dirty cache lines may be resident in the caches of various CPUs, and may not have been written back to RAM yet.  To deal with this, the appropriate part of the kernel must flush the overlapping bits of cache on each CPU (and maybe invalidate them as well).
 
@@ -3264,11 +3259,17 @@ In addition, the data DMA'd to RAM by a device may be overwritten by dirty cache
 
 See Documentation/core-api/cachetlb.rst for more information on cache management.
 
-并非所有系统都保持与执行 DMA 的设备相关的缓存一致性。 在这种情况下, 尝试 DMA 的设备可能会从 RAM 获取陈旧数据, 因为脏缓存行可能驻留在各种 CPU 的缓存中, 并且可能尚未写回 RAM。 为了解决这个问题, 内核的适当部分必须刷新每个 CPU 上缓存的重叠位（也可能使它们无效）。
+并非所有系统都维持与执行 DMA 的设备相关的缓存一致性。 在这种情况下, 尝试 DMA 的设备可能会从 RAM 中获取陈旧数据, 因为脏缓存行可能驻留在各种 CPU 缓存中, 并且可能尚未写回 RAM。 为了解决这个问题, Linux内核的相关部分必须刷新每个 CPU 缓存的重叠位（或者置为无效）。
 
-此外, 设备 DMA 到 RAM 的数据可能会被设备安装自己的数据后从 CPU 的缓存写回 RAM 的脏缓存行覆盖, 或者 CPU 缓存中存在的缓存行可能只是掩盖了 RAM 已经更新的事实, 直到缓存行从 CPU 的缓存中被丢弃并重新加载。 为了解决这个问题, 内核的适当部分必须使每个 CPU 上缓存的重叠位无效。
+此外, 设备 DMA 到 RAM 的数据, 可能会在设备装载自己的数据之后, 被 CPU 缓存写回到 RAM 的脏缓存行所覆盖, 或者 CPU 缓存中的缓存行, 可能掩盖了 RAM 已经被更新的事实, 直到缓存行从 CPU 缓存中丢弃并重新加载。  为了解决这个问题, Linux内核的相关部分必须使每个 CPU 上缓存的重叠位无效。
 
-有关缓存管理的更多信息, 请参阅 Documentation/core-api/cachetlb.rst。
+有关缓存管理的更多信息, 请参阅 `Documentation/core-api/cachetlb.rst`。
+
+
+
+#########################################################
+############# 到此处
+#########################################################
 
 
 CACHE COHERENCY VS MMIO
