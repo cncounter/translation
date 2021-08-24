@@ -3185,11 +3185,6 @@ CPU还可以丢弃那些没有最终效果的指令串。 比如, 如果相邻�
 同样的道理, 也需要预期: 编译器也可能会以它认为合适的任何方式对指令流进行重排序, 只要是对外保证符合因果关系的顺序即可。
 
 
-#########################################################
-############# 到此处
-#########################################################
-
-
 ============================
 THE EFFECTS OF THE CPU CACHE
 ============================
@@ -3238,19 +3233,24 @@ The CPU core may execute instructions in any order it deems fit, provided the ex
 
 What memory barriers are concerned with is controlling the order in which accesses cross from the CPU side of things to the memory side of things, and the order in which the effects are perceived to happen by the other observers in the system.
 
-CPU 内核可以按照它认为合适的任何顺序执行指令, 前提是预期的程序因果关系似乎保持不变。一些指令生成加载和存储操作, 然后进入要执行的内存访问队列。内核可以按照它希望的任何顺序将它们放在队列中, 并继续执行直到它被迫等待指令完成。
+CPU内核可以按照它认为合适的任何顺序执行指令, 前提是预期的程序因果关系保持不变。 一些指令生成 load 和 store 操作, 然后进入内存访问队列等待执行。 CPU内核可以按照它希望的任何顺序将这些指令放在队列中, 并继续往下执行, 直到某些操作, 强制它等待某条指令执行完成。
 
-内存屏障所关心的是控制从事物的 CPU 端到事物的内存端的访问顺序, 以及系统中其他观察者感知影响发生的顺序。
+内存屏障所关心的是, 控制从 CPU 侧到内存侧的访问执行顺序, 以及系统中其他观察者感知到影响发生的顺序。
 
 
 > [!] Memory barriers are _not_ needed within a given CPU, as CPUs always see their own loads and stores as if they had happened in program order.
 
 > [!] MMIO or other device accesses may bypass the cache system.  This depends on the properties of the memory window through which devices are accessed and/or the use of any special device communication instructions the CPU may have.
 
-> [!] 在给定的 CPU 中_不需要_内存屏障, 因为 CPU 总是看到自己的加载和存储, 就好像它们是按照程序顺序发生的一样。
+> [!] 单个CPU内部, 并不需要内存屏障, 因为 CPU 总是能看到自己的 load 和 store, 就像它们是按照程序顺序发生的一样。
 
-> [!] MMIO 或其他设备访问可能会绕过缓存系统。这取决于访问设备的内存窗口的属性和/或 CPU 可能具有的任何特殊设备通信指令的使用。
+> [!] MMIO 或其他设备访问可能会绕过 CPU cache。这取决于访问设备的内存窗口的属性, 以及 CPU 可能具有的某些特殊设备通信指令。
 
+
+
+#########################################################
+############# 到此处
+#########################################################
 
 CACHE COHERENCY VS DMA
 ----------------------
