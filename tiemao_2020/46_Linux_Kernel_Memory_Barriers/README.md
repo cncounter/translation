@@ -3263,13 +3263,7 @@ See Documentation/core-api/cachetlb.rst for more information on cache management
 
 此外, 设备 DMA 到 RAM 的数据, 可能会在设备装载自己的数据之后, 被 CPU 缓存写回到 RAM 的脏缓存行所覆盖, 或者 CPU 缓存中的缓存行, 可能掩盖了 RAM 已经被更新的事实, 直到缓存行从 CPU 缓存中丢弃并重新加载。  为了解决这个问题, Linux内核的相关部分必须使每个 CPU 上缓存的重叠位无效。
 
-有关缓存管理的更多信息, 请参阅 `Documentation/core-api/cachetlb.rst`。
-
-
-
-#########################################################
-############# 到此处
-#########################################################
+CPU cache 管理相关的更多信息, 请参阅 `Documentation/core-api/cachetlb.rst`。
 
 
 CACHE COHERENCY VS MMIO
@@ -3282,10 +3276,15 @@ Memory mapped I/O usually takes place through memory locations that are part of 
 
 Amongst these properties is usually the fact that such accesses bypass the caching entirely and go directly to the device buses.  This means MMIO accesses may, in effect, overtake accesses to cached memory that were emitted earlier. A memory barrier isn't sufficient in such a case, but rather the cache must be flushed between the cached memory write and the MMIO access if the two are in any way dependent.
 
-内存映射 I/O 通常通过内存位置发生, 这些内存位置是 CPU 内存空间中窗口的一部分, 该窗口具有与通常的 RAM 定向窗口不同的属性。
+内存映射 I/O 通常是通过内存位置进行的, 这些内存位置是 CPU 内存地址空间中窗口的一部分, 该窗口具有与通常的 RAM 定向窗口不同的属性。
 
-在这些属性中, 通常这样的访问完全绕过缓存并直接进入设备总线。 这意味着 MMIO 访问实际上可能会超过对先前发出的缓存内存的访问。 在这种情况下, 内存屏障是不够的, 而是必须在缓存内存写入和 MMIO 访问之间刷新缓存, 如果两者有任何依赖关系。
+在这些属性中, 通常这样的访问完全绕过缓存并直接进入设备总线。 这意味着 MMIO 访问实际上可能会在先前发出的缓存内存的访问之前到达。 在这种情况下, 内存屏障是不够的, 如果两者有任何依赖关系的话, 必须在缓存内存写入和 MMIO 访问之间刷新缓存, 。
 
+
+
+#########################################################
+############# 到此处
+#########################################################
 
 =========================
 THE THINGS CPUS GET UP TO
