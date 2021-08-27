@@ -3428,24 +3428,20 @@ and the LOAD operation never appear outside of the CPU.
 那么 LOAD 操作永远都不会出现在 CPU 之外。
 
 
-
-#########################################################
-############# 到此处
-#########################################################
-
 AND THEN THERE'S THE ALPHA
 --------------------------
 
 <a name="AND_THEN_THERE_S_THE_ALPHA"></a>
-### 10.1 ALPHA上的一些注意事项
+### 10.1 ALPHA架构的一些注意事项
 
 The DEC Alpha CPU is one of the most relaxed CPUs there is.  Not only that, some versions of the Alpha CPU have a split data cache, permitting them to have two semantically-related cache lines updated at separate times.  This is where the data dependency barrier really becomes necessary as this synchronises both caches with the memory coherence system, thus making it seem like pointer changes vs new data occur in the right order.
 
 The Alpha defines the Linux kernel's memory model, although as of v4.15 the Linux kernel's addition of `smp_mb()` to `READ_ONCE()` on Alpha greatly reduced its impact on the memory model.
 
-DEC Alpha CPU 是目前最轻松的 CPU 之一。 不仅如此, 某些版本的 Alpha CPU 具有拆分数据缓存, 允许它们在不同时间更新两个语义相关的缓存行。 这就是数据依赖屏障真正变得必要的地方, 因为这将两个缓存与内存一致性系统同步, 从而使指针更改与新数据看起来以正确的顺序发生。
+DEC Alpha CPU 是目前最宽松的 CPU 之一。 不仅如此, 某些版本的 Alpha CPU 具有拆分开的数据缓存, 允许它们在不同时间更新两个语义相关的缓存行。 这就是数据依赖屏障真正变得必要的地方, 因为这会将两个缓存与内存一致性系统进行同步, 从而使指针更改与新数据看起来是以正确的顺序发生的。
 
-Alpha 定义了 Linux 内核的内存模型, 尽管从 v4.15 开始, Linux 内核在 Alpha 上将 `smp_mb()` 添加到 `READ_ONCE()` 大大减少了它对内存模型的影响。
+Alpha 定义了 Linux 内核的内存模型, 尽管从 v4.15 开始, Linux 内核在 Alpha 上将 `smp_mb()` 添加到 `READ_ONCE()`中, 大大减少了它对内存模型的影响。
+
 
 
 VIRTUAL MACHINE GUESTS
@@ -3461,11 +3457,11 @@ To handle this case optimally, low-level virt_mb() etc macros are available. The
 
 These are equivalent to `smp_mb()` etc counterparts in all other respects, in particular, they do not control MMIO effects: to control MMIO effects, use mandatory barriers.
 
-即使在没有 SMP 支持的情况下编译来宾本身, 在虚拟机中运行的来宾也可能会受到 SMP 效果的影响。 这是在运行 UP 内核时与 SMP 主机接口的人工制品。 对此用例使用强制性障碍是可能的, 但通常不是最理想的。
+即使在虚拟机中运行的程序是在没有 SMP 支持的情况下编译的, 这些访客也可能会受到 SMP 效果的影响。 这是在UP内核的SMP宿主机上运行产品。 对这种场景使用强制性障碍是可能的, 但一般不是最理想的方案。
 
-为了最佳地处理这种情况, 可以使用低级 virt_mb() 等宏。 当启用 SMP 时, 它们与 `smp_mb()` 等具有相同的效果, 但为 SMP 和非 SMP 系统生成相同的代码。 例如, 虚拟机来宾在与（可能是 SMP）主机同步时应该使用 virt_mb() 而不是 `smp_mb()`。
+为了最佳地处理这种情况, 可以使用底层的 `virt_mb()` 等宏函数。 当启用 SMP 时, 它们与 `smp_mb()` 具有相同的效果, 但是会为 SMP 和非 SMP 系统生成等效的代码。 例如, 虚拟机访客在（可能是 SMP的）主机上进行同步时, 会使用 `virt_mb()` 而不是 `smp_mb()`。
 
-这些在所有其他方面都等同于 `smp_mb()` 等对应物, 特别是, 它们不控制 MMIO 效果: 要控制 MMIO 效果, 请使用强制障碍。
+这些在其他所有方面都等价于 `smp_mb()` 的对应函数 特别是, 它们不控制 MMIO 效果: 要控制 MMIO 效果, 请使用强制障碍。
 
 ============
 EXAMPLE USES
