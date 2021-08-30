@@ -1,5 +1,6 @@
 # MySQL用户命名规范
 
+> 中英双语对照版请查看: [GitHub中英对照版: MySQL用户帐号命名规范](https://github.com/cncounter/translation/blob/master/tiemao_2020/30_mysql_account_username/README.md)
 
 MySQL account names consist of a user name and a host name, which enables creation of distinct accounts for users with the same user name who can connect from different hosts. This section describes how to write account names, including special values and wildcard rules.
 
