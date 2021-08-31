@@ -52,7 +52,7 @@ GitHub地址: <https://github.com/cncounter/translation>
 * [27.vim与vi编辑器使用技巧](./tiemao_2020/27_vi-vim-editor-end-of-line/README.md)
 * [28.深入剖析JVM实现细节(系列)](./tiemao_2020/28_anatomy-quarks/README.md)【系列文章】
 * [29.通过线程调度延迟来探测CPU性能抖动](./tiemao_2020/29_sleep_test/README.md)【已完成】
-* [30.MySQL用户命名规范](./tiemao_2020/30_mysql_account_username/README.md)【已完成】
+* [30.MySQL帐号命名规范](./tiemao_2020/30_mysql_account_username/README.md)【已完成 - 已校对】
 * [31.删除MySQL用户帐号 - DROP USER语句简介](./tiemao_2020/31_mysql_account_drop_user/README.md)【已完成】
 * [32.Spring Boot 实战教程](./tiemao_2020/32_spring-boot-tutorials/README.md)
 * [33.数据结构与集合](./tiemao_2020/33_collection_intro/README.md)
