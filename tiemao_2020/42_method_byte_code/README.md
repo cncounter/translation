@@ -1496,6 +1496,12 @@ Stack在这里明显是指的操作数栈。
 // TODO
 
 
+
+## 其他信息
+
+
+深入学习字节码与JIT编译: [Virtual Call](https://github.com/jpbempel/jpbempel.github.io/blob/master/_posts/2012-10-24-virtual-call-911.md)
+
 更多文章请参考GitHub上的文章翻译项目: <https://github.com/cncounter/translation>
 
 同时也请各位大佬点赞Star支持!
