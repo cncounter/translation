@@ -1,6 +1,6 @@
 # FACE DEVOPS CHALLENGES HEAD-ON WITH A REDEFINED APPROACH TO APPLICATION MONITORING
 
-# 应对DEVOPS面临的挑战：您需要一种全新的监控方法
+# 应对DEVOPS面临的挑战：需要一种全新的监控方法
 
 > April 2020, Jim Rapoza, Research Director
 

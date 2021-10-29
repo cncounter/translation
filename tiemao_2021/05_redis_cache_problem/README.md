@@ -44,16 +44,10 @@ private List<BaseActivityVO> buildBaseActivityVOS(List<TBaseActivity> baseActivi
     for(TBaseActivity tBaseActivity:baseActivitys){
         try {
             BaseActivityVO baseActivityVO = new BaseActivityVO();
-            baseActivityVO.setUserId(Long.parseLong(tBaseActivity.getCode()));
-            baseActivityVO.setModifyEnable(checkIsModify(tBaseActivity,requestFrom));
             baseActivityVO.setId(tBaseActivity.getId());
-            baseActivityVO.setSource(buildSourceName(tBaseActivity.getSourceFrom()));
-            baseActivityVO.setExchangeCode(buildExchangeCode(tBaseActivity.getExchangeId()));
             baseActivityVO.setExchangeId(tBaseActivity.getExchangeId());
-            baseActivityVO.setType(buildTypeName(tBaseActivity.getBaseActivityTypeId()));
-            baseActivityVO.setState(buildStateName(tBaseActivity.getState()));
-            baseActivityVO.setCreatedAt(tBaseActivity.getGmtCreated());
-            baseActivityVO.setUpdatedAt(tBaseActivity.getGmtModified());
+            baseActivityVO.setExchangeCode(buildExchangeCode(tBaseActivity.getExchangeId()));
+            // 其他代码 ......
             baseActivityVOS.add(baseActivityVO);
         } catch (Exception e) {
             log.warn("erro activityr code:{}",tBaseActivity.getCode(),e);
