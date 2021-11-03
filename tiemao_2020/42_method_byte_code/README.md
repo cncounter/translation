@@ -5,13 +5,15 @@
 
 ## 1. 基础知识
 
-Java中的各种操作和运算，都是基于方法进行的。 即便是静态变量和实例变量的初始化声明, 也被归集到了相应的初始化方法中。
+Java中的各种操作和运算，都是基于方法进行的。 即便是静态变量和实例变量的初始化声明赋值(比如: `public static int count = 1;` 和 `private int age = 18;`), 也会被归集到相应的初始化方法中。
 
 Java虚拟机规范, 定义了class文件中使用的各种字节码, 其中方法使用的部分称为操作码, 也就是Java虚拟机指令集。 英文文档为: [Chapter 6. The Java Virtual Machine Instruction Set](https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-6.html)
 
-另外，官方单独整理了一份操作码助记符, 对应的链接为: [Java Virtual Machine Specification: Chapter 7. Opcode Mnemonics by Opcode](https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-7.html)
+另外，官方单独整理了一份操作码助记符, 对应的链接为: [Java Virtual Machine Specification: Chapter 7. Opcode Mnemonics by Opcode](https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-7.html)。 本文也按照这份操作码助记符的顺序进行介绍。
 
-最新版本请访问: [2020年文章: 42.深入JVM - 案例讲解方法体字节码](https://github.com/cncounter/translation/blob/master/tiemao_2020/42_method_byte_code/README.md)
+上一篇文章的最新版本请访问: [2020年文章: 41.深入JVM - 实例详解invoke相关操作码](https://github.com/cncounter/translation/blob/master/tiemao_2020/41_invoke_opcode/README.md)
+
+本文的最新版本请访问: [2020年文章: 42.深入JVM - 案例讲解方法体字节码](https://github.com/cncounter/translation/blob/master/tiemao_2020/42_method_byte_code/README.md)
 
 
 #### 1.1 javap反编译的字节码简单解读
@@ -30,13 +32,19 @@ public class DemoMethodOpcode {
 }
 ```
 
-代码很简单, 然后我们通过以下命令进行编译和反编译:
+代码很简单, 编写完成后, 我们通过以下命令进行编译和反编译:
 
 ```shell
 # 编译
 javac -g DemoMethodOpcode.java
 # 反编译
 javap -v DemoMethodOpcode.class
+
+# 想要运行main方法则需要注意包名; 比如:
+mkdir -p com/cncounter/opcode/
+cp DemoMethodOpcode.class com/cncounter/opcode/
+java com.cncounter.opcode.DemoMethodOpcode
+
 ```
 
 反编译工具 javap 输出的字节码信息如下：
@@ -102,7 +110,7 @@ SourceFile: "DemoMethodOpcode.java"
 
 下面分别对各个部分进行解读。
 
-1. 类文件信息:
+##### 1.1.1. 类文件信息
 
 ```java
 Classfile /Users/renfufei/src/com/cncounter/opcode/DemoMethodOpcode.class
@@ -114,12 +122,12 @@ Classfile /Users/renfufei/src/com/cncounter/opcode/DemoMethodOpcode.class
 这里展示的信息包括:
 
 - class文件的路径
-- 修改时间, 文件大小。
+- 修改时间, 文件大小(`433 bytes`)。
 - MD5校验和
-- 源文件信息
+- 源文件信息(`"DemoMethodOpcode.java"`)
 
 
-2. 类的信息:
+##### 1.1.2. 类基本信息
 
 ```java
 public class com.cncounter.opcode.DemoMethodOpcode
@@ -130,14 +138,14 @@ public class com.cncounter.opcode.DemoMethodOpcode
 
 从中可以解读出的信息包括:
 
-- class的完全限定名信息
+- class的完全限定名信息: `com.cncounter.opcode.DemoMethodOpcode`
 - class文件的小版本号: `minor version: 0`
-- class文件的大版本号: `major version: 52`; 根据规则, `52-45(+1.0)=8`, 所以class格式的版本为 `8.0`；
-- class的可见性标识: `ACC_PUBLIC` 表示 public 类; `ACC_SUPER` 则是为了兼容性而生成的, 可以忽略。
+- class文件的大版本号: `major version: 52`; 根据规则, `52-45(+1.0) = 8`, 所以class格式对应的JDK版本为 `8.0`；
+- class的可见性标识: `ACC_PUBLIC` 表示这是一个 public 类; `ACC_SUPER` 则是为了兼容JDK1.0而生成的, 可以忽略。
 
 
 
-3. 常量池信息
+##### 1.1.3. 常量池信息
 
 ```java
 Constant pool:
@@ -171,7 +179,7 @@ Constant pool:
 - `// java/lang/Object` 这种则是注释信息, 方便理解。
 
 
-4. 构造函数信息
+##### 1.1.4. 构造函数解读
 
 ```java
   public com.cncounter.opcode.DemoMethodOpcode();
@@ -189,21 +197,21 @@ Constant pool:
             0       5     0  this   Lcom/cncounter/opcode/DemoMethodOpcode;
 ```
 
-简单解读一下:
+简单解读一下构造函数:
 
-- `descriptor: ()V` 方法描述符: 括号里面什么都没有, 所以入参个数为0; `V`表示没有返回值。
-- `flags: ACC_PUBLIC` 访问标志, 表示这是一个public方法。
-- `stack=1, locals=1, args_size=1` 表示操作数栈深度1, 局部变量数量1, 参数数量1, 为什么都是1呢? 本质上, 构造函数是一种特殊的实例方法, 里面会涉及 `this`, 所以这几个值都是1.
-- `0: aload_0` 前面的0表示字节码的位置索引, 指令跳转的时候引用的就是这个值, 在这里`aload_0`就是将0号槽位的变量`this`入栈,让后面的方法调用指令使用。
-- `1: invokespecial #1` 是偏移量=1的指令, 后面的 `#1` 引用的是常量池的1号item。 最后面的注释信息则是展示给我们看的。
-- `4: return` 方法结束; 为什么索引值是4, 2和3到哪里去了呢？ 注意前面的 `invokespecial` 指令, 在字节码中带了2个字节长度的操作数。
-- `LineNumberTable` 表示与源代码对应的行号映射信息, `line 6: 0` 是说字节码的0位置索引对应第6行源码。
+- `descriptor: ()V` : 方法描述符信息, 括号里面什么都没有, 表示不需要接收外部参数; 括号后面的`V`表示没有返回值(类似于void)。
+- `flags: ACC_PUBLIC` : 访问标志, 表示这是一个public方法, 很明显, 编译器自动生成的默认构造方法就是: `无参public构造方法`。
+- `stack=1, locals=1, args_size=1` : 表示操作数栈的最大深度=1, 局部变量的槽位数=1, 参数个数=1; 为什么这几个值都是1呢? 本质上, 构造函数也是一种特殊的实例方法, 里面可以引用 `this`; JVM在执行构造方法时, 会在前一个方法中先把this压进操作数栈, 然后拷贝/重用到构造函数的局部变量槽位中; 所以这几个值都等于1.
+- `0: aload_0` 这条指令, 前面的`0`表示字节码的位置索引; 在执行跳转指令的时候, 其操作数引用的就是这种索引值(也可以叫指令偏移量), 在这里 `aload_0` 指令的作用, 就是将局部变量表中0号槽位的变量值(`this`)加载到操作数栈(压入), 供后续的其他指令使用。
+- `1: invokespecial #1` 是位置索引偏移量=1的指令, 这个指令的助记符是 `invokespecial`, 在字节码文件中需要附带2个字节的操作数, 也就是后面跟着的 `#1` 占了2个字节, 表示引用常量池中的1号item。 最后面, `//` 后面是注释信息, 是反编译器展示给我们人工阅读查看的。 这个指令, 在字节码文件中带2个字节的操作数(这个长度支持最大65536个)。
+- `4: return` 表示方法结束并返回; 为什么索引值是4呢? 参考前一条指令的说明, 索引位置2和索引位置3, 被前面 `invokespecial` 指令的操作数占用了(可以简单推测, 一个方法中最多支持65536个常量, 如果感兴趣的话, 可以写一个通过循环来生成java文件的程序, 往某个方法里面灌N多条语句)。
+- `LineNumberTable` 表示与源代码对应的行号映射信息, `line 6: 0` 表示字节码的索引位置0处, 对应源码文件的第6行, 抛异常堆栈时挺有用, 当然,这个信息是可以被编译器擦除的, 如果编译器不生成那就没有了, 我们编译时指定了 `javac -g` 参数则是强制生成调试信息。
 - `LocalVariableTable` 则是局部变量表;
-- 可以看到0号槽位(Slot)存的是this引用地址, 作用域范围则是(Start=0; Length=5;)
+- 可以看到0号槽位(Slot)存的是this值, 作用域范围则是(Start=0; Length=5;)
 
 
 
-5. main方法信息
+##### 1.1.5. main方法简单解读
 
 ```java
   public static void main(java.lang.String[]);
@@ -221,13 +229,13 @@ Constant pool:
 
 简单解读一下:
 
-- `descriptor: ([Ljava/lang/String;)V` 方法描述符: 括号里面是参数类型, L表示数组; `V`表示没有返回值。
+- `descriptor: ([Ljava/lang/String;)V` : 方法描述符信息, 括号里面是参数类型, L打头代表数组; 括号后面的`V`表示没有返回值(类似于void)。
 - `flags: ACC_PUBLIC, ACC_STATIC` 访问标志, 表示这是一个 public 的 static 方法。
-- `stack=0, locals=1, args_size=1` 表示操作数栈深度0, 局部变量数1, 参数数量1.
-- `0: return` 前面的0表示字节码的位置索引, return表示方法结束返回; 因为这是一个空方法, 什么也没有。
+- `stack=0, locals=1, args_size=1` : 表示操作数栈的最大深度=0, 因为是空方法, 里面没有什么压栈操作; 局部变量表槽位数=1, 一个引用变量只占用1个槽位, 特殊的是long和double占2个操作,这个后面会介绍; 接收的参数个数=1, 和前面的构造函数对比来看, static 方法不能使用this, 所以定义了几个入参就是几个;
+- `0: return` 前面的0表示字节码的位置索引, return表示方法结束并返回; 因为这是一个空方法, 什么也没有。
 - `LineNumberTable` 表示与源代码对应的行号映射信息, `line 8: 0` 是说此方法字节码的0索引对应第8行源码。
 - `LocalVariableTable` 则是局部变量表;
-- 可以看到0号槽位(Slot)存的是args, 作用域范围是(Start=0; Length=1;), 对应方法体code的索引位置。
+- 可以看到0号槽位(Slot)存的是 `args`, 作用域范围是(Start=0; Length=1;), 对应方法体code的索引位置。
 
 
 
