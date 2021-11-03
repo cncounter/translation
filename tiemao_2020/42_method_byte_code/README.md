@@ -15,6 +15,7 @@ Java虚拟机规范, 定义了class文件中使用的各种字节码, 其中方�
 
 本文的最新版本请访问: [2020年文章: 42.深入JVM - 案例讲解方法体字节码](https://github.com/cncounter/translation/blob/master/tiemao_2020/42_method_byte_code/README.md)
 
+本文基于Java SE 8 Edition的JDK进行讲解。
 
 #### 1.1 javap反编译的字节码简单解读
 
@@ -172,12 +173,15 @@ Constant pool:
 
 简单解读一下:
 
-- 左边的 `#1`, `#2` 等信息, 是常量池中item的编号。
-- item 编号后面的等号 `=` 则是为了展示方便，统一放置的。
-- `#1 = Methodref #3.#17` 包的是方法引用, 引用了 `#3`, `#17`, 也就是类名.方法名。
-- `#4 = Utf8 <init>` 表示的就是UTF8字符串, 后面的 `<init>` 就是此常量item的值。
-- `// java/lang/Object` 这种则是注释信息, 方便理解。
+- 最左边的 `#1`, `#2` 等数字, 表示这个class文件的静态常量池中的item编号。
+- item 编号后面的等号(`=`), 是反编译器为了方便展示，统一放置的。
+- `#1 = Methodref #3.#17`, 1号item, 表示这个item是一个方法引用, 类引用参考 `#3`号常量, 方法名引用了`#17`号常量。
+- `#3 = Class #19`, 3号item, 表示这个item是一个类引用, 类名引用了 `#19`。
+- `#4 = Utf8 <init>`, 4号item, 表示这是一个UTF8字符串, 后面的 `<init>` 就是常量item的值。
+- `#17 = NameAndType #4:#5`, 17号item, 表示一个方法的签名类型; `#4:#5` 表示: 方法名引用4号item, 参数和返回值引用5号item。 当然, 后面的注释信息也说明了这一点。
+- 反编译器在有些条目后面展示了注释信息, 比如 `// java/lang/Object` 这种, 这样展示是为了方便理解。
 
+详细的常量池信息解读, 可以参考Java SE 8 Edition的: [JVM规范: 4.4. The Constant Pool](https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html#jvms-4.4)
 
 ##### 1.1.4. 构造函数解读
 
