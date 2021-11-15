@@ -14,17 +14,16 @@ You can do all of that on-premises if you have invested in compute resources and
 The major cloud providers — and a number of minor clouds too — have put significant effort into building out their machine learning platforms to support the complete machine learning lifecycle, from planning a project to maintaining a model in production. How do you determine which of these clouds will meet your needs? Here are 12 capabilities every end-to-end machine learning platform should provide.
 
 
-为了创建有效的机器学习和深度学习模型，您需要大量数据、一种清理数据并对其执行特征工程的方法，以及一种在合理的时间内训练数据模型的方法。然后，您需要一种方法来部署您的模型，监控它们随时间的漂移，并根据需要重新训练它们。
+为了创建有效的机器学习和深度学习模型，您需要大量数据、一种清理数据并对其执行特征工程的方法，以及一种在合理的时间内训练数据模型的方法。然后，您需要一种方法来部署您的模型，并随时间的漂移对其进行监控，根据需要重新训练它们。
 
-如果您投资了计算资源和 GPU 等加速器，您可以在本地完成所有这些工作，但您可能会发现，如果您的资源充足，它们也会在大部分时间处于闲置状态。另一方面，有时在云中运行整个管道，根据需要使用大量计算资源和加速器，然后释放它们，有时会更具成本效益。
+如果已经购买了机器和 GPU 加速器等计算资源，则在机房就可以完成所有的工作，但你会发现，如果资源充足的话，在大部分时间这些机器都是处于闲置状态的。 另一方面，有时候，在云环境中运行整个流水线，按需使用大量的计算资源和加速器，用完之后进行释放，在成本方面会更有优势。
 
-主要的云供应商——以及一些小型云——都付出了巨大的努力来构建他们的机器学习平台，以支持整个机器学习生命周期，从规划项目到维护生产模型。您如何确定这些云中的哪些将满足您的需求？以下是每个端到端机器学习平台应提供的 12 项功能。
+大部分云厂商、以及一些小型的云，都付出了很多资源和努力来构建他们的机器学习平台，以支持整个机器学习生命周期，包括规划项目到维护生产模型。 那么我们如何确定这些云中的哪些将满足需求？以下是每个端到端机器学习平台都应该提供的 12 项功能。
 
 
 ## Be close to your data
 
 If you have the large amounts of data needed to build precise models, you don’t want to ship it halfway around the world. The issue here isn’t distance, however, it’s time: Data transmission speed is ultimately limited by the speed of light, even on a perfect network with infinite bandwidth. Long distances mean latency.
-
 
 The ideal case for very large data sets is to build the model where the data already resides, so that no mass data transmission is needed. Several databases support that to a limited extent.
 
@@ -34,14 +33,13 @@ The worst case would be if you have to move big data long distances over paths w
 
 ## 1. 接近您的数据
 
-如果您拥有构建精确模型所需的大量数据，您不会希望将其运送到半个地球。这里的问题不是距离，而是时间：数据传输速度最终受到光速的限制，即使在具有无限带宽的完美网络上也是如此。长距离意味着延迟。
+如果构建精确模型需要大量的数据，就不会希望将其跨地域进行远距离传输。 这里的问题不是距离，而是时间：数据传输的极限速度最终受到光速的限制，即便是具有无限带宽的完美网络上也是如此。 距离远就意味着延迟大。
 
+对于大数据集而言, 最理想的情况, 是直接在数据存储的地方构建模型，这样就不需要大量数据传输。有些数据库在一定程度上支持这一点。
 
-非常大的数据集的理想情况是在数据已经驻留的地方构建模型，这样就不需要大量数据传输。有几个数据库在有限程度上支持这一点。
+另一种比较好的场景, 是数据与模型构建程序位于同一个高速网络下，这通常意味着在同一个数据中心内。 如果有TB级，或者更大量级的数据，即使是在同一个可用区内，但只要将数据从一个数据中心移到另一个数据中心也会有明显的延迟。 我们可以通过增量更新来缓解这种情况。
 
-下一个最好的情况是数据与模型构建软件位于同一个高速网络上，这通常意味着在同一个数据中心内。如果您有太字节 (TB) 或更多，即使将数据从一个数据中心移动到云可用性区域内的另一个数据中心也会导致显着延迟。您可以通过进行增量更新来缓解这种情况。
-
-最糟糕的情况是，您必须在带宽受限且延迟高的路径上长距离移动大数据。在这方面，通往澳大利亚的跨太平洋电缆尤其令人震惊。
+最糟糕的情况，是必须在带宽受限且延迟高的网络上, 远距离传输大量的数据。 在这方面，通往澳大利亚的跨太平洋电缆尤其令人震惊。
 
 
 ## Support an ETL or ELT pipeline
