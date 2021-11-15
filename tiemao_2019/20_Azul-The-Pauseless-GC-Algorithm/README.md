@@ -1,11 +1,14 @@
 # The Pauseless GC Algorithm
 
-# Pauseless GC 算法论文 - 中文翻译
+# 论文翻译: Pauseless GC算法(中英对照版)
 
 > ##### 译者注:
-> Pauseless GC Algorithm, 无停顿的垃圾收集算法;
-> 算法本身是无停顿的，但兼容 HotSpot JVM 的实现(C4, ZGC)还需要少量短暂的STW暂停。
-> mutator, 对内存进行读写操作的线程, 可理解为业务线程, 与GC线程做区分。
+>
+> Pauseless GC Algorithm, 无停顿垃圾收集算法;
+>
+> 该算法在理论上是无停顿的，但兼容 HotSpot VM 的实现(如C4, ZGC), 还需要少量短暂的STW停顿。
+>
+> mutator, 是指对内存进行读写操作的线程, 可简单理解为业务线程, 方便和GC线程进行区分。
 
 ```
 作者:
@@ -18,7 +21,7 @@ Mountain View, CA 94043
 
 > Permission to make digital or hard copies of all or part of this work for personal or classroom use is granted without fee provided that copies are not made or distributed for profit or commercial advantage and that copies bear this notice and the full citation on the first page. To copy otherwise, or republish, to post on servers or to redistribute to lists, requires prior specific permission and/or a fee.
 
-> 本论文可免费用于学习和研究, 但不得用于谋利或商业化用途。 且需要在第一页中展示本声明。拷贝、发布、传播本文档，则需要获得许可/付费。
+> 本论文可免费用于研究和学习, 但不得用于商业用途或者谋取其他利益。 且使用时需要在第一页中展示本声明。 想要拷贝、发布、传播本文档，则需要获得许可/付费。
 
 > VEE’05, June 11–12, 2005, Chicago, Illinois, USA.
 
@@ -27,19 +30,23 @@ Mountain View, CA 94043
 
 ## ABSTRACT
 
-## 摘要
+## 论文摘要
 
 Modern transactional response-time sensitive applications have run into practical limits on the size of garbage collected heaps. The heap can only grow until GC pauses exceed the response-time limits. Sustainable, scalable concurrent collection has become a feature worth paying for.
 
-很多业务系统对响应时间非常敏感, 却因为要考虑GC停顿时间，限制了可以配置的最大堆内存。
-不能将堆内存配得太大，以免GC停顿时间超过业务允许的响应时间阈值。
-所以业界迫切需要一款可以长期稳定运行的、支持大内存的并发垃圾收集器。
+当代的很多业务系统对响应时间非常敏感, 所以要考虑GC暂停时间，这在客观上限制了允许配置的堆内存最大值。
+如果堆内存设置过大，可能就会因为GC暂停, 导致请求响应的延迟时间, 超过业务所能容忍的最大阈值。
+所以业界迫切需要一款可以长期稳定运行的、适应小内存到超大内存的并发垃圾收集器。
+
+> 译者注: 并发(concurrent)垃圾收集器, 指GC线程可以和业务线程同时运行。
 
 Azul Systems has built a custom system (CPU, chip, board, and OS) specifically to run garbage collected virtual machines. The custom CPU includes a read barrier instruction. The read barrier enables a highly concurrent (no stop-the-world phases), parallel and compacting GC algorithm. The Pauseless algorithm is designed for uninterrupted application execution and consistent mutator throughput in every GC phase.
 
-Azul Systems 公司为此专门定制了一整套系统(包括CPU、芯片组、主板和操作系统)，用来运行具备垃圾收集功能的虚拟机。
-定制的CPU内置了【读屏障指令】。 通过读屏障(read barrier)，来实现并行的、具有碎片整理功能的高并发(无STW暂停)垃圾收集算法。
-Pauseless GC 算法专为不间断运行的系统设计, 保证在各个GC阶段都能获得稳定的业务吞吐量。
+Azul Systems 公司为此定制了一套系统(包括CPU、芯片组、主板以及操作系统)，专门用来跑具备垃圾收集功能的虚拟机。
+其中专门定制的CPU内置了【读屏障指令, read barrier instruction】。 通过读屏障功能，可以实现高并发(无STW停顿)、并行式、具有碎片整理功能的垃圾收集算法。
+Pauseless GC 算法专为不间断运行的系统而设计, 保证每个GC阶段都能获得稳定的业务吞吐量。
+
+> 译者注: 并行(parallel)垃圾收集器, 指有多个GC线程可以并行执行。
 
 Beyond the basic requirement of collecting faster than the allocation rate, the Pauseless collector is never in a “rush” to complete any GC phase. No phase places an undue burden on the mutators nor do phases race to complete before the mutators produce more work. Portions of the Pauseless algorithm also feature a “self-healing” behavior which limits mutator overhead and reduces mutator sensitivity to the current GC state.
 
@@ -102,11 +109,11 @@ Many modern garbage collectors rely on write barriers imposed on mutator heap wr
 
 Azul Systems has built a custom system (CPU, chip, board, and OS) specifically to run garbage collected virtual machines. The custom CPU includes a read barrier instruction. The read barrier enables a highly concurrent, parallel and compacting GC algorithm. The Pauseless GC algorithm is simple, efficient (low mutator overhead), and has no Stop-The-World pauses.
 
-Azul Systems 公司构建了一套专门定制的系统(包括CPU、芯片组、主板以及操作系统)，用来运行支持垃圾收集的虚拟机。定制的CPU内置了[读屏障指令]。读屏障(read barrier)用于支持高并发、并行化、具有内存碎片整理功能的GC算法。无停顿的GC算法非常简洁、高效(突变开销很小), 没有STW暂停(Stop-The-World pauses)。
+Azul Systems 公司构建了一套专门定制的系统(包括CPU、芯片组、主板以及操作系统)，用来运行支持垃圾收集的虚拟机。定制的CPU内置了[读屏障指令]。读屏障(read barrier)用于支持高并发、并行化、具有内存碎片整理功能的GC算法。无停顿的GC算法非常简洁、高效(突变开销很小), 没有STW停顿(Stop-The-World pauses)。
 
 Azul Systems 公司为此专门定制了一整套系统(包括CPU、芯片组、主板和操作系统)，用来运行具备垃圾收集功能的虚拟机。
 定制的CPU内置了【读屏障指令】。 通过读屏障(read barrier)，来实现并行的、具有碎片整理功能的高并发垃圾收集算法。
-Pauseless GC 算法简洁高效（业务线程的额外开销很小），没有STW暂停(Stop-The-World pauses)。
+Pauseless GC 算法简洁高效（业务线程的额外开销很小），没有STW停顿(Stop-The-World pauses)。
 
 
 
@@ -243,7 +250,7 @@ The result of this behavior is that nearly all stopped threads are at GC safepoi
 
 这种行为的结果, 是几乎所有被暂停的线程都处于GC安全点。
 要实现全局的安全点，Stop-The-World（STW）方式的停顿，要比补丁和滚动转发方案要快得多(见[1])，而且一般没有软轮询方面的开销。
-虽然我们提出的算法理论上没有STW暂停，但当前的实现却有。
+虽然我们提出的算法理论上没有STW停顿，但当前的实现却有。
 因此，快速停止机制仍然相当有用。
 
 
@@ -253,9 +260,9 @@ We also make use of Checkpoints, points where we cannot proceed until all mutato
 我们还使用了检查点, 在检查点(Checkpoint)位置, 需要等待所有的业务线程执行完某些操作， GC才能继续。
 在检查点中，每个业务线程都会到达GC安全点，执行少量与GC相关的工作，然后接着执行。
 被阻塞的线程已经处于GC安全点; GC线程替阻塞线程执行操作。
-在STW暂停中，所有的业务线程都必须先到达GC安全点，然后才能继续进行;暂停时间由最慢的线程决定。
+在STW停顿中，所有的业务线程都必须先到达GC安全点，然后才能继续进行;暂停时间由最慢的线程决定。
 在检查点中，运行状态的线程永远不会闲置，GC工作会及时分散。
-STW暂停和检查点都使用同样的硬件和操作系统支持。
+STW停顿和检查点都使用同样的硬件和操作系统支持。
 
 
 ### 3.3 Hardware Read Barrier
@@ -454,11 +461,11 @@ New objects created by concurrent mutators are allocated in pages which will not
 
 One of the difficulties in making an incremental update marker is that mutators can “hide” live objects from the marking threads. A mutator can read an unmarked ref into a register, then clear it from memory. The object remains live (because its ref is in a register) but not visible to the marking threads (because they are past the mutator stack-scan step). The unmarked ref can also be stored down into an already marked region of the heap. This problem is typically solved by requiring another STW pause at the end of marking. During this second STW the marking threads revisit the root-set and modified portions of the heap and must mark any new refs discovered. Some GC algorithms have used a SATB invariant to avoid the extra STW pause. The cost of SATB is a somewhat more expensive writebarrier; the barrier needs to read and test the overwritten value.
 
-增量更新标记的一个难点是，标记线程可能看不见业务线程藏起来的存活对象。 mutator可以将未标记的引用读进寄存器，然后在内存中清除这个引用。该对象依然是存活状态（因为它还有引用在寄存器中）,但标记线程就是看不见（因为在mutator栈扫描过程中被跳过了）。 未标记的引用也可能被存放到已标记区域中。通常是在标记结束时，请求另一次STW暂停来解决该问题。 在第二次STW期间， 标记线程重新访问GCroot-set合、以及堆内存中发生修改的部分，并且必须标记所有新发现的引用。一些GC算法使用SATB不变量来避免额外的STW暂停。 SATB的开销是一个更昂贵的写屏障; 这个写屏障需要读取并检测被覆盖的值。
+增量更新标记的一个难点是，标记线程可能看不见业务线程藏起来的存活对象。 mutator可以将未标记的引用读进寄存器，然后在内存中清除这个引用。该对象依然是存活状态（因为它还有引用在寄存器中）,但标记线程就是看不见（因为在mutator栈扫描过程中被跳过了）。 未标记的引用也可能被存放到已标记区域中。通常是在标记结束时，请求另一次STW停顿来解决该问题。 在第二次STW期间， 标记线程重新访问GCroot-set合、以及堆内存中发生修改的部分，并且必须标记所有新发现的引用。一些GC算法使用SATB不变量来避免额外的STW停顿。 SATB的开销是一个更昂贵的写屏障; 这个写屏障需要读取并检测被覆盖的值。
 
 Instead of a STW pause or write-barrier we use a read barrier and require the mutators do a little GC work when they load a potentially unmarked ref by taking an NMT-trap. We get the trapping behavior by relying on the read-barrier and the Not- Marked-Through bit: a bit we steal from each ref. Refs are 64- bit entities in our system representing a vast address space. The hardware implements a smaller virtual address space; the unused bits are ignored for addressing purposes. The read-barrier logic maintains the notion of a desired value for the NMT bit and will trap if it is set wrong. Correctly set NMT bits cost no more than the read-barrier cost itself. The invariant is that refs with a correct NMT have definitely been communicated to the Marking threads (even if they haven't yet been marked through). Refs with incorrect NMT bits may have been marked through, but the mutator has no way to tell. It informs the marking threads in any case.
 
-我们既不使用STW暂停，也不使用写屏障，而是使用读屏障，并且在加载可能未标记的引用时，要求业务线程执行一点儿GC相关的工作，通过采用NMT陷阱的方式。依靠read-barrier和Not-Marked-Through位(从每个指针地址中截取的一个bit)来触发陷阱的行为。 在我们的系统中指针引用是64位的，可以表示的地址空间多到用不完；硬件只使用了其中很少的一部分虚拟地址空间; 在寻址时会忽略未使用的bit。读屏障的逻辑是维护NMT位的期望值这个概念，如果设置错误则会触发陷阱。正确设置NMT位的开销不会超过读屏障本身。不变量引用具有正确的NMT标志位、肯定已传给标记线程（即使它们尚未被标记）。 NMT位错误的引用可能被标记过，但是mutator线程不知道。所以在任何情况下都会通知标记线程。
+我们既不使用STW停顿，也不使用写屏障，而是使用读屏障，并且在加载可能未标记的引用时，要求业务线程执行一点儿GC相关的工作，通过采用NMT陷阱的方式。依靠read-barrier和Not-Marked-Through位(从每个指针地址中截取的一个bit)来触发陷阱的行为。 在我们的系统中指针引用是64位的，可以表示的地址空间多到用不完；硬件只使用了其中很少的一部分虚拟地址空间; 在寻址时会忽略未使用的bit。读屏障的逻辑是维护NMT位的期望值这个概念，如果设置错误则会触发陷阱。正确设置NMT位的开销不会超过读屏障本身。不变量引用具有正确的NMT标志位、肯定已传给标记线程（即使它们尚未被标记）。 NMT位错误的引用可能被标记过，但是mutator线程不知道。所以在任何情况下都会通知标记线程。
 
 If a mutator thread loads and read-barriers a ref with the NMT bit set wrong, it has found a potentially unvisited ref. The mutator jumps to the NMT-trap handler. In the NMT-trap handler the loaded value has it's NMT bit set correctly. The ref is recorded with the Mark phase logic. <sup>2</sup>  Then the corrected ref is stored back into memory. Since the ref is changed in memory, that particular ref will not cause a trap in the future.
 
@@ -483,7 +490,7 @@ Changing the ref in memory amounts to a store, even if the stored value is Java-
 
 Refs in mutators' root-set have already passed any chance for running a read-barrier. Hence the initial root-set stack-scan also flips the NMT bits in the root-set. Since the flipping is done with a Checkpoint instead of a STW pause, for a brief time different threads will have different settings for the NMT desired value. It is possible for two threads to throb, to constantly compete over a single ref's desired value NMT value via trapping and updating in memory. This situation can only last a short period of time, until the unflipped thread passes the next GC safepoint where it will trap, flip its stack, and cross the Checkpoint.
 
-业务线程 root-set 中的引用已经放过任何执行读屏障的机会。 因此，初始 root-set 栈扫描也会翻转其中引用的NMT位。由于翻转是通过检查点而不是STW暂停完成的，因此在短时间内，不同的线程对NMT期望值并不相同。 两个线程可能会不断地通过陷阱来更新单个引用的NMT值。 这种情况只会持续很短的时间，只要未翻转的线程也通过下一个GC安全点，就会触发陷阱，翻转其栈内的引用，并越过检查点。
+业务线程 root-set 中的引用已经放过任何执行读屏障的机会。 因此，初始 root-set 栈扫描也会翻转其中引用的NMT位。由于翻转是通过检查点而不是STW停顿完成的，因此在短时间内，不同的线程对NMT期望值并不相同。 两个线程可能会不断地通过陷阱来更新单个引用的NMT值。 这种情况只会持续很短的时间，只要未翻转的线程也通过下一个GC安全点，就会触发陷阱，翻转其栈内的引用，并越过检查点。
 
 Note that it is not possible for a single thread to hold the same ref twice in its root-set with different NMT settings. Hence we do not suffer from the pointer-equality problem; if two refs compare as bitwise not-equal, then they are truly unequal.
 
@@ -598,7 +605,7 @@ At the end of the Remap phase, all pages that were protected before the start of
 
 Our implementation is a rapidly moving work-in-progress. As of this writing it suffers from a few STW pauses not required by the Pauseless GC algorithm. Over time we hope to remove these STWs or engineer their maximum time below an OS time-slice quanta. We have proposed solutions for each one, and report pauses experienced by the current implementation on the 8- warehouse 20-minute pseudo-JBB run described in Section 8.
 
-我们的具体实现属于边做边改。 在撰写本文时，还需要一些STW暂停来支持、当然 Pauseless GC 算法本身是没有STW的。 随着时间的推移，我们希望能去除所有的STW，或者让最大停顿时间小于操作系统的最小时间片。 我们为每种方式都提供了解决方案，在第8节中，通过20分钟的8仓伪JBB运行，来测试当前实现，并统计所遇到的停顿情况。
+我们的具体实现属于边做边改。 在撰写本文时，还需要一些STW停顿来支持、当然 Pauseless GC 算法本身是没有STW的。 随着时间的推移，我们希望能去除所有的STW，或者让最大停顿时间小于操作系统的最小时间片。 我们为每种方式都提供了解决方案，在第8节中，通过20分钟的8仓伪JBB运行，来测试当前实现，并统计所遇到的停顿情况。
 
 ### 7.1 At the Mark Phase Start
 
@@ -697,7 +704,7 @@ We decided to NOT report SpecJBB score, which is reported in units of transactio
 
 We measured both transaction times and GC pause times reported with “-verbose:gc”. We feel that transaction times represent a more realistic measure than direct GC pauses as they more closely correspond to “user wait time”.
 
-使用 “-verbose:gc” 选项来测量业务响应时间和GC停顿时间。 我们认为业务响应时间比直接的GC停顿更符合实际情况，因为更接近于“用户等待时间”。
+使用 “-verbose:gc” 选项来测量业务响应时间和GC暂停时间。 我们认为业务响应时间比直接的GC停顿更符合实际情况，因为更接近于“用户等待时间”。
 
 Transaction times were gathered into buckets by duration, building a histogram. Duration was measured with Java's current- TimeMillis() and so is limited to millisecond resolution. Most transactions take 0 or 1 milliseconds, so we did not gather accurate times for these fast transactions. However, we are more interested in the slow transactions. All the collectors except Pauseless had a significant fraction of transactions take 100- 300ms (100 times slower than the fast transactions), with spikes to 1-4 seconds. We kept per-millisecond buckets from 0ms to 31ms. After that we grew the buckets by powers-of-2 with halves: 32-47ms, 48-63ms, 64-95ms, 96-127ms, and so on up to 16sec. This allowed us to compute the bucket index with a few shifts. Buckets were replicated per thread to avoid coherency costs then totaled together at the end of the run.
 
@@ -764,7 +771,7 @@ Table 1 shows the worse-case transaction times. The Pauseless algorithm's worse-
 
 We collected GC pause times reported with “-verbose:gc”. We summed all reported times and present a histogram of cumulative pause times vs. pause duration. Figure 8 shows the reported pauses. Most of the concurrent collectors consistently report pause times in the 40-50ms range; IBM's concurrent collector has 150ms as it's common (mode) pause time. As expected, the parallel collectors all do worse with the bulk of time spent in pauses ranging from 150ms to several seconds.
 
-我们使用“-verbose：gc”来收集GC停顿时间的报告。 将所有停顿时间相加，汇总为一张 累积停顿时间VS.停顿持续时间的直方图。 图8显示了停顿报告。 大多数并发收集器的停顿时间一直在40-50ms范围内; IBM的并发收集器因为常见（模式）停顿时间而达到150毫秒左右。 正如预期的那样，并行收集器在停顿时间方面表现很糟糕，从大于150ms直到几秒之间都有。
+我们使用“-verbose：gc”来收集GC暂停时间的报告。 将所有停顿时间相加，汇总为一张 累积停顿时间VS.停顿持续时间的直方图。 图8显示了停顿报告。 大多数并发收集器的停顿时间一直在40-50ms范围内; IBM的并发收集器因为常见（模式）停顿时间而达到150毫秒左右。 正如预期的那样，并行收集器在停顿时间方面表现很糟糕，从大于150ms直到几秒之间都有。
 
 Table 1 also shows the ratio of worst-case transaction time and worst-case reported pause times. Note that JBB transactions are highly regular, doing a fixed amount of work per transaction. Changes in transaction time can be directly attributed to GC.<sup>4</sup>
 Several of the worse-case transactions are a full second longer than the worse-case pauses. We have some guesses as to why this is so:
@@ -788,7 +795,7 @@ The concurrent collectors other than Pauseless under-report their effects by 2x 
 
 We also attempted to gather Minimum Mutator Utilization figures [12], especially to track the “trap storm” effects. MMU reports the smallest amount of time available to the mutators in a continuous rolling interval. Since our largest pause was over 20ms there exists a 20ms interval where the mutators make no progress, so MMU@20ms is 0. Preliminary figures are in Table 2, and represent MMU figures for the entire 20 minute run worst case across all threads. Looking at the MMU@50ms figure, we see about 40ms of pause out of 50ms. We know that about 20ms of that is reported as an STW pause, so we assume the remaining 20ms is due to the trap storm.
 
-我们还尝试收集 Minimum Mutator Utilization 数据（见[12]），特别是追踪“陷阱风暴”效应。 MMU报告在连续滚动间隔中业务线程可用的最小时间量。由于我们的最大停顿超过20ms，因此存在20ms的间隔，其中业务线程没有进展，因此 MMU@20ms 值为0. 初步数字在表2中，并且MMU数值代表所有线程在整个20分钟运行中的最坏情况。 再看 MMU@50ms 数值，可以发现在50ms内大约有40ms的停顿。我们知道其中大约 20ms 被报告为STW暂停，所以我们假定剩下的20ms是由陷阱风暴引起的。
+我们还尝试收集 Minimum Mutator Utilization 数据（见[12]），特别是追踪“陷阱风暴”效应。 MMU报告在连续滚动间隔中业务线程可用的最小时间量。由于我们的最大停顿超过20ms，因此存在20ms的间隔，其中业务线程没有进展，因此 MMU@20ms 值为0. 初步数字在表2中，并且MMU数值代表所有线程在整个20分钟运行中的最坏情况。 再看 MMU@50ms 数值，可以发现在50ms内大约有40ms的停顿。我们知道其中大约 20ms 被报告为STW停顿，所以我们假定剩下的20ms是由陷阱风暴引起的。
 
 ![](08_05_Minimum_Mutator_Utilization.jpg)
 
@@ -808,7 +815,7 @@ Azul的Pauseless GC算法，是为大型多处理器系统设计的，支持并�
 
 Azul's custom hardware includes a read-barrier, an instruction executed against every ref loaded from the heap. The read-barrier allows global GC invariants to be cheaply maintained. It checks for loading of potentially unmarked objects, preventing the spread of unmarked objects into previously marked regions of the heap. This allows the concurrent incremental update Mark phase to terminate cleanly without needing a final STW pause. The read-barrier also checks for loading stale refs to relocated objects and it does it cheaper than a Brooks' style indirection barrier.
 
-Azul 定制的硬件包括一个读屏障，一个针对从堆内存加载引用时执行的指令。读屏障允许轻松维护全局的GC不变量。它检测可能是未标记对象的加载，防止未标记对象扩散到先前标记的区域中。这允许并发增量更新标记阶段干脆地停止，而不需要在最后来一下STW暂停。读屏障还会检查陈旧的指针，到重定位的对象，比起 Brooks 风格的间接屏障代价更低。
+Azul 定制的硬件包括一个读屏障，一个针对从堆内存加载引用时执行的指令。读屏障允许轻松维护全局的GC不变量。它检测可能是未标记对象的加载，防止未标记对象扩散到先前标记的区域中。这允许并发增量更新标记阶段干脆地停止，而不需要在最后来一下STW停顿。读屏障还会检查陈旧的指针，到重定位的对象，比起 Brooks 风格的间接屏障代价更低。
 
 Section 7, Reality Check, includes ongoing and future work. Another obvious and desirable feature is a generational variation of Pauseless. As presented, Pauseless is a single-generation algorithm. The entire heap is scanned in each Mark/Remap cycle. Because the algorithm is parallel and concurrent, and we have plentiful CPUs the cost is fairly well hidden. On a fully loaded system the GC threads will steal cycles from mutator threads, so we'd like the GC to be as efficient as possible. A generational version will only need to scan the young generation most of the time. The necessary hardware barriers already exists.
 
