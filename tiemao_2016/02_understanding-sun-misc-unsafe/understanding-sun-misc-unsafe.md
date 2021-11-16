@@ -30,3 +30,6 @@ Winterhalter 列举了如何使用 **`Unsafe`** 来绕过 Java编程中的一些
 
 
 翻译人员: [铁锚 http://blog.csdn.net/renfufei](http://blog.csdn.net/renfufei)
+
+
+- [cnblogs:说一说Java的Unsafe类](https://www.cnblogs.com/pkufork/p/java_unsafe.html)
