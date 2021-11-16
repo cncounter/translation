@@ -48,11 +48,11 @@ ETL (export, transform, and load) and ELT (export, load, and transform) are two 
 
 In general, data in the wild is noisy. That needs to be filtered. Additionally, data in the wild has varying ranges: One variable might have a maximum in the millions, while another might have a range of -0.1 to -0.001. For machine learning, variables must be transformed to standardized ranges to keep the ones with large ranges from dominating the model. Exactly which standardized range depends on the algorithm used for the model.
 
-## 2. 支持 ETL 或 ELT 管道
+## 2. 支持ETL或者ELT管道
 
-ETL（导出、转换和加载）和 ELT（导出、加载和转换）是数据库世界中常见的两种数据管道配置。 机器学习和深度学习放大了对这些的需求，尤其是转换部分。 当您的转换需要更改时，ELT 为您提供了更大的灵活性，因为加载阶段通常是大数据最耗时的阶段。
+ETL(export, transform, and load; 导出、转换和加载) 以及 ELT (export, load, and transform; 导出、加载和转换) 是数据清洗领域中最常见的两种数据管道配置。 机器学习和深度学习放大了对这些操作的需求，尤其是转换部分。 当您的转换操作需要变更时，ELT提供了更灵活的支持，因为加载阶段通常是大数据处理中最耗时的阶段。
 
-一般来说，野外数据是嘈杂的。 这需要过滤。 此外，野外数据具有不同的范围：一个变量的最大值可能为数百万，而另一个变量的范围可能为 -0.1 到 -0.001。 对于机器学习，必须将变量转换为标准化范围，以防止范围较大的变量主导模型。 究竟哪个标准化范围取决于用于模型的算法。
+一般来说，野生的数据是杂乱的。 需要先进行过滤。 此外，野生数据具有不同的范围：一个变量的最大值可能为数百万，而另一个变量的范围可能是 -0.1 到 -0.001。 对于机器学习而言，必须先将变量转换为标准范围，以防止范围较大的变量主导模型。 究竟蚕蛹多大的标准范围则取决于用于建模的算法。
 
 
 ## Support an online environment for model building
