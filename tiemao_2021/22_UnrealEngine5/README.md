@@ -20,6 +20,11 @@
 - 查看免费在线学习视频: https://www.unrealengine.com/zh-CN/onlinelearning-courses
 
 
+
+要求先注册 unrealengine 账号, 并在个人设置中，连接上GitHub账号, 授权加入 EpicGames 组织。 相关操作可参考 [注册向导](https://github.com/EpicGames/Signup)
+
+- 官方仓库地址(私仓): https://github.com/EpicGames/UnrealEngine
+
 ## 相关链接
 
 - [虚幻引擎5 - Unreal Engine](https://www.unrealengine.com/zh-CN/unreal-engine-5?lang=zh-CN)
