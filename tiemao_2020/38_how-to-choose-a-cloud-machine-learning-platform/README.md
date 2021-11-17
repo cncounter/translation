@@ -33,7 +33,7 @@ The worst case would be if you have to move big data long distances over paths w
 
 ## 1. 接近您的数据
 
-如果构建精确模型需要大量的数据，就不会希望将其跨地域进行远距离传输。 这里的问题不是距离，而是时间：数据传输的极限速度最终受到光速的限制，即便是具有无限带宽的完美网络上也是如此。 距离远就意味着延迟大。
+如果构建精确模型需要大量的数据，就不会希望将其跨地域进行远距离传输。 这里的问题不是距离，而是时间: 数据传输的极限速度最终受到光速的限制，即便是具有无限带宽的完美网络上也是如此。 距离远就意味着延迟大。
 
 对于大数据集而言, 最理想的情况, 是直接在数据存储的地方构建模型，这样就不需要大量数据传输。有些数据库在一定程度上支持这一点。
 
@@ -52,7 +52,7 @@ In general, data in the wild is noisy. That needs to be filtered. Additionally, 
 
 ETL(export, transform, and load; 导出、转换和加载) 以及 ELT (export, load, and transform; 导出、加载和转换) 是数据清洗领域中最常见的两种数据管道配置。 机器学习和深度学习放大了对这些操作的需求，尤其是转换部分。 当您的转换操作需要变更时，ELT提供了更灵活的支持，因为加载阶段通常是大数据处理中最耗时的阶段。
 
-一般来说，野生的数据是杂乱的。 需要先进行过滤。 此外，野生数据具有不同的范围：一个变量的最大值可能为数百万，而另一个变量的范围可能是 -0.1 到 -0.001。 对于机器学习而言，必须先将变量转换为标准范围，以防止范围较大的变量主导模型。 究竟蚕蛹多大的标准范围则取决于用于建模的算法。
+一般来说，野生的数据是杂乱的。 需要先进行过滤。 此外，野生数据具有不同的范围: 一个变量的最大值可能为数百万，而另一个变量的范围可能是 -0.1 到 -0.001。 对于机器学习而言，必须先将变量转换为标准范围，以防止范围较大的变量主导模型。 究竟蚕蛹多大的标准范围则取决于用于建模的算法。
 
 
 ## Support an online environment for model building
@@ -61,11 +61,11 @@ The conventional wisdom used to be that you should import your data to your desk
 
 Web-based development environments such as Jupyter Notebooks, JupyterLab, and Apache Zeppelin are well suited for model building. If your data is in the same cloud as the notebook environment, you can bring the analysis to the data, minimizing the time-consuming movement of data.
 
-## 3. 支持模型构建的在线环境
+## 3. 支持在线建模
 
-过去的传统观点是，您应该将数据导入桌面以进行模型构建。 构建良好的机器学习和深度学习模型所需的大量数据改变了情况：您可以将一小部分数据样本下载到您的桌面以进行探索性数据分析和模型构建，但对于生产模型，您需要访问完整的 数据。
+传统的做法是将数据导入桌面环境来进行模型构建。 构建良好的机器学习和深度学习模型所需的大量数据改变了这种情况:  可以将一小部分数据样本下载到桌面环境以进行探索性的数据分析和模型构建，但对于生产模型，需要访问完整的数据。
 
-Jupyter Notebooks、JupyterLab 和 Apache Zeppelin 等基于 Web 的开发环境非常适合模型构建。 如果您的数据与笔记本环境在同一个云中，您可以将分析带到数据中，最大限度地减少耗时的数据移动。
+基于Web的开发环境, 比如 Jupyter Notebooks、JupyterLab 和 Apache Zeppelin 等等非常适合模型构建。 如果我们的数据与 notebook 在同一个云环境中，则可以将分析过程放到数据中，以最大限度地减少耗时的数据移动。
 
 
 ## Support scale-up and scale-out training
@@ -74,7 +74,8 @@ The compute and memory requirements of notebooks are generally minimal, except f
 
 ## 4. 支持纵向扩展和横向扩展训练
 
-除了训练模型外，笔记本电脑的计算和内存要求通常很小。如果笔记本可以生成在多个大型虚拟机或容器上运行的训练作业，这将大有帮助。如果训练可以使用 GPU、TPU 和 FPGA 等加速器，这也有很大帮助；这些可以将几天的培训变成几小时。
+notebook 对CPU算力和内存的要求一般都不高, 除了训练模型的时候。 如果笔记本可以在多个大型虚拟机或容器上执行训练作业的生成，这将有很大帮助。 如果训练时可以使用 GPU、TPU 和 FPGA 等加速器，也会有很大帮助； 这些辅助措施可以将几天的训练时间缩短到几小时。
+
 
 ## Support AutoML and automatic feature engineering
 
@@ -85,9 +86,9 @@ AutoML systems often try many models to see which result in the best objective f
 
 ## 5. 支持 AutoML 和自动特征工程
 
-并不是每个人都擅长选择机器学习模型、选择特征（模型使用的变量）以及从原始观察中设计新特征。即使您擅长这些任务，它们也很耗时，并且可以在很大程度上实现自动化。
+并不是每个人都擅长筛选机器学习模型、选择特征（模型使用的变量）以及从原始观察中设计新特征。 即使您擅长这些任务，它们也很耗时，而这些工作在很大程度上可以实现自动化。
 
-[AutoML 系统](https://www.infoworld.com/article/3430788/automated-machine-learning-or-automl-explained.html) 通常会尝试多种模型，以查看哪个会产生最佳目标函数值，例如回归问题的最小平方误差。最好的 AutoML 系统还可以执行特征工程，并有效地利用它们的资源来追求具有最佳特征集的最佳模型。
+[AutoML 系统](https://www.infoworld.com/article/3430788/automated-machine-learning-or-automl-explained.html) 通常会尝试多种模型，来查看哪个会产生最佳目标函数值，例如回归问题的最小平方误差。 最好的 AutoML 系统还可以执行特征工程，并有效地利用它们的资源来追求具有最佳特征集的最佳模型。
 
 
 ## Support the best machine learning and deep learning frameworks
@@ -101,11 +102,12 @@ Some cloud platforms also offer their own tuned versions of major deep learning 
 
 ## 6. 支持最好的机器学习和深度学习框架
 
-大多数数据科学家都有最喜欢的机器学习和深度学习框架和编程语言。对于喜欢 Python 的人来说，Scikit-learn 通常是机器学习的最爱，而 TensorFlow、PyTorch、Keras 和 MXNet 通常是深度学习的首选。在 Scala 中，Spark MLlib 往往是机器学习的首选。在 R 中，有很多原生机器学习包，以及一个很好的 Python 接口。在 Java 中，H2O.ai 的评价很高，Java-ML 和 Deep Java 库也是如此。
+大部分数据科学家都有自己喜欢的机器学习框架、深度学习框架、以及编程语言。 对于喜欢 Python 的人来说，Scikit-learn 通常是机器学习的最爱，而 TensorFlow、PyTorch、Keras 和 MXNet 通常是深度学习的首选。 在 Scala 语言生态中，Spark MLlib 往往是机器学习的首选。 在 R 语言中，提供了很多原生的机器学习包，以及很好的 Python 接口。 在 Java 语言中，H2O.ai 受到的评价很高，Java-ML 和 Deep Java 库也不错。
 
-云机器学习和深度学习平台往往有自己的算法集合，它们通常支持至少一种语言的外部框架或作为具有特定入口点的容器。在某些情况下，您可以将自己的算法和统计方法与平台的 AutoML 工具集成，这非常方便。
+云机器学习平台、云深度学习平台、往往都有自己的算法集合，它们通常支持至少一种语言的外部框架、或者作为具有特定入口点的容器。 在某些情况下，您可以将自己的算法和统计方法，与平台的 AutoML 工具集成，这非常方便。
 
-一些云平台还提供自己的主要深度学习框架的调整版本。例如，AWS 有一个优化版本的 TensorFlow，它声称可以为深度神经网络训练实现近乎线性的可扩展性。
+一些云平台还提供自己的深度学习框架的调优版本。 例如，AWS 有一个优化版的 TensorFlow，它声称可以为深度神经网络训练实现近乎线性的可扩展性。
+
 
 ## Offer pre-trained models and support transfer learning
 
@@ -115,9 +117,9 @@ On the other hand, pre-trained models may not always identify the objects you ca
 
 ## 7. 提供预训练模型并支持迁移学习
 
-不是每个人都想花时间和计算资源来训练自己的模型——当预训练模型可用时，他们也不应该。例如，ImageNet 数据集非常庞大，针对它训练最先进的深度神经网络可能需要数周时间，因此在可能的情况下使用预先训练的模型是有意义的。
+不是每个人都想花时间和计算资源来训练自己的模型:  当预训练模型可用时，就不需要自己折腾。 例如，ImageNet 数据集非常庞大，针对它训练最先进的深度神经网络可能需要至少几周的时间，因此在可能的情况下，使用预先训练的模型是非常有意义的。
 
-另一方面，预先训练的模型可能并不总是识别您关心的对象。迁移学习可以帮助您为您的特定数据集定制神经网络的最后几层，而无需花费时间和费用来训练整个网络。
+另一方面，预先训练的模型可能并不总是能识别您关心的对象。 迁移学习可以帮助您为特定的数据集定制神经网络的最后几层，而无需花费时间和费用来训练整个网络。
 
 ## Offer tuned AI services
 
@@ -125,11 +127,11 @@ The major cloud platforms offer robust, tuned AI services for many applications,
 
 These services have already been trained and tested on more data than is usually available to businesses. They are also already deployed on service endpoints with enough computational resources, including accelerators, to ensure good response times under worldwide load.
 
-## 8. 提供经过调整的 AI 服务
+## 8. 提供经过优化的 AI 服务
 
-主要的云平台为许多应用程序提供强大的、经过调整的 AI 服务，而不仅仅是图像识别。 示例包括语言翻译、语音到文本、文本到语音、预测和推荐。
+主要的云平台为许多应用程序提供强大的、经过调优的 AI 服务，而不仅仅是图像识别。 示例包括语言翻译、语音识别、文本朗读、预测和推荐算法。
 
-这些服务已经接受了比企业通常可用的更多数据的培训和测试。 它们也已经部署在具有足够计算资源（包括加速器）的服务端点上，以确保在全球负载下的良好响应时间。
+这些服务已经接受了比一般企业所需更多的数据训练和测试。 它们也已经部署到具有足够计算资源（包括加速器）的服务端点上，以确保在全局负载下的良好响应时间。
 
 
 ## Manage your experiments
@@ -138,28 +140,29 @@ The only way to find the best model for your data set is to try everything, whet
 
 A good cloud machine learning platform will have a way that you can see and compare the objective function values of each experiment for both the training sets and the test data, as well as the size of the model and the confusion matrix. Being able to graph all of that is a definite plus.
 
-## 9. 管理您的实验
+## 9. 实验过程管理
 
-为您的数据集找到最佳模型的唯一方法是尝试一切，无论是手动还是使用 AutoML。 这留下了另一个问题：管理您的实验。
+为数据集找到最佳模型的唯一方法，是穷举和尝试一切方法，无论是人工的方式、还是使用 AutoML。 这就带来了另一个问题: 实验过程管理。
 
-一个好的云机器学习平台会有一种方式，你可以看到和比较每个实验的目标函数值，包括训练集和测试数据，以及模型的大小和混淆矩阵。 能够绘制所有这些是一个明确的加分项。
+一个好的云机器学习平台会有一种方式，你可以查阅和比对每次实验的目标函数值，包括训练集和测试数据，以及模型的大小和混淆矩阵。  能够绘制所有这些是一个明确的加分项。
+
 
 ## Support model deployment for prediction
 
 Once you have a way of picking the best experiment given your criteria, you also need an easy way to deploy the model. If you deploy multiple models for the same purpose, you’ll also need a way to apportion traffic among them for a/b testing.
 
-## 10. 支持模型部署进行预测
+## 10. 支持预测式的模型部署
 
-一旦您有办法根据您的标准选择最佳实验，您还需要一种简单的方法来部署模型。 如果您出于同一目的部署多个模型，您还需要一种在它们之间分配流量以进行 a/b 测试的方法。
+一旦找到办法来根据标准选择最佳实验，我们还需要一种简单的方法来部署模型。 如果您出于同一目的部署多个模型，您还需要一种在它们之间分配流量以进行 a/b 测试的方法。
 
 
 ## Monitor prediction performance
 
 Unfortunately, the world tends to change, and data changes with it. That means you can’t deploy a model and forget it. Instead, you need to monitor the data submitted for predictions over time. When the data starts changing significantly from the baseline of your original training data set, you’ll need to retrain your model.
 
-## 11. 监控预测性能
+## 11. 性能监控和预测
 
-不幸的是，世界往往会发生变化，数据也会随之变化。 这意味着您不能部署模型并忘记它。 相反，您需要随着时间的推移监控为预测而提交的数据。 当数据从原始训练数据集的基线开始发生显着变化时，您需要重新训练模型。
+不幸的是，世界往往会发生变化，数据也会随之变化。 这意味着我们不能一劳永逸、部署模型之后就不管了。 相反，我们需要随着时间的推移，监控提交的数据并进行预测。 当数据与原始训练数据集相比, 开始发生明显变化时，我们需要重新训练模型。
 
 
 ## Control costs
@@ -168,11 +171,11 @@ Finally, you need ways to control the costs incurred by your models. Deploying m
 
 The best way to control prediction costs depends on your load and the complexity of your model. If you have a high load, you might be able to use an accelerator to avoid adding more virtual machine instances. If you have a variable load, you might be able to dynamically change your size or number of instances or containers as the load goes up or down. And if you have a low or occasional load, you might be able to use a very small instance with a partial accelerator to handle the predictions.
 
-## 12. 控制成本
+## 12. 成本控制
 
-最后，您需要控制模型产生的成本的方法。 部署用于生产推理的模型通常占深度学习成本的 90%，而培训仅占成本的 10%。
+最终，还需要控制模型产生的成本。 生产环境部署和执行模型的成本，通常占深度学习成本的 90%以上，而训练仅占成本的 10%。
 
-控制预测成本的最佳方法取决于您的负载和模型的复杂性。 如果您的负载很高，您或许可以使用加速器来避免添加更多虚拟机实例。 如果您有可变负载，您可能能够随着负载的上升或下降动态更改实例或容器的大小或数量。 如果您的负载较低或偶尔负载，您可以使用带有部分加速器的非常小的实例来处理预测。
+预测和控制成本的最佳方法取决于您的流量/CPU负载，以及模型的复杂度。 如果CPU负载很高，可以考虑使用加速器来避免添加太多的虚拟机实例。 如果负载是动态变化的，则可以随着负载的上升或下降而动态调整实例或容器的大小以及数量。 如果负载较低或者只有偶发性的负载，则可以使用带有部分加速器的非常小的实例来处理预定流量。
 
 
 > https://www.infoworld.com/article/3568889/how-to-choose-a-cloud-machine-learning-platform.html
