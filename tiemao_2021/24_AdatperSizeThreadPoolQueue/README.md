@@ -37,3 +37,9 @@ AdatperSizeThreadPoolQueue
 增加和维护核心线程数更靠谱一些。而且这个是阻塞式的queue。
 
 扩容或者缩容时, 需要使用原子计数器, 并吃掉能处理的异常。
+
+
+## 相关链接
+
+
+- 动态线程池（Hippo4J）: <https://github.com/acmenlt/dynamic-threadpool>
