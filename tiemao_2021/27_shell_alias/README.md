@@ -1,10 +1,12 @@
 # 一些好用的 alias 命令
 
+Linux和MaxOSX的 alias 命令使用技巧
+
 因为 gist 被强的比较厉害，所以只好放到 repo 中。
 
 可以放到 `~/.bash_profile` 文件中, 或者
 
-```
+```shell
 # SYS ALIAS
 # ll显示隐藏文件
 alias ll='ls -lAF'
