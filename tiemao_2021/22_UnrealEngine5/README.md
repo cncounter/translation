@@ -29,3 +29,5 @@
 
 - [虚幻引擎5 - Unreal Engine](https://www.unrealengine.com/zh-CN/unreal-engine-5?lang=zh-CN)
 - [Unreal Engine 5 - Unreal Engine](https://www.unrealengine.com/en-US/unreal-engine-5)
+- Maya人物建模: [Autodesk it](https://www.autodesk.com.cn/)
+- Modo创意3D建模: <https://www.foundry.com/zh-hans/products/modo>
