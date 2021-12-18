@@ -26,3 +26,30 @@ alias lines='git ls-files | xargs wc -l | grep total'
 ```
 
 如果你有好用的alias，欢迎补充: pr, wiki, comment 都可以。
+
+
+
+每日一个shell命令:
+
+
+```shell
+# 每日一个shell命令
+cncounter:CODE_ALL renfufei$ type ls
+ls is hashed (/bin/ls)
+cncounter:CODE_ALL renfufei$ type ll
+ll is aliased to 'ls -lAF'
+cncounter:CODE_ALL renfufei$ type echo
+echo is a shell builtin
+cncounter:CODE_ALL renfufei$ type java
+java is /Users/renfufei/.jenv/shims/java
+cncounter:CODE_ALL renfufei$ which java
+/Users/renfufei/.jenv/shims/java
+cncounter:CODE_ALL renfufei$ whereis java
+/usr/bin/java
+```
+
+
+
+相关链接:
+
+- Bash 脚本教程: <https://wangdoc.com/bash/index.html>
