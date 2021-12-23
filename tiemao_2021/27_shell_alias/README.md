@@ -49,6 +49,20 @@ cncounter:CODE_ALL renfufei$ whereis java
 ```
 
 
+shell快捷键(注意默认不是vi/Vim的快捷键, 而是emacs的快捷键):
+
+- 清理屏幕`clear`: 使用 `Ctrl` + `l`
+- 光标退回行首`ahead`: 使用 `Ctrl` + `a`
+- 光标退回行尾`end`: 使用 `Ctrl` + `e`
+
+
+Vim快捷键:
+
+- 光标退回行首: 在命令模式下输入数字 `0`
+- 光标退回行尾: 在命令模式下输入数字 `$`
+
+
+
 
 相关链接:
 
