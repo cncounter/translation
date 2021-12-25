@@ -23,6 +23,12 @@ alias port='sudo lsof -iTCP -sTCP:LISTEN -n -P'
 # 统计git仓库的代码行数
 alias lines='git ls-files | xargs wc -l | grep total'
 
+
+# set history format
+export HISTTIMEFORMAT='%F %T  '
+export HISTSIZE=10000
+export HISTIGNORE='pwd:ls:ll:history:exit'
+
 ```
 
 如果你有好用的alias，欢迎补充: pr, wiki, comment 都可以。
@@ -55,6 +61,8 @@ shell快捷键(注意默认不是vi/Vim的快捷键, 而是emacs的快捷键):
 - 光标退回行首`ahead`: 使用 `Ctrl` + `a`
 - 光标退回行尾`end`: 使用 `Ctrl` + `e`
 
+
+- 从历史记录查找`research?`: `Ctrl + r` 进入, 然后输入模糊搜索字符串, 可再次使用 `Ctrl + r` 往前查找;
 
 Vim快捷键:
 
