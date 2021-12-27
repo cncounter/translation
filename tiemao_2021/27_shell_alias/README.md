@@ -75,3 +75,4 @@ Vim快捷键:
 相关链接:
 
 - Bash 脚本教程: <https://wangdoc.com/bash/index.html>
+- Bash 脚本入门: <https://wangdoc.com/bash/script.html>
