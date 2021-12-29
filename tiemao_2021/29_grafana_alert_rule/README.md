@@ -493,11 +493,11 @@ This section describes the fields you fill out to create an alert.
 
 You can set a minimum evaluation interval in the `alerting.min_interval_seconds` configuration field, to set a minimum time between evaluations. Refer to Configuration for more information.
 
-> Caution: Do not use For with the If no data or all values are null setting set to No Data. The triggering of No Data will trigger instantly and not take For into consideration. This may also result in that an OK notification not being sent if alert transitions from No Data -> Pending -> OK.
+> Caution: Do not use For with the `If no data or all values are null` setting set to `No Data`. The triggering of No Data will trigger instantly and not take `For` into consideration. This may also result in that an OK notification not being sent if alert transitions from No Data -> Pending -> OK.
 
 可以在 `alerting.min_interval_seconds` 参数中设置允许的最小评估时间间隔。 更多信息请参阅 [Configuration](https://grafana.com/docs/grafana/latest/administration/configuration/#min-interval-seconds)。
 
-> 请注意: 不要在“如果没有数据或所有值为空”的情况下使用 For，设置为“no data”。“No Data”的触发将立即触发，不考虑“For”。这也可能导致OK通知不被发送，如果告警转换从没有数据-> Pending -> OK。
+> 请注意: 使用For的时候, 不建议将 `If no data or all values are null` 设置为 `No Data`。 因为 `No Data` 会立即触发，而不管 For 的值。 如果告警状态的变化路径是 No Data -> Pending -> OK, 可能会导致 OK 通知不发送。
 
 
 If an alert rule has a configured For and the query violates the configured threshold, then it will first go from OK to Pending. Going from OK to Pending Grafana will not send any notifications. Once the alert rule has been firing for more than For duration, it will change to Alerting and send alert notifications.
