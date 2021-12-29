@@ -473,6 +473,50 @@ The alert notification template feature allows you to take the [label](https://g
 告警通知模板功能允许您从告警查询中获取 [label](https://grafana.com/docs/grafana/latest/basics/timeseries-dimensions/#labels) 值并[将其注入告警通知] （https://grafana.com/docs/grafana/latest/alerting/old-alerting/add-notification-template/）。
 
 
+## Alert rule fields
+
+This section describes the fields you fill out to create an alert.
+
+### Rule
+
+- Name - Enter a descriptive name. The name will be displayed in the Alert Rules list. This field supports templating.
+- Evaluate every - Specify how often the scheduler should evaluate the alert rule. This is referred to as the evaluation interval.
+- For - Specify how long the query needs to violate the configured thresholds before the alert notification triggers.
+
+
+### 告警规则配置字段
+
+- Name - 告警规则的名称, 在 Alert Rules list 展示. 最新版本支持 [templating](https://grafana.com/docs/grafana/latest/alerting/old-alerting/add-notification-template/).
+- Evaluate every - 计算周期: 指定调度器多长时间计算一次这个告警规则. 也可以称为评估间隔(evaluation interval).
+- For - 持续多长时间才发告警通知: 超过指定的阈值后, 需要持续多少时间, 才去真正地触发告警通知的发送。
+
+
+You can set a minimum evaluation interval in the `alerting.min_interval_seconds` configuration field, to set a minimum time between evaluations. Refer to Configuration for more information.
+
+> Caution: Do not use For with the If no data or all values are null setting set to No Data. The triggering of No Data will trigger instantly and not take For into consideration. This may also result in that an OK notification not being sent if alert transitions from No Data -> Pending -> OK.
+
+可以在 `alerting.min_interval_seconds` 参数中设置允许的最小评估时间间隔。 更多信息请参阅 [Configuration](https://grafana.com/docs/grafana/latest/administration/configuration/#min-interval-seconds)。
+
+> 请注意: 不要在“如果没有数据或所有值为空”的情况下使用 For，设置为“no data”。“No Data”的触发将立即触发，不考虑“For”。这也可能导致OK通知不被发送，如果告警转换从没有数据-> Pending -> OK。
+
+
+If an alert rule has a configured For and the query violates the configured threshold, then it will first go from OK to Pending. Going from OK to Pending Grafana will not send any notifications. Once the alert rule has been firing for more than For duration, it will change to Alerting and send alert notifications.
+
+Typically, it’s always a good idea to use this setting since it’s often worse to get false positive than wait a few minutes before the alert notification triggers. Looking at the Alert list or Alert list panels you will be able to see alerts in pending state.
+
+Below you can see an example timeline of an alert using the For setting. At ~16:04 the alert state changes to Pending and after 4 minutes it changes to Alerting which is when alert notifications are sent. Once the series falls back to normal the alert rule goes back to OK.
+
+如果告警规则配置了 For 值，并且查询结果达到了配置的阈值，那么告警规则会先从 OK 转到 Pending 状态。
+从 OK 到 Pending 状态时, Grafana并不会发送任何通知。
+一旦告警规则触发的时间超过 For 配置，将会变更为 Alerting, 并发送告警通知。
+
+一般情况下，使用这种设置是一个好主意，因为得到假阳性的通知一般比较糟糕, 还不如等待几分钟后才触发告警通知。
+通过 Alert list 或者 Alert list panels, 您将能够看到处于挂起状态的告警规则。
+
+下面您可以看到使用For设置的警告时间线示例。在 ~16:04 时，告警状态变为 Pending , 4分钟后变为 Alerting ，这时候发送告警通知。 一旦数据恢复正常，告警规则就回到 OK 。
+
+
 ## 相关链接
 
-- <https://grafana.com/docs/grafana/latest/alerting/old-alerting/notifications/>
+- 配置消息通道: <https://grafana.com/docs/grafana/latest/alerting/old-alerting/notifications/>
+- 创建告警规则: <https://grafana.com/docs/grafana/latest/alerting/old-alerting/create-alerts/>
