@@ -44,3 +44,5 @@ To activate this feature, you were required to pass `-XX:+UseCompressedOops` JVM
 
 
 - 原文链接: [Avoid passing -XX:+UseCompressedOops](https://blog.gceasy.io/2020/04/16/avoid-passing-xxusecompressedoops/)
+- GitHub版本: [不需要再手工指定JVM启动参数 `-XX:+UseCompressedOops`](https://github.com/cncounter/translation/blob/master/tiemao_2021/30_avoid-passing-xxusecompressedoops/README.md)
+- Gitee版本: [不需要再手工指定JVM启动参数 `-XX:+UseCompressedOops`](https://gitee.com/cncounter/translation/blob/master/tiemao_2021/30_avoid-passing-xxusecompressedoops/README.md)
