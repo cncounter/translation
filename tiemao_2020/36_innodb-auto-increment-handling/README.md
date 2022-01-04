@@ -10,7 +10,7 @@
 
 有1张表300万数据，另一张表3000万数据。
 因为涉及到数据加密方式变更，需要修补数据, 采用了 【挂起请求存到Redis + 新旧2套表切换的方式】。
-通过SQLrename，以及将备份表的自增id去除，新表加上自增id的方式: 这2个步骤耗时【1小时】。
+通过SQL rename，以及将备份表的自增id去除，新表加上自增id的方式: 这2个步骤耗时【1小时】。
 
 经验教训: 大数据量的表, 不要修改自增id。
 
@@ -103,7 +103,7 @@ mysql> ALTER TABLE tbl AUTO_INCREMENT = 100;
 
 ### InnoDB对AUTO_INCREMENT的处理机制
 
-> 此部分内容为官方文档: [14.6.1.6  InnoDB对AUTO_INCREMENT的处理机制](https://github.com/cncounter/translation/tiemao_2020/44_innodb-storage-engine/14.6_innodb-on-disk-structures.md#14.6.1.6) 
+> 此部分内容为官方文档: [14.6.1.6  InnoDB对AUTO_INCREMENT的处理机制](https://github.com/cncounter/translation/tiemao_2020/44_innodb-storage-engine/14.6_innodb-on-disk-structures.md#14.6.1.6)
 
 
 `InnoDB` provides a configurable locking mechanism that can significantly improve scalability and performance of SQL statements that add rows to tables with `AUTO_INCREMENT` columns. To use the `AUTO_INCREMENT` mechanism with an `InnoDB` table, an `AUTO_INCREMENT` column must be defined as part of an index such that it is possible to perform the equivalent of an indexed `SELECT MAX(*`ai_col`*)` lookup on the table to obtain the maximum column value. Typically, this is achieved by making the column the first column of some table index.
