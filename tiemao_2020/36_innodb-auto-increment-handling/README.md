@@ -101,7 +101,9 @@ mysql> ALTER TABLE tbl AUTO_INCREMENT = 100;
 
 ### AUTO_INCREMENT Handling in InnoDB
 
-### InnoDB中的AUTO_INCREMENT处理机制
+### InnoDB对AUTO_INCREMENT的处理机制
+
+> 此部分内容为官方文档: [14.6.1.6  InnoDB对AUTO_INCREMENT的处理机制](https://github.com/cncounter/translation/tiemao_2020/44_innodb-storage-engine/14.6_innodb-on-disk-structures.md#14.6.1.6) 
 
 
 `InnoDB` provides a configurable locking mechanism that can significantly improve scalability and performance of SQL statements that add rows to tables with `AUTO_INCREMENT` columns. To use the `AUTO_INCREMENT` mechanism with an `InnoDB` table, an `AUTO_INCREMENT` column must be defined as part of an index such that it is possible to perform the equivalent of an indexed `SELECT MAX(*`ai_col`*)` lookup on the table to obtain the maximum column value. Typically, this is achieved by making the column the first column of some table index.
