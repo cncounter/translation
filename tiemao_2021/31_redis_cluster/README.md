@@ -55,6 +55,18 @@ So in practical terms, what do you get with Redis Cluster?
 - The ability to **continue operations when a subset of the nodes are experiencing failures** or are unable to communicate with the rest of the cluster.
 
 
+## Redis集群基础
+
+Redis Cluster 提供了一种将数据自动分片到多个 Redis 节点的运行方式。
+
+Redis Cluster 在分片的同时, 也在一定程度上提供了更好的可用性保障， 实际上就是在某些节点出现故障或无法通信时, 也能继续操作的能力。
+当然，如果发生大规模的故障, 比如大多数主节点都不可用时，集群也就会停止运行。
+
+那么在生产实践中，使用 Redis Cluster, 有什么好处呢？
+
+- 可扩展性: 自动将数据分片到多个节点的能力。
+- 高可用性: 当部分节点出现故障, 或者无法与集群的其余部分进行通信时, 集群还可以继续提供服务。
+
 
 ## Redis Cluster TCP ports
 
