@@ -84,6 +84,26 @@ If you don't open both TCP ports, your cluster will not work as expected.
 The cluster bus uses a different, binary protocol, for node to node data exchange, which is more suited to exchange information between nodes using little bandwidth and processing time.
 
 
+## Redis集群的TCP端口号
+
+集群中每个Redis节点都需要打开两个 TCP 端口。
+用于服务客户端的普通 Redis TCP 端口, 例如 `6379`,
+第二个端口称为集群总线端口。
+集群总线端口默认是在数据端口的数字上加`10000`, 比如在本示例中为 `16379`, 也可以通过 cluster-port 配置来覆盖。
+
+第二个端口数字一般更大, 用于集群总线，互相之间使用二进制协议来实现节点到节点的通信通道。
+节点使用集群总线进行故障检测、配置更新、故障转移授权等等。
+客户端不应该尝试与集群总线端口通信，而始终使用正常的 Redis 命令端口即可，但请确保在防火墙中放开了这两个端口，否则 Redis 集群节点之间将无法通信。
+
+请注意，要保证 Redis 集群正常工作，对每个节点都需要：
+
+1. 与客户端通信的普通端口(通常为`6379`), 对所有需要访问集群的客户端, 以及所有其他Redis节点开放(会使用客户端来进行Key迁移)。
+2. 集群总线端口, 从集群中的其他Redis节点, 必须能访问。
+
+如果没有开启这两个 TCP 端口，那么Redis集群将无法按预期工作。
+
+集群总线使用不同的二进制协议来进行节点到节点的数据交换，它更适用于在节点之间进行信息交换, 消耗的带宽很小, 处理时间也很短。
+
 
 ## Redis Cluster and Docker
 
@@ -92,6 +112,14 @@ Currently Redis Cluster does not support NATted environments and in general envi
 Docker uses a technique called *port mapping*: programs running inside Docker containers may be exposed with a different port compared to the one the program believes to be using. This is useful in order to run multiple containers using the same ports, at the same time, in the same server.
 
 In order to make Docker compatible with Redis Cluster you need to use the **host networking mode** of Docker. Please check the `--net=host` option in the [Docker documentation](https://docs.docker.com/engine/userguide/networking/dockernetworks/) for more information.
+
+## Redis集群和Docker
+
+目前 Redis Cluster 不支持 NAT 网络环境, 一般这种环境是将 IP 地址和 TCP 端口重新映射了。
+
+Docker 使用了一种技术, 名为“端口映射”(port mapping)： 在 Docker 容器里运行的程序自己监听的端口号, 可以被Docker暴露并映射为宿主机的其他端口号。 这对于在同一服务器上同时运行多个使用相同端口的容器很有用。
+
+为了使 Docker 与 Redis Cluster 兼容, 您需要使用 Docker 的主机网络模式(host networking mode)。 请查阅 [Docker documentation](https://docs.docker.com/engine/userguide/networking/dockernetworks/) 中的 `--net=host` 选项以获取更多信息。
 
 
 
