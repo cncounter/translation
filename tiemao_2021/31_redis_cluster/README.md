@@ -1,6 +1,6 @@
 # Redis集群入门简介
 
-当前，在面对大规模内存容量的存储需求时, Redis集群是一个比较好的方案。
+当前, 在面对大规模内存容量的存储需求时, Redis集群是一个比较好的方案。
 
 Redis官方文档的地址为: <https://redis.io/documentation>
 
@@ -24,14 +24,14 @@ If you plan to run a serious Redis Cluster deployment, the more formal specifica
 <a name="cluster-tutorial"></a>
 # 1. Redis集群入门教程
 
-本教程对Redis Cluster进行简要的介绍，不涉及难以理解的分布式系统概念。
+本教程对Redis Cluster进行简要的介绍, 不涉及难以理解的分布式系统概念。
 主要涵盖的内容包括:
 
 - 如何安装和配置集群
 - 如何进行测试与验证
 - 如何操作并管理集群
 
-本教程从用户的角度, 描述系统如何使用，如何运行。
+本教程从用户的角度, 描述系统如何使用, 如何运行。
 具体的集群算法原理和实现, 请参考 [Redis集群规范文档](#cluster-spec)。
 
 本教程尝试从终端用户的角度, 以简单易懂的方式, 介绍有关 Redis Cluster 的可用性和一致性特征的信息。
@@ -39,7 +39,7 @@ If you plan to run a serious Redis Cluster deployment, the more formal specifica
 > 请注意: 学习本教程的内容, 需要安装 Redis 3.0 或更高版本。
 
 如果需要在生产环境部署和运维 Redis 集群, 那么建议您阅读更正式的规范。
-当然，先学习本教程做个入门，玩一段时间的 Redis Cluster，然后再阅读规范也是一个很好的学习路径。
+当然, 先学习本教程做个入门, 玩一段时间的 Redis Cluster, 然后再阅读规范也是一个很好的学习路径。
 
 
 
@@ -59,10 +59,10 @@ So in practical terms, what do you get with Redis Cluster?
 
 Redis Cluster 提供了一种将数据自动分片到多个 Redis 节点的运行方式。
 
-Redis Cluster 在分片的同时, 也在一定程度上提供了更好的可用性保障， 实际上就是在某些节点出现故障或无法通信时, 也能继续操作的能力。
-当然，如果发生大规模的故障, 比如大多数主节点都不可用时，集群也就会停止运行。
+Redis Cluster 在分片的同时, 也在一定程度上提供了更好的可用性保障, 实际上就是在某些节点出现故障或无法通信时, 也能继续操作的能力。
+当然, 如果发生大规模的故障, 比如大多数主节点都不可用时, 集群也就会停止运行。
 
-那么在生产实践中，使用 Redis Cluster, 有什么好处呢？
+那么在生产实践中, 使用 Redis Cluster, 有什么好处呢？
 
 - 可扩展性: 自动将数据分片到多个节点的能力。
 - 高可用性: 当部分节点出现故障, 或者无法与集群的其余部分进行通信时, 集群还可以继续提供服务。
@@ -91,18 +91,18 @@ The cluster bus uses a different, binary protocol, for node to node data exchang
 第二个端口称为集群总线端口。
 集群总线端口默认是在数据端口的数字上加`10000`, 比如在本示例中为 `16379`, 也可以通过 cluster-port 配置来覆盖。
 
-第二个端口数字一般更大, 用于集群总线，互相之间使用二进制协议来实现节点到节点的通信通道。
+第二个端口数字一般更大, 用于集群总线, 互相之间使用二进制协议来实现节点到节点的通信通道。
 节点使用集群总线进行故障检测、配置更新、故障转移授权等等。
-客户端不应该尝试与集群总线端口通信，而始终使用正常的 Redis 命令端口即可，但请确保在防火墙中放开了这两个端口，否则 Redis 集群节点之间将无法通信。
+客户端不应该尝试与集群总线端口通信, 而始终使用正常的 Redis 命令端口即可, 但请确保在防火墙中放开了这两个端口, 否则 Redis 集群节点之间将无法通信。
 
-请注意，要保证 Redis 集群正常工作，对每个节点都需要：
+请注意, 要保证 Redis 集群正常工作, 对每个节点都需要：
 
 1. 与客户端通信的普通端口(通常为`6379`), 对所有需要访问集群的客户端, 以及所有其他Redis节点开放(会使用客户端来进行Key迁移)。
 2. 集群总线端口, 从集群中的其他Redis节点, 必须能访问。
 
-如果没有开启这两个 TCP 端口，那么Redis集群将无法按预期工作。
+如果没有开启这两个 TCP 端口, 那么Redis集群将无法按预期工作。
 
-集群总线使用不同的二进制协议来进行节点到节点的数据交换，它更适用于在节点之间进行信息交换, 消耗的带宽很小, 处理时间也很短。
+集群总线使用不同的二进制协议来进行节点到节点的数据交换, 它更适用于在节点之间进行信息交换, 消耗的带宽很小, 处理时间也很短。
 
 
 ## Redis Cluster and Docker
@@ -131,6 +131,16 @@ There are 16384 hash slots in Redis Cluster, and to compute what is the hash slo
 
 Every node in a Redis Cluster is responsible for a subset of the hash slots, so for example you may have a cluster with 3 nodes, where:
 
+
+## Redis Cluster 数据分片
+
+Redis Cluster 并没有使用一致性哈希算法(consistent hashing), 而是使用不同的分片形式, 在概念上, 每个Key都是所谓的哈希槽(hash slot)的一部分。
+
+Redis 集群中共有 16384 个哈希槽, 要计算给定Key的哈希槽位是哪个, 只需将Key的 CRC16 值, 模上 16384 接口。
+
+集群中的每个 Redis 节点都负责一部分哈希槽, 例如, 某个集群有 3 个节点, 可能会有：
+
+
 - Node A contains hash slots from 0 to 5500.
 - Node B contains hash slots from 5501 to 11000.
 - Node C contains hash slots from 11001 to 16383.
@@ -143,6 +153,21 @@ Redis Cluster supports multiple key operations as long as all the keys involved 
 
 Hash tags are documented in the Redis Cluster specification, but the gist is that if there is a substring between {} brackets in a key, only what is inside the string is hashed, so for example `this{foo}key` and `another{foo}key` are guaranteed to be in the same hash slot, and can be used together in a command with multiple keys as arguments.
 
+- 节点 A 包含从 0 到 5500 的哈希槽。
+- 节点 B 包含从 5501 到 11000 的哈希槽。
+- 节点 C 包含从 11001 到 16383 的哈希槽。
+
+这样就可以在集群中轻松地添加和删除节点。
+例如, 我想添加一个新节点 D, 那么需要将一部分哈希槽从节点 A、B、C 移动到 D。
+同样, 如果我想从集群中删除节点 A, 可以只移动 A 节点服务的哈希槽到 B 和 C。
+当节点 A 中的槽位为空时, 就可以将它安全地从集群中摘除。
+
+因为将哈希槽从一个节点移动到另一个节点不需要停止操作, 添加和删除节点, 或者更改节点持有的哈希槽百分比时, 都不需要停机维护。
+
+Redis Cluster 支持多 key 操作,  只要这个命令(或整个事务, 或 Lua 脚本)涉及的所有Key, 全都位于同一个哈希槽中。
+用户可以通过使用一种名为 哈希标签(hash tags) 的手段, 强制将多个Key分配到同一个哈希槽中。
+
+哈希标签的文档在 Redis Cluster 规范中,  简单点说就是: 如果Key中有英文半角花括号 `{}`, 并且花括号里面有子字符串, 则仅对花括号中的子字符串内容进行哈希计算, 例如 `this{foo}key` 和 `another{foo}key` 会保证落在同一个哈希槽中, 可以在支持多个Key作为参数的命令中使用。
 
 
 ## Redis Cluster master-replica model
@@ -849,7 +874,7 @@ Welcome to the **Redis Cluster Specification**. Here you'll find information abo
 
 欢迎查阅 《Redis集群规范文档》。  
 本文档介绍有关 Redis 集群的算法和设计原理。
-这是一份不断更新的文档，与 Redis 的具体实现保持密切同步。
+这是一份不断更新的文档, 与 Redis 的具体实现保持密切同步。
 
 
 <a name="main-properties-and-rationales-of-the-design"></a>
