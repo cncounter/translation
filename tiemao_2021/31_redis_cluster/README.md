@@ -95,7 +95,7 @@ The cluster bus uses a different, binary protocol, for node to node data exchang
 节点使用集群总线进行故障检测、配置更新、故障转移授权等等。
 客户端不应该尝试与集群总线端口通信, 而始终使用正常的 Redis 命令端口即可, 但请确保在防火墙中放开了这两个端口, 否则 Redis 集群节点之间将无法通信。
 
-请注意, 要保证 Redis 集群正常工作, 对每个节点都需要：
+请注意, 要保证 Redis 集群正常工作, 对每个节点都需要:
 
 1. 与客户端通信的普通端口(通常为`6379`), 对所有需要访问集群的客户端, 以及所有其他Redis节点开放(会使用客户端来进行Key迁移)。
 2. 集群总线端口, 从集群中的其他Redis节点, 必须能访问。
@@ -117,7 +117,7 @@ In order to make Docker compatible with Redis Cluster you need to use the **host
 
 目前 Redis Cluster 不支持 NAT 网络环境, 一般这种环境是将 IP 地址和 TCP 端口重新映射了。
 
-Docker 使用了一种技术, 名为“端口映射”(port mapping)： 在 Docker 容器里运行的程序自己监听的端口号, 可以被Docker暴露并映射为宿主机的其他端口号。 这对于在同一服务器上同时运行多个使用相同端口的容器很有用。
+Docker 使用了一种技术, 名为“端口映射”(port mapping):  在 Docker 容器里运行的程序自己监听的端口号, 可以被Docker暴露并映射为宿主机的其他端口号。 这对于在同一服务器上同时运行多个使用相同端口的容器很有用。
 
 为了使 Docker 与 Redis Cluster 兼容, 您需要使用 Docker 的主机网络模式(host networking mode)。 请查阅 [Docker documentation](https://docs.docker.com/engine/userguide/networking/dockernetworks/) 中的 `--net=host` 选项以获取更多信息。
 
@@ -138,7 +138,7 @@ Redis Cluster 并没有使用一致性哈希算法(consistent hashing), 而是�
 
 Redis 集群中共有 16384 个哈希槽, 要计算给定Key的哈希槽位是哪个, 只需将Key的 CRC16 值, 模上 16384 接口。
 
-集群中的每个 Redis 节点都负责一部分哈希槽, 例如, 某个集群有 3 个节点, 可能会有：
+集群中的每个 Redis 节点都负责一部分哈希槽, 例如, 某个集群有 3 个节点, 可能会有:
 
 
 - Node A contains hash slots from 0 to 5500.
@@ -208,17 +208,50 @@ The first reason why Redis Cluster can lose writes is because it uses asynchrono
 
 As you can see, B does not wait for an acknowledgement from B1, B2, B3 before replying to the client, since this would be a prohibitive latency penalty for Redis, so if your client writes something, B acknowledges the write, but crashes before being able to send the write to its replicas, one of the replicas (that did not receive the write) can be promoted to master, losing the write forever.
 
+## Redis集群一致性保证
+
+Redis Cluster 无法保证 **强一致性**。 实际上就是说，在某些极端情况下，Redis 集群可能会丢失系统已经向客户端确认了的写入。
+
+Redis Cluster 可能丢失写入的第一个原因, 是因为它使用异步复制。
+在写入期间的场景一般是这样:
+
+- 客户端写入数据到主节点 B。
+- 主节点 B 向客户端回复 OK。
+- 然后, 主节点 B 再将写入信息传播给副本 B1、B2 和 B3。
+
+可以看到，主节点 B 在回复客户端之前, 不会等待来自 B1、B2、B3 的确认。
+因为对 Redis 来说可能会有令人望而却步的延迟惩罚，
+因此在客户端写入内容之后，主节点 B 会确认写入，这时候, 如果在将写入数据发送到副本之前，其中某个未收到写入信息的副本被提升为主节点，那么这个写入就会永久丢失。
+
+
 This is **very similar to what happens** with most databases that are configured to flush data to disk every second, so it is a scenario you are already able to reason about because of past experiences with traditional database systems not involving distributed systems. Similarly you can improve consistency by forcing the database to flush data to disk before replying to the client, but this usually results in prohibitively low performance. That would be the equivalent of synchronous replication in the case of Redis Cluster.
 
 Basically, there is a trade-off to be made between performance and consistency.
 
 Redis Cluster has support for synchronous writes when absolutely needed, implemented via the [WAIT](https://redis.io/commands/wait) command. This makes losing writes a lot less likely. However, note that Redis Cluster does not implement strong consistency even when synchronous replication is used: it is always possible, under more complex failure scenarios, that a replica that was not able to receive the write will be elected as master.
 
+这与每秒定时刷新一次数据到磁盘的大部分数据库类似，因此，基于过去不涉及分布式的传统数据库系统的使用经验，您已经能够推断出这种情况。
+同样，可以通过强制数据库在回复客户端之前将数据刷新到磁盘来提高一致性， 但这通常会导致性能降低。
+在 Redis Cluster 的情况下，这相当于使用了同步复制。
+
+基本上，我们需要在性能(performance)和一致性(consistency)之间进行取舍和权衡。
+
+Redis Cluster 在必要时可以支持同步写入，通过使用 [WAIT](https://redis.io/commands/wait) 命令来实现。
+这使得丢失写入的可能性大大降低。
+但请注意，即使使用同步复制，Redis Cluster 也不会实现强一致性: 在更极端的故障场景下, 甚至有可能将没有收到写入信息的那个副本选举为 master。
+
+
 There is another notable scenario where Redis Cluster will lose writes, that happens during a network partition where a client is isolated with a minority of instances including at least a master.
 
 Take as an example our 6 nodes cluster composed of A, B, C, A1, B1, C1, with 3 masters and 3 replicas. There is also a client, that we will call Z1.
 
 After a partition occurs, it is possible that in one side of the partition we have A, C, A1, B1, C1, and in the other side we have B and Z1.
+
+另一个 Redis 集群会丢失写入的场景，是发生在网络分裂期间(network partition)，其中客户端与少数实例（包括至少一个主实例）隔离。
+
+以我们的 6 节点集群为例，假设集群由 A、B、C、A1、B1、C1 组成，具有 3 主节点和 3 个副本。 还有一个客户端，我们称之为 Z1。
+
+发生网络分裂后，可能在分区的一侧有 A、C、A1、B1、C1，而在另一侧有 B 和 Z1。
 
 Z1 is still able to write to B, which will accept its writes. If the partition heals in a very short time, the cluster will continue normally. However, if the partition lasts enough time for B1 to be promoted to master on the majority side of the partition, the writes that Z1 has sent to B in the meantime will be lost.
 
@@ -228,6 +261,16 @@ This amount of time is a very important configuration directive of Redis Cluster
 
 After node timeout has elapsed, a master node is considered to be failing, and can be replaced by one of its replicas. Similarly, after node timeout has elapsed without a master node to be able to sense the majority of the other master nodes, it enters an error state and stops accepting writes.
 
+Z1 仍然能够写入 B，B 也会接受其写入。
+如果分裂在很短的时间内恢复，集群将继续正常运行。
+但是，如果分裂持续了较长时间, 让 B1 被人多的一方提升为主节点，那么，在此期间 Z1 发送给 B 的写入将会丢失。
+
+请注意，这里有一个**最大时间窗口**, Z1 还能够将数据写入到 B:  如果分区的多数方经过足够的时间选择了一个副本作为主节点，那么少数这一方的每个主节点都会停止接受写入请求。
+
+这个时间量是 Redis Cluster 中的一个非常重要的配置指令，被称为 `node timeout`。
+
+节点超时后，主节点被认为发生故障，并且可以由其副本之一替换。
+类似地，在节点超时后, 如果某个主节点不能感知到其他大多数的主节点，则会进入错误状态, 并停止接受写入。
 
 
 # Redis Cluster configuration parameters
