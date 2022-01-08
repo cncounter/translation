@@ -184,16 +184,16 @@ However, note that if nodes B and B1 fail at the same time, Redis Cluster is not
 
 ## Redis集群和主从复制模型
 
-为了在一部分主节点发生故障, 或者是无法与大多数节点通信时, 保持集群的可用性， Redis 集群使用主从模型(master-replica model)，
-其中每个哈希槽都有1到N份数据副本（1份在主节点, 另外有 N-1 份在从节点）。
+为了在一部分主节点发生故障, 或者是无法与大多数节点通信时, 保持集群的可用性,  Redis 集群使用主从模型(master-replica model),
+其中每个哈希槽都有1到N份数据副本(1份在主节点, 另外有 N-1 份在从节点)。
 
-在前面介绍的集群示例中, 有3个节点 A、B、C，如果节点 B 发生故障，则集群将无法继续提供服务，因为我们没有办法为 5501-11000 范围内的哈希槽提供服务。
+在前面介绍的集群示例中, 有3个节点 A、B、C, 如果节点 B 发生故障, 则集群将无法继续提供服务, 因为我们没有办法为 5501-11000 范围内的哈希槽提供服务。
 
-但是，在集群创建时，或者在之后的时间点，如果我们为每个主节点添加一个副本节点，那么最终的集群就是: 由 A、B、C 作为主节点, 以及 A1、B1、C1 组成副本节点.  这样配置好以后，假如节点 B 发生故障，那么系统还能继续运行。
+但是, 在集群创建时, 或者在之后的时间点, 如果我们为每个主节点添加一个副本节点, 那么最终的集群就是: 由 A、B、C 作为主节点, 以及 A1、B1、C1 组成副本节点.  这样配置好以后, 假如节点 B 发生故障, 那么系统还能继续运行。
 
-节点 B1 复制的是 B，而如果 B 发生故障，集群会将节点 B1 提升为新的 master，并继续正常运行。
+节点 B1 复制的是 B, 而如果 B 发生故障, 集群会将节点 B1 提升为新的 master, 并继续正常运行。
 
-但是请注意，如果节点 B 和 B1 同时发生故障，Redis Cluster 则无法继续运行。
+但是请注意, 如果节点 B 和 B1 同时发生故障, Redis Cluster 则无法继续运行。
 
 
 ## Redis Cluster consistency guarantees
@@ -210,7 +210,7 @@ As you can see, B does not wait for an acknowledgement from B1, B2, B3 before re
 
 ## Redis集群一致性保证
 
-Redis Cluster 无法保证 **强一致性**。 实际上就是说，在某些极端情况下，Redis 集群可能会丢失系统已经向客户端确认了的写入。
+Redis Cluster 无法保证 **强一致性**。 实际上就是说, 在某些极端情况下, Redis 集群可能会丢失系统已经向客户端确认了的写入。
 
 Redis Cluster 可能丢失写入的第一个原因, 是因为它使用异步复制。
 在写入期间的场景一般是这样:
@@ -219,9 +219,9 @@ Redis Cluster 可能丢失写入的第一个原因, 是因为它使用异步复�
 - 主节点 B 向客户端回复 OK。
 - 然后, 主节点 B 再将写入信息传播给副本 B1、B2 和 B3。
 
-可以看到，主节点 B 在回复客户端之前, 不会等待来自 B1、B2、B3 的确认。
-因为对 Redis 来说可能会有令人望而却步的延迟惩罚，
-因此在客户端写入内容之后，主节点 B 会确认写入，这时候, 如果在将写入数据发送到副本之前，其中某个未收到写入信息的副本被提升为主节点，那么这个写入就会永久丢失。
+可以看到, 主节点 B 在回复客户端之前, 不会等待来自 B1、B2、B3 的确认。
+因为对 Redis 来说可能会有令人望而却步的延迟惩罚,
+因此在客户端写入内容之后, 主节点 B 会确认写入, 这时候, 如果在将写入数据发送到副本之前, 其中某个未收到写入信息的副本被提升为主节点, 那么这个写入就会永久丢失。
 
 
 This is **very similar to what happens** with most databases that are configured to flush data to disk every second, so it is a scenario you are already able to reason about because of past experiences with traditional database systems not involving distributed systems. Similarly you can improve consistency by forcing the database to flush data to disk before replying to the client, but this usually results in prohibitively low performance. That would be the equivalent of synchronous replication in the case of Redis Cluster.
@@ -230,15 +230,15 @@ Basically, there is a trade-off to be made between performance and consistency.
 
 Redis Cluster has support for synchronous writes when absolutely needed, implemented via the [WAIT](https://redis.io/commands/wait) command. This makes losing writes a lot less likely. However, note that Redis Cluster does not implement strong consistency even when synchronous replication is used: it is always possible, under more complex failure scenarios, that a replica that was not able to receive the write will be elected as master.
 
-这与每秒定时刷新一次数据到磁盘的大部分数据库类似，因此，基于过去不涉及分布式的传统数据库系统的使用经验，您已经能够推断出这种情况。
-同样，可以通过强制数据库在回复客户端之前将数据刷新到磁盘来提高一致性， 但这通常会导致性能降低。
-在 Redis Cluster 的情况下，这相当于使用了同步复制。
+这与每秒定时刷新一次数据到磁盘的大部分数据库类似, 因此, 基于过去不涉及分布式的传统数据库系统的使用经验, 您已经能够推断出这种情况。
+同样, 可以通过强制数据库在回复客户端之前将数据刷新到磁盘来提高一致性,  但这通常会导致性能降低。
+在 Redis Cluster 的情况下, 这相当于使用了同步复制。
 
-基本上，我们需要在性能(performance)和一致性(consistency)之间进行取舍和权衡。
+基本上, 我们需要在性能(performance)和一致性(consistency)之间进行取舍和权衡。
 
-Redis Cluster 在必要时可以支持同步写入，通过使用 [WAIT](https://redis.io/commands/wait) 命令来实现。
+Redis Cluster 在必要时可以支持同步写入, 通过使用 [WAIT](https://redis.io/commands/wait) 命令来实现。
 这使得丢失写入的可能性大大降低。
-但请注意，即使使用同步复制，Redis Cluster 也不会实现强一致性: 在更极端的故障场景下, 甚至有可能将没有收到写入信息的那个副本选举为 master。
+但请注意, 即使使用同步复制, Redis Cluster 也不会实现强一致性: 在更极端的故障场景下, 甚至有可能将没有收到写入信息的那个副本选举为 master。
 
 
 There is another notable scenario where Redis Cluster will lose writes, that happens during a network partition where a client is isolated with a minority of instances including at least a master.
@@ -247,11 +247,11 @@ Take as an example our 6 nodes cluster composed of A, B, C, A1, B1, C1, with 3 m
 
 After a partition occurs, it is possible that in one side of the partition we have A, C, A1, B1, C1, and in the other side we have B and Z1.
 
-另一个 Redis 集群会丢失写入的场景，是发生在网络分裂期间(network partition)，其中客户端与少数实例（包括至少一个主实例）隔离。
+另一个 Redis 集群会丢失写入的场景, 是发生在网络分裂期间(network partition), 其中客户端与少数实例(包括至少一个主实例)隔离。
 
-以我们的 6 节点集群为例，假设集群由 A、B、C、A1、B1、C1 组成，具有 3 主节点和 3 个副本。 还有一个客户端，我们称之为 Z1。
+以我们的 6 节点集群为例, 假设集群由 A、B、C、A1、B1、C1 组成, 具有 3 主节点和 3 个副本。 还有一个客户端, 我们称之为 Z1。
 
-发生网络分裂后，可能在分区的一侧有 A、C、A1、B1、C1，而在另一侧有 B 和 Z1。
+发生网络分裂后, 可能在分区的一侧有 A、C、A1、B1、C1, 而在另一侧有 B 和 Z1。
 
 Z1 is still able to write to B, which will accept its writes. If the partition heals in a very short time, the cluster will continue normally. However, if the partition lasts enough time for B1 to be promoted to master on the majority side of the partition, the writes that Z1 has sent to B in the meantime will be lost.
 
@@ -261,33 +261,49 @@ This amount of time is a very important configuration directive of Redis Cluster
 
 After node timeout has elapsed, a master node is considered to be failing, and can be replaced by one of its replicas. Similarly, after node timeout has elapsed without a master node to be able to sense the majority of the other master nodes, it enters an error state and stops accepting writes.
 
-Z1 仍然能够写入 B，B 也会接受其写入。
-如果分裂在很短的时间内恢复，集群将继续正常运行。
-但是，如果分裂持续了较长时间, 让 B1 被人多的一方提升为主节点，那么，在此期间 Z1 发送给 B 的写入将会丢失。
+Z1 仍然能够写入 B, B 也会接受其写入。
+如果分裂在很短的时间内恢复, 集群将继续正常运行。
+但是, 如果分裂持续了较长时间, 让 B1 被人多的一方提升为主节点, 那么, 在此期间 Z1 发送给 B 的写入将会丢失。
 
-请注意，这里有一个**最大时间窗口**, Z1 还能够将数据写入到 B:  如果分区的多数方经过足够的时间选择了一个副本作为主节点，那么少数这一方的每个主节点都会停止接受写入请求。
+请注意, 这里有一个**最大时间窗口**, Z1 还能够将数据写入到 B:  如果分区的多数方经过足够的时间选择了一个副本作为主节点, 那么少数这一方的每个主节点都会停止接受写入请求。
 
-这个时间量是 Redis Cluster 中的一个非常重要的配置指令，被称为 `node timeout`。
+这个时间量是 Redis Cluster 中的一个非常重要的配置指令, 被称为 `node timeout`。
 
-节点超时后，主节点被认为发生故障，并且可以由其副本之一替换。
-类似地，在节点超时后, 如果某个主节点不能感知到其他大多数的主节点，则会进入错误状态, 并停止接受写入。
+节点超时后, 主节点被认为发生故障, 并且可以由其副本之一替换。
+类似地, 在节点超时后, 如果某个主节点不能感知到其他大多数的主节点, 则会进入错误状态, 并停止接受写入。
 
 
-# Redis Cluster configuration parameters
+## Redis Cluster configuration parameters
 
 We are about to create an example cluster deployment. Before we continue, let's introduce the configuration parameters that Redis Cluster introduces in the `redis.conf` file. Some will be obvious, others will be more clear as you continue reading.
 
-- **cluster-enabled `<yes/no>`**: If yes, enables Redis Cluster support in a specific Redis instance. Otherwise the instance starts as a standalone instance as usual.
-- **cluster-config-file `<filename>`**: Note that despite the name of this option, this is not a user editable configuration file, but the file where a Redis Cluster node automatically persists the cluster configuration (the state, basically) every time there is a change, in order to be able to re-read it at startup. The file lists things like the other nodes in the cluster, their state, persistent variables, and so forth. Often this file is rewritten and flushed on disk as a result of some message reception.
-- **cluster-node-timeout `<milliseconds>`**: The maximum amount of time a Redis Cluster node can be unavailable, without it being considered as failing. If a master node is not reachable for more than the specified amount of time, it will be failed over by its replicas. This parameter controls other important things in Redis Cluster. Notably, every node that can't reach the majority of master nodes for the specified amount of time, will stop accepting queries.
-- **cluster-slave-validity-factor `<factor>`**: If set to zero, a replica will always consider itself valid, and will therefore always try to failover a master, regardless of the amount of time the link between the master and the replica remained disconnected. If the value is positive, a maximum disconnection time is calculated as the *node timeout* value multiplied by the factor provided with this option, and if the node is a replica, it will not try to start a failover if the master link was disconnected for more than the specified amount of time. For example, if the node timeout is set to 5 seconds and the validity factor is set to 10, a replica disconnected from the master for more than 50 seconds will not try to failover its master. Note that any value different than zero may result in Redis Cluster being unavailable after a master failure if there is no replica that is able to failover it. In that case the cluster will return to being available only when the original master rejoins the cluster.
-- **cluster-migration-barrier `<count>`**: Minimum number of replicas a master will remain connected with, for another replica to migrate to a master which is no longer covered by any replica. See the appropriate section about replica migration in this tutorial for more information.
-- **cluster-require-full-coverage `<yes/no>`**: If this is set to yes, as it is by default, the cluster stops accepting writes if some percentage of the key space is not covered by any node. If the option is set to no, the cluster will still serve queries even if only requests about a subset of keys can be processed.
-- **cluster-allow-reads-when-down `<yes/no>`**: If this is set to no, as it is by default, a node in a Redis Cluster will stop serving all traffic when the cluster is marked as failed, either when a node can't reach a quorum of masters or when full coverage is not met. This prevents reading potentially inconsistent data from a node that is unaware of changes in the cluster. This option can be set to yes to allow reads from a node during the fail state, which is useful for applications that want to prioritize read availability but still want to prevent inconsistent writes. It can also be used for when using Redis Cluster with only one or two shards, as it allows the nodes to continue serving writes when a master fails but automatic failover is impossible.
 
 
+## Redis 集群配置参数
 
-# Creating and using a Redis Cluster
+我们在下一节将会创建一个集群部署示例。 所以本节先介绍一下在 `redis.conf` 文件中,  Redis Cluster 引入的配置参数。
+有些配置参数的含义很明显, 有一些则会随着阅读的深入而变得更加清晰。
+
+- `cluster-enabled <yes/no>`: If yes, enables Redis Cluster support in a specific Redis instance. Otherwise the instance starts as a standalone instance as usual.
+- `cluster-config-file <filename>`: Note that despite the name of this option, this is not a user editable configuration file, but the file where a Redis Cluster node automatically persists the cluster configuration (the state, basically) every time there is a change, in order to be able to re-read it at startup. The file lists things like the other nodes in the cluster, their state, persistent variables, and so forth. Often this file is rewritten and flushed on disk as a result of some message reception.
+- `cluster-node-timeout <milliseconds>`: The maximum amount of time a Redis Cluster node can be unavailable, without it being considered as failing. If a master node is not reachable for more than the specified amount of time, it will be failed over by its replicas. This parameter controls other important things in Redis Cluster. Notably, every node that can't reach the majority of master nodes for the specified amount of time, will stop accepting queries.
+- `cluster-slave-validity-factor <factor>`: If set to zero, a replica will always consider itself valid, and will therefore always try to failover a master, regardless of the amount of time the link between the master and the replica remained disconnected. If the value is positive, a maximum disconnection time is calculated as the *node timeout* value multiplied by the factor provided with this option, and if the node is a replica, it will not try to start a failover if the master link was disconnected for more than the specified amount of time. For example, if the node timeout is set to 5 seconds and the validity factor is set to 10, a replica disconnected from the master for more than 50 seconds will not try to failover its master. Note that any value different than zero may result in Redis Cluster being unavailable after a master failure if there is no replica that is able to failover it. In that case the cluster will return to being available only when the original master rejoins the cluster.
+
+- `cluster-enabled <yes/no>`: 如果设置为 yes, 则启用 Redis Cluster 模式。 否则, Redis实例就会作为独立实例启动(standalone)。
+- `cluster-config-file <filename>`: 请注意, 尽管这个选项指定的是集群配置文件名称, 但指定的这个配置文件并不是用户可以编辑的, 而是 Redis Cluster 节点在集群信息有变化时自动保存的, 基本上都是些状态信息, 以便能够在重启时能读取它。 该文件列出了集群中的其他节点、它们的状态、持久变量等内容。 在收到某些消息时, 此文件通常会被覆盖, 因为需要把相关信息刷新到磁盘上。
+- `cluster-node-timeout <milliseconds>`: Redis 集群节点不可用的最大时间, 在此期间不会被视为宕机。 如果主节点在超过指定的时间内无法访问, 将使用其副本进行故障转移。 此参数控制 Redis Cluster 中的其他重要内容。 值得注意的是, 某个节点如果达到一定时间范围仍然无法访问大多数主节点, 则这个节点将停止接受查询请求。
+- `cluster-slave-validity-factor <factor>`: 如果设置为0, 则副本节点始终认为自己有效, 将一直尝试故障转移主节点, 而不管自己与主节点的链接断开了多长时间。  如果该值为正数, 则最大断开时间的计算公式为: `node timeout` 值乘以此选项提供的因子值, 如果节点是副本, 则如果与主节点的链接断开超过这个最大断开时间, 将不会尝试启动故障转移。 例如,  `node timeout` 设置为 5 秒, 有效性因子 `cluster-slave-validity-factor` 设置为 10, 如果副本与主节点断开连接的时间超过 50 秒, 副本将不会再尝试对主节点进行故障转移(断开时间太长, 自己的数据可能太陈旧或者丢失的太多了)。  请注意, 如果设置为非0值, 在某个主节点不可用之后, 如果集群中没有能够对其进行故障转移的副本, 则会导致 Redis 集群在主节点故障后变为不可用。 在这种情况下, 只有当原始的主节点重新加入集群时, 集群才会恢复可用。
+
+- `cluster-migration-barrier <count>`: Minimum number of replicas a master will remain connected with, for another replica to migrate to a master which is no longer covered by any replica. See the appropriate section about replica migration in this tutorial for more information.
+- `cluster-require-full-coverage <yes/no>`: If this is set to yes, as it is by default, the cluster stops accepting writes if some percentage of the key space is not covered by any node. If the option is set to no, the cluster will still serve queries even if only requests about a subset of keys can be processed.
+- `cluster-allow-reads-when-down <yes/no>`: If this is set to no, as it is by default, a node in a Redis Cluster will stop serving all traffic when the cluster is marked as failed, either when a node can't reach a quorum of masters or when full coverage is not met. This prevents reading potentially inconsistent data from a node that is unaware of changes in the cluster. This option can be set to yes to allow reads from a node during the fail state, which is useful for applications that want to prioritize read availability but still want to prevent inconsistent writes. It can also be used for when using Redis Cluster with only one or two shards, as it allows the nodes to continue serving writes when a master fails but automatic failover is impossible.
+
+- `cluster-migration-barrier <count>`: master要保持连接的最小副本数, 以便另一个副本提升为 master, 不再被任何副本覆盖。 更多信息请参考后面的副本迁移部分。
+- `cluster-require-full-coverage <yes/no>`:  如果此选项设置的是默认值 yes, 假如未被任何副本节点覆盖的 Key space 达到一定百分比, 则集群将停止接受写入。 如果该选项设置为 no, 即使只能处理一部分 Key 的请求,  集群仍将提供查询服务。
+- `cluster-allow-reads-when-down <yes/no>`:  如果此选项设置的是默认值 no, 当集群标记为失败时, Redis 集群中的节点将停止服务所有流量, 当节点无法连接指定数量的主节点, 或未满足完全覆盖时。 这可以阻止客户端从不知道集群信息变更的节点读取到不一致的数据。 可以将此选项设置为 yes, 以允许客户端从处于故障状态期间的节点读取数据, 这对于希望优先考虑读取可用性, 但仍希望防止写入不一致的应用程序很有用。 当使用只有一个或两个分片的 Redis 集群时, 也可以使用它, 因为它允许在主节点失败但无法自动故障转移时, 继续提供写入服务。
+
+
+## Creating and using a Redis Cluster
 
 Note: to deploy a Redis Cluster manually it is **very important to learn** certain operational aspects of it. However if you want to get a cluster up and running ASAP (As Soon As Possible) skip this section and the next one and go directly to **Creating a Redis Cluster using the create-cluster script**.
 
@@ -831,7 +847,7 @@ The node 3c3a0c... now has two replicas, running on ports 7002 (the existing one
 To remove a replica node just use the `del-node` command of redis-cli:
 
 ```
-redis-cli --cluster del-node 127.0.0.1:7000 `<node-id>`
+redis-cli --cluster del-node 127.0.0.1:7000 <node-id>
 ```
 
 The first argument is just a random node in the cluster, the second argument is the ID of the node you want to remove.
