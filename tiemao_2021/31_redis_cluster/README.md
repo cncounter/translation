@@ -182,6 +182,18 @@ Node B1 replicates B, and B fails, the cluster will promote node B1 as the new m
 
 However, note that if nodes B and B1 fail at the same time, Redis Cluster is not able to continue to operate.
 
+## Redis集群和主从复制模型
+
+为了在一部分主节点发生故障, 或者是无法与大多数节点通信时, 保持集群的可用性， Redis 集群使用主从模型(master-replica model)，
+其中每个哈希槽都有1到N份数据副本（1份在主节点, 另外有 N-1 份在从节点）。
+
+在前面介绍的集群示例中, 有3个节点 A、B、C，如果节点 B 发生故障，则集群将无法继续提供服务，因为我们没有办法为 5501-11000 范围内的哈希槽提供服务。
+
+但是，在集群创建时，或者在之后的时间点，如果我们为每个主节点添加一个副本节点，那么最终的集群就是: 由 A、B、C 作为主节点, 以及 A1、B1、C1 组成副本节点.  这样配置好以后，假如节点 B 发生故障，那么系统还能继续运行。
+
+节点 B1 复制的是 B，而如果 B 发生故障，集群会将节点 B1 提升为新的 master，并继续正常运行。
+
+但是请注意，如果节点 B 和 B1 同时发生故障，Redis Cluster 则无法继续运行。
 
 
 ## Redis Cluster consistency guarantees
