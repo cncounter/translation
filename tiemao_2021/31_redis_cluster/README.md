@@ -311,6 +311,16 @@ To create a cluster, the first thing we need is to have a few empty Redis instan
 
 The following is a minimal Redis cluster configuration file:
 
+## 创建和使用 Redis 集群
+
+注意: 手工部署一套 Redis 集群，对于了解运行原理来说是非常重要的。
+
+> 但如果只想尽快(ASAP; As Soon As Possible)启动并运行Redis 集群，可以跳过本节和下一节，直接转到 [使用 create-cluster 脚本快速创建Redis集群](#creating-a-redis-cluster-using-the-create-cluster-script)。
+
+要创建集群，我们首先需要有多个运行在 **集群模式** 的 Redis 空实例。 这基本上意味着集群不是使用普通 Redis 实例创建的，因为需要配置特殊模式， 以便 Redis 实例启用集群相关的功能和命令。
+
+下面是一份最简的 Redis 集群配置文件：
+
 ```
 port 7000
 cluster-enabled yes
@@ -327,7 +337,17 @@ To do so, enter a new directory, and create the following directories named afte
 
 Something like:
 
-```
+可以看到, 启用集群模式只需要一条简单的 `cluster-enabled` 指令。
+每个实例还包含存储该节点配置的文件路径，默认是 `nodes.conf`。 该文件永远不需要人工编辑和阅读； 它只是由 Redis 集群实例在启动时生成，并在需要时进行更新。
+
+请注意，按预期工作的最小化Redis集群m, 至少需要包含三个主节点。 对于您的第一次测试，强烈建议启动包含三个主节点和三个副本节点的集群。
+
+为此，进入一个新目录，并创建以下子目录，从这些目录的命名我们可以看到对应实例的端口号。
+
+比如这样的代码：
+
+
+```c
 mkdir cluster-test
 cd cluster-test
 mkdir 7000 7001 7002 7003 7004 7005
@@ -339,6 +359,12 @@ Now copy your redis-server executable, **compiled from the latest sources in the
 
 Start every instance like that, one every tab:
 
+从 7000 到 7005 总共有6个子目录, 我们在每个子目录中创建一个 `redis.conf` 文件。 作为配置文件的模板，只需使用上面的最简示例即可，但需要将其中的端口号 `7000` 替换为正确的端口号, 可以根据目录名称来快速定位。
+
+然后将可执行文件 redis-server ，或者从源代码编译的可执行文件, 拷贝到 `cluster-test` 目录， 最后在shell中打开 6 个终端选项卡。
+
+像下面这样启动每个实例，每个选项卡启动一个：
+
 ```
 cd 7000
 ../redis-server ./redis.conf
@@ -346,12 +372,18 @@ cd 7000
 
 As you can see from the logs of every instance, since no `nodes.conf` file existed, every node assigns itself a new ID.
 
+从每个实例的日志中可以看出，由于不存在 `nodes.conf` 文件，每个节点都会为自己分配一个新的 ID。
+
 ```
 [82462] 26 Nov 11:56:55.329 * No cluster configuration found, I'm 97a3a64667477371c4479320d683e4c8db5858b1
 ```
 
 This ID will be used forever by this specific instance in order for the instance to have a unique name in the context of the cluster. Every node remembers every other node using this IDs, and not by IP or port. IP addresses and ports may change, but the unique node identifier will never change for all the life of the node. We call this identifier simply **Node ID**.
 
+分配完之后, 这个实例将永远都使用此 ID，以便实例在集群上下文中具有唯一名称。
+每个节点都是通过这个 ID 来记住其他节点，而不是通过 IP 或端口号。
+因为IP 地址和端口可能会改变，但唯一的节点标识符在节点的整个生命周期内都不会改变。
+我们将此标识符简称为 **节点ID(Node ID)**。
 
 
 ## Creating the cluster
@@ -396,7 +428,7 @@ Redis-cli will propose you a configuration. Accept the proposed configuration by
 This means that there is at least a master instance serving each of the 16384 slots available.
 
 
-
+<a name="creating-a-redis-cluster-using-the-create-cluster-script"></a>
 ## Creating a Redis Cluster using the create-cluster script
 
 If you don't want to create a Redis Cluster by configuring and executing individual instances manually as explained above, there is a much simpler system (but you'll not learn the same amount of operational details).
