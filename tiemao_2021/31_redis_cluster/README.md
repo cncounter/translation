@@ -164,10 +164,10 @@ Hash tags are documented in the Redis Cluster specification, but the gist is tha
 
 因为将哈希槽从一个节点移动到另一个节点不需要停止操作, 添加和删除节点, 或者更改节点持有的哈希槽百分比时, 都不需要停机维护。
 
-Redis Cluster 支持多 key 操作,  只要这个命令(或整个事务, 或 Lua 脚本)涉及的所有Key, 全都位于同一个哈希槽中。
+Redis Cluster 支持多 key 操作, 只要这个命令(或整个事务, 或 Lua 脚本)涉及的所有Key, 全都位于同一个哈希槽中。
 用户可以通过使用一种名为 哈希标签(hash tags) 的手段, 强制将多个Key分配到同一个哈希槽中。
 
-哈希标签的文档在 Redis Cluster 规范中,  简单点说就是: 如果Key中有英文半角花括号 `{}`, 并且花括号里面有子字符串, 则仅对花括号中的子字符串内容进行哈希计算, 例如 `this{foo}key` 和 `another{foo}key` 会保证落在同一个哈希槽中, 可以在支持多个Key作为参数的命令中使用。
+哈希标签的文档在 Redis Cluster 规范中, 简单点说就是: 如果Key中有英文半角花括号 `{}`, 并且花括号里面有子字符串, 则仅对花括号中的子字符串内容进行哈希计算, 例如 `this{foo}key` 和 `another{foo}key` 会保证落在同一个哈希槽中, 可以在支持多个Key作为参数的命令中使用。
 
 
 ## Redis Cluster master-replica model
@@ -184,7 +184,7 @@ However, note that if nodes B and B1 fail at the same time, Redis Cluster is not
 
 ## Redis集群和主从复制模型
 
-为了在一部分主节点发生故障, 或者是无法与大多数节点通信时, 保持集群的可用性,  Redis 集群使用主从模型(master-replica model),
+为了在一部分主节点发生故障, 或者是无法与大多数节点通信时, 保持集群的可用性, Redis 集群使用主从模型(master-replica model),
 其中每个哈希槽都有1到N份数据副本(1份在主节点, 另外有 N-1 份在从节点)。
 
 在前面介绍的集群示例中, 有3个节点 A、B、C, 如果节点 B 发生故障, 则集群将无法继续提供服务, 因为我们没有办法为 5501-11000 范围内的哈希槽提供服务。
@@ -231,7 +231,7 @@ Basically, there is a trade-off to be made between performance and consistency.
 Redis Cluster has support for synchronous writes when absolutely needed, implemented via the [WAIT](https://redis.io/commands/wait) command. This makes losing writes a lot less likely. However, note that Redis Cluster does not implement strong consistency even when synchronous replication is used: it is always possible, under more complex failure scenarios, that a replica that was not able to receive the write will be elected as master.
 
 这与每秒定时刷新一次数据到磁盘的大部分数据库类似, 因此, 基于过去不涉及分布式的传统数据库系统的使用经验, 您已经能够推断出这种情况。
-同样, 可以通过强制数据库在回复客户端之前将数据刷新到磁盘来提高一致性,  但这通常会导致性能降低。
+同样, 可以通过强制数据库在回复客户端之前将数据刷新到磁盘来提高一致性, 但这通常会导致性能降低。
 在 Redis Cluster 的情况下, 这相当于使用了同步复制。
 
 基本上, 我们需要在性能(performance)和一致性(consistency)之间进行取舍和权衡。
@@ -281,7 +281,7 @@ We are about to create an example cluster deployment. Before we continue, let's 
 
 ## Redis 集群配置参数
 
-我们在下一节将会创建一个集群部署示例。 所以本节先介绍一下在 `redis.conf` 文件中,  Redis Cluster 引入的配置参数。
+我们在下一节将会创建一个集群部署示例。 所以本节先介绍一下在 `redis.conf` 文件中, Redis Cluster 引入的配置参数。
 有些配置参数的含义很明显, 有一些则会随着阅读的深入而变得更加清晰。
 
 - `cluster-enabled <yes/no>`: If yes, enables Redis Cluster support in a specific Redis instance. Otherwise the instance starts as a standalone instance as usual.
@@ -292,14 +292,14 @@ We are about to create an example cluster deployment. Before we continue, let's 
 - `cluster-enabled <yes/no>`: 如果设置为 yes, 则启用 Redis Cluster 模式。 否则, Redis实例就会作为独立实例启动(standalone)。
 - `cluster-config-file <filename>`: 请注意, 尽管这个选项指定的是集群配置文件名称, 但指定的这个配置文件并不是用户可以编辑的, 而是 Redis Cluster 节点在集群信息有变化时自动保存的, 基本上都是些状态信息, 以便能够在重启时能读取它。 该文件列出了集群中的其他节点、它们的状态、持久变量等内容。 在收到某些消息时, 此文件通常会被覆盖, 因为需要把相关信息刷新到磁盘上。
 - `cluster-node-timeout <milliseconds>`: Redis 集群节点不可用的最大时间, 在此期间不会被视为宕机。 如果主节点在超过指定的时间内无法访问, 将使用其副本进行故障转移。 此参数控制 Redis Cluster 中的其他重要内容。 值得注意的是, 某个节点如果达到一定时间范围仍然无法访问大多数主节点, 则这个节点将停止接受查询请求。
-- `cluster-slave-validity-factor <factor>`: 如果设置为0, 则副本节点始终认为自己有效, 将一直尝试故障转移主节点, 而不管自己与主节点的链接断开了多长时间。  如果该值为正数, 则最大断开时间的计算公式为: `node timeout` 值乘以此选项提供的因子值, 如果节点是副本, 则如果与主节点的链接断开超过这个最大断开时间, 将不会尝试启动故障转移。 例如,  `node timeout` 设置为 5 秒, 有效性因子 `cluster-slave-validity-factor` 设置为 10, 如果副本与主节点断开连接的时间超过 50 秒, 副本将不会再尝试对主节点进行故障转移(断开时间太长, 自己的数据可能太陈旧或者丢失的太多了)。  请注意, 如果设置为非0值, 在某个主节点不可用之后, 如果集群中没有能够对其进行故障转移的副本, 则会导致 Redis 集群在主节点故障后变为不可用。 在这种情况下, 只有当原始的主节点重新加入集群时, 集群才会恢复可用。
+- `cluster-slave-validity-factor <factor>`: 如果设置为0, 则副本节点始终认为自己有效, 将一直尝试故障转移主节点, 而不管自己与主节点的链接断开了多长时间。  如果该值为正数, 则最大断开时间的计算公式为: `node timeout` 值乘以此选项提供的因子值, 如果节点是副本, 则如果与主节点的链接断开超过这个最大断开时间, 将不会尝试启动故障转移。 例如, `node timeout` 设置为 5 秒, 有效性因子 `cluster-slave-validity-factor` 设置为 10, 如果副本与主节点断开连接的时间超过 50 秒, 副本将不会再尝试对主节点进行故障转移(断开时间太长, 自己的数据可能太陈旧或者丢失的太多了)。  请注意, 如果设置为非0值, 在某个主节点不可用之后, 如果集群中没有能够对其进行故障转移的副本, 则会导致 Redis 集群在主节点故障后变为不可用。 在这种情况下, 只有当原始的主节点重新加入集群时, 集群才会恢复可用。
 
 - `cluster-migration-barrier <count>`: Minimum number of replicas a master will remain connected with, for another replica to migrate to a master which is no longer covered by any replica. See the appropriate section about replica migration in this tutorial for more information.
 - `cluster-require-full-coverage <yes/no>`: If this is set to yes, as it is by default, the cluster stops accepting writes if some percentage of the key space is not covered by any node. If the option is set to no, the cluster will still serve queries even if only requests about a subset of keys can be processed.
 - `cluster-allow-reads-when-down <yes/no>`: If this is set to no, as it is by default, a node in a Redis Cluster will stop serving all traffic when the cluster is marked as failed, either when a node can't reach a quorum of masters or when full coverage is not met. This prevents reading potentially inconsistent data from a node that is unaware of changes in the cluster. This option can be set to yes to allow reads from a node during the fail state, which is useful for applications that want to prioritize read availability but still want to prevent inconsistent writes. It can also be used for when using Redis Cluster with only one or two shards, as it allows the nodes to continue serving writes when a master fails but automatic failover is impossible.
 
 - `cluster-migration-barrier <count>`: master要保持连接的最小副本数, 以便另一个副本提升为 master, 不再被任何副本覆盖。 更多信息请参考后面的副本迁移部分。
-- `cluster-require-full-coverage <yes/no>`:  如果此选项设置的是默认值 yes, 假如未被任何副本节点覆盖的 Key space 达到一定百分比, 则集群将停止接受写入。 如果该选项设置为 no, 即使只能处理一部分 Key 的请求,  集群仍将提供查询服务。
+- `cluster-require-full-coverage <yes/no>`:  如果此选项设置的是默认值 yes, 假如未被任何副本节点覆盖的 Key space 达到一定百分比, 则集群将停止接受写入。 如果该选项设置为 no, 即使只能处理一部分 Key 的请求, 集群仍将提供查询服务。
 - `cluster-allow-reads-when-down <yes/no>`:  如果此选项设置的是默认值 no, 当集群标记为失败时, Redis 集群中的节点将停止服务所有流量, 当节点无法连接指定数量的主节点, 或未满足完全覆盖时。 这可以阻止客户端从不知道集群信息变更的节点读取到不一致的数据。 可以将此选项设置为 yes, 以允许客户端从处于故障状态期间的节点读取数据, 这对于希望优先考虑读取可用性, 但仍希望防止写入不一致的应用程序很有用。 当使用只有一个或两个分片的 Redis 集群时, 也可以使用它, 因为它允许在主节点失败但无法自动故障转移时, 继续提供写入服务。
 
 
@@ -313,13 +313,13 @@ The following is a minimal Redis cluster configuration file:
 
 ## 创建和使用 Redis 集群
 
-注意: 手工部署一套 Redis 集群，对于了解运行原理来说是非常重要的。
+注意: 手工部署一套 Redis 集群, 对于了解运行原理来说是非常重要的。
 
-> 但如果只想尽快(ASAP; As Soon As Possible)启动并运行Redis 集群，可以跳过本节和下一节，直接转到 [使用 create-cluster 脚本快速创建Redis集群](#creating-a-redis-cluster-using-the-create-cluster-script)。
+> 但如果只想尽快(ASAP; As Soon As Possible)启动并运行Redis 集群, 可以跳过本节和下一节, 直接转到 [使用 create-cluster 脚本快速创建Redis集群](#creating-a-redis-cluster-using-the-create-cluster-script)。
 
-要创建集群，我们首先需要有多个运行在 **集群模式** 的 Redis 空实例。 这基本上意味着集群不是使用普通 Redis 实例创建的，因为需要配置特殊模式， 以便 Redis 实例启用集群相关的功能和命令。
+要创建集群, 我们首先需要有多个运行在 **集群模式** 的 Redis 空实例。 这基本上意味着集群不是使用普通 Redis 实例创建的, 因为需要配置特殊模式, 以便 Redis 实例启用集群相关的功能和命令。
 
-下面是一份最简的 Redis 集群配置文件：
+下面是一份最简 Redis 集群配置文件：
 
 ```
 port 7000
@@ -338,13 +338,13 @@ To do so, enter a new directory, and create the following directories named afte
 Something like:
 
 可以看到, 启用集群模式只需要一条简单的 `cluster-enabled` 指令。
-每个实例还包含存储该节点配置的文件路径，默认是 `nodes.conf`。 该文件永远不需要人工编辑和阅读； 它只是由 Redis 集群实例在启动时生成，并在需要时进行更新。
+每个实例还包含存储该节点配置的文件路径, 默认是 `nodes.conf`。 该文件永远不需要人工编辑和阅读； 它只是由 Redis 集群实例在启动时生成, 并在需要时进行更新。
 
-请注意，按预期工作的最小化Redis集群m, 至少需要包含三个主节点。 对于您的第一次测试，强烈建议启动包含三个主节点和三个副本节点的集群。
+请注意, 按预期工作的最小化Redis集群m, 至少需要包含三个主节点。 对于您的第一次测试, 强烈建议启动包含三个主节点和三个副本节点的集群。
 
-为此，进入一个新目录，并创建以下子目录，从这些目录的命名我们可以看到对应实例的端口号。
+为此, 进入一个新目录, 并创建以下子目录, 从这些目录的命名我们可以看到对应实例的端口号。
 
-比如这样的代码：
+比如执行这样的代码：
 
 
 ```c
@@ -359,11 +359,11 @@ Now copy your redis-server executable, **compiled from the latest sources in the
 
 Start every instance like that, one every tab:
 
-从 7000 到 7005 总共有6个子目录, 我们在每个子目录中创建一个 `redis.conf` 文件。 作为配置文件的模板，只需使用上面的最简示例即可，但需要将其中的端口号 `7000` 替换为正确的端口号, 可以根据目录名称来快速定位。
+从 7000 到 7005 总共有6个子目录, 我们在每个子目录中创建一个 `redis.conf` 文件。 作为配置文件的模板, 只需使用上面的最简示例即可, 但需要将其中的端口号 `7000` 替换为正确的端口号, 可以根据目录名称来快速定位。
 
-然后将可执行文件 redis-server ，或者从源代码编译的可执行文件, 拷贝到 `cluster-test` 目录， 最后在shell中打开 6 个终端选项卡。
+然后将从源代码编译的可执行文件 redis-server, 拷贝到 `cluster-test` 目录, 最后在shell中打开 6 个终端选项卡。
 
-像下面这样启动每个实例，每个选项卡启动一个：
+像下面这样启动每个实例, 每个选项卡启动一个：
 
 ```
 cd 7000
@@ -372,7 +372,7 @@ cd 7000
 
 As you can see from the logs of every instance, since no `nodes.conf` file existed, every node assigns itself a new ID.
 
-从每个实例的日志中可以看出，由于不存在 `nodes.conf` 文件，每个节点都会为自己分配一个新的 ID。
+从每个实例的日志中可以看出, 由于不存在 `nodes.conf` 文件, 每个节点都会为自己分配一个新的 ID。
 
 ```
 [82462] 26 Nov 11:56:55.329 * No cluster configuration found, I'm 97a3a64667477371c4479320d683e4c8db5858b1
@@ -380,9 +380,9 @@ As you can see from the logs of every instance, since no `nodes.conf` file exist
 
 This ID will be used forever by this specific instance in order for the instance to have a unique name in the context of the cluster. Every node remembers every other node using this IDs, and not by IP or port. IP addresses and ports may change, but the unique node identifier will never change for all the life of the node. We call this identifier simply **Node ID**.
 
-分配完之后, 这个实例将永远都使用此 ID，以便实例在集群上下文中具有唯一名称。
-每个节点都是通过这个 ID 来记住其他节点，而不是通过 IP 或端口号。
-因为IP 地址和端口可能会改变，但唯一的节点标识符在节点的整个生命周期内都不会改变。
+分配完之后, 这个实例将永远都使用此 ID, 以便实例在集群上下文中具有唯一名称。
+每个节点都是通过这个 ID 来记住其他节点, 而不是通过 IP 或端口号。
+因为IP 地址和端口可能会改变, 但唯一的节点标识符在节点的整个生命周期内都不会改变。
 我们将此标识符简称为 **节点ID(Node ID)**。
 
 
@@ -394,6 +394,15 @@ If you are using Redis 5 or higher, this is very easy to accomplish as we are he
 
 For Redis version 3 or 4, there is the older tool called `redis-trib.rb` which is very similar. You can find it in the `src` directory of the Redis source code distribution. You need to install `redis` gem to be able to run `redis-trib`.
 
+## 创建Redis集群
+
+现在我们有了6个集群模式的实例在运行, 但还需要通过向节点写入一些有意义的配置信息, 才能搭建好我们的集群。
+
+如果使用的是 Redis 5 或更高版本, 这很容易完成, 因为我们将 Redis Cluster command line 工具的帮助信息中嵌入到了 `redis-cli` 中, 包括创建新集群、检查、以及重新分片现有集群, 等等。
+
+对于 Redis 3 或 4版本 , 有一个名为`redis-trib.rb` 的Ruby工具, 也非常相似。 您可以在 Redis 源代码结构的 `src` 目录中找到它。
+当然您需要先安装gem, 再使用gem安装 `redis` 插件才能运行 `redis-trib`。
+
 ```
 gem install redis
 ```
@@ -401,6 +410,13 @@ gem install redis
 The first example, that is, the cluster creation, will be shown using both `redis-cli` in Redis 5 and `redis-trib` in Redis 3 and 4. However all the next examples will only use `redis-cli`, since as you can see the syntax is very similar, and you can trivially change one command line into the other by using `redis-trib.rb help` to get info about the old syntax. **Important:** note that you can use Redis 5 `redis-cli` against Redis 4 clusters without issues if you wish.
 
 To create your cluster for Redis 5 with `redis-cli` simply type:
+
+第一个示例，是创建集群，将使用 Redis 5 中内置的 `redis-cli` 工具, 以及 Redis 3 和 4 中的 `redis-trib` 来展示。
+但后续的所有示例都只使用 `redis-cli`, 因为他们的语法还是很相似的, 碰到不懂的地方, 也可以通过 `redis-trib.rb help` 来展示帮助信息, 看看如何将一个命令改写为另一个旧语法的命令。
+
+> 重要提示：请注意，如果您愿意，可以对 Redis 4 集群服务器, 使用 Redis 5 版本的客户端 `redis-cli` 链接, 而不会出现问题。
+
+要使用 `redis-cli` 为 Redis 5 创建集群，只需键入：
 
 ```
 redis-cli --cluster create 127.0.0.1:7000 127.0.0.1:7001 \
@@ -410,22 +426,32 @@ redis-cli --cluster create 127.0.0.1:7000 127.0.0.1:7001 \
 
 Using `redis-trib.rb` for Redis 4 or 3 type:
 
+ Redis 3 和 Redis 4 版本中则使用 `redis-trib`:
+
 ```
 ./redis-trib.rb create --replicas 1 127.0.0.1:7000 127.0.0.1:7001 \
 127.0.0.1:7002 127.0.0.1:7003 127.0.0.1:7004 127.0.0.1:7005
 ```
 
-The command used here is **create**, since we want to create a new cluster. The option `--cluster-replicas 1` means that we want a replica for every master created. The other arguments are the list of addresses of the instances I want to use to create the new cluster.
+The command used here is `create`, since we want to create a new cluster. The option `--cluster-replicas 1` means that we want a replica for every master created. The other arguments are the list of addresses of the instances I want to use to create the new cluster.
 
 Obviously the only setup with our requirements is to create a cluster with 3 masters and 3 replicas.
 
-Redis-cli will propose you a configuration. Accept the proposed configuration by typing **yes**. The cluster will be configured and *joined*, which means, instances will be bootstrapped into talking with each other. Finally, if everything went well, you'll see a message like that:
+Redis-cli will propose you a configuration. Accept the proposed configuration by typing `yes`. The cluster will be configured and *joined*, which means, instances will be bootstrapped into talking with each other. Finally, if everything went well, you'll see a message like that:
+
+这里使用的命令是 `create`，因为我们要创建一个新集群。 选项 `--cluster-replicas 1` 表示我们希望为每个主服务器创建一个副本。 其他参数则是用来创建新集群的实例对应的地址端口列表。
+
+显然，符合这种要求的设置, 只能是创建一个具有 3 主 3 从的集群。
+
+redis-cli 会先提示你确认这个配置。 接受建议则输入 `yes` 。 将配置集群并让这些节点加入，这意味着相关实例将被引导并与其他节点互相通信。 最后，如果一切顺利，你会看到这样的消息：
 
 ```
 [OK] All 16384 slots covered
 ```
 
 This means that there is at least a master instance serving each of the 16384 slots available.
+
+这条消息表示, 总共 16384 个槽位中, 每个槽位至少有一个主节点为其提供服务。
 
 
 <a name="creating-a-redis-cluster-using-the-create-cluster-script"></a>
@@ -482,7 +508,7 @@ redis 127.0.0.1:7002> get hello
 "world"
 ```
 
-**Note:** if you created the cluster using the script your nodes may listen to different ports, starting from 30001 by default.
+`Note:` if you created the cluster using the script your nodes may listen to different ports, starting from 30001 by default.
 
 The redis-cli cluster support is very basic so it always uses the fact that Redis Cluster nodes are able to redirect a client to the right node. A serious client is able to do better than that, and cache the map between hash slots and nodes addresses, to directly use the right connection to the right node. The map is refreshed only when something changed in the cluster configuration, for example after a failover or after the system administrator changed the cluster layout by adding or removing nodes.
 
@@ -545,17 +571,17 @@ The application does a very simple thing, it sets keys in the form `foo<number>`
 
 The program looks more complex than it should usually as it is designed to show errors on the screen instead of exiting with an exception, so every operation performed with the cluster is wrapped by `begin` `rescue` blocks.
 
-The **line 14** is the first interesting line in the program. It creates the Redis Cluster object, using as argument a list of *startup nodes*, the maximum number of connections this object is allowed to take against different nodes, and finally the timeout after a given operation is considered to be failed.
+The `line 14` is the first interesting line in the program. It creates the Redis Cluster object, using as argument a list of *startup nodes*, the maximum number of connections this object is allowed to take against different nodes, and finally the timeout after a given operation is considered to be failed.
 
 The startup nodes don't need to be all the nodes of the cluster. The important thing is that at least one node is reachable. Also note that redis-rb-cluster updates this list of startup nodes as soon as it is able to connect with the first node. You should expect such a behavior with any other serious client.
 
-Now that we have the Redis Cluster object instance stored in the **rc** variable, we are ready to use the object like if it was a normal Redis object instance.
+Now that we have the Redis Cluster object instance stored in the `rc` variable, we are ready to use the object like if it was a normal Redis object instance.
 
-This is exactly what happens in **line 18 to 26**: when we restart the example we don't want to start again with `foo0`, so we store the counter inside Redis itself. The code above is designed to read this counter, or if the counter does not exist, to assign it the value of zero.
+This is exactly what happens in `line 18 to 26`: when we restart the example we don't want to start again with `foo0`, so we store the counter inside Redis itself. The code above is designed to read this counter, or if the counter does not exist, to assign it the value of zero.
 
 However note how it is a while loop, as we want to try again and again even if the cluster is down and is returning errors. Normal applications don't need to be so careful.
 
-**Lines between 28 and 37** start the main loop where the keys are set or an error is displayed.
+`Lines between 28 and 37` start the main loop where the keys are set or an error is displayed.
 
 Note the `sleep` call at the end of the loop. In your tests you can remove the sleep if you want to write to the cluster as fast as possible (relatively to the fact that this is a busy loop without real parallelism of course, so you'll get the usually 10k ops/second in the best of the conditions).
 
@@ -655,7 +681,7 @@ However instead of just writing, the application does two additional things:
 - When a counter is updated using [INCR](https://redis.io/commands/incr), the application remembers the write.
 - It also reads a random counter before every write, and check if the value is what we expected it to be, comparing it with the value it has in memory.
 
-What this means is that this application is a simple **consistency checker**, and is able to tell you if the cluster lost some write, or if it accepted a write that we did not receive acknowledgment for. In the first case we'll see a counter having a value that is smaller than the one we remember, while in the second case the value will be greater.
+What this means is that this application is a simple `consistency checker`, and is able to tell you if the cluster lost some write, or if it accepted a write that we did not receive acknowledgment for. In the first case we'll see a counter having a value that is smaller than the one we remember, while in the second case the value will be greater.
 
 Running the consistency-test application produces a line of output every second:
 
@@ -670,7 +696,7 @@ $ ruby consistency-test.rb
 25818 R (0 err) | 25818 W (0 err) |
 ```
 
-The line shows the number of **R**eads and **W**rites performed, and the number of errors (query not accepted because of errors since the system was not available).
+The line shows the number of `R`eads and `W`rites performed, and the number of errors (query not accepted because of errors since the system was not available).
 
 If some inconsistency is found, new lines are added to the output. This is what happens, for example, if I reset a counter manually while the program is running:
 
@@ -707,7 +733,7 @@ $ redis-cli -p 7000 cluster nodes | grep master
 97a3a64667477371c4479320d683e4c8db5858b1 :0 myself,master - 0 0 0 connected 0-5959 10922-11422
 ```
 
-Ok, so 7000, 7001, and 7002 are masters. Let's crash node 7002 with the **DEBUG SEGFAULT** command:
+Ok, so 7000, 7001, and 7002 are masters. Let's crash node 7002 with the `DEBUG SEGFAULT` command:
 
 ```
 $ redis-cli -p 7002 debug segfault
@@ -763,7 +789,7 @@ The output of the [CLUSTER NODES](https://redis.io/commands/cluster-nodes) comma
 
 Sometimes it is useful to force a failover without actually causing any problem on a master. For example in order to upgrade the Redis process of one of the master nodes it is a good idea to failover it in order to turn it into a replica with minimal impact on availability.
 
-Manual failovers are supported by Redis Cluster using the [CLUSTER FAILOVER](https://redis.io/commands/cluster-failover) command, that must be executed in one of the **replicas** of the master you want to failover.
+Manual failovers are supported by Redis Cluster using the [CLUSTER FAILOVER](https://redis.io/commands/cluster-failover) command, that must be executed in one of the `replicas` of the master you want to failover.
 
 Manual failovers are special and are safer compared to failovers resulting from actual master failures, since they occur in a way that avoid data loss in the process, by switching clients from the original master to the new master only when the system is sure that the new master processed all the replication stream from the old one.
 
@@ -792,7 +818,7 @@ Adding a new node is basically the process of adding an empty node and then movi
 
 We'll show both, starting with the addition of a new master instance.
 
-In both cases the first step to perform is **adding an empty node**.
+In both cases the first step to perform is `adding an empty node`.
 
 This is as simple as to start a new node in port 7006 (we already used from 7000 to 7005 for our existing 6 nodes) with the same configuration used for the other nodes, except for the port number, so what you should do in order to conform with the setup we used for the previous nodes:
 
@@ -804,13 +830,13 @@ This is as simple as to start a new node in port 7006 (we already used from 7000
 
 At this point the server should be running.
 
-Now we can use **redis-cli** as usual in order to add the node to the existing cluster.
+Now we can use `redis-cli` as usual in order to add the node to the existing cluster.
 
 ```
 redis-cli --cluster add-node 127.0.0.1:7006 127.0.0.1:7000
 ```
 
-As you can see I used the **add-node** command specifying the address of the new node as first argument, and the address of a random existing node in the cluster as second argument.
+As you can see I used the `add-node` command specifying the address of the new node as first argument, and the address of a random existing node in the cluster as second argument.
 
 In practical terms redis-cli here did very little to help us, it just sent a [CLUSTER MEET](https://redis.io/commands/cluster-meet) message to the node, something that is also possible to accomplish manually. However redis-cli also checks the state of the cluster before to operate, so it is a good idea to perform cluster operations always via redis-cli even when you know how the internals work.
 
@@ -940,7 +966,7 @@ Users willing to migrate to Redis Cluster may have just a single master, or may 
 In both cases it is possible to migrate to Redis Cluster easily, however what is the most important detail is if multiple-keys operations are used by the application, and how. There are three different cases:
 
 1. Multiple keys operations, or transactions, or Lua scripts involving multiple keys, are not used. Keys are accessed independently (even if accessed via transactions or Lua scripts grouping multiple commands, about the same key, together).
-2. Multiple keys operations, or transactions, or Lua scripts involving multiple keys are used but only with keys having the same **hash tag**, which means that the keys used together all have a `{...}` sub-string that happens to be identical. For example the following multiple keys operation is defined in the context of the same hash tag: `SUNION {user:1000}.foo {user:1000}.bar`.
+2. Multiple keys operations, or transactions, or Lua scripts involving multiple keys are used but only with keys having the same `hash tag`, which means that the keys used together all have a `{...}` sub-string that happens to be identical. For example the following multiple keys operation is defined in the context of the same hash tag: `SUNION {user:1000}.foo {user:1000}.bar`.
 3. Multiple keys operations, or transactions, or Lua scripts involving multiple keys are used with key names not having an explicit, or the same, hash tag.
 
 The third case is not handled by Redis Cluster: the application requires to be modified in order to don't use multi keys operations or only use them in the context of the same hash tag.
@@ -1001,7 +1027,7 @@ What is described in this document is implemented in Redis 3.0 or greater.
 
 Redis Cluster implements all the single key commands available in the non-distributed version of Redis. Commands performing complex multi-key operations like Set type unions or intersections are implemented as well as long as the keys all hash to the same slot.
 
-Redis Cluster implements a concept called **hash tags** that can be used in order to force certain keys to be stored in the same hash slot. However during manual resharding, multi-key operations may become unavailable for some time while single key operations are always available.
+Redis Cluster implements a concept called `hash tags` that can be used in order to force certain keys to be stored in the same hash slot. However during manual resharding, multi-key operations may become unavailable for some time while single key operations are always available.
 
 Redis Cluster does not support multiple databases like the standalone version of Redis. There is just database 0 and the [SELECT](https://redis.io/commands/select) command is not allowed.
 
