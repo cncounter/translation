@@ -31,6 +31,29 @@
 - [14.23 一些InnoDB的最大值限制](14.23_innodb-limits.md)【粗翻】
 - [14.24 InnoDB Restrictions and Limitations]()
 
+
+##### 部分技巧
+
+```
+-- 查询InnoDB状态
+SHOW ENGINE INNODB STATUS;
+
+-- 查询理论上的MySQL内存最大使用量
+SELECT ( @@key_buffer_size
++ @@query_cache_size
++ @@innodb_buffer_pool_size
++ @@innodb_log_buffer_size
++ @@max_connections * (
+    @@read_buffer_size
+    + @@read_rnd_buffer_size
+    + @@sort_buffer_size
+    + @@join_buffer_size
+    + @@binlog_cache_size
+    + @@thread_stack
+    + @@tmp_table_size )
+) / (1024 * 1024 * 1024) AS MAX_MEMORY_GB;
+```
+
 ##### 相关链接
 
 - [InnoDB存储引擎官方文档-中文翻译-GitHub](https://github.com/cncounter/translation/tree/master/tiemao_2020/44_innodb-storage-engine)
