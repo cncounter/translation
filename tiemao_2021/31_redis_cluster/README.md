@@ -461,17 +461,29 @@ If you don't want to create a Redis Cluster by configuring and executing individ
 
 Just check `utils/create-cluster` directory in the Redis distribution. There is a script called `create-cluster` inside (same name as the directory it is contained into), it's a simple bash script. In order to start a 6 nodes cluster with 3 masters and 3 replicas just type the following commands:
 
-1. `create-cluster start`
-2. `create-cluster create`
+## 使用 create-cluster 脚本创建 Redis 集群
+
+如果您不想像上面解释的那样通过手动配置和执行单个实例来创建 Redis 集群，那么有一个更简单的系统（但您不会学到相同数量的操作细节）。
+
+只需检查 Redis 发行版中的 utils/create-cluster 目录即可。 里面有一个名为 `create-cluster` 的脚本（与它所在的目录同名），它是一个简单的 bash 脚本。 要启动具有 3 个主节点和 3 个副本的 6 节点集群，只需键入以下命令：
+
+> `create-cluster start`
+>
+> `create-cluster create`
 
 Reply to `yes` in step 2 when the `redis-cli` utility wants you to accept the cluster layout.
 
 You can now interact with the cluster, the first node will start at port 30001 by default. When you are done, stop the cluster with:
 
-1. `create-cluster stop`
+当 `redis-cli` 实用程序希望您接受集群布局时，在第 2 步中回复 `yes`。
+
+您现在可以与集群交互，默认情况下第一个节点将从端口 30001 开始。 完成后，使用以下命令停止集群：
+
+> `create-cluster stop`
 
 Please read the `README` inside this directory for more information on how to run the script.
 
+有关如何运行脚本的更多信息，请阅读此目录中的“README”。
 
 
 ## Playing with the cluster
@@ -479,6 +491,13 @@ Please read the `README` inside this directory for more information on how to ru
 At this stage one of the problems with Redis Cluster is the lack of client libraries implementations.
 
 I'm aware of the following implementations:
+
+
+## 客户端如何与Redis集群交互
+
+在早期阶段，Redis Cluster 的一个问题是缺少支持集群的客户端库实现。
+
+下面是支持集群的已知实现：
 
 - [redis-rb-cluster](http://github.com/antirez/redis-rb-cluster) is a Ruby implementation written by me (@antirez) as a reference for other languages. It is a simple wrapper around the original redis-rb, implementing the minimal semantics to talk with the cluster efficiently.
 - [redis-py-cluster](https://github.com/Grokzen/redis-py-cluster) A port of redis-rb-cluster to Python. Supports majority of *redis-py* functionality. Is in active development.
@@ -490,7 +509,22 @@ I'm aware of the following implementations:
 - [ioredis](https://github.com/luin/ioredis) is a popular Node.js client, providing a robust support for Redis Cluster.
 - The `redis-cli` utility implements basic cluster support when started with the `-c` switch.
 
+
+- [redis-rb-cluster](http://github.com/antirez/redis-rb-cluster); 是Redis作者(@antirez)通过 Ruby 写的，作为其他语言的参考实现。 只是对原来的 redis-rb 进行了简单的包装，实现了与集群有效交互的最小语义。
+- [redis-py-cluster](https://github.com/Grokzen/redis-py-cluster); redis-rb-cluster 到 Python 的端口。 支持大部分 *redis-py* 功能。 正在积极开发中。
+- 流行的 [Predis](https://github.com/nrk/predis); 支持 Redis Cluster，最近正在更新并积极开发中。
+- [Jedis](https://github.com/xetorthio/jedis); 最常用的 Java 客户端, 最近添加了对 Redis Cluster 的支持，请参阅该项目中 README 文件的 *Jedis Cluster* 部分。
+- [StackExchange.Redis](https://github.com/StackExchange/StackExchange.Redis); 提供对 C# 的支持（并且应该适用于大多数 .NET 版本；VB、F# 等）
+- [thunk-redis](https://github.com/thunks/thunk-redis); 提供对 Node.js 和 io.js 的支持，它是一个 thunk/promise-based 的 redis 客户端, 支持 pipelining 和 cluster。
+- [redis-go-cluster](https://github.com/chasex/redis-go-cluster); 是以 [Redigo library client](https://github.com/garyburd/redigo) 为基础的Go语言实现。 通过结果聚合来实现 MGET/MSET。
+- [ioredis](https://github.com/luin/ioredis); 是一个流行的 Node.js 客户端，为 Redis Cluster 提供了强大的支持。
+- `redis-cli` 命令行工具; 传入 `-c` 选项时，支持基础的集群功能。
+
+
 An easy way to test Redis Cluster is either to try any of the above clients or simply the `redis-cli` command line utility. The following is an example of interaction using the latter:
+
+使用上面给出的任何客户端都可以测试 Redis 集群, 一种简单方法是使用 `redis-cli` 命令行工具。
+下面是一个与Redis Cluster交互的使用示例：
 
 ```
 $ redis-cli -c -p 7000
@@ -512,9 +546,18 @@ redis 127.0.0.1:7002> get hello
 
 The redis-cli cluster support is very basic so it always uses the fact that Redis Cluster nodes are able to redirect a client to the right node. A serious client is able to do better than that, and cache the map between hash slots and nodes addresses, to directly use the right connection to the right node. The map is refreshed only when something changed in the cluster configuration, for example after a failover or after the system administrator changed the cluster layout by adding or removing nodes.
 
+> 注意：如果使用脚本自动创建集群，Redis节点可能会监听不同的端口，默认情况下是从 30001 开始。
+
+可以看到, redis-cli 对集群的支持非常简陋，直接基于 Redis 集群节点能够让客户端重定向到正确节点的事实。
+一个高性能的客户端应该做得更好一些，比如将哈希槽和节点地址间的映射关系缓存起来，直接使用与正确节点的连接，避免重定向。
+只有当集群配置发生变更时才会刷新映射关系, 例如在故障转移, 或者系统管理员添加/删除节点导致集群布局变化。
 
 
 ## Writing an example app with redis-rb-cluster
+
+## 使用 redis-rb-cluster 编写应用程序示例
+
+> 此部分不翻译, 采用Java和SpringBoot来实现;
 
 Before going forward showing how to operate the Redis Cluster, doing things like a failover, or a resharding, we need to create some example application or at least to be able to understand the semantics of a simple Redis Cluster client interaction.
 
