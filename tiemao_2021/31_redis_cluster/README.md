@@ -311,6 +311,42 @@ To create a cluster, the first thing we need is to have a few empty Redis instan
 
 The following is a minimal Redis cluster configuration file:
 
+## 下载和编译Redis
+
+如果你能访问GitHub, 也可以参考Redis官方的GitHub仓库: <https://github.com/redis/redis>
+
+首先, 打开Redis官网, 地址为:
+
+> <https://redis.io/>
+
+然后, 找到 Download 部分，打开页面:
+
+> <https://redis.io/download>
+
+根据你的操作系统平台, 选择适当的版本。 使用官方给出的方法下载和安装。
+
+> Windows下建议安装Linux虚拟机使用; 或者参考: [Windows下安装并设置Redis](https://renfufei.blog.csdn.net/article/details/38474435)
+
+比如Linux系统下, 先下载源代码:
+
+```c
+
+# 创建并进入相应目录
+mkdir -p redis_all
+cd redis_all/
+
+# 下载; 如果下载不了可以采用其他方式
+wget http://download.redis.io/redis-stable.tar.gz
+
+# 解压
+tar xzf redis-stable.tar.gz
+
+# 编译; 要求gcc, 没有请先安装
+cd redis-stable
+make
+```
+
+
 ## 创建和使用 Redis 集群
 
 注意: 手工部署一套 Redis 集群, 对于了解运行原理来说是非常重要的。
@@ -350,6 +386,12 @@ Something like:
 ```c
 mkdir cluster-test
 cd cluster-test
+
+# 拷贝 redis 可执行文件
+cp ../src/redis-server ./redis-server
+cp ../src/redis-cli ./redis-cli
+
+# 创建子目录; 方便运维;
 mkdir 7000 7001 7002 7003 7004 7005
 ```
 
@@ -368,7 +410,14 @@ Start every instance like that, one every tab:
 ```
 cd 7000
 ../redis-server ./redis.conf
+
 ```
+
+如果想后台启动Redis示例, 一般来说有这些方式:
+
+- 可以采用 `nohup xxxxx &` 的方式;
+- 在配置文件 `redis.conf` 中设置选项 `daemonize yes`;
+- 指定命令行启动参数 `--daemonize yes`;
 
 As you can see from the logs of every instance, since no `nodes.conf` file existed, every node assigns itself a new ID.
 
@@ -404,6 +453,7 @@ For Redis version 3 or 4, there is the older tool called `redis-trib.rb` which i
 当然您需要先安装gem, 再使用gem安装 `redis` 插件才能运行 `redis-trib`。
 
 ```
+# Redis 3/4 版本:
 gem install redis
 ```
 
@@ -426,7 +476,7 @@ redis-cli --cluster create 127.0.0.1:7000 127.0.0.1:7001 \
 
 Using `redis-trib.rb` for Redis 4 or 3 type:
 
- Redis 3 和 Redis 4 版本中则使用 `redis-trib`:
+Redis 3 和 Redis 4 版本中则使用 `redis-trib`:
 
 ```
 ./redis-trib.rb create --replicas 1 127.0.0.1:7000 127.0.0.1:7001 \
@@ -465,11 +515,22 @@ Just check `utils/create-cluster` directory in the Redis distribution. There is 
 
 如果您不想像上面解释的那样通过手动配置和执行单个实例来创建 Redis 集群，那么有一个更简单的系统（但您不会学到相同数量的操作细节）。
 
-只需检查 Redis 发行版中的 utils/create-cluster 目录即可。 里面有一个名为 `create-cluster` 的脚本（与它所在的目录同名），它是一个简单的 bash 脚本。 要启动具有 3 个主节点和 3 个副本的 6 节点集群，只需键入以下命令：
+只需检查 Redis 发行版中的 `utils/create-cluster` 目录即可。
 
-> `create-cluster start`
->
-> `create-cluster create`
+里面有一个名为 `create-cluster` 的脚本（与它所在的目录同名），它是一个简单的 bash 脚本。
+
+有兴趣的话你可以看看里面的shell代码, 并不是很复杂, 可以尝试猜测着理解。
+
+要启动具有 3 个主节点和 3 个副本的 6 节点集群，只需键入以下命令：
+
+```
+cd utils/create-cluster
+
+# 启动示例
+./create-cluster start
+# 创建集群
+./create-cluster create
+```
 
 Reply to `yes` in step 2 when the `redis-cli` utility wants you to accept the cluster layout.
 
@@ -477,9 +538,36 @@ You can now interact with the cluster, the first node will start at port 30001 b
 
 当 `redis-cli` 实用程序希望您接受集群布局时，在第 2 步中回复 `yes`。
 
-您现在可以与集群交互，默认情况下第一个节点将从端口 30001 开始。 完成后，使用以下命令停止集群：
+然后可以看到类似这样的提示信息:
 
-> `create-cluster stop`
+```c
+...
+[OK] All nodes agree about slots configuration.
+>>> Check for open slots...
+>>> Check slots coverage...
+[OK] All 16384 slots covered.
+```
+
+然后就可以与集群交互，默认情况下第一个节点将从端口 30001 开始。
+
+
+```
+# Linux 下查看端口号监听
+lsof -iTCP -sTCP:LISTEN -n -P | grep TCP
+```
+
+可以发现, 有 30001 到 30006,  以及 40001 到 40006;
+
+
+测试完成后，如果不再需要集群, 可以使用以下命令停止集群：
+
+```
+# 停止实例
+./create-cluster stop
+
+# 下次再启动实例; 一般来说不需要再次创建集群;
+./create-cluster start
+```
 
 Please read the `README` inside this directory for more information on how to run the script.
 
@@ -527,7 +615,10 @@ An easy way to test Redis Cluster is either to try any of the above clients or s
 下面是一个与Redis Cluster交互的使用示例：
 
 ```
-$ redis-cli -c -p 7000
+cd ../../src
+
+./redis-cli -c -p 7000
+
 redis 127.0.0.1:7000> set foo bar
 -> Redirected to slot [12182] located at 127.0.0.1:7002
 OK
@@ -545,6 +636,12 @@ redis 127.0.0.1:7002> get hello
 `Note:` if you created the cluster using the script your nodes may listen to different ports, starting from 30001 by default.
 
 The redis-cli cluster support is very basic so it always uses the fact that Redis Cluster nodes are able to redirect a client to the right node. A serious client is able to do better than that, and cache the map between hash slots and nodes addresses, to directly use the right connection to the right node. The map is refreshed only when something changed in the cluster configuration, for example after a failover or after the system administrator changed the cluster layout by adding or removing nodes.
+
+退出redis-cli支持多种方式, 例如:
+
+- `CTRL + C`
+- `exit`
+- `quit`
 
 > 注意：如果使用脚本自动创建集群，Redis节点可能会监听不同的端口，默认情况下是从 30001 开始。
 

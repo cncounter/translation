@@ -35,6 +35,10 @@
 ##### 部分技巧
 
 ```
+
+-- 查询客户端连接(服务器线程)
+SHOW FULL PROCESSLIST;
+
 -- 查询InnoDB状态
 SHOW ENGINE INNODB STATUS;
 
