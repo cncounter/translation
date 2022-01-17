@@ -5,7 +5,7 @@
 
 # 如何选择机器学习云平台
 
-> 要支撑完整的机器学习生命周期, 每个机器学习云平台都应该提供的12项功能特征
+> 为了支撑完整的机器学习生命周期, 每个机器学习云平台都应该提供的12项功能特性
 
 In order to create effective machine learning and deep learning models, you need copious amounts of data, a way to clean the data and perform feature engineering on it, and a way to train models on your data in a reasonable amount of time. Then you need a way to deploy your models, monitor them for drift over time, and retrain them as needed.
 
@@ -14,11 +14,14 @@ You can do all of that on-premises if you have invested in compute resources and
 The major cloud providers — and a number of minor clouds too — have put significant effort into building out their machine learning platforms to support the complete machine learning lifecycle, from planning a project to maintaining a model in production. How do you determine which of these clouds will meet your needs? Here are 12 capabilities every end-to-end machine learning platform should provide.
 
 
-为了创建有效的机器学习和深度学习模型，您需要大量数据、一种清理数据并对其执行特征工程的方法，以及一种在合理的时间内训练数据模型的方法。然后，您需要一种方法来部署您的模型，并随时间的漂移对其进行监控，根据需要重新训练它们。
+为了创建有效的机器学习和深度学习模型，我们需要大量的数据、以及一种清洗数据并对其执行特征工程的方法，还要有能一种在合理时间范围内训练数据模型的方法。
+然后，我们需要通过某种方式来部署模型，并进行实时监控和持续监控，必要时还可以重新进行训练。
 
-如果已经购买了机器和 GPU 加速器等计算资源，则在机房就可以完成所有的工作，但你会发现，如果资源充足的话，在大部分时间这些机器都是处于闲置状态的。 另一方面，有时候，在云环境中运行整个流水线，按需使用大量的计算资源和加速器，用完之后进行释放，在成本方面会更有优势。
+如果已经购买了物理机, 还有GPU加速器之类的计算资源，则在自己的机房就可以完成所有的工作。 但如果计算资源非常充裕的话，我们会发现，在大部分时间里这些机器的算力都是闲置的。
+另一方面，我们在云环境中运行整个流水线，按需分配大量的计算资源和加速器，用完之后及时释放，会在成本开销方面有很大优势。
 
-大部分云厂商、以及一些小型的云，都付出了很多资源和努力来构建他们的机器学习平台，以支持整个机器学习生命周期，包括规划项目到维护生产模型。 那么我们如何确定这些云中的哪些将满足需求？以下是每个端到端机器学习平台都应该提供的 12 项功能。
+大部分云厂商、以及某些小型云服务提供商，都花费了很多资源，付出很大的努力，构建了他们的机器学习平台，来支持机器学习的完整生命周期，从项目规划, 到生产模型维护。
+那如何确定哪些云环境能满足我们的需求呢？下面列出了每个端到端机器学习平台都应该提供的 12 项功能。
 
 
 ## Be close to your data
