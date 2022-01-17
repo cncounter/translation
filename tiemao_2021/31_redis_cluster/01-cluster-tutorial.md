@@ -817,7 +817,14 @@ All the slots will be covered as usual, but this time the master at 127.0.0.1:70
 
 ## Scripting a resharding operation
 
+## 非交互式执行重新分片的脚本
+
+
 Resharding can be performed automatically without the need to manually enter the parameters in an interactive way. This is possible using a command line like the following:
+
+重新分片可以自动执行，无需以手动交互的方式来输入参数。
+可以使用如下命令行：
+
 
 ```
 redis-cli --cluster reshard <host>:<port> --cluster-from <node-id> --cluster-to <node-id> --cluster-slots <number of slots> --cluster-yes
@@ -825,7 +832,15 @@ redis-cli --cluster reshard <host>:<port> --cluster-from <node-id> --cluster-to 
 
 This allows to build some automatism if you are likely to reshard often, however currently there is no way for `redis-cli` to automatically rebalance the cluster checking the distribution of keys across the cluster nodes and intelligently moving slots as needed. This feature will be added in the future.
 
+如果需要经常重新分片，可以通过这样的脚本来执行一些自动化操作，
+但到目前为止, 还没有办法让 `redis-cli` 自动平衡集群，检查集群节点之间的Key分布情况并根据需要智能移动槽位。
+将来的版本可能会添加这种功能。
+
 The `--cluster-yes` option instructs the cluster manager to automatically answer "yes" to the command's prompts, allowing it to run in a non-interactive mode. Note that this option can also be activated by setting the `REDISCLI_CLUSTER_YES` environment variable.
+
+
+选项 `--cluster-yes` 指示集群管理器自动对命令提示回答"yes"，允许它以非交互模式运行。
+注意，也可以通过设置环境变量 `REDISCLI_CLUSTER_YES` 来激活此选项。
 
 
 
