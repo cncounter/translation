@@ -514,6 +514,19 @@ Just check `utils/create-cluster` directory in the Redis distribution. There is 
 ```
 cd utils/create-cluster
 
+# 查看帮助
+./create-cluster
+Usage: ./create-cluster [start|create|stop|watch|tail|clean|call]
+start       -- Launch Redis Cluster instances.
+create [-f] -- Create a cluster using redis-cli --cluster create.
+stop        -- Stop Redis Cluster instances.
+watch       -- Show CLUSTER NODES output (first 30 lines) of first node.
+tail <id>   -- Run tail -f of instance at base port + ID.
+tailall     -- Run tail -f for all the log files at once.
+clean       -- Remove all instances data, logs, configs.
+clean-logs  -- Remove just instances logs.
+call <cmd>  -- Call a command (up to 7 arguments) on all nodes.
+
 # 启动示例
 ./create-cluster start
 # 创建集群
@@ -846,6 +859,10 @@ The `--cluster-yes` option instructs the cluster manager to automatically answer
 
 ## A more interesting example application
 
+## 一个更有趣的示例应用程序
+
+> 此示例是Ruby，不懂。
+
 The example application we wrote early is not very good. It writes to the cluster in a simple way without even checking if what was written is the right thing.
 
 From our point of view the cluster receiving the writes could just always write the key `foo` to `42` to every operation, and we would not notice at all.
@@ -896,11 +913,22 @@ This program is much more interesting as a test case, so we'll use it to test th
 
 ## Testing the failover
 
+## 试试故障转移
+
+
 Note: during this test, you should take a tab open with the consistency test application running.
 
 In order to trigger the failover, the simplest thing we can do (that is also the semantically simplest failure that can occur in a distributed system) is to crash a single process, in our case a single master.
 
 We can identify a master and crash it with the following command:
+
+
+> 注意：在本次测试过程中，您应该在一个新标签页中，运行和前面示例中使用的 consistency 测试程序。
+
+要触发故障转移，有一种简单的办法: 就是把进程搞崩溃。 这也是分布式系统中经常发生的简单故障;
+在我们的例子中需要让1个 master 进程崩溃。
+
+我们可以通过以下命令来找出 master：
 
 ```
 $ redis-cli -p 7000 cluster nodes | grep master
@@ -911,6 +939,8 @@ $ redis-cli -p 7000 cluster nodes | grep master
 
 Ok, so 7000, 7001, and 7002 are masters. Let's crash node 7002 with the `DEBUG SEGFAULT` command:
 
+可以看到, 7000, 7001, 和 7002 端口都是master进程; 我们向 7002 端口发送 `DEBUG SEGFAULT` 命令使其崩溃:
+
 ```
 $ redis-cli -p 7002 debug segfault
 Error: Server closed the connection
@@ -918,12 +948,14 @@ Error: Server closed the connection
 
 Now we can look at the output of the consistency test to see what it reported.
 
+接着可以看到测试程序的报告信息:
+
 ```
 18849 R (0 err) | 18849 W (0 err) |
 23151 R (0 err) | 23151 W (0 err) |
 27302 R (0 err) | 27302 W (0 err) |
 
-... many error warnings here ...
+... 这里会有很多 error 和 warnings 信息 ...
 
 29659 R (578 err) | 29660 W (577 err) |
 33749 R (578 err) | 33750 W (577 err) |
@@ -934,6 +966,13 @@ Now we can look at the output of the consistency test to see what it reported.
 As you can see during the failover the system was not able to accept 578 reads and 577 writes, however no inconsistency was created in the database. This may sound unexpected as in the first part of this tutorial we stated that Redis Cluster can lose writes during the failover because it uses asynchronous replication. What we did not say is that this is not very likely to happen because Redis sends the reply to the client, and the commands to replicate to the replicas, about at the same time, so there is a very small window to lose data. However the fact that it is hard to trigger does not mean that it is impossible, so this does not change the consistency guarantees provided by Redis cluster.
 
 We can now check what is the cluster setup after the failover (note that in the meantime I restarted the crashed instance so that it rejoins the cluster as a replica):
+
+正如您在故障转移期间看到的那样，系统有 578 次读取和 577 次写入没被接受，但是数据库中没有不一致的数据。
+这听起来可能出乎意料，因为在本教程的第一部分中，我们说过 Redis Cluster 在故障转移期间可能会丢失写入，因为它使用了异步复制。
+我们没有说的是, 这种情况发生的概率非常小，因为 Redis 向客户端发送回复，以及复制到副本的命令大约是同时发送的， 因此丢失数据的时间窗口非常小。
+但是不容易触发并不代表不可能，所以这并没有改变Redis集群提供的一致性保证。
+
+我们现在可以检查故障转移后的集群设置, 注意验证之后又重新启动了崩溃的实例，以便它作为副本再次加入集群：
 
 ```
 $ redis-cli -p 7000 cluster nodes
@@ -948,6 +987,11 @@ a211e242fc6b22a9427fed61285e85892fa04e08 127.0.0.1:7003 slave 97a3a64667477371c4
 Now the masters are running on ports 7000, 7001 and 7005. What was previously a master, that is the Redis instance running on port 7002, is now a replica of 7005.
 
 The output of the [CLUSTER NODES](https://redis.io/commands/cluster-nodes) command may look intimidating, but it is actually pretty simple, and is composed of the following tokens:
+
+现在 master 运行在 7000、7001 和 7005 端口上。
+之前的 master，运行在 7002 端口上的 Redis 实例，现在变成了 7005 的副本。
+
+[CLUSTER NODES](https://redis.io/commands/cluster-nodes) 命令的输出可能看起来有点复杂，但实际上很容易理解，每一行数据由以下部分组成：
 
 - Node ID
 - ip:port
