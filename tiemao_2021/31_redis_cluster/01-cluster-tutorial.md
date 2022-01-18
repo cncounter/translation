@@ -1004,8 +1004,10 @@ The output of the [CLUSTER NODES](https://redis.io/commands/cluster-nodes) comma
 - Slots served...
 
 
-
+<a name="manual-failover"></a>
 ## Manual failover
+
+## 人工操作强制执行故障转移
 
 Sometimes it is useful to force a failover without actually causing any problem on a master. For example in order to upgrade the Redis process of one of the master nodes it is a good idea to failover it in order to turn it into a replica with minimal impact on availability.
 
@@ -1014,6 +1016,16 @@ Manual failovers are supported by Redis Cluster using the [CLUSTER FAILOVER](htt
 Manual failovers are special and are safer compared to failovers resulting from actual master failures, since they occur in a way that avoid data loss in the process, by switching clients from the original master to the new master only when the system is sure that the new master processed all the replication stream from the old one.
 
 This is what you see in the replica log when you perform a manual failover:
+
+有时通过人工干预, 对 master 服务器强制执行故障转移, 而不对客户端系统产生任何实际影响, 会非常有用。
+例如，要升级某个 master 节点对应的 Redis 进程，最好是先对其进行故障转移，以便将其转换为副本，同时基本上不影响集群的可用性。
+
+Redis 集群支持使用 [CLUSTER FAILOVER](https://redis.io/commands/cluster-failover) 命令来手动执行故障转移，该命令必须在某个 `replicas` 节点中执行, 对应要执行故障转移的master节点。
+
+手动执行故障转移是特殊的处理方式，与实际发生 master 崩溃导致的故障转移相比更安全，因为执行过程中可以避免数据丢失。
+只有当Redis集群系统确定新 master 处理完以前的 master 发出的所有复制流之后，才会让客户端从原始master切换到新 master。
+
+在执行手动故障转移时, 可以在副本节点的日志中看到类似这样的内容：
 
 ```
 # Manual failover user request accepted.
@@ -1026,9 +1038,18 @@ This is what you see in the replica log when you perform a manual failover:
 
 Basically clients connected to the master we are failing over are stopped. At the same time the master sends its replication offset to the replica, that waits to reach the offset on its side. When the replication offset is reached, the failover starts, and the old master is informed about the configuration switch. When the clients are unblocked on the old master, they are redirected to the new master.
 
-Note:
+基本上，连接到正在执行故障转移的master服务器的客户端已停止。
+同时，master服务器将其复制偏移量(replication offset)发送给副本，副本等待自身到达这个偏移量。
+当达到复制偏移量时，故障转移正式启动，并通知旧的 master 切换配置。
+当客户端在旧 master 上解除阻塞时, 它们将被重定向到新的 master。
 
-- To promote a replica to master, it must first be known as a replica by a majority of the masters in the cluster. Otherwise, it cannot win the failover election. If the replica has just been added to the cluster (see [Adding a new node as a replica](https://redis.io/topics/cluster-tutorial#adding-a-new-node-as-a-replica) below), you may need to wait a while before sending the [CLUSTER FAILOVER](https://redis.io/commands/cluster-failover) command, to make sure the masters in cluster are aware of the new replica.
+> Note:
+
+- To promote a replica to master, it must first be known as a replica by a majority of the masters in the cluster. Otherwise, it cannot win the failover election. If the replica has just been added to the cluster (see [Adding a new node as a replica](#adding-a-new-node-as-a-replica) below), you may need to wait a while before sending the [CLUSTER FAILOVER](https://redis.io/commands/cluster-failover) command, to make sure the masters in cluster are aware of the new replica.
+
+> 提示:
+
+- 要将副本提升为 master，必须先让集群中的大多数 master 知道他是副本。  否则它无法赢得故障转移选举。 如果副本刚刚添加到集群中（参见后面的 [Adding a new node as a replica](#adding-a-new-node-as-a-replica) 小节）， 可能需要等一段时间才能发送 [CLUSTER FAILOVER](https://redis.io/commands/cluster-failover) 命令，以确保集群中的 master 都感知到这个新副本。
 
 
 
@@ -1081,6 +1102,7 @@ Note that since this node is already connected to the cluster it is already able
 Now it is possible to assign hash slots to this node using the resharding feature of `redis-cli`. It is basically useless to show this as we already did in a previous section, there is no difference, it is just a resharding having as a target the empty node.
 
 
+<a name="adding-a-new-node-as-a-replica"></a>
 
 ## Adding a new node as a replica
 
@@ -1170,7 +1192,7 @@ Upgrading replica nodes is easy since you just need to stop the node and restart
 
 Upgrading masters is a bit more complex, and the suggested procedure is:
 
-1. Use [CLUSTER FAILOVER](https://redis.io/commands/cluster-failover) to trigger a manual failover of the master to one of its replicas. (See the [Manual failover](https://redis.io/topics/cluster-tutorial#manual-failover) section in this document.)
+1. Use [CLUSTER FAILOVER](https://redis.io/commands/cluster-failover) to trigger a manual failover of the master to one of its replicas. (See the [Manual failover](#manual-failover) section in this document.)
 2. Wait for the master to turn into a replica.
 3. Finally upgrade the node as you do for replicas.
 4. If you want the master to be the node you just upgraded, trigger a new manual failover in order to turn back the upgraded node into a master.
