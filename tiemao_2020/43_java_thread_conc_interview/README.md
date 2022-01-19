@@ -215,8 +215,8 @@ ThreadLocal, 线程本地变量，使得每一个调用的线程都能拥有一�
 
 ![](./ThreadLocal.jpg)
 
-ThreadLocal内部是一个双层的Map结构，以当前线程作为第一层的key。
-以具体的ThreadLocal对象(代码中的this)作为第二层Map的key, 对应的值受到泛型类型的约束。
+- ThreadLocal内部是一个双层的Map结构，以当前线程作为第一层的key。
+- 以具体的ThreadLocal对象作为第二层Map的key(即代码中的this), 对应的值受到泛型类型的约束。
 
 
 
