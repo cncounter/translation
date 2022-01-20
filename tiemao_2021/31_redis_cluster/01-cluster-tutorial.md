@@ -307,7 +307,7 @@ The following is a minimal Redis cluster configuration file:
 
 > <https://redis.io/>
 
-然后, 找到 Download 部分，打开页面:
+然后, 找到 Download 部分,打开页面:
 
 > <https://redis.io/download>
 
@@ -449,12 +449,12 @@ The first example, that is, the cluster creation, will be shown using both `redi
 
 To create your cluster for Redis 5 with `redis-cli` simply type:
 
-第一个示例，是创建集群，将使用 Redis 5 中内置的 `redis-cli` 工具, 以及 Redis 3 和 4 中的 `redis-trib` 来展示。
+第一个示例,是创建集群,将使用 Redis 5 中内置的 `redis-cli` 工具, 以及 Redis 3 和 4 中的 `redis-trib` 来展示。
 但后续的所有示例都只使用 `redis-cli`, 因为他们的语法还是很相似的, 碰到不懂的地方, 也可以通过 `redis-trib.rb help` 来展示帮助信息, 看看如何将一个命令改写为另一个旧语法的命令。
 
-> 重要提示:请注意，如果您愿意，可以对 Redis 4 集群服务, 使用 Redis 5 版本的客户端 `redis-cli` 链接, 而不会出现问题。
+> 重要提示:请注意,如果您愿意,可以对 Redis 4 集群服务, 使用 Redis 5 版本的客户端 `redis-cli` 链接, 而不会出现问题。
 
-要使用 `redis-cli` 为 Redis 5 创建集群，只需键入:
+要使用 `redis-cli` 为 Redis 5 创建集群,只需键入:
 
 ```
 redis-cli --cluster create 127.0.0.1:7000 127.0.0.1:7001 \
@@ -477,11 +477,11 @@ Obviously the only setup with our requirements is to create a cluster with 3 mas
 
 Redis-cli will propose you a configuration. Accept the proposed configuration by typing `yes`. The cluster will be configured and *joined*, which means, instances will be bootstrapped into talking with each other. Finally, if everything went well, you'll see a message like that:
 
-这里使用的命令是 `create`，因为我们要创建一个新集群。 选项 `--cluster-replicas 1` 表示我们希望为每个主服务创建一个副本。 其他参数则是用来创建新集群的实例对应的地址端口列表。
+这里使用的命令是 `create`,因为我们要创建一个新集群。 选项 `--cluster-replicas 1` 表示我们希望为每个主服务创建一个副本。 其他参数则是用来创建新集群的实例对应的地址端口列表。
 
-显然，符合这种要求的设置, 只能是创建一个具有 3 主 3 从的集群。
+显然,符合这种要求的设置, 只能是创建一个具有 3 主 3 从的集群。
 
-redis-cli 会先提示你确认这个配置。 接受建议则输入 `yes` 。 将配置集群并让这些节点加入，这意味着相关实例将被引导并与其他节点互相通信。 最后，如果一切顺利，你会看到这样的消息:
+redis-cli 会先提示你确认这个配置。 接受建议则输入 `yes` 。 将配置集群并让这些节点加入,这意味着相关实例将被引导并与其他节点互相通信。 最后,如果一切顺利,你会看到这样的消息:
 
 ```
 [OK] All 16384 slots covered
@@ -501,15 +501,15 @@ Just check `utils/create-cluster` directory in the Redis distribution. There is 
 
 ## 使用 create-cluster 脚本创建 Redis 集群
 
-如果您不想像上面解释的那样通过手动配置和执行单个实例来创建 Redis 集群，那么有一个更简单的系统（但您不会学到相同数量的操作细节）。
+如果您不想像上面解释的那样通过手动配置和执行单个实例来创建 Redis 集群,那么有一个更简单的系统(但您不会学到相同数量的操作细节)。
 
 只需检查 Redis 发行版中的 `utils/create-cluster` 目录即可。
 
-里面有一个名为 `create-cluster` 的脚本（与它所在的目录同名），它是一个简单的 bash 脚本。
+里面有一个名为 `create-cluster` 的脚本(与它所在的目录同名),它是一个简单的 bash 脚本。
 
 有兴趣的话你可以看看里面的shell代码, 并不是很复杂, 可以尝试猜测着理解。
 
-要启动具有 3 个主节点和 3 个副本的 6 节点集群，只需键入以下命令:
+要启动具有 3 个主节点和 3 个副本的 6 节点集群,只需键入以下命令:
 
 ```
 cd utils/create-cluster
@@ -537,7 +537,7 @@ Reply to `yes` in step 2 when the `redis-cli` utility wants you to accept the cl
 
 You can now interact with the cluster, the first node will start at port 30001 by default. When you are done, stop the cluster with:
 
-当 `redis-cli` 实用程序希望您接受集群布局时，在第 2 步中回复 `yes`。
+当 `redis-cli` 实用程序希望您接受集群布局时,在第 2 步中回复 `yes`。
 
 然后可以看到类似这样的提示信息:
 
@@ -549,7 +549,7 @@ You can now interact with the cluster, the first node will start at port 30001 b
 [OK] All 16384 slots covered.
 ```
 
-然后就可以与集群交互，默认情况下第一个节点将从端口 30001 开始。
+然后就可以与集群交互,默认情况下第一个节点将从端口 30001 开始。
 
 
 ```
@@ -560,7 +560,7 @@ lsof -iTCP -sTCP:LISTEN -n -P | grep TCP
 可以发现, 有 30001 到 30006,  以及 40001 到 40006;
 
 
-测试完成后，如果不再需要集群, 可以使用以下命令停止集群:
+测试完成后,如果不再需要集群, 可以使用以下命令停止集群:
 
 ```
 # 停止实例
@@ -572,7 +572,7 @@ lsof -iTCP -sTCP:LISTEN -n -P | grep TCP
 
 Please read the `README` inside this directory for more information on how to run the script.
 
-有关如何运行脚本的更多信息，请阅读此目录中的“README”。
+有关如何运行脚本的更多信息,请阅读此目录中的“README”。
 
 
 ## Playing with the cluster
@@ -584,7 +584,7 @@ I'm aware of the following implementations:
 
 ## 客户端如何与Redis集群交互
 
-在早期阶段，Redis Cluster 的一个问题是缺少支持集群的客户端库实现。
+在早期阶段,Redis Cluster 的一个问题是缺少支持集群的客户端库实现。
 
 下面是支持集群的已知实现:
 
@@ -599,15 +599,15 @@ I'm aware of the following implementations:
 - The `redis-cli` utility implements basic cluster support when started with the `-c` switch.
 
 
-- [redis-rb-cluster](http://github.com/antirez/redis-rb-cluster); 是Redis作者(@antirez)通过 Ruby 写的，作为其他语言的参考实现。 只是对原来的 redis-rb 进行了简单的包装，实现了与集群有效交互的最小语义。
+- [redis-rb-cluster](http://github.com/antirez/redis-rb-cluster); 是Redis作者(@antirez)通过 Ruby 写的,作为其他语言的参考实现。 只是对原来的 redis-rb 进行了简单的包装,实现了与集群有效交互的最小语义。
 - [redis-py-cluster](https://github.com/Grokzen/redis-py-cluster); redis-rb-cluster 到 Python 的端口。 支持大部分 *redis-py* 功能。 正在积极开发中。
-- 流行的 [Predis](https://github.com/nrk/predis); 支持 Redis Cluster，最近正在更新并积极开发中。
-- [Jedis](https://github.com/xetorthio/jedis); 最常用的 Java 客户端, 最近添加了对 Redis Cluster 的支持，请参阅该项目中 README 文件的 *Jedis Cluster* 部分。
-- [StackExchange.Redis](https://github.com/StackExchange/StackExchange.Redis); 提供对 C# 的支持（并且应该适用于大多数 .NET 版本；VB、F# 等）
-- [thunk-redis](https://github.com/thunks/thunk-redis); 提供对 Node.js 和 io.js 的支持，它是一个 thunk/promise-based 的 redis 客户端, 支持 pipelining 和 cluster。
+- 流行的 [Predis](https://github.com/nrk/predis); 支持 Redis Cluster,最近正在更新并积极开发中。
+- [Jedis](https://github.com/xetorthio/jedis); 最常用的 Java 客户端, 最近添加了对 Redis Cluster 的支持,请参阅该项目中 README 文件的 *Jedis Cluster* 部分。
+- [StackExchange.Redis](https://github.com/StackExchange/StackExchange.Redis); 提供对 C# 的支持(并且应该适用于大多数 .NET 版本；VB、F# 等)
+- [thunk-redis](https://github.com/thunks/thunk-redis); 提供对 Node.js 和 io.js 的支持,它是一个 thunk/promise-based 的 redis 客户端, 支持 pipelining 和 cluster。
 - [redis-go-cluster](https://github.com/chasex/redis-go-cluster); 是以 [Redigo library client](https://github.com/garyburd/redigo) 为基础的Go语言实现。 通过结果聚合来实现 MGET/MSET。
-- [ioredis](https://github.com/luin/ioredis); 是一个流行的 Node.js 客户端，为 Redis Cluster 提供了强大的支持。
-- `redis-cli` 命令行工具; 传入 `-c` 选项时，支持基础的集群功能。
+- [ioredis](https://github.com/luin/ioredis); 是一个流行的 Node.js 客户端,为 Redis Cluster 提供了强大的支持。
+- `redis-cli` 命令行工具; 传入 `-c` 选项时,支持基础的集群功能。
 
 
 An easy way to test Redis Cluster is either to try any of the above clients or simply the `redis-cli` command line utility. The following is an example of interaction using the latter:
@@ -644,10 +644,10 @@ The redis-cli cluster support is very basic so it always uses the fact that Redi
 - `exit`
 - `quit`
 
-> 注意:如果使用脚本自动创建集群，Redis节点可能会监听不同的端口，默认情况下是从 30001 开始。
+> 注意:如果使用脚本自动创建集群,Redis节点可能会监听不同的端口,默认情况下是从 30001 开始。
 
-可以看到, redis-cli 对集群的支持非常简陋，直接基于 Redis 集群节点能够让客户端重定向到正确节点的事实。
-一个高性能的客户端应该做得更好一些，比如将哈希槽和节点地址间的映射关系缓存起来，直接使用与正确节点的连接，避免重定向。
+可以看到, redis-cli 对集群的支持非常简陋,直接基于 Redis 集群节点能够让客户端重定向到正确节点的事实。
+一个高性能的客户端应该做得更好一些,比如将哈希槽和节点地址间的映射关系缓存起来,直接使用与正确节点的连接,避免重定向。
 只有当集群配置发生变更时才会刷新映射关系, 例如在故障转移, 或者系统管理员添加/删除节点导致集群布局变化。
 
 
@@ -759,12 +759,12 @@ Resharding basically means to move hash slots from a set of nodes to another set
 To start a resharding just type:
 
 下面我们来演示如何让集群重新分片。
-为此请保持 `example.rb` 程序继续运行，以便我们观察重新分片对程序运行是否有影响。
-此外，可能需要注释掉ruby代码中的 `sleep` 调用，以便在重新分片期间有一定量的写入负载。
+为此请保持 `example.rb` 程序继续运行,以便我们观察重新分片对程序运行是否有影响。
+此外,可能需要注释掉ruby代码中的 `sleep` 调用,以便在重新分片期间有一定量的写入负载。
 
-重新分片基本上意味着将哈希槽从一组节点移动到另一组节点，和集群创建类似，可以使用 redis-cli 命令行工具来调用。
+重新分片基本上意味着将哈希槽从一组节点移动到另一组节点,和集群创建类似,可以使用 redis-cli 命令行工具来调用。
 
-要开始重新分片，只需输入以下命令:
+要开始重新分片,只需输入以下命令:
 
 ```
 redis-cli --cluster reshard 127.0.0.1:7000
@@ -774,9 +774,9 @@ You only need to specify a single node, redis-cli will find the other nodes auto
 
 Currently redis-cli is only able to reshard with the administrator support, you can't just say move 5% of slots from this node to the other one (but this is pretty trivial to implement). So it starts with questions. The first is how much a big resharding do you want to do:
 
-只需要指定一个节点即可，redis-cli 会自动找到其他节点。
+只需要指定一个节点即可,redis-cli 会自动找到其他节点。
 
-目前 redis-cli 只能在管理员的支持下重新分片，不能说只将 5% 的哈希槽从一个节点移动到另一个节点（当然要实现起来也很简单）。
+目前 redis-cli 只能在管理员的支持下重新分片,不能说只将 5% 的哈希槽从一个节点移动到另一个节点(当然要实现起来也很简单)。
 所以客户端会提示你进行选择。
 首先是问你想对多少个槽位执行重新分片:
 
@@ -788,11 +788,11 @@ We can try to reshard 1000 hash slots, that should already contain a non trivial
 
 Then redis-cli needs to know what is the target of the resharding, that is, the node that will receive the hash slots. I'll use the first master node, that is, `127.0.0.1:7000`, but I need to specify the Node ID of the instance. This was already printed in a list by redis-cli, but I can always find the ID of a node with the following command if I need:
 
-我们可以尝试重分片 1000 个哈希槽，如果示例程序注释掉 sleep 并持续运行，那么Redis中应该已经包含大量的key。
+我们可以尝试重分片 1000 个哈希槽,如果示例程序注释掉 sleep 并持续运行,那么Redis中应该已经包含大量的key。
 
-然后 redis-cli 需要确定 resharding 的目标节点是哪些，也就是接收hash slot的Redis节点。
-我们使用第一个主节点，即 `127.0.0.1:7000`，但需要指定的是实例的节点ID。
-这已经由 redis-cli 打印在列表中，但如果需要，可以使用以下命令找到节点的 ID:
+然后 redis-cli 需要确定 resharding 的目标节点是哪些,也就是接收hash slot的Redis节点。
+我们使用第一个主节点,即 `127.0.0.1:7000`,但需要指定的是实例的节点ID。
+这已经由 redis-cli 打印在列表中,但如果需要,可以使用以下命令找到节点的 ID:
 
 ```
 $ redis-cli -p 7000 cluster nodes | grep myself
@@ -809,15 +809,15 @@ While the resharding is in progress you should be able to see your example progr
 
 At the end of the resharding, you can test the health of the cluster with the following command:
 
-在示例中，我们的目标节点是 `97a3a64667477371c4479320d683e4c8db5858b1`, 具体运行时是多少你就填多少。
+在示例中,我们的目标节点是 `97a3a64667477371c4479320d683e4c8db5858b1`, 具体运行时是多少你就填多少。
 
-接着，系统会询问你要从哪些节点获取这些key。 只需键入 `all`，以便从所有其他主节点中获取一些哈希槽。
+接着,系统会询问你要从哪些节点获取这些key。 只需键入 `all`,以便从所有其他主节点中获取一些哈希槽。
 
-在最终确认之后，可以看到 redis-cli 将每个槽位从一个节点移到另一个节点的消息，并且每个实际的key移动完就会打印一个英文点号。
+在最终确认之后,可以看到 redis-cli 将每个槽位从一个节点移到另一个节点的消息,并且每个实际的key移动完就会打印一个英文点号。
 
-当重新分片正在进行时，应该能够看到您的示例程序运行不受影响。 如果需要，可以在重新分片期间多次停止并重新启动它。
+当重新分片正在进行时,应该能够看到您的示例程序运行不受影响。 如果需要,可以在重新分片期间多次停止并重新启动它。
 
-重新分片结束后，可以使用以下命令测试集群的健康状况:
+重新分片结束后,可以使用以下命令测试集群的健康状况:
 
 ```
 redis-cli --cluster check 127.0.0.1:7000
@@ -825,7 +825,7 @@ redis-cli --cluster check 127.0.0.1:7000
 
 All the slots will be covered as usual, but this time the master at 127.0.0.1:7000 will have more hash slots, something around 6461.
 
-所有的槽都会像往常一样被覆盖，但这次位于 127.0.0.1:7000 的 master 服务将有更多的哈希槽，大约在 6461 左右。
+所有的槽都会像往常一样被覆盖,但这次位于 127.0.0.1:7000 的 master 服务将有更多的哈希槽,大约在 6461 左右。
 
 
 ## Scripting a resharding operation
@@ -835,7 +835,7 @@ All the slots will be covered as usual, but this time the master at 127.0.0.1:70
 
 Resharding can be performed automatically without the need to manually enter the parameters in an interactive way. This is possible using a command line like the following:
 
-重新分片可以自动执行，无需以手动交互的方式来输入参数。
+重新分片可以自动执行,无需以手动交互的方式来输入参数。
 可以使用如下命令行：
 
 
@@ -845,15 +845,15 @@ redis-cli --cluster reshard <host>:<port> --cluster-from <node-id> --cluster-to 
 
 This allows to build some automatism if you are likely to reshard often, however currently there is no way for `redis-cli` to automatically rebalance the cluster checking the distribution of keys across the cluster nodes and intelligently moving slots as needed. This feature will be added in the future.
 
-如果需要经常重新分片，可以通过这样的脚本来执行一些自动化操作，
-但到目前为止, 还没有办法让 `redis-cli` 自动平衡集群，检查集群节点之间的Key分布情况并根据需要智能移动槽位。
+如果需要经常重新分片,可以通过这样的脚本来执行一些自动化操作,
+但到目前为止, 还没有办法让 `redis-cli` 自动平衡集群,检查集群节点之间的Key分布情况并根据需要智能移动槽位。
 将来的版本可能会添加这种功能。
 
 The `--cluster-yes` option instructs the cluster manager to automatically answer "yes" to the command's prompts, allowing it to run in a non-interactive mode. Note that this option can also be activated by setting the `REDISCLI_CLUSTER_YES` environment variable.
 
 
-选项 `--cluster-yes` 指示集群管理器自动对命令提示回答"yes"，允许它以非交互模式运行。
-注意，也可以通过设置环境变量 `REDISCLI_CLUSTER_YES` 来激活此选项。
+选项 `--cluster-yes` 指示集群管理器自动对命令提示回答"yes",允许它以非交互模式运行。
+注意,也可以通过设置环境变量 `REDISCLI_CLUSTER_YES` 来激活此选项。
 
 
 
@@ -861,7 +861,7 @@ The `--cluster-yes` option instructs the cluster manager to automatically answer
 
 ## 一个更有趣的示例应用程序
 
-> 此示例是Ruby，不懂。
+> 此示例是Ruby,不懂。
 
 The example application we wrote early is not very good. It writes to the cluster in a simple way without even checking if what was written is the right thing.
 
@@ -923,9 +923,9 @@ In order to trigger the failover, the simplest thing we can do (that is also the
 We can identify a master and crash it with the following command:
 
 
-> 注意：在本次测试过程中，您应该在一个新标签页中，运行和前面示例中使用的 consistency 测试程序。
+> 注意：在本次测试过程中,您应该在一个新标签页中,运行和前面示例中使用的 consistency 测试程序。
 
-要触发故障转移，有一种简单的办法: 就是把进程搞崩溃。 这也是分布式系统中经常发生的简单故障;
+要触发故障转移,有一种简单的办法: 就是把进程搞崩溃。 这也是分布式系统中经常发生的简单故障;
 在我们的例子中需要让1个 master 进程崩溃。
 
 我们可以通过以下命令来找出 master：
@@ -967,12 +967,12 @@ As you can see during the failover the system was not able to accept 578 reads a
 
 We can now check what is the cluster setup after the failover (note that in the meantime I restarted the crashed instance so that it rejoins the cluster as a replica):
 
-正如您在故障转移期间看到的那样，系统有 578 次读取和 577 次写入没被接受，但是数据库中没有不一致的数据。
-这听起来可能出乎意料，因为在本教程的第一部分中，我们说过 Redis Cluster 在故障转移期间可能会丢失写入，因为它使用了异步复制。
-我们没有说的是, 这种情况发生的概率非常小，因为 Redis 向客户端发送回复，以及复制到副本的命令大约是同时发送的， 因此丢失数据的时间窗口非常小。
-但是不容易触发并不代表不可能，所以这并没有改变Redis集群提供的一致性保证。
+正如您在故障转移期间看到的那样,系统有 578 次读取和 577 次写入没被接受,但是数据库中没有不一致的数据。
+这听起来可能出乎意料,因为在本教程的第一部分中,我们说过 Redis Cluster 在故障转移期间可能会丢失写入,因为它使用了异步复制。
+我们没有说的是, 这种情况发生的概率非常小,因为 Redis 向客户端发送回复,以及复制到副本的命令大约是同时发送的, 因此丢失数据的时间窗口非常小。
+但是不容易触发并不代表不可能,所以这并没有改变Redis集群提供的一致性保证。
 
-我们现在可以检查故障转移后的集群设置, 注意验证之后又重新启动了崩溃的实例，以便它作为副本再次加入集群：
+我们现在可以检查故障转移后的集群设置, 注意验证之后又重新启动了崩溃的实例,以便它作为副本再次加入集群：
 
 ```
 $ redis-cli -p 7000 cluster nodes
@@ -989,9 +989,9 @@ Now the masters are running on ports 7000, 7001 and 7005. What was previously a 
 The output of the [CLUSTER NODES](https://redis.io/commands/cluster-nodes) command may look intimidating, but it is actually pretty simple, and is composed of the following tokens:
 
 现在 master 运行在 7000、7001 和 7005 端口上。
-之前的 master，运行在 7002 端口上的 Redis 实例，现在变成了 7005 的副本。
+之前的 master,运行在 7002 端口上的 Redis 实例,现在变成了 7005 的副本。
 
-[CLUSTER NODES](https://redis.io/commands/cluster-nodes) 命令的输出可能看起来有点复杂，但实际上很容易理解，每一行数据由以下部分组成：
+[CLUSTER NODES](https://redis.io/commands/cluster-nodes) 命令的输出可能看起来有点复杂,但实际上很容易理解,每一行数据由以下部分组成：
 
 - Node ID
 - ip:port
@@ -1018,12 +1018,12 @@ Manual failovers are special and are safer compared to failovers resulting from 
 This is what you see in the replica log when you perform a manual failover:
 
 有时通过人工干预, 对 master 服务强制执行故障转移, 而不对客户端系统产生任何实际影响, 会非常有用。
-例如，要升级某个 master 节点对应的 Redis 进程，最好是先对其进行故障转移，以便将其转换为副本，同时基本上不影响集群的可用性。
+例如,要升级某个 master 节点对应的 Redis 进程,最好是先对其进行故障转移,以便将其转换为副本,同时基本上不影响集群的可用性。
 
-Redis 集群支持使用 [CLUSTER FAILOVER](https://redis.io/commands/cluster-failover) 命令来手动执行故障转移，该命令必须在某个 `replicas` 节点中执行, 要进行故障转移的就是他对应的master节点。
+Redis 集群支持使用 [CLUSTER FAILOVER](https://redis.io/commands/cluster-failover) 命令来手动执行故障转移,该命令必须在某个 `replicas` 节点中执行, 要进行故障转移的就是他对应的master节点。
 
-手动执行故障转移是特殊的处理方式，与实际发生 master 崩溃导致的故障转移相比更安全，因为执行过程中可以避免数据丢失。
-只有当Redis集群系统确定新 master 处理完以前的 master 发出的所有复制流之后，才会让客户端从原始master切换到新 master。
+手动执行故障转移是特殊的处理方式,与实际发生 master 崩溃导致的故障转移相比更安全,因为执行过程中可以避免数据丢失。
+只有当Redis集群系统确定新 master 处理完以前的 master 发出的所有复制流之后,才会让客户端从原始master切换到新 master。
 
 在执行手动故障转移时, 可以在副本节点的日志中看到类似这样的内容：
 
@@ -1038,9 +1038,9 @@ Redis 集群支持使用 [CLUSTER FAILOVER](https://redis.io/commands/cluster-fa
 
 Basically clients connected to the master we are failing over are stopped. At the same time the master sends its replication offset to the replica, that waits to reach the offset on its side. When the replication offset is reached, the failover starts, and the old master is informed about the configuration switch. When the clients are unblocked on the old master, they are redirected to the new master.
 
-基本上，连接到正在执行故障转移的master服务的客户端已停止。
-同时，master服务将其复制偏移量(replication offset)发送给副本，副本等待自身到达这个偏移量。
-当达到复制偏移量时，故障转移正式启动，并通知旧的 master 切换配置。
+基本上,连接到正在执行故障转移的master服务的客户端已停止。
+同时,master服务将其复制偏移量(replication offset)发送给副本,副本等待自身到达这个偏移量。
+当达到复制偏移量时,故障转移正式启动,并通知旧的 master 切换配置。
 当客户端在旧 master 上解除阻塞时, 它们将被重定向到新的 master。
 
 > Note:
@@ -1049,7 +1049,7 @@ Basically clients connected to the master we are failing over are stopped. At th
 
 > 提示:
 
-- 要将副本提升为 master，必须先让集群中的大多数 master 知道他是副本。  否则它无法赢得故障转移选举。 如果副本刚刚添加到集群中（参见后面的 [Adding a new node as a replica](#adding-a-new-node-as-a-replica) 小节）， 可能需要等一段时间才能发送 [CLUSTER FAILOVER](https://redis.io/commands/cluster-failover) 命令，以确保集群中的 master 都感知到这个新副本。
+- 要将副本提升为 master,必须先让集群中的大多数 master 知道他是副本。  否则它无法赢得故障转移选举。 如果副本刚刚添加到集群中(参见后面的 [Adding a new node as a replica](#adding-a-new-node-as-a-replica) 小节), 可能需要等一段时间才能发送 [CLUSTER FAILOVER](https://redis.io/commands/cluster-failover) 命令,以确保集群中的 master 都感知到这个新副本。
 
 
 
@@ -1071,8 +1071,8 @@ This is as simple as to start a new node in port 7006 (we already used from 7000
 
 ## 添加新节点
 
-添加新节点, 基本上就是添加一个空节点, 然后再将一部分数据移动到其中的过程，如果它是新的 master 节点的话。
-或者是将它设置为某个已知节点的副本，如果它是副本节点。
+添加新节点, 基本上就是添加一个空节点, 然后再将一部分数据移动到其中的过程,如果它是新的 master 节点的话。
+或者是将它设置为某个已知节点的副本,如果它是副本节点。
 
 我们将演示如何添加这两种节点。 我们先从添加一个新的 master 实例开始。
 
@@ -1080,12 +1080,12 @@ This is as simple as to start a new node in port 7006 (we already used from 7000
 
 现在已经有了 6 个节点, 这些端口号从 7000 到 7005;
 添加新节点就可以是简单地在端口 7006 上启动一个新的集群节点;
-除端口号外，配置和其他节点完全相同，如果你忘了,可以回顾之前我们手工启动集群节点的配置：
+除端口号外,配置和其他节点完全相同,如果你忘了,可以回顾之前我们手工启动集群节点的配置：
 
 - 在终端程序中创建一个新选项卡。
 - 进入我们的 `cluster-test` 目录。
 - 创建一个名为 `7006` 的目录。
-- 在里面创建一个 `redis.conf` 文件，文件内容和其他节点类似，但设置端口号为 7006。
+- 在里面创建一个 `redis.conf` 文件,文件内容和其他节点类似,但设置端口号为 7006。
 - 最后使用 `../redis-server ./redis.conf` 之类的命令来启动Redis服务.
 
 
@@ -1108,12 +1108,12 @@ In practical terms redis-cli here did very little to help us, it just sent a [CL
 Now we can connect to the new node to see if it really joined the cluster:
 
 
-这里使用了 `add-node` 命令, 第一个参数是新节点的地址，第二个参数是集群中某个现有节点的地址。
+这里使用了 `add-node` 命令, 第一个参数是新节点的地址,第二个参数是集群中某个现有节点的地址。
 
-在这步操作中 redis-cli 执行的操作很简单，它只是向节点发送了 [CLUSTER MEET](https://redis.io/commands/cluster-meet) 消息，这其实也可以通过手工完成.
-但是，redis-cli 还会在执行之前检查集群的状态，因此即使你了解内部的运行原理，但最好还是通过 redis-cli 来执行集群操作。
+在这步操作中 redis-cli 执行的操作很简单,它只是向节点发送了 [CLUSTER MEET](https://redis.io/commands/cluster-meet) 消息,这其实也可以通过手工完成.
+但是,redis-cli 还会在执行之前检查集群的状态,因此即使你了解内部的运行原理,但最好还是通过 redis-cli 来执行集群操作。
 
-接下来, 我们可以连接新节点，查看它是否真的加入了集群：
+接下来, 我们可以连接新节点,查看它是否真的加入了集群：
 
 
 ```
@@ -1134,10 +1134,10 @@ Note that since this node is already connected to the cluster it is already able
 
 Now it is possible to assign hash slots to this node using the resharding feature of `redis-cli`. It is basically useless to show this as we already did in a previous section, there is no difference, it is just a resharding having as a target the empty node.
 
-请注意，由于该节点连接到集群中，能够正确重定向客户端查询，并且已经变成了集群的一部分。 然而，与其他 master 相比，它有两个特点：
+请注意,由于该节点连接到集群中,能够正确重定向客户端查询,并且已经变成了集群的一部分。 然而,与其他 master 相比,它有两个特点：
 
-- 1. 没有数据，集群也没有给他分配哈希槽。
-- 2. 因为这是一个没有分配到任何槽位的新master节点，所以当其他 replica 想成为 master 时, 这个没有槽位的主节点不参与选举过程。
+- 1. 没有数据,集群也没有给他分配哈希槽。
+- 2. 因为这是一个没有分配到任何槽位的新master节点,所以当其他 replica 想成为 master 时, 这个没有槽位的主节点不参与选举过程。
 
 接着可以使用 `redis-cli` 的重新分片功能, 为该节点分配哈希槽。
 像我们上一节中所做的那样, 并没有多少区别, 将这个空节点作为目标来进行重新分片即可。
@@ -1147,7 +1147,13 @@ Now it is possible to assign hash slots to this node using the resharding featur
 
 ## Adding a new node as a replica
 
-Adding a new Replica can be performed in two ways. The obvious one is to use redis-cli again, but with the --cluster-slave option, like this:
+Adding a new Replica can be performed in two ways. The obvious one is to use redis-cli again, but with the `--cluster-slave` option, like this:
+
+## 添加新节点并设置为副本
+
+可以通过两种方式来添加新副本。
+
+最简单的是使用 redis-cli 工具,并使用 `--cluster-slave` 选项,如下所示：
 
 ```
 redis-cli --cluster add-node 127.0.0.1:7006 127.0.0.1:7000 --cluster-slave
@@ -1157,6 +1163,12 @@ Note that the command line here is exactly like the one we used to add a new mas
 
 However you can specify exactly what master you want to target with your new replica with the following command line:
 
+可以看到,和添加 master 的命令行非常相似,因为我们没有指定副本的 master 服务。
+在这种情况下,redis-cli 会将新节点随机添加给具有副本较少的 master 服务。
+
+但是,可以使用以下命令来明确指定新副本的目标master：
+
+
 ```
 redis-cli --cluster add-node 127.0.0.1:7006 127.0.0.1:7000 --cluster-slave --cluster-master-id 3c3a0c74aae0b56170ccb03a76b60cfe7dc1912e
 ```
@@ -1165,13 +1177,23 @@ This way we assign the new replica to a specific master.
 
 A more manual way to add a replica to a specific master is to add the new node as an empty master, and then turn it into a replica using the [CLUSTER REPLICATE](https://redis.io/commands/cluster-replicate) command. This also works if the node was added as a replica but you want to move it as a replica of a different master.
 
-For example in order to add a replica for the node 127.0.0.1:7005 that is currently serving hash slots in the range 11423-16383, that has a Node ID 3c3a0c74aae0b56170ccb03a76b60cfe7dc1912e, all I need to do is to connect with the new node (already added as empty master) and send the command:
+For example in order to add a replica for the node `127.0.0.1:7005` that is currently serving hash slots in the range 11423-16383, that has a Node ID `3c3a0c74aae0b56170ccb03a76b60cfe7dc1912e`, all I need to do is to connect with the new node (already added as empty master) and send the command:
+
+通过这个命令,可以将新副本直接分配给某个特定的 master 服务。
+
+另一种方式, 是先将新节点添加为空的master,然后使用 [CLUSTER REPLICATE](https://redis.io/commands/cluster-replicate) 命令将其转换为副本。 当然, 这个命令也可以将副本节点指定为另一个 master 的副本节点。
+
+例如,想要为 `127.0.0.1:7005` 节点(哈希槽范围: 11423-16383)添加副本, master节点 ID 为 `3c3a0c74aae0b56170ccb03a76b60cfe7dc1912e`。
+需要做的就是连接到新节点, 并发送命令：
 
 ```
 redis 127.0.0.1:7006> cluster replicate 3c3a0c74aae0b56170ccb03a76b60cfe7dc1912e
 ```
 
 That's it. Now we have a new replica for this set of hash slots, and all the other nodes in the cluster already know (after a few seconds needed to update their config). We can verify with the following command:
+
+很简单对吧。 现在这组哈希槽就有了一个新副本，并且集群中的所有其他节点都已经感知(更新配置信息有几秒钟的延迟)。
+我们可以使用以下命令进行验证：
 
 ```
 $ redis-cli -p 7000 cluster nodes | grep slave | grep 3c3a0c74aae0b56170ccb03a76b60cfe7dc1912e
@@ -1181,6 +1203,7 @@ f093c80dde814da99c5cf72a7dd01590792b783b 127.0.0.1:7006 slave 3c3a0c74aae0b56170
 
 The node 3c3a0c... now has two replicas, running on ports 7002 (the existing one) and 7006 (the new one).
 
+`3c3a0c74aae0b56170ccb03a76b60cfe7dc1912e` 节点现在有两个副本，在端口 7002(已有节点)和 7006(新节点)上运行。
 
 
 ## Removing a node
