@@ -105,7 +105,7 @@ In order to make Docker compatible with Redis Cluster you need to use the **host
 
 目前 Redis Cluster 不支持 NAT 网络环境, 一般这种环境是将 IP 地址和 TCP 端口重新映射了。
 
-Docker 使用了一种技术, 名为“端口映射”(port mapping):  在 Docker 容器里运行的程序自己监听的端口号, 可以被Docker暴露并映射为宿主机的其他端口号。 这对于在同一服务器上同时运行多个使用相同端口的容器很有用。
+Docker 使用了一种技术, 名为“端口映射”(port mapping): 在 Docker 容器里运行的程序自己监听的端口号, 可以被Docker暴露并映射为宿主机的其他端口号。 这对于在同一服务器上同时运行多个使用相同端口的容器很有用。
 
 为了使 Docker 与 Redis Cluster 兼容, 您需要使用 Docker 的宿主机网络模式(host networking mode)。 请查阅 [Docker documentation](https://docs.docker.com/engine/userguide/networking/dockernetworks/) 中的 `--net=host` 选项以获取更多信息。
 
@@ -253,7 +253,7 @@ Z1 仍然能够写入 B, B 也会接受其写入。
 如果分裂在很短的时间内恢复, 集群将继续正常运行。
 但是, 如果分裂持续了较长时间, 让 B1 被人多的一方提升为主节点, 那么, 在此期间 Z1 发送给 B 的写入将会丢失。
 
-请注意, 这里有一个**最大时间窗口**, Z1 还能够将数据写入到 B:  如果分区的多数方经过足够的时间选择了一个副本作为主节点, 那么少数这一方的每个主节点都会停止接受写入请求。
+请注意, 这里有一个**最大时间窗口**, Z1 还能够将数据写入到 B: 如果分区的多数方经过足够的时间选择了一个副本作为主节点, 那么少数这一方的每个主节点都会停止接受写入请求。
 
 这个时间量是 Redis Cluster 中的一个非常重要的配置指令, 被称为 `node timeout`。
 
@@ -287,8 +287,8 @@ We are about to create an example cluster deployment. Before we continue, let's 
 - `cluster-allow-reads-when-down <yes/no>`: If this is set to no, as it is by default, a node in a Redis Cluster will stop serving all traffic when the cluster is marked as failed, either when a node can't reach a quorum of masters or when full coverage is not met. This prevents reading potentially inconsistent data from a node that is unaware of changes in the cluster. This option can be set to yes to allow reads from a node during the fail state, which is useful for applications that want to prioritize read availability but still want to prevent inconsistent writes. It can also be used for when using Redis Cluster with only one or two shards, as it allows the nodes to continue serving writes when a master fails but automatic failover is impossible.
 
 - `cluster-migration-barrier <count>`: master要保持连接的最小副本数, 以便另一个副本提升为 master, 不再被任何副本覆盖。 更多信息请参考后面的副本迁移部分。
-- `cluster-require-full-coverage <yes/no>`:  如果此选项设置的是默认值 yes, 假如未被任何副本节点覆盖的 Key space 达到一定百分比, 则集群将停止接受写入。 如果该选项设置为 no, 即使只能处理一部分 Key 的请求, 集群仍将提供查询服务。
-- `cluster-allow-reads-when-down <yes/no>`:  如果此选项设置的是默认值 no, 当集群标记为失败时, Redis 集群中的节点将停止服务所有流量, 当节点无法连接指定数量的主节点, 或未满足完全覆盖时。 这可以阻止客户端从不知道集群信息变更的节点读取到不一致的数据。 可以将此选项设置为 yes, 以允许客户端从处于故障状态期间的节点读取数据, 这对于希望优先考虑读取可用性, 但仍希望防止写入不一致的应用程序很有用。 当使用只有一个或两个分片的 Redis 集群时, 也可以使用它, 因为它允许在主节点失败但无法自动故障转移时, 继续提供写入服务。
+- `cluster-require-full-coverage <yes/no>`: 如果此选项设置的是默认值 yes, 假如未被任何副本节点覆盖的 Key space 达到一定百分比, 则集群将停止接受写入。 如果该选项设置为 no, 即使只能处理一部分 Key 的请求, 集群仍将提供查询服务。
+- `cluster-allow-reads-when-down <yes/no>`: 如果此选项设置的是默认值 no, 当集群标记为失败时, Redis 集群中的节点将停止服务所有流量, 当节点无法连接指定数量的主节点, 或未满足完全覆盖时。 这可以阻止客户端从不知道集群信息变更的节点读取到不一致的数据。 可以将此选项设置为 yes, 以允许客户端从处于故障状态期间的节点读取数据, 这对于希望优先考虑读取可用性, 但仍希望防止写入不一致的应用程序很有用。 当使用只有一个或两个分片的 Redis 集群时, 也可以使用它, 因为它允许在主节点失败但无法自动故障转移时, 继续提供写入服务。
 
 
 ## Creating and using a Redis Cluster
@@ -337,7 +337,7 @@ make
 
 ## 创建和使用 Redis 集群
 
-注意: 手工部署一套 Redis 集群, 对于了解运行原理来说是非常重要的。
+提示: 手工部署一套 Redis 集群, 对于了解运行原理来说是非常重要的。
 
 > 但如果只想尽快(ASAP; As Soon As Possible)启动并运行Redis 集群, 可以跳过本节和下一节, 直接转到 [使用 create-cluster 脚本快速创建Redis集群](#creating-a-redis-cluster-using-the-create-cluster-script)。
 
@@ -452,7 +452,7 @@ To create your cluster for Redis 5 with `redis-cli` simply type:
 第一个示例,是创建集群,将使用 Redis 5 中内置的 `redis-cli` 工具, 以及 Redis 3 和 4 中的 `redis-trib` 来展示。
 但后续的所有示例都只使用 `redis-cli`, 因为他们的语法还是很相似的, 碰到不懂的地方, 也可以通过 `redis-trib.rb help` 来展示帮助信息, 看看如何将一个命令改写为另一个旧语法的命令。
 
-> 重要提示:请注意,如果您愿意,可以对 Redis 4 集群服务, 使用 Redis 5 版本的客户端 `redis-cli` 链接, 而不会出现问题。
+> 重要提示: 如果愿意, 可以使用 Redis 5 版本的客户端 `redis-cli` 连接 Redis 4 集群服务, 而不会出现问题。
 
 要使用 `redis-cli` 为 Redis 5 创建集群,只需键入:
 
@@ -644,7 +644,7 @@ The redis-cli cluster support is very basic so it always uses the fact that Redi
 - `exit`
 - `quit`
 
-> 注意:如果使用脚本自动创建集群,Redis节点可能会监听不同的端口,默认情况下是从 30001 开始。
+> 提示:如果使用脚本自动创建集群,Redis节点可能会监听不同的端口,默认情况下是从 30001 开始。
 
 可以看到, redis-cli 对集群的支持非常简陋,直接基于 Redis 集群节点能够让客户端重定向到正确节点的事实。
 一个高性能的客户端应该做得更好一些,比如将哈希槽和节点地址间的映射关系缓存起来,直接使用与正确节点的连接,避免重定向。
@@ -836,7 +836,7 @@ All the slots will be covered as usual, but this time the master at 127.0.0.1:70
 Resharding can be performed automatically without the need to manually enter the parameters in an interactive way. This is possible using a command line like the following:
 
 重新分片可以自动执行,无需以手动交互的方式来输入参数。
-可以使用如下命令行：
+可以使用如下命令行:
 
 
 ```
@@ -923,12 +923,12 @@ In order to trigger the failover, the simplest thing we can do (that is also the
 We can identify a master and crash it with the following command:
 
 
-> 注意：在本次测试过程中,您应该在一个新标签页中,运行和前面示例中使用的 consistency 测试程序。
+> 提示: 在本次测试过程中,您应该在一个新标签页中,运行和前面示例中使用的 consistency 测试程序。
 
 要触发故障转移,有一种简单的办法: 就是把进程搞崩溃。 这也是分布式系统中经常发生的简单故障;
 在我们的例子中需要让1个 master 进程崩溃。
 
-我们可以通过以下命令来找出 master：
+我们可以通过以下命令来找出 master:
 
 ```
 $ redis-cli -p 7000 cluster nodes | grep master
@@ -972,7 +972,7 @@ We can now check what is the cluster setup after the failover (note that in the 
 我们没有说的是, 这种情况发生的概率非常小,因为 Redis 向客户端发送回复,以及复制到副本的命令大约是同时发送的, 因此丢失数据的时间窗口非常小。
 但是不容易触发并不代表不可能,所以这并没有改变Redis集群提供的一致性保证。
 
-我们现在可以检查故障转移后的集群设置, 注意验证之后又重新启动了崩溃的实例,以便它作为副本再次加入集群：
+我们现在可以检查故障转移后的集群设置, 注意验证之后又重新启动了崩溃的实例,以便它作为副本再次加入集群:
 
 ```
 $ redis-cli -p 7000 cluster nodes
@@ -991,7 +991,7 @@ The output of the [CLUSTER NODES](https://redis.io/commands/cluster-nodes) comma
 现在 master 运行在 7000、7001 和 7005 端口上。
 之前的 master,运行在 7002 端口上的 Redis 实例,现在变成了 7005 的副本。
 
-[CLUSTER NODES](https://redis.io/commands/cluster-nodes) 命令的输出可能看起来有点复杂,但实际上很容易理解,每一行数据由以下部分组成：
+[CLUSTER NODES](https://redis.io/commands/cluster-nodes) 命令的输出可能看起来有点复杂,但实际上很容易理解,每一行数据由以下部分组成:
 
 - Node ID
 - ip:port
@@ -1025,7 +1025,7 @@ Redis 集群支持使用 [CLUSTER FAILOVER](https://redis.io/commands/cluster-fa
 手动执行故障转移是特殊的处理方式,与实际发生 master 崩溃导致的故障转移相比更安全,因为执行过程中可以避免数据丢失。
 只有当Redis集群系统确定新 master 处理完以前的 master 发出的所有复制流之后,才会让客户端从原始master切换到新 master。
 
-在执行手动故障转移时, 可以在副本节点的日志中看到类似这样的内容：
+在执行手动故障转移时, 可以在副本节点的日志中看到类似这样的内容:
 
 ```
 # Manual failover user request accepted.
@@ -1080,7 +1080,7 @@ This is as simple as to start a new node in port 7006 (we already used from 7000
 
 现在已经有了 6 个节点, 这些端口号从 7000 到 7005;
 添加新节点就可以是简单地在端口 7006 上启动一个新的集群节点;
-除端口号外,配置和其他节点完全相同,如果你忘了,可以回顾之前我们手工启动集群节点的配置：
+除端口号外,配置和其他节点完全相同,如果你忘了,可以回顾之前我们手工启动集群节点的配置:
 
 - 在终端程序中创建一个新选项卡。
 - 进入我们的 `cluster-test` 目录。
@@ -1113,7 +1113,7 @@ Now we can connect to the new node to see if it really joined the cluster:
 在这步操作中 redis-cli 执行的操作很简单,它只是向节点发送了 [CLUSTER MEET](https://redis.io/commands/cluster-meet) 消息,这其实也可以通过手工完成.
 但是,redis-cli 还会在执行之前检查集群的状态,因此即使你了解内部的运行原理,但最好还是通过 redis-cli 来执行集群操作。
 
-接下来, 我们可以连接新节点,查看它是否真的加入了集群：
+接下来, 我们可以连接新节点,查看它是否真的加入了集群:
 
 
 ```
@@ -1134,7 +1134,7 @@ Note that since this node is already connected to the cluster it is already able
 
 Now it is possible to assign hash slots to this node using the resharding feature of `redis-cli`. It is basically useless to show this as we already did in a previous section, there is no difference, it is just a resharding having as a target the empty node.
 
-请注意,由于该节点连接到集群中,能够正确重定向客户端查询,并且已经变成了集群的一部分。 然而,与其他 master 相比,它有两个特点：
+请注意,由于该节点连接到集群中,能够正确重定向客户端查询,并且已经变成了集群的一部分。 然而,与其他 master 相比,它有两个特点:
 
 - 1. 没有数据,集群也没有给他分配哈希槽。
 - 2. 因为这是一个没有分配到任何槽位的新master节点,所以当其他 replica 想成为 master 时, 这个没有槽位的主节点不参与选举过程。
@@ -1153,7 +1153,7 @@ Adding a new Replica can be performed in two ways. The obvious one is to use red
 
 可以通过两种方式来添加新副本。
 
-最简单的是使用 redis-cli 工具,并使用 `--cluster-slave` 选项,如下所示：
+最简单的是使用 redis-cli 工具,并使用 `--cluster-slave` 选项,如下所示:
 
 ```
 redis-cli --cluster add-node 127.0.0.1:7006 127.0.0.1:7000 --cluster-slave
@@ -1166,7 +1166,7 @@ However you can specify exactly what master you want to target with your new rep
 可以看到,和添加 master 的命令行非常相似,因为我们没有指定副本的 master 服务。
 在这种情况下,redis-cli 会将新节点随机添加给具有副本较少的 master 服务。
 
-但是,可以使用以下命令来明确指定新副本的目标master：
+但是,可以使用以下命令来明确指定新副本的目标master:
 
 
 ```
@@ -1184,7 +1184,7 @@ For example in order to add a replica for the node `127.0.0.1:7005` that is curr
 另一种方式, 是先将新节点添加为空的master,然后使用 [CLUSTER REPLICATE](https://redis.io/commands/cluster-replicate) 命令将其转换为副本。 当然, 这个命令也可以将副本节点指定为另一个 master 的副本节点。
 
 例如,想要为 `127.0.0.1:7005` 节点(哈希槽范围: 11423-16383)添加副本, master节点 ID 为 `3c3a0c74aae0b56170ccb03a76b60cfe7dc1912e`。
-需要做的就是连接到新节点, 并发送命令：
+需要做的就是连接到新节点, 并发送命令:
 
 ```
 redis 127.0.0.1:7006> cluster replicate 3c3a0c74aae0b56170ccb03a76b60cfe7dc1912e
@@ -1193,7 +1193,7 @@ redis 127.0.0.1:7006> cluster replicate 3c3a0c74aae0b56170ccb03a76b60cfe7dc1912e
 That's it. Now we have a new replica for this set of hash slots, and all the other nodes in the cluster already know (after a few seconds needed to update their config). We can verify with the following command:
 
 很简单对吧。 现在这组哈希槽就有了一个新副本，并且集群中的所有其他节点都已经感知(更新配置信息有几秒钟的延迟)。
-我们可以使用以下命令进行验证：
+我们可以使用以下命令进行验证:
 
 ```
 $ redis-cli -p 7000 cluster nodes | grep slave | grep 3c3a0c74aae0b56170ccb03a76b60cfe7dc1912e
@@ -1212,7 +1212,7 @@ To remove a replica node just use the `del-node` command of redis-cli:
 
 ## 删除Redis集群节点
 
-如果要删除副本节点，只需使用 redis-cli 发送 `del-node` 命令即可：
+如果要删除副本节点，只需使用 redis-cli 发送 `del-node` 命令即可:
 
 ```
 redis-cli --cluster del-node 127.0.0.1:7000 <node-id>
@@ -1240,6 +1240,10 @@ An alternative to remove a master node is to perform a manual failover of it ove
 
 In Redis Cluster it is possible to reconfigure a replica to replicate with a different master at any time just using the following command:
 
+## 副本迁移功能
+
+在 Redis 集群中，可以随时使用以下命令将副本节点重新配置到不同的 master 进行复制:
+
 ```
 CLUSTER REPLICATE <master-node-id>
 ```
@@ -1248,13 +1252,33 @@ However there is a special scenario where you want replicas to move from one mas
 
 Note: you can read the details of replicas migration in the [Redis Cluster Specification](./02-cluster-spec.md#cluster-spec), here we'll only provide some information about the general idea and what you should do in order to benefit from it.
 
+但是，有一种特殊情况，我们希望副本节点能自动从一个 master 切换到另一个 master， 而无需系统管理员的干预。
+副本重新进行自动配置的过程称为 *副本迁移(replicas migration)*, 能够提高 Redis 集群的可靠性。
+
+提示: 副本迁移的详细信息可以在 [Redis Cluster Specification](./02-cluster-spec.md#cluster-spec) 中查看，这里仅提供一些大体思路, 以及如何利用这个特性。
+
 The reason why you may want to let your cluster replicas to move from one master to another under certain condition, is that usually the Redis Cluster is as resistant to failures as the number of replicas attached to a given master.
+
+在特定条件下, 让集群副本从一个主节点切换为另一个主节点的原因是, Redis 集群对故障的抵抗能力, 通常与连接到 master 节点的副本数量成正比。
 
 For example a cluster where every master has a single replica can't continue operations if the master and its replica fail at the same time, simply because there is no other instance to have a copy of the hash slots the master was serving. However while net-splits are likely to isolate a number of nodes at the same time, many other kind of failures, like hardware or software failures local to a single node, are a very notable class of failures that are unlikely to happen at the same time, so it is possible that in your cluster where every master has a replica, the replica is killed at 4am, and the master is killed at 6am. This still will result in a cluster that can no longer operate.
 
+比如 master 只有单个副本, 如果 master 和副本同时发生故障，因为没有其他实例拥有 master 正在服务的哈希槽的副本, 会导致集群无法继续运行。
+网络分裂可能会同时隔离多个节点，但很多其他类型的故障，比如单个节点的宿主机硬件故障或软件故障，虽然不太可能在同一时间发生。
+假设在Redis集群中，每个 master 都有一个副本，可能在凌晨 4 点副本被杀死，而在早上 6 点 master 被杀死。这就会导致集群无法再运行。
+
 To improve reliability of the system we have the option to add additional replicas to every master, but this is expensive. Replica migration allows to add more replicas to just a few masters. So you have 10 masters with 1 replica each, for a total of 20 instances. However you add, for example, 3 instances more as replicas of some of your masters, so certain masters will have more than a single replica.
 
+为了提高系统的可靠性，我们可以选择向每个 master 添加额外的副本，虽然这有一些成本和代价。
+副本迁移允许将很多副本添加到几个 master 。
+如果有 10 个master，每个master有 1 个副本，总共有 20 个实例。
+但如果我们再添加 3 个实例作为某些master的副本，那么某些master就会拥有多个副本。
+
 With replicas migration what happens is that if a master is left without replicas, a replica from a master that has multiple replicas will migrate to the *orphaned* master. So after your replica goes down at 4am as in the example we made above, another replica will take its place, and when the master will fail as well at 5am, there is still a replica that can be elected so that the cluster can continue to operate.
+
+有副本迁移功能的加持，如果某个 master 没有副本，则具有多个副本的 master 的某个副本, 会自动迁移到 *孤立的* master。
+所以在前面举例的场景中，副本节点在凌晨 4 点出现故障后，另一个副本将会自动取代它，
+当 master 在凌晨 5 点也失败时，仍然可以选举一个副本，以便集群可以继续操作。
 
 So what you should know about replicas migration in short?
 
@@ -1262,11 +1286,19 @@ So what you should know about replicas migration in short?
 - To benefit from replica migration you have just to add a few more replicas to a single master in your cluster, it does not matter what master.
 - There is a configuration parameter that controls the replica migration feature that is called `cluster-migration-barrier`: you can read more about it in the example `redis.conf` file provided with Redis Cluster.
 
+那么简单来说, 副本迁移有那些功能特性需要了解呢？
 
+- 1. 在某个时间点, 集群将尝试从副本最多的 master 迁移一个副本。
+- 2. 要利用好副本迁移，只需向集群中的单个master添加多个副本即可，无论是哪个master。
+- 3. 有一个配置参数 `cluster-migration-barrier` 可以用来控制副本迁移功能, 在 Redis Cluster 提供的示例 `redis.conf` 文件中可以查看更多信息。
 
 ## Upgrading nodes in a Redis Cluster
 
 Upgrading replica nodes is easy since you just need to stop the node and restart it with an updated version of Redis. If there are clients scaling reads using replica nodes, they should be able to reconnect to a different replica if a given one is not available.
+
+## 升级 Redis 集群中的节点
+
+升级副本节点很容易，因为您只需要停止节点并使用更新版本的 Redis 重新启动它。 如果有客户端使用副本节点扩展读取，如果给定的副本不可用，它们应该能够重新连接到不同的副本。
 
 Upgrading masters is a bit more complex, and the suggested procedure is:
 
@@ -1277,21 +1309,44 @@ Upgrading masters is a bit more complex, and the suggested procedure is:
 
 Following this procedure you should upgrade one node after the other until all the nodes are upgraded.
 
+升级 master 有点复杂，建议的过程是:
+
+1. 使用 [CLUSTER FAILOVER](https://redis.io/commands/cluster-failover) 触发 master 手动故障转移到其副本之一。 （请参阅本文档中的 [手动故障转移](#manual-failover) 部分。）
+2.等待master变成replica。
+3. 最后像升级副本一样升级节点。
+4. 如果您希望主节点成为您刚刚升级的节点，请触发新的手动故障转移，以便将升级后的节点恢复为主节点。
+
+按照此过程，您应该一个接一个地升级一个节点，直到所有节点都升级完毕。
 
 
 ## Migrating to Redis Cluster
 
+## 迁移到 Redis 集群
+
 Users willing to migrate to Redis Cluster may have just a single master, or may already using a preexisting sharding setup, where keys are split among N nodes, using some in-house algorithm or a sharding algorithm implemented by their client library or Redis proxy.
 
+愿意迁移到 Redis 集群的用户可能只有一个主节点，或者可能已经使用预先存在的分片设置，其中密钥在 N 个节点之间拆分，使用一些内部算法或由他们的客户端库或 Redis 代理实现的分片算法。
+
 In both cases it is possible to migrate to Redis Cluster easily, however what is the most important detail is if multiple-keys operations are used by the application, and how. There are three different cases:
+
 
 1. Multiple keys operations, or transactions, or Lua scripts involving multiple keys, are not used. Keys are accessed independently (even if accessed via transactions or Lua scripts grouping multiple commands, about the same key, together).
 2. Multiple keys operations, or transactions, or Lua scripts involving multiple keys are used but only with keys having the same `hash tag`, which means that the keys used together all have a `{...}` sub-string that happens to be identical. For example the following multiple keys operation is defined in the context of the same hash tag: `SUNION {user:1000}.foo {user:1000}.bar`.
 3. Multiple keys operations, or transactions, or Lua scripts involving multiple keys are used with key names not having an explicit, or the same, hash tag.
 
+在这两种情况下，都可以轻松迁移到 Redis 集群，但最重要的细节是应用程序是否使用了多键操作，以及如何使用。 有三种不同的情况:
+
+1. 不使用多键操作，或事务，或涉及多个键的 Lua 脚本。键是独立访问的（即使通过事务或 Lua 脚本将多个命令组合在一起，大约相同的键，一起访问）。
+2. 使用多个键操作，或事务，或涉及多个键的 Lua 脚本，但仅使用具有相同 `hash tag` 的键，这意味着一起使用的键都有一个 `{...}` 子字符串恰好是相同的。例如，在同一个哈希标签的上下文中定义了以下多键操作: `SUNION {user:1000}.foo {user:1000}.bar`。
+3. 涉及多个键的多键操作、事务或 Lua 脚本与不具有显式或相同哈希标记的键名一起使用。
+
 The third case is not handled by Redis Cluster: the application requires to be modified in order to don't use multi keys operations or only use them in the context of the same hash tag.
 
 Case 1 and 2 are covered, so we'll focus on those two cases, that are handled in the same way, so no distinction will be made in the documentation.
+
+第三种情况 Redis Cluster 不处理: 需要修改应用程序才能不使用多键操作或仅在相同哈希标签的上下文中使用它们。
+
+案例 1 和 2 已涵盖，因此我们将重点关注这两种情况，它们的处理方式相同，因此文档中将不作区分。
 
 Assuming you have your preexisting data set split into N masters, where N=1 if you have no preexisting sharding, the following steps are needed in order to migrate your data set to Redis Cluster:
 
@@ -1305,6 +1360,18 @@ Assuming you have your preexisting data set split into N masters, where N=1 if y
 8. Use `redis-cli --cluster check` at the end to make sure your cluster is ok.
 9. Restart your clients modified to use a Redis Cluster aware client library.
 
+假设您将预先存在的数据集拆分为 N 个主节点，其中 N=1 如果您没有预先存在的分片，则需要执行以下步骤才能将数据集迁移到 Redis 集群:
+
+1. 阻止你的客户。目前无法自动实时迁移到 Redis 集群。您可以在应用程序/环境的上下文中编排实时迁移。
+2. 使用 [BGREWRITEAOF](https://redis.io/commands/bgrewriteaof) 命令为所有 N 个 master 生成一个 append only 文件，并等待 AOF 文件完全生成。
+3. 将您的 AOF 文件从 aof-1 保存到 aof-N 某处。此时，您可以根据需要停止旧实例（这很有用，因为在非虚拟化部署中，您经常需要重用相同的计算机）。
+4、创建一个由N个master和0个replicas组成的Redis Cluster。稍后您将添加副本。确保所有节点都使用仅附加文件进行持久化。
+5. 停止所有集群节点，用您预先存在的仅附加文件替换它们的仅附加文件，第一个节点为 aof-1，第二个节点为 aof-2，直到 aof-N。
+6. 使用新的 AOF 文件重新启动您的 Redis 集群节点。他们会抱怨根据他们的配置，有些键不应该存在。
+7. 使用 `redis-cli --cluster fix` 命令修复集群，以便根据每个节点是否权威的哈希槽迁移密钥。
+8. 最后使用 `redis-cli --cluster check` 来确保你的集群是好的。
+9. 重新启动修改为使用 Redis Cluster 感知客户端库的客户端。
+
 There is an alternative way to import data from external instances to a Redis Cluster, which is to use the `redis-cli --cluster import` command.
 
 The command moves all the keys of a running instance (deleting the keys from the source instance) to the specified pre-existing Redis Cluster. However note that if you use a Redis 2.8 instance as source instance the operation may be slow since 2.8 does not implement migrate connection caching, so you may want to restart your source instance with a Redis 3.x version before to perform such operation.
@@ -1312,6 +1379,11 @@ The command moves all the keys of a running instance (deleting the keys from the
 **A note about the word slave used in this page**: Starting with Redis 5, if not for backward compatibility, the Redis project no longer uses the word slave. Unfortunately in this command the word slave is part of the protocol, so we'll be able to remove such occurrences only when this API will be naturally deprecated.
 
 
+将数据从外部实例导入 Redis 集群还有另一种方法，即使用 `redis-cli --cluster import` 命令。
+
+该命令将正在运行的实例的所有键（从源实例中删除键）移动到指定的预先存在的 Redis 集群。 但是请注意，如果您使用 Redis 2.8 实例作为源实例，则操作可能会很慢，因为 2.8 没有实现迁移连接缓存，因此您可能需要在执行此类操作之前使用 Redis 3.x 版本重新启动源实例。
+
+**关于本页使用的slave这个词的说明**: 从Redis 5开始，如果不是为了向后兼容，Redis项目不再使用slave这个词。 不幸的是，在这个命令中，slave 这个词是协议的一部分，所以只有当这个 API 被自然弃用时，我们才能删除此类事件。
 
 
 ## 相关链接
