@@ -107,7 +107,7 @@ In order to make Docker compatible with Redis Cluster you need to use the **host
 
 Docker 使用了一种技术, 名为“端口映射”(port mapping):  在 Docker 容器里运行的程序自己监听的端口号, 可以被Docker暴露并映射为宿主机的其他端口号。 这对于在同一服务器上同时运行多个使用相同端口的容器很有用。
 
-为了使 Docker 与 Redis Cluster 兼容, 您需要使用 Docker 的主机网络模式(host networking mode)。 请查阅 [Docker documentation](https://docs.docker.com/engine/userguide/networking/dockernetworks/) 中的 `--net=host` 选项以获取更多信息。
+为了使 Docker 与 Redis Cluster 兼容, 您需要使用 Docker 的宿主机网络模式(host networking mode)。 请查阅 [Docker documentation](https://docs.docker.com/engine/userguide/networking/dockernetworks/) 中的 `--net=host` 选项以获取更多信息。
 
 
 
@@ -1210,6 +1210,10 @@ The node 3c3a0c... now has two replicas, running on ports 7002 (the existing one
 
 To remove a replica node just use the `del-node` command of redis-cli:
 
+## 删除Redis集群节点
+
+如果要删除副本节点，只需使用 redis-cli 发送 `del-node` 命令即可：
+
 ```
 redis-cli --cluster del-node 127.0.0.1:7000 <node-id>
 ```
@@ -1220,6 +1224,16 @@ You can remove a master node in the same way as well, **however in order to remo
 
 An alternative to remove a master node is to perform a manual failover of it over one of its replicas and remove the node after it turned into a replica of the new master. Obviously this does not help when you want to reduce the actual number of masters in your cluster, in that case, a resharding is needed.
 
+
+第一个参数是集群中任意一个节点的IP和端口号，
+第二个参数是要删除的节点 ID。
+
+也可以用相同的方式删除 master 节点，**但是要删除 master 节点，要求其没有对应的哈希槽**。
+如果要删除的 master 节点不为空，则需要先将数据重新分片到其他 master 节点。
+
+删除 master 节点的另一种方法, 是在他的某个副本上对其执行手动故障转移。
+并在旧 master 变成新master的副本后, 删除旧节点。
+显然，这种方式并不能减少集群中的 master 数量，想要降低master数量需要执行重新分片。
 
 
 ## Replicas migration
