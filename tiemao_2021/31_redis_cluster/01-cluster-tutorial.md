@@ -1242,7 +1242,7 @@ In Redis Cluster it is possible to reconfigure a replica to replicate with a dif
 
 ## 副本迁移功能
 
-在 Redis 集群中，可以随时使用以下命令将副本节点重新配置到不同的 master 进行复制:
+在 Redis 集群中，可以随时使用以下命令将副本节点重新配置到不同的 master 以进行复制:
 
 ```
 CLUSTER REPLICATE <master-node-id>
@@ -1294,11 +1294,12 @@ So what you should know about replicas migration in short?
 
 ## Upgrading nodes in a Redis Cluster
 
-Upgrading replica nodes is easy since you just need to stop the node and restart it with an updated version of Redis. If there are clients scaling reads using replica nodes, they should be able to reconnect to a different replica if a given one is not available.
-
 ## 升级 Redis 集群中的节点
 
-升级副本节点很容易，因为您只需要停止节点并使用更新版本的 Redis 重新启动它。 如果有客户端使用副本节点扩展读取，如果给定的副本不可用，它们应该能够重新连接到不同的副本。
+Upgrading replica nodes is easy since you just need to stop the node and restart it with an updated version of Redis. If there are clients scaling reads using replica nodes, they should be able to reconnect to a different replica if a given one is not available.
+
+升级副本节点很容易，只需要停止节点, 使用更高版本的 Redis 并重新启动就可以了。
+如果有客户端连接了副本节点读取数据，如果给定的副本不可用，它们应该可以重连到其他副本。
 
 Upgrading masters is a bit more complex, and the suggested procedure is:
 
@@ -1309,14 +1310,14 @@ Upgrading masters is a bit more complex, and the suggested procedure is:
 
 Following this procedure you should upgrade one node after the other until all the nodes are upgraded.
 
-升级 master 有点复杂，建议的过程是:
+升级 master 则稍微有一点复杂，建议的步骤为:
 
-1. 使用 [CLUSTER FAILOVER](https://redis.io/commands/cluster-failover) 触发 master 手动故障转移到其副本之一。 （请参阅本文档中的 [手动故障转移](#manual-failover) 部分。）
-2.等待master变成replica。
-3. 最后像升级副本一样升级节点。
-4. 如果您希望主节点成为您刚刚升级的节点，请触发新的手动故障转移，以便将升级后的节点恢复为主节点。
+1. 使用 [CLUSTER FAILOVER](https://redis.io/commands/cluster-failover) 命令触发手动故障转移, 选举某个副本为新的master。 请参阅前文的 [Manual failover](#manual-failover) 小节。
+2. 等待旧master变成副本节点(replica)。
+3. 最后像升级副本一样升级该节点。
+4. 如果希望主节点还是我们刚刚升级的节点，则再次触发手动故障转移，以便将升级后的节点恢复为主节点。
 
-按照此过程，您应该一个接一个地升级一个节点，直到所有节点都升级完毕。
+按照这个步骤，我们可以依次升级每一个 master 节点，直到所有节点都升级完毕。
 
 
 ## Migrating to Redis Cluster
@@ -1325,7 +1326,7 @@ Following this procedure you should upgrade one node after the other until all t
 
 Users willing to migrate to Redis Cluster may have just a single master, or may already using a preexisting sharding setup, where keys are split among N nodes, using some in-house algorithm or a sharding algorithm implemented by their client library or Redis proxy.
 
-愿意迁移到 Redis 集群的用户可能只有一个主节点，或者可能已经使用预先存在的分片设置，其中密钥在 N 个节点之间拆分，使用一些内部算法或由他们的客户端库或 Redis 代理实现的分片算法。
+想要迁移到 Redis 集群的用户, 可能只有一个 master 节点，或者使用了自定义的分片算法，通过算法将其中的 key 拆分到 N 个节点, 具体的执行则由客户端库或者 Redis 代理来实现。
 
 In both cases it is possible to migrate to Redis Cluster easily, however what is the most important detail is if multiple-keys operations are used by the application, and how. There are three different cases:
 
@@ -1334,19 +1335,19 @@ In both cases it is possible to migrate to Redis Cluster easily, however what is
 2. Multiple keys operations, or transactions, or Lua scripts involving multiple keys are used but only with keys having the same `hash tag`, which means that the keys used together all have a `{...}` sub-string that happens to be identical. For example the following multiple keys operation is defined in the context of the same hash tag: `SUNION {user:1000}.foo {user:1000}.bar`.
 3. Multiple keys operations, or transactions, or Lua scripts involving multiple keys are used with key names not having an explicit, or the same, hash tag.
 
-在这两种情况下，都可以轻松迁移到 Redis 集群，但最重要的细节是应用程序是否使用了多键操作，以及如何使用。 有三种不同的情况:
+这两种情况下，用户都可以轻松地迁移到 Redis 集群，但其中最重要的问题在于: 应用程序是否使用了多个键的操作(Multiple keys operations)，以及使用的方式。可分为三种情况:
 
-1. 不使用多键操作，或事务，或涉及多个键的 Lua 脚本。键是独立访问的（即使通过事务或 Lua 脚本将多个命令组合在一起，大约相同的键，一起访问）。
-2. 使用多个键操作，或事务，或涉及多个键的 Lua 脚本，但仅使用具有相同 `hash tag` 的键，这意味着一起使用的键都有一个 `{...}` 子字符串恰好是相同的。例如，在同一个哈希标签的上下文中定义了以下多键操作: `SUNION {user:1000}.foo {user:1000}.bar`。
-3. 涉及多个键的多键操作、事务或 Lua 脚本与不具有显式或相同哈希标记的键名一起使用。
+1. 没有用到多个key的操作，也没有使用事务，或者涉及到多个key的 Lua 脚本。每个 key 是独立访问的（或者是通过事务与Lua脚本将多个命令组合在了一起，但也只涉及到同一个key，只是一次性发送请求）。
+2. 使用了多个key的操作，事务，或者是涉及多个key的 Lua 脚本，但这些key都具有相同 `hash tag`，也就是一起使用的这些key都指定了相同的 `{...}` 子串。例如，在同一个哈希标签的上下文中定义了以下多key操作: `SUNION {user:1000}.foo {user:1000}.bar`。
+3. 涉及多个key的操作、事务或 Lua 脚本, 并且没有明确指定相同的key名称, 或者哈希标签。
 
 The third case is not handled by Redis Cluster: the application requires to be modified in order to don't use multi keys operations or only use them in the context of the same hash tag.
 
 Case 1 and 2 are covered, so we'll focus on those two cases, that are handled in the same way, so no distinction will be made in the documentation.
 
-第三种情况 Redis Cluster 不处理: 需要修改应用程序才能不使用多键操作或仅在相同哈希标签的上下文中使用它们。
+第三种情况 Redis Cluster 处理不了: 需要修改程序代码, 将多key操作去除, 或者仅在相同哈希标签的上下文中使用。
 
-案例 1 和 2 已涵盖，因此我们将重点关注这两种情况，它们的处理方式相同，因此文档中将不作区分。
+第一种和第二种情况不需要修改代码，因此我们重点关注这两种情况，它们的处理方式是一样的，因此本文将不作区分。
 
 Assuming you have your preexisting data set split into N masters, where N=1 if you have no preexisting sharding, the following steps are needed in order to migrate your data set to Redis Cluster:
 
