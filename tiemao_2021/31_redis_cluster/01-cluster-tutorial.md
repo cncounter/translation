@@ -1339,7 +1339,7 @@ In both cases it is possible to migrate to Redis Cluster easily, however what is
 
 1. 没有用到多个key的操作，也没有使用事务，或者涉及到多个key的 Lua 脚本。每个 key 是独立访问的（或者是通过事务与Lua脚本将多个命令组合在了一起，但也只涉及到同一个key，只是一次性发送请求）。
 2. 使用了多个key的操作，事务，或者是涉及多个key的 Lua 脚本，但这些key都具有相同 `hash tag`，也就是一起使用的这些key都指定了相同的 `{...}` 子串。例如，在同一个哈希标签的上下文中定义了以下多key操作: `SUNION {user:1000}.foo {user:1000}.bar`。
-3. 涉及多个key的操作、事务或 Lua 脚本, 并且没有明确指定相同的key名称, 或者哈希标签。
+3. 涉及多个key的操作、事务或 Lua 脚本, 并且没有明确指定相同的key名称, 也没有指定相同的哈希标签。
 
 The third case is not handled by Redis Cluster: the application requires to be modified in order to don't use multi keys operations or only use them in the context of the same hash tag.
 
@@ -1347,7 +1347,7 @@ Case 1 and 2 are covered, so we'll focus on those two cases, that are handled in
 
 第三种情况 Redis Cluster 处理不了: 需要修改程序代码, 将多key操作去除, 或者仅在相同哈希标签的上下文中使用。
 
-第一种和第二种情况不需要修改代码，因此我们重点关注这两种情况，它们的处理方式是一样的，因此本文将不作区分。
+第一种和第二种情况不需要修改代码，因此我们重点关注前两种情况，它们的处理方式是一样的，下文不作区分。
 
 Assuming you have your preexisting data set split into N masters, where N=1 if you have no preexisting sharding, the following steps are needed in order to migrate your data set to Redis Cluster:
 
@@ -1361,17 +1361,17 @@ Assuming you have your preexisting data set split into N masters, where N=1 if y
 8. Use `redis-cli --cluster check` at the end to make sure your cluster is ok.
 9. Restart your clients modified to use a Redis Cluster aware client library.
 
-假设您将预先存在的数据集拆分为 N 个主节点，其中 N=1 如果您没有预先存在的分片，则需要执行以下步骤才能将数据集迁移到 Redis 集群:
+假设系统之前将数据集拆分到 N 个 master 节点，如果没有分片则 N=1, 需要执行以下步骤才能将数据迁移到 Redis 集群:
 
-1. 阻止你的客户。目前无法自动实时迁移到 Redis 集群。您可以在应用程序/环境的上下文中编排实时迁移。
-2. 使用 [BGREWRITEAOF](https://redis.io/commands/bgrewriteaof) 命令为所有 N 个 master 生成一个 append only 文件，并等待 AOF 文件完全生成。
-3. 将您的 AOF 文件从 aof-1 保存到 aof-N 某处。此时，您可以根据需要停止旧实例（这很有用，因为在非虚拟化部署中，您经常需要重用相同的计算机）。
-4、创建一个由N个master和0个replicas组成的Redis Cluster。稍后您将添加副本。确保所有节点都使用仅附加文件进行持久化。
-5. 停止所有集群节点，用您预先存在的仅附加文件替换它们的仅附加文件，第一个节点为 aof-1，第二个节点为 aof-2，直到 aof-N。
-6. 使用新的 AOF 文件重新启动您的 Redis 集群节点。他们会抱怨根据他们的配置，有些键不应该存在。
-7. 使用 `redis-cli --cluster fix` 命令修复集群，以便根据每个节点是否权威的哈希槽迁移密钥。
-8. 最后使用 `redis-cli --cluster check` 来确保你的集群是好的。
-9. 重新启动修改为使用 Redis Cluster 感知客户端库的客户端。
+1. 停止客户端应用。 目前还无法实现实时自动迁移到 Redis 集群。 您可以在应用程序上下文/环境中编排实时迁移。
+2. 对这 N 个 master 使用 [BGREWRITEAOF](https://redis.io/commands/bgrewriteaof) 命令, 生成对应的 append only 文件，并等待 AOF 文件完全生成。
+3. 将 aof-1 到 aof-N 等 AOF 文件保存到某个地方。 此时，可以根据需要停止旧实例（这很有用，因为在非虚拟化部署中，经常需要重用同一台机器）。
+4. 创建由N个master和0个replica组成的 Redis Cluster。 稍后才添加副本。 确保所有节点都使用 append only 文件进行持久化。
+5. 停止所有集群节点， 用预先导出的  append only 文件替换这些集群节点的  append only 文件, 比如第一个节点为 aof-1，第二个节点为 aof-2，直到 aof-N。
+6. 配置上新的 AOF 文件之后, 重启的 Redis 集群节点。 他们会抱怨说根据配置，有些键不应该存在他这里。
+7. 使用 `redis-cli --cluster fix` 命令修复集群，以便根据每个节点匹配的哈希槽来迁移相应的key。
+8. 最后使用 `redis-cli --cluster check` 来检查集群状态, 确保正常。
+9. 修改客户端系统的配置为使用 Redis Cluster, 并重启。
 
 There is an alternative way to import data from external instances to a Redis Cluster, which is to use the `redis-cli --cluster import` command.
 
@@ -1382,9 +1382,10 @@ The command moves all the keys of a running instance (deleting the keys from the
 
 将数据从外部实例导入 Redis 集群还有另一种方法，即使用 `redis-cli --cluster import` 命令。
 
-该命令将正在运行的实例的所有键（从源实例中删除键）移动到指定的预先存在的 Redis 集群。 但是请注意，如果您使用 Redis 2.8 实例作为源实例，则操作可能会很慢，因为 2.8 没有实现迁移连接缓存，因此您可能需要在执行此类操作之前使用 Redis 3.x 版本重新启动源实例。
+该命令将某个Redis实例中的所有Key移动到指定的 Redis 集群中（移动的意思是会从源实例中删除Key）。
+但是请注意，如果您使用 Redis 2.8 实例作为源，则操作速度可能会非常慢，因为 2.8 没有实现迁移连接缓存，因此可能需要在执行此类操作前, 先将源实例升级到 Redis 3.x 版本并重新启动。
 
-**关于本页使用的slave这个词的说明**: 从Redis 5开始，如果不是为了向后兼容，Redis项目不再使用slave这个词。 不幸的是，在这个命令中，slave 这个词是协议的一部分，所以只有当这个 API 被自然弃用时，我们才能删除此类事件。
+> **关于本文中出现词汇 `slave` 的说明**: 从Redis 5开始，如果不是为了向后兼容，Redis项目不再使用slave这个词。 不幸的是，在这个命令中，slave 这个词是协议的一部分，所以只有当这个 API 被完全弃用时，我们才能删除这个敏感词。
 
 
 ## 相关链接
