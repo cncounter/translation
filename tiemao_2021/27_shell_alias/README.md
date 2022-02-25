@@ -76,6 +76,20 @@ Vim快捷键:
 ```
 
 
+# 系统工具安装
+
+```shell
+# 安装域名bind查询工具
+yum -y install bind-utils
+
+# 安装网络监控检测工具
+yum -y install net-tools
+
+# 安装系统状态监控工具
+yum -y install sysstat
+
+```
+
 
 # dns
 
