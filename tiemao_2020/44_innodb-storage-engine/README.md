@@ -13,8 +13,8 @@
 - [14.5 InnoDB在内存中的数据结构](14.5_innodb-in-memory-structures.md)【粗翻】
 - [14.6 InnoDB在磁盘上的存储结构](14.6_innodb-on-disk-structures.md)【粗翻】
 - [14.7 InnoDB的锁和事务模型](14.7_innodb-locking-transaction-model.md)【校对完成】
-- [14.8 InnoDB Configuration]()
-- [14.9 InnoDB Table and Page Compression]()
+- [14.8 InnoDB Configuration](14.8_innodb-configuration.md)
+- [14.9 InnoDB Table and Page Compression](14.9_innodb-compression.md)
 - [14.10 InnoDB File-Format Management]()
 - [14.11 InnoDB Row Formats]()
 - [14.12 InnoDB Disk I/O and File Space Management]()
@@ -28,8 +28,8 @@
 - [14.20 InnoDB and MySQL Replication]()
 - [14.21 InnoDB memcached Plugin]()
 - [14.22 InnoDB Troubleshooting]()
-- [14.23 一些InnoDB的最大值限制](14.23_innodb-limits.md)【粗翻】
-- [14.24 InnoDB Restrictions and Limitations]()
+- [14.23 InnoDB的极限限制](14.23_innodb-limits.md)【粗翻】
+- [14.24 InnoDB Restrictions and Limitations](14.24_innodb-restrictions-limitations.md)
 
 
 ##### 部分技巧
