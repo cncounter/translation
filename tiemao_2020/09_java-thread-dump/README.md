@@ -280,6 +280,16 @@ As always, the full source code of the example is available [over on GitHub](htt
 
 完整的示例代码请参考 [GitHub仓库](https://github.com/eugenp/tutorials/tree/master/core-java-modules/core-java-perf) 。
 
+## 6. 附录: 线程状态
+
+ThreadDump 输出的线程状态包括:
+
+- `RUNNABLE` : 可正常调度执行
+- `WAITING` : 等待锁资源, 比如 `Unsafe.park()`, `Object.wait()` 等。
+- `TIMED_WAITING` : 限时等待锁资源, 比如 `Unsafe.park()`, `Object.wait()` 等。
+- ...
+
+
 原文链接:
 
 > <https://www.baeldung.com/java-thread-dump>
