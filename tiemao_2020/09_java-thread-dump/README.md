@@ -280,16 +280,141 @@ As always, the full source code of the example is available [over on GitHub](htt
 
 完整的示例代码请参考 [GitHub仓库](https://github.com/eugenp/tutorials/tree/master/core-java-modules/core-java-perf) 。
 
-## 6. 附录: 线程状态
+## 6. 附录: 线程状态及示例代码
 
-ThreadDump 输出的线程状态包括:
+Thread 状态可参考 [`Thread.State`](https://docs.oracle.com/javase/8/docs/api/java/lang/Thread.State.html), 包括:
 
-- `RUNNABLE` : 可正常调度执行
+- `NEW`: 未启动; 比如还没执行(完)  start 方法;
+- `RUNNABLE` : 可运行状态; 这是JVM的视角, 具体是否正在使用CPU则看操作系统调度;
+- `BLOCKED` : 阻塞状态; 比如进入同步方法/同步块, 等待锁资源;
 - `WAITING` : 等待锁资源, 比如 `Unsafe.park()`, `Object.wait()` 等。
 - `TIMED_WAITING` : 限时等待锁资源, 比如 `Unsafe.park()`, `Object.wait()` 等。
-- ...
+- `TERMINATED`: 已终结; 线程的任务已执行完了。
+
+测试代码:
+
+```java
+
+import java.util.Objects;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
+// 简单模拟线程的各种状态
+public class ThreadStateTest implements Runnable {
+    public final Lock lock = new ReentrantLock(true);
+    public final CountDownLatch beforeMonitorLatch = new CountDownLatch(1);
+    public final CountDownLatch beforeLockLatch = new CountDownLatch(1);
+    public final CountDownLatch toSleepLatch = new CountDownLatch(1);
+
+    public static void main(String[] args) throws Exception {
+        // Runnable task
+        ThreadStateTest task = new ThreadStateTest();
+        // 新创建线程对象
+        Thread thread = new Thread(task);
+        // 1. 线程未开始; NEW 状态;
+        System.out.println("1. before start: thread.getState(): " + thread.getState());
+        assertEquals(Thread.State.NEW, thread.getState());
+        // 把重量锁抢了
+        synchronized (task) {
+            // 启动线程;
+            thread.start();
+            // 等待执行到要请求管程锁
+            task.beforeMonitorLatch.await();
+            TimeUnit.MILLISECONDS.sleep(100L);
+            // 3. 线程在阻塞状态: 等待管程锁
+            System.out.println("3. blocked by monitor: thread.getState(): " + thread.getState());
+            assertEquals(Thread.State.BLOCKED, thread.getState());
+            // 将轻量锁抢了
+            task.lock.lock();
+        }
+        // 等待执行到要请求锁
+        task.beforeLockLatch.await();
+        // 稍微等一等
+        TimeUnit.MILLISECONDS.sleep(100L);
+        // 4. 等待状态; 此处是等待轻量锁;
+        System.out.println("4. waiting lock: thread.getState(): " + thread.getState());
+        assertEquals(Thread.State.WAITING, thread.getState());
+        // 释放锁
+        task.lock.unlock();
+        // 让线程继续执行
+        task.toSleepLatch.countDown();
+        TimeUnit.MILLISECONDS.sleep(100);
+        // 此时 thread 应该在睡眠中
+        System.out.println("5.Thread in sleep: thread.getState(): " + thread.getState());
+        assertEquals(Thread.State.TIMED_WAITING, thread.getState());
+        // 等线程结束来汇合
+        thread.join();
+        System.out.println("6. after join: thread.getState(): " + thread.getState());
+        assertEquals(Thread.State.TERMINATED, thread.getState());
+    }
+
+    @Override
+    public void run() {
+        System.out.println("=== enter run() ===");
+        // 获取执行此任务的线程;
+        Thread thread = Thread.currentThread();
+        // 2. 线程在执行过程中; 在JVM看来属于可执行状态
+        assertEquals(Thread.State.RUNNABLE, thread.getState());
+        System.out.println("2. executing run: thread.getState(): " + thread.getState());
+
+        //请求管程锁
+        System.out.println("=== before synchronized (this)===");
+        beforeMonitorLatch.countDown();
+        synchronized (this) {
+            System.out.println("===synchronized (this) enter===");
+        }
+
+        // 设置标识: 即将请求轻量锁
+        beforeLockLatch.countDown();
+        System.out.println("===before lock.lock()===");
+        // 等待锁
+        lock.lock();
+        lock.unlock();
+
+        try {
+            // 等待标志: 需要睡眠
+            this.toSleepLatch.await();
+            // 睡眠500毫秒
+            System.out.println("===before sleep()===");
+            TimeUnit.MILLISECONDS.sleep(500L);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        System.out.println("===finish run()===");
+    }
+
+    // 工具方法; 程序断言相等
+    static public void assertEquals(Object expected, Object actual) {
+        if (false == Objects.equals(expected, actual)) {
+            throw new RuntimeException("Not Equals: expected=" + expected + "; actual=" + actual);
+        }
+    }
+}
+
+```
+
+控制台输出的执行结果为:
+
+```c
+1. before start: thread.getState(): NEW
+=== enter run() ===
+2. executing run: thread.getState(): RUNNABLE
+=== before synchronized (this)===
+3. blocked by monitor: thread.getState(): BLOCKED
+===synchronized (this) enter===
+===before lock.lock()===
+4. waiting lock: thread.getState(): WAITING
+===before sleep()===
+5.Thread in sleep: thread.getState(): TIMED_WAITING
+===finish run()===
+6. after join: thread.getState(): TERMINATED
+```
 
 
-原文链接:
+## 相关链接:
 
-> <https://www.baeldung.com/java-thread-dump>
+- 原文链接: <https://www.baeldung.com/java-thread-dump>
+- 中英双语对照版GitHub: [获取Java线程转储的常用方法](https://github.com/cncounter/translation/blob/master/tiemao_2020/09_java-thread-dump/README.md)
+- 中英双语对照版Gitee: [获取Java线程转储的常用方法](https://gitee.com/cncounter/translation/blob/master/tiemao_2020/09_java-thread-dump/README.md)
