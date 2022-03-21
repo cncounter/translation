@@ -261,6 +261,61 @@ In the above program, we are performing several steps:
 上面代码做的事情很简单, 先通过 `ManagementFactory` 获取 `ThreadMxBean` 对象。
 方法的布尔参数 `lockedMonitors` 和 `lockedSynchronizers`, 表示是否导出持有的同步器和管程锁。
 
+> 但是, 这种方法有一些缺陷:
+
+- 1. 性能不太好, 消耗的资源不少。
+- 2. `threadDump.toString()` 方法最多只会输出8个栈帧(`MAX_FRAMES = 8`); 可以拷贝 toString 代码并自己进行修改/过滤。
+- 3. 本地线程(比如GC线程)不会被Dump。
+
+替代方案:
+
+- 1. 通过 Runtime 调用 jstack 获取线程转储信息; 如果失败则回退到JMX方式;
+
+部分代码:
+
+```java
+
+    public static String jStackThreadDump() {
+        // 获取当前JVM进程的pid
+        long currentPid = currentPid();
+        // 组装命令
+        String cmdarray[] = {
+                "jstack",
+                "" + currentPid
+        };
+        ProcessBuilder builder = new ProcessBuilder(cmdarray);
+        String threadDump = "";
+        try {
+            Process p = builder.start();
+            final BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+            StringJoiner sj = new StringJoiner(System.lineSeparator());
+            reader.lines().iterator().forEachRemaining(sj::add);
+            threadDump = sj.toString();
+            p.waitFor();
+            p.destroy();
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }
+        return threadDump;
+    }
+
+    public static long currentPid() {
+        final long fallback = -1;
+        final String jvmName = ManagementFactory.getRuntimeMXBean().getName();
+        final int index = jvmName.indexOf("@");
+        if (index < 1) {
+            return fallback;
+        }
+        String pid = jvmName.substring(0, index);
+        if (null != pid && pid.matches("\\d+")) {
+            return Long.parseLong(pid);
+        }
+        return fallback;
+    }
+```
+
+
+
 
 ## 5. Conclusion
 
@@ -413,8 +468,14 @@ public class ThreadStateTest implements Runnable {
 ```
 
 
-## 相关链接:
+## 相关链接
+
+
+更多信息科参考:
 
 - 原文链接: <https://www.baeldung.com/java-thread-dump>
+- [JVMTI](https://docs.oracle.com/javase/8/docs/platform/jvmti/jvmti.html)
+- [DTrace](https://zhuanlan.zhihu.com/p/24124082)
+- [honest-profiler](https://github.com/jvm-profiling-tools/honest-profiler)
 - 中英双语对照版GitHub: [获取Java线程转储的常用方法](https://github.com/cncounter/translation/blob/master/tiemao_2020/09_java-thread-dump/README.md)
 - 中英双语对照版Gitee: [获取Java线程转储的常用方法](https://gitee.com/cncounter/translation/blob/master/tiemao_2020/09_java-thread-dump/README.md)
