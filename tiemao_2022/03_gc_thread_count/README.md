@@ -106,7 +106,7 @@ Scavenger is a person who searches for and cleans-up discarded items. GC threads
 ### 为什么叫做清道夫(Scavenger)?
 
 清道夫(Scavenger), 也叫拾荒者, 是寻找和清理废弃物品的人。
-GC 线程做的事情也差不多。
+GC线程做的事情和拾荒者差不多, 把有用的东西捡起来, 没用的清掉。
 一个地方有多个清道夫, 产出也不会增加多少。
 同样, 过多的 GC 线程也无助于提升JVM性能。
 
