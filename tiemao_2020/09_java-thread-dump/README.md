@@ -477,5 +477,6 @@ public class ThreadStateTest implements Runnable {
 - [JVMTI](https://docs.oracle.com/javase/8/docs/platform/jvmti/jvmti.html)
 - [DTrace](https://zhuanlan.zhihu.com/p/24124082)
 - [honest-profiler](https://github.com/jvm-profiling-tools/honest-profiler)
+- [《动态追踪技术漫谈》](https://blog.openresty.com.cn/cn/dynamic-tracing/)
 - 中英双语对照版GitHub: [获取Java线程转储的常用方法](https://github.com/cncounter/translation/blob/master/tiemao_2020/09_java-thread-dump/README.md)
 - 中英双语对照版Gitee: [获取Java线程转储的常用方法](https://gitee.com/cncounter/translation/blob/master/tiemao_2020/09_java-thread-dump/README.md)
