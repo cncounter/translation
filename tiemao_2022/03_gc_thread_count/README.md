@@ -114,4 +114,6 @@ GC线程做的事情和拾荒者差不多, 把有用的东西捡起来, 没用�
 ### 相关链接
 
 - GitHub中英双语对照版: [JVM调优系列: GC线程数的默认值计算公式](https://github.com/cncounter/translation/blob/master/tiemao_2022/03_gc_thread_count/README.md)
+- [GC Tuning Guide](https://docs.oracle.com/javase/8/docs/technotes/guides/vm/gctuning/)
+- [Java HotSpot VM Options](https://www.oracle.com/java/technologies/javase/vmoptions-jsp.html)
 - EN原文链接: [THREAD DUMP ANALYSIS PATTERN – SEVERAL SCAVENGERS](https://blog.fastthread.io/2015/09/02/thread-dump-analysis-pattern-several-scavengers/)

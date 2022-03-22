@@ -18,7 +18,7 @@
 
 A *regular expression* defines a search pattern for strings. The abbreviation for regular expression is *regex*. The search pattern can be anything from a simple character, a fixed string or a complex expression containing special characters describing the pattern. The pattern defined by the regex may match one or several times or not at all for a given string.
 
-*正则表达式(Regular Expression)*, 简称 *正则*, 也翻译为 *正规式*, 用来表示文本搜索模式。英文缩写是 *regex*(`reg-ex`). 
+*正则表达式(Regular Expression)*, 简称 *正则*, 也翻译为 *正规式*, 用来表示文本搜索模式。英文缩写是 *regex*(`reg-ex`).
 
 搜索模式(search pattern)可能多种多样, 如, 单个字符(character), 特定字符串(fixed string), 包含特殊含义的复杂表达式等等. 对于给定的字符串, 正则表达式可能匹配一到多次, 也可能一次都不匹配。
 
@@ -120,7 +120,7 @@ The following meta characters have a pre-defined meaning and make certain common
 | `\b`  | 匹配单词外边界(word boundary), 单词字符指的是 `[a-zA-Z0-9_]` |
 
 
-> These meta characters have the same first letter as their representation, e.g., digit, space, word, and boundary. Uppercase symbols define the opposite. 
+> These meta characters have the same first letter as their representation, e.g., digit, space, word, and boundary. Uppercase symbols define the opposite.
 
 > 这些元字符主要取自于对应单词的英文首字母, 例如: digit(数字), space(空白), word (单词), 以及 boundary(边界)。对应的大写字符则用来表示取反。
 
@@ -860,6 +860,8 @@ The resulting dialog allows you to review the changes and remove elements which 
 - [Regulare xpressions examples](http://www.regular-expressions.info/examples.html)
 - [The Java Tutorials: Lesson: Regular Expressions](http://docs.oracle.com/javase/tutorial/essential/regex/)
 
+- [Grok 正则捕获](https://doc.yonyoucloud.com/doc/logstash-best-practice-cn/filter/grok.html)
+
 
 
 原文链接: <http://www.vogella.com/tutorials/JavaRegularExpressions/article.html>
@@ -869,6 +871,3 @@ The resulting dialog allows you to review the changes and remove elements which 
 翻译日期: 2017-12-28
 
 翻译人员: [铁锚 http://blog.csdn.net/renfufei/](http://blog.csdn.net/renfufei/)
-
-
-

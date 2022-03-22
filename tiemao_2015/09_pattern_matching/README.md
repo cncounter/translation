@@ -835,8 +835,11 @@ Jeff Friesen has been involved with computers for the past 23 years. He holds a 
 - [Study guide: Regular expressions simplify pattern-matching code](http://www.javaworld.com/article/2073175/core-java/study-guide--regular-expressions-simplify-pattern-matching-code.html)
 - [Get ready for the new stack](http://www.javaworld.com/article/2882614/enterprise-java/get-ready-for-the-new-stack.html)
 
+- [Grok 正则捕获](https://doc.yonyoucloud.com/doc/logstash-best-practice-cn/filter/grok.html)
+
 
 原文链接: [http://www.javaworld.com/article/2073192/core-java/regular-expressions-simplify-pattern-matching-code.html](http://www.javaworld.com/article/2073192/core-java/regular-expressions-simplify-pattern-matching-code.html)
+
 
 原文日期: 2013年02月07日
 

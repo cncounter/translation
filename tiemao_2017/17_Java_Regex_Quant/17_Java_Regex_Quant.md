@@ -75,15 +75,15 @@ Let's start our look at greedy quantifiers by creating three different regular e
 
 ```
 Enter your regex: a?
-Enter input string to search: 
+Enter input string to search:
 I found the text "" starting at index 0 and ending at index 0.
 
 Enter your regex: a*
-Enter input string to search: 
+Enter input string to search:
 I found the text "" starting at index 0 and ending at index 0.
 
 Enter your regex: a+
-Enter input string to search: 
+Enter input string to search:
 No match found.
 ```
 
@@ -93,7 +93,7 @@ No match found.
 
 In the above example, the match is successful in the first two cases because the expressions a? and a* both allow for zero occurrences of the letter a. You'll also notice that the start and end indices are both zero, which is unlike any of the examples we've seen so far. The empty input string "" has no length, so the test simply matches nothing at index 0. Matches of this sort are known as a zero-length matches. A zero-length match can occur in several cases: in an empty input string, at the beginning of an input string, after the last character of an input string, or in between any two characters of an input string. Zero-length matches are easily identifiable because they always start and end at the same index position.
 
-上面的示例中, 前两个正则成功匹配, 因为 `a?` 和 `a*` 都允许出现 0 次 `a`.  且开始索引和结束索引 都是 0, 这和之前所见的情形略有不同。空字符串` ""` 的长度为0, 所以只能在索引0处匹配。这种情况称为零长匹配(Zero-Length Match). 
+上面的示例中, 前两个正则成功匹配, 因为 `a?` 和 `a*` 都允许出现 0 次 `a`.  且开始索引和结束索引 都是 0, 这和之前所见的情形略有不同。空字符串` ""` 的长度为0, 所以只能在索引0处匹配。这种情况称为零长匹配(Zero-Length Match).
 
 零长匹配可能出现的情况包括:  空文本, 字符串起始处, 字符串结尾处, 以及任意两个字符之间.  零长匹配很容易辨认, 因为开始索引和结束索引的位置相等。
 
@@ -148,7 +148,7 @@ I found the text "" starting at index 5 and ending at index 5.
 Enter your regex: a+
 Enter input string to search: aaaaa
 I found the text "aaaaa" starting at index 0 and ending at index 5.
-```	
+```
 
 The expression a? finds an individual match for each character, since it matches when "a" appears zero or one times. The expression a* finds two separate matches: all of the letter "a"'s in the first match, then the zero-length match after the last character at index 5. And finally, a+ matches all occurrences of the letter "a", ignoring the presence of "nothing" at the last index.
 
@@ -370,14 +370,15 @@ The third example fails to find a match because the quantifier is possessive. In
 
 
 
-相关链接: 
+相关链接:
 
-[Pattern-API文档](https://docs.oracle.com/javase/8/docs/api/java/util/regex/Pattern.html)
+- [Pattern-API文档](https://docs.oracle.com/javase/8/docs/api/java/util/regex/Pattern.html)
 
-[regex教程目录](https://docs.oracle.com/javase/tutorial/essential/regex/index.html)
+- [regex教程目录](https://docs.oracle.com/javase/tutorial/essential/regex/index.html)
+
+- [Grok 正则捕获](https://doc.yonyoucloud.com/doc/logstash-best-practice-cn/filter/grok.html)
 
 
 翻译日期: 2018年1月2日
 
 翻译人员: [铁锚 http://blog.csdn.net/renfufei](http://blog.csdn.net/renfufei/)
-
