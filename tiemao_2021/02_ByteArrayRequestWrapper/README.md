@@ -1,4 +1,4 @@
-# HttpServletRequest多次获取InputStream
+# 可以多次获取InputStream的HttpServletRequest
 
 
 
@@ -24,7 +24,7 @@ public class XRouterLocalSiteFilter implements Filter {
 ```java
 private HttpServletRequest wrapByteArrayRequestWrapper(ServletRequest servletRequest) {
   HttpServletRequest request = (HttpServletRequest) servletRequest;
-  return new ByteArrayRequestWrapper(request);
+  return request instanceof ByteArrayRequestWrapper ? request : new ByteArrayRequestWrapper(request);
 }
 ```
 
@@ -40,6 +40,13 @@ public void doFilter(ServletRequest servletRequest, ServletResponse servletRespo
   //
   String method = request.getMethod();
   String uri = request.getRequestURI();
+  String body = null;
+    try {
+        // 包装之后, 就可以多次获取输入流并读取
+        body = IOUtils.toString(request.getInputStream());
+    } catch (IOException e) {
+        log.warn("[路由]解析请求出错", e);
+    }
   // 打印日志信息
   log.debug("[路由]收到请求: {} {}", method, uri);
   try {
@@ -162,6 +169,8 @@ public class ByteArrayRequestWrapper extends HttpServletRequestWrapper {
 ```
 
 相关的注意事项, 已经写在代码注释之中了。
+
+具体的代码也可以参考: [ByteArrayRequestWrapper.java](./ByteArrayRequestWrapper.java)
 
 
 2021年02月26日

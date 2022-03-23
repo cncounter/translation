@@ -5,7 +5,7 @@
 <summary>点击展开2021年目录</summary>
 
 * [01.Spring Boot配置Filter过滤器](./01_spring-boot-add-filter/README.md)【粗翻】
-* [02.允许多次读取的HttpServletRequest](./02_ByteArrayRequestWrapper/README.md)【草稿】
+* [02.可以多次获取InputStream的HttpServletRequest](./02_ByteArrayRequestWrapper/README.md)【草稿】
 * [03.graal-java-jit-compiler](./03_graal-java-jit-compiler/README.md)
 * [04.用Java语言实现数据结构-跳表(SkipList)](./04_Java_SkipList/README.md)
 * [05.一次Redis缓存问题排查案例](./05_redis_cache_problem/README.md)【草稿】
