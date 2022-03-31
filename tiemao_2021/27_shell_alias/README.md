@@ -6,6 +6,8 @@ Linux和MaxOSX的 alias 命令使用技巧
 
 # alias
 
+注意: 等号两边不能有空格;
+
 可以放到 `~/.bash_profile` 文件中, 或者
 
 ```shell
@@ -24,6 +26,9 @@ alias port='sudo lsof -iTCP -sTCP:LISTEN -n -P'
 
 # 统计git仓库的代码行数
 alias lines='git ls-files | xargs wc -l | grep total'
+
+# MAC清理DNS缓存
+alias dns='sudo killall -HUP mDNSResponder'
 
 
 # set history format
