@@ -162,7 +162,7 @@ If you found the above to be too familiar, don’t be afraid, you are not alone.
 
 如果您觉得上面这个过程很熟悉，别紧张，其实大家都这样干。
 大多数工程师在故障排除和诊断调优领域都缺乏经验，因此也就很难使用标准的套路。
-这没什么丢人的 – 除非是 [Brendan Gregg](http://www.brendangregg.com/)(《性能之巅》作者)、或者 [Peter Lawrey](https://twitter.com/PeterLawrey) 这种专业大牛，否则您很难有1万小时的故障排除经历，也就很难成为这个领域的专家。
+这没什么丢人的 – 除非是 [Brendan Gregg](http://www.brendangregg.com/)(《DTrace》《性能之巅》作者)、或者 [Peter Lawrey](https://twitter.com/PeterLawrey) 这种专业大牛，否则您很难有1万小时的故障排除经历，也就很难成为这个领域的专家。
 
 This lack of experience tends to result in tossing different evidence-gathering tools towards the problem at hand, including but not limited to:
 

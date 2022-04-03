@@ -343,6 +343,18 @@ GitHub地址: <https://github.com/cncounter/translation>
 </details>
 
 
+
+### 推荐书单
+
+<details>
+<summary>点击展开推荐书单</summary>
+
+1. 《人类简史》: 关于人类管理与组织的简要发展历史。
+2. 《性能之巅》:
+
+</details>
+
+
 GITHUB官方帮助文档(中文版): <https://docs.github.com/cn/free-pro-team@latest/github>
 
 
