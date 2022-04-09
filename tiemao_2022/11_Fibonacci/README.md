@@ -84,6 +84,7 @@ public class Fibonacci {
     }
 
     // 优化: 尝试使用缓存;
+    // 根据实际业务场景来进行优化, 场景参考相应的测试方法;
     private static BigDecimal tryFibonacciCache(int index) {
         // 1. 有缓存直接返回缓存;
         Integer n = Integer.valueOf(index);
