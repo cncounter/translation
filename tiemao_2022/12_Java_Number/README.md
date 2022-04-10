@@ -24,7 +24,7 @@ public class LongDoubleTest {
         // 1E8 = 1亿, 1后面带8个0;
         // 1E8 = 100000000
         System.out.println("1E8 = " + Double.valueOf(1E8).longValue());
-        // 1.79E308大约是: 1.79亿亿亿亿亿...（重复 308/8 ~= 38 个左右的单位 "亿")
+        // 1.79E308大约是: 1.79万亿亿亿亿亿...（重复 308/8 ~= 38 个左右的单位 "亿")
         // doubleMax = 1.7976931348623157E308
         System.out.println("doubleMax = " + doubleMax);
 
