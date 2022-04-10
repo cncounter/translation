@@ -28,11 +28,11 @@ public class LongDoubleTest {
         // doubleMax = 1.7976931348623157E308
         System.out.println("doubleMax = " + doubleMax);
 
-        // d1 = 9.223372036854776E21
-        double d1 = longMax * 1000d;
+        // d1 = 9.223372036854776E18
+        double d1 = longMax;
         System.out.println("d1 = " + d1);
-        // d2 = 9.223372036854776E21
-        double d2 = d1 + 10.0d;
+        // d2 = 9.223372036854776E18
+        double d2 = d1 - 10.0;
         System.out.println("d2 = " + d2);
         // 可以发现, 双精度已经丢精度了; d1 和 d2 区分不开;
         // (d1 == d2) : true
