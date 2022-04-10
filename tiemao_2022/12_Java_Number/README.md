@@ -42,10 +42,12 @@ public class LongDoubleTest {
         // bigValue = 85070591730234615847396907784232501249
         BigDecimal bigValue = decimal.multiply(decimal);
         System.out.println("bigValue = " + bigValue);
-        // BigDecimal 除法计算必须指定 scale 精度, 四舍五入方法(区别在于边界值0.5的时候怎么算)
+        // BigDecimal 除法计算必须指定 scale 精度, 四舍五入方法(区别在于边界值0.5的时候怎么取值)
         int scale = 18;
         BigDecimal divideValue = bigValue.divide(new BigDecimal(Math.PI),
                 scale, BigDecimal.ROUND_HALF_UP);
+        // divideValue = 27078810371238705561432334334038776498.543974388218463903
+        System.out.println("divideValue = " + divideValue);
     }
 }
 
