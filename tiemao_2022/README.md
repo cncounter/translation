@@ -12,7 +12,10 @@
 * [06.Lock Lock Lock: Enter!](./06_lock-lock-lock-enter/README.md)
 * [07.填坑日记: Map接口的getOrDefault方法](./07_Map/README.md)
 * [08.synchronized与wait-notify](./08_wait_notify/README.md)
-* [09.Java Performance 读书笔记](./09_Java_Performance_Notes/README.md)【持续更新中...】
+* [09.Java_Performance读书笔记](./09_Java_Performance_Notes/README.md)【持续更新中...】
+* [09.10_success_secret](./09_Java_Performance_Notes/README.md)【持续更新中...】
+* [11.费波那契数列与黄金分割比例的一种优化算法](./11_Fibonacci/README.md)【初稿】
+* [12.面试题-Java中long和double类型的最大取值](./12_Java_Number/README.md)【初稿】
 
 
 
