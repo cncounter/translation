@@ -1249,6 +1249,10 @@ Stack在这里明显是指的操作数栈。
 
 // 方法返回值不保存
 
+return this.index++;
+
+https://juejin.cn/post/6844903693083475982
+
 // TODO
 
 
@@ -1291,18 +1295,18 @@ Stack在这里明显是指的操作数栈。
 | 117   | (0x75)  | lneg      | 将栈顶的1个 long 值取出,算术取负, 并将结果压入栈顶        |
 | 118   | (0x76)  | fneg      | 将栈顶的1个 float 值取出,算术取负, 并将结果压入栈顶        |
 | 119   | (0x77)  | dneg      | 将栈顶的1个 double 值取出,算术取负, 并将结果压入栈顶        |
-| 120   | (0x78)  | ishl      |         |
-| 121   | (0x79)  | lshl      |         |
-| 122   | (0x7a)  | ishr      |         |
-| 123   | (0x7b)  | lshr      |         |
-| 124   | (0x7c)  | iushr     |         |
-| 125   | (0x7d)  | lushr     |         |
-| 126   | (0x7e)  | iand      |         |
-| 127   | (0x7f)  | land      |         |
-| 128   | (0x80)  | ior       |         |
-| 129   | (0x81)  | lor       |         |
-| 130   | (0x82)  | ixor      |         |
-| 131   | (0x83)  | lxor      |         |
+| 120   | (0x78)  | ishl      | int值左移操作符; 次顶为iv1,栈顶为x,将这两个数取出, 对iv1左移x位 (x大于32则取模)并将计算结果入栈; |
+| 121   | (0x79)  | lshl      | long值左移操作符; 次顶为lv1,栈顶为int值x,将这两个数取出, 对lv1左移x位 (x大于64则取模)并将计算结果入栈;   |
+| 122   | (0x7a)  | ishr      | int值右移操作符; 次顶为iv1,栈顶为x,将这两个数取出, 对iv1右移x位 (x大于32则取模)并将计算结果入栈; |
+| 123   | (0x7b)  | lshr      | long值右移操作符; 次顶为lv1,栈顶为int值x,将这两个数取出, 对lv1右移x位 (x大于64则取模)并将结果入栈; |
+| 124   | (0x7c)  | iushr     | int值无符号右移操作符?        |
+| 125   | (0x7d)  | lushr     | long值无符号右移操作符?        |
+| 126   | (0x7e)  | iand      | int值按位与操作; 取出2个32bit的int操作数, 按位与计算, 并将结果入栈;        |
+| 127   | (0x7f)  | land      | long值按位与操作; 取出2个64bit的long操作数, 按位与计算, 并将结果入栈;        |
+| 128   | (0x80)  | ior       | int值按位或操作; 取出2个32bit的int操作数, 按位或计算, 并将结果入栈;        |
+| 129   | (0x81)  | lor       | long值按位或操作; 取出2个64bit的long操作数, 按位或计算, 并将结果入栈;        |
+| 130   | (0x82)  | ixor      | int值按位异或操作; 取出2个32bit的int操作数, 按位异或计算(XOR), 并将结果入栈;     |
+| 131   | (0x83)  | lxor      | long值按位异或操作; 取出2个64bit的long操作数, 按位异或计算(XOR), 并将结果入栈;        |
 | 132   | (0x84)  | iinc      | 操作数栈无变化; 将 index 局部变量槽位上的int值递增一个常数值        |
 
 
@@ -1516,6 +1520,9 @@ Stack在这里明显是指的操作数栈。
 
 
 深入学习字节码与JIT编译: [Virtual Call](https://github.com/jpbempel/jpbempel.github.io/blob/master/_posts/2012-10-24-virtual-call-911.md)
+
+
+Byte Code Engineering Library (BCEL): https://commons.apache.org/proper/commons-bcel/
 
 更多文章请参考GitHub上的文章翻译项目: <https://github.com/cncounter/translation>
 
