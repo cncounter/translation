@@ -268,29 +268,29 @@ Constant pool:
 
 #### 2.1 操作符说明
 
-| 十进制 | 十六进制 | 助记符          |  说明           |
-| :---  | :---    | :---           | :---           |
-| 00    | (0x00)  | nop            | 没有操作, 可以看到编码是00 |
-| 01    | (0x01)  | aconst_null    | 将常量 `null` 压入操作数栈的栈顶  |
-| 02    | (0x02)  | iconst_m1      | 将int常量值 `-1` 压入操作数栈    |
-| 03    | (0x03)  | iconst_0       | 将int常量值 `0` 压入操作数栈     |
-| 04    | (0x04)  | iconst_1       | 将int常量值 `1` 压入操作数栈     |
-| 05    | (0x05)  | iconst_2       | 将int常量值 `2` 压入操作数栈     |
-| 06    | (0x06)  | iconst_3       | 将int常量值 `3` 压入操作数栈     |
-| 07    | (0x07)  | iconst_4       | 将int常量值 `4` 压入操作数栈     |
-| 08    | (0x08)  | iconst_5       | 将int常量值 `5` 压入操作数栈     |
-| 09    | (0x09)  | lconst_0       | 将long常量值 `0` 压入操作数栈    |
-| 10    | (0x0a)  | lconst_1       | 将long常量值 `1` 压入操作数栈    |
-| 11    | (0x0b)  | fconst_0       | 将float常量值 `0` 压入操作数栈   |
-| 12    | (0x0c)  | fconst_1       | 将float常量值 `1` 压入操作数栈   |
-| 13    | (0x0d)  | fconst_2       | 将float常量值 `2` 压入操作数栈   |
-| 14    | (0x0e)  | dconst_0       | 将double常量值 `0` 压入操作数栈  |
-| 15    | (0x0f)  | dconst_1       | 将double常量值 `1` 压入操作数栈  |
-| 16    | (0x10)  | bipush         | 将byte 常量值压入操作数栈, 后面带的操作数是1个字节 |
-| 17    | (0x11)  | sipush         | 将short常量值压入操作数栈, 后面带的操作数占2个字节 |
-| 18    | (0x12)  | ldc            | 将运行时常量池中的item压入操作数栈,load constant,后面带的操作数是1字节的常量池index |
-| 19    | (0x13)  | ldc_w          | 将运行时常量池中的item压入操作数栈, 后面带的操作数是2字节的wide index        |
-| 20    | (0x14)  | ldc2_w         | 将运行时常量池中的long或者double值压入操作数栈, 后面带的操作数是2字节的index  |
+| 十进制 | 十六进制 | 助记符      | 附带字节操作数 | 出栈字节 | 压栈字节 |  说明           |
+| :---  | :---    | :---       | :---     | :---     | :---      | :---           |
+| 00    | (0x00)  | nop        | 0        |      0   |    0      | 没有操作, 可以看到编码是00 |
+| 01    | (0x01)  | aconst_null| 0        |      0   |    1      | 将常量 `null` 压入操作数栈的栈顶  |
+| 02    | (0x02)  | iconst_m1  | 0        |      0   |    0      | 将int常量值 `-1` 压入操作数栈    |
+| 03    | (0x03)  | iconst_0   | 0        |      0   |    0      | 将int常量值 `0` 压入操作数栈     |
+| 04    | (0x04)  | iconst_1   | 0        |      0   |    0      | 将int常量值 `1` 压入操作数栈     |
+| 05    | (0x05)  | iconst_2   | 0        |      0   |    0      | 将int常量值 `2` 压入操作数栈     |
+| 06    | (0x06)  | iconst_3   | 0        |      0   |    0      | 将int常量值 `3` 压入操作数栈     |
+| 07    | (0x07)  | iconst_4   | 0        |      0   |    0      | 将int常量值 `4` 压入操作数栈     |
+| 08    | (0x08)  | iconst_5   | 0        |      0   |    0      | 将int常量值 `5` 压入操作数栈     |
+| 09    | (0x09)  | lconst_0   | 0        |      0   |    0      | 将long常量值 `0` 压入操作数栈    |
+| 10    | (0x0a)  | lconst_1   | 0        |      0   |    0      | 将long常量值 `1` 压入操作数栈    |
+| 11    | (0x0b)  | fconst_0   | 0        |      0   |    0      | 将float常量值 `0` 压入操作数栈   |
+| 12    | (0x0c)  | fconst_1   | 0        |      0   |    0      | 将float常量值 `1` 压入操作数栈   |
+| 13    | (0x0d)  | fconst_2   | 0        |      0   |    0      | 将float常量值 `2` 压入操作数栈   |
+| 14    | (0x0e)  | dconst_0   | 0        |      0   |    0      | 将double常量值 `0` 压入操作数栈  |
+| 15    | (0x0f)  | dconst_1   | 0        |      0   |    0      | 将double常量值 `1` 压入操作数栈  |
+| 16    | (0x10)  | bipush     | 0        |      0   |    0      | 将byte 常量值压入操作数栈, 后面带的操作数是1个字节 |
+| 17    | (0x11)  | sipush     | 0        |      0   |    0      | 将short常量值压入操作数栈, 后面带的操作数占2个字节 |
+| 18    | (0x12)  | ldc        | 0        |      0   |    0      | 将运行时常量池中的item压入操作数栈,load constant,后面带的操作数是1字节的常量池index |
+| 19    | (0x13)  | ldc_w      | 0        |      0   |    0      | 将运行时常量池中的item压入操作数栈, 后面带的操作数是2字节的wide index        |
+| 20    | (0x14)  | ldc2_w     | 0        |      0   |    0      | 将运行时常量池中的long或者double值压入操作数栈, 后面带的操作数是2字节的index  |
 
 
 这一块很简单，也很容易记忆。
@@ -1403,19 +1403,21 @@ https://juejin.cn/post/6844903693083475982
 相关的操作码指令如下:
 
 
-| 十进制 | 十六进制 | 助记符    |  效果说明                                         |
-| :---  | :---    | :---     | :---                                            |
-| 167   | (0xa7)  | goto      |         |
-| 168   | (0xa8)  | jsr      |         |
-| 169   | (0xa9)  | ret      |         |
-| 170   | (0xaa)  | tableswitch      |         |
-| 171   | (0xab)  | lookupswitch      |         |
-| 172   | (0xac)  | ireturn      |         |
-| 173   | (0xad)  | lreturn      |         |
-| 174   | (0xae)  | freturn      |         |
-| 175   | (0xaf)  | dreturn      |         |
-| 176   | (0xb0)  | areturn      |         |
-| 177   | (0xb1)  | return      |         |
+| 十进制 | 十六进制 | 助记符      | 附带字节操作数 | 出栈字节 | 压栈字节 |  效果说明        |
+| :---  | :---    | :---       | :---     | :---     | :---      | :---           |
+| 167   | (0xa7)  | goto      | 2        |      0   |    0      | 跳转指令;         |
+| 200   | (0xc8)  | goto_w    | 4        |      0   |    0      | 跳转指令, 宽索引;  |
+| 168   | (0xa8)  | jsr       | 2        |      0   |    0      | 跳转子路由; Jump subroutine; 比如try-finally |
+| 201   | (0xc9)  | jsr_w     | 4        |      0   |    0      | 跳转子路由; 带4字节的指令操作数 |
+| 169   | (0xa9)  | ret       | 1        |      0   |    0      | 从子路由返回; |
+| 170   | (0xaa)  | tableswitch  | 变长   |      2   |    0      | 表格式 switch 跳转; |
+| 171   | (0xab)  | lookupswitch | 变长   |      2   |    0      | 查找式 switch 跳转; |
+| 172   | (0xac)  | ireturn      | 0     |   [清空]  |    0      | 返回 int 能表示的栈顶值 |
+| 173   | (0xad)  | lreturn      | 0     |   [清空]  |    0      | 返回 long 类型的栈顶值 |
+| 174   | (0xae)  | freturn      | 0     |   [清空]  |    0      | 返回 float 类型的栈顶值|
+| 175   | (0xaf)  | dreturn      | 0     |   [清空]  |    0      | 返回 double 类型的栈顶值 |
+| 176   | (0xb0)  | areturn      | 0     |   [清空]  |    0      | 返回地址引用类型的栈顶值 |
+| 177   | (0xb1)  | return       | 0     |   [清空]  |    0      | 返回 void |
 
 
 
@@ -1521,6 +1523,7 @@ https://juejin.cn/post/6844903693083475982
 
 深入学习字节码与JIT编译: [Virtual Call](https://github.com/jpbempel/jpbempel.github.io/blob/master/_posts/2012-10-24-virtual-call-911.md)
 
+JVM规范第3章: 编译: https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-3.html
 
 Byte Code Engineering Library (BCEL): https://commons.apache.org/proper/commons-bcel/
 
