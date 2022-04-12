@@ -7,8 +7,8 @@ Java虚拟机规范中有一个章节专门列出了操作码助记符, 对应�
 
 | 十进制 | 十六进制 | 助记符          |  说明     |
 | :---  | :---   | :---            | :---           |
-| 182   | (0xb6) | invokevirtual   |  调用类的实例方法; |
-| 183   | (0xb7) | invokespecial   |  调用特殊实例方法; 如构造函数、超类方法,以及private |
+| 182   | (0xb6) | invokevirtual   |  调用对象的实例方法; |
+| 183   | (0xb7) | invokespecial   |  调用对象的特殊实例方法; 如构造函数、超类方法,以及private |
 | 184   | (0xb8) | invokestatic    |  调用静态方法    |
 | 185   | (0xb9) | invokeinterface |  调用接口方法    |
 | 186   | (0xba) | invokedynamic   |  动态方法调用    |
