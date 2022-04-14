@@ -4,19 +4,39 @@
 
 > April 2020, Jim Rapoza, Research Director
 
-In this report, Aberdeen analyzes the challenges modern application developers face, as well as the strategies and capabilities that leading businesses are following, such as AI-driven analysis, to optimize their applications. We’ll also delve into the steps that organizations can take to modernize Application Performance Monitoring (APM) and make it ready for the applications of today and the future.
+> In this report, Aberdeen analyzes the challenges modern application developers face, as well as the strategies and capabilities that leading businesses are following, such as AI-driven analysis, to optimize their applications. We’ll also delve into the steps that organizations can take to modernize Application Performance Monitoring (APM) and make it ready for the applications of today and the future.
+
+> 作者: Jim Rapoza, 研发总监, 2020年4月;
+
+> 在本文中，Aberdeen 分析了当代程序开发人员所面临的挑战，以及领先企业所采用的策略和能力， 例如AI驱动的数据分析，来优化其应用程序。 我们还将深入研究组织可以采取哪些步骤来实现应用程序性能监控 (APM) 的现代化，并使其为当今和未来的应用程序做好准备。
 
 
 Application developers today face a constant and rapid pace of change.
 
-How today’s developers create and deploy applications has transformed dramatically from just a few years ago. Rather than large, monolithic applications, today’s developers are building microservices based on containers, Kubernetes, serverless and ephemeral infrastructures, and often deployed on multiple clouds — both public and private. However, many of the APM solutions that organizations are using to monitor and manage applications were not designed to meet these new development paradigms. For businesses with older solutions, understanding, optimizing, and improving their applications using disconnected and siloed APM tools with slow analytics that alert in minutes instead of seconds, rely heavily on clients, and can’t scale to handle thousands of diverse containers, is often a complex and nearly impossible task.
+How today’s developers create and deploy applications has transformed dramatically from just a few years ago. Rather than large, monolithic applications, today’s developers are building microservices based on containers, Kubernetes, serverless and ephemeral infrastructures, and often deployed on multiple clouds — both public and private.
+
+However, many of the APM solutions that organizations are using to monitor and manage applications were not designed to meet these new development paradigms. For businesses with older solutions, understanding, optimizing, and improving their applications using disconnected and siloed APM tools with slow analytics that alert in minutes instead of seconds, rely heavily on clients, and can’t scale to handle thousands of diverse containers, is often a complex and nearly impossible task.
 
 Aberdeen research has found that when leading organizations adopt modern APM tools that have been built from the ground up to support today’s applications, IT Ops and DevOps teams have deep and fast insight into their applications so that they can troubleshoot and prevent issues before they impact end users.
+
+今天的应用系统开发人员面临着持续而快速的变化。
+
+与几年前相比，今天的开发人员创建和部署应用程序的方式发生了巨大的变化。 今天的开发人员正在构建的微服务, 是基于容器、Kubernetes、无服务器和临时基础设施环境而构建的，而不再使用大型的单体应用程序架构，并且通常部署在多个云上 —— 包括公共云和私有云。
+
+但是，很多企业和组织所用来监控和管理应用程序的 APM 解决方案, 并不是为这些新的开发形式而设计的。 对于使用较老的解决方案的企业，他们使用非连接式, 孤立的 APM 工具来理解、优化和改进他们的应用系统， 这些工具的告警周期在分钟级, 而不是秒级，并且严重依赖客户端，并且无法扩容来应对成千上万个不同的容器，对这些工具而言, 这基本上是一项复杂且几乎不可能完成的任务。
+
+Aberdeen 研究发现，大厂(头部公司)在采用从零设计的方式来构建现代 APM 工具时, 为了支持当今的应用程序，IT Ops 和 DevOps 团队需要对应用程序具有深入而快速的洞察力，以便能够在影响终端用户之前, 就排查和处理掉相应的故障。
 
 
 > Defining Modern APM:
 
 > Designed to meet the needs of today’s applications and microservices, a modern APM provides powerful real-time streaming, full-fidelity data ingestion, open source instrumentation, and deep AIdriven data analytics
+
+
+> **现代APM的定义**：
+
+> 现代 APM 旨在满足当今应用程序和微服务的需求，提供强大的实时流、全保真数据摄取、开源基础设置和深度 AI 驱动的数据分析
+
 
 
 ## Modern Applications Need Modern Approaches to Monitoring
@@ -26,11 +46,18 @@ New technologies and trends are bringing significant changes to all application 
 While modern application architectures and frequent code pushes help accelerate organizational responsiveness and innovation, they are adding new complexities and challenges to monitoring. IT Ops and DevOps teams are limited by traditional APM tools, which have only become more difficult to use given the many new changes to application environments. In our research into application development, Aberdeen asked organizations to list the top drivers pushing them to upgrade and improve their application monitoring as a result of more modern infrastructure and application environments.
 
 
+## 现代化的应用需要采用现代化的方法来监控
+
+新技术和新趋势正在为所有应用程序开发人员带来重大变化，正如许多组织终于开始适应 DevOps、敏捷和 CI/CD 带来的变化一样 —— 他们现在也面临着微服务、无服务器应用程序和 Kubernetes 的颠覆, 构建和部署应用程序的方式改变了。
+
+虽然现代应用程序架构和代码的频繁变更和提交, 有助于加快组织的响应能力和创新实力，但也给系统监控带来了新的复杂性和挑战。 IT Ops 和 DevOps 团队受到传统 APM 工具的限制，鉴于应用程序运行环境持续不断的变化，这些工具只会变得更加难以使用。 在我们对应用程序开发的研究中，Aberdeen 要求组织列出了, 由于更现代的基础架构和应用程序环境而促使他们升级和改进应用程序监控的主要驱动因素。
+
+
 ![](01_figure1_improve_apm_top_pressures.jpg)
 
 > Figure 1: Top Pressures to Improve Application Performance Monitoring
 
-> 图1：APM系统升级和改造的最大压力
+> 图1: 促使APM系统升级和改造的主要动力
 
 
 Analyzing the data from Figure 1, we find that while many businesses are still driven by the need to reduce the costs associated with application development, another major pressure to improve how they monitor and optimize applications is the rapid pace of technological innovation, and the additional complexity that accompanies it.
@@ -38,6 +65,12 @@ Analyzing the data from Figure 1, we find that while many businesses are still d
 Businesses understand the need to be aggressive in adopting technologies that are cloud-native, flexible, and that bring a competitive advantage. However, these businesses and DevOps teams realize that managing and successfully adopting emerging technologies with legacy monitoring tools is a recipe for failure.
 
 The data from Figure 1 also highlights the challenge businesses face with their ability to harness the massive amounts of new data that are generated every day by users, systems, and devices. As always, executives need to ensure that they are getting the most out of their technology investments.
+
+分析图1中列出的数据可以发现，尽管许多企业最主要的驱动力来自于需要降低应用程序开发相关的成本，但促使其改进应用监控和优化的另一个主要压力, 是技术创新的快速步伐，以及随之而来的复杂性。
+
+企业知道, 需要积极采用云原生、灵活并能带来竞争优势的技术。 然而，这些企业和 DevOps 团队意识到，再用老旧的监控工具, 来管理新兴技术是找死的行为。
+
+图1中的数据, 还强调了企业在面对每天由 用户、系统和设备生成的海量数据方面所面临的挑战。 与往常一样，高管们需要确保他们从技术投资中获得最大收益。
 
 
 
