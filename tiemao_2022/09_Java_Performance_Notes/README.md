@@ -246,8 +246,9 @@ JVM扩展参数的格式:
 
 形式:
 
-- 微代码测试: microbenchmark
-- 宏代码测试: macrobenchmark
+- 微基准测试: microbenchmark: 少量 代码
+- 整体测试: macrobenchmark: 整个应用
+- 部分测试: meso-benchmark: 模块级/流程级
 - 回归测试: regression
 - 单元测试: unit
 - 模块测试: module-level testing
@@ -270,7 +271,10 @@ JVM扩展参数的格式:
 
 
 
+数据类型:
 
+- BigDecimal: 金额相关, 专业选择
+- double:  
 
 
 

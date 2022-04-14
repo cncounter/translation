@@ -84,6 +84,18 @@ They are identifying APM that can give them analytics in seconds, as they unders
 
 Leaders also want APM solutions that are as based on open standards as the tools and systems that they are using to build and deploy microservices and modern cloud-native applications. By embracing open tools, leading businesses can avoid vendor lock-in and take advantage of high levels of integration and flexibility.
 
+
+## 大厂如何升级APM的功能
+
+很多公司都在努力升级和改进他们的 APM 能力，但我们发现那些领导者不仅仅是简单地获取他们已有的最新版本。被 Aberdeen 认定为应用程序开发领导者的企业——这意味着它们在正常运行时间、性能、成本节约和客户满意度方面得分前 30%——正在选择专为当今微服务和云原生应用程序设计的新型现代 APM 解决方案。
+
+领导者正在识别和部署什么样的 APM 解决方案？我们发现他们正在寻找具有深度分析能力的 APM，以处理来自应用程序的大量数据，包括所有指标、跟踪、日志和所有其他有价值的信息。
+
+他们正在确定可以在几秒钟内为他们提供分析的 APM，因为他们了解让客户和最终用户满意依赖于在问题成为真正问题之前对其进行故障排除。我们已经看到，在应用程序开发方面处于领先地位的组织正在部署 APM，利用人工智能来更有效地分析和优化他们的应用程序，如下图 2 所示。
+
+领导者还希望 APM 解决方案与他们用于构建和部署微服务和现代云原生应用程序的工具和系统一样基于开放标准。通过采用开放工具，领先的企业可以避免供应商锁定，并利用高水平的集成和灵活性。
+
+
 ![](02_figure2_ai_driven_intelligent_monitoring.jpg)
 
 > Figure 2: How AI-driven Intelligent Monitoring is Adopted
