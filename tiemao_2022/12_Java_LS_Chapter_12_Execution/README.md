@@ -4,9 +4,9 @@
 
 This chapter specifies activities that occur during execution of a program. It is organized around the life cycle of the Java Virtual Machine and of the classes, interfaces, and objects that form a program.
 
-The Java Virtual Machine starts up by loading a specified class or interface, then invoking the method `main` in this specified class or interface. Section [§12.1](https://docs.oracle.com/javase/specs/jls/se11/html/jls-12.html#jls-12.1) outlines the loading, linking, and initialization steps involved in executing `main`, as an introduction to the concepts in this chapter. Further sections specify the details of loading ([§12.2](https://docs.oracle.com/javase/specs/jls/se11/html/jls-12.html#jls-12.2)), linking ([§12.3](https://docs.oracle.com/javase/specs/jls/se11/html/jls-12.html#jls-12.3)), and initialization ([§12.4](https://docs.oracle.com/javase/specs/jls/se11/html/jls-12.html#jls-12.4)).
+The Java Virtual Machine starts up by loading a specified class or interface, then invoking the method `main` in this specified class or interface. Section [§12.1](#jls-12.1) outlines the loading, linking, and initialization steps involved in executing `main`, as an introduction to the concepts in this chapter. Further sections specify the details of loading ([§12.2](#jls-12.2)), linking ([§12.3](#jls-12.3)), and initialization ([§12.4](#jls-12.4)).
 
-The chapter continues with a specification of the procedures for creation of new class instances ([§12.5](https://docs.oracle.com/javase/specs/jls/se11/html/jls-12.html#jls-12.5)); and finalization of class instances ([§12.6](https://docs.oracle.com/javase/specs/jls/se11/html/jls-12.html#jls-12.6)). It concludes by describing the unloading of classes ([§12.7](https://docs.oracle.com/javase/specs/jls/se11/html/jls-12.html#jls-12.7)) and the procedure followed when a program exits ([§12.8](https://docs.oracle.com/javase/specs/jls/se11/html/jls-12.html#jls-12.8)).
+The chapter continues with a specification of the procedures for creation of new class instances ([§12.5](#jls-12.5)); and finalization of class instances ([§12.6](#jls-12.6)). It concludes by describing the unloading of classes ([§12.7](#jls-12.7)) and the procedure followed when a program exits ([§12.8](#jls-12.8)).
 
 ## 12.1. Java Virtual Machine Startup
 
@@ -28,15 +28,15 @@ We now outline the steps the Java Virtual Machine may take to execute `Test`, as
 
 ### 12.1.1. Load the Class `Test`
 
-The initial attempt to execute the method `main` of class `Test` discovers that the class `Test` is not loaded - that is, that the Java Virtual Machine does not currently contain a binary representation for this class. The Java Virtual Machine then uses a class loader to attempt to find such a binary representation. If this process fails, then an error is thrown. This loading process is described further in [§12.2](https://docs.oracle.com/javase/specs/jls/se11/html/jls-12.html#jls-12.2).
+The initial attempt to execute the method `main` of class `Test` discovers that the class `Test` is not loaded - that is, that the Java Virtual Machine does not currently contain a binary representation for this class. The Java Virtual Machine then uses a class loader to attempt to find such a binary representation. If this process fails, then an error is thrown. This loading process is described further in [§12.2](#jls-12.2).
 
 ### 12.1.2. Link `Test`: Verify, Prepare, (Optionally) Resolve
 
-After `Test` is loaded, it must be initialized before `main` can be invoked. And `Test`, like all (class or interface) types, must be linked before it is initialized. Linking involves verification, preparation, and (optionally) resolution. Linking is described further in [§12.3](https://docs.oracle.com/javase/specs/jls/se11/html/jls-12.html#jls-12.3).
+After `Test` is loaded, it must be initialized before `main` can be invoked. And `Test`, like all (class or interface) types, must be linked before it is initialized. Linking involves verification, preparation, and (optionally) resolution. Linking is described further in [§12.3](#jls-12.3).
 
-Verification checks that the loaded representation of `Test` is well-formed, with a proper symbol table. Verification also checks that the code that implements `Test` obeys the semantic requirements of the Java programming language and the Java Virtual Machine. If a problem is detected during verification, then an error is thrown. Verification is described further in [§12.3.1](https://docs.oracle.com/javase/specs/jls/se11/html/jls-12.html#jls-12.3.1).
+Verification checks that the loaded representation of `Test` is well-formed, with a proper symbol table. Verification also checks that the code that implements `Test` obeys the semantic requirements of the Java programming language and the Java Virtual Machine. If a problem is detected during verification, then an error is thrown. Verification is described further in [§12.3.1](#jls-12.3.1).
 
-Preparation involves allocation of static storage and any data structures that are used internally by the implementation of the Java Virtual Machine, such as method tables. Preparation is described further in [§12.3.2](https://docs.oracle.com/javase/specs/jls/se11/html/jls-12.html#jls-12.3.2).
+Preparation involves allocation of static storage and any data structures that are used internally by the implementation of the Java Virtual Machine, such as method tables. Preparation is described further in [§12.3.2](#jls-12.3.2).
 
 Resolution is the process of checking symbolic references from `Test` to other classes and interfaces, by loading the other classes and interfaces that are mentioned and checking that the references are correct.
 
@@ -46,11 +46,11 @@ An implementation may instead choose to resolve a symbolic reference only when i
 
 The only requirement on when resolution is performed is that any errors detected during resolution must be thrown at a point in the program where some action is taken by the program that might, directly or indirectly, require linkage to the class or interface involved in the error. Using the "static" example implementation choice described above, loading and linkage errors could occur before the program is executed if they involved a class or interface mentioned in the class `Test` or any of the further, recursively referenced, classes and interfaces. In a system that implemented the "laziest" resolution, these errors would be thrown only when an incorrect symbolic reference is actively used.
 
-The resolution process is described further in [§12.3.3](https://docs.oracle.com/javase/specs/jls/se11/html/jls-12.html#jls-12.3.3).
+The resolution process is described further in [§12.3.3](#jls-12.3.3).
 
 ### 12.1.3. Initialize Test: Execute Initializers
 
-In our continuing example, the Java Virtual Machine is still trying to execute the method `main` of class `Test`. This is permitted only if the class has been initialized ([§12.4.1](https://docs.oracle.com/javase/specs/jls/se11/html/jls-12.html#jls-12.4.1)).
+In our continuing example, the Java Virtual Machine is still trying to execute the method `main` of class `Test`. This is permitted only if the class has been initialized ([§12.4.1](#jls-12.4.1)).
 
 Initialization consists of execution of any class variable initializers and static initializers of the class `Test`, in textual order. But before `Test` can be initialized, its direct superclass must be initialized, as well as the direct superclass of its direct superclass, and so on, recursively. In the simplest case, `Test` has `Object` as its implicit direct superclass; if class `Object` has not yet been initialized, then it must be initialized before `Test` is initialized. Class `Object` has no superclass, so the recursion terminates here.
 
@@ -58,7 +58,7 @@ If class `Test` has another class `Super` as its superclass, then `Super` must b
 
 Initialization may thus cause loading, linking, and initialization errors, including such errors involving other types.
 
-The initialization process is described further in [§12.4](https://docs.oracle.com/javase/specs/jls/se11/html/jls-12.html#jls-12.4).
+The initialization process is described further in [§12.4](#jls-12.4).
 
 ### 12.1.4. Invoke `Test.main`
 
@@ -126,7 +126,7 @@ If an error occurs during verification, then an instance of the following subcla
 
 ### 12.3.2. Preparation of a Class or Interface Type
 
-*Preparation* involves creating the `static` fields (class variables and constants) for a class or interface and initializing such fields to the default values ([§4.12.5](https://docs.oracle.com/javase/specs/jls/se11/html/jls-4.html#jls-4.12.5)). This does not require the execution of any source code; explicit initializers for static fields are executed as part of initialization ([§12.4](https://docs.oracle.com/javase/specs/jls/se11/html/jls-12.html#jls-12.4)), not preparation.
+*Preparation* involves creating the `static` fields (class variables and constants) for a class or interface and initializing such fields to the default values ([§4.12.5](https://docs.oracle.com/javase/specs/jls/se11/html/jls-4.html#jls-4.12.5)). This does not require the execution of any source code; explicit initializers for static fields are executed as part of initialization ([§12.4](#jls-12.4)), not preparation.
 
 Implementations of the Java Virtual Machine may precompute additional data structures at preparation time in order to make later operations on a class or interface more efficient. One particularly useful data structure is a "method table" or other data structure that allows any method to be invoked on instances of a class without requiring a search of superclasses at invocation time.
 
@@ -154,7 +154,7 @@ If an error occurs during resolution, then an error will be thrown. Most typical
 
   This can occur, for example, if a method declaration was deleted from a class after another class that refers to the method was compiled ([§13.4.12](https://docs.oracle.com/javase/specs/jls/se11/html/jls-13.html#jls-13.4.12)).
 
-Additionally, an `UnsatisfiedLinkError`, a subclass of `LinkageError`, may be thrown if a class declares a `native` method for which no implementation can be found. The error will occur if the method is used, or earlier, depending on what kind of resolution strategy is being used by an implementation of the Java Virtual Machine ([§12.3](https://docs.oracle.com/javase/specs/jls/se11/html/jls-12.html#jls-12.3)).
+Additionally, an `UnsatisfiedLinkError`, a subclass of `LinkageError`, may be thrown if a class declares a `native` method for which no implementation can be found. The error will occur if the method is used, or earlier, depending on what kind of resolution strategy is being used by an implementation of the Java Virtual Machine ([§12.3](#jls-12.3)).
 
 ## 12.4. Initialization of Classes and Interfaces
 
@@ -183,7 +183,7 @@ Note that a compiler may generate *synthetic* default methods in an interface, t
 
 The intent is that a class or interface type has a set of initializers that put it in a consistent state, and that this state is the first state that is observed by other classes. The static initializers and class variable initializers are executed in textual order, and may not refer to class variables declared in the class whose declarations appear textually after the use, even though these class variables are in scope ([§8.3.3](https://docs.oracle.com/javase/specs/jls/se11/html/jls-8.html#jls-8.3.3)). This restriction is designed to detect, at compile time, most circular or otherwise malformed initializations.
 
-The fact that initialization code is unrestricted allows examples to be constructed where the value of a class variable can be observed when it still has its initial default value, before its initializing expression is evaluated, but such examples are rare in practice. (Such examples can be also constructed for instance variable initialization ([§12.5](https://docs.oracle.com/javase/specs/jls/se11/html/jls-12.html#jls-12.5)).) The full power of the Java programming language is available in these initializers; programmers must exercise some care. This power places an extra burden on code generators, but this burden would arise in any case because the Java programming language is concurrent ([§12.4.2](https://docs.oracle.com/javase/specs/jls/se11/html/jls-12.html#jls-12.4.2)).
+The fact that initialization code is unrestricted allows examples to be constructed where the value of a class variable can be observed when it still has its initial default value, before its initializing expression is evaluated, but such examples are rare in practice. (Such examples can be also constructed for instance variable initialization ([§12.5](#jls-12.5)).) The full power of the Java programming language is available in these initializers; programmers must exercise some care. This power places an extra burden on code generators, but this burden would arise in any case because the Java programming language is concurrent ([§12.4.2](#jls-12.4.2)).
 
 
 
@@ -480,7 +480,7 @@ protected void finalize() throws Throwable {
 }
 ```
 
-We encourage implementations to treat such objects as having a finalizer that is not overridden, and to finalize them more efficiently, as described in [§12.6.1](https://docs.oracle.com/javase/specs/jls/se11/html/jls-12.html#jls-12.6.1).
+We encourage implementations to treat such objects as having a finalizer that is not overridden, and to finalize them more efficiently, as described in [§12.6.1](#jls-12.6.1).
 
 A finalizer may be invoked explicitly, just like any other method.
 
@@ -569,7 +569,7 @@ If an object `X` is marked as finalizable at *di*, then:
 
 An implementation of the Java programming language may *unload* classes.
 
-A class or interface may be unloaded if and only if its defining class loader may be reclaimed by the garbage collector as discussed in [§12.6](https://docs.oracle.com/javase/specs/jls/se11/html/jls-12.html#jls-12.6).
+A class or interface may be unloaded if and only if its defining class loader may be reclaimed by the garbage collector as discussed in [§12.6](#jls-12.6).
 
 Classes and interfaces loaded by the bootstrap loader may not be unloaded.
 
@@ -594,7 +594,14 @@ A program terminates all its activity and *exits* when one of two things happens
 - All the threads that are not daemon threads terminate.
 - Some thread invokes the `exit` method of class `Runtime` or class `System`, and the `exit` operation is not forbidden by the security manager.
 
+## 12.8. 程序退出
+
+当发生以下两种情况之一时，程序将终止其所有活动并 *退出*：
+
+- 所有的前台线程(非守护线程, not daemon threads)都已经停止了。
+- 某些线程调用了`Runtime`类或者 `System`类的`exit`方法, 而且 `exit` 操作没有被安全管理器(security manager)禁止。
+
 
 ## 相关链接
 
-- [Java Language Specification: Chapter 12. Execution](https://docs.oracle.com/javase/specs/jls/se11/html/jls-12.html#jls-12.2)
+- [Java Language Specification: Chapter 12. Execution](https://docs.oracle.com/javase/specs/jls/se11/html/jls-12.html)
