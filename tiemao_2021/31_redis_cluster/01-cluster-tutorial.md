@@ -332,6 +332,7 @@ tar xzf redis-stable.tar.gz
 # 编译; 要求gcc, 没有请先安装
 cd redis-stable
 make
+
 ```
 
 
@@ -527,10 +528,16 @@ clean       -- Remove all instances data, logs, configs.
 clean-logs  -- Remove just instances logs.
 call <cmd>  -- Call a command (up to 7 arguments) on all nodes.
 
+
+# 如果要修改端口号, 直接修改脚本 create-cluster 即可
+# 注意: 如果需要内网其他机器访问, 需要关闭保护模式;
+
 # 启动示例
 ./create-cluster start
+
 # 创建集群
 ./create-cluster create
+
 ```
 
 Reply to `yes` in step 2 when the `redis-cli` utility wants you to accept the cluster layout.
@@ -573,6 +580,7 @@ lsof -iTCP -sTCP:LISTEN -n -P | grep TCP
 Please read the `README` inside this directory for more information on how to run the script.
 
 有关如何运行脚本的更多信息,请阅读此目录中的“README”。
+
 
 
 ## Playing with the cluster
