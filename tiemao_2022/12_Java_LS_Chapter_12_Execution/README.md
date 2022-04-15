@@ -5,6 +5,8 @@
 
 # Java语言规范文档
 
+> Java虚拟机, 全称为 Java Virtual Machine, 简称JVM。
+
 ## 第12章. 执行(Execution)
 
 This chapter specifies activities that occur during execution of a program. It is organized around the life cycle of the Java Virtual Machine and of the classes, interfaces, and objects that form a program.
@@ -39,6 +41,18 @@ The manner in which the initial class or interface is specified to the Java Virt
 
 For example, in a UNIX implementation, the command line:
 
+
+## 12.1. Java虚拟机启动
+
+Java虚拟机通过调用某个指定类或接口的 `main` 方法开始执行，并向main方法传递一个参数, 类型为字符串数组。 在本规范的示例中，第一个类通常命名为 `Test`。
+
+Java 虚拟机启动的精确语义在 *The Java Virtual Machine Specification, Java SE 11 Edition* 的第 5 章中给出。 在这里，我们从 Java 编程语言的角度来概述这个过程。
+
+为 Java 虚拟机指定初始类或接口的方式超出了本规范的范围，但在命令行环境中，通常需要指定类或接口的完全限定名作为命令行参数，并将后续的命令行参数作为字符串数组提供给 `main` 方法。
+
+例如，在 UNIX 系统中，执行下面的命令行脚本:
+
+
 ```
 java Test reboot Bob Dot Enzo
 ```
@@ -46,6 +60,11 @@ java Test reboot Bob Dot Enzo
 will typically start a Java Virtual Machine by invoking method `main` of class `Test` (a class in an unnamed package), passing it an array containing the four strings "`reboot`", "`Bob`", "`Dot`", and "`Enzo`".
 
 We now outline the steps the Java Virtual Machine may take to execute `Test`, as an example of the loading, linking, and initialization processes that are described further in later sections.
+
+这里 `Test` 类没有包名, 通过调用类 `Test` 类的方法 `main` 来启动 Java 虚拟机, 并传递一个包含 "`reboot`", "`Bob`", "`Dot`", and "`Enzo`" 这四个字符串的数组作为参数。
+
+我们现在将 Java 虚拟机执行`Test`类可能采取的步骤，归纳为: 加载(loading)、链接(linking)和初始化(initialization)过程，这些过程将在后面的部分中进一步描述。
+
 
 ### 12.1.1. Load the Class `Test`
 
