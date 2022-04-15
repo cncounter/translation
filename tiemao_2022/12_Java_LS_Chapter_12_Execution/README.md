@@ -2,11 +2,32 @@
 
 ## Chapter 12. Execution
 
+
+# Java语言规范文档
+
+## 第12章. 执行(Execution)
+
 This chapter specifies activities that occur during execution of a program. It is organized around the life cycle of the Java Virtual Machine and of the classes, interfaces, and objects that form a program.
 
 The Java Virtual Machine starts up by loading a specified class or interface, then invoking the method `main` in this specified class or interface. Section [§12.1](#jls-12.1) outlines the loading, linking, and initialization steps involved in executing `main`, as an introduction to the concepts in this chapter. Further sections specify the details of loading ([§12.2](#jls-12.2)), linking ([§12.3](#jls-12.3)), and initialization ([§12.4](#jls-12.4)).
 
 The chapter continues with a specification of the procedures for creation of new class instances ([§12.5](#jls-12.5)); and finalization of class instances ([§12.6](#jls-12.6)). It concludes by describing the unloading of classes ([§12.7](#jls-12.7)) and the procedure followed when a program exits ([§12.8](#jls-12.8)).
+
+
+本章规定了程序执行期间发生的活动。 主要围绕 Java 虚拟机，以及构成程序的类、接口和对象的生命周期进行组织。
+
+Java 虚拟机启动时，先加载指定的类(class)或接口(interface)，然后调用在该类或接口中声明的 `main` 方法。
+
+>【从Java8开始, 接口中支持static方法和default方法, interface中也就支持 main 方法了】
+
+[§12.1](#jls-12.1) 小节概述了执行 `main` 方法所涉及的加载(loading)、链接(linking)和初始化(initialization)步骤，作为本章中基础概念的介绍。
+接下来的部分，详细说明了加载 ([§12.2](#jls-12.2))、链接 ([§12.3](#jls-12.3)) 和初始化 ([§12.4](#jls-12.4)) 的细节与规范。
+
+接着 [§12.5](#jls-12.5) 介绍类的新实例创建过程；以及类对象的最终确定（[§12.6](#jls-12.6)）。
+最后 [§12.7](#jls-12.7) 描述了类的卸载；还有程序退出时需要遵循的过程 ([§12.8](#jls-12.8))。
+
+
+<a name="jls-12.1"></a>
 
 ## 12.1. Java Virtual Machine Startup
 
