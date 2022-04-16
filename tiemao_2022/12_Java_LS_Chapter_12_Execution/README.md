@@ -61,14 +61,21 @@ will typically start a Java Virtual Machine by invoking method `main` of class `
 
 We now outline the steps the Java Virtual Machine may take to execute `Test`, as an example of the loading, linking, and initialization processes that are described further in later sections.
 
-这里 `Test` 类没有包名, 通过调用类 `Test` 类的方法 `main` 来启动 Java 虚拟机, 并传递一个包含 "`reboot`", "`Bob`", "`Dot`", and "`Enzo`" 这四个字符串的数组作为参数。
+通过命令调用 `Test` 类的 `main` 方法来启动 Java 虚拟机, 这个 `Test` 类没有包名, 传递给main方法的参数是一个数组, 包含 "`reboot`", "`Bob`", "`Dot`", 以及 "`Enzo`" 四个字符串。
 
-我们现在将 Java 虚拟机执行`Test`类可能采取的步骤，归纳为: 加载(loading)、链接(linking)和初始化(initialization)过程，这些过程将在后面的部分中进一步描述。
+我们现在将 Java 虚拟机执行`Test`类可能采取的步骤，归纳为: 加载(loading)、链接(linking)和初始化(initialization)过程，这些过程在后面的部分中详细介绍。
 
 
 ### 12.1.1. Load the Class `Test`
 
 The initial attempt to execute the method `main` of class `Test` discovers that the class `Test` is not loaded - that is, that the Java Virtual Machine does not currently contain a binary representation for this class. The Java Virtual Machine then uses a class loader to attempt to find such a binary representation. If this process fails, then an error is thrown. This loading process is described further in [§12.2](#jls-12.2).
+
+
+### 12.1.1. 加载`Test`类
+
+JVM最初尝试执行 `Test` 类的 `main` 方法时, 发现尚未加载类 `Test` - 也就是说，Java虚拟机当前还未包含此类的二进制表示。
+Java 虚拟机然后通过类加载器尝试找到这样的二进制表示。 如果此过程失败，则会引发错误。 [§12.2](#jls-12.2) 中进一步描述了这个加载过程。
+
 
 ### 12.1.2. Link `Test`: Verify, Prepare, (Optionally) Resolve
 
@@ -76,17 +83,35 @@ After `Test` is loaded, it must be initialized before `main` can be invoked. And
 
 Verification checks that the loaded representation of `Test` is well-formed, with a proper symbol table. Verification also checks that the code that implements `Test` obeys the semantic requirements of the Java programming language and the Java Virtual Machine. If a problem is detected during verification, then an error is thrown. Verification is described further in [§12.3.1](#jls-12.3.1).
 
+### 12.1.2. 链接 `Test`: 验证、准备、解析（可选）
+
+`Test` 类加载后，必须在调用 `main` 之前对其进行初始化(initialized)。 与所有类型（类或接口）一样， `Test` 必须在初始化之前进行链接。 链接涉及验证(verification)、准备(preparation)和(可选的)解析（resolution）。 [§12.3](#jls-12.3) 中进一步描述了链接过程。
+
+验证过程会检查加载到的 `Test` 字节码格式正确，具有正确的符号表。 验证还检查实现 `Test` 的代码是否符合 Java 编程语言和 Java 虚拟机的语义要求。 如果在验证过程中检测到问题，则会引发错误。 [§12.3.1](#jls-12.3.1) 中进一步描述了验证。
+
 Preparation involves allocation of static storage and any data structures that are used internally by the implementation of the Java Virtual Machine, such as method tables. Preparation is described further in [§12.3.2](#jls-12.3.2).
 
 Resolution is the process of checking symbolic references from `Test` to other classes and interfaces, by loading the other classes and interfaces that are mentioned and checking that the references are correct.
 
 The resolution step is optional at the time of initial linkage. An implementation may resolve symbolic references from a class or interface that is being linked very early, even to the point of resolving all symbolic references from the classes and interfaces that are further referenced, recursively. (This resolution may result in errors from these further loading and linking steps.) This implementation choice represents one extreme and is similar to the kind of "static" linkage that has been done for many years in simple implementations of the C language. (In these implementations, a compiled program is typically represented as an "`a.out`" file that contains a fully-linked version of the program, including completely resolved links to library routines used by the program. Copies of these library routines are included in the "`a.out`" file.)
 
+准备过程(Preparation)包括分配静态存储和 Java 虚拟机实现内部使用的任何数据结构，例如方法表。 [§12.3.2](#jls-12.3.2) 中进一步描述了准备过程。
+
+解析是检查从 `Test` 到其他类和接口的符号引用的过程，会加载引用到的其他类和接口, 并检查引用是否正确。
+
+在初始化链接时，解析步骤是可选的。 JVM实现可以在链接类或接口的早期阶段解析符号引用，甚至可以递归地解析来自更深层引用的类和接口中的所有符号引用。 （但这种递归解决方案可能会导致进一步的加载和链接步骤出错。）这种实现选择代表了一个极端，类似于多年来在 C 语言的简单实现中所做的那种“静态”链接。 （在这些C编译器实现中，编译的程序通常表示为 "`a.out`" 文件，其中包含程序的完全链接版本，包括程序使用的库例程的完全解析链接。这些库例程的副本被打包到 "`a.out`" 文件中。）
+
 An implementation may instead choose to resolve a symbolic reference only when it is actively used; consistent use of this strategy for all symbolic references would represent the "laziest" form of resolution. In this case, if `Test` had several symbolic references to another class, then the references might be resolved one at a time, as they are used, or perhaps not at all, if these references were never used during execution of the program.
 
 The only requirement on when resolution is performed is that any errors detected during resolution must be thrown at a point in the program where some action is taken by the program that might, directly or indirectly, require linkage to the class or interface involved in the error. Using the "static" example implementation choice described above, loading and linkage errors could occur before the program is executed if they involved a class or interface mentioned in the class `Test` or any of the further, recursively referenced, classes and interfaces. In a system that implemented the "laziest" resolution, these errors would be thrown only when an incorrect symbolic reference is actively used.
 
 The resolution process is described further in [§12.3.3](#jls-12.3.3).
+
+一个JVM实现可能会选择仅在主动使用符号引用时才去解析；对所有符号引用一致使用此策略将代表“最懒惰”的解决形式。 在这种情况下，如果 `Test` 有多个对另其它类的符号引用，那么这些引用可能会在使用时, 用到一个解析一个，或者如果在程序执行期间从未使用过这些引用，则可能根本不进行解析。
+
+关于何时执行解析的唯一要求是，在解析期间检测到的任何错误必须在程序中的某个点抛出，程序可能需要在链接到涉及的类或接口出错时, 对这种错误采取某些直接或间接的操作.  如果JVM使用上面描述的“静态”方式实现，在加载和链接 `Test` 类中提到的类或接口, 或任何进一步的递归引用的类和接口，假如报错，则可能会在程序执行之前发生加载和链接错误。 在使用“最懒惰”解决方案的系统中，只有在主动使用错误的符号引用时才会抛出这些错误。
+
+[§12.3.3](#jls-12.3.3) 中进一步描述了解析过程。
 
 ### 12.1.3. Initialize Test: Execute Initializers
 
