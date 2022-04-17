@@ -144,9 +144,18 @@ Finally, after completion of the initialization for class `Test` (during which o
 
 The method `main` must be declared `public`, `static`, and `void`. It must specify a formal parameter ([§8.4.1](https://docs.oracle.com/javase/specs/jls/se11/html/jls-8.html#jls-8.4.1)) whose declared type is array of `String`. Therefore, either of the following declarations is acceptable:
 
-```
+### 12.1.4. 调用`Test.main`
+
+在`Test` 类初始化此期间可能发生其他相关类的加载、链接和初始化；最后，在完成 `Test` 类的初始化之后，调用`Test`的`main`方法。
+
+`main`方法必须声明为 `public`, `static`, `void`。 而且必须指定一个声明类型为 `String`数组的形参（[§8.4.1](https://docs.oracle.com/javase/specs/jls/se11/html/jls-8.html#jls-8.4.1)）。 因此，可以接受以下这些形式的任一种方法声明：
+
+
+```java
 public static void main(String[] args)
+public static void main(String []args)
 public static void main(String... args)
+public static void main(String... aaa)
 ```
 
 ## 12.2. Loading of Classes and Interfaces
