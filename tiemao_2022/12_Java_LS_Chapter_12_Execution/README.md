@@ -125,6 +125,19 @@ Initialization may thus cause loading, linking, and initialization errors, inclu
 
 The initialization process is described further in [§12.4](#jls-12.4).
 
+### 12.1.3. Test初始化：执行初始化代码
+
+继续我们的示例，Java 虚拟机仍在尝试执行 `Test` 类的 `main` 方法。 但是只有在类已初始化时才允许这样做 ([§12.4.1](#jls-12.4.1))。
+
+初始化就是按源代码中的文本顺序执行 `Test` 类的所有类变量初始化代码, 以及静态初始化块。 但是在 `Test` 可以被初始化之前，它的直接超类必须先被初始化，以及超类的超类，以此类推。 在最简单的情况下，`Test` 将 `Object` 作为其隐式直接超类； 如果类 `Object` 尚未初始化，则必须在初始化 `Test` 之前先对其进行初始化。 `Object` 类没有超类，因此递归在此终止。
+
+如果 `Test` 类有另一个类`Super`作为超类，那么`Super`类必须在`Test`之前进行初始化。这就需要加载、验证和准备`Super`（如果尚未完成），并且根据JVM实现，还可能涉及递归地解析`Super`类中的符号引用等等。
+
+因此，初始化可能会导致加载、链接, 还可能会导致初始化错误，包括其他相关类的这些错误。
+
+[§12.4](#jls-12.4) 中进一步描述了初始化过程。
+
+
 ### 12.1.4. Invoke `Test.main`
 
 Finally, after completion of the initialization for class `Test` (during which other consequential loading, linking, and initializing may have occurred), the method `main` of `Test` is invoked.
