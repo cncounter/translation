@@ -148,7 +148,7 @@ The method `main` must be declared `public`, `static`, and `void`. It must speci
 
 在`Test` 类初始化此期间可能发生其他相关类的加载、链接和初始化；最后，在完成 `Test` 类的初始化之后，调用`Test`的`main`方法。
 
-`main`方法必须声明为 `public`, `static`, `void`。 而且必须指定一个声明类型为 `String`数组的形参（[§8.4.1](https://docs.oracle.com/javase/specs/jls/se11/html/jls-8.html#jls-8.4.1)）。 因此，可以接受以下这些形式的任一种方法声明：
+`main`方法必须声明为 `public`, `static`, `void`。 而且必须指定一个声明类型为 `String`数组的形参（[§8.4.1](https://docs.oracle.com/javase/specs/jls/se11/html/jls-8.html#jls-8.4.1)）。 因此，JVM可以接受以下任何一种形式的方法声明：
 
 
 ```java
@@ -165,6 +165,15 @@ public static void main(String... aaa)
 The precise semantics of loading are given in Chapter 5 of *The Java Virtual Machine Specification, Java SE 11 Edition*. Here we present an overview of the process from the viewpoint of the Java programming language.
 
 The binary format of a class or interface is normally the `class` file format described in *The Java Virtual Machine Specification, Java SE 11 Edition* cited above, but other formats are possible, provided they meet the requirements specified in [§13.1](https://docs.oracle.com/javase/specs/jls/se11/html/jls-13.html#jls-13.1). The method `defineClass` of class `ClassLoader` may be used to construct `Class` objects from binary representations in the `class` file format.
+
+## 12.2. 类和接口的加载
+
+加载(Loading)是指根据特定名称查找类或接口类型的二进制表示形式的过程，可以在运行时通过动态计算得出，但一般都是通过检索由 Java 编译器从源代码编译得出的二进制表示； 然后通过这种二进制形式来构建出一个 `Class` 对象来表示类或接口。
+
+JVM规范的第 5 章中给出了加载的精确语义。 在这里，我们从 Java 编程语言的角度来概述这个过程。
+
+类或接口的二进制格式通常是 `class` 文件格式, 由Java 虚拟机规范所定义，当然，其他格式也是可能的，只要它们满足 [§13.1](https://docs.oracle.com/javase/specs/jls/se11/html/jls-13.html#jls-13.1) 中指定的要求。 `ClassLoader` 类的 `defineClass` 方法可用于从 `class` 文件格式的二进制表示来构造出 `Class` 对象。
+
 
 Well-behaved class loaders maintain these properties:
 
