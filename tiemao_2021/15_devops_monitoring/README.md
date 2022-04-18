@@ -85,24 +85,26 @@ They are identifying APM that can give them analytics in seconds, as they unders
 Leaders also want APM solutions that are as based on open standards as the tools and systems that they are using to build and deploy microservices and modern cloud-native applications. By embracing open tools, leading businesses can avoid vendor lock-in and take advantage of high levels of integration and flexibility.
 
 
-## 大厂如何升级APM的功能
+## 大厂如何迭代升级APM的功能特性
 
-很多公司都在努力升级和改进他们的 APM 能力，但我们发现那些领导者不仅仅是简单地获取他们已有的最新版本。被 Aberdeen 认定为应用程序开发领导者的企业——这意味着它们在正常运行时间、性能、成本节约和客户满意度方面得分前 30%——正在选择专为当今微服务和云原生应用程序设计的新型现代 APM 解决方案。
+很多公司都在努力升级和改进他们的 APM 系统功能，但我们发现那些领导者不仅仅是简单地获取已有的最新版本。 被 Aberdeen 认定为系统开发领军者的企业 —— 这意味着它们在正常运行时间、性能、成本节约和客户满意度方面得分排在 30% —— 都选择了专为微服务和云原生应用而设计的新型现代 APM 解决方案。
 
-领导者正在识别和部署什么样的 APM 解决方案？我们发现他们正在寻找具有深度分析能力的 APM，以处理来自应用程序的大量数据，包括所有指标、跟踪、日志和所有其他有价值的信息。
+什么样的 APM 解决方案是大厂认可和使用的？ 我们发现他们正在寻找具有深度分析能力的 APM，以处理来自应用程序的大量数据，包括所有指标、跟踪、日志和所有其他有价值的信息。
 
-他们正在确定可以在几秒钟内为他们提供分析的 APM，因为他们了解让客户和最终用户满意依赖于在问题成为真正问题之前对其进行故障排除。我们已经看到，在应用程序开发方面处于领先地位的组织正在部署 APM，利用人工智能来更有效地分析和优化他们的应用程序，如下图 2 所示。
+这些受到认可的APM可以在几秒钟内为团队提供分析报告，实力团队都有一个共识: 让客户和最终用户满意的诀窍，是在隐患成为真正的问题之前, 就对其进行故障排除。 我们已经看到，在信息系统开发领域处于领先地位的组织正在部署 APM，利用人工智能(artificial intelligence)来更有效地分析和优化他们的应用程序，如下图 2 所示。
 
-领导者还希望 APM 解决方案与他们用于构建和部署微服务和现代云原生应用程序的工具和系统一样基于开放标准。通过采用开放工具，领先的企业可以避免供应商锁定，并利用高水平的集成和灵活性。
+领军者还希望 APM 解决方案基于开放标准, 与他们用于构建和部署微服务和现代云原生应用的工具和系统一致。 通过采用开放工具，领先的企业可以避免供应商锁定，并利用自身高超的系统集成水平和灵活性优势。
 
 
 ![](02_figure2_ai_driven_intelligent_monitoring.jpg)
 
 > Figure 2: How AI-driven Intelligent Monitoring is Adopted
 
-> 图 2：AI驱动-智能监控系统的接受程度
+> 图2: AI驱动的智能监控系统的接受程度
 
 Looking at this data, we see that adoption of monitoring that utilizes AI to provide faster and better analysis and outcomes is nearly universal among leaders. By implementing AI as part of an overall upgrade to modern, cloud-native APM, leaders are achieving the highest levels of application performance and reliability, and keeping users and customers free from the frustrations of slow and unavailable applications.
+
+通过查看这些数据，我们发现采用人工智能来提供更快、更好分析结果的监控, 在领导者中几乎是普遍的。 通过将 AI 作为现代云原生 APM 整体升级的一部分实施，领导者正在达成最高水平的应用系统性能和可靠性，让用户和客户免受应用程序缓慢和系统不可用的困扰。
 
 ## Modern, AI-enabled APM Boosts All Application Management
 
