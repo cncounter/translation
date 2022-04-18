@@ -87,7 +87,7 @@ Leaders also want APM solutions that are as based on open standards as the tools
 
 ## 大厂如何迭代升级APM的功能特性
 
-很多公司都在努力升级和改进他们的 APM 系统功能，但我们发现那些领导者不仅仅是简单地获取已有的最新版本。 被 Aberdeen 认定为系统开发领军者的企业 —— 这意味着它们在正常运行时间、性能、成本节约和客户满意度方面得分排在 30% —— 都选择了专为微服务和云原生应用而设计的新型现代 APM 解决方案。
+很多公司都在努力升级和改进他们的 APM 系统功能，但我们发现那些领军者不仅仅是简单地获取已有的最新版本。 被 Aberdeen 认定为系统开发领军者的企业 —— 这意味着它们在正常运行时间、性能、成本节约和客户满意度方面得分排在 30% —— 都选择了专为微服务和云原生应用而设计的新型现代 APM 解决方案。
 
 什么样的 APM 解决方案是大厂认可和使用的？ 我们发现他们正在寻找具有深度分析能力的 APM，以处理来自应用程序的大量数据，包括所有指标、跟踪、日志和所有其他有价值的信息。
 
@@ -104,7 +104,8 @@ Leaders also want APM solutions that are as based on open standards as the tools
 
 Looking at this data, we see that adoption of monitoring that utilizes AI to provide faster and better analysis and outcomes is nearly universal among leaders. By implementing AI as part of an overall upgrade to modern, cloud-native APM, leaders are achieving the highest levels of application performance and reliability, and keeping users and customers free from the frustrations of slow and unavailable applications.
 
-通过查看这些数据，我们发现采用人工智能来提供更快、更好分析结果的监控, 在领导者中几乎是普遍的。 通过将 AI 作为现代云原生 APM 整体升级的一部分实施，领导者正在达成最高水平的应用系统性能和可靠性，让用户和客户免受应用程序缓慢和系统不可用的困扰。
+通过查看这些数据，我们发现采用人工智能来提供更快、更好分析结果的监控, 在领军者中几乎是普遍的。 通过将 AI 作为现代云原生 APM 整体升级的一部分实施，领军者正在达成最高水平的应用系统性能和可靠性，让用户和客户免受应用程序缓慢和系统不可用的困扰。
+
 
 ## Modern, AI-enabled APM Boosts All Application Management
 
@@ -113,11 +114,19 @@ Leaders in application development are taking advantage of APM with powerful rea
 We discovered that application development organizations that adopt modern APM (as defined on page 2), outpace their peers in a number of key capabilities for understanding and managing today’s complex cloudnative applications and microservices.
 
 
+## 支持AI的现代APM, 提升所有应用程序管理
+
+应用程序开发的领军者正在利用 APM 的强大实时流计算功能、全保真数据摄取、开源基础设施, 以及AI 驱动的深度 数据分析特性。 但如果不是领军者的组织, 在采用这些解决方案时, 能获得哪些能力和优势呢？ 为了理解这一点，Aberdeen 分析了我们的研究数据，以确定采用现代最先进的 APM 的企业的结果。 然后，将这些组织与那些没有采用具有流分析和AI功能的 APM 的竞争对手进行对比。
+
+我们发现，采用现代APM（在前面的小节所定义）的应用程序开发组织, 在理解和管理当今最复杂的云原生应用和微服务方面, 许多关键能力都超过了同行。
+
+
 ![](03_figure3_modern_apm_leads_better_management.jpg)
 
 > Figure 3: Modern APM Leads to Better End-to-End Application Management
 
-> 图 3：新一代APM可带来更好的端到端应用管理
+> 图3: 新一代APM可带来更好的端到端应用管理能力
+
 
 With a modern APM powering their monitoring and troubleshooting capabilities, development organizations are reaping the benefits of realtime alerting, meaning that they are likely to have the capability to identify issues in seconds rather than the minutes or hours businesses with legacy APM experience. A modern APM also leads to better adoption of strong application performance monitoring across the board, and AI enables the ability to perform deep and accurate root-cause analysis for application issues.
 
@@ -127,7 +136,17 @@ We’ve found that among the top pressures pushing development organizations to 
 
 When Aberdeen looked at the benefits that application development organizations gained by adopting modern APM, the answer to this question is yes. Across the board, businesses with modern APM are seeing significant gains over their competitors, as shown in Table 1.
 
+借助现代 APM 为其监控和故障排除功能提供支持，开发组织获得了实时告警的好处，这意味着他们可能能够在几秒钟内识别问题，而不是传统 APM 监控的业务那样需要几分钟甚至几小时。 现代 APM 还可以更好地全面采用强大的应用程序性能监控，并且 AI 能够对应用程序问题执行深入而准确的根本原因分析。
+
+很明显，采用现代 APM 可以为管理当今复杂的应用环境带来更好的端到端功能。 Aberdeen 的研究表明，这些优势不仅限于能力，而且正在帮助组织提高投资回报率(ROI)、可靠性(reliability)和用户体验(customer experience)。
+
+我们发现，推动开发组织改进系统基础设施的最大压力之一是 Kubernetes、容器和混合云等新技术带来的日益增长的复杂性。 但 IT Ops 和 DevOps 团队仍然受到传统的性能、数据需求和底线需求的驱动。 在性能、数据管理和 ROI 方面处于领先地位的程序开发人员采用了现代 APM，以提供流式分析和支持人工智能的监控。但鉴于现代 APM 在领军者中几乎普遍采用（如图 2 所示），有必要调查一下现代 APM 是否是使这些企业成为一流企业的重要组成部分。
+
+当 Aberdeen 研究应用开发组织通过采用现代 APM 获得的好处时，这个问题的答案是肯定的。 如 表1 所示，拥有现代 APM 的企业总体上比竞争对手取得了更明显的进步。
+
 > Table 1: Meeting Complex Application Demands with a Modern APM Organizations with a modern APM are:
+>
+> 表1: 通过现代 APM 来满足复杂的应用程序需求, 对使用现代 APM 的组织的共享包括:
 
 | 比例 | 说明 |
 | --- | --- |
@@ -141,6 +160,10 @@ When Aberdeen looked at the benefits that application development organizations 
 Compared to their peers that are still making use of traditional APM, organizations with modern APM that gives them vital insight and proactive analytics are more likely to have high application reliability, less application downtime, and fewer application defects. With AI tied to realtime analytics, modern APM users are also addressing issues much faster than their competitors, speeding resolution of application problems before they become an issue for end-users and customers.
 
 Most importantly, by upgrading to an APM that is designed from the ground up to handle today’s application environments, they are building high-performing and user friendly applications that keep customers and users highly satisfied. And with more reliable applications that work well with modern development environments and solutions, these modern APM organizations are more likely to have lower overall costs for application development.
+
+与仍在使用传统APM 的同行相比，拥有现代 APM 的组织, 可以为其提供重要的洞察力和主动分析能力, 更有可能具有较高的应用程序可靠性、更少的应用程序停机时间和更少的应用程序缺陷。 通过将人工智能与实时分析组合起来，现代 APM 用户也比竞争对手更快地发现和解决问题，在系统BUG影响最终用户和客户之前, 加快解决问题的速度。
+
+最重要的是，通过从头开始设计的APM升级, 以应对当今应用程序环境， 他们正在构建高性能和用户友好的应用程序，让客户和用户高度满意。 有了更可靠的应用程序, 还有现代开发环境和解决方案的支持，这些使用现代 APM 的组织有更大的可能来降低应用程序开发的总体成本。
 
 
 ## Key Takeaways
