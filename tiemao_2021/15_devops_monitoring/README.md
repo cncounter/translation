@@ -174,6 +174,14 @@ This transformative change requires a new approach to APM. As we’ve seen, orga
 
 To join these leaders, and bring their APM capabilities into the modern age, application developers, IT Ops and DevOps teams should:
 
+## 关键要点
+
+近年来，应用程序开发人员一直处于不断变化的状态。 他们采用了 DevOps 和敏捷，他们在测试中漂移，他们正在部署容器化、基于 Kubernetes 的云原生应用程序，而不是传统的单体应用程序。
+
+这种变革性的变化需要一种新的 APM 监控方案。 正如我们所见，采用基于现代、开放标准的 APM、全保真跟踪和端到端实时分析的组织，面对不断增长的数据量, 利用 AI 来增加洞察力，获得增强的功能并收到明显的好处。
+
+要加入这些领军者的行列，并将他们的 APM 能力带入现代的，应用程序开发人员、IT Ops 和 DevOps 团队, 可以这样做：
+
 
 - **Know what is happening right now**.
 When end-users experience an application problem before operations knows about it, negative results such as poor productivity for employees or dissatisfied customers speaking out on social media will occur. Real-time monitoring in seconds and incident alerting detect application issues as they occur and leads to swift resolution of problems.
@@ -188,6 +196,20 @@ The sooner an application issue is fixed, the less potential it has to affect us
 Today’s applications are built with open standards and frameworks and are designed to easily integrate with any other application or service. The solutions that developers use to manage and monitor applications need the same kind of openness. Leading organizations leverage open standards based APM systems that consolidate monitoring into a single screen and give them the ability to replace their APM at any time, control and own their data, and not be locked in with a single APM vendor that uses a proprietary agent.
 
 Modern applications based on cloud, containers, microservices, and serverless functions need modern application performance monitoring tools. Ephemeral infrastructure, complex service interdependencies, and much more frequent code pushes are quickly becoming the norm and legacy tools are limited in their ability to support these more dynamic and distributed environments.
+
+- **了解今天发生了什么**。
+当终端用户先遇到应用程序问题, 而运营人员还不知道时，就会出现负面结果，例如员工生产力低下, 或者客户在社交媒体上投诉不满。 几秒钟内的实时监控和事件警报可在应用程序问题发生时检测到, 帮助运营方迅速解决问题。
+
+- **上马深度、持续和人工智能驱动的监控和分析**。
+当今复杂的应用程序创建了大量有价值且压倒性的数据。 领先的企业利用 APM 可以从所有来源（例如跟踪和指标）中提取数据，并且可以使用强大的 AI 来分析这些海量数据以更好地理解和管理。
+
+- **立即采取行动**。
+应用程序问题越早解决，影响到用户的可能性就越小（影响到用户就会降低生产力和收入）。 具有流式分析和 AI 功能的现代 APM 系统可以采取快速措施来限制应用程序问题的影响范围，并提供未来可能发生问题所需的信息。
+
+- **开放, 打破信息孤岛**。
+今天的应用程序是使用开放标准和框架构建的，旨在轻松与任何其他应用程序或服务集成。 开发人员用来管理和监控应用程序的解决方案同样需要开放性。 领先的组织利用基于开放标准的 APM 系统，将监控整合到一个屏幕中，使他们能够随时更换 APM、控制和拥有自己的数据，而不会被专有agent的单一 APM 供应商锁定和掣肘。
+
+基于云、容器、微服务和无服务器功能的现代应用程序，需要现代APM工具。 临时基础设施、复杂的服务依赖，以及频繁的代码推送正迅速成为常态，而遗留工具在支持这些更加动态和分布式环境的能力方面受到限制。
 
 
 ## About Aberdeen
