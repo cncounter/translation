@@ -220,6 +220,15 @@ This document is the result of primary research performed by Aberdeen and repres
 
 Unless otherwise noted, the entire contents of this publication are copyrighted by Aberdeen and may not be reproduced, distributed, archived, or transmitted in any form or by any means without prior written consent by Aberdeen.
 
+## 关于阿伯丁(Aberdeen)
+
+自 1988 年以来，Aberdeen 发表了帮助全球企业提高绩效的研究报告。 我们的分析师从专有分析框架中获得基于事实的、供应商中立的见解，该框架从与行业从业者进行的初步研究中识别出一流的组织。 由此产生的研究内容被成千上万的商业专业人士用来推动更明智的决策和改进商业战略。 Aberdeen总部位于美国马萨诸塞州沃尔瑟姆(Waltham, Massachusetts, USA)。
+
+本文件是 Aberdeen 进行初步研究的结果，代表了该文件出版时可用的最佳分析。
+
+除非另有说明，否则本出版物的全部内容均由 Aberdeen 拥有版权，未经 Aberdeen 事先书面同意，不得以任何形式或任何方式复制、分发、存档或传播。
+
+
 ## ABOUT OUR SPONSOR
 
 These days we hear a lot about how cloud, containers, Kubernetes, and DevOps can help applications scale better, reduce time to market, and give developers the flexibility to choose the right tool for the job. We also hear that the shift from a monolithic to a microservices-based architecture brings new monitoring challenges around the scale of data, the ephemerality of the underlying infrastructure, and the constantly changing interactions between all these components.
@@ -227,6 +236,14 @@ These days we hear a lot about how cloud, containers, Kubernetes, and DevOps can
 Many organizations try to leverage traditional Application Performance Monitoring (APM) tools in order to meet ever-increasing user expectations. However, most traditional APM solutions were designed for a world in which a single monolithic application would run on a static set of on-premises hosts. In such a world, applications were slow to change, written in a single language, and operated by separate teams. That is not the world in which our applications live in today.
 
 Modern applications need an APM tool that is designed for cloud-native, microservices-based architectures from the ground up. Such a solution would have to handle the enormous amount of data associated with a microservices architecture and ephemeral infrastructure. It would need to collect ALL available data and leverage AI-driven analysis to derive insights to enable DevOps and SRE teams to act quickly and effciently. Finally, as today’s developers now have a broad set of tools and languages to choose from, modern APM tools also need support for open and flexible standards that meet the needs of modern DevOps teams.
+
+## 关于赞助商
+
+这些天来，我们听到很多关于云、容器、Kubernetes 和 DevOps 如何帮助应用程序更好地扩展、缩短上市时间以及让开发人员能够灵活地选择合适的工具来完成工作的内容。我们还听说，从单体架构到基于微服务的架构的转变带来了围绕数据规模、底层基础设施的短暂性以及所有这些组件之间不断变化的交互的新监控挑战。
+
+许多组织试图利用传统的应用程序性能监控工具 (APM) 来满足不断增长的用户预期。 但是，大多数传统的 APM 解决方案都是为单个单体应用程序在一组静态的本地主机上运行的环境而设计的。 在这样的环境中，应用程序变化比较缓慢，使用单一编程语言，并由不同的团队运营。 这不是我们今天的应用程序所处的世界。
+
+现代应用程序需要一个 APM 工具，该工具专为云原生、基于微服务的架构而设计。 这样的解决方案必须处理与微服务架构和临时基础设施相关的大量数据。 它需要收集所有可用数据并利用人工智能驱动的分析来获得洞察力，以使 DevOps 和 SRE 团队能够快速有效地采取行动。 最后，由于当今的开发人员有大量工具和语言可供选择，现代 APM 工具还需要支持开放和灵活的标准，以满足现代 DevOps 团队的需求。
 
 Splunk designed SignalFx Microservices APM™ with all of this in mind. SignalFx Microservices APM leverages our streaming analytics engine to ingest 100% of trace data, correlate service workloads to underlying cloud infrastructure, and provides AI-Driven Directed Troubleshooting to help DevOps teams detect and resolve issues in their applications before users are negatively impacted.
 
@@ -236,6 +253,13 @@ We find that customers who leverage our modern approach to APM are able to achie
 
 Today’s end users expect instant gratification and superb application experience. Only by taking a modern approach to APM can organizations elevate end user experience, bring applications to market faster, and future-proof their code.
 
+Splunk 设计 SignalFx Microservices APM™ 时考虑到了所有这些情况。 SignalFx Microservices APM 利用我们的流分析引擎来摄取 100% 的跟踪数据，将服务工作负载与底层云基础设施相关联，并提供 AI 驱动的定向故障排除，以帮助 DevOps 团队在用户受到负面影响之前检测并解决其系统中的问题。
+
+作为 CNCF OpenTelemetry 项目的创始成员和积极贡献者，Splunk 致力于消除供应商锁定的开放标准，并为开发人员提供最大的灵活性，以快速高效地发布高质量代码。
+
+我们发现，利用现代 APM 监控的客户能够实现传统 APM 工具无法实现的目标。 他们中的许多人已经能够将故障排除问题从几小时甚至几天缩短到几分钟。 通过利用 100% 的跟踪数据，可以了解导致最罕见异常的场景，并且其规模是其他解决方案无法比拟的。最后，通过我们的开放标准检测方法，他们能够消除繁重的专有代理的开销，并保持对自己数据的完全控制。
+
+今天的最终用户期望即时满足和卓越的应用体验。只有采用现代 APM 监控方法，组织才能提升最终用户体验，更快地将应用程序推向市场，并让自己的代码面向未来。
 
 
 #  参考链接
