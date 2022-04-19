@@ -222,7 +222,7 @@ Because loading involves the allocation of new data structures, it may fail with
 - `ClassFormatError`： 请求的类或接口, 对应的class文件二进制数据格式错误。
 - `NoClassDefFoundError`：相关类加载器找不到请求的类或接口定义。
 
-因为加载涉及到新数据结构的分配，所以它可能会失败并抛出 `OutOfMemoryError`。
+因为加载涉及到新数据结构的分配，所以可能会失败并抛出 `OutOfMemoryError`。
 
 
 ## 12.3. Linking of Classes and Interfaces
@@ -238,6 +238,21 @@ This specification allows an implementation flexibility as to when linking activ
 For example, an implementation may choose to resolve each symbolic reference in a class or interface individually, only when it is used (lazy or late resolution), or to resolve them all at once while the class is being verified (static resolution). This means that the resolution process may continue, in some implementations, after a class or interface has been initialized.
 
 Because linking involves the allocation of new data structures, it may fail with an `OutOfMemoryError`.
+
+## 12.3. 类和接口的链接
+
+链接(Linking)过程主要是将类或接口的二进制形式, 组合到Java虚拟机的运行时状态中，并使其可以执行。 在链接之前必须先将类或接口加载完成。
+
+链接涉及三种不同的活动： 验证、准备、符号引用的解析。
+
+*The Java Virtual Machine Specification, Java SE 11 Edition* 的第 5 章给出了链接的精确语义。 在这里，我们从 Java 编程语言的角度概述该过程。
+
+本规范允许在JVM实现在任意时刻灵活地执行链接活动（以及递归链接而产生的加载行为），前提是尊重 Java 编程语言的语义， 在初始化之前对类或接口进行完全的验证和准备，并且在链接期间检测到的错误会在程序执行过程中的某个点被抛出，在该点上，程序执行了一些可能需要链接到错误中所涉及的类或接口的操作。
+
+例如，JVM实现可以选择懒惰或延迟解析(lazy or late resolution), 仅在用到时单独解析类或接口中的每一个符号引用； 或者选择静态解析(static resolution)，在验证类时一次性解析。 这意味着在某些JVM实现中，在类或接口完成初始化之后，解析过程还可能在断断续续执行。
+
+因为链接涉及新数据结构的分配，所以可能会失败并抛出 `OutOfMemoryError`。
+
 
 ### 12.3.1. Verification of the Binary Representation
 
