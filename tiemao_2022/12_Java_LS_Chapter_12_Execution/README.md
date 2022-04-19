@@ -327,7 +327,7 @@ The fact that initialization code is unrestricted allows examples to be construc
 
 **Example 12.4.1-1. Superclasses Are Initialized Before Subclasses**
 
-```
+```java
 class Super {
     static { System.out.print("Super "); }
 }
@@ -348,7 +348,7 @@ class Test {
 
 This program produces the output:
 
-```
+```java
 Super Two false
 ```
 
@@ -360,7 +360,7 @@ The class `One` is never initialized, because it not used actively and therefore
 
 **Example 12.4.1-2. Only The Class That Declares `static` Field Is Initialized**
 
-```
+```java
 class Super {
     static int taxi = 1729;
 }
@@ -376,7 +376,7 @@ class Test {
 
 This program prints only:
 
-```
+```java
 1729
 ```
 
@@ -388,7 +388,7 @@ because the class `Sub` is never initialized; the reference to `Sub.taxi` is a r
 
 **Example 12.4.1-3. Interface Initialization Does Not Initialize Superinterfaces**
 
-```
+```java
 interface I {
     int i = 1, ii = Test.out("ii", 2);
 }
@@ -412,7 +412,7 @@ class Test {
 
 This program produces the output:
 
-```
+```java
 1
 j=3
 jj=4
@@ -507,7 +507,7 @@ Unlike C++, the Java programming language does not specify altered rules for met
 
 **Example 12.5-1. Evaluation of Instance Creation**
 
-```
+```java
 class Point {
     int x, y;
     Point() { x = 1; y = 1; }
@@ -525,13 +525,13 @@ class Test {
 
 Here, a new instance of `ColoredPoint` is created. First, space is allocated for the new `ColoredPoint`, to hold the fields `x`, `y`, and `color`. All these fields are then initialized to their default values (in this case, `0` for each field). Next, the `ColoredPoint` constructor with no arguments is first invoked. Since `ColoredPoint` declares no constructors, a default constructor of the following form is implicitly declared:
 
-```
+```java
 ColoredPoint() { super(); }
 ```
 
 This constructor then invokes the `Point` constructor with no arguments. The `Point` constructor does not begin with an invocation of a constructor, so the Java compiler provides an implicit invocation of its superclass constructor of no arguments, as though it had been written:
 
-```
+```java
 Point() { super(); x = 1; y = 1; }
 ```
 
@@ -539,7 +539,7 @@ Therefore, the constructor for `Object` which takes no arguments is invoked.
 
 The class `Object` has no superclass, so the recursion terminates here. Next, any instance initializers and instance variable initializers of `Object` are invoked. Next, the body of the constructor of `Object` that takes no arguments is executed. No such constructor is declared in `Object`, so the Java compiler supplies a default one, which in this special case is:
 
-```
+```java
 Object() { }
 ```
 
@@ -555,7 +555,7 @@ Next, the initializers for the instance variables of class `ColoredPoint` are ex
 
 **Example 12.5-2. Dynamic Dispatch During Instance Creation**
 
-```
+```java
 class Super {
     Super() { printThree(); }
     void printThree() { System.out.println("three"); }
@@ -573,7 +573,7 @@ class Test extends Super {
 
 This program produces the output:
 
-```
+```java
 0
 3
 ```
@@ -612,7 +612,7 @@ For efficiency, an implementation may keep track of classes that do not override
 
 For example:
 
-```
+```java
 protected void finalize() throws Throwable {
     super.finalize();
 }
@@ -648,7 +648,7 @@ Another example of this occurs if the values in an object's fields are stored in
 
 For example, consider the *Finalizer Guardian* pattern:
 
-```
+```java
 class Foo {
     private final Object finalizerGuardian = new Object() {
         protected void finalize() throws Throwable {
