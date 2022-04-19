@@ -184,6 +184,17 @@ A malicious class loader could violate these properties. However, it could not u
 
 For further discussion of these issues, see *The Java Virtual Machine Specification, Java SE 11 Edition* and the paper *Dynamic Class Loading in the Java Virtual Machine*, by Sheng Liang and Gilad Bracha, in *Proceedings of OOPSLA '98*, published as *ACM SIGPLAN Notices*, Volume 33, Number 10, October 1998, pages 36-44. A basic principle of the design of the Java programming language is that the run-time type system cannot be subverted by code written in the Java programming language, not even by implementations of such otherwise sensitive system classes as `ClassLoader` and `SecurityManager`.
 
+
+行为良好的类加载器支持这些特性：
+
+- 给定相同的名称，一个好的类加载器应该总是返回相同的类对象。
+- 如果类加载器 `L1` 将类 C 的加载委托给另一个加载器`L2`；那么对于任何类型 T，作为 C 的直接超类，或C的直接超接口, 或作为 C 中字段的类型，或作为 C 中方法或构造函数的形参类型，或者作为 C 中方法的返回类型，`L1` 和 `L2` 都应该返回相同的 `Class` 对象。
+
+恶意类加载器可能会违反这些特性。 但是，它不会破坏类型系统的安全性， 因为 Java 虚拟机对此进行了防范。
+
+有关这些问题的进一步讨论，请参阅 *The Java Virtual Machine Specification, Java SE 11 Edition* 和论文 *Dynamic Class Loading in the Java Virtual Machine*，作者 Sheng Liang 和 Gilad Bracha，在 *Proceedings of OOPSLA '98*，出版为 *ACM SIGPLAN Notices*，第 33 卷，第 10 期，1998 年 10 月，第 36-44 页。 Java 编程语言的一个基本设计原则是，运行时类型系统不能被 Java 编程语言编写的代码所颠覆，即使是 `ClassLoader` and `SecurityManager` 等敏感系统类的实现也不行。
+
+
 ### 12.2.1. The Loading Process
 
 The loading process is implemented by the class `ClassLoader` and its subclasses.
