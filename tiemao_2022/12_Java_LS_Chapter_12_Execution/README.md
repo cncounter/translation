@@ -107,7 +107,7 @@ The only requirement on when resolution is performed is that any errors detected
 
 The resolution process is described further in [§12.3.3](#jls-12.3.3).
 
-一个JVM实现可能会选择仅在主动使用符号引用时才去解析；对所有符号引用一致使用此策略将代表“最懒惰”的解决形式。 在这种情况下，如果 `Test` 有多个对另其它类的符号引用，那么这些引用可能会在使用时, 用到一个解析一个，或者如果在程序执行期间从未使用过这些引用，则可能根本不进行解析。
+具体的JVM实现可能会选择仅在主动使用符号引用时才去解析；对所有符号引用一致使用此策略将代表“最懒惰”的解决形式。 在这种情况下，如果 `Test` 有多个对另其它类的符号引用，那么这些引用可能会在使用时, 用到一个解析一个，或者如果在程序执行期间从未使用过这些引用，则可能根本不进行解析。
 
 关于何时执行解析的唯一要求是，在解析期间检测到的任何错误必须在程序中的某个点抛出，程序可能需要在链接到涉及的类或接口出错时, 对这种错误采取某些直接或间接的操作.  如果JVM使用上面描述的“静态”方式实现，在加载和链接 `Test` 类中提到的类或接口, 或任何进一步的递归引用的类和接口，假如报错，则可能会在程序执行之前发生加载和链接错误。 在使用“最懒惰”解决方案的系统中，只有在主动使用错误的符号引用时才会抛出这些错误。
 
@@ -208,6 +208,22 @@ If an error occurs during class loading, then an instance of one of the followin
 - `NoClassDefFoundError`: No definition for a requested class or interface could be found by the relevant class loader.
 
 Because loading involves the allocation of new data structures, it may fail with an `OutOfMemoryError`.
+
+
+### 12.2.1. 加载过程
+
+加载过程(Loading Process, 或者称为装载过程)由 `ClassLoader` 类及其子类实现。
+
+`ClassLoader` 的不同子类可能实现不同的加载策略。 特别是，类加载器可以缓存类和接口的二进制表示，根据预期使用情况执行预加载，或者一次性加载一组相关的类。 这些活动对正在运行的应用程序而言可能不是完全透明的，例如，如果由于类加载器缓存了旧版本的class文件，而导致找不到新编译的class等问题。 然而，类加载器的职责是只在程序中没有预取或组加载的情况下可能出现加载错误的地方反映加载错误。
+
+如果在类加载过程中发生错误，可能在程序中（直接或间接）使用该类型的任何位置，会抛出 `LinkageError` 类或者子类之一的错误：
+
+- `ClassCircularityError`：无法加载类或接口，因为它是自己的超类或超接口（ [§8.1.4](https://docs.oracle.com/javase/specs/jls/se11/html/jls-8.html#jls-8.1.4), [§9.1.3](https://docs.oracle.com/javase/specs/jls/se11/html/jls-9.html#jls-9.1.3), [§13.4.4](https://docs.oracle.com/javase/specs/jls/se11/html/jls-13.html#jls-13.4.4) ）。
+- `ClassFormatError`： 请求的类或接口, 对应的class文件二进制数据格式错误。
+- `NoClassDefFoundError`：相关类加载器找不到请求的类或接口定义。
+
+因为加载涉及到新数据结构的分配，所以它可能会失败并抛出 `OutOfMemoryError`。
+
 
 ## 12.3. Linking of Classes and Interfaces
 
