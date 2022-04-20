@@ -657,7 +657,7 @@ A new class instance is explicitly created when evaluation of a class instance c
 
 A new class instance may be implicitly created in the following situations:
 
-## 12.5. 创建类的新实例
+## 12.5. 创建类的新实例对象
 
 在执行类实例创建表达式时, 会显式创建对应类的一个新实例（[§15.9](https://docs.oracle.com/javase/specs/jls/se11/html/jls-15.html#jls-15.9)) ，会导致类被实例化。
 
@@ -682,6 +682,14 @@ Whenever a new class instance is created, memory space is allocated for it with 
 If there is not sufficient space available to allocate memory for the object, then creation of the class instance completes abruptly with an `OutOfMemoryError`. Otherwise, all the instance variables in the new object, including those declared in superclasses, are initialized to their default values ([§4.12.5](https://docs.oracle.com/javase/specs/jls/se11/html/jls-4.html#jls-4.12.5)).
 
 Just before a reference to the newly created object is returned as the result, the indicated constructor is processed to initialize the new object using the following procedure:
+
+每一种场景都唯一标识了调用某个特定的构造函数（[§8.8](https://docs.oracle.com/javase/specs/jls/se11/html/jls-8.html#jls-8.8)）, 通过特定参数来进行构造（也可能是无参构造）。
+
+每当创建类的一个新实例时，都会为其分配内存空间，并为该类中声明的所有实例变量, 以及每个超类中声明的所有实例变量（包括所有可能被隐藏的实例变量）分配空间（[§8.3](https://docs.oracle.com/javase/specs/jls/se11/html/jls-8.html#jls-8.3))。
+
+如果没有足够的可用内存空间分配给新对象，则实例的创建会突然完成，并出现 `OutOfMemoryError`。 否则，新对象中的所有实例变量，包括在超类中声明的变量，都将初始化为其默认值（[§4.12.5](https://docs.oracle.com/javase/specs/jls/se11/html/jls-4.html#jls-4.12.5))。
+
+就在将新创建对象的引用作为结果返回之前，使用以下过程, 处理指定的构造函数以初始化新对象：
 
 1. Assign the arguments for the constructor to newly created parameter variables for this constructor invocation.
 2. If this constructor begins with an explicit constructor invocation ([§8.8.7.1](https://docs.oracle.com/javase/specs/jls/se11/html/jls-8.html#jls-8.8.7.1)) of another constructor in the same class (using `this`), then evaluate the arguments and process that constructor invocation recursively using these same five steps. If that constructor invocation completes abruptly, then this procedure completes abruptly for the same reason; otherwise, continue with step 5.
