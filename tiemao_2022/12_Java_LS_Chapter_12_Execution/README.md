@@ -657,10 +657,23 @@ A new class instance is explicitly created when evaluation of a class instance c
 
 A new class instance may be implicitly created in the following situations:
 
+## 12.5. 创建类的新实例
+
+在执行类实例创建表达式时, 会显式创建对应类的一个新实例（[§15.9](https://docs.oracle.com/javase/specs/jls/se11/html/jls-15.html#jls-15.9)) ，会导致类被实例化。
+
+在以下情况下，可能会隐式创建新的类实例：
+
 - Loading of a class or interface that contains a string literal ([§3.10.5](https://docs.oracle.com/javase/specs/jls/se11/html/jls-3.html#jls-3.10.5)) may create a new `String` object to represent the literal. (This will not occur if a string denoting the same sequence of Unicode code points has previously been interned.)
 - Execution of an operation that causes boxing conversion ([§5.1.7](https://docs.oracle.com/javase/specs/jls/se11/html/jls-5.html#jls-5.1.7)). Boxing conversion may create a new object of a wrapper class (`Boolean`, `Byte`, `Short`, `Character`, `Integer`, `Long`, `Float`, `Double`) associated with one of the primitive types.
 - Execution of a string concatenation operator `+` ([§15.18.1](https://docs.oracle.com/javase/specs/jls/se11/html/jls-15.html#jls-15.18.1)) that is not part of a constant expression ([§15.28](https://docs.oracle.com/javase/specs/jls/se11/html/jls-15.html#jls-15.28)) always creates a new `String` object to represent the result. String concatenation operators may also create temporary wrapper objects for a value of a primitive type.
 - Evaluation of a method reference expression ([§15.13.3](https://docs.oracle.com/javase/specs/jls/se11/html/jls-15.html#jls-15.13.3)) or a lambda expression ([§15.27.4](https://docs.oracle.com/javase/specs/jls/se11/html/jls-15.html#jls-15.27.4)) may require that a new instance of a class that implements a functional interface type be created.
+
+
+- 加载包含字符串值的类或接口时, 可以创建一个新的 `String` 对象来表示这些字符。 （如果表示相同 Unicode 编码序列的字符串先前已被内联，则不会发生这种情况。）
+- 执行导致装箱转换的操作（[§5.1.7](https://docs.oracle.com/javase/specs/jls/se11/html/jls-5.html#jls-5.1.7)）. 装箱转换可能会创建与原生类型相关联的包装类（`Boolean`、`Byte`、`Short`、`Character`、`Integer`、`Long`、`Float`、`Double`）的新对象。
+- 字符串连接运算符 `+` 不是常量表达式的一部分, 总是创建一个新的`String` 对象来表示结果。 字符串连接运算符还可以为原始类型的值创建临时包装对象。【这里可能会发生javac编译器优化, 消除纯字面量的 `+` 操作】
+- 执行方法引用表达式 ([§15.13.3](https://docs.oracle.com/javase/specs/jls/se11/html/jls-15.html#jls-15.13.3)) 或lambda 表达式 ([§15.27.4](https://docs.oracle.com/javase/specs/jls/se11/html/jls-15.html#jls-15.27.4)) 可能需要创建一个实现函数接口类型的类的实例。
+
 
 Each of these situations identifies a particular constructor ([§8.8](https://docs.oracle.com/javase/specs/jls/se11/html/jls-8.html#jls-8.8)) to be called with specified arguments (possibly none) as part of the class instance creation process.
 
