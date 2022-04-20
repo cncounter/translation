@@ -6,6 +6,8 @@
 # Java语言规范文档
 
 > Java虚拟机, 全称为 Java Virtual Machine, 简称JVM。
+> 常量值, constant value
+> 常量变量, constant variable
 
 
 <a name="jls-12"></a>
@@ -366,6 +368,13 @@ Additionally, an `UnsatisfiedLinkError`, a subclass of `LinkageError`, may be th
 
 *Initialization* of an interface consists of executing the initializers for fields (constants) declared in the interface.
 
+## 12.4. 类和接口的初始化
+
+*初始化(Initialization)*:
+
+- 类的初始化, 包括执行其静态初始化程序, 以及类中 `static` 字段（类变量）的声明式赋值代码。
+- 接口初始化, 包括执行接口中 `static` 字段（类变量）的声明式赋值代码。
+
 <a name="jls-12.4.1"></a>
 
 ### 12.4.1. When Initialization Occurs
@@ -377,6 +386,16 @@ A class or interface type T will be initialized immediately before the first occ
 - A `static` field declared by T is assigned.
 - A `static` field declared by T is used and the field is not a constant variable ([§4.12.4](https://docs.oracle.com/javase/specs/jls/se11/html/jls-4.html#jls-4.12.4)).
 
+### 12.4.1. 初始化发生的时机
+
+类或接口类型 `T` 将在以下任何一项第一次出现之前, 立即初始化：
+
+- 如果 `T` 是一个类，创建一个 `T` 的实例。
+- 调用由 `T` 声明的 `static` 方法。
+- 赋值给 `T` 声明的 `static` 字段。
+- 从 `T` 声明的 `static` 字段取值，并且该字段不是常量变量（constant variable， [§4.12.4](https://docs.oracle.com/javase/specs/jls/se11/html/jls-4.html#jls-4.12.4) ）。
+
+
 When a class is initialized, its superclasses are initialized (if they have not been previously initialized), as well as any superinterfaces ([§8.1.5](https://docs.oracle.com/javase/specs/jls/se11/html/jls-8.html#jls-8.1.5)) that declare any default methods ([§9.4.3](https://docs.oracle.com/javase/specs/jls/se11/html/jls-9.html#jls-9.4.3)) (if they have not been previously initialized). Initialization of an interface does not, of itself, cause initialization of any of its superinterfaces.
 
 A reference to a `static` field ([§8.3.1.1](https://docs.oracle.com/javase/specs/jls/se11/html/jls-8.html#jls-8.3.1.1)) causes initialization of only the class or interface that actually declares it, even though it might be referred to through the name of a subclass, a subinterface, or a class that implements an interface.
@@ -385,15 +404,30 @@ Invocation of certain reflective methods in class `Class` and in package `java.l
 
 A class or interface will not be initialized under any other circumstance.
 
+一个类被初始化时，它的超类也会被初始化（如果之前已经执行过初始化则不会重复执行）；如果有声明了默认方法的超接口也会被初始化（如果之前没有被初始化）。 接口的初始化本身不会导致其任何超接口的初始化。
+
+对`static`字段的引用（[§8.3.1.1](https://docs.oracle.com/javase/specs/jls/se11/html/jls-8.html#jls-8.3.1.1)）, 会导致仅初始化实际声明它的类或接口，即使代码中可能通过子类、子接口或实现接口的类名称来引用。
+
+在类 `Class` 和包 `java.lang.reflect` 中调用某些反射方法也会导致类或接口初始化。
+
+在任何其他情况下, 都不会初始化类或接口。
+
 Note that a compiler may generate *synthetic* default methods in an interface, that is, default methods that are neither explicitly nor implicitly declared ([§13.1](https://docs.oracle.com/javase/specs/jls/se11/html/jls-13.html#jls-13.1)). Such methods will trigger the interface's initialization despite the source code giving no indication that the interface should be initialized.
 
 The intent is that a class or interface type has a set of initializers that put it in a consistent state, and that this state is the first state that is observed by other classes. The static initializers and class variable initializers are executed in textual order, and may not refer to class variables declared in the class whose declarations appear textually after the use, even though these class variables are in scope ([§8.3.3](https://docs.oracle.com/javase/specs/jls/se11/html/jls-8.html#jls-8.3.3)). This restriction is designed to detect, at compile time, most circular or otherwise malformed initializations.
 
 The fact that initialization code is unrestricted allows examples to be constructed where the value of a class variable can be observed when it still has its initial default value, before its initializing expression is evaluated, but such examples are rare in practice. (Such examples can be also constructed for instance variable initialization ([§12.5](#jls-12.5)).) The full power of the Java programming language is available in these initializers; programmers must exercise some care. This power places an extra burden on code generators, but this burden would arise in any case because the Java programming language is concurrent ([§12.4.2](#jls-12.4.2)).
 
+请注意，编译器可能会在接口中生成一些合成的默认方法，即既是不显式也是不隐式声明的默认方法。 尽管源代码中没有表明应该初始化接口，但这些方法将触发接口的连带自动初始化。
+
+目的是因为类或接口类型有一组初始化器，将其置于一致状态，并且此状态是其他类观察到的第一个状态。 静态初始化器和类变量初始化器以源代码中的文本顺序执行，并且不允许引用该类中在其后声明的类变量。 此限制旨在编译时检测大多数循环或其他格式的错误初始化。
+
+初始化代码不受限制的事实允许构建示例，在其初始化表达式执行完成之前，类变量的值仍然具有初始默认值时可以观察到， 但这样的示例在实践中很少见。 （也可以为实例变量初始化构建此类示例 ([§12.5](#jls-12.5))。） Java 编程语言的全部功能在这些初始化程序中可用； 程序员必须小心谨慎。这种能力给代码生成器带来了额外的负担，但无论如何都会出现这种负担，因为 Java 编程语言是并发的 ([§12.4.2](#jls-12.4.2))。
 
 
-**Example 12.4.1-1. Superclasses Are Initialized Before Subclasses**
+> **Example 12.4.1-1. Superclasses Are Initialized Before Subclasses**
+
+> **Example 12.4.1-1. 超类在子类之前初始化**
 
 ```java
 class Super {
@@ -416,17 +450,23 @@ class Test {
 
 This program produces the output:
 
+程序的执行结果如下:
+
 ```java
 Super Two false
 ```
 
 The class `One` is never initialized, because it not used actively and therefore is never linked to. The class `Two` is initialized only after its superclass `Super` has been initialized.
 
+在这个示例中, `One` 类永远不会被初始化，因为它没有被主动使用，因此永远不会被链接到。
+类 `Two` 必须在其超类 `Super` 初始化完成之后才会被初始化。
 
 
 
+> **Example 12.4.1-2. Only The Class That Declares `static` Field Is Initialized**
 
-**Example 12.4.1-2. Only The Class That Declares `static` Field Is Initialized**
+> **Example 12.4.1-2. 在使用static字段时, 只有直接声明 `static` 字段的类, 才会被初始化 **
+
 
 ```java
 class Super {
@@ -444,6 +484,8 @@ class Test {
 
 This program prints only:
 
+程序的执行结果如下:
+
 ```java
 1729
 ```
@@ -451,10 +493,12 @@ This program prints only:
 because the class `Sub` is never initialized; the reference to `Sub.taxi` is a reference to a field actually declared in class `Super` and does not trigger initialization of the class `Sub`.
 
 
+因为类 `Sub` 从未被初始化； `Sub.taxi` 引用的实际上是在 `Super` 类中声明的字段， 所以不会触发 `Sub` 类的初始化。
 
 
+> **Example 12.4.1-3. Interface Initialization Does Not Initialize Superinterfaces**
 
-**Example 12.4.1-3. Interface Initialization Does Not Initialize Superinterfaces**
+> **Example 12.4.1-3. 接口的初始化不会触发超接口的初始化 **
 
 ```java
 interface I {
@@ -480,6 +524,8 @@ class Test {
 
 This program produces the output:
 
+程序的执行结果如下:
+
 ```java
 1
 j=3
@@ -493,6 +539,12 @@ The reference to `K.j` is a reference to a field actually declared in interface 
 
 Despite the fact that the name `K` is used to refer to field `j` of interface `J`, interface `K` is not initialized.
 
+
+对 `J.i` 的引用是一个常量变量字段（[§4.12.4](https://docs.oracle.com/javase/specs/jls/se11/html/jls-4.html#jls-4.12.4)); 因此，它不会导致`I`被初始化（[§13.4.9](https://docs.oracle.com/javase/specs/jls/se11/html/jls-13.html#jls-13.4.9))。
+
+对 `K.j` 的引用是实际在接口 `J` 中声明的字段，该字段不是常量变量； 这会导致接口 `J` 的字段初始化，但不会初始化其超接口 `I` 的字段，也不会初始化接口  `K` 的字段。
+
+尽管代码中使用了  `K` 类来引用接口 `J` 的字段`j`，但接口 `K` 并未初始化。
 
 
 <a name="jls-12.4.2"></a>
