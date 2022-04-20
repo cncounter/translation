@@ -216,7 +216,7 @@ Because loading involves the allocation of new data structures, it may fail with
 
 `ClassLoader` 的不同子类可能实现不同的加载策略。 特别是，类加载器可以缓存类和接口的二进制表示，根据预期使用情况执行预加载，或者一次性加载一组相关的类。 这些活动对正在运行的应用程序而言可能不是完全透明的，例如，如果由于类加载器缓存了旧版本的class文件，而导致找不到新编译的class等问题。 然而，类加载器的职责是只在程序中没有预取或组加载的情况下可能出现加载错误的地方反映加载错误。
 
-如果在类加载过程中发生错误，可能在程序中（直接或间接）使用该类型的任何位置，会抛出 `LinkageError` 类或者子类之一的错误：
+如果在类加载过程中发生错误，可能在程序中（直接或间接）使用该类型的任何位置，抛出以下 `LinkageError` 子类的错误：
 
 - `ClassCircularityError`：无法加载类或接口，因为它是自己的超类或超接口（ [§8.1.4](https://docs.oracle.com/javase/specs/jls/se11/html/jls-8.html#jls-8.1.4), [§9.1.3](https://docs.oracle.com/javase/specs/jls/se11/html/jls-9.html#jls-9.1.3), [§13.4.4](https://docs.oracle.com/javase/specs/jls/se11/html/jls-13.html#jls-13.4.4) ）。
 - `ClassFormatError`： 请求的类或接口, 对应的class文件二进制数据格式错误。
@@ -241,7 +241,7 @@ Because linking involves the allocation of new data structures, it may fail with
 
 ## 12.3. 类和接口的链接
 
-链接(Linking)过程主要是将类或接口的二进制形式, 组合到Java虚拟机的运行时状态中，并使其可以执行。 在链接之前必须先将类或接口加载完成。
+链接(Linking): 主要是将类或接口的二进制形式, 组合到Java虚拟机的运行时状态中，并使其可以执行的过程。 在链接开始之前类或接口就已经加载完成了。
 
 链接涉及三种不同的活动： 验证、准备、符号引用的解析。
 
@@ -261,6 +261,14 @@ Because linking involves the allocation of new data structures, it may fail with
 If an error occurs during verification, then an instance of the following subclass of class `LinkageError` will be thrown at the point in the program that caused the class to be verified:
 
 - `VerifyError`: The binary definition for a class or interface failed to pass a set of required checks to verify that it obeys the semantics of the Java Virtual Machine language and that it cannot violate the integrity of the Java Virtual Machine. (See [§13.4.2](https://docs.oracle.com/javase/specs/jls/se11/html/jls-13.html#jls-13.4.2), [§13.4.4](https://docs.oracle.com/javase/specs/jls/se11/html/jls-13.html#jls-13.4.4), [§13.4.9](https://docs.oracle.com/javase/specs/jls/se11/html/jls-13.html#jls-13.4.9), and [§13.4.17](https://docs.oracle.com/javase/specs/jls/se11/html/jls-13.html#jls-13.4.17) for some examples.)
+
+### 12.3.1. 对二进制数据进行验证
+
+*验证(Verification)* 确保类或接口的二进制表示在结构上是正确的。 例如，检查每条指令是否包含一个有效的操作码；每条分支指令的跳转索引都是其他指令的开头，而不是跳转到某条指令的中间；每个方法都提供了结构正确的签名；并且每条指令都遵循 Java 虚拟机语言的类型规则。
+
+如果在验证过程中发生错误，则会在程序中导致该类被验证的执行处, 抛出以下 `LinkageError` 子类的实例：
+
+- `VerifyError`：类或接口的二进制定义未能通过一组必需的检查，以验证它是否符合 Java 虚拟机语言的语义，并且不能违反 Java 虚拟机的完整性。 （示例请参见[§13.4.2](https://docs.oracle.com/javase/specs/jls/se11/html/jls-13.html#jls-13.4.2), [§13.4.4](https://docs.oracle.com/javase/specs/jls/se11/html/jls-13.html#jls-13.4.4), [§13.4.9](https://docs.oracle.com/javase/specs/jls/se11/html/jls-13.html#jls-13.4.9), 以及 [§13.4.17](https://docs.oracle.com/javase/specs/jls/se11/html/jls-13.html#jls-13.4.17)。）
 
 ### 12.3.2. Preparation of a Class or Interface Type
 
