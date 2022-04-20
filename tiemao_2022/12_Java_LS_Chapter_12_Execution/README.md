@@ -264,7 +264,7 @@ If an error occurs during verification, then an instance of the following subcla
 
 ### 12.3.1. 对二进制数据进行验证
 
-*验证(Verification)* 确保类或接口的二进制表示在结构上是正确的。 例如，检查每条指令是否包含一个有效的操作码；每条分支指令的跳转索引都是其他指令的开头，而不是跳转到某条指令的中间；每个方法都提供了结构正确的签名；并且每条指令都遵循 Java 虚拟机语言的类型规则。
+*验证(Verification)*：确保类或接口的二进制表示在结构上是正确的。 例如，检查每条指令是否包含一个有效的操作码；每条分支指令的跳转索引都是其他指令的开头，而不是跳转到某条指令的中间；每个方法都提供了结构正确的签名；并且每条指令都遵循 Java 虚拟机语言的类型规则。
 
 如果在验证过程中发生错误，则会在程序中导致该类被验证的执行处, 抛出以下 `LinkageError` 子类的实例：
 
@@ -275,6 +275,12 @@ If an error occurs during verification, then an instance of the following subcla
 *Preparation* involves creating the `static` fields (class variables and constants) for a class or interface and initializing such fields to the default values ([§4.12.5](https://docs.oracle.com/javase/specs/jls/se11/html/jls-4.html#jls-4.12.5)). This does not require the execution of any source code; explicit initializers for static fields are executed as part of initialization ([§12.4](#jls-12.4)), not preparation.
 
 Implementations of the Java Virtual Machine may precompute additional data structures at preparation time in order to make later operations on a class or interface more efficient. One particularly useful data structure is a "method table" or other data structure that allows any method to be invoked on instances of a class without requiring a search of superclasses at invocation time.
+
+### 12.3.2. 类或接口类型的准备
+
+*准备(Preparation)*：涉及为类或接口创建`static`字段（类变量和常量），并将这些字段初始化为默认值（[§4.12.5](https://docs.oracle.com/javase/specs/jls/se11/html/jls-4.html#jls-4.12.5))。 这个过程不需要执行任何源代码； 对静态字段的显式初始化赋值是初始化（initialization）过程的一部分（[§12.4](#jls-12.4)），准备阶段并不处理。
+
+Java 虚拟机的实现可以在准备阶段, 预先计算额外的数据结构，以使后续对类或接口的操作更高效。 一种特别有用的数据结构是 "method table(方法表)" 或类似的其他数据结构，它允许在类的实例上调用任何方法，而无需在调用时再搜索超类。
 
 ### 12.3.3. Resolution of Symbolic References
 
