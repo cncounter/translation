@@ -372,7 +372,7 @@ Additionally, an `UnsatisfiedLinkError`, a subclass of `LinkageError`, may be th
 
 *初始化(Initialization)*:
 
-- 类的初始化, 包括执行其静态初始化程序, 以及类中 `static` 字段（类变量）的声明式赋值代码。
+- 类的初始化, 包括执行其静态初始化块, 以及类中 `static` 字段（类变量）的声明式赋值代码。
 - 接口初始化, 包括执行接口中 `static` 字段（类变量）的声明式赋值代码。
 
 <a name="jls-12.4.1"></a>
@@ -553,6 +553,10 @@ Despite the fact that the name `K` is used to refer to field `j` of interface `J
 
 Because the Java programming language is multithreaded, initialization of a class or interface requires careful synchronization, since some other thread may be trying to initialize the same class or interface at the same time. There is also the possibility that initialization of a class or interface may be requested recursively as part of the initialization of that class or interface; for example, a variable initializer in class A might invoke a method of an unrelated class B, which might in turn invoke a method of class A. The implementation of the Java Virtual Machine is responsible for taking care of synchronization and recursive initialization by using the following procedure.
 
+### 12.4.2. 详细的初始化过程
+
+Java 编程语言是多线程的，所以类或接口的初始化需要仔细同步，因为其他线程可能会并发地尝试初始化同一个类或接口。 还有一种可能性是，作为类或接口初始化时的某些调用，可以会递归地请求类或接口的初始化； 例如，类 A 中的变量初始化器, 可能会调用不相关的类 B 的方法，而后者初始化时又可能调用类 A 的方法。 Java 虚拟机实现通过使用以下处理过程来负责同步和递归初始化。
+
 The procedure assumes that the `Class` object has already been verified and prepared, and that the `Class` object contains state that indicates one of four situations:
 
 - This `Class` object is verified and prepared but not initialized.
@@ -560,7 +564,17 @@ The procedure assumes that the `Class` object has already been verified and prep
 - This `Class` object is fully initialized and ready for use.
 - This `Class` object is in an erroneous state, perhaps because initialization was attempted and failed.
 
+该过程假定 `Class` 对象已经过验证和准备，并且 `Class` 对象包含指示以下四种情况之一的状态：
+
+- 这个 `Class` 对象已经过验证和准备，但还没有初始化。
+- 这个 `Class` 对象正在被某个特定线程 `T` 初始化。
+- 这个 `Class` 对象已完全初始化并可以使用。
+- 这个 `Class` 对象处于错误状态，可能是因为尝试初始化但失败了。
+
 For each class or interface C, there is a unique initialization lock `LC`. The mapping from C to `LC` is left to the discretion of the Java Virtual Machine implementation. The procedure for initializing C is then as follows:
+
+对于每个类或接口 `C`，都有一个唯一的初始化锁 `LC`。 从 `C` 到 `LC` 的映射由 Java 虚拟机实现自行维护。 初始化 C 的过程如下：
+
 
 1. Synchronize on the initialization lock, `LC`, for C. This involves waiting until the current thread can acquire `LC`.
 
@@ -572,15 +586,35 @@ For each class or interface C, there is a unique initialization lock `LC`. The m
 
 5. If the `Class` object for C is in an erroneous state, then initialization is not possible. Release `LC` and throw a `NoClassDefFoundError`.
 
+1. 同步 `C` 的初始化锁 `LC` 。 这包括等待当前线程可以获取`LC`。
+
+2. 如果 `C` 的 `Class` 对象表明其他线程正在对 `C` 进行初始化，则释放 `LC` 并阻塞当前线程，直到收到通知之前正在进行的初始化已完成，此时重复此步骤 .
+
+3. 如果 `C` 的 `Class` 对象表明当前线程正在对 `C`进行初始化，那么这一定是一个递归的初始化请求。 释放 `LC` 并正常完成。
+
+4. 如果 `C` 的 `Class` 对象表明 `C` 已经被初始化，则不需要进一步的操作。 释放`LC`并正常完成。
+
+5. 如果 `C` 的 `Class` 对象处于错误状态，则无法进行初始化。 释放 `LC` 并抛出 `NoClassDefFoundError`。
+
 6. Otherwise, record the fact that initialization of the `Class` object for C is in progress by the current thread, and release `LC`.
 
    Then, initialize the `static` fields of C which are constant variables ([§4.12.4](https://docs.oracle.com/javase/specs/jls/se11/html/jls-4.html#jls-4.12.4), [§8.3.2](https://docs.oracle.com/javase/specs/jls/se11/html/jls-8.html#jls-8.3.2), [§9.3.1](https://docs.oracle.com/javase/specs/jls/se11/html/jls-9.html#jls-9.3.1)).
+
+6. 否则，走到这一步，则记下当前线程正在对`C`的`Class`对象进行初始化，并释放`LC`。
+
+    然后，初始化 `C` 中属于 常量变量 的`static`字段（[§4.12.4](https://docs.oracle.com/javase/specs/jls/se11/html/jls-4.html#jls-4.12.4), [§8.3.2](https://docs.oracle.com/javase/specs/jls/se11/html/jls-8.html#jls-8.3.2), [§9.3.1](https://docs.oracle.com/javase/specs/jls/se11/html/jls-9.html#jls-9.3.1)）。
 
 7. Next, if C is a class rather than an interface, then let SC be its superclass and let SI1, ..., SIn be all superinterfaces of C that declare at least one default method. The order of superinterfaces is given by a recursive enumeration over the superinterface hierarchy of each interface directly implemented by C (in the left-to-right order of C's `implements` clause). For each interface I directly implemented by C, the enumeration recurs on I's superinterfaces (in the left-to-right order of I's `extends` clause) before returning I.
 
    For each S in the list [ SC, SI1, ..., SIn ], if S has not yet been initialized, then recursively perform this entire procedure for S. If necessary, verify and prepare S first.
 
    If the initialization of S completes abruptly because of a thrown exception, then acquire `LC`, label the `Class` object for C as erroneous, notify all waiting threads, release `LC`, and complete abruptly, throwing the same exception that resulted from initializing S.
+
+7. 接下来，如果 `C` 是类而不是接口，则令 `SC` 为其超类，并令 `SI1`，`...`，`SIn` 为声明至少一个默认方法(default method)的 `C` 的所有超接口。 超级接口的顺序由 `C` 直接实现的每个接口的超级接口层次结构上的递归枚举给出（深度优先，并按照 `C` 的 `implements` 子句从左到右的顺序）。 对于由 `C` 直接实现的每个接口 `I` ，在返回 `I` 之前，会在 `I` 的超接口上重复枚举（按 `I` 的 `extends` 子句从左到右的顺序）。
+
+    对于 [ SC, SI1, ..., SIn ] 列表中的每个 `S` ，如果 `S` 还没有被初始化，那么递归地对S执行整个过程。 如果需要，还要先验证和准备 `S` 。
+
+    如果对 `S` 的初始化由于抛出异常而突然结束，则获取`LC`锁，将 `C` 的`Class` 对象标记为错误，通知所有等待线程，释放`LC`，然后突然完成，抛出初始化S时抛出的同一个异常。
 
 8. Next, determine whether assertions are enabled ([§14.10](https://docs.oracle.com/javase/specs/jls/se11/html/jls-14.html#jls-14.10)) for C by querying its defining class loader.
 
@@ -592,11 +626,28 @@ For each class or interface C, there is a unique initialization lock `LC`. The m
 
 12. Acquire `LC`, label the `Class` object for C as erroneous, notify all waiting threads, release `LC`, and complete this procedure abruptly with reason E or its replacement as determined in the previous step.
 
+8. 接下来，通过查询定义 `C` 的类加载器, 确定是否启用了断言（[§14.10](https://docs.oracle.com/javase/specs/jls/se11/html/jls-14.html#jls-14.10)）。
+
+9. 接下来，按照源代码中的文本顺序，依次执行类变量初始化程序和静态初始化块，或者接口的字段初始化程序，就好像它们在一个单独的块中一样。
+
+10. 如果初始化程序的执行正常完成，则获取`LC`，将`C`的`Class`对象标记为完全初始化，通知所有等待线程，释放`LC`，正常完成此过程。
+
+11. 其他情况，则初始化程序必须通过抛出异常 `E` 突然完成。 如果 `E` 的类不是 `Error` 或其子类， 则创建 `ExceptionInInitializerError` 类的新实例，以 `E` 作为参数，并在接下来的步骤中使用此对象代替 `E`。 如果由于发生 `OutOfMemoryError` 而无法创建 `ExceptionInInitializerError` 的新实例， 则在接下来的步骤中使用 `OutOfMemoryError` 对象代替 `E`。
+
+12. 获取`LC`， 将`C`的`Class`对象标记为错误，通知所有等待的线程，然后释放`LC`，并根据上一步确定的原因 E 或替换原因突然完成此过程。
+
 An implementation may optimize this procedure by eliding the lock acquisition in step 1 (and release in step 4/5) when it can determine that the initialization of the class has already completed, provided that, in terms of the memory model, all happens-before orderings that would exist if the lock were acquired, still exist when the optimization is performed.
 
 Code generators need to preserve the points of possible initialization of a class or interface, inserting an invocation of the initialization procedure just described. If this initialization procedure completes normally and the `Class` object is fully initialized and ready for use, then the invocation of the initialization procedure is no longer necessary and it may be eliminated from the code - for example, by patching it out or otherwise regenerating the code.
 
 Compile-time analysis may, in some cases, be able to eliminate many of the checks that a type has been initialized from the generated code, if an initialization order for a group of related types can be determined. Such analysis must, however, fully account for concurrency and for the fact that initialization code is unrestricted.
+
+JVM实现如果确定类的初始化已经完成时，可以优化这个过程, 比如省略步骤 1 中的锁获取（并在步骤 4/5 中释放），但去掉锁的一个前提是，从内存模型而言，需要保证，获取锁过程的时候对应的所有 happens-before 操作，在进行锁优化操作替换时，对应的状态仍然一致。
+
+代码生成器需要保留类或接口可能的初始化点，插入刚刚描述的初始化过程的调用。 如果此初始化过程正常完成并且`Class`对象已完全初始化并已准备好， 则不再需要调用初始化过程，并且可以从代码中消除它 - 例如，通过修补它或以其他方式重新生成编码。
+
+在某些情况下，编译时分析器如果确定一组相关类型都已经完成初始化，则可以从生成的代码中修剪掉很多对某个类型进行初始化的检查。 然而，这种分析必须充分考虑并发性和初始化代码不受限制的事实。
+
 
 <a name="jls-12.5"></a>
 
