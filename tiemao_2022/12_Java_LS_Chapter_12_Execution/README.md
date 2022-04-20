@@ -7,6 +7,9 @@
 
 > Java虚拟机, 全称为 Java Virtual Machine, 简称JVM。
 
+
+<a name="jls-12"></a>
+
 ## 第12章. 执行(Execution)
 
 This chapter specifies activities that occur during execution of a program. It is organized around the life cycle of the Java Virtual Machine and of the classes, interfaces, and objects that form a program.
@@ -65,6 +68,7 @@ We now outline the steps the Java Virtual Machine may take to execute `Test`, as
 
 我们现在将 Java 虚拟机执行`Test`类可能采取的步骤，归纳为: 加载(loading)、链接(linking)和初始化(initialization)过程，这些过程在后面的部分中详细介绍。
 
+<a name="jls-12.1.1"></a>
 
 ### 12.1.1. Load the Class `Test`
 
@@ -76,6 +80,7 @@ The initial attempt to execute the method `main` of class `Test` discovers that 
 JVM最初尝试执行 `Test` 类的 `main` 方法时, 发现尚未加载类 `Test` - 也就是说，Java虚拟机当前还未包含此类的二进制表示。
 Java 虚拟机然后通过类加载器尝试找到这样的二进制表示。 如果此过程失败，则会引发错误。 [§12.2](#jls-12.2) 中进一步描述了这个加载过程。
 
+<a name="jls-12.1.2"></a>
 
 ### 12.1.2. Link `Test`: Verify, Prepare, (Optionally) Resolve
 
@@ -113,6 +118,8 @@ The resolution process is described further in [§12.3.3](#jls-12.3.3).
 
 [§12.3.3](#jls-12.3.3) 中进一步描述了解析过程。
 
+<a name="jls-12.1.3"></a>
+
 ### 12.1.3. Initialize Test: Execute Initializers
 
 In our continuing example, the Java Virtual Machine is still trying to execute the method `main` of class `Test`. This is permitted only if the class has been initialized ([§12.4.1](#jls-12.4.1)).
@@ -137,6 +144,7 @@ The initialization process is described further in [§12.4](#jls-12.4).
 
 [§12.4](#jls-12.4) 中进一步描述了初始化过程。
 
+<a name="jls-12.1.4"></a>
 
 ### 12.1.4. Invoke `Test.main`
 
@@ -157,6 +165,9 @@ public static void main(String []args)
 public static void main(String... args)
 public static void main(String... aaa)
 ```
+
+
+<a name="jls-12.2"></a>
 
 ## 12.2. Loading of Classes and Interfaces
 
@@ -194,6 +205,7 @@ For further discussion of these issues, see *The Java Virtual Machine Specificat
 
 有关这些问题的进一步讨论，请参阅 *The Java Virtual Machine Specification, Java SE 11 Edition* 和论文 *Dynamic Class Loading in the Java Virtual Machine*，作者 Sheng Liang 和 Gilad Bracha，在 *Proceedings of OOPSLA '98*，出版为 *ACM SIGPLAN Notices*，第 33 卷，第 10 期，1998 年 10 月，第 36-44 页。 Java 编程语言的一个基本设计原则是，运行时类型系统不能被 Java 编程语言编写的代码所颠覆，即使是 `ClassLoader` and `SecurityManager` 等敏感系统类的实现也不行。
 
+<a name="jls-12.2.1"></a>
 
 ### 12.2.1. The Loading Process
 
@@ -224,6 +236,7 @@ Because loading involves the allocation of new data structures, it may fail with
 
 因为加载涉及到新数据结构的分配，所以可能会失败并抛出 `OutOfMemoryError`。
 
+<a name="jls-12.3"></a>
 
 ## 12.3. Linking of Classes and Interfaces
 
@@ -253,6 +266,7 @@ Because linking involves the allocation of new data structures, it may fail with
 
 因为链接涉及新数据结构的分配，所以可能会失败并抛出 `OutOfMemoryError`。
 
+<a name="jls-12.3.1"></a>
 
 ### 12.3.1. Verification of the Binary Representation
 
@@ -270,6 +284,8 @@ If an error occurs during verification, then an instance of the following subcla
 
 - `VerifyError`：类或接口的二进制定义未能通过一组必需的检查，以验证它是否符合 Java 虚拟机语言的语义，并且不能违反 Java 虚拟机的完整性。 （示例请参见[§13.4.2](https://docs.oracle.com/javase/specs/jls/se11/html/jls-13.html#jls-13.4.2), [§13.4.4](https://docs.oracle.com/javase/specs/jls/se11/html/jls-13.html#jls-13.4.4), [§13.4.9](https://docs.oracle.com/javase/specs/jls/se11/html/jls-13.html#jls-13.4.9), 以及 [§13.4.17](https://docs.oracle.com/javase/specs/jls/se11/html/jls-13.html#jls-13.4.17)。）
 
+<a name="jls-12.3.2"></a>
+
 ### 12.3.2. Preparation of a Class or Interface Type
 
 *Preparation* involves creating the `static` fields (class variables and constants) for a class or interface and initializing such fields to the default values ([§4.12.5](https://docs.oracle.com/javase/specs/jls/se11/html/jls-4.html#jls-4.12.5)). This does not require the execution of any source code; explicit initializers for static fields are executed as part of initialization ([§12.4](#jls-12.4)), not preparation.
@@ -282,6 +298,8 @@ Implementations of the Java Virtual Machine may precompute additional data struc
 
 Java 虚拟机的实现可以在准备阶段, 预先计算额外的数据结构，以使后续对类或接口的操作更高效。 一种特别有用的数据结构是 "method table(方法表)" 或类似的其他数据结构，它允许在类的实例上调用任何方法，而无需在调用时再搜索超类。
 
+<a name="jls-12.3.3"></a>
+
 ### 12.3.3. Resolution of Symbolic References
 
 The binary representation of a class or interface references other classes and interfaces and their fields, methods, and constructors symbolically, using the binary names ([§13.1](https://docs.oracle.com/javase/specs/jls/se11/html/jls-13.html#jls-13.1)) of the other classes and interfaces ([§13.1](https://docs.oracle.com/javase/specs/jls/se11/html/jls-13.html#jls-13.1)). For fields and methods, these symbolic references include the name of the class or interface type of which the field or method is a member, as well as the name of the field or method itself, together with appropriate type information.
@@ -289,6 +307,18 @@ The binary representation of a class or interface references other classes and i
 Before a symbolic reference can be used it must undergo resolution, wherein a symbolic reference is checked to be correct and, typically, replaced with a direct reference that can be more efficiently processed if the reference is used repeatedly.
 
 If an error occurs during resolution, then an error will be thrown. Most typically, this will be an instance of one of the following subclasses of the class `IncompatibleClassChangeError`, but it may also be an instance of some other subclass of `IncompatibleClassChangeError` or even an instance of the class `IncompatibleClassChangeError` itself. This error may be thrown at any point in the program that uses a symbolic reference to the type, directly or indirectly:
+
+### 12.3.3. 解析符号引用
+
+类或接口的二进制表示, 通过二进制格式的名称作为符号, 来引用其他类和接口，以及相应的字段、方法和构造函数（[§13.1](https://docs.oracle.com/javase/specs/jls/se11/html/jls-13.html#jls-13.1)) 的其他类和接口。 对于字段和方法，这些符号引用包括:
+
+- 字段或方法所属的类/接口类型的名称，
+- 以及字段或方法本身的名称，
+- 以及相关的类型信息。
+
+在符号引用可以使用前，必须经过解析；解析过程会检查符号引用是否正确，通常会替换为直接引用；如果多个地方重复使用该引用, 那么这种替换就可以提升处理效率。
+
+如果在解析过程中发生错误，则会抛出错误。 最典型的情况下，抛出的错误是 `IncompatibleClassChangeError` 类及其子类的实例。 这些错误会在程序中直接或间接使用该类型的符号引用的任何位置引发：
 
 - `IllegalAccessError`: A symbolic reference has been encountered that specifies a use or assignment of a field, or invocation of a method, or creation of an instance of a class, to which the code containing the reference does not have access because the field or method was declared with `private`, `protected`, or package access (not `public`), or because the class was not declared `public` in a package that is exported or opened to the code containing the reference.
 
@@ -298,6 +328,15 @@ If an error occurs during resolution, then an error will be thrown. Most typical
 
   This can occur, for example, if a class that is originally not `abstract` is changed to be `abstract` after another class that refers to the class in question has been compiled ([§13.4.1](https://docs.oracle.com/javase/specs/jls/se11/html/jls-13.html#jls-13.4.1)).
 
+- `IllegalAccessError`：非法访问错误; 遇到一个符号引用，对某个字段进行使用或赋值，或调用某个方法，或创建某个类的实例，但是包含这个引用的代码无权限访问，因为该字段或方法被声明为  `private`, `protected` 或包访问（非 `public` ），或者因为在导出或打开到包含引用的代码的包中未将类声明为 `public`。
+
+  例如，一个类的某个字段, 原先声明为 `public`, 其他类引用这个字段完全没问题, 可以通过编译; 但是在编译完成后 又将 `public` 声明的字段改为 `private` 访问权限, 如果只编译修改后的这个类, 那么在运行时就会出现这种问类; 或者，一个package中导出的public类, 如果在引用该类的另一个模块被编译后，这个package却不再由其模块导出该类等情况（([§13.4.1](https://docs.oracle.com/javase/specs/jls/se11/html/jls-13.html#jls-13.4.1)))。
+
+- `InstantiationError`：实例化错误; 遇到一个符号引用，用来对某个类进行实例创建，但无法创建对应的实例，因为该引用指向的是接口或者抽象类。
+
+  例如，如果一个原本不是 `abstract` 的类，在另一个引用该类的类被编译后，更改为  `abstract`（[§13.4.1](https://docs.oracle.com/javase/specs/jls/se11/html/jls-13.html#jls-13.4.1))。
+
+
 - `NoSuchFieldError`: A symbolic reference has been encountered that refers to a specific field of a specific class or interface, but the class or interface does not contain a field of that name.
 
   This can occur, for example, if a field declaration was deleted from a class after another class that refers to the field was compiled ([§13.4.8](https://docs.oracle.com/javase/specs/jls/se11/html/jls-13.html#jls-13.4.8)).
@@ -306,13 +345,28 @@ If an error occurs during resolution, then an error will be thrown. Most typical
 
   This can occur, for example, if a method declaration was deleted from a class after another class that refers to the method was compiled ([§13.4.12](https://docs.oracle.com/javase/specs/jls/se11/html/jls-13.html#jls-13.4.12)).
 
+- `NoSuchFieldError`：没有这个字段； 遇到了引用特定类或接口的特定字段的符号引用，但该类或接口不包含该名称的字段。
+
+   例如，如果在引用该字段的另一个类编译之后，从被引用类中删除了字段声明（ [§13.4.8](https://docs.oracle.com/javase/specs/jls/se11/html/jls-13.html#jls-13.4.8) ）。
+
+- `NoSuchMethodError`：没有这个方法; 遇到了引用特定类或接口的特定方法的符号引用，但该类或接口不包含该签名的方法。
+
+   例如，如果在引用该方法的另一个类编译之后, 从被引用类中删除了方法声明（ [§13.4.12](https://docs.oracle.com/javase/specs/jls/se11/html/jls-13.html#jls-13.4.12) )。
+
 Additionally, an `UnsatisfiedLinkError`, a subclass of `LinkageError`, may be thrown if a class declares a `native` method for which no implementation can be found. The error will occur if the method is used, or earlier, depending on what kind of resolution strategy is being used by an implementation of the Java Virtual Machine ([§12.3](#jls-12.3)).
+
+此外，如果一个类声明了 `native` 方法却找不到对应的实现，则可能会抛出错误 `UnsatisfiedLinkError`，这也是 `LinkageError` 的子类。
+抛出的实际可能是调用这个方法时，或者更早的时间点，具体取决于 Java 虚拟机实现使用哪种解析策略 ([§12.3](#jls-12.3))。
+
+<a name="jls-12.4"></a>
 
 ## 12.4. Initialization of Classes and Interfaces
 
 *Initialization* of a class consists of executing its static initializers and the initializers for `static` fields (class variables) declared in the class.
 
 *Initialization* of an interface consists of executing the initializers for fields (constants) declared in the interface.
+
+<a name="jls-12.4.1"></a>
 
 ### 12.4.1. When Initialization Occurs
 
@@ -441,6 +495,8 @@ Despite the fact that the name `K` is used to refer to field `j` of interface `J
 
 
 
+<a name="jls-12.4.2"></a>
+
 ### 12.4.2. Detailed Initialization Procedure
 
 Because the Java programming language is multithreaded, initialization of a class or interface requires careful synchronization, since some other thread may be trying to initialize the same class or interface at the same time. There is also the possibility that initialization of a class or interface may be requested recursively as part of the initialization of that class or interface; for example, a variable initializer in class A might invoke a method of an unrelated class B, which might in turn invoke a method of class A. The implementation of the Java Virtual Machine is responsible for taking care of synchronization and recursive initialization by using the following procedure.
@@ -489,6 +545,8 @@ An implementation may optimize this procedure by eliding the lock acquisition in
 Code generators need to preserve the points of possible initialization of a class or interface, inserting an invocation of the initialization procedure just described. If this initialization procedure completes normally and the `Class` object is fully initialized and ready for use, then the invocation of the initialization procedure is no longer necessary and it may be eliminated from the code - for example, by patching it out or otherwise regenerating the code.
 
 Compile-time analysis may, in some cases, be able to eliminate many of the checks that a type has been initialized from the generated code, if an initialization order for a group of related types can be determined. Such analysis must, however, fully account for concurrency and for the fact that initialization code is unrestricted.
+
+<a name="jls-12.5"></a>
 
 ## 12.5. Creation of New Class Instances
 
@@ -596,6 +654,8 @@ This shows that the invocation of `printThree` in the constructor for class `Sup
 
 
 
+<a name="jls-12.6"></a>
+
 ## 12.6. Finalization of Class Instances
 
 The class `Object` has a `protected` method called `finalize`; this method can be overridden by other classes. The particular definition of `finalize` that can be invoked for an object is called the *finalizer* of that object. Before the storage for an object is reclaimed by the garbage collector, the Java Virtual Machine will invoke the finalizer of that object.
@@ -637,6 +697,8 @@ We encourage implementations to treat such objects as having a finalizer that is
 A finalizer may be invoked explicitly, just like any other method.
 
 The package `java.lang.ref` describes weak references, which interact with garbage collection and finalization. As with any API that has special interactions with the Java programming language, implementors must be cognizant of any requirements imposed by the `java.lang.ref` API. This specification does not discuss weak references in any way. Readers are referred to the API documentation for details.
+
+<a name="jls-12.6.1"></a>
 
 ### 12.6.1. Implementing Finalization
 
@@ -680,6 +742,8 @@ Transformations of this sort may result in invocations of the `finalize` method 
 
 Note that this does not prevent synchronization elimination: synchronization only keeps an object alive if a finalizer might synchronize on it. Since the finalizer occurs in another thread, in many cases the synchronization could not be removed anyway.
 
+<a name="jls-12.6.2"></a>
+
 ### 12.6.2. Interaction with the Memory Model
 
 It must be possible for the memory model ([§17.4](https://docs.oracle.com/javase/specs/jls/se11/html/jls-17.html#jls-17.4)) to decide when it can commit actions that take place in a finalizer. This section describes the interaction of finalization with the memory model.
@@ -717,6 +781,8 @@ If an object `X` is marked as finalizable at *di*, then:
 - *di* must be the only place where `X` is marked as finalizable; and
 - actions that happen-after the finalizer invocation must come-after *di*.
 
+<a name="jls-12.7"></a>
+
 ## 12.7. Unloading of Classes and Interfaces
 
 An implementation of the Java programming language may *unload* classes.
@@ -739,6 +805,8 @@ Class unloading is an optimization that is only significant for applications tha
 
 Strictly speaking, it is not essential that the issue of class unloading be discussed by this specification, as class unloading is merely an optimization. However, the issue is very subtle, and so it is mentioned here by way of clarification.
 
+<a name="jls-12.8"></a>
+
 ## 12.8. Program Exit
 
 A program terminates all its activity and *exits* when one of two things happens:
@@ -753,6 +821,8 @@ A program terminates all its activity and *exits* when one of two things happens
 - 所有的前台线程(非守护线程, not daemon threads)都已经停止了。
 - 某些线程调用了`Runtime`类或者 `System`类的`exit`方法, 而且 `exit` 操作没有被安全管理器(security manager)禁止。
 
+
+<a name="jls-12.end"></a>
 
 ## 相关链接
 
