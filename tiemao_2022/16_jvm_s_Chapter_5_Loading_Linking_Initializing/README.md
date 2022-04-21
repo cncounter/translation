@@ -1694,9 +1694,9 @@ A Java Virtual Machine implementation may optimize this procedure by eliding the
 
 *Binding* is the process by which a function written in a language other than the Java programming language and implementing a `native` method is integrated into the Java Virtual Machine so that it can be executed. Although this process is traditionally referred to as linking, the term binding is used in the specification to avoid confusion with linking of classes or interfaces by the Java Virtual Machine.
 
-## 5.6. 绑定本地方法(Native Method)实现
+## 5.6. 绑定本地方法(Native Method)
 
-*绑定*是将用 Java 编程语言以外的语言编写并实现"本地"方法的函数集成到 Java 虚拟机中以便可以执行的过程. 尽管这个过程传统上被称为链接，但在规范中使用术语绑定以避免与 Java 虚拟机的类或接口链接混淆。
+*绑定(Binding)* 是将用 Java 之外的其他编程语言编写的函数来实现的 "本地" 方法, 集成到 Java 虚拟机中以便可以执行的过程.  尽管这个过程传统上被称为链接(linking)，但在本规范中, 为了避免与 Java 虚拟机的类或接口链接相混淆, 所以使用单独的术语。
 
 ## 5.7. Java Virtual Machine Exit
 
