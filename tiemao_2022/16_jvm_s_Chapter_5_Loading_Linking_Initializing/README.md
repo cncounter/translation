@@ -1553,7 +1553,7 @@ While C will typically be a class, it may be an interface when these rules are a
 
 A class or interface C may be initialized only as a result of:
 
-## 5.5. 初始化
+## 5.5. 初始化(Initialization)
 
 *类或接口的初始化*包括执行其类或接口的初始化方法（[§2.9.2](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-2.html #jvms-2.9.2))。
 
