@@ -808,6 +808,15 @@ This shows that the invocation of `printThree` in the constructor for class `Sup
 
 ## 12.6. Finalization of Class Instances
 
+## 12.6. 对象的终结
+
+> `finalize()` 方法算是一种糟粕, 一般只在某些遗留系统和历史代码中存在; 理论上是可以在其中处理某些外部资源或者将this复活一次;
+> 2001年时Effective Java就提示避免, 自2008年之后官方已不推荐使用，会造成各种各样的困扰;
+
+废弃提案:
+- [JEP 421: Deprecate Finalization for Removal](https://openjdk.java.net/jeps/421)
+
+
 The class `Object` has a `protected` method called `finalize`; this method can be overridden by other classes. The particular definition of `finalize` that can be invoked for an object is called the *finalizer* of that object. Before the storage for an object is reclaimed by the garbage collector, the Java Virtual Machine will invoke the finalizer of that object.
 
 Finalizers provide a chance to free up resources that cannot be freed automatically by an automatic storage manager. In such situations, simply reclaiming the memory used by an object would not guarantee that the resources it held would be reclaimed.
