@@ -699,9 +699,18 @@ Just before a reference to the newly created object is returned as the result, t
 
 Unlike C++, the Java programming language does not specify altered rules for method dispatch during the creation of a new class instance. If methods are invoked that are overridden in subclasses in the object being initialized, then these overriding methods are used, even before the new object is completely initialized.
 
+1. 将要创建的参数值赋值给新创建对象的构造函数参数。
+2. 如果此构造函数（通过使用 `this`）显式调用（[§8.8.7.1](https://docs.oracle.com/javase/specs/jls/se11/html/jls-8.html#jls-8.8.7.1)) 同一个类中的另一个构造函数，然后评估参数并使用这相同的五个步骤递归地处理该构造函数调用。 如果该构造函数调用突然抛出异常，则此过程出于相同原因而突然完成；否则，继续执行步骤 5。
+3. 这个构造函数不是以显式调用同一个类中的另一个构造函数开始的（使用`this`）。 如果此构造函数不是 `Object` 类，则此构造函数将从显式或隐式调用超类构造函数开始（使用 `super`）。使用这五个相同的步骤递归地计算超类构造函数调用的参数和过程。如果该构造函数调用突然抛出异常，则此过程出于相同的原因突然完成。否则，继续执行步骤 4。
+4. 执行该类的实例初始化块和实例变量初始化代码，将实例变量初始化器的值分配给相应的实例变量，按照它们在源文件中的出现顺序从左到右。如果执行这些初始化程序中的任何一个导致异常，则不会处理更多初始化程序，并且此过程会以相同的异常突然完成。否则，继续执行步骤 5。
+5. 执行此构造函数的其余部分。 如果该执行突然完成，则此过程出于同样的原因突然完成。否则，此过程正常完成。
+
+与 C++ 不同，Java 编程语言在新实例创建期间没有为方法分派指定更改的规则。 如果对象在被初始化时调用的方法在子类中被覆写，那么即使在新对象还没有完成初始化之前，也会使用这些被子类覆写的方法。
 
 
-**Example 12.5-1. Evaluation of Instance Creation**
+> **Example 12.5-1. Evaluation of Instance Creation**
+
+> **Example 12.5-1. 执行实例创建**
 
 ```java
 class Point {
@@ -721,11 +730,15 @@ class Test {
 
 Here, a new instance of `ColoredPoint` is created. First, space is allocated for the new `ColoredPoint`, to hold the fields `x`, `y`, and `color`. All these fields are then initialized to their default values (in this case, `0` for each field). Next, the `ColoredPoint` constructor with no arguments is first invoked. Since `ColoredPoint` declares no constructors, a default constructor of the following form is implicitly declared:
 
+这个示例中创建了一个新的 `ColoredPoint` 实例。 首先，为新的 `ColoredPoint` 对象分配内存空间，以保存字段 `x`、`y` 和 `color`。 然后将所有这些字段初始化为其默认值（在这种情况下，三个字段都为`0`值）。 接下来，首先调用不带参数的 `ColoredPoint` 构造函数。 由于 `ColoredPoint` 没有声明构造函数，因此隐式声明了以下形式的默认构造函数：
+
 ```java
 ColoredPoint() { super(); }
 ```
 
 This constructor then invokes the `Point` constructor with no arguments. The `Point` constructor does not begin with an invocation of a constructor, so the Java compiler provides an implicit invocation of its superclass constructor of no arguments, as though it had been written:
+
+然后，ColoredPoint 构造函数中会自动调用不带参数的`Point`构造函数。 `Point` 构造函数中的第一行代码不是以调用构造函数开始的，因此 Java 编译器自动为其生成了对超类无参数构造函数的隐式调用，就等价于它是这样写的：
 
 ```java
 Point() { super(); x = 1; y = 1; }
@@ -734,6 +747,10 @@ Point() { super(); x = 1; y = 1; }
 Therefore, the constructor for `Object` which takes no arguments is invoked.
 
 The class `Object` has no superclass, so the recursion terminates here. Next, any instance initializers and instance variable initializers of `Object` are invoked. Next, the body of the constructor of `Object` that takes no arguments is executed. No such constructor is declared in `Object`, so the Java compiler supplies a default one, which in this special case is:
+
+因此，调用了 `Object` 的无参构造函数。
+
+`Object` 类没有超类，因此递归在此终止。 接下来，调用“ `Object` 的所有实例初始化块和实例变量初始化器。 接下来，执行不带参数的 `Object` 的构造函数主体。 `Object` 中没有声明这样的构造函数，因此 Java 编译器提供了一个默认构造函数，在这种特殊情况下是：
 
 ```java
 Object() { }
@@ -745,11 +762,17 @@ Next, all initializers for the instance variables of class `Point` are executed.
 
 Next, the initializers for the instance variables of class `ColoredPoint` are executed. This step assigns the value `0xFF00FF` to `color`. Finally, the rest of the body of the `ColoredPoint` constructor is executed (the part after the invocation of `super`); there happen to be no statements in the rest of the body, so no further action is required and initialization is complete.
 
+此构造函数执行没有任何效果, 也没有返回值。
+
+接下来，执行 `Point` 类的实例变量的所有初始化程序。 碰巧的是，`x` 和 `y` 的声明不提供任何初始化表达式，所以在此示例中, 这一步不需要任何操作。 然后执行 `Point` 构造函数的方法体，将 `x` 设置为 `1`，将 `y` 也设置为 `1`。
+
+接下来，执行 `ColoredPoint` 类的实例变量的初始化程序。 此步骤将 `0xFF00FF` 赋值给 `color`。 最后，执行 `ColoredPoint` 构造函数的其余部分（ `super` 调用之后的部分，如果有的话）； 方法体的其余部分恰好没有语句，因此不需要进一步的操作，初始化执行完成。
 
 
 
+> **Example 12.5-2. Dynamic Dispatch During Instance Creation**
 
-**Example 12.5-2. Dynamic Dispatch During Instance Creation**
+> **Example 12.5-2. 在实例创建时的动态分发/多态 **
 
 ```java
 class Super {
@@ -769,6 +792,8 @@ class Test extends Super {
 
 This program produces the output:
 
+程序的执行结果如下:
+
 ```java
 0
 3
@@ -776,6 +801,7 @@ This program produces the output:
 
 This shows that the invocation of `printThree` in the constructor for class `Super` does not invoke the definition of `printThree` in class `Super`, but rather invokes the overriding definition of `printThree` in class `Test`. This method therefore runs before the field initializers of `Test` have been executed, which is why the first value output is `0`, the default value to which the field `three` of `Test` is initialized. The later invocation of `printThree` in method `main` invokes the same definition of `printThree`, but by that point the initializer for instance variable `three` has been executed, and so the value `3` is printed.
 
+这表明在  `Super` 类的构造函数中调用 `printThree` 方法时, 并没有调用`Super`类中自己定义的那个 `printThree`方法，而是调用了 `Test` 类中覆写的 `printThree` 方法。 因此，此方法在 `Test` 类的字段初始化代码执行之前运行，这就是为什么输出的第一个值是 `0`，这是 `Test` 类实例变量 `three` 的默认值。 稍后在方法 `main` 中调用 `printThree` 时, 会调用同样的 `printThree` 方法定义，但此时实例变量 `three` 的初始化程序已经执行完成，因此打印输出的值是 `3`。
 
 
 <a name="jls-12.6"></a>
