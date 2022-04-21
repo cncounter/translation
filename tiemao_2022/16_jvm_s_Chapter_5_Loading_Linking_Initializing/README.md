@@ -13,7 +13,7 @@ In this chapter, [§5.1](#jvms-5.1) describes how the Java Virtual Machine deriv
 
 Java 虚拟机动态加载、链接和初始化类和接口。加载是查找具有特定名称的类或接口类型的二进制表示并从该二进制表示*创建*类或接口的过程。链接是获取类或接口并将其组合到 Java 虚拟机的运行时状态以便可以执行的过程。类或接口的初始化包括执行类或接口初始化方法`<clinit>` ([§2.9.2](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms- 2.html#jvms-2.9.2))。
 
-在本章中，[§5.1](#jvms-5.1) 描述了 Java 虚拟机如何从类或接口的二进制表示派生符号引用. [§5.2](#jvms-5.2) 解释了加载、链接和初始化过程是如何首先由 Java 虚拟机启动的. [§5.3](#jvms-5.3) 指定类和接口的二进制表示如何由类加载器加载以及如何创建类和接口. [§5.4](#jvms-5.4) 中描述了链接. [§5.5](#jvms-5.5) 详细说明了如何初始化类和接口. [§5.6](#jvms-5.6) 引入了绑定本机方法的概念。最后，[§5.7](#jvms-5.7) 描述了 Java 虚拟机何时退出。
+在本章中，[§5.1](#jvms-5.1) 描述了 Java 虚拟机如何从类或接口的二进制表示派生符号引用. [§5.2](#jvms-5.2) 解释了加载、链接和初始化过程是如何首先由 Java 虚拟机启动的. [§5.3](#jvms-5.3) 指定类和接口的二进制表示如何由类加载器加载以及如何创建类和接口. [§5.4](#jvms-5.4) 中描述了链接. [§5.5](#jvms-5.5) 详细说明了如何初始化类和接口. [§5.6](#jvms-5.6) 引入了绑定本地方法(Native Method)的概念。最后，[§5.7](#jvms-5.7) 描述了 Java 虚拟机何时退出。
 
 
 ## 5.1. The Run-Time Constant Pool
@@ -1694,9 +1694,9 @@ A Java Virtual Machine implementation may optimize this procedure by eliding the
 
 *Binding* is the process by which a function written in a language other than the Java programming language and implementing a `native` method is integrated into the Java Virtual Machine so that it can be executed. Although this process is traditionally referred to as linking, the term binding is used in the specification to avoid confusion with linking of classes or interfaces by the Java Virtual Machine.
 
-## 5.6. 绑定本机方法实现
+## 5.6. 绑定本地方法(Native Method)实现
 
-*绑定*是将用 Java 编程语言以外的语言编写并实现“本机”方法的函数集成到 Java 虚拟机中以便可以执行的过程. 尽管这个过程传统上被称为链接，但在规范中使用术语绑定以避免与 Java 虚拟机的类或接口链接混淆。
+*绑定*是将用 Java 编程语言以外的语言编写并实现"本地"方法的函数集成到 Java 虚拟机中以便可以执行的过程. 尽管这个过程传统上被称为链接，但在规范中使用术语绑定以避免与 Java 虚拟机的类或接口链接混淆。
 
 ## 5.7. Java Virtual Machine Exit
 
@@ -1704,12 +1704,13 @@ The Java Virtual Machine exits when some thread invokes the `exit` method of cla
 
 In addition, the JNI (Java Native Interface) Specification describes termination of the Java Virtual Machine when the JNI Invocation API is used to load and unload the Java Virtual Machine.
 
-## 5.7. Java 虚拟机退出
+## 5.7. Java虚拟机退出
 
-Java 虚拟机在某个线程调用 `Runtime` 类或 `System` 类的 `exit` 方法，或 `Runtime` 类的 `halt` 方法时退出，并且 `exit` 或 `halt` 操作被允许 安全管理员。
+当某个线程调用 `Runtime` 类或 `System` 类的 `exit` 方法, 或 `Runtime` 类的 `halt` 方法, 并且 `exit` 或 `halt` 操作被 security manager (安全管理器)允许, Java虚拟机退出。
 
-此外，JNI（Java Native Interface）规范描述了当使用JNI Invocation API加载和卸载Java虚拟机时Java虚拟机的终止。
+此外，JNI (Java Native Interface)规范描述了Java虚拟机的终止，当使用 JNI Invocation API 来加载和卸载Java虚拟机时，。
 
 ## 相关链接
 
 - [Java Virtual Machine Specification: Chapter 5. Loading, Linking, and Initializing](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-5.html)
+- [12.Java语言规范文档: 第12章. 执行(Execution)](../12_Java_LS_Chapter_12_Execution/README.md)
