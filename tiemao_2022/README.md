@@ -15,7 +15,7 @@
 * [09.Java_Performance读书笔记](./09_Java_Performance_Notes/README.md)【持续更新中...】
 * [10.自由职业者: 成功的秘诀](./10_success_secret/README.md)【粗翻】
 * [11.费波那契数列与黄金分割比例的一种优化算法](./11_Fibonacci/README.md)【初稿】
-* [12.Java语言规范: 第12章.Execution](./12_Java_LS_Chapter_12_Execution/README.md)
+* [12.Java语言规范文档: 第12章. 执行(Execution)](./12_Java_LS_Chapter_12_Execution/README.md)【粗翻】
 * [13.面试题-Java中long和double类型的最大取值](./13_Java_Number/README.md)【初稿】
 
 
