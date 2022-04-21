@@ -943,17 +943,40 @@ Classes and interfaces loaded by the bootstrap loader may not be unloaded.
 
 Class unloading is an optimization that helps reduce memory use. Obviously, the semantics of a program should not depend on whether and how a system chooses to implement an optimization such as class unloading. To do otherwise would compromise the portability of programs. Consequently, whether a class or interface has been unloaded or not should be transparent to a program.
 
+## 12.7 类和接口的卸载
+
+Java 编程语言的实现可以 *卸载（unload）* 类。
+
+当且仅当 垃圾收集器可以回收定义Class的类加载器时，才能卸载对应的类或接口，如 [§12.6](#jls-12.6) 中所述。
+
+被启动类加载器（bootstrap loader）所加载的类和接口可能不会被卸载。
+
+类卸载是一种优化行为，有助于减少内存占用。 显然，程序的语义不应该依赖于于系统是否卸载类，以及JVM选择如何实现诸如类卸载之类的优化。 否则会损害程序的可移植性。 因此，一个类或接口是否被卸载应该对程序是透明的。
+
 However, if a class or interface C was unloaded while its defining loader was potentially reachable, then C might be reloaded. One could never ensure that this would not happen. Even if the class was not referenced by any other currently loaded class, it might be referenced by some class or interface, D, that had not yet been loaded. When D is loaded by C's defining loader, its execution might cause reloading of C.
 
 Reloading may not be transparent if, for example, the class has `static` variables (whose state would be lost), static initializers (which may have side effects), or `native` methods (which may retain static state). Furthermore, the hash value of the `Class` object is dependent on its identity. Therefore it is, in general, impossible to reload a class or interface in a completely transparent manner.
 
 Since we can never guarantee that unloading a class or interface whose loader is potentially reachable will not cause reloading, and reloading is never transparent, but unloading must be transparent, it follows that one must not unload a class or interface while its loader is potentially reachable. A similar line of reasoning can be used to deduce that classes and interfaces loaded by the bootstrap loader can never be unloaded.
 
+但是，假如一个类或接口 C 被卸载了，但定义C的类加载器还可以继续访问的话，那么 C 就有可能会被重新加载。 谁都永远保证这种情况不会发生。 即使该类没有被当前加载的任何其他类所引用，它也可能被一些尚未加载的类或接口 D 引用。 当 D 被定义 C 的类加载器加载时，它的执行可能会导致 C 被重新加载。
+
+重新加载类的过程可能不是透明的, 例如，如果类具有 `static` 变量（那么其状态将会丢失）、静态初始化器（可能有副作用）或  `native` 方法（可能保留静态状态）。 此外，`Class` 对象的哈希值取决于其身份。 因此，通常不可能以完全透明的方式重新加载类或接口。
+
+由于单独卸载类或接口后，我们永远无法保证可达的加载器不会导致这些类重新加载，并且重新加载永远不会透明，但卸载必须是透明的， 因此禁止在类加载器可达时去卸载其中的类或接口. 类似的推理可以用来推断出, 启动类加载器所加载的类和接口永远都不会被卸载。
+
 One must also argue why it is safe to unload a class C if its defining class loader can be reclaimed. If the defining loader can be reclaimed, then there can never be any live references to it (this includes references that are not live, but might be resurrected by finalizers). This, in turn, can only be true if there are can never be any live references to any of the classes defined by that loader, including C, either from their instances or from code.
 
 Class unloading is an optimization that is only significant for applications that load large numbers of classes and that stop using most of those classes after some time. A prime example of such an application is a web browser, but there are others. A characteristic of such applications is that they manage classes through explicit use of class loaders. As a result, the policy outlined above works well for them.
 
 Strictly speaking, it is not essential that the issue of class unloading be discussed by this specification, as class unloading is merely an optimization. However, the issue is very subtle, and so it is mentioned here by way of clarification.
+
+可能有些同学有疑问, 为什么类加载器可以被GC回收时，卸载其定义的类 C 是安全的呢。 如果定义类的加载器可以被回收，那么永远都不会有任何对它的存活引用（这包括不存活的引用，但有可能会被finalizer终结器复活）。 反过来说，只有在永远不能从类的实例或代码中对加载器定义的任何类（包括 C）有存活引用时才成立。
+
+类卸载是一种优化，仅对加载大量类，并在一段时间后停止使用其中大部分类的应用程序有意义。 此类应用程序的一个主要示例是 Web 浏览器，当然也还有其他应用程序，比如支持多个Context和卸载Context的 Web容器。 此类应用程序的一个特点是它们明确使用自定义的类加载器来管理类。 因此，上述优化策略对他们很有效。
+
+严格来说，本规范讨论类卸载的问题并不是必须的，因为类卸载只是一种优化。 但是，这个问题非常微妙，所以在这里作为澄清的方式提一下。
+
 
 <a name="jls-12.8"></a>
 
