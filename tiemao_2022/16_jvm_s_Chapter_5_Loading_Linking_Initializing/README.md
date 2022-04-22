@@ -172,19 +172,21 @@ An entry in the run-time constant pool is loadable if it is derived from an entr
 - 静态常量（Static constants）
 
 
+<a name="jvms-5.2"></a>
 ## 5.2. Java Virtual Machine Startup
-
-The Java Virtual Machine starts up by creating an initial class or interface using the bootstrap class loader ([§5.3.1](#jvms-5.3.1)) or a user-defined class loader ([§5.3.2](#jvms-5.3.2)). The Java Virtual Machine then links the initial class or interface, initializes it, and invokes the `public` `static` method `void main(String[])`. The invocation of this method drives all further execution. Execution of the Java Virtual Machine instructions constituting the `main` method may cause linking (and consequently creation) of additional classes and interfaces, as well as invocation of additional methods.
-
-The initial class or interface is specified in an implementation-dependent manner. For example, the initial class or interface could be provided as a command line argument. Alternatively, the implementation of the Java Virtual Machine could itself provide an initial class that sets up a class loader which in turn loads an application. Other choices of the initial class or interface are possible so long as they are consistent with the specification given in the previous paragraph.
 
 ## 5.2. Java 虚拟机启动
 
+The Java Virtual Machine starts up by creating an initial class or interface using the bootstrap class loader ([§5.3.1](#jvms-5.3.1)) or a user-defined class loader ([§5.3.2](#jvms-5.3.2)). The Java Virtual Machine then links the initial class or interface, initializes it, and invokes the `public` `static` method `void main(String[])`. The invocation of this method drives all further execution. Execution of the Java Virtual Machine instructions constituting the `main` method may cause linking (and consequently creation) of additional classes and interfaces, as well as invocation of additional methods.
+
 Java 虚拟机通过使用引导类加载器 ([§5.3.1](#jvms-5.3.1)) 或用户定义的类加载器 ([§5.3.2](#jvms-5.3.2)). Java 虚拟机然后链接初始类或接口, 对其进行初始化, 并调用 `public` `static` 方法 `void main(String[])`。调用此方法会驱动所有进一步的执行。执行构成 `main` 方法的 Java 虚拟机指令可能会导致链接（并因此创建）其他类和接口, 以及调用其他方法。
+
+The initial class or interface is specified in an implementation-dependent manner. For example, the initial class or interface could be provided as a command line argument. Alternatively, the implementation of the Java Virtual Machine could itself provide an initial class that sets up a class loader which in turn loads an application. Other choices of the initial class or interface are possible so long as they are consistent with the specification given in the previous paragraph.
 
 初始类或接口以实现相关的方式指定。例如, 初始类或接口可以作为命令行参数提供。或者, Java 虚拟机的实现本身可以提供一个初始类, 该类设置一个类加载器, 该类加载器反过来加载应用程序。初始类或接口的其他选择是可能的, 只要它们与前一段中给出的规范一致。
 
 
+<a name="jvms-5.3"></a>
 ## 5.3. Creation and Loading
 
 Creation of a class or interface C denoted by the name `N` consists of the construction in the method area of the Java Virtual Machine ([§2.5.4](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-2.html#jvms-2.5.4)) of an implementation-specific internal representation of C. Class or interface creation is triggered by another class or interface D, which references C through its run-time constant pool. Class or interface creation may also be triggered by D invoking methods in certain Java SE Platform class libraries ([§2.12](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-2.html#jvms-2.12)) such as reflection.
@@ -262,6 +264,7 @@ We will also represent a class or interface using the notation `N``Li`, where `N
 我们还将使用符号`N`Li 表示类或接口, 其中`N`表示类或接口的名称, `Li`表示类或接口的初始加载器。
 
 
+<a name="jvms-5.3.1"></a>
 ### 5.3.1. Loading Using the Bootstrap Class Loader
 
 The following steps are used to load and thereby create the nonarray class or interface C denoted by `N` using the bootstrap class loader.
@@ -291,6 +294,7 @@ Then the Java Virtual Machine attempts to derive a class denoted by `N` using th
 然后, Java 虚拟机尝试使用 [§5.3.5](#jvms-5.3.5) 中的算法从声称的表示中使用引导类加载器派生一个由`N`表示的类. 那堂课是C。
 
 
+<a name="jvms-5.3.2"></a>
 ### 5.3.2. Loading Using a User-defined Class Loader
 
 The following steps are used to load and thereby create the nonarray class or interface C denoted by `N` using a user-defined class loader `L`.
@@ -326,6 +330,7 @@ Since JDK release 1.1, Oracle’s Java Virtual Machine implementation has invoke
 自 JDK 1.1 版以来, Oracle 的 Java 虚拟机实现调用了类加载器的 `loadClass` 方法, 以使其加载类或接口. `loadClass` 的参数是要加载的类或接口的名称. `loadClass` 方法还有一个双参数版本, 其中第二个参数是一个 `boolean`, 指示是否要链接类或接口. JDK 1.0.2 版中只提供了两个参数的版本, Oracle 的 Java 虚拟机实现依赖它来链接加载的类或接口。从 JDK 1.1 版开始, Oracle 的 Java 虚拟机实现直接链接类或接口, 而不依赖于类加载器。
 
 
+<a name="jvms-5.3.3"></a>
 ### 5.3.3. Creating Array Classes
 
 The following steps are used to create the array class C denoted by `N` using class loader `L`. Class loader `L` may be either the bootstrap class loader or a user-defined class loader.
@@ -363,6 +368,7 @@ Otherwise, the following steps are performed to create C:
    如果组件类型是`引用`类型, 则数组类的可访问性由其组件类型的可访问性决定（[§5.4.4](#jvms-5.4.4)）。否则, 所有类和接口都可以访问数组类。
 
 
+<a name="jvms-5.3.4"></a>
 ### 5.3.4. Loading Constraints
 
 Ensuring type safe linkage in the presence of class loaders requires special care. It is possible that when two different class loaders initiate loading of a class or interface denoted by `N`, the name `N` may denote a different class or interface in each loader.
@@ -402,6 +408,7 @@ A full discussion of class loaders and type safety is beyond the scope of this s
 对类加载器和类型安全的完整讨论超出了本规范的范围。如需更全面的讨论, 读者可参阅 Sheng Liang 和 Gilad Bracha 的 *Dynamic Class Loading in the Java Virtual Machine*（*Proceedings of the 1998 ACM SIGPLAN Conference on Object-Oriented Programming Systems, Languages and Applications*）。
 
 
+<a name="jvms-5.3.5"></a>
 ### 5.3.5. Deriving a Class from a `class` File Representation
 
 The following steps are used to derive a `Class` object for the nonarray class or interface C denoted by `N` using loader `L` from a purported representation in `class` file format.
@@ -475,6 +482,7 @@ The following steps are used to derive a `Class` object for the nonarray class o
 5. Java 虚拟机将 C 标记为具有`L`作为其定义类加载器, 并记录`L`是 C 的初始加载器（[§5.3.4](#jvms-5.3.4)）。
 
 
+<a name="jvms-5.3.6"></a>
 ### 5.3.6. Modules and Layers
 
 The Java Virtual Machine supports the organization of classes and interfaces into modules. The membership of a class or interface C in a module `M` is used to control access to C from classes and interfaces in modules other than `M` ([§5.4.4](#jvms-5.4.4)).
@@ -535,6 +543,7 @@ Java 虚拟机支持将类和接口组织成模块。模块`M`中的类或接口
 类加载器和层之间有相似之处和不同之处。一方面, 层类似于类加载器, 因为每个层都可以分别委托给一个或多个父层或类加载器, 这些父层或类加载器分别在较早的时间创建了模块或类。也就是说, 指定给层的模块集可能依赖于未指定给层的模块, 而是先前指定给一个或多个父层的模块。另一方面, 一个层只能用于创建新模块一次, 而类加载器可用于在任何时候通过多次调用来创建新的类或接口
 
 
+<a name="jvms-5.4"></a>
 ## 5.4. Linking
 
 Linking a class or interface involves verifying and preparing that class or interface, its direct superclass, its direct superinterfaces, and its element type (if it is an array type), if necessary. Linking also involves resolution of symbolic references in the class or interface, though not necessarily at the same time as the class or interface is verified and prepared.
@@ -575,6 +584,8 @@ Because linking involves the allocation of new data structures, it may fail with
 
 因为链接涉及新数据结构的分配, 所以它可能会失败并出现`OutOfMemoryError`。
 
+
+<a name="jvms-5.4.1"></a>
 ### 5.4.1. Verification
 
 *Verification* ([§4.10](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-4.html#jvms-4.10)) ensures that the binary representation of a class or interface is structurally correct ([§4.9](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-4.html#jvms-4.9)). Verification may cause additional classes and interfaces to be loaded ([§5.3](#jvms-5.3)) but need not cause them to be verified or prepared.
@@ -591,6 +602,7 @@ If an attempt by the Java Virtual Machine to verify a class or interface fails b
 
 如果 Java 虚拟机验证类或接口的尝试失败, 因为抛出了一个错误, 该错误是 `LinkageError`（或子类）的一个实例, 那么随后验证类或接口的尝试总是会失败, 并返回相同的错误作为初始验证尝试的结果被抛出。
 
+<a name="jvms-5.4.2"></a>
 ### 5.4.2. Preparation
 
 *Preparation* involves creating the static fields for a class or interface and initializing such fields to their default values ([§2.3](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-2.html#jvms-2.3), [§2.4](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-2.html#jvms-2.4)). This does not require the execution of any Java Virtual Machine code; explicit initializers for static fields are executed as part of initialization ([§5.5](#jvms-5.5)), not preparation.
@@ -649,6 +661,7 @@ Preparation may occur at any time following creation but must be completed prior
 
 
 
+<a name="jvms-5.4.3"></a>
 ### 5.4.3. Resolution
 
 Many Java Virtual Machine instructions - *anewarray*, *checkcast*, *getfield*, *getstatic*, *instanceof*, *invokedynamic*, *invokeinterface*, *invokespecial*, *invokestatic*, *invokevirtual*, *ldc*, *ldc_w*, *ldc2_w*, *multianewarray*, *new*, *putfield*, and *putstatic* - rely on symbolic references in the run-time constant pool. Execution of any of these instructions requires *resolution* of the symbolic reference.
@@ -721,6 +734,7 @@ Linking exceptions generated by checks that are specific to the execution of a p
 
 
 
+<a name="jvms-5.4.3.1"></a>
 #### 5.4.3.1. Class and Interface Resolution
 
 To resolve an unresolved symbolic reference from D to a class or interface C denoted by `N`, the following steps are performed:
@@ -750,6 +764,7 @@ If steps 1 and 2 succeed but step 3 fails, C is still valid and usable. Neverthe
 如果步骤 1 和 2 成功但步骤 3 失败, 则 C 仍然有效且可用. 然而, 解析失败, D被禁止访问C。
 
 
+<a name="jvms-5.4.3.2"></a>
 #### 5.4.3.2. Field Resolution
 
 To resolve an unresolved symbolic reference from D to a field in a class or interface C, the symbolic reference to C given by the field reference must first be resolved ([§5.4.3.1](#jvms-5.4.3.1)). Therefore, any exception that can be thrown as a result of failure of resolution of a class or interface reference can be thrown as a result of failure of field resolution. If the reference to C can be successfully resolved, an exception relating to the failure of resolution of the field reference itself can be thrown.
@@ -806,6 +821,7 @@ Then, the result of field resolution is determined:
      如果施加此约束导致违反任何加载约束 ([§5.3.4](#jvms-5.3.4)), 则字段解析失败. 否则, 字段解析成功。
 
 
+<a name="jvms-5.4.3.3"></a>
 #### 5.4.3.3. Method Resolution
 
 To resolve an unresolved symbolic reference from D to a method in a class C, the symbolic reference to C given by the method reference is first resolved ([§5.4.3.1](#jvms-5.4.3.1)). Therefore, any exception that can be thrown as a result of failure of resolution of a class reference can be thrown as a result of failure of method resolution. If the reference to C can be successfully resolved, exceptions relating to the resolution of the method reference itself can be thrown.
@@ -928,6 +944,7 @@ Note that if the result of resolution is an `abstract` method, the referenced cl
 请注意, 如果解析的结果是`抽象`方法, 则引用的类 C 可能不是`抽象`。要求 C 是`抽象的`会与超接口方法的非确定性选择相冲突。相反, 解析假定被调用对象的运行时类具有该方法的具体实现。
 
 
+<a name="jvms-5.4.3.4"></a>
 #### 5.4.3.4. Interface Method Resolution
 
 To resolve an unresolved symbolic reference from D to an interface method in an interface C, the symbolic reference to C given by the interface method reference is first resolved ([§5.4.3.1](#jvms-5.4.3.1)). Therefore, any exception that can be thrown as a result of failure of resolution of an interface reference can be thrown as a result of failure of interface method resolution. If the reference to C can be successfully resolved, exceptions relating to the resolution of the interface method reference itself can be thrown.
@@ -999,6 +1016,7 @@ Access control is necessary because interface method resolution may pick a `priv
 访问控制是必要的, 因为接口方法解析可能会选择接口 C 的`私有`方法。（在 Java SE 8 之前, 接口方法解析的结果可能是`Object`类的非`公共`方法或`静态`方法`Object` 类的方法；这样的结果与 Java 编程语言的继承模型不一致, 在 Java SE 8 及更高版本中是不允许的。）
 
 
+<a name="jvms-5.4.3.5"></a>
 #### 5.4.3.5. Method Type and Method Handle Resolution
 
 To resolve an unresolved symbolic reference to a method type, it is as if resolution occurs of unresolved symbolic references to classes and interfaces ([§5.4.3.1](#jvms-5.4.3.1)) whose names correspond to the types given in the method descriptor ([§4.3.3](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-4.html#jvms-4.3.3)).
@@ -1171,6 +1189,7 @@ Java 虚拟机的实现不需要实习方法类型或方法句柄。也就是说
 Java SE Platform API 中的 `java.lang.invoke.MethodHandles` 类允许创建没有字节码行为的方法句柄。它们的行为由创建它们的 `java.lang.invoke.MethodHandles` 方法定义。例如, 一个方法句柄可以在被调用时首先对其参数值应用转换, 然后将转换后的值提供给另一个方法句柄的调用, 然后对从该调用返回的值应用转换, 然后将转换后的值返回为自己的结果。
 
 
+<a name="jvms-5.4.3.6"></a>
 #### 5.4.3.6. Dynamically-Computed Constant and Call Site Resolution
 
 To resolve an unresolved symbolic reference R to a dynamically-computed constant or call site, there are three tasks. First, R is examined to determine which code will serve as its *bootstrap method*, and which arguments will be passed to that code. Second, the arguments are packaged into an array and the bootstrap method is invoked. Third, the result of the bootstrap method is validated, and used as the result of resolution.
@@ -1358,6 +1377,7 @@ If several threads attempt resolution of R at the same time, the bootstrap metho
 如果多个线程同时尝试解析 R, 则可能会同时调用引导方法. 因此, 访问全局应用程序数据的引导方法必须对竞争条件采取预防措施。
 
 
+<a name="jvms-5.4.4"></a>
 ### 5.4.4. Access Control
 
 Access control is applied during resolution ([§5.4.3](#jvms-5.4.3)) to ensure that a reference to a class, interface, field, or method is permitted. Access control succeeds if a specified class, interface, field, or method is *accessible* to the referring class or interface.
@@ -1481,6 +1501,8 @@ The nest host of a class or interface `M` is determined as follows:
 
    否则, H 是 `M` 的嵌套宿主。
 
+
+<a name="jvms-5.4.5"></a>
 ### 5.4.5. Method Overriding
 
 An instance method `mC` *can override* another instance method `mA` iff all of the following are true:
@@ -1534,6 +1556,7 @@ then:
 - `D.m` 可以覆盖 `B.m` 和传递性的 `A.m`, 但它不能覆盖 `C.m`。
 
 
+<a name="jvms-5.4.6"></a>
 ### 5.4.6. Method Selection
 
 During execution of an *invokeinterface* or *invokevirtual* instruction, a method is *selected* with respect to (i) the run-time type of the object on the stack, and (ii) a method that was previously *resolved* by the instruction. The rules to select a method with respect to a class or interface C and a method `mR` are as follows:
@@ -1570,6 +1593,8 @@ While C will typically be a class, it may be an interface when these rules are a
 
 虽然 C 通常是一个类, 但在准备期间应用这些规则时, 它可能是一个接口 ([§5.4.2](#jvms-5.4.2))。
 
+
+<a name="jvms-5.5"></a>
 ## 5.5. Initialization
 
 *Initialization* of a class or interface consists of executing its class or interface initialization method ([§2.9.2](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-2.html#jvms-2.9.2)).
@@ -1713,6 +1738,7 @@ A Java Virtual Machine implementation may optimize this procedure by eliding the
 当 Java 虚拟机实现可以确定类的初始化已经完成时, 可以通过省略步骤 1 中的锁获取（并在步骤 4/5 中释放）来优化此过程, 前提是根据 Java 内存模型 , 如果获得锁, 所有 *happens-before* 排序（JLS §17.4.5）在执行优化时仍然存在。
 
 
+<a name="jvms-5.6"></a>
 ## 5.6. Binding Native Method Implementations
 
 *Binding* is the process by which a function written in a language other than the Java programming language and implementing a `native` method is integrated into the Java Virtual Machine so that it can be executed. Although this process is traditionally referred to as linking, the term binding is used in the specification to avoid confusion with linking of classes or interfaces by the Java Virtual Machine.
@@ -1721,6 +1747,8 @@ A Java Virtual Machine implementation may optimize this procedure by eliding the
 
 *绑定(Binding)* 是将用 Java 之外的其他编程语言编写的函数来实现的 "本地" 方法, 集成到 Java 虚拟机中以便可以执行的过程.  尽管这个过程传统上被称为链接(linking), 但在本规范中, 为了避免与 Java 虚拟机的类或接口链接相混淆, 所以使用单独的术语。
 
+
+<a name="jvms-5.7"></a>
 ## 5.7. Java Virtual Machine Exit
 
 The Java Virtual Machine exits when some thread invokes the `exit` method of class `Runtime` or class `System`, or the `halt` method of class `Runtime`, and the `exit` or `halt` operation is permitted by the security manager.
