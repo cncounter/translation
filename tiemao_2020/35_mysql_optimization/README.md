@@ -9,7 +9,7 @@ Table of Contents
 
 
 - [8.1 MySQL调优概述](./8.1-optimize-overview.md) 【粗翻】
-- [8.2 Optimizing SQL Statements](./8.2-statement-optimization.md)
+- [8.2 Optimizing SQL Statements](./8.2-statement-optimization.md)【部分】
 - [8.3 Optimization and Indexes](./8.3-optimization-indexes.md)
 - [8.4 Optimizing Database Structure](./8.4-optimizing-database-structure.md)
 - [8.5 Optimizing for InnoDB Tables](./8.5-optimizing-innodb.md)
