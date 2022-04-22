@@ -179,11 +179,11 @@ An entry in the run-time constant pool is loadable if it is derived from an entr
 
 The Java Virtual Machine starts up by creating an initial class or interface using the bootstrap class loader ([§5.3.1](#jvms-5.3.1)) or a user-defined class loader ([§5.3.2](#jvms-5.3.2)). The Java Virtual Machine then links the initial class or interface, initializes it, and invokes the `public` `static` method `void main(String[])`. The invocation of this method drives all further execution. Execution of the Java Virtual Machine instructions constituting the `main` method may cause linking (and consequently creation) of additional classes and interfaces, as well as invocation of additional methods.
 
-Java 虚拟机通过使用引导类加载器 ([§5.3.1](#jvms-5.3.1)) 或用户定义的类加载器 ([§5.3.2](#jvms-5.3.2)). Java 虚拟机然后链接初始类或接口, 对其进行初始化, 并调用 `public` `static` 方法 `void main(String[])`。调用此方法会驱动所有进一步的执行。执行构成 `main` 方法的 Java 虚拟机指令可能会导致链接（并因此创建）其他类和接口, 以及调用其他方法。
+Java 虚拟机启动时，会通过引导类加载器 (bootstrap class loader, [§5.3.1](#jvms-5.3.1)) , 或者用户自定义的类加载器 (user-defined class loader, [§5.3.2](#jvms-5.3.2)), 创建一个初始的类或接口.  然后Java 虚拟机链接初始类或接口, 对其进行初始化, 并调用 `public` `static` `void main(String[])` 方法。 调用此方法会驱动所有进一步的执行过程。 执行 `main` 方法中的 JVM指令, 可能会导致链接（和创建）其他类以及接口, 以及调用其他方法。
 
 The initial class or interface is specified in an implementation-dependent manner. For example, the initial class or interface could be provided as a command line argument. Alternatively, the implementation of the Java Virtual Machine could itself provide an initial class that sets up a class loader which in turn loads an application. Other choices of the initial class or interface are possible so long as they are consistent with the specification given in the previous paragraph.
 
-初始类或接口以实现相关的方式指定。例如, 初始类或接口可以作为命令行参数提供。或者, Java 虚拟机的实现本身可以提供一个初始类, 该类设置一个类加载器, 该类加载器反过来加载应用程序。初始类或接口的其他选择是可能的, 只要它们与前一段中给出的规范一致。
+初始类或接口以JVM具体实现支持的相关方式指定。 例如, 初始类或接口可以通过命令行参数提供。 或者, Java 虚拟机的实现本身也可以提供一个初始类, 该类设置一个类加载器, 使用该类加载器反过来加载应用程序。 使用其他方式来指定初始类或接口也是可能的, 只要与前一段中给出的规范一致。
 
 
 <a name="jvms-5.3"></a>
