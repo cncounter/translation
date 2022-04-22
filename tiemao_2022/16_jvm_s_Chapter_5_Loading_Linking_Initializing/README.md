@@ -9,11 +9,21 @@
 
 The Java Virtual Machine dynamically loads, links and initializes classes and interfaces. Loading is the process of finding the binary representation of a class or interface type with a particular name and *creating* a class or interface from that binary representation. Linking is the process of taking a class or interface and combining it into the run-time state of the Java Virtual Machine so that it can be executed. Initialization of a class or interface consists of executing the class or interface initialization method `<clinit>` ([§2.9.2](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-2.html#jvms-2.9.2)).
 
+Java虚拟机(Java Virtual Machine)动态地加载(load)、链接(link)和初始化(initialize)类与接口。
+加载, 是根据特定名称, 查找对应类或接口的二进制表示形式, 并根据该二进制表示 *创建* 类或接口的过程。
+链接, 是获取类或接口, 并将其组合到 Java 虚拟机的运行时状态, 以便可以执行的过程。
+类或接口的初始化, 则是指执行类或接口初始化方法 `<clinit>` ([§2.9.2](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-2.html#jvms-2.9.2))。
+
 In this chapter, [§5.1](#jvms-5.1) describes how the Java Virtual Machine derives symbolic references from the binary representation of a class or interface. [§5.2](#jvms-5.2) explains how the processes of loading, linking, and initialization are first initiated by the Java Virtual Machine. [§5.3](#jvms-5.3) specifies how binary representations of classes and interfaces are loaded by class loaders and how classes and interfaces are created. Linking is described in [§5.4](#jvms-5.4). [§5.5](#jvms-5.5) details how classes and interfaces are initialized. [§5.6](#jvms-5.6) introduces the notion of binding native methods. Finally, [§5.7](#jvms-5.7) describes when a Java Virtual Machine exits.
 
-Java 虚拟机动态加载、链接和初始化类和接口。加载是查找具有特定名称的类或接口类型的二进制表示并从该二进制表示*创建*类或接口的过程。链接是获取类或接口并将其组合到 Java 虚拟机的运行时状态以便可以执行的过程。类或接口的初始化包括执行类或接口初始化方法`<clinit>` ([§2.9.2](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms- 2.html#jvms-2.9.2))。
-
-在本章中，[§5.1](#jvms-5.1) 描述了 Java 虚拟机如何从类或接口的二进制表示派生符号引用. [§5.2](#jvms-5.2) 解释了加载、链接和初始化过程是如何首先由 Java 虚拟机启动的. [§5.3](#jvms-5.3) 指定类和接口的二进制表示如何由类加载器加载以及如何创建类和接口. [§5.4](#jvms-5.4) 中描述了链接. [§5.5](#jvms-5.5) 详细说明了如何初始化类和接口. [§5.6](#jvms-5.6) 引入了绑定本地方法(Native Method)的概念。最后，[§5.7](#jvms-5.7) 描述了 Java 虚拟机何时退出。
+在本章中:
+[§5.1](#jvms-5.1) 描述了 Java 虚拟机从类或接口的二进制格式数据如何得到符号引用.
+[§5.2](#jvms-5.2) 解释了加载、链接和初始化过程是如何由 Java 虚拟机启动的.
+[§5.3](#jvms-5.3) 指定了类和接口的二进制数据, 是如何由类加载器加载的, 以及如何创建类和接口.
+[§5.4](#jvms-5.4) 中描述了链接.
+[§5.5](#jvms-5.5) 详细说明了如何初始化类和接口.
+[§5.6](#jvms-5.6) 引入了绑定本地方法(Native Method)的概念。
+最后，[§5.7](#jvms-5.7) 描述了 Java 虚拟机何时退出。
 
 
 ## 5.1. The Run-Time Constant Pool
