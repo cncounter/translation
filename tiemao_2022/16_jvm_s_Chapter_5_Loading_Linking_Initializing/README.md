@@ -275,31 +275,31 @@ We will also represent a class or interface using the notation `N``Li`, where `N
 <a name="jvms-5.3.1"></a>
 ### 5.3.1. Loading Using the Bootstrap Class Loader
 
+### 5.3.1. 启动类加载器执行的加载
+
 The following steps are used to load and thereby create the nonarray class or interface C denoted by `N` using the bootstrap class loader.
+
+以下步骤, 启动类加载器用于加载并创建由`N`表示的非数组类 C, 或接口 C。
 
 First, the Java Virtual Machine determines whether the bootstrap class loader has already been recorded as an initiating loader of a class or interface denoted by `N`. If so, this class or interface is C, and no class creation is necessary.
 
+首先, Java 虚拟机需要确定, 启动类加载器是否已经被登记为由`N`表示的类或接口的初始加载器. 如果是这样, 则此类或接口是 C, 并且不需要创建类。
+
 Otherwise, the Java Virtual Machine passes the argument `N` to an invocation of a method on the bootstrap class loader to search for a purported representation of C in a platform-dependent manner. Typically, a class or interface will be represented using a file in a hierarchical file system, and the name of the class or interface will be encoded in the pathname of the file.
 
-### 5.3.1. 使用启动类加载器加载
-
-以下步骤用于使用启动类加载器加载并创建由`N`表示的非数组类或接口 C。
-
-首先, Java 虚拟机确定启动类加载器是否已被记录为由`N`表示的类或接口的初始加载器. 如果是这样, 则此类或接口是 C, 并且不需要创建类。
-
-否则, Java 虚拟机将参数`N`传递给启动类加载器上的方法调用, 以依赖于平台的方式搜索 C 的声称表示. 通常, 类或接口将使用分层文件系统中的文件表示, 并且类或接口的名称将编码在文件的路径名中。
+否则, Java 虚拟机将参数`N`传递给启动类加载器上的方法调用, 以依赖于平台的方式搜索 C 的声明表示. 通常, 类或接口使用的是分层目录结构文件系统中的文件表示, 并且类或接口的名称对应了文件的路径名。
 
 Note that there is no guarantee that a purported representation found is valid or is a representation of C. This phase of loading must detect the following error:
 
 - If no purported representation of C is found, loading throws an instance of `ClassNotFoundException`.
 
+请注意, 并不能保证一定会找到 C 的声明表示, 或者找到了但格式不一定合法。 这个加载阶段必须检测到以下错误:
+
+- 如果没有找到 C 的声明表示, 加载过程会抛出一个 `ClassNotFoundException` 类的异常实例。
+
 Then the Java Virtual Machine attempts to derive a class denoted by `N` using the bootstrap class loader from the purported representation using the algorithm found in [§5.3.5](#jvms-5.3.5). That class is C.
 
-请注意, 不能保证找到的声称的表示是有效的或者是 C 的表示。这个加载阶段必须检测到以下错误:
-
-- 如果没有找到声称的 C 表示, 加载会抛出一个 `ClassNotFoundException` 的实例。
-
-然后, Java 虚拟机尝试使用 [§5.3.5](#jvms-5.3.5) 中的算法从声称的表示中使用启动类加载器派生一个由`N`表示的类. 那堂课是C。
+然后, Java 虚拟机尝试使用 [§5.3.5](#jvms-5.3.5) 中的算法, 使用启动类加载器, 从声称的表示中派生一个由 `N` 表示的类. 那个类就是C。
 
 
 <a name="jvms-5.3.2"></a>
