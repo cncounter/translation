@@ -179,7 +179,7 @@ An entry in the run-time constant pool is loadable if it is derived from an entr
 
 The Java Virtual Machine starts up by creating an initial class or interface using the bootstrap class loader ([§5.3.1](#jvms-5.3.1)) or a user-defined class loader ([§5.3.2](#jvms-5.3.2)). The Java Virtual Machine then links the initial class or interface, initializes it, and invokes the `public` `static` method `void main(String[])`. The invocation of this method drives all further execution. Execution of the Java Virtual Machine instructions constituting the `main` method may cause linking (and consequently creation) of additional classes and interfaces, as well as invocation of additional methods.
 
-Java 虚拟机启动时，会通过引导类加载器 (bootstrap class loader, [§5.3.1](#jvms-5.3.1)) , 或者用户自定义的类加载器 (user-defined class loader, [§5.3.2](#jvms-5.3.2)), 创建一个初始的类或接口.  然后Java 虚拟机链接初始类或接口, 对其进行初始化, 并调用 `public` `static` `void main(String[])` 方法。 调用此方法会驱动所有进一步的执行过程。 执行 `main` 方法中的 JVM指令, 可能会导致链接（和创建）其他类以及接口, 以及调用其他方法。
+Java 虚拟机启动时，会通过启动类加载器 (bootstrap class loader, [§5.3.1](#jvms-5.3.1)) , 或者用户自定义的类加载器 (user-defined class loader, [§5.3.2](#jvms-5.3.2)), 创建一个初始的类或接口.  然后Java 虚拟机链接初始类或接口, 对其进行初始化, 并调用 `public` `static` `void main(String[])` 方法。 调用此方法会驱动所有进一步的执行过程。 执行 `main` 方法中的 JVM指令, 可能会导致链接（和创建）其他类以及接口, 以及调用其他方法。
 
 The initial class or interface is specified in an implementation-dependent manner. For example, the initial class or interface could be provided as a command line argument. Alternatively, the implementation of the Java Virtual Machine could itself provide an initial class that sets up a class loader which in turn loads an application. Other choices of the initial class or interface are possible so long as they are consistent with the specification given in the previous paragraph.
 
@@ -189,31 +189,37 @@ The initial class or interface is specified in an implementation-dependent manne
 <a name="jvms-5.3"></a>
 ## 5.3. Creation and Loading
 
+## 5.3. 创建和加载
+
 Creation of a class or interface C denoted by the name `N` consists of the construction in the method area of the Java Virtual Machine ([§2.5.4](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-2.html#jvms-2.5.4)) of an implementation-specific internal representation of C. Class or interface creation is triggered by another class or interface D, which references C through its run-time constant pool. Class or interface creation may also be triggered by D invoking methods in certain Java SE Platform class libraries ([§2.12](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-2.html#jvms-2.12)) such as reflection.
+
+`N` 类或接口 C 的创建过程, 由JVM通过方法区中的名称`N`来构造（[§2.5.4](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-2.html#jvms-2.5.4)),  C 的内部表示由具体的JVM实现来决定。 类或接口的创建由另一个类或接口 D 触发, 该类或接口 D 通过其运行时常量池引用 C。 类或接口的创建也可能由某些 Java SE 平台类库中的 D 调用方法触发（[§2.12](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-2.html#jvms-2.12)) 比如反射。
 
 If C is not an array class, it is created by loading a binary representation of C ([§4 (*The `class` File Format*)](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-4.html)) using a class loader. Array classes do not have an external binary representation; they are created by the Java Virtual Machine rather than by a class loader.
 
+如果 C 不是数组类, 它是通过使用类加载器, 加载 C 的二进制表示来创建的（[§4 (*The `class` File Format*)](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-4.html)）。 数组类没有外部的二进制表示；它们是由 Java 虚拟机而不是类加载器创建的。
+
 There are two kinds of class loaders: the bootstrap class loader supplied by the Java Virtual Machine, and user-defined class loaders. Every user-defined class loader is an instance of a subclass of the abstract class `ClassLoader`. Applications employ user-defined class loaders in order to extend the manner in which the Java Virtual Machine dynamically loads and thereby creates classes. User-defined class loaders can be used to create classes that originate from user-defined sources. For example, a class could be downloaded across a network, generated on the fly, or extracted from an encrypted file.
 
-## 5.3。创建和加载
-
-由名称`N`表示的类或接口 C 的创建包括 Java 虚拟机的方法区域中的构造（[§2.5.4](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-2.html#jvms-2.5.4)) C 的特定于实现的内部表示。类或接口的创建由另一个类或接口 D 触发, 该类或接口 D 通过其运行时常量引用 C水池。类或接口的创建也可能由某些 Java SE 平台类库中的 D 调用方法触发（[§2.12](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-2.html #jvms-2.12)) 比如反射。
-
-如果 C 不是数组类, 它是通过加载 C 的二进制表示来创建的（[§4（*`class` 文件格式*）]（https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-4.html)) 使用类加载器。数组类没有外部二进制表示；它们是由 Java 虚拟机而不是类加载器创建的。
-
-有两种类加载器: Java 虚拟机提供的引导类加载器和用户定义的类加载器。每个用户定义的类加载器都是抽象类`ClassLoader`的子类的一个实例。应用程序使用用户定义的类加载器来扩展 Java 虚拟机动态加载并由此创建类的方式。用户定义的类加载器可用于创建源自用户定义源的类。例如, 一个类可以通过网络下载、动态生成或从加密文件中提取。
+有两种类加载器: Java 虚拟机提供的启动类加载器(bootstrap class loader), 和用户自定义的类加载器。
+每个用户定义的类加载器都是抽象类`ClassLoader`的子类的一个实例。 应用程序使用用户定义的类加载器来扩展 Java 虚拟机，实现动态加载并由此创建类的方式。 用户定义的类加载器可用于创建源自用户自定义来源的类。 例如, 可以通过网络下载、动态生成或从加密文件中提取出来一个类。
 
 A class loader `L` may create C by defining it directly or by delegating to another class loader. If `L` creates C directly, we say that `L` *defines* C or, equivalently, that `L` is the *defining loader* of C.
 
+类加载器`L`可以通过直接定义或委托给另一个类加载器来创建 C.  如果`L`直接创建C, 我们说 `L` *定义了（defines）* C, 或者说, `L`是C的 *定义加载器（defining loader）*。
+
 When one class loader delegates to another class loader, the loader that initiates the loading is not necessarily the same loader that completes the loading and defines the class. If `L` creates C, either by defining it directly or by delegation, we say that `L` initiates loading of C or, equivalently, that `L` is an *initiating loader* of C.
+
+当一个类加载器委托另一个类加载器时, 初始启动加载的 loader 不一定是最终完成加载并定义类的加载器.  如果`L`通过直接定义或通过委托来创建 C, 我们说`L`启动了C 的加载, 或者等效地, `L`是 C 的 *启动加载器*。
 
 At run time, a class or interface is determined not by its name alone, but by a pair: its binary name ([§4.2.1](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-4.html#jvms-4.2.1)) and its defining class loader. Each such class or interface belongs to a single *run-time package*. The run-time package of a class or interface is determined by the package name and defining class loader of the class or interface.
 
-类加载器`L`可以通过直接定义或委托给另一个类加载器来创建 C. 如果`L`直接创建C, 我们说`L`*定义* C, 或者等价地, `L`是C的*定义加载器*。
+在运行时, 类或接口不仅仅只由名称决定, 而是由两项因素共同确定:
 
-当一个类加载器委托给另一个类加载器时, 启动加载的加载器不一定是完成加载并定义类的加载器. 如果`L`通过直接定义或通过委托来创建 C, 我们说`L`启动 C 的加载, 或者等效地, `L`是 C 的*启动加载器*。
+- 类或接口的二进制名称（[§4.2.1](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-4.html#jvms-4.2.1))
+- 定义它的类加载器.
 
-在运行时, 类或接口不仅仅由其名称决定, 而是由一对: 它的二进制名称（[§4.2.1](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-4.html#jvms-4.2.1)) 及其定义类加载器. 每个这样的类或接口都属于一个*运行时包*. 类或接口的运行时包由包名和定义类或接口的类加载器决定。
+每个这样的类或接口都属于一个 *运行时包(run-time package)*.  类或接口的运行时包, 由包名和定义类或接口的类加载器决定。
 
 The Java Virtual Machine uses one of three procedures to create class or interface C denoted by `N`:
 
@@ -222,25 +228,25 @@ The Java Virtual Machine uses one of three procedures to create class or interfa
   - If D was defined by a user-defined class loader, then that same user-defined class loader initiates loading of C ([§5.3.2](#jvms-5.3.2)).
 - Otherwise `N` denotes an array class. An array class is created directly by the Java Virtual Machine ([§5.3.3](#jvms-5.3.3)), not by a class loader. However, the defining class loader of D is used in the process of creating array class C.
 
-Java 虚拟机使用三个过程之一来创建由`N`表示的类或接口 C:
+Java 虚拟机通过以下3种过程中的一种, 来创建由`N`表示的类或接口 C:
 
 - 如果`N`表示非数组类或接口, 则使用以下两种方法之一来加载并由此创建 C:
-   - 如果 D 由引导类加载器定义, 则引导类加载器启动 C 的加载（[§5.3.1](#jvms-5.3.1)）。
-   - 如果 D 由用户定义的类加载器定义, 则相同的用户定义的类加载器会启动 C 的加载（[§5.3.2](#jvms-5.3.2)）。
-- 否则 `N` 表示一个数组类. 数组类由 Java 虚拟机 ([§5.3.3](#jvms-5.3.3)) 直接创建, 而不是由类加载器创建. 但是在创建数组类C的过程中使用了D的定义类加载器。
+   - 如果 D 由启动类加载器定义, 则启动类加载器启动 C 的加载（[§5.3.1](#jvms-5.3.1)）。
+   - 如果 D 由用户定义的类加载器定义, 则使用相同的用户自定义类加载器来启动 C 的加载（[§5.3.2](#jvms-5.3.2)）。
+- 否则 `N` 表示一个数组类.  数组类由 Java 虚拟机 ([§5.3.3](#jvms-5.3.3)) 直接创建, 而不是由类加载器创建. 但是在创建数组类C的过程中会使用D的定义类加载器。
 
 
 If an error occurs during class loading, then an instance of a subclass of `LinkageError` must be thrown at a point in the program that (directly or indirectly) uses the class or interface being loaded.
 
+如果在类加载期间发生错误, 则必须在程序中（直接或间接）使用正在加载的类或接口的某个位置, 抛出一个 `LinkageError` 子类的Error实例。
+
 If the Java Virtual Machine ever attempts to load a class C during verification ([§5.4.1](#jvms-5.4.1)) or resolution ([§5.4.3](#jvms-5.4.3)) (but not initialization ([§5.5](#jvms-5.5))), and the class loader that is used to initiate loading of C throws an instance of `ClassNotFoundException`, then the Java Virtual Machine must throw an instance of `NoClassDefFoundError` whose cause is the instance of `ClassNotFoundException`.
+
+如果 Java 虚拟机加载一个类时, 在验证 ([§5.4.1](#jvms-5.4.1)) 或解析 ([§5.4.3](#jvms-5.4.3)) 期间（尚未初始化（[§5.5](#jvms-5.5))）, 并且用于启动 C 加载的类加载器抛出了一个 `ClassNotFoundException` 的Exception实例, 那么 Java 虚拟机必须抛出一个 `NoClassDefFoundError` 的Error实例, 其中设置 Cause 为 `ClassNotFoundException` 实例。
 
 (A subtlety here is that recursive class loading to load superclasses is performed as part of resolution ([§5.3.5](#jvms-5.3.5), step 3). Therefore, a `ClassNotFoundException` that results from a class loader failing to load a superclass must be wrapped in a `NoClassDefFoundError`.)
 
-如果在类加载期间发生错误, 则必须在程序中（直接或间接）使用正在加载的类或接口的某个点处抛出一个 `LinkageError` 子类的实例。
-
-如果 Java 虚拟机在验证 ([§5.4.1](#jvms-5.4.1)) 或解析 ([§5.4.3](#jvms-5.4.3)) 期间尝试加载 C 类（但是 没有初始化（[§5.5](#jvms-5.5))）, 并且用于启动 C 加载的类加载器抛出一个 `ClassNotFoundException` 的实例, 那么 Java 虚拟机必须抛出一个 `NoClassDefFoundError` 的实例, 其 Cause 是 `ClassNotFoundException` 的实例。
-
-（这里的一个微妙之处在于, 加载超类的递归类加载是作为解析的一部分执行的（[§5.3.5](#jvms-5.3.5), 第 3 步）。因此, 类加载器导致的 `ClassNotFoundException` 未能加载超类必须包含在 `NoClassDefFoundError` 中。）
+（这里的一个微妙之处在于, 递归加载超类时, 是作为解析的一部分执行的（[§5.3.5](#jvms-5.3.5), 第 3 步）。 因此, 导致类加载器未能成功加载超类的 `ClassNotFoundException` 异常, 必须包在 `NoClassDefFoundError` 中。）
 
 
 A well-behaved class loader should maintain three properties:
@@ -249,19 +255,21 @@ A well-behaved class loader should maintain three properties:
 - If a class loader `L1` delegates loading of a class C to another loader `L2`, then for any type T that occurs as the direct superclass or a direct superinterface of C, or as the type of a field in C, or as the type of a formal parameter of a method or constructor in C, or as a return type of a method in C, `L1` and `L2` should return the same `Class` object.
 - If a user-defined classloader prefetches binary representations of classes and interfaces, or loads a group of related classes together, then it must reflect loading errors only at points in the program where they could have arisen without prefetching or group loading.
 
-一个行为良好的类加载器应该保持三个属性:
+行为良好的类加载器应该支持这三个特性:
 
 - 给定相同的名称, 一个好的类加载器应该总是返回相同的 `Class` 对象。
-- 如果类加载器`L1`将类 C 的加载委托给另一个加载器`L2`, 那么对于作为直接超类或 C 的直接超接口出现的任何类型 T, 或作为 C 中字段的类型, 或 作为 C 中方法或构造函数的形参类型, 或者作为 C 中方法的返回类型, `L1` 和 `L2` 应该返回相同的 `Class` 对象。
-- 如果用户定义的类加载器预取类和接口的二进制表示, 或者一起加载一组相关类, 那么它必须仅在程序中没有预取或组加载的情况下可能出现加载错误的地方反映加载错误。
+- 如果类加载器 `L1` 将类 C 的加载委托给另一个加载器`L2`；那么对于任何类型 T，作为 C 的直接超类，或C的直接超接口, 或作为 C 中字段的类型，或作为 C 中方法或构造函数的形参类型，或者作为 C 中方法的返回类型，`L1` 和 `L2` 这两个类加载器都应该返回相同的 `Class` 对象。
+- 如果用户自定义的类加载器, 预取了类和接口的二进制表示, 或者批量加载一组相关的类, 那么必须在没有预取或批量加载的情况下, 可能出现加载错误的地方才能抛出加载错误。
+
+
 
 We will sometimes represent a class or interface using the notation `<``N`, `Ld``>`, where `N` denotes the name of the class or interface and `Ld` denotes the defining loader of the class or interface.
 
+我们有时会使用符号 `<N, Ld>` 来表示一个类或接口,  其中`N`表示类或接口的名称, `Ld`表示类或接口的定义加载器 .
+
 We will also represent a class or interface using the notation `N``Li`, where `N` denotes the name of the class or interface and `Li` denotes an initiating loader of the class or interface.
 
-我们有时会使用符号`<``N`、`Ld`>`来表示一个类或接口, 其中`N`表示类或接口的名称, `Ld`表示类或接口的定义加载器 .
-
-我们还将使用符号`N`Li 表示类或接口, 其中`N`表示类或接口的名称, `Li`表示类或接口的初始加载器。
+我们还会使用符号 `NLi` 表示类或接口, 其中`N`表示类或接口的名称, `Li`表示类或接口的初始加载器。
 
 
 <a name="jvms-5.3.1"></a>
@@ -273,13 +281,13 @@ First, the Java Virtual Machine determines whether the bootstrap class loader ha
 
 Otherwise, the Java Virtual Machine passes the argument `N` to an invocation of a method on the bootstrap class loader to search for a purported representation of C in a platform-dependent manner. Typically, a class or interface will be represented using a file in a hierarchical file system, and the name of the class or interface will be encoded in the pathname of the file.
 
-### 5.3.1. 使用引导类加载器加载
+### 5.3.1. 使用启动类加载器加载
 
-以下步骤用于使用引导类加载器加载并创建由`N`表示的非数组类或接口 C。
+以下步骤用于使用启动类加载器加载并创建由`N`表示的非数组类或接口 C。
 
-首先, Java 虚拟机确定引导类加载器是否已被记录为由`N`表示的类或接口的初始加载器. 如果是这样, 则此类或接口是 C, 并且不需要创建类。
+首先, Java 虚拟机确定启动类加载器是否已被记录为由`N`表示的类或接口的初始加载器. 如果是这样, 则此类或接口是 C, 并且不需要创建类。
 
-否则, Java 虚拟机将参数`N`传递给引导类加载器上的方法调用, 以依赖于平台的方式搜索 C 的声称表示. 通常, 类或接口将使用分层文件系统中的文件表示, 并且类或接口的名称将编码在文件的路径名中。
+否则, Java 虚拟机将参数`N`传递给启动类加载器上的方法调用, 以依赖于平台的方式搜索 C 的声称表示. 通常, 类或接口将使用分层文件系统中的文件表示, 并且类或接口的名称将编码在文件的路径名中。
 
 Note that there is no guarantee that a purported representation found is valid or is a representation of C. This phase of loading must detect the following error:
 
@@ -291,7 +299,7 @@ Then the Java Virtual Machine attempts to derive a class denoted by `N` using th
 
 - 如果没有找到声称的 C 表示, 加载会抛出一个 `ClassNotFoundException` 的实例。
 
-然后, Java 虚拟机尝试使用 [§5.3.5](#jvms-5.3.5) 中的算法从声称的表示中使用引导类加载器派生一个由`N`表示的类. 那堂课是C。
+然后, Java 虚拟机尝试使用 [§5.3.5](#jvms-5.3.5) 中的算法从声称的表示中使用启动类加载器派生一个由`N`表示的类. 那堂课是C。
 
 
 <a name="jvms-5.3.2"></a>
@@ -322,7 +330,7 @@ Since JDK release 1.1, Oracle’s Java Virtual Machine implementation has invoke
 
 当使用要加载的类或接口 C 的名称`N`调用类加载器`L`的`loadClass`方法时, `L`必须执行以下两个操作之一才能加载 C:
 
-1. 类加载器 `L` 可以创建一个字节数组, 将 C 表示为 `ClassFile` 结构的字节（[§4.1](https://docs.oracle.com/javase/specs/jvms/se11/html /jvms-4.html#jvms-4.1));然后它必须调用类`ClassLoader`的方法`defineClass`。调用 `defineClass` 会导致 Java 虚拟机使用 [§5.3.5](#jvms-5.3.5) 中的算法从字节数组中使用 `L` 派生一个由 `N` 表示的类或接口。
+1. 类加载器 `L` 可以创建一个字节数组, 将 C 表示为 `ClassFile` 结构的字节（[§4.1](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-4.html#jvms-4.1));然后它必须调用类`ClassLoader`的方法`defineClass`。调用 `defineClass` 会导致 Java 虚拟机使用 [§5.3.5](#jvms-5.3.5) 中的算法从字节数组中使用 `L` 派生一个由 `N` 表示的类或接口。
 2. 类加载器`L`可以将C的加载委托给其他类加载器`L`。这是通过将参数`N`直接或间接传递给`L`上的方法调用（通常是`loadClass`方法）来实现的。调用的结果是 C。
 
 在 (1) 或 (2) 中, 如果类加载器`L`由于任何原因无法加载由`N`表示的类或接口, 它必须抛出一个`ClassNotFoundException`实例。
@@ -349,9 +357,9 @@ Otherwise, the following steps are performed to create C:
 
    If the component type is a `reference` type, the accessibility of the array class is determined by the accessibility of its component type ([§5.4.4](#jvms-5.4.4)). Otherwise, the array class is accessible to all classes and interfaces.
 
-### 5.3.3。创建数组类
+### 5.3.3. 创建数组类
 
-以下步骤用于使用类加载器`L`创建由`N`表示的数组类 C。类加载器`L`可以是引导类加载器或用户定义的类加载器。
+以下步骤用于使用类加载器`L`创建由`N`表示的数组类 C。类加载器`L`可以是启动类加载器或用户定义的类加载器。
 
 如果`L`已经被记录为与`N`具有相同组件类型的数组类的初始加载器, 则该类是C, 并且不需要创建数组类。
 
@@ -361,7 +369,7 @@ Otherwise, the following steps are performed to create C:
 
 2. Java 虚拟机创建一个具有指定组件类型和维数的新数组类。
 
-   如果组件类型是`引用`类型, 则 C 被标记为已由组件类型的定义类加载器定义。否则, C 被标记为已由引导类加载器定义。
+   如果组件类型是`引用`类型, 则 C 被标记为已由组件类型的定义类加载器定义。否则, C 被标记为已由启动类加载器定义。
 
    在任何情况下, Java 虚拟机都会记录`L`是 C 的初始加载程序（[§5.3.4](#jvms-5.3.4)）。
 
@@ -377,7 +385,7 @@ When a class or interface C = `<``N1`, `L1``>` makes a symbolic reference to a f
 
 To ensure this, the Java Virtual Machine imposes *loading constraints* of the form `N``L1` = `N``L2` during preparation ([§5.4.2](#jvms-5.4.2)) and resolution ([§5.4.3](#jvms-5.4.3)). To enforce these constraints, the Java Virtual Machine will, at certain prescribed times (see [§5.3.1](#jvms-5.3.1), [§5.3.2](#jvms-5.3.2), [§5.3.3](#jvms-5.3.3), and [§5.3.5](#jvms-5.3.5)), record that a particular loader is an initiating loader of a particular class. After recording that a loader is an initiating loader of a class, the Java Virtual Machine must immediately check to see if any loading constraints are violated. If so, the record is retracted, the Java Virtual Machine throws a `LinkageError`, and the loading operation that caused the recording to take place fails.
 
-### 5.3.4。加载约束
+### 5.3.4. 加载约束
 
 在存在类加载器的情况下确保类型安全链接需要特别小心。当两个不同的类加载器开始加载一个由`N`表示的类或接口时, 名称`N`可能表示每个加载器中的不同类或接口。
 
@@ -396,7 +404,7 @@ The situations described here are the only times at which the Java Virtual Machi
 
 A full discussion of class loaders and type safety is beyond the scope of this specification. For a more comprehensive discussion, readers are referred to *Dynamic Class Loading in the Java Virtual Machine* by Sheng Liang and Gilad Bracha (*Proceedings of the 1998 ACM SIGPLAN Conference on Object-Oriented Programming Systems, Languages and Applications*).
 
-同样, 在施加加载约束之后（参见 [§5.4.2](#jvms-5.4.2)、[§5.4.3.2](#jvms-5.4.3.2)、[§5.4.3.3](#jvms-5.4 .3.3) 和 [§5.4.3.4](#jvms-5.4.3.4)), Java 虚拟机必须立即检查是否违反了任何加载约束。如果是这样, 则收回新施加的加载约束, Java 虚拟机抛出一个 `LinkageError`, 导致施加约束的操作（解决或准备, 视情况而定）失败。
+同样, 在施加加载约束之后（参见 [§5.4.2](#jvms-5.4.2)、[§5.4.3.2](#jvms-5.4.3.2)、[§5.4.3.3](#jvms-5.4.3.3) 和 [§5.4.3.4](#jvms-5.4.3.4)), Java 虚拟机必须立即检查是否违反了任何加载约束。如果是这样, 则收回新施加的加载约束, Java 虚拟机抛出一个 `LinkageError`, 导致施加约束的操作（解决或准备, 视情况而定）失败。
 
 此处描述的情况是 Java 虚拟机检查是否违反任何加载约束的唯一时间。当且仅当所有以下四个条件都成立时, 才违反加载约束:
 
@@ -445,7 +453,7 @@ The following steps are used to derive a `Class` object for the nonarray class o
 
 5. The Java Virtual Machine marks C as having `L` as its defining class loader and records that `L` is an initiating loader of C ([§5.3.4](#jvms-5.3.4)).
 
-### 5.3.5。从`类`文件表示派生类
+### 5.3.5. 从`类`文件表示派生类
 
 以下步骤用于使用加载器`L`从所谓的`类`文件格式的表示中为非数组类或接口 C 派生一个`类`对象, 由`N`表示。
 
@@ -516,7 +524,7 @@ It is possible for a class loader to define a class or interface in a run-time p
 - Every unnamed module reads every run-time module.
 - Every unnamed module exports, to every run-time module, every run-time package associated with itself.
 
-### 5.3.6。模块和层
+### 5.3.6. 模块和层
 
 Java 虚拟机支持将类和接口组织成模块。模块`M`中的类或接口 C 的成员资格用于控制从`M`以外的模块中的类和接口对 C 的访问（[§5.4.4](#jvms-5.4.4)）。
 
@@ -532,7 +540,7 @@ Java 虚拟机支持将类和接口组织成模块。模块`M`中的类或接口
 
 换句话说, 类加载器和运行时模块之间的关系不必是 1:1。对于要加载的一组给定模块, 如果程序可以确定每个模块中的包的名称仅在该模块中找到, 那么程序可以仅指定一个类加载器来调用`defineModules`。这个类加载器将跨多个运行时模块创建类。
 
-`defineModules` 创建的每个运行时模块都是 *layer* 的一部分。层表示一组类加载器, 它们共同用于在一组运行时模块中创建类。有两种层: Java 虚拟机提供的引导层和用户定义的层。引导层是在 Java 虚拟机启动时以实现相关的方式创建的。它将标准运行时模块`java.base`与引导类加载器定义的标准运行时包相关联, 例如`java.lang`。用户定义层由程序创建, 以构建依赖于 java.base 和其他标准运行时模块的运行时模块集。
+`defineModules` 创建的每个运行时模块都是 *layer* 的一部分。层表示一组类加载器, 它们共同用于在一组运行时模块中创建类。有两种层: Java 虚拟机提供的引导层和用户定义的层。引导层是在 Java 虚拟机启动时以实现相关的方式创建的。它将标准运行时模块`java.base`与启动类加载器定义的标准运行时包相关联, 例如`java.lang`。用户定义层由程序创建, 以构建依赖于 java.base 和其他标准运行时模块的运行时模块集。
 
 根据`defineModules`的语义, 运行时模块隐含地恰好是一层的一部分。然而, 一个类加载器可能会在不同层的运行时模块中创建类, 因为同一个类加载器可能会被指定给`defineModules`的多个调用。访问控制由类的运行时模块管理, 而不是由创建类的类加载器或类加载器所服务的层管理。
 
@@ -564,7 +572,7 @@ For example, a Java Virtual Machine implementation may choose a "lazy" linkage s
 
 Because linking involves the allocation of new data structures, it may fail with an `OutOfMemoryError`.
 
-## 5.4。链接
+## 5.4. 链接
 
 如果需要, 链接一个类或接口涉及验证和准备该类或接口、其直接超类、其直接超接口及其元素类型（如果它是数组类型）。链接还涉及到类或接口中的符号引用的解析, 尽管不一定在验证和准备类或接口的同时。
 
@@ -594,7 +602,7 @@ If the binary representation of a class or interface does not satisfy the static
 
 If an attempt by the Java Virtual Machine to verify a class or interface fails because an error is thrown that is an instance of `LinkageError` (or a subclass), then subsequent attempts to verify the class or interface always fail with the same error that was thrown as a result of the initial verification attempt.
 
-### 5.4.1。确认
+### 5.4.1. 确认
 
 *验证* ([§4.10](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-4.html#jvms-4.10)) 确保类或接口的二进制表示在结构上是正确的（[§4.9](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-4.html#jvms-4.9)）。验证可能会导致加载其他类和接口 ([§5.3](#jvms-5.3)), 但不需要验证或准备它们。
 
@@ -631,9 +639,9 @@ During preparation of a class or interface C, the Java Virtual Machine also impo
 
 Preparation may occur at any time following creation but must be completed prior to initialization.
 
-### 5.4.2。准备
+### 5.4.2. 准备
 
-*准备*涉及为类或接口创建静态字段并将这些字段初始化为其默认值（[§2.3](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-2 .html#jvms-2.3)、[§2.4](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-2.html#jvms-2.4))。这不需要执行任何 Java 虚拟机代码；静态字段的显式初始化程序作为初始化的一部分执行（[§5.5](#jvms-5.5)）, 而不是准备。
+*准备*涉及为类或接口创建静态字段并将这些字段初始化为其默认值（[§2.3](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-2.html#jvms-2.3)、[§2.4](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-2.html#jvms-2.4))。这不需要执行任何 Java 虚拟机代码；静态字段的显式初始化程序作为初始化的一部分执行（[§5.5](#jvms-5.5)）, 而不是准备。
 
 在准备类或接口 C 期间, Java 虚拟机还施加了加载约束（[§5.3.4](#jvms-5.3.4)）:
 
@@ -698,7 +706,7 @@ Certain of the instructions above require additional linking checks when resolvi
 
 Linking exceptions generated by checks that are specific to the execution of a particular Java Virtual Machine instruction are given in the description of that instruction and are not covered in this general discussion of resolution. Note that such exceptions, although described as part of the execution of Java Virtual Machine instructions rather than resolution, are still properly considered failures of resolution.
 
-### 5.4.3。解析度
+### 5.4.3. 解析度
 
 许多 Java 虚拟机指令 - *anewarray*、*checkcast*、*getfield*、*getstatic*、*instanceof*、*invokedynamic*、*invokeinterface*、*invokespecial*、*invokestatic*、*invokevirtual*、*ldc*、 *ldc_w*、*ldc2_w*、*multianewarray*、*new*、*putfield* 和 *putstatic* - 依赖于运行时常量池中的符号引用。执行这些指令中的任何一个都需要符号引用的*解析*。
 
@@ -757,7 +765,7 @@ If steps 1 and 2 succeed but step 3 fails, C is still valid and usable. Neverthe
 
     因此, 由于类或接口创建失败而引发的任何异常都可能因类和接口解析失败而引发。
 
-2. 如果 C 是一个数组类并且它的元素类型是 `reference` 类型, 那么通过调用 [§5.4.3.1](#jvms-5.4 .3.1) 递归。
+2. 如果 C 是一个数组类并且它的元素类型是 `reference` 类型, 那么通过调用 [§5.4.3.1](#jvms-5.4.3.1) 递归。
 
 3. 最后, 对从 D 到 C 的访问应用访问控制（[§5.4.4](#jvms-5.4.4)）。
 
@@ -776,7 +784,7 @@ When resolving a field reference, field resolution first attempts to look up the
 3. Otherwise, if C has a superclass S, field lookup is applied recursively to S.
 4. Otherwise, field lookup fails.
 
-#### 5.4.3.2。场分辨率
+#### 5.4.3.2. 场分辨率
 
 要将未解析的符号引用从 D 解析到类或接口 C 中的字段, 必须首先解析由字段引用给出的对 C 的符号引用 ([§5.4.3.1](#jvms-5.4.3.1))。因此, 任何因类或接口引用解析失败而引发的异常都可能因字段解析失败而引发。如果可以成功解析对 C 的引用, 则可以抛出与字段引用本身解析失败有关的异常。
 
@@ -853,7 +861,7 @@ A *maximally-specific superinterface method* of a class or interface C for a par
 - The method has neither its `ACC_PRIVATE` flag nor its `ACC_STATIC` flag set.
 - Where the method is declared in interface I, there exists no other maximally-specific superinterface method of C with the specified name and descriptor that is declared in a subinterface of I.
 
-#### 5.4.3.3。方法解析
+#### 5.4.3.3. 方法解析
 
 要解析从 D 到类 C 中的方法的未解析符号引用, 首先解析由方法引用给出的对 C 的符号引用 ([§5.4.3.1](#jvms-5.4.3.1))。因此, 任何因类引用解析失败而引发的异常都可能因方法解析失败而引发。如果可以成功解析对 C 的引用, 则可以抛出与方法引用本身的解析相关的异常。
 
@@ -958,7 +966,7 @@ When resolving an interface method reference:
 5. Otherwise, if any superinterface of C declares a method with the name and descriptor specified by the method reference that has neither its `ACC_PRIVATE` flag nor its `ACC_STATIC` flag set, one of these is arbitrarily chosen and method lookup succeeds.
 6. Otherwise, method lookup fails.
 
-#### 5.4.3.4。接口方法解析
+#### 5.4.3.4. 接口方法解析
 
 要将未解析的符号引用从 D 解析到接口 C 中的接口方法, 首先解析由接口方法引用给出的对 C 的符号引用 ([§5.4.3.1](#jvms-5.4.3.1))。因此, 任何因接口引用解析失败而引发的异常都可能因接口方法解析失败而引发。如果对 C 的引用可以成功解析, 则可以抛出与接口方法引用本身的解析相关的异常。
 
@@ -1031,7 +1039,7 @@ Resolution of an unresolved symbolic reference to a method handle is more compli
 
 Symbolic references by an instruction sequence to fields or methods are indicated by `C.x:T`, where `x` and `T` are the name and descriptor ([§4.3.2](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-4.html#jvms-4.3.2), [§4.3.3](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-4.html#jvms-4.3.3)) of the field or method, and `C` is the class or interface in which the field or method is to be found.
 
-#### 5.4.3.5。方法类型和方法句柄解析
+#### 5.4.3.5. 方法类型和方法句柄解析
 
 要解析对方法类型的未解析符号引用, 就好像解析对类和接口的未解析符号引用 ([§5.4.3.1](#jvms-5.4.3.1)), 其名称对应方法描述符（[§4.3.3](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-4.html#jvms-4.3.3)）。
 
@@ -1196,7 +1204,7 @@ To resolve an unresolved symbolic reference R to a dynamically-computed constant
 
 The first task involves the following steps:
 
-#### 5.4.3.6。动态计算的常数和调用点分辨率
+#### 5.4.3.6. 动态计算的常数和调用点分辨率
 
 要将未解析的符号引用 R 解析为动态计算的常量或调用站点, 需要完成三个任务。首先, 检查 R 以确定哪些代码将用作其*引导方法*, 以及哪些参数将传递给该代码。其次, 将参数打包到一个数组中, 并调用 bootstrap 方法。第三, 对bootstrap方法的结果进行验证, 并作为解析的结果。
 
@@ -1575,7 +1583,7 @@ During execution of an *invokeinterface* or *invokevirtual* instruction, a metho
 
 While C will typically be a class, it may be an interface when these rules are applied during preparation ([§5.4.2](#jvms-5.4.2)).
 
-### 5.4.6。方法选择
+### 5.4.6. 方法选择
 
 在执行 *invokeinterface* 或 *invokevirtual* 指令期间, 根据 (i) 堆栈上对象的运行时类型和 (ii) 先前 *resolved* 的方法*选择*该指令。关于类或接口 C 和方法 `mR` 选择方法的规则如下:
 
@@ -1603,7 +1611,7 @@ A class or interface C may be initialized only as a result of:
 
 ## 5.5. 初始化(Initialization)
 
-*类或接口的初始化*包括执行其类或接口的初始化方法（[§2.9.2](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-2.html #jvms-2.9.2))。
+*类或接口的初始化*包括执行其类或接口的初始化方法（[§2.9.2](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-2.html#jvms-2.9.2))。
 
 类或接口 C 只能作为以下结果进行初始化:
 
@@ -1626,7 +1634,7 @@ A class or interface C may be initialized only as a result of:
 
 - Its designation as the initial class or interface at Java Virtual Machine startup ([§5.2](#jvms-5.2)).
 
-- 执行任何引用 C 的 Java 虚拟机指令 *new*、*getstatic*、*putstatic* 或 *invokestatic*（[§*new*](https://docs.oracle.com/javase /specs/jvms/se11/html/jvms-6.html#jvms-6.5.new), [§*getstatic*](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-6.html#jvms-6.5.getstatic）, [§*putstatic*]（https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-6.html#jvms-6.5.putstatic ), [§*invokestatic*](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-6.html#jvms-6.5.invokestatic))。
+- 执行任何引用 C 的 Java 虚拟机指令 *new*、*getstatic*、*putstatic* 或 *invokestatic*（[§*new*](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-6.html#jvms-6.5.new), [§*getstatic*](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-6.html#jvms-6.5.getstatic）, [§*putstatic*]（https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-6.html#jvms-6.5.putstatic ), [§*invokestatic*](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-6.html#jvms-6.5.invokestatic))。
 
   在执行 *new* 指令时, 要初始化的类是指令引用的类。
 
@@ -1634,7 +1642,7 @@ A class or interface C may be initialized only as a result of:
 
 - `java.lang.invoke.MethodHandle` 实例的第一次调用, 这是方法句柄解析的结果（[§5.4.3.5](#jvms-5.4.3.5)）, 用于类型 2 的方法句柄（`REF_getStatic `)、4 (`REF_putStatic`)、6 (`REF_invokeStatic`) 或 8 (`REF_newInvokeSpecial`)。
 
-  这意味着在为 *invokedynamic* 指令调用引导方法时初始化引导方法的类（[§*invokedynamic*](https://docs.oracle.com/javase/specs/jvms/se11/html /jvms-6.html#jvms-6.5.invokedynamic)), 作为调用站点说明符的持续解析的一部分。
+  这意味着在为 *invokedynamic* 指令调用引导方法时初始化引导方法的类（[§*invokedynamic*](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-6.html#jvms-6.5.invokedynamic)), 作为调用站点说明符的持续解析的一部分。
 
 - 在类库中调用某些反射方法（[§2.12](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-2.html#jvms-2.12)）, 例如, 在类`Class`或包`java.lang.reflect`中。
 
@@ -1698,7 +1706,7 @@ For each class or interface C, there is a unique initialization lock `LC`. The m
 
 6. 否则, 记录当前线程正在对C的`Class`对象进行初始化, 并释放`LC`。
 
-   然后, 用其`ConstantValue`属性中的常量值初始化C的每个`final``static`字段（[§4.7.2]（https://docs.oracle.com/javase/specs/jvms/se11/html /jvms-4.html#jvms-4.7.2)), 按照字段在 `ClassFile` 结构中出现的顺序。
+   然后, 用其`ConstantValue`属性中的常量值初始化C的每个`final``static`字段（[§4.7.2]（https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-4.html#jvms-4.7.2)), 按照字段在 `ClassFile` 结构中出现的顺序。
 
 7. Next, if C is a class rather than an interface, then let SC be its superclass and let SI1, ..., SIn be all superinterfaces of C (whether direct or indirect) that declare at least one non-`abstract`, non-`static` method. The order of superinterfaces is given by a recursive enumeration over the superinterface hierarchy of each interface directly implemented by C. For each interface I directly implemented by C (in the order of the `interfaces` array of C), the enumeration recurs on I's superinterfaces (in the order of the `interfaces` array of I) before returning I.
 
