@@ -341,11 +341,19 @@ Since JDK release 1.1, Oracle’s Java Virtual Machine implementation has invoke
 <a name="jvms-5.3.3"></a>
 ### 5.3.3. Creating Array Classes
 
+### 5.3.3. 创建数组类
+
 The following steps are used to create the array class C denoted by `N` using class loader `L`. Class loader `L` may be either the bootstrap class loader or a user-defined class loader.
+
+使用类加载器`L`, 创建由名称 `N` 表示的数组类 C, 采取下面的步骤。 类加载器`L` 可以是启动类加载器, 或者用户定义的类加载器。
 
 If `L` has already been recorded as an initiating loader of an array class with the same component type as `N`, that class is C, and no array class creation is necessary.
 
+如果`L`已经被记录为与`N`具有相同组件类型的数组类的初始加载器, 则该类就是C, 不需要再创建数组类。
+
 Otherwise, the following steps are performed to create C:
+
+否则, 执行以下步骤来创建 C:
 
 1. If the component type is a `reference` type, the algorithm of this section ([§5.3](#jvms-5.3)) is applied recursively using class loader `L` in order to load and thereby create the component type of C.
 
@@ -357,23 +365,15 @@ Otherwise, the following steps are performed to create C:
 
    If the component type is a `reference` type, the accessibility of the array class is determined by the accessibility of its component type ([§5.4.4](#jvms-5.4.4)). Otherwise, the array class is accessible to all classes and interfaces.
 
-### 5.3.3. 创建数组类
-
-以下步骤用于使用类加载器`L`创建由`N`表示的数组类 C。类加载器`L`可以是启动类加载器或用户定义的类加载器。
-
-如果`L`已经被记录为与`N`具有相同组件类型的数组类的初始加载器, 则该类是C, 并且不需要创建数组类。
-
-否则, 执行以下步骤来创建 C:
-
-1. 如果组件类型是 `reference` 类型, 则使用类加载器 `L` 递归应用本节的算法（[§5.3](#jvms-5.3)）, 以加载并创建组件类型C。
+1. 如果组件类型是 `reference` 类型, 则使用类加载器 `L` , 递归应用本节的算法（[§5.3](#jvms-5.3)）, 以加载并创建组件类型C。
 
 2. Java 虚拟机创建一个具有指定组件类型和维数的新数组类。
 
-   如果组件类型是`引用`类型, 则 C 被标记为已由组件类型的定义类加载器定义。否则, C 被标记为已由启动类加载器定义。
+   如果组件类型是 `引用` 类型, 则 C 被标记为已由组件类型的定义类加载器定义。 否则, C 被标记为已由启动类加载器定义。
 
-   在任何情况下, Java 虚拟机都会记录`L`是 C 的初始加载程序（[§5.3.4](#jvms-5.3.4)）。
+   在任何情况下, Java 虚拟机都会记录`L`是 C 的初始加载器（[§5.3.4](#jvms-5.3.4)）。
 
-   如果组件类型是`引用`类型, 则数组类的可访问性由其组件类型的可访问性决定（[§5.4.4](#jvms-5.4.4)）。否则, 所有类和接口都可以访问数组类。
+   如果组件类型是`引用`类型, 则数组类的可访问性, 由其组件类型的可访问性决定（[§5.4.4](#jvms-5.4.4)）。 否则, 所有类和接口都可以访问数组类。
 
 
 <a name="jvms-5.3.4"></a>
