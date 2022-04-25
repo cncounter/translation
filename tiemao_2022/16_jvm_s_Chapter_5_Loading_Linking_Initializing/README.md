@@ -299,43 +299,43 @@ Note that there is no guarantee that a purported representation found is valid o
 
 Then the Java Virtual Machine attempts to derive a class denoted by `N` using the bootstrap class loader from the purported representation using the algorithm found in [§5.3.5](#jvms-5.3.5). That class is C.
 
-然后, Java 虚拟机尝试使用 [§5.3.5](#jvms-5.3.5) 中的算法, 使用启动类加载器, 从声称的表示中派生一个由 `N` 表示的类. 那个类就是C。
+然后, Java 虚拟机尝试使用 [§5.3.5](#jvms-5.3.5) 中介绍的算法, 使用启动类加载器, 从声称的表示中派生一个由 `N` 表示的类. 那个类就是C。
 
 
 <a name="jvms-5.3.2"></a>
 ### 5.3.2. Loading Using a User-defined Class Loader
 
+### 5.3.2. 用户自定义类加载器执行的加载
+
 The following steps are used to load and thereby create the nonarray class or interface C denoted by `N` using a user-defined class loader `L`.
+
+用户自定义的类加载器`L`, 通过以下步骤, 加载并创建由`N`表示的, 非数组类 C, 或者接口 C。
 
 First, the Java Virtual Machine determines whether `L` has already been recorded as an initiating loader of a class or interface denoted by `N`. If so, this class or interface is C, and no class creation is necessary.
 
+首先, Java 虚拟机确定`L`是否已被记录为由`N`表示的类或接口的初始加载器. 如果是这样, 则需要定义的类或接口就是 C, 并且不需要创建类。
+
 Otherwise, the Java Virtual Machine invokes `loadClass(N)` on `L`. The value returned by the invocation is the created class or interface C. The Java Virtual Machine then records that `L` is an initiating loader of C ([§5.3.4](#jvms-5.3.4)). The remainder of this section describes this process in more detail.
 
-### 5.3.2. 使用用户定义的类加载器加载
-
-以下步骤用于使用用户定义的类加载器`L`加载并创建由`N`表示的非数组类或接口 C。
-
-首先, Java 虚拟机确定`L`是否已被记录为由`N`表示的类或接口的初始加载器. 如果是这样, 则此类或接口是 C, 并且不需要创建类。
-
-否则, Java 虚拟机在 `L` 上调用 `loadClass(N)`. 调用返回的值是创建的类或接口 C。Java 虚拟机然后记录`L`是 C 的初始加载器（[§5.3.4](#jvms-5.3.4)）. 本节的其余部分更详细地描述了这个过程。
+否则, Java 虚拟机在 `L` 上调用 `loadClass(N)`. 调用返回的值是创建的类或接口 C。 JVM 然后记录`L`是 C 的初始加载器（[§5.3.4](#jvms-5.3.4)）. 本节剩下的部分更详细地描述了这个过程。
 
 When the `loadClass` method of the class loader `L` is invoked with the name `N` of a class or interface C to be loaded, `L` must perform one of the following two operations in order to load C:
 
+当使用名称`N`，要加载类或接口 C，调用类加载器`L`的`loadClass`方法时, `L`必须执行以下两个操作之一才能加载 C:
+
 1. The class loader `L` can create an array of bytes representing C as the bytes of a `ClassFile` structure ([§4.1](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-4.html#jvms-4.1)); it then must invoke the method `defineClass` of class `ClassLoader`. Invoking `defineClass` causes the Java Virtual Machine to derive a class or interface denoted by `N` using `L` from the array of bytes using the algorithm found in [§5.3.5](#jvms-5.3.5).
-2. The class loader `L` can delegate the loading of C to some other class loader `L`'. This is accomplished by passing the argument `N` directly or indirectly to an invocation of a method on `L`' (typically the `loadClass` method). The result of the invocation is C.
+2. The class loader `L` can delegate the loading of C to some other class loader `L'`. This is accomplished by passing the argument `N` directly or indirectly to an invocation of a method on `L`' (typically the `loadClass` method). The result of the invocation is C.
+
+1. 类加载器 `L` 可以创建一个字节数组, 将 C 表示为 `ClassFile` 结构的字节数组（[§4.1](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-4.html#jvms-4.1)); 然后它必须调用 `ClassLoader` 类的方法`defineClass`。 调用 `defineClass` 会导致 Java 虚拟机使用 [§5.3.5](#jvms-5.3.5) 中的算法, 从字节数组中通过 `L` 派生出一个由名称 `N` 表示的类或接口。
+2. 类加载器`L`可以将 C 的加载委托给其他类加载器`L'`。 这是通过将参数`N`直接或间接传递给`L'`上的方法（通常是`loadClass`方法）调用来实现的。调用的结果是 C。
 
 In either (1) or (2), if the class loader `L` is unable to load a class or interface denoted by `N` for any reason, it must throw an instance of `ClassNotFoundException`.
 
 Since JDK release 1.1, Oracle’s Java Virtual Machine implementation has invoked the `loadClass` method of a class loader in order to cause it to load a class or interface. The argument to `loadClass` is the name of the class or interface to be loaded. There is also a two-argument version of the `loadClass` method, where the second argument is a `boolean` that indicates whether the class or interface is to be linked or not. Only the two-argument version was supplied in JDK release 1.0.2, and Oracle’s Java Virtual Machine implementation relied on it to link the loaded class or interface. From JDK release 1.1 onward, Oracle’s Java Virtual Machine implementation links the class or interface directly, without relying on the class loader.
 
-当使用要加载的类或接口 C 的名称`N`调用类加载器`L`的`loadClass`方法时, `L`必须执行以下两个操作之一才能加载 C:
+不管是在 (1) 或 (2) 步骤中, 如果类加载器`L`由于任何原因, 无法加载由`N`表示的类或接口, 它必须抛出一个 `ClassNotFoundException` 异常实例。
 
-1. 类加载器 `L` 可以创建一个字节数组, 将 C 表示为 `ClassFile` 结构的字节（[§4.1](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-4.html#jvms-4.1));然后它必须调用类`ClassLoader`的方法`defineClass`。调用 `defineClass` 会导致 Java 虚拟机使用 [§5.3.5](#jvms-5.3.5) 中的算法从字节数组中使用 `L` 派生一个由 `N` 表示的类或接口。
-2. 类加载器`L`可以将C的加载委托给其他类加载器`L`。这是通过将参数`N`直接或间接传递给`L`上的方法调用（通常是`loadClass`方法）来实现的。调用的结果是 C。
-
-在 (1) 或 (2) 中, 如果类加载器`L`由于任何原因无法加载由`N`表示的类或接口, 它必须抛出一个`ClassNotFoundException`实例。
-
-自 JDK 1.1 版以来, Oracle 的 Java 虚拟机实现调用了类加载器的 `loadClass` 方法, 以使其加载类或接口. `loadClass` 的参数是要加载的类或接口的名称. `loadClass` 方法还有一个双参数版本, 其中第二个参数是一个 `boolean`, 指示是否要链接类或接口. JDK 1.0.2 版中只提供了两个参数的版本, Oracle 的 Java 虚拟机实现依赖它来链接加载的类或接口。从 JDK 1.1 版开始, Oracle 的 Java 虚拟机实现直接链接类或接口, 而不依赖于类加载器。
+自 JDK 1.1 版以来, Oracle 的 Java 虚拟机实现, 调用某个类加载器的 `loadClass` 方法, 以使其加载类或接口. `loadClass` 的参数是要加载的类或接口的名称. `loadClass` 方法还有一个双参数版本, 其中第二个参数是一个 `boolean`, 指示是否要链接类或接口.  早期的 JDK 1.0.2 版中只提供了两个参数的版本, Oracle 的 Java 虚拟机实现, 依赖它来链接加载的类或接口。 从 JDK 1.1 版开始, Oracle 的 Java 虚拟机实现直接链接类或接口, 而不依赖于类加载器。
 
 
 <a name="jvms-5.3.3"></a>
