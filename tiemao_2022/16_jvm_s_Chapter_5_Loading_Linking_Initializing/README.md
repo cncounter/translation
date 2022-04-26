@@ -422,7 +422,7 @@ A full discussion of class loaders and type safety is beyond the scope of this s
 <a name="jvms-5.3.5"></a>
 ### 5.3.5. Deriving a Class from a `class` File Representation
 
-### 5.3.5. 将`class`文件格式形成一个类
+### 5.3.5. 从`class`文件数据派生出一个类
 
 The following steps are used to derive a `Class` object for the nonarray class or interface C denoted by `N` using loader `L` from a purported representation in `class` file format.
 
