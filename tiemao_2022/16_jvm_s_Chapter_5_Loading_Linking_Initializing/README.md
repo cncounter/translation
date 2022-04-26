@@ -569,9 +569,16 @@ It is possible for a class loader to define a class or interface in a run-time p
 <a name="jvms-5.4"></a>
 ## 5.4. Linking
 
+
+## 5.4. 链接
+
 Linking a class or interface involves verifying and preparing that class or interface, its direct superclass, its direct superinterfaces, and its element type (if it is an array type), if necessary. Linking also involves resolution of symbolic references in the class or interface, though not necessarily at the same time as the class or interface is verified and prepared.
 
+如果需要, 链接一个类或接口涉及验证和准备该类或接口、其直接超类、其直接超接口及其元素类型（如果它是数组类型）。链接还涉及到类或接口中的符号引用的解析, 尽管不一定在验证和准备类或接口的同时。
+
 This specification allows an implementation flexibility as to when linking activities (and, because of recursion, loading) take place, provided that all of the following properties are maintained:
+
+该规范允许在何时发生链接活动（以及由于递归, 加载）时实现灵活性, 前提是维护以下所有属性:
 
 - A class or interface is completely loaded before it is linked.
 
@@ -583,15 +590,6 @@ This specification allows an implementation flexibility as to when linking activ
 
   A symbolic reference to a dynamically-computed call site is not resolved until a bootstrap method that refers to it as a static argument is invoked.
 
-For example, a Java Virtual Machine implementation may choose a "lazy" linkage strategy, where each symbolic reference in a class or interface (other than the symbolic references above) is resolved individually when it is used. Alternatively, an implementation may choose an "eager" linkage strategy, where all symbolic references are resolved at once when the class or interface is being verified. This means that the resolution process may continue, in some implementations, after a class or interface has been initialized. Whichever strategy is followed, any error detected during resolution must be thrown at a point in the program that (directly or indirectly) uses a symbolic reference to the class or interface.
-
-Because linking involves the allocation of new data structures, it may fail with an `OutOfMemoryError`.
-
-## 5.4. 链接
-
-如果需要, 链接一个类或接口涉及验证和准备该类或接口、其直接超类、其直接超接口及其元素类型（如果它是数组类型）。链接还涉及到类或接口中的符号引用的解析, 尽管不一定在验证和准备类或接口的同时。
-
-该规范允许在何时发生链接活动（以及由于递归, 加载）时实现灵活性, 前提是维护以下所有属性:
 
 - 类或接口在链接之前已完全加载。
 
@@ -603,7 +601,12 @@ Because linking involves the allocation of new data structures, it may fail with
 
   在调用将其称为静态参数的引导方法之前, 不会解析对动态计算的调用站点的符号引用。
 
+
+For example, a Java Virtual Machine implementation may choose a "lazy" linkage strategy, where each symbolic reference in a class or interface (other than the symbolic references above) is resolved individually when it is used. Alternatively, an implementation may choose an "eager" linkage strategy, where all symbolic references are resolved at once when the class or interface is being verified. This means that the resolution process may continue, in some implementations, after a class or interface has been initialized. Whichever strategy is followed, any error detected during resolution must be thrown at a point in the program that (directly or indirectly) uses a symbolic reference to the class or interface.
+
 例如, Java 虚拟机实现可能会选择`惰性`链接策略, 其中类或接口中的每个符号引用（除了上面的符号引用）在使用时都会单独解析。或者, 实现可以选择`急切`的链接策略, 其中在验证类或接口时立即解析所有符号引用。这意味着在某些实现中, 在初始化类或接口之后, 解析过程可能会继续。无论采用哪种策略, 在解析期间检测到的任何错误都必须在程序中（直接或间接）使用对类或接口的符号引用的点处抛出。
+
+Because linking involves the allocation of new data structures, it may fail with an `OutOfMemoryError`.
 
 因为链接涉及新数据结构的分配, 所以它可能会失败并出现`OutOfMemoryError`。
 
@@ -1766,9 +1769,9 @@ A Java Virtual Machine implementation may optimize this procedure by eliding the
 
 *Binding* is the process by which a function written in a language other than the Java programming language and implementing a `native` method is integrated into the Java Virtual Machine so that it can be executed. Although this process is traditionally referred to as linking, the term binding is used in the specification to avoid confusion with linking of classes or interfaces by the Java Virtual Machine.
 
-## 5.6. 绑定本地方法(Native Method)
+## 5.6. 绑定本地方法实现
 
-*绑定(Binding)* 是将用 Java 之外的其他编程语言编写的函数来实现的 "本地" 方法, 集成到 Java 虚拟机中以便可以执行的过程.  尽管这个过程传统上被称为链接(linking), 但在本规范中, 为了避免与 Java 虚拟机的类或接口链接相混淆, 所以使用单独的术语。
+*绑定(Binding)*, 是将 Java 之外的其他语言所编写的函数实现的 "本地"方法(Native Method), 集成到 Java 虚拟机中, 以便可以调用执行的过程.  尽管在传统上, 这个过程被称为链接(linking), 但在本规范中, 为了避免与 Java 虚拟机的类或接口链接相混淆, 所以单独使用一个术语。
 
 
 <a name="jvms-5.7"></a>
@@ -1780,7 +1783,7 @@ In addition, the JNI (Java Native Interface) Specification describes termination
 
 ## 5.7. Java虚拟机退出
 
-当某个线程调用 `Runtime` 类或 `System` 类的 `exit` 方法, 或 `Runtime` 类的 `halt` 方法, 并且 `exit` 或 `halt` 操作被 security manager (安全管理器)允许, Java虚拟机退出。
+当某个线程调用 `Runtime` 类或 `System` 类的 `exit` 方法, 或者 `Runtime` 类的 `halt` 方法, 并且 `exit` 或 `halt` 操作被 security manager (安全管理器)允许, 则Java虚拟机退出。
 
 此外, JNI (Java Native Interface)规范描述了Java虚拟机的终止, 当使用 JNI Invocation API 来加载和卸载Java虚拟机时, 。
 
