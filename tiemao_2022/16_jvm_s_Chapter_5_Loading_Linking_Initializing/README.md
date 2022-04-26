@@ -498,62 +498,72 @@ The following steps are used to derive a `Class` object for the nonarray class o
 <a name="jvms-5.3.6"></a>
 ### 5.3.6. Modules and Layers
 
+### 5.3.6. 模块和层
+
 The Java Virtual Machine supports the organization of classes and interfaces into modules. The membership of a class or interface C in a module `M` is used to control access to C from classes and interfaces in modules other than `M` ([§5.4.4](#jvms-5.4.4)).
+
+最新版本的Java虚拟机, 支持将类和接口组织成模块。 模块`M`中的类或接口 C 的成员资格, 用于控制从 `M` 以外的模块中的类和接口对 C 的访问（[§5.4.4](#jvms-5.4.4)）。
 
 Module membership is defined in terms of run-time packages ([§5.3](#jvms-5.3)). A program determines the names of the packages in each module, and the class loaders that will create the classes and interfaces of the named packages; it then specifies the packages and class loaders to an invocation of the `defineModules` method of the class `ModuleLayer`. Invoking `defineModules` causes the Java Virtual Machine to create new *run-time modules* that are associated with the run-time packages of the class loaders.
 
+模块成员是根据运行时包(run-time packages)定义的 ([§5.3](#jvms-5.3))。程序确定每个模块中包的名称, 并创建类加载器中类和接口的命名包； 然后, 它将包和类加载器指定为调用 `ModuleLayer` 类的 `defineModules` 方法。 调用 `defineModules` 会导致 Java 虚拟机创建新的 *运行时模块(run-time modules)*, 这些模块与类加载器的运行时包相关联。
+
 Every run-time module indicates the run-time packages that it *exports*, which influences access to the `public` classes and interfaces in those run-time packages. Every run-time module also indicates the other run-time modules that it *reads*, which influences access by its own code to the `public` types and interfaces in those run-time modules.
+
+每个运行时模块都标识出自己所 *导出* 的运行时包, 这会影响对运行时包中  `public` 类和接口的访问。 每个运行时模块还表示它 *读取* 的其他运行时模块, 这会影响其自己的代码对这些运行时模块中的 `public` 类型和接口的访问。
 
 We say that *a class is in a run-time module* iff the class's run-time package is associated (or will be associated, if the class is actually created) with that run-time module.
 
+如果一个类的运行时包, 与某个运行时模块关联（或即将关联, 等该类实际创建时）, 我们说 *该类在这个运行时模块中*, 。
+
 A class created by a class loader is in exactly one run-time package and therefore exactly one run-time module, because the Java Virtual Machine does not support a run-time package being associated with (or more evocatively, "split across") multiple run-time modules.
+
+由类加载器创建的一个类, 位于一个运行时包中,  因此位于一个运行时模块中, 因为 Java 虚拟机不支持运行时包与多个运行时模块关联( 或更令人回味的, 拆分, `split across`)。
 
 A run-time module is implicitly bound to exactly one class loader, by the semantics of `defineModules`. On the other hand, a class loader may create classes in more than one run-time module, because the Java Virtual Machine does not require all the run-time packages of a class loader to be associated with the same run-time module.
 
+根据 `defineModules` 的语义, 一个运行时模块, 隐式地绑定到一个类加载器。 另一方面, 类加载器可以在多个运行时模块中创建类, 因为 Java 虚拟机不要求类加载器中的所有运行时包, 都与同一个运行时模块关联。
+
 In other words, the relationship between class loaders and run-time modules need not be 1:1. For a given set of modules to be loaded, if a program can determine that the names of the packages in each module are found only in that module, then the program may specify only one class loader to the invocation of `defineModules`. This class loader will create classes across multiple run-time modules.
+
+换句话说, 类加载器和运行时模块之间不必是 1:1的关系。 对于一组给定要加载的模块, 如果程序可以确定, 每个模块中的包名, 仅在该模块中找到, 那么程序可以仅指定一个类加载器来调用 `defineModules`。 这个类加载器将跨多个运行时模块创建类。
 
 Every run-time module created by `defineModules` is part of a *layer*. A layer represents a set of class loaders that jointly serve to create classes in a set of run-time modules. There are two kinds of layers: the boot layer supplied by the Java Virtual Machine, and user-defined layers. The boot layer is created at Java Virtual Machine startup in an implementation-dependent manner. It associates the standard run-time module `java.base` with standard run-time packages defined by the bootstrap class loader, such as `java.lang`. User-defined layers are created by programs in order to construct sets of run-time modules that depend on `java.base` and other standard run-time modules.
 
+`defineModules` 创建的每个运行时模块, 都是一层(layer) 的一部分。 每层表示一组类加载器, 它们共同用于在一组运行时模块中创建类。 有两种层: Java 虚拟机提供的引导层(boot layer)和用户定义的层(user-defined layers)。 引导层由具体的JVM实现在程序启动时创建的。 它将标准运行时模块 `java.base`, 与启动类加载器定义的标准运行时包相关联, 例如`java.lang`。 用户定义层由程序创建, 以构建依赖于 java.base 和其他标准运行时模块的运行时模块集合。
+
 A run-time module is implicitly part of exactly one layer, by the semantics of `defineModules`. However, a class loader may create classes in the run-time modules of different layers, because the same class loader may be specified to multiple invocations of `defineModules`. Access control is governed by a class's run-time module, not by the class loader which created the class or by the layer(s) which the class loader serves.
+
+根据 `defineModules` 的语义, 每个运行时模块隐式地成为一层的一部分。 然而, 一个类加载器可能会在不同层的运行时模块中创建类, 因为同一个类加载器可能会被指定给 `defineModules` 的多个调用。 访问控制由一个类的运行时模块管理, 而不是由创建类的类加载器或类加载器所服务的层管理。
 
 The set of class loaders specified for a layer, and the set of run-time modules which are part of a layer, are immutable after the layer is created. However, the `ModuleLayer` class affords programs a degree of dynamic control over the relationships between the run-time modules in a user-defined layer.
 
+为层指定的类加载器集合, 和作为层的一部分的运行时模块集, 在层创建后是不可变的。 但是, `ModuleLayer` 类为程序提供了一定程度的动态控制, 维护用户定义层中运行时模块之间的关系。
+
 If a user-defined layer contains more than one class loader, then any delegation between the class loaders is the responsibility of the program that created the layer. The Java Virtual Machine does not check that the layer's class loaders delegate to each other in accordance with how the layer's run-time modules read each other. Moreover, if the layer's run-time modules are modified via the `ModuleLayer` class to read additional run-time modules, then the Java Virtual Machine does not check that the layer's class loaders are modified by some out-of-band mechanism to delegate in a corresponding fashion.
+
+如果用户定义的层包含多个类加载器, 那么类加载器之间的任何委托, 都是创建该层的程序的责任. Java 虚拟机 **不会** 根据层的运行时模块相互读取的方式, 检查层的类加载器之间是否相互委托。 此外, 如果通过 `ModuleLayer` 类修改层的运行时模块, 以读取额外的运行时模块, 则 Java 虚拟机不会检查层的类加载器是否被某些带外机制修改以委托以相应的方式。
 
 There are similarities and differences between class loaders and layers. On the one hand, a layer is similar to a class loader in that each may delegate to, respectively, one or more parent layers or class loaders that created, respectively, modules or classes at an earlier time. That is, the set of modules specified to a layer may depend on modules not specified to the layer, and instead specified previously to one or more parent layers. On the other hand, a layer may be used to create new modules only once, whereas a class loader may be used to create new classes or interfaces at any time via multiple invocations of the `defineClass` method.
 
+类加载器和层之间有相似之处和不同之处。
+
+- 一方面, 层类似于类加载器, 因为每个层都可以分别委托给一个或多个父层或类加载器, 这些父层或类加载器分别在较早的时间创建了模块或类。 也就是说, 指定给某层的模块集, 可能依赖于未指定给该层的模块, 而那些模块先前指定给了一个或多个父层。
+- 另一方面, 一个层只能用于创建一次新模块, 而类加载器可用于在任何时候, 通过多次调用 `defineClass` 方法来创建新的类或接口。
+
 It is possible for a class loader to define a class or interface in a run-time package that was not associated with a run-time module by any of the layers which the class loader serves. This may occur if the run-time package embodies a named package that was not specified to `defineModules`, or if the class or interface has a simple binary name ([§4.2.1](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-4.html#jvms-4.2.1)) and thus is a member of a run-time package that embodies an unnamed package (JLS §7.4.2). In either case, the class or interface is treated as a member of a special run-time module which is implicitly bound to the class loader. This special run-time module is known as the *unnamed module* of the class loader. The run-time package of the class or interface is associated with the unnamed module of the class loader. There are special rules for unnamed modules, designed to maximize their interoperation with other run-time modules, as follows:
+
+类加载器可以在运行时包中定义一个类或接口，该类或接口, 不与类加载器所服务的任何层之中的任何运行时模块相关联。 如果运行时包中, 包含未指定给 `defineModules` 的命名包，或者类或接口具有简单的二进制名称（[§4.2.1](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-4.html#jvms-4.2.1))，因此是包含未命名包的运行时包的成员（JLS §7.4.2）。 在任何一种情况下，类或接口都被视为隐式地绑定到类加载器的特殊运行时模块。 这个特殊的运行时模块被称为类加载器的 *未命名模块（unnamed module）*。 这些类或接口的运行时包, 与类加载器的未命名模块相关联。 未命名模块有一些特殊规则，旨在最大限度地与其他运行时模块互操作，如下所示：
 
 - A class loader's unnamed module is distinct from all other run-time modules bound to the same class loader.
 - A class loader's unnamed module is distinct from all run-time modules (including unnamed modules) bound to other class loaders.
 - Every unnamed module reads every run-time module.
 - Every unnamed module exports, to every run-time module, every run-time package associated with itself.
 
-### 5.3.6. 模块和层
-
-Java 虚拟机支持将类和接口组织成模块。模块`M`中的类或接口 C 的成员资格用于控制从`M`以外的模块中的类和接口对 C 的访问（[§5.4.4](#jvms-5.4.4)）。
-
-模块成员是根据运行时包定义的 ([§5.3](#jvms-5.3))。程序确定每个模块中包的名称, 以及将创建命名包的类和接口的类加载器；然后, 它将包和类加载器指定为调用`ModuleLayer`类的`defineModules`方法。调用 `defineModules` 会导致 Java 虚拟机创建新的*运行时模块*, 这些模块与类加载器的运行时包相关联。
-
-每个运行时模块都指示它*导出*的运行时包, 这会影响对这些运行时包中的`公共`类和接口的访问。每个运行时模块还指示它*读取*的其他运行时模块, 这会影响其自己的代码对这些运行时模块中的`公共`类型和接口的访问。
-
-我们说*一个类在一个运行时模块中*, 如果该类的运行时包与该运行时模块关联（或将关联, 如果该类是实际创建的）。
-
-由类加载器创建的类恰好位于一个运行时包中, 因此恰好位于一个运行时模块中, 因为 Java 虚拟机不支持与（或者更令人回味的是, `拆分`）关联的运行时包多个运行时模块。
-
-通过`defineModules`的语义, 一个运行时模块被隐式地绑定到一个类加载器。另一方面, 类加载器可以在多个运行时模块中创建类, 因为 Java 虚拟机不要求类加载器的所有运行时包都与同一个运行时模块相关联。
-
-换句话说, 类加载器和运行时模块之间的关系不必是 1:1。对于要加载的一组给定模块, 如果程序可以确定每个模块中的包的名称仅在该模块中找到, 那么程序可以仅指定一个类加载器来调用`defineModules`。这个类加载器将跨多个运行时模块创建类。
-
-`defineModules` 创建的每个运行时模块都是 *layer* 的一部分。层表示一组类加载器, 它们共同用于在一组运行时模块中创建类。有两种层: Java 虚拟机提供的引导层和用户定义的层。引导层是在 Java 虚拟机启动时以实现相关的方式创建的。它将标准运行时模块`java.base`与启动类加载器定义的标准运行时包相关联, 例如`java.lang`。用户定义层由程序创建, 以构建依赖于 java.base 和其他标准运行时模块的运行时模块集。
-
-根据`defineModules`的语义, 运行时模块隐含地恰好是一层的一部分。然而, 一个类加载器可能会在不同层的运行时模块中创建类, 因为同一个类加载器可能会被指定给`defineModules`的多个调用。访问控制由类的运行时模块管理, 而不是由创建类的类加载器或类加载器所服务的层管理。
-
-为层指定的类加载器集和作为层一部分的运行时模块集在创建层后是不可变的。但是, `ModuleLayer`类为程序提供了对用户定义层中运行时模块之间关系的一定程度的动态控制。
-
-如果用户定义的层包含多个类加载器, 那么类加载器之间的任何委托都是创建该层的程序的责任. Java 虚拟机不会根据层的运行时模块相互读取的方式检查层的类加载器是否相互委托。此外, 如果层的运行时模块通过 `ModuleLayer` 类修改以读取额外的运行时模块, 则 Java 虚拟机不会检查层的类加载器是否被某些带外机制修改以委托以相应的方式。
-
-类加载器和层之间有相似之处和不同之处。一方面, 层类似于类加载器, 因为每个层都可以分别委托给一个或多个父层或类加载器, 这些父层或类加载器分别在较早的时间创建了模块或类。也就是说, 指定给层的模块集可能依赖于未指定给层的模块, 而是先前指定给一个或多个父层的模块。另一方面, 一个层只能用于创建新模块一次, 而类加载器可用于在任何时候通过多次调用来创建新的类或接口
+- 类加载器的未命名模块, 与绑定到同一类加载器的其他运行时模块都不同。
+- 类加载器的未命名模块, 与绑定到其他类加载器的所有运行时模块都不同（包括未命名模块）。
+- 每个未命名的模块, 都会读取每个运行时模块。
+- 每个未命名的模块, 都导出到与每个运行时包相关联的每一个运行时模块。
 
 
 <a name="jvms-5.4"></a>
