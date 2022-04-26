@@ -84,7 +84,7 @@ The symbolic references in the run-time constant pool are derived from entries i
 
 - A symbolic reference to a method type is derived from a `CONSTANT_MethodType_info` structure ([§4.4.9](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-4.html#jvms-4.4.9)). Such a reference gives a method descriptor ([§4.3.3](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-4.html#jvms-4.3.3)).
 
-- 方法类型的符号引用, 源自`CONSTANT_MethodType_info`结构（[§4.4.9](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-4.html#jvms-4.4.9))。这样的引用给出了一个方法描述符（[§4.3.3]（https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-4.html#jvms-4.3.3））。
+- 方法类型的符号引用, 源自`CONSTANT_MethodType_info`结构（[§4.4.9](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-4.html#jvms-4.4.9))。这样的引用给出了一个方法描述符（[§4.3.3](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-4.html#jvms-4.3.3））。
 
 
 - A symbolic reference to a *dynamically-computed constant* is derived from a `CONSTANT_Dynamic_info` structure ([§4.4.10](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-4.html#jvms-4.4.10)). Such a reference gives:
@@ -1298,7 +1298,7 @@ The first task involves the following steps:
    - 如果 A 是对动态计算常量的符号引用, 其字段描述符指示原始类型 T, 则解析 A, 生成原始值`v`。给定 `v` 和 T, 根据上面为数字常量指定的过程, 获得对 `java.lang.invoke.MethodHandle` 实例的`reference`。
    - 如果 A 是任何其他类型的符号引用, 则结果是解析 A 的结果。
 
-   在运行时常量池中的符号引用中, 对动态计算常量的符号引用是特殊的, 因为它们派生自 `constant_pool` 条目, 这些条目可以通过 `BootstrapMethods` 属性在语法上引用它们自己（[§4.7.23]（ https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-4.html#jvms-4.7.23))。但是, Java 虚拟机不支持解析对依赖于自身的动态计算常量的符号引用（即, 作为其自身引导方法的静态参数）。因此, 当 R 和 A 都是对动态计算常量的符号引用时, 如果 A 与 R 相同, 或者 A 给出（直接或间接）引用 R 的静态参数, 则解析失败并在该点处出现`StackOverflowError`需要重新解析 R。
+   在运行时常量池中的符号引用中, 对动态计算常量的符号引用是特殊的, 因为它们派生自 `constant_pool` 条目, 这些条目可以通过 `BootstrapMethods` 属性在语法上引用它们自己（[§4.7.23](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-4.html#jvms-4.7.23))。但是, Java 虚拟机不支持解析对依赖于自身的动态计算常量的符号引用（即, 作为其自身引导方法的静态参数）。因此, 当 R 和 A 都是对动态计算常量的符号引用时, 如果 A 与 R 相同, 或者 A 给出（直接或间接）引用 R 的静态参数, 则解析失败并在该点处出现`StackOverflowError`需要重新解析 R。
 
    与类初始化 ([§5.5](#jvms-5.5)) 不同, 在未初始化的类之间允许循环, 解析不允许符号引用动态计算常量的循环。如果解决方案的实现递归使用堆栈, 则自然会发生`StackOverflowError`。如果不是, 则需要实现来检测循环, 而不是无限循环或返回动态计算常量的默认值。
 
@@ -1629,49 +1629,51 @@ A class or interface C may be initialized only as a result of:
 
 ## 5.5. 初始化(Initialization)
 
-*类或接口的初始化*包括执行其类或接口的初始化方法（[§2.9.2](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-2.html#jvms-2.9.2))。
+类或接口的初始化, 主要就是执行类或接口的初始化方法（[§2.9.2](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-2.html#jvms-2.9.2))。
 
-类或接口 C 只能作为以下结果进行初始化:
+类或接口 C 只能在这些情况下才能进行初始化:
 
 
-- The execution of any one of the Java Virtual Machine instructions *new*, *getstatic*, *putstatic*, or *invokestatic* that references C ([§*new*](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-6.html#jvms-6.5.new), [§*getstatic*](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-6.html#jvms-6.5.getstatic), [§*putstatic*](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-6.html#jvms-6.5.putstatic), [§*invokestatic*](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-6.html#jvms-6.5.invokestatic)).
+- The execution of any one of the Java Virtual Machine instructions `new`, `getstatic`, `putstatic`, or `invokestatic` that references C ([§new](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-6.html#jvms-6.5.new), [§getstatic](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-6.html#jvms-6.5.getstatic), [§putstatic](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-6.html#jvms-6.5.putstatic), [§invokestatic](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-6.html#jvms-6.5.invokestatic)).
 
-  Upon execution of a *new* instruction, the class to be initialized is the class referenced by the instruction.
+  Upon execution of a `new` instruction, the class to be initialized is the class referenced by the instruction.
 
-  Upon execution of a *getstatic*, *putstatic*, or *invokestatic* instruction, the class or interface to be initialized is the class or interface that declares the resolved field or method.
+  Upon execution of a `getstatic`, `putstatic`, or `invokestatic` instruction, the class or interface to be initialized is the class or interface that declares the resolved field or method.
+
+- 执行引用 C 的任何 Java 虚拟机指令:  `new`, `getstatic`, `putstatic`, or `invokestatic`,（[§new](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-6.html#jvms-6.5.new), [§getstatic](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-6.html#jvms-6.5.getstatic), [§putstatic](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-6.html#jvms-6.5.putstatic), [§invokestatic](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-6.html#jvms-6.5.invokestatic) )。
+
+  在执行 `new` 指令时, 要初始化的类, 是指令引用的类。
+
+  在执行 `getstatic`, `putstatic`, or `invokestatic` 指令时, 要初始化的类或接口, 是声明已解析字段或方法的类或接口。
 
 - The first invocation of a `java.lang.invoke.MethodHandle` instance which was the result of method handle resolution ([§5.4.3.5](#jvms-5.4.3.5)) for a method handle of kind 2 (`REF_getStatic`), 4 (`REF_putStatic`), 6 (`REF_invokeStatic`), or 8 (`REF_newInvokeSpecial`).
 
-  This implies that the class of a bootstrap method is initialized when the bootstrap method is invoked for an *invokedynamic* instruction ([§*invokedynamic*](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-6.html#jvms-6.5.invokedynamic)), as part of the continuing resolution of the call site specifier.
+  This implies that the class of a bootstrap method is initialized when the bootstrap method is invoked for an `invokedynamic` instruction ([invokedynamic](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-6.html#jvms-6.5.invokedynamic)), as part of the continuing resolution of the call site specifier.
+
+- 方法句柄解析类型 2 (`REF_getStatic`), 4 (`REF_putStatic`), 6 (`REF_invokeStatic`), or 8 (`REF_newInvokeSpecial`) 的结果, 是 `java.lang.invoke.MethodHandle` 实例, [§5.4.3.5](#jvms-5.4.3.5), 第一次调用时。
+
+  这意味着, 在 `invokedynamic` 指令调用时（[invokedynamic](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-6.html#jvms-6.5.invokedynamic)), 作为调用点说明符的持续解析的一部分, 引导方法的类会被初始化。
 
 - Invocation of certain reflective methods in the class library ([§2.12](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-2.html#jvms-2.12)), for example, in class `Class` or in package `java.lang.reflect`.
 
+- 调用类库中（[§2.12](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-2.html#jvms-2.12)）的某些反射方法时, 例如, 在 `Class` 类或 `java.lang.reflect`包中。
+
 - If C is a class, the initialization of one of its subclasses.
+
+- 如果 C 是一个类, 初始化它的一个子类时。
 
 - If C is an interface that declares a non-`abstract`, non-`static` method, the initialization of a class that implements C directly or indirectly.
 
+- 如果 C 是一个接口, 其中声明了非抽象、非静态方法, 则初始化直接或间接实现 C 的类时。
+
 - Its designation as the initial class or interface at Java Virtual Machine startup ([§5.2](#jvms-5.2)).
 
-- 执行任何引用 C 的 Java 虚拟机指令 *new*、*getstatic*、*putstatic* 或 *invokestatic*（[§*new*](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-6.html#jvms-6.5.new), [§*getstatic*](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-6.html#jvms-6.5.getstatic）, [§*putstatic*]（https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-6.html#jvms-6.5.putstatic ), [§*invokestatic*](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-6.html#jvms-6.5.invokestatic))。
-
-  在执行 *new* 指令时, 要初始化的类是指令引用的类。
-
-  在执行 *getstatic*、*putstatic* 或 *invokestatic* 指令时, 要初始化的类或接口是声明已解析字段或方法的类或接口。
-
-- `java.lang.invoke.MethodHandle` 实例的第一次调用, 这是方法句柄解析的结果（[§5.4.3.5](#jvms-5.4.3.5)）, 用于类型 2 的方法句柄（`REF_getStatic `)、4 (`REF_putStatic`)、6 (`REF_invokeStatic`) 或 8 (`REF_newInvokeSpecial`)。
-
-  这意味着在为 *invokedynamic* 指令调用引导方法时初始化引导方法的类（[§*invokedynamic*](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-6.html#jvms-6.5.invokedynamic)), 作为调用站点说明符的持续解析的一部分。
-
-- 在类库中调用某些反射方法（[§2.12](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-2.html#jvms-2.12)）, 例如, 在类`Class`或包`java.lang.reflect`中。
-
-- 如果 C 是一个类, 则初始化它的一个子类。
-
-- 如果 C 是一个声明非抽象、非静态方法的接口, 则初始化直接或间接实现 C 的类。
-
-- 在 Java 虚拟机启动时将其指定为初始类或接口 ([§5.2](#jvms-5.2))。
+- 在 Java 虚拟机启动时, 将其指定为初始类或初始接口 ([§5.2](#jvms-5.2))。
 
 
 Prior to initialization, a class or interface must be linked, that is, verified, prepared, and optionally resolved.
+
+在初始化之前, 类或接口必须完成链接, 即验证、准备和可选的解析。
 
 Because the Java Virtual Machine is multithreaded, initialization of a class or interface requires careful synchronization, since some other thread may be trying to initialize the same class or interface at the same time. There is also the possibility that initialization of a class or interface may be requested recursively as part of the initialization of that class or interface. The implementation of the Java Virtual Machine is responsible for taking care of synchronization and recursive initialization by using the following procedure. It assumes that the `Class` object has already been verified and prepared, and that the `Class` object contains state that indicates one of four situations:
 
@@ -1680,9 +1682,7 @@ Because the Java Virtual Machine is multithreaded, initialization of a class or 
 - This `Class` object is fully initialized and ready for use.
 - This `Class` object is in an erroneous state, perhaps because initialization was attempted and failed.
 
-在初始化之前, 必须链接一个类或接口, 即验证、准备和可选地解析。
-
-因为 Java 虚拟机是多线程的, 所以类或接口的初始化需要仔细同步, 因为其他一些线程可能同时尝试初始化同一个类或接口。也有可能作为该类或接口的初始化的一部分递归地请求类或接口的初始化. Java 虚拟机的实现负责通过使用以下过程来处理同步和递归初始化。它假定 `Class` 对象已经过验证和准备, 并且 `Class` 对象包含指示以下四种情况之一的状态:
+因为 Java 虚拟机是多线程的, 所以类或接口的初始化需要仔细同步, 因为其他线程可能会并发地尝试初始化同一个类或接口。 也有可能作为该类或接口的初始化的一部分, 递归地请求类或接口的初始化. Java 虚拟机的具体实现, 负责通过使用以下过程来处理同步和递归初始化。 假定 `Class` 对象已经过验证和准备, 并且 `Class` 对象包含指示以下四种情况之一的状态:
 
 - 这个 `Class` 对象已经过验证和准备, 但没有初始化。
 - 这个 `Class` 对象正在被某个特定线程初始化。
@@ -1692,39 +1692,39 @@ Because the Java Virtual Machine is multithreaded, initialization of a class or 
 
 For each class or interface C, there is a unique initialization lock `LC`. The mapping from C to `LC` is left to the discretion of the Java Virtual Machine implementation. For example, `LC` could be the `Class` object for C, or the monitor associated with that `Class` object. The procedure for initializing C is then as follows:
 
+对于每个类或接口 C, 都有一个唯一的初始化锁 `LC`。从 C 到`LC`的映射由 Java 虚拟机实现自行决定。 例如, `LC` 可以是 C 的`Class` 对象, 或与该`Class` 对象关联的管程锁(monitor)。 初始化 C 的过程如下:
+
 1. Synchronize on the initialization lock, `LC`, for C. This involves waiting until the current thread can acquire `LC`.
+
+1. 在 C 的初始化锁`LC`上同步。 这包括等待当前线程获取`LC`锁。
 
 2. If the `Class` object for C indicates that initialization is in progress for C by some other thread, then release `LC` and block the current thread until informed that the in-progress initialization has completed, at which time repeat this procedure.
 
-   Thread interrupt status is unaffected by execution of the initialization procedure.
+  Thread interrupt status is unaffected by execution of the initialization procedure.
+
+2. 如果 C 的 `Class` 对象指示其他线程正在对 C 进行初始化, 则释放 `LC` 并阻塞当前线程, 直到收到通知之前进行的初始化已完成, 然后重复此过程.
+
+  线程中断状态不受初始化过程执行的影响。
 
 3. If the `Class` object for C indicates that initialization is in progress for C by the current thread, then this must be a recursive request for initialization. Release `LC` and complete normally.
 
+3. 如果 C 的 `Class` 对象显示当前线程正在对 C 进行初始化,  那么这一定是一个递归的初始化请求。 释放`LC`并正常完成。
+
 4. If the `Class` object for C indicates that C has already been initialized, then no further action is required. Release `LC` and complete normally.
 
+4. 如果 C 的 `Class` 对象表明 C 已经被初始化, 则不需要进一步的操作。 释放`LC`并正常完成。
+
 5. If the `Class` object for C is in an erroneous state, then initialization is not possible. Release `LC` and throw a `NoClassDefFoundError`.
+
+5. 如果 C 的 `Class` 对象处于错误状态, 则无法进行初始化。释放 `LC` 并抛出 `NoClassDefFoundError`。
 
 6. Otherwise, record the fact that initialization of the `Class` object for C is in progress by the current thread, and release `LC`.
 
    Then, initialize each `final` `static` field of C with the constant value in its `ConstantValue` attribute ([§4.7.2](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-4.html#jvms-4.7.2)), in the order the fields appear in the `ClassFile` structure.
 
-对于每个类或接口 C, 都有一个唯一的初始化锁`LC`。从 C 到`LC`的映射由 Java 虚拟机实现自行决定。例如, `LC` 可以是 C 的`Class` 对象, 或与该`Class` 对象关联的监视器。初始化 C 的过程如下:
-
-1. 在 C 的初始化锁`LC`上同步。这包括等待当前线程可以获取`LC`。
-
-2. 如果 C 的 `Class` 对象表明其他线程正在对 C 进行初始化, 则释放 `LC` 并阻塞当前线程, 直到通知正在进行的初始化已完成, 此时重复此过程.
-
-   线程中断状态不受初始化过程执行的影响。
-
-3. 如果 C 的 `Class` 对象表明当前线程正在对 C 进行初始化, 那么这一定是一个递归的初始化请求。释放`LC`并正常完成。
-
-4. 如果 C 的 `Class` 对象表明 C 已经被初始化, 则不需要进一步的操作。释放`LC`并正常完成。
-
-5. 如果 C 的 `Class` 对象处于错误状态, 则无法进行初始化。释放 `LC` 并抛出 `NoClassDefFoundError`。
-
 6. 否则, 记录当前线程正在对C的`Class`对象进行初始化, 并释放`LC`。
 
-   然后, 用其`ConstantValue`属性中的常量值初始化C的每个`final``static`字段（[§4.7.2]（https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-4.html#jvms-4.7.2)), 按照字段在 `ClassFile` 结构中出现的顺序。
+   然后, 用 `ConstantValue` 属性中的常量值, 按照字段在 `ClassFile` 结构中出现的顺序, 初始化C的每个 `final` `static` 字段（[§4.7.2](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-4.html#jvms-4.7.2))。
 
 7. Next, if C is a class rather than an interface, then let SC be its superclass and let SI1, ..., SIn be all superinterfaces of C (whether direct or indirect) that declare at least one non-`abstract`, non-`static` method. The order of superinterfaces is given by a recursive enumeration over the superinterface hierarchy of each interface directly implemented by C. For each interface I directly implemented by C (in the order of the `interfaces` array of C), the enumeration recurs on I's superinterfaces (in the order of the `interfaces` array of I) before returning I.
 
@@ -1732,36 +1732,36 @@ For each class or interface C, there is a unique initialization lock `LC`. The m
 
    If the initialization of S completes abruptly because of a thrown exception, then acquire `LC`, label the `Class` object for C as erroneous, notify all waiting threads, release `LC`, and complete abruptly, throwing the same exception that resulted from initializing SC.
 
+7. 接下来, 如果 C 是类而不是接口, 则令 SC 为其超类, 并令 SI1, ..., SIn 为 C 的声明至少一个非抽象方法、非`static`方法的所有超接口（无论是直接的还是间接的）。 超接口的顺序由 C 直接实现的每个接口的超级接口层次结构上的递归枚举给出。​​ 对于由 C 直接实现的每个接口 I （按照 C 的 `interfaces` 数组的顺序）, 在返回 I 之前, 枚举在  I  的超级接口上重复（按 I 的 `interfaces` 数组的顺序）。
+
+   对于列表 [ SC, SI1, ..., SIn ] 中的每个S, 如果S还没有被初始化, 那么递归地对S执行整个过程。 如果有必要, 首先验证和准备S。
+
+   如果 S 的初始化由于抛出异常而非正常完成, 则获取`LC`, 将 C 的`Class` 对象标记为错误, 通知所有等待线程, 释放`LC`, 然后非正常完成, 抛出与导致 SC 初始化结果异常相同的异常。
+
 8. Next, determine whether assertions are enabled for C by querying its defining class loader.
-
-9. Next, execute the class or interface initialization method of C.
-
-10. If the execution of the class or interface initialization method completes normally, then acquire `LC`, label the `Class` object for C as fully initialized, notify all waiting threads, release `LC`, and complete this procedure normally.
-
-11. Otherwise, the class or interface initialization method must have completed abruptly by throwing some exception E. If the class of E is not `Error` or one of its subclasses, then create a new instance of the class `ExceptionInInitializerError` with E as the argument, and use this object in place of E in the following step. If a new instance of `ExceptionInInitializerError` cannot be created because an `OutOfMemoryError` occurs, then use an `OutOfMemoryError` object in place of E in the following step.
-
-12. Acquire `LC`, label the `Class` object for C as erroneous, notify all waiting threads, release `LC`, and complete this procedure abruptly with reason E or its replacement as determined in the previous step.
-
-7. 接下来, 如果 C 是类而不是接口, 则令 SC 为其超类, 并令 SI1, ..., SIn 为声明至少一个非抽象的 C 的所有超接口（无论是直接的还是间接的） , 非`static`方法。超级接口的顺序由 C 直接实现的每个接口的超级接口层次结构上的递归枚举给出。​​对于我由 C 直接实现的每个接口（按照 C 的 `interfaces` 数组的顺序）, 枚举在我的超级接口上重复（按 I 的 `interfaces` 数组的顺序）在返回 I 之前。
-
-   对于列表[ SC, SI1, ..., SIn ]中的每个S, 如果S还没有被初始化, 那么递归地对S执行整个过程。如果有必要, 首先验证和准备S。
-
-   如果 S 的初始化由于抛出异常而突然完成, 则获取`LC`, 将 C 的`Class` 对象标记为错误, 通知所有等待线程, 释放`LC`, 然后突然完成, 抛出与导致的相同的异常从初始化 SC。
 
 8. 接下来, 通过查询其定义的类加载器来确定是否为 C 启用了断言。
 
-9、接下来执行C的类或接口初始化方法。
+9. Next, execute the class or interface initialization method of C.
 
-10、如果类或接口初始化方法的执行正常完成, 则获取`LC`, 将C的`Class`对象标记为完全初始化, 通知所有等待线程, 释放`LC`, 正常完成此过程。
+9. 接下来执行C的类或接口初始化方法。
 
-11. 否则, 类或接口的初始化方法必须通过抛出异常 E 突然完成。如果 E 的类不是 `Error` 或其子类之一, 则创建一个新的类 `ExceptionInInitializerError` 实例, 其中 E 为参数, 并在接下来的步骤中使用此对象代替 E。如果由于发生 `OutOfMemoryError` 而无法创建 `ExceptionInInitializerError` 的新实例, 则在以下步骤中使用 `OutOfMemoryError` 对象代替 E。
+10. If the execution of the class or interface initialization method completes normally, then acquire `LC`, label the `Class` object for C as fully initialized, notify all waiting threads, release `LC`, and complete this procedure normally.
 
-12.获取`LC`, 将C的`Class`对象标记为错误, 通知所有等待的线程, 释放`LC`, 并根据上一步确定的原因E或替换原因突然完成此过程。
+10. 如果类或接口初始化方法的执行正常完成, 则获取`LC`, 将C的`Class`对象标记为完全初始化, 通知所有等待线程, 释放`LC`, 正常完成此过程。
+
+11. Otherwise, the class or interface initialization method must have completed abruptly by throwing some exception E. If the class of E is not `Error` or one of its subclasses, then create a new instance of the class `ExceptionInInitializerError` with E as the argument, and use this object in place of E in the following step. If a new instance of `ExceptionInInitializerError` cannot be created because an `OutOfMemoryError` occurs, then use an `OutOfMemoryError` object in place of E in the following step.
+
+11. 否则, 类或接口的初始化方法必须通过抛出异常 E 非正常完成。 如果 E 的类不是 `Error` 或其子类之一, 则创建一个新的类 `ExceptionInInitializerError` 实例, 其中 E 为参数, 并在接下来的步骤中使用此对象代替 E。 如果由于发生 `OutOfMemoryError` 而无法创建 `ExceptionInInitializerError` 的新实例, 则在后续步骤中使用 `OutOfMemoryError` 对象代替 E。
+
+12. Acquire `LC`, label the `Class` object for C as erroneous, notify all waiting threads, release `LC`, and complete this procedure abruptly with reason E or its replacement as determined in the previous step.
+
+12. 获取`LC`, 将C的`Class`对象标记为错误, 通知所有等待的线程, 释放`LC`, 并根据上一步确定的原因E或替换原因, 非正常完成此过程。
 
 
 A Java Virtual Machine implementation may optimize this procedure by eliding the lock acquisition in step 1 (and release in step 4/5) when it can determine that the initialization of the class has already completed, provided that, in terms of the Java memory model, all *happens-before* orderings (JLS §17.4.5) that would exist if the lock were acquired, still exist when the optimization is performed.
 
-当 Java 虚拟机实现可以确定类的初始化已经完成时, 可以通过省略步骤 1 中的锁获取（并在步骤 4/5 中释放）来优化此过程, 前提是根据 Java 内存模型 , 如果获得锁, 所有 *happens-before* 排序（JLS §17.4.5）在执行优化时仍然存在。
+JVM实现如果确定类的初始化已经完成时，可以优化这个过程, 比如省略步骤 1 中的锁获取（并在步骤 4/5 中释放），但去掉锁的一个前提是，从内存模型而言，需要保证，获取锁过程的时候对应的所有 happens-before 操作，在进行锁优化操作替换时，对应的状态仍然一致。
 
 
 <a name="jvms-5.6"></a>

@@ -614,7 +614,7 @@ For each class or interface C, there is a unique initialization lock `LC`. The m
 
     对于 [ SC, SI1, ..., SIn ] 列表中的每个 `S` ，如果 `S` 还没有被初始化，那么递归地对S执行整个过程。 如果需要，还要先验证和准备 `S` 。
 
-    如果对 `S` 的初始化由于抛出异常而突然结束，则获取`LC`锁，将 `C` 的`Class` 对象标记为错误，通知所有等待线程，释放`LC`，然后突然完成，抛出初始化S时抛出的同一个异常。
+    如果对 `S` 的初始化由于抛出异常而非正常结束，则获取`LC`锁，将 `C` 的`Class` 对象标记为错误，通知所有等待线程，释放`LC`，然后非正常完成，抛出初始化S时抛出的同一个异常。
 
 8. Next, determine whether assertions are enabled ([§14.10](https://docs.oracle.com/javase/specs/jls/se11/html/jls-14.html#jls-14.10)) for C by querying its defining class loader.
 
@@ -632,9 +632,9 @@ For each class or interface C, there is a unique initialization lock `LC`. The m
 
 10. 如果初始化程序的执行正常完成，则获取`LC`，将`C`的`Class`对象标记为完全初始化，通知所有等待线程，释放`LC`，正常完成此过程。
 
-11. 其他情况，则初始化程序必须通过抛出异常 `E` 突然完成。 如果 `E` 的类不是 `Error` 或其子类， 则创建 `ExceptionInInitializerError` 类的新实例，以 `E` 作为参数，并在接下来的步骤中使用此对象代替 `E`。 如果由于发生 `OutOfMemoryError` 而无法创建 `ExceptionInInitializerError` 的新实例， 则在接下来的步骤中使用 `OutOfMemoryError` 对象代替 `E`。
+11. 其他情况，则初始化程序必须通过抛出异常 `E` 非正常完成。 如果 `E` 的类不是 `Error` 或其子类， 则创建 `ExceptionInInitializerError` 类的新实例，以 `E` 作为参数，并在接下来的步骤中使用此对象代替 `E`。 如果由于发生 `OutOfMemoryError` 而无法创建 `ExceptionInInitializerError` 的新实例， 则在接下来的步骤中使用 `OutOfMemoryError` 对象代替 `E`。
 
-12. 获取`LC`， 将`C`的`Class`对象标记为错误，通知所有等待的线程，然后释放`LC`，并根据上一步确定的原因 E 或替换原因突然完成此过程。
+12. 获取`LC`， 将`C`的`Class`对象标记为错误，通知所有等待的线程，然后释放`LC`，并根据上一步确定的原因 E 或替换原因非正常完成此过程。
 
 An implementation may optimize this procedure by eliding the lock acquisition in step 1 (and release in step 4/5) when it can determine that the initialization of the class has already completed, provided that, in terms of the memory model, all happens-before orderings that would exist if the lock were acquired, still exist when the optimization is performed.
 
@@ -687,7 +687,7 @@ Just before a reference to the newly created object is returned as the result, t
 
 每当创建类的一个新实例时，都会为其分配内存空间，并为该类中声明的所有实例变量, 以及每个超类中声明的所有实例变量（包括所有可能被隐藏的实例变量）分配空间（[§8.3](https://docs.oracle.com/javase/specs/jls/se11/html/jls-8.html#jls-8.3))。
 
-如果没有足够的可用内存空间分配给新对象，则实例的创建会突然完成，并出现 `OutOfMemoryError`。 否则，新对象中的所有实例变量，包括在超类中声明的变量，都将初始化为其默认值（[§4.12.5](https://docs.oracle.com/javase/specs/jls/se11/html/jls-4.html#jls-4.12.5))。
+如果没有足够的可用内存空间分配给新对象，则实例的创建会非正常完成，并出现 `OutOfMemoryError`。 否则，新对象中的所有实例变量，包括在超类中声明的变量，都将初始化为其默认值（[§4.12.5](https://docs.oracle.com/javase/specs/jls/se11/html/jls-4.html#jls-4.12.5))。
 
 就在将新创建对象的引用作为结果返回之前，使用以下过程, 处理指定的构造函数以初始化新对象：
 
@@ -700,10 +700,10 @@ Just before a reference to the newly created object is returned as the result, t
 Unlike C++, the Java programming language does not specify altered rules for method dispatch during the creation of a new class instance. If methods are invoked that are overridden in subclasses in the object being initialized, then these overriding methods are used, even before the new object is completely initialized.
 
 1. 将要创建的参数值赋值给新创建对象的构造函数参数。
-2. 如果此构造函数（通过使用 `this`）显式调用（[§8.8.7.1](https://docs.oracle.com/javase/specs/jls/se11/html/jls-8.html#jls-8.8.7.1)) 同一个类中的另一个构造函数，然后评估参数并使用这相同的五个步骤递归地处理该构造函数调用。 如果该构造函数调用突然抛出异常，则此过程出于相同原因而突然完成；否则，继续执行步骤 5。
-3. 这个构造函数不是以显式调用同一个类中的另一个构造函数开始的（使用`this`）。 如果此构造函数不是 `Object` 类，则此构造函数将从显式或隐式调用超类构造函数开始（使用 `super`）。使用这五个相同的步骤递归地计算超类构造函数调用的参数和过程。如果该构造函数调用突然抛出异常，则此过程出于相同的原因突然完成。否则，继续执行步骤 4。
+2. 如果此构造函数（通过使用 `this`）显式调用（[§8.8.7.1](https://docs.oracle.com/javase/specs/jls/se11/html/jls-8.html#jls-8.8.7.1)) 同一个类中的另一个构造函数，然后评估参数并使用这相同的五个步骤递归地处理该构造函数调用。 如果该构造函数调用非正常抛出异常，则此过程出于相同原因而非正常完成；否则，继续执行步骤 5。
+3. 这个构造函数不是以显式调用同一个类中的另一个构造函数开始的（使用`this`）。 如果此构造函数不是 `Object` 类，则此构造函数将从显式或隐式调用超类构造函数开始（使用 `super`）。使用这五个相同的步骤递归地计算超类构造函数调用的参数和过程。如果该构造函数调用突然抛出异常，则此过程出于相同的原因非正常完成。否则，继续执行步骤 4。
 4. 执行该类的实例初始化块和实例变量初始化代码，将实例变量初始化器的值分配给相应的实例变量，按照它们在源文件中的出现顺序从左到右。如果执行这些初始化程序中的任何一个导致异常，则不会处理更多初始化程序，并且此过程会以相同的异常突然完成。否则，继续执行步骤 5。
-5. 执行此构造函数的其余部分。 如果该执行突然完成，则此过程出于同样的原因突然完成。否则，此过程正常完成。
+5. 执行此构造函数的其余部分。 如果该执行非正常完成，则此过程出于同样的原因非正常完成。否则，此过程正常完成。
 
 与 C++ 不同，Java 编程语言在新实例创建期间没有为方法分派指定更改的规则。 如果对象在被初始化时调用的方法在子类中被覆写，那么即使在新对象还没有完成初始化之前，也会使用这些被子类覆写的方法。
 
