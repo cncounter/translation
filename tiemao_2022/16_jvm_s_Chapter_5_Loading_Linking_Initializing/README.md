@@ -422,9 +422,16 @@ A full discussion of class loaders and type safety is beyond the scope of this s
 <a name="jvms-5.3.5"></a>
 ### 5.3.5. Deriving a Class from a `class` File Representation
 
+### 5.3.5. 将`class`文件格式形成一个类
+
 The following steps are used to derive a `Class` object for the nonarray class or interface C denoted by `N` using loader `L` from a purported representation in `class` file format.
 
+
+以下步骤, 用于加载器`L`, 从所谓的 `class` 文件格式的表示中, 为非数组类或接口 C 派生出一个名为 `N` 的 `Class`对象。
+
 1. First, the Java Virtual Machine determines whether it has already recorded that `L` is an initiating loader of a class or interface denoted by `N`. If so, this creation attempt is invalid and loading throws a `LinkageError`.
+
+1. 首先, Java虚拟机判断是否已经记录了 `L` 是名为 `N` 的类或接口的初始加载器。 如果是这样, 则本次尝试创建无效, 并且加载过程会抛出 `LinkageError`。
 
 2. Otherwise, the Java Virtual Machine attempts to parse the purported representation. However, the purported representation may not in fact be a valid representation of C.
 
@@ -440,12 +447,34 @@ The following steps are used to derive a `Class` object for the nonarray class o
 
      This occurs when the purported representation has either a `this_class` item which specifies a name other than `N`, or an `access_flags` item which has the `ACC_MODULE` flag set.
 
+2. 然后, Java 虚拟机尝试解析二进制格式的数据。 但实际上, 这份二进制数据有可能不是 C 的有效表示。
+
+加载的这个阶段必须检测以下错误:
+
+  - 如果声称的表示不是 `ClassFile` 结构（[§4.1](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-4.html#jvms-4.1), [§4.8](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-4.html#jvms-4.8)）, 加载会抛出 `ClassFormatError` 实例。
+
+  - 然后, 如果声称的表示, 不是受支持的大版本和小版本（major or minor version, [§4.1](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-4.html#jvms-4.1)), 加载过程会抛出一个 `UnsupportedClassVersionError` 的实例。
+
+  > `UnsupportedClassVersionError` 是 `ClassFormatError` 的子类, 引入它的目的是为了能够轻松识别由于尝试加载不支持版本的 `class` 文件格式的类而导致的 `ClassFormatError`。 在 JDK 1.1 和更早的版本中, 如果版本不受支持, 则会抛出 `NoClassDefFoundError` 或 `ClassFormatError` 的实例, 具体取决于类是由系统类加载器还是用户定义的类加载器加载的。
+
+  - 然后, 如果声称的表示实际上并不表示名为 `N` 的类, 则加载会抛出 `NoClassDefFoundError` 或其子类的实例。
+
+  > 当声称的表示具有指定`N`以外的名称的`this_class`项或设置了`ACC_MODULE`标志的`access_flags`项时, 就会发生这种情况。
+
+
 3. If C has a direct superclass, the symbolic reference from C to its direct superclass is resolved using the algorithm of [§5.4.3.1](#jvms-5.4.3.1). Note that if C is an interface it must have `Object` as its direct superclass, which must already have been loaded. Only `Object` has no direct superclass.
 
    Any exceptions that can be thrown due to class or interface resolution can be thrown as a result of this phase of loading. In addition, this phase of loading must detect the following errors:
 
    - If the class or interface named as the direct superclass of C is in fact an interface, loading throws an `IncompatibleClassChangeError`.
    - Otherwise, if any of the superclasses of C is C itself, loading throws a `ClassCircularityError`.
+
+3. 如果 C 具有直接超类, 则使用 [§5.4.3.1](#jvms-5.4.3.1) 的算法解析从 C 到其直接超类的符号引用。 请注意, 如果 C 是一个接口, 它必须将 `Object` 作为其直接超类, 该超类一定已经被加载。 只有 `Object` 没有直接的超类。
+
+   由于类或接口解析而抛出的任何异常, 都可能在此加载阶段抛出。 此外, 这个加载阶段必须检测以下错误:
+
+   - 如果命名为 C 的直接超类的类或接口实际上是一个接口, 则加载时会抛出一个 `IncompatibleClassChangeError`。
+   - 然后, 如果 C 的任何超类是 C 本身, 则加载会抛出 `ClassCircularityError`。
 
 4. If C has any direct superinterfaces, the symbolic references from C to its direct superinterfaces are resolved using the algorithm of [§5.4.3.1](#jvms-5.4.3.1).
 
@@ -454,43 +483,16 @@ The following steps are used to derive a `Class` object for the nonarray class o
    - If any of the classes or interfaces named as direct superinterfaces of C is not in fact an interface, loading throws an `IncompatibleClassChangeError`.
    - Otherwise, if any of the superinterfaces of C is C itself, loading throws a `ClassCircularityError`.
 
-5. The Java Virtual Machine marks C as having `L` as its defining class loader and records that `L` is an initiating loader of C ([§5.3.4](#jvms-5.3.4)).
-
-### 5.3.5. 从`类`文件表示派生类
-
-以下步骤用于使用加载器`L`从所谓的`类`文件格式的表示中为非数组类或接口 C 派生一个`类`对象, 由`N`表示。
-
-1.首先, Java虚拟机判断它是否已经记录了`L`是一个由`N`表示的类或接口的初始加载器。如果是这样, 则此创建尝试无效并且加载会引发`LinkageError`。
-
-2. 否则, Java 虚拟机尝试解析声称的表示。但是, 声称的表示实际上可能不是 C 的有效表示。
-
-   这个加载阶段必须检测到以下错误:
-
-   - 如果声称的表示不是 `ClassFile` 结构（[§4.1](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-4.html#jvms-4.1), [ §4.8](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-4.html#jvms-4.8)）, 加载会引发`ClassFormatError`实例。
-
-   - 否则, 如果声称的表示不是受支持的主要或次要版本（[§4.1](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-4.html#jvms-4.1)), 加载会抛出一个 `UnsupportedClassVersionError` 的实例。
-
-     `UnsupportedClassVersionError` 是 `ClassFormatError` 的一个子类, 它被引入以便能够轻松识别由于尝试加载其表示使用不支持版本的 `class` 文件格式的类而导致的 `ClassFormatError`。在 JDK 1.1 和更早的版本中, 如果版本不受支持, 则会抛出 `NoClassDefFoundError` 或 `ClassFormatError` 的实例, 具体取决于类是由系统类加载器还是用户定义的类加载器加载的。
-
-   - 否则, 如果声称的表示实际上并不表示名为`N`的类, 则加载会引发`NoClassDefFoundError`的实例或其子类之一的实例。
-
-     当声称的表示具有指定`N`以外的名称的`this_class`项或设置了`ACC_MODULE`标志的`access_flags`项时, 就会发生这种情况。
-
-3. 如果 C 具有直接超类, 则使用 [§5.4.3.1](#jvms-5.4.3.1) 的算法解析从 C 到其直接超类的符号引用。请注意, 如果 C 是一个接口, 它必须将`Object`作为其直接超类, 该超类必须已经被加载。只有 `Object` 没有直接的超类。
-
-   由于类或接口解析而引发的任何异常都可能在此加载阶段引发。此外, 这个加载阶段必须检测到以下错误:
-
-   - 如果命名为 C 的直接超类的类或接口实际上是一个接口, 则加载会抛出一个 `IncompatibleClassChangeError`。
-   - 否则, 如果 C 的任何超类是 C 本身, 则加载会引发 `ClassCircularityError`。
-
 4. 如果 C 有任何直接超接口, 则使用 [§5.4.3.1](#jvms-5.4.3.1) 的算法解析从 C 到其直接超接口的符号引用。
 
-   由于类或接口解析而引发的任何异常都可能在此加载阶段引发。此外, 这个加载阶段必须检测到以下错误:
+   由于类或接口解析而抛出的任何异常, 都可能在此加载阶段抛出。 此外, 这个加载阶段必须检测以下错误:
 
-   - 如果命名为 C 的直接超接口的任何类或接口实际上不是接口, 则加载会引发`IncompatibleClassChangeError`。
-   - 否则, 如果 C 的任何超接口是 C 本身, 则加载会引发 `ClassCircularityError`。
+   - 如果命名为 C 的直接超接口的任何类或接口, 实际上不是接口, 则加载会抛出 `IncompatibleClassChangeError`。
+   - 然后, 如果 C 的任何超接口是 C 本身, 则加载会抛出 `ClassCircularityError`。
 
-5. Java 虚拟机将 C 标记为具有`L`作为其定义类加载器, 并记录`L`是 C 的初始加载器（[§5.3.4](#jvms-5.3.4)）。
+5. The Java Virtual Machine marks C as having `L` as its defining class loader and records that `L` is an initiating loader of C ([§5.3.4](#jvms-5.3.4)).
+
+5. Java 虚拟机将 C 标记为具有 `L` 作为其定义类加载器, 并记录`L`是 C 的初始加载器（[§5.3.4](#jvms-5.3.4)）。
 
 
 <a name="jvms-5.3.6"></a>
@@ -585,7 +587,7 @@ Because linking involves the allocation of new data structures, it may fail with
 
 - 一个类或接口在初始化之前已经完全验证和准备好了。
 
-- 在链接过程中检测到的错误会在程序中的某个点引发, 在该点程序可能会直接或间接地执行某些操作, 这些操作可能需要链接到错误中涉及的类或接口。
+- 在链接过程中检测到的错误会在程序中的某个点抛出, 在该点程序可能会直接或间接地执行某些操作, 这些操作可能需要链接到错误中涉及的类或接口。
 
 - 直到 (i) 引用它的 *ldc*、*ldc_w* 或 *ldc2_w* 指令被执行, 或 (ii) 引用它的引导方法时, 才会解析对动态计算常量的符号引用作为静态参数被调用。
 
@@ -658,7 +660,7 @@ Preparation may occur at any time following creation but must be completed prior
 
    那么 Ti`L1` = Ti`L2` 对于 *i* = 0 到 *n*。
 
-2.对于在C的超接口`<`I,`L3`>`中声明的每个实例方法`m`, 如果C本身没有声明可以覆盖`m`的实例方法, 则选择一个方法（[ §5.4.6](#jvms-5.4.6)) 关于 C 和 `<`I, `L3`>` 中的方法 `m`。让 `<`D, `L2``>` 为声明所选方法的类或接口. Java 虚拟机施加如下加载约束。
+2.对于在C的超接口`<`I,`L3`>`中声明的每个实例方法`m`, 如果C本身没有声明可以覆盖`m`的实例方法, 则选择一个方法（[§5.4.6](#jvms-5.4.6)) 关于 C 和 `<`I, `L3`>` 中的方法 `m`。让 `<`D, `L2``>` 为声明所选方法的类或接口. Java 虚拟机施加如下加载约束。
 
    假设 `m` 的返回类型是 Tr, 并且 `m` 的形参类型是 Tf1, ..., Tfn:
 
@@ -721,7 +723,7 @@ Linking exceptions generated by checks that are specific to the execution of a p
 
   解析符号引用的后续尝试总是很成功, 并导致初始解析产生相同的实体。如果符号引用是对动态计算的常量, 则不会为这些后续尝试重新执行引导方法。
 
-- 如果在解析符号引用期间发生错误, 则它是 (i) `IncompatibleClassChangeError` 的实例（或子类）； (ii) 由解决或调用引导方法引起的`错误`（或子类）实例；或 (iii) 由于类加载失败或违反加载器约束而出现的`LinkageError`（或子类）实例。错误必须在程序中（直接或间接）使用符号引用的地方引发。
+- 如果在解析符号引用期间发生错误, 则它是 (i) `IncompatibleClassChangeError` 的实例（或子类）； (ii) 由解决或调用引导方法引起的`错误`（或子类）实例；或 (iii) 由于类加载失败或违反加载器约束而出现的`LinkageError`（或子类）实例。错误必须在程序中（直接或间接）使用符号引用的地方抛出。
 
   解析符号引用的后续尝试总是失败, 并抛出与初始解析尝试相同的错误。如果符号引用是对动态计算的常量, 则不会为这些后续尝试重新执行引导方法。
 
@@ -735,7 +737,7 @@ Linking exceptions generated by checks that are specific to the execution of a p
 
   对于任何操作码的 `class` 文件中的所有其他指令, 符号引用仍未解析, 这些指令指示运行时常量池中的条目与上面的 *invokedynamic* 指令相同。
 
-- 如果在解析符号引用期间发生错误, 则它是 (i) `IncompatibleClassChangeError` 的实例（或子类）； (ii) 由解决或调用引导方法引起的`错误`（或子类）实例；或 (iii) 由于类加载失败或违反加载器约束而出现的`LinkageError`（或子类）实例。错误必须在程序中（直接或间接）使用符号引用的地方引发。
+- 如果在解析符号引用期间发生错误, 则它是 (i) `IncompatibleClassChangeError` 的实例（或子类）； (ii) 由解决或调用引导方法引起的`错误`（或子类）实例；或 (iii) 由于类加载失败或违反加载器约束而出现的`LinkageError`（或子类）实例。错误必须在程序中（直接或间接）使用符号引用的地方抛出。
 
   后续尝试*通过 `class` 文件中的相同指令* 解析符号引用总是失败, 并出现与初始解析尝试相同的错误。对于这些后续尝试, 不会重新执行引导方法。
 
@@ -766,7 +768,7 @@ If steps 1 and 2 succeed but step 3 fails, C is still valid and usable. Neverthe
 
 1. D 的定义类加载器用于创建一个用`N`表示的类或接口. 此类或接口是 C。过程的详细信息在 [§5.3](#jvms-5.3) 中给出。
 
-    因此, 由于类或接口创建失败而引发的任何异常都可能因类和接口解析失败而引发。
+    因此, 由于类或接口创建失败而抛出的任何异常都可能因类和接口解析失败而抛出。
 
 2. 如果 C 是一个数组类并且它的元素类型是 `reference` 类型, 那么通过调用 [§5.4.3.1](#jvms-5.4.3.1) 递归。
 
@@ -789,7 +791,7 @@ When resolving a field reference, field resolution first attempts to look up the
 
 #### 5.4.3.2. 场分辨率
 
-要将未解析的符号引用从 D 解析到类或接口 C 中的字段, 必须首先解析由字段引用给出的对 C 的符号引用 ([§5.4.3.1](#jvms-5.4.3.1))。因此, 任何因类或接口引用解析失败而引发的异常都可能因字段解析失败而引发。如果可以成功解析对 C 的引用, 则可以抛出与字段引用本身解析失败有关的异常。
+要将未解析的符号引用从 D 解析到类或接口 C 中的字段, 必须首先解析由字段引用给出的对 C 的符号引用 ([§5.4.3.1](#jvms-5.4.3.1))。因此, 任何因类或接口引用解析失败而抛出的异常都可能因字段解析失败而抛出。如果可以成功解析对 C 的引用, 则可以抛出与字段引用本身解析失败有关的异常。
 
 解析字段引用时, 字段解析首先尝试在 C 及其超类中查找引用的字段:
 
@@ -866,7 +868,7 @@ A *maximally-specific superinterface method* of a class or interface C for a par
 
 #### 5.4.3.3. 方法解析
 
-要解析从 D 到类 C 中的方法的未解析符号引用, 首先解析由方法引用给出的对 C 的符号引用 ([§5.4.3.1](#jvms-5.4.3.1))。因此, 任何因类引用解析失败而引发的异常都可能因方法解析失败而引发。如果可以成功解析对 C 的引用, 则可以抛出与方法引用本身的解析相关的异常。
+要解析从 D 到类 C 中的方法的未解析符号引用, 首先解析由方法引用给出的对 C 的符号引用 ([§5.4.3.1](#jvms-5.4.3.1))。因此, 任何因类引用解析失败而抛出的异常都可能因方法解析失败而抛出。如果可以成功解析对 C 的引用, 则可以抛出与方法引用本身的解析相关的异常。
 
 解析方法引用时:
 
@@ -971,7 +973,7 @@ When resolving an interface method reference:
 
 #### 5.4.3.4. 接口方法解析
 
-要将未解析的符号引用从 D 解析到接口 C 中的接口方法, 首先解析由接口方法引用给出的对 C 的符号引用 ([§5.4.3.1](#jvms-5.4.3.1))。因此, 任何因接口引用解析失败而引发的异常都可能因接口方法解析失败而引发。如果对 C 的引用可以成功解析, 则可以抛出与接口方法引用本身的解析相关的异常。
+要将未解析的符号引用从 D 解析到接口 C 中的接口方法, 首先解析由接口方法引用给出的对 C 的符号引用 ([§5.4.3.1](#jvms-5.4.3.1))。因此, 任何因接口引用解析失败而抛出的异常都可能因接口方法解析失败而抛出。如果对 C 的引用可以成功解析, 则可以抛出与接口方法引用本身的解析相关的异常。
 
 解析接口方法引用时:
 
@@ -1046,7 +1048,7 @@ Symbolic references by an instruction sequence to fields or methods are indicate
 
 要解析对方法类型的未解析符号引用, 就好像解析对类和接口的未解析符号引用 ([§5.4.3.1](#jvms-5.4.3.1)), 其名称对应方法描述符（[§4.3.3](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-4.html#jvms-4.3.3)）。
 
-因此, 由于类引用解析失败而引发的任何异常都可能因方法类型解析失败而引发。
+因此, 由于类引用解析失败而抛出的任何异常都可能因方法类型解析失败而抛出。
 
 成功的方法类型解析的结果是对表示方法描述符的 java.lang.invoke.MethodType 实例的`引用`。
 
@@ -1124,7 +1126,7 @@ To resolve `MH`, all symbolic references to classes, interfaces, fields, and met
 
 要解析`MH`, 使用以下四个步骤来解析`MH`字节码行为中对类、接口、字段和方法的所有符号引用:
 
-1. R 已解决。当 `MH` 的字节码行为是种类 1、2、3 或 4 时, 就好像通过字段解析 ([§5.4.3.2](#jvms-5.4.3.2)) 和方法解析 ([ §5.4.3.3](#jvms-5.4.3.3)) 当 `MH` 的字节码行为是种类 5、6、7 或 8, 并且好像通过接口方法解析 ([§5.4.3.4](#jvms-5.4.3.4)) 当 `MH` 的字节码行为是 kind 9 时。
+1. R 已解决。当 `MH` 的字节码行为是种类 1、2、3 或 4 时, 就好像通过字段解析 ([§5.4.3.2](#jvms-5.4.3.2)) 和方法解析 ([§5.4.3.3](#jvms-5.4.3.3)) 当 `MH` 的字节码行为是种类 5、6、7 或 8, 并且好像通过接口方法解析 ([§5.4.3.4](#jvms-5.4.3.4)) 当 `MH` 的字节码行为是 kind 9 时。
 
 2. 以下约束适用于解析 R 的结果。这些约束对应于将在验证或执行相关字节码行为的指令序列期间强制执行的约束。
 
@@ -1179,7 +1181,7 @@ An implementation of the Java Virtual Machine is not required to intern method t
 
 The `java.lang.invoke.MethodHandles` class in the Java SE Platform API allows creation of method handles with no bytecode behavior. Their behavior is defined by the method of `java.lang.invoke.MethodHandles` that creates them. For example, a method handle may, when invoked, first apply transformations to its argument values, then supply the transformed values to the invocation of another method handle, then apply a transformation to the value returned from that invocation, then return the transformed value as its own result.
 
-在步骤 1、3 和 4 中, 由于对类、接口、字段或方法的符号引用解析失败而引发的任何异常都可能因方法句柄解析失败而引发。在第 2 步中, 由于指定约束导致的任何失败都会导致由于`IllegalAccessError`而导致方法句柄解析失败。
+在步骤 1、3 和 4 中, 由于对类、接口、字段或方法的符号引用解析失败而抛出的任何异常都可能因方法句柄解析失败而抛出。在第 2 步中, 由于指定约束导致的任何失败都会导致由于`IllegalAccessError`而导致方法句柄解析失败。
 
 目的是解析方法句柄可以在 Java 虚拟机成功验证和解析字节码行为中的符号引用的完全相同的情况下完成。特别是, `private`、`protected`和`static`成员的方法句柄可以在相应的正常访问是合法的那些类中创建。
 
@@ -1193,7 +1195,7 @@ The `java.lang.invoke.MethodHandles` class in the Java SE Platform API allows cr
 
 变量 arity 方法句柄在通过`invoke`调用时执行参数列表装箱（JLS §15.12.4.2）, 而它相对于`invokeExact`的行为就像没有设置`ACC_VARARGS`标志一样。
 
-如果 R 引用的方法设置了 `ACC_VARARGS` 标志并且 A* 是空序列或 A* 中的最后一个参数类型不是数组类型, 则方法句柄解析会引发 `IncompatibleClassChangeError`。也就是说, 创建变量arity 方法句柄失败。
+如果 R 引用的方法设置了 `ACC_VARARGS` 标志并且 A* 是空序列或 A* 中的最后一个参数类型不是数组类型, 则方法句柄解析会抛出 `IncompatibleClassChangeError`。也就是说, 创建变量arity 方法句柄失败。
 
 Java 虚拟机的实现不需要实习方法类型或方法句柄。也就是说, 对结构相同的方法类型或方法句柄的两个不同符号引用可能不会分别解析为相同的 java.lang.invoke.MethodType 或 java.lang.invoke.MethodHandle 实例。
 
@@ -1231,7 +1233,7 @@ The first task involves the following steps:
 
 1. R 给出了一个*引导方法句柄*的符号引用。引导方法句柄被解析 ([§5.4.3.5](#jvms-5.4.3.5)) 以获得对 `java.lang.invoke.MethodHandle` 实例的`reference`。
 
-   任何由于方法句柄的符号引用解析失败而引发的异常都可以在此步骤中引发。
+   任何由于方法句柄的符号引用解析失败而抛出的异常都可以在此步骤中抛出。
 
    如果 R 是对动态计算常量的符号引用, 则令 D 为引导方法句柄的类型描述符. （也就是说, D 是对 `java.lang.invoke.MethodType` 实例的`reference`。） D 指示的第一个参数类型必须是 `java.lang.invoke.MethodHandles.Lookup`, 否则解析失败带有`BootstrapMethodError`。由于历史原因, 动态计算调用站点的引导方法句柄没有类似的约束。
 
@@ -1241,7 +1243,7 @@ The first task involves the following steps:
 
    否则, 字段描述符指示类或接口类型, 或数组类型。获得对表示字段描述符指示的类型的`Class`对象的`引用`, 就像通过解析对类或接口的未解析符号引用一样（[§5.4.3.1](#jvms-5.4.3.1) ), 其名称对应于字段描述符所指示的类型。
 
-   由于对类或接口的符号引用解析失败而引发的任何异常都可以在此步骤中引发。
+   由于对类或接口的符号引用解析失败而抛出的任何异常都可以在此步骤中抛出。
 
 3. If R is a symbolic reference to a dynamically-computed call site, then it gives a method descriptor.
 
@@ -1253,7 +1255,7 @@ The first task involves the following steps:
 
     获得了对`java.lang.invoke.MethodType`实例的`引用`, 就好像通过解析对方法类型的未解析符号引用（[§5.4.3.5](#jvms-5.4.3.5)） 与方法描述符相同的参数和返回类型。
 
-    由于无法解析对方法类型的符号引用而引发的任何异常都可以在此步骤中引发。
+    由于无法解析对方法类型的符号引用而抛出的任何异常都可以在此步骤中抛出。
 
 4. R gives zero or more *static arguments*, which communicate application-specific metadata to the bootstrap method. Each static argument A is resolved, in the order given by R, as follows:
 
@@ -1289,7 +1291,7 @@ The first task involves the following steps:
 
    如果引导方法的主体引用当前正在解析的动态计算常量, 则可能会出现类似的循环。对于 *invokedynamic* 引导程序, 这一直是可能的, 并且不需要在解析中进行特殊处理；递归的 `invokeWithArguments` 调用自然会导致 `StackOverflowError`。
 
-   由于符号引用解析失败而引发的任何异常都可以在此步骤中引发。
+   由于符号引用解析失败而抛出的任何异常都可以在此步骤中抛出。
 
 The second task, to invoke the bootstrap method handle, involves the following steps:
 
@@ -1426,7 +1428,7 @@ A field or method R is accessible to a class or interface D if and only if any o
 
 - R is `private` and is declared by a class or interface C that belongs to the same nest as D, according to the nestmate test below.
 
-如果 D 无法访问 C, 则访问控制会引发`IllegalAccessError`。否则, 访问控制成功。
+如果 D 无法访问 C, 则访问控制会抛出`IllegalAccessError`。否则, 访问控制成功。
 
 当且仅当满足以下任一条件时, 类或接口 D 才能访问字段或方法 R:
 
@@ -1454,7 +1456,7 @@ A *nest* is a set of classes and interfaces that allow mutual access to their `p
 
 如果 D 无法访问 R, 则:
 
-- 如果 R 是 `public`、`protected` 或具有默认访问权限, 则访问控制会引发 `IllegalAccessError`。
+- 如果 R 是 `public`、`protected` 或具有默认访问权限, 则访问控制会抛出 `IllegalAccessError`。
 - 如果 R 是`private`, 则nestmate 测试失败, 并且访问控制由于同样的原因而失败。
 
 否则, 访问控制成功。
