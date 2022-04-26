@@ -379,41 +379,44 @@ Otherwise, the following steps are performed to create C:
 <a name="jvms-5.3.4"></a>
 ### 5.3.4. Loading Constraints
 
-Ensuring type safe linkage in the presence of class loaders requires special care. It is possible that when two different class loaders initiate loading of a class or interface denoted by `N`, the name `N` may denote a different class or interface in each loader.
-
-When a class or interface C = `<``N1`, `L1``>` makes a symbolic reference to a field or method of another class or interface D = `<``N2`, `L2``>`, the symbolic reference includes a descriptor specifying the type of the field, or the return and argument types of the method. It is essential that any type name `N` mentioned in the field or method descriptor denote the same class or interface when loaded by `L1` and when loaded by `L2`.
-
-To ensure this, the Java Virtual Machine imposes *loading constraints* of the form `N``L1` = `N``L2` during preparation ([§5.4.2](#jvms-5.4.2)) and resolution ([§5.4.3](#jvms-5.4.3)). To enforce these constraints, the Java Virtual Machine will, at certain prescribed times (see [§5.3.1](#jvms-5.3.1), [§5.3.2](#jvms-5.3.2), [§5.3.3](#jvms-5.3.3), and [§5.3.5](#jvms-5.3.5)), record that a particular loader is an initiating loader of a particular class. After recording that a loader is an initiating loader of a class, the Java Virtual Machine must immediately check to see if any loading constraints are violated. If so, the record is retracted, the Java Virtual Machine throws a `LinkageError`, and the loading operation that caused the recording to take place fails.
-
 ### 5.3.4. 加载约束
 
-在存在类加载器的情况下确保类型安全链接需要特别小心。当两个不同的类加载器开始加载一个由`N`表示的类或接口时, 名称`N`可能表示每个加载器中的不同类或接口。
+Ensuring type safe linkage in the presence of class loaders requires special care. It is possible that when two different class loaders initiate loading of a class or interface denoted by `N`, the name `N` may denote a different class or interface in each loader.
 
-当一个类或接口 C = `<``N1`, `L1`>` 对另一个类或接口的字段或方法进行符号引用 D = `<``N2`, `L2`>`,符号引用包括指定字段类型或方法的返回和参数类型的描述符。重要的是, 字段或方法描述符中提到的任何类型名称`N`在被`L1`加载时和被`L2`加载时都表示相同的类或接口。
+在存在类加载器的情况下, 确保类型的安全链接, 需要特别小心。 当两个不同的类加载器, 开始加载一个由 `N` 表示的类或接口时, 名称`N`可能表示每个加载器中的不同类或接口。
 
-为了确保这一点, Java 虚拟机在准备 ([§5.4.2](#jvms-5.4.2)) 和解析 ( [§5.4.3](#jvms-5.4.3))。为了强制执行这些约束, Java 虚拟机将在某些规定的时间（参见 [§5.3.1](#jvms-5.3.1)、[§5.3.2](#jvms-5.3.2)、[§5.3 .3](#jvms-5.3.3) 和 [§5.3.5](#jvms-5.3.5)), 记录特定加载器是特定类的初始加载器。在记录加载器是类的初始加载器之后, Java 虚拟机必须立即检查是否违反了任何加载约束。如果是这样, 记录被收回, Java 虚拟机抛出一个 `LinkageError`, 导致记录发生的加载操作失败。
+When a class or interface C = `<N1, L1>` makes a symbolic reference to a field or method of another class or interface D = `<N2, L2>`, the symbolic reference includes a descriptor specifying the type of the field, or the return and argument types of the method. It is essential that any type name `N` mentioned in the field or method descriptor denote the same class or interface when loaded by `L1` and when loaded by `L2`.
+
+当一个类或接口 C = `<N1, L1>`, 有一个符号引用 D = `<N2, L2>`, 指向另一个类或接口的字段或方法, 符号引用包括了指定字段类型的描述符, 或者方法的返回值类型和参数类型。 重要的是, 字段或方法描述符中提到的任何类型名称`N`, 在被`L1`加载时和被`L2`加载时, 都表示相同的类或接口。
+
+To ensure this, the Java Virtual Machine imposes *loading constraints* of the form `N(L1` = `N(L2` during preparation ([§5.4.2](#jvms-5.4.2)) and resolution ([§5.4.3](#jvms-5.4.3)). To enforce these constraints, the Java Virtual Machine will, at certain prescribed times (see [§5.3.1](#jvms-5.3.1), [§5.3.2](#jvms-5.3.2), [§5.3.3](#jvms-5.3.3), and [§5.3.5](#jvms-5.3.5)), record that a particular loader is an initiating loader of a particular class. After recording that a loader is an initiating loader of a class, the Java Virtual Machine must immediately check to see if any loading constraints are violated. If so, the record is retracted, the Java Virtual Machine throws a `LinkageError`, and the loading operation that caused the recording to take place fails.
+
+为了确保这一点, Java 虚拟机在准备 ([§5.4.2](#jvms-5.4.2)) 和解析 ( [§5.4.3](#jvms-5.4.3))阶段, 施加了加载约束 `N(L1` = `N(L2`。 为了强制这种约束, Java 虚拟机将在某些规定的时间（参见 [§5.3.1](#jvms-5.3.1)、[§5.3.2](#jvms-5.3.2)、[§5.3 .3](#jvms-5.3.3) 和 [§5.3.5](#jvms-5.3.5)), 记录特定加载器为特定类的初始加载器。 在记录加载器是某个类的初始加载器之后, Java 虚拟机必须立即检查是否违反了任何加载约束。 如果是这样, 记录将被收回, Java 虚拟机抛出一个 `LinkageError`, 导致发生记录操作的加载行为失败。
 
 Similarly, after imposing a loading constraint (see [§5.4.2](#jvms-5.4.2), [§5.4.3.2](#jvms-5.4.3.2), [§5.4.3.3](#jvms-5.4.3.3), and [§5.4.3.4](#jvms-5.4.3.4)), the Java Virtual Machine must immediately check to see if any loading constraints are violated. If so, the newly imposed loading constraint is retracted, the Java Virtual Machine throws a `LinkageError`, and the operation that caused the constraint to be imposed (either resolution or preparation, as the case may be) fails.
 
+同样, 在施加加载约束之后（参见 [§5.4.2](#jvms-5.4.2)、[§5.4.3.2](#jvms-5.4.3.2)、[§5.4.3.3](#jvms-5.4.3.3) 和 [§5.4.3.4](#jvms-5.4.3.4)), Java 虚拟机必须立即检查是否违反了任何加载约束。 如果是这样, 则收回新施加的加载约束, Java 虚拟机抛出一个 `LinkageError`, 导致施加约束的操作（解析或准备, 看具体情况）失败。
+
 The situations described here are the only times at which the Java Virtual Machine checks whether any loading constraints have been violated. A loading constraint is violated if, and only if, all the following four conditions hold:
 
+这里描述的情况, 是 Java 虚拟机检查是否违反任何加载约束的唯一时间。 当且仅当以下所有四个条件全部成立时, 才违反加载约束:
+
 - There exists a loader `L` such that `L` has been recorded by the Java Virtual Machine as an initiating loader of a class C named `N`.
-- There exists a loader `L`' such that `L`' has been recorded by the Java Virtual Machine as an initiating loader of a class C ' named `N`.
+- There exists a loader `L'` such that `L`' has been recorded by the Java Virtual Machine as an initiating loader of a class C' named `N`.
 - The equivalence relation defined by the (transitive closure of the) set of imposed constraints implies `N``L` = `N``L`'.
-- C ≠ C '.
+- `C ≠ C'`.
+
+
+- 存在一个加载器`L`, 因此`L`已被 Java 虚拟机记录为名为`N`的类 C 的初始加载器。
+- 存在一个加载器`L'`, 因此 `L'` 已被 Java 虚拟机记录为名为`N`的类 `C'` 的初始加载器。
+- 由施加约束的（传递闭包）集合定义的等价关系意味着`N(L` = `N(L'`。
+- `C ≠ C'`。
+
 
 A full discussion of class loaders and type safety is beyond the scope of this specification. For a more comprehensive discussion, readers are referred to *Dynamic Class Loading in the Java Virtual Machine* by Sheng Liang and Gilad Bracha (*Proceedings of the 1998 ACM SIGPLAN Conference on Object-Oriented Programming Systems, Languages and Applications*).
 
-同样, 在施加加载约束之后（参见 [§5.4.2](#jvms-5.4.2)、[§5.4.3.2](#jvms-5.4.3.2)、[§5.4.3.3](#jvms-5.4.3.3) 和 [§5.4.3.4](#jvms-5.4.3.4)), Java 虚拟机必须立即检查是否违反了任何加载约束。如果是这样, 则收回新施加的加载约束, Java 虚拟机抛出一个 `LinkageError`, 导致施加约束的操作（解决或准备, 视情况而定）失败。
 
-此处描述的情况是 Java 虚拟机检查是否违反任何加载约束的唯一时间。当且仅当所有以下四个条件都成立时, 才违反加载约束:
-
-- 存在一个加载器`L`, 因此 Java 虚拟机将`L`记录为名为`N`的类 C 的初始加载器。
-- 存在一个加载器`L`, 因此`L`已被 Java 虚拟机记录为名为`N`的类 C' 的初始加载器。
-- 由施加约束的（传递闭包）集合定义的等价关系意味着`N``L` = `N``L`'。
--C≠C'。
-
-对类加载器和类型安全的完整讨论超出了本规范的范围。如需更全面的讨论, 读者可参阅 Sheng Liang 和 Gilad Bracha 的 *Dynamic Class Loading in the Java Virtual Machine*（*Proceedings of the 1998 ACM SIGPLAN Conference on Object-Oriented Programming Systems, Languages and Applications*）。
+对类加载器和类型安全的完整讨论超出了本规范的范围。 如需更全面的讨论, 读者可参阅 Sheng Liang 和 Gilad Bracha 的文章: [Dynamic class loading in the Java virtual machine](https://dl.acm.org/doi/10.1145/286942.286945)。
 
 
 <a name="jvms-5.3.5"></a>
