@@ -5,6 +5,7 @@
 
 - 专题: Java学习资源与相关网站
 - 专题: String与Java
+- 专题: Java与正则表达式
 - 专题: 数字和Java
 - 专题: Java与集合
 - 专题: Java运行时标准库与常用API
