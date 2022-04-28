@@ -242,7 +242,7 @@ If an error occurs during class loading, then an instance of a subclass of `Link
 
 If the Java Virtual Machine ever attempts to load a class C during verification ([§5.4.1](#jvms-5.4.1)) or resolution ([§5.4.3](#jvms-5.4.3)) (but not initialization ([§5.5](#jvms-5.5))), and the class loader that is used to initiate loading of C throws an instance of `ClassNotFoundException`, then the Java Virtual Machine must throw an instance of `NoClassDefFoundError` whose cause is the instance of `ClassNotFoundException`.
 
-如果 Java 虚拟机加载一个类时, 在验证 ([§5.4.1](#jvms-5.4.1)) 或解析 ([§5.4.3](#jvms-5.4.3)) 期间（尚未初始化（[§5.5](#jvms-5.5))）, 并且用于启动 C 加载的类加载器抛出了一个 `ClassNotFoundException` 的Exception实例, 那么 Java 虚拟机必须抛出一个 `NoClassDefFoundError` 的Error实例, 其中设置 Cause 为 `ClassNotFoundException` 实例。
+如果 Java 虚拟机加载一个类时, 在验证 ([§5.4.1](#jvms-5.4.1)) 或解析 ([§5.4.3](#jvms-5.4.3)) 期间（此时尚未初始化）, 并且用于启动该类加载的类加载器, 抛出了一个 `ClassNotFoundException` 实例, 那么 Java 虚拟机必须抛出一个 `NoClassDefFoundError` 实例, 其中设置 Cause 为 `ClassNotFoundException` 实例。
 
 (A subtlety here is that recursive class loading to load superclasses is performed as part of resolution ([§5.3.5](#jvms-5.3.5), step 3). Therefore, a `ClassNotFoundException` that results from a class loader failing to load a superclass must be wrapped in a `NoClassDefFoundError`.)
 
@@ -574,47 +574,46 @@ It is possible for a class loader to define a class or interface in a run-time p
 
 Linking a class or interface involves verifying and preparing that class or interface, its direct superclass, its direct superinterfaces, and its element type (if it is an array type), if necessary. Linking also involves resolution of symbolic references in the class or interface, though not necessarily at the same time as the class or interface is verified and prepared.
 
-如果需要, 链接一个类或接口涉及验证和准备该类或接口、其直接超类、其直接超接口及其元素类型（如果它是数组类型）。链接还涉及到类或接口中的符号引用的解析, 尽管不一定在验证和准备类或接口的同时。
+如果需要, 链接一个类或接口时, 涉及验证和准备对应的类或接口、直接超类、直接超接口, 以及元素类型（如果是数组类型）。 链接还涉及到类或接口中的符号引用的解析, 尽管不一定在验证和准备的同时就解析。
 
 This specification allows an implementation flexibility as to when linking activities (and, because of recursion, loading) take place, provided that all of the following properties are maintained:
 
-该规范允许在何时发生链接活动（以及由于递归, 加载）时实现灵活性, 前提是维护以下所有属性:
+规范允许JVM灵活决定在什么时候执行链接操作（以及由于递归加载导致的链接操作）, 前提是维护以下所有特性:
 
 - A class or interface is completely loaded before it is linked.
 
+- 在链接之前, 类或接口必须加载完全。
+
 - A class or interface is completely verified and prepared before it is initialized.
+
+- 在初始化之前, 类或接口已经完全验证和准备好了。
 
 - Errors detected during linkage are thrown at a point in the program where some action is taken by the program that might, directly or indirectly, require linkage to the class or interface involved in the error.
 
-- A symbolic reference to a dynamically-computed constant is not resolved until either (i) an *ldc*, *ldc_w*, or *ldc2_w* instruction that refers to it is executed, or (ii) a bootstrap method that refers to it as a static argument is invoked.
+- 在链接过程中, 如果检测到错误, 需要在程序中的某个点抛出; 而这个点必须是程序直接或间接执行某些操作, 可能需要链接到报错涉及的类或接口时。
+
+- A symbolic reference to a dynamically-computed constant is not resolved until either (i) an `ldc`, `ldc_w`, or `ldc2_w` instruction that refers to it is executed, or (ii) a bootstrap method that refers to it as a static argument is invoked.
 
   A symbolic reference to a dynamically-computed call site is not resolved until a bootstrap method that refers to it as a static argument is invoked.
 
+- 对动态计算常量的符号引用, 直到 (i) 引用它的 `ldc`, `ldc_w`, or `ldc2_w` 指令被执行, 或者 (ii) 引用它作为静态参数的引导方法被调用时, 才会解析。
 
-- 类或接口在链接之前已完全加载。
-
-- 一个类或接口在初始化之前已经完全验证和准备好了。
-
-- 在链接过程中检测到的错误会在程序中的某个点抛出, 在该点程序可能会直接或间接地执行某些操作, 这些操作可能需要链接到错误中涉及的类或接口。
-
-- 直到 (i) 引用它的 *ldc*、*ldc_w* 或 *ldc2_w* 指令被执行, 或 (ii) 引用它的引导方法时, 才会解析对动态计算常量的符号引用作为静态参数被调用。
-
-  在调用将其称为静态参数的引导方法之前, 不会解析对动态计算的调用站点的符号引用。
+  动态计算调用点的符号引用， 在将其作为静态参数的引导方法被调用之前, 不会解析。
 
 
 For example, a Java Virtual Machine implementation may choose a "lazy" linkage strategy, where each symbolic reference in a class or interface (other than the symbolic references above) is resolved individually when it is used. Alternatively, an implementation may choose an "eager" linkage strategy, where all symbolic references are resolved at once when the class or interface is being verified. This means that the resolution process may continue, in some implementations, after a class or interface has been initialized. Whichever strategy is followed, any error detected during resolution must be thrown at a point in the program that (directly or indirectly) uses a symbolic reference to the class or interface.
 
-例如, Java 虚拟机实现可能会选择`惰性`链接策略, 其中类或接口中的每个符号引用（除了上面的符号引用）在使用时都会单独解析。或者, 实现可以选择`急切`的链接策略, 其中在验证类或接口时立即解析所有符号引用。这意味着在某些实现中, 在初始化类或接口之后, 解析过程可能会继续。无论采用哪种策略, 在解析期间检测到的任何错误都必须在程序中（直接或间接）使用对类或接口的符号引用的点处抛出。
+例如, Java 虚拟机实现可能会选择 "惰性(lazy)" 链接策略, 类或接口中的每个符号引用在使用时都会单独解析（除了上面提到的动态计算常量的的符号引用）。 或者, JVM实现也可以选择 "急切(eager)" 的链接策略, 在验证类或接口时, 立即解析所有的符号引用。 这意味着在某些实现中, 在初始化类或接口之后, 可能会继续执行解析过程。 无论JVM采用哪种策略, 在解析期间检测到的任何错误, 都必须在程序实际用到类或接口的符号引用时（直接或间接）, 才能在这个点抛出链接错误。
 
 Because linking involves the allocation of new data structures, it may fail with an `OutOfMemoryError`.
 
-因为链接涉及新数据结构的分配, 所以它可能会失败并出现`OutOfMemoryError`。
+因为链接涉及到新数据结构的分配, 所以可能会失败并报 `OutOfMemoryError` 错误。
 
 
 <a name="jvms-5.4.1"></a>
 ### 5.4.1. Verification
 
-*Verification* ([§4.10](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-4.html#jvms-4.10)) ensures that the binary representation of a class or interface is structurally correct ([§4.9](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-4.html#jvms-4.9)). Verification may cause additional classes and interfaces to be loaded ([§5.3](#jvms-5.3)) but need not cause them to be verified or prepared.
+`Verification` ([§4.10](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-4.html#jvms-4.10)) ensures that the binary representation of a class or interface is structurally correct ([§4.9](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-4.html#jvms-4.9)). Verification may cause additional classes and interfaces to be loaded ([§5.3](#jvms-5.3)) but need not cause them to be verified or prepared.
 
 If the binary representation of a class or interface does not satisfy the static or structural constraints listed in [§4.9](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-4.html#jvms-4.9), then a `VerifyError` must be thrown at the point in the program that caused the class or interface to be verified.
 
@@ -622,7 +621,7 @@ If an attempt by the Java Virtual Machine to verify a class or interface fails b
 
 ### 5.4.1. 确认
 
-*验证* ([§4.10](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-4.html#jvms-4.10)) 确保类或接口的二进制表示在结构上是正确的（[§4.9](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-4.html#jvms-4.9)）。验证可能会导致加载其他类和接口 ([§5.3](#jvms-5.3)), 但不需要验证或准备它们。
+`验证` ([§4.10](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-4.html#jvms-4.10)) 确保类或接口的二进制表示在结构上是正确的（[§4.9](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-4.html#jvms-4.9)）。验证可能会导致加载其他类和接口 ([§5.3](#jvms-5.3)), 但不需要验证或准备它们。
 
 如果类或接口的二进制表示不满足 [§4.9](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-4.html#jvms-4.9), 则必须在程序中导致类或接口被验证的点处抛出一个 `VerifyError`。
 
@@ -631,7 +630,7 @@ If an attempt by the Java Virtual Machine to verify a class or interface fails b
 <a name="jvms-5.4.2"></a>
 ### 5.4.2. Preparation
 
-*Preparation* involves creating the static fields for a class or interface and initializing such fields to their default values ([§2.3](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-2.html#jvms-2.3), [§2.4](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-2.html#jvms-2.4)). This does not require the execution of any Java Virtual Machine code; explicit initializers for static fields are executed as part of initialization ([§5.5](#jvms-5.5)), not preparation.
+`Preparation` involves creating the static fields for a class or interface and initializing such fields to their default values ([§2.3](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-2.html#jvms-2.3), [§2.4](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-2.html#jvms-2.4)). This does not require the execution of any Java Virtual Machine code; explicit initializers for static fields are executed as part of initialization ([§5.5](#jvms-5.5)), not preparation.
 
 During preparation of a class or interface C, the Java Virtual Machine also imposes loading constraints ([§5.3.4](#jvms-5.3.4)):
 
@@ -641,9 +640,9 @@ During preparation of a class or interface C, the Java Virtual Machine also impo
 
    If Tr not an array type, let T0 be Tr; otherwise, let T0 be the element type of Tr.
 
-   For *i* = 1 to *n*: If Tfi is not an array type, let Ti be Tfi; otherwise, let Ti be the element type of Tfi.
+   For `i` = 1 to `n`: If Tfi is not an array type, let Ti be Tfi; otherwise, let Ti be the element type of Tfi.
 
-   Then Ti`L1` = Ti`L2` for *i* = 0 to *n*.
+   Then Ti`L1` = Ti`L2` for `i` = 0 to `n`.
 
 2. For each instance method `m` declared in a superinterface `<`I, `L3``>` of C, if C does not itself declare an instance method that can override `m`, then a method is selected ([§5.4.6](#jvms-5.4.6)) with respect to C and the method `m` in `<`I, `L3``>`. Let `<`D, `L2``>` be the class or interface that declares the selected method. The Java Virtual Machine imposes loading constraints as follows.
 
@@ -651,15 +650,15 @@ During preparation of a class or interface C, the Java Virtual Machine also impo
 
    If Tr not an array type, let T0 be Tr; otherwise, let T0 be the element type of Tr.
 
-   For *i* = 1 to *n*: If Tfi is not an array type, let Ti be Tfi; otherwise, let Ti be the element type of Tfi.
+   For `i` = 1 to `n`: If Tfi is not an array type, let Ti be Tfi; otherwise, let Ti be the element type of Tfi.
 
-   Then Ti`L2` = Ti`L3` for *i* = 0 to *n*.
+   Then Ti`L2` = Ti`L3` for `i` = 0 to `n`.
 
 Preparation may occur at any time following creation but must be completed prior to initialization.
 
 ### 5.4.2. 准备
 
-*准备*涉及为类或接口创建静态字段并将这些字段初始化为其默认值（[§2.3](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-2.html#jvms-2.3)、[§2.4](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-2.html#jvms-2.4))。这不需要执行任何 Java 虚拟机代码；静态字段的显式初始化程序作为初始化的一部分执行（[§5.5](#jvms-5.5)）, 而不是准备。
+`准备`涉及为类或接口创建静态字段并将这些字段初始化为其默认值（[§2.3](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-2.html#jvms-2.3)、[§2.4](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-2.html#jvms-2.4))。这不需要执行任何 Java 虚拟机代码；静态字段的显式初始化程序作为初始化的一部分执行（[§5.5](#jvms-5.5)）, 而不是准备。
 
 在准备类或接口 C 期间, Java 虚拟机还施加了加载约束（[§5.3.4](#jvms-5.3.4)）:
 
@@ -669,9 +668,9 @@ Preparation may occur at any time following creation but must be completed prior
 
    如果 Tr 不是数组类型, 则令 T0 为 Tr；否则, 令 T0 为 Tr 的元素类型。
 
-   For *i* = 1 to *n*: 如果Tfi不是数组类型, 则令Ti为Tfi；否则, 令 Ti 为 Tfi 的元素类型。
+   For `i` = 1 to `n`: 如果Tfi不是数组类型, 则令Ti为Tfi；否则, 令 Ti 为 Tfi 的元素类型。
 
-   那么 Ti`L1` = Ti`L2` 对于 *i* = 0 到 *n*。
+   那么 Ti`L1` = Ti`L2` 对于 `i` = 0 到 `n`。
 
 2.对于在C的超接口`<`I,`L3`>`中声明的每个实例方法`m`, 如果C本身没有声明可以覆盖`m`的实例方法, 则选择一个方法（[§5.4.6](#jvms-5.4.6)) 关于 C 和 `<`I, `L3`>` 中的方法 `m`。让 `<`D, `L2``>` 为声明所选方法的类或接口. Java 虚拟机施加如下加载约束。
 
@@ -679,9 +678,9 @@ Preparation may occur at any time following creation but must be completed prior
 
    如果 Tr 不是数组类型, 则令 T0 为 Tr；否则, 令 T0 为 Tr 的元素类型。
 
-   For *i* = 1 to *n*: 如果Tfi不是数组类型, 则令Ti为Tfi；否则, 令 Ti 为 Tfi 的元素类型。
+   For `i` = 1 to `n`: 如果Tfi不是数组类型, 则令Ti为Tfi；否则, 令 Ti 为 Tfi 的元素类型。
 
-   然后 Ti`L2` = Ti`L3` 对于 *i* = 0 到 *n*。
+   然后 Ti`L2` = Ti`L3` 对于 `i` = 0 到 `n`。
 
 准备工作可以在创建后的任何时间进行, 但必须在初始化之前完成。
 
@@ -690,7 +689,7 @@ Preparation may occur at any time following creation but must be completed prior
 <a name="jvms-5.4.3"></a>
 ### 5.4.3. Resolution
 
-Many Java Virtual Machine instructions - *anewarray*, *checkcast*, *getfield*, *getstatic*, *instanceof*, *invokedynamic*, *invokeinterface*, *invokespecial*, *invokestatic*, *invokevirtual*, *ldc*, *ldc_w*, *ldc2_w*, *multianewarray*, *new*, *putfield*, and *putstatic* - rely on symbolic references in the run-time constant pool. Execution of any of these instructions requires *resolution* of the symbolic reference.
+Many Java Virtual Machine instructions - `anewarray`, `checkcast`, `getfield`, `getstatic`, `instanceof`, `invokedynamic`, `invokeinterface`, `invokespecial`, `invokestatic`, `invokevirtual`, `ldc`, `ldc_w`, `ldc2_w`, `multianewarray`, `new`, `putfield`, and `putstatic` - rely on symbolic references in the run-time constant pool. Execution of any of these instructions requires `resolution` of the symbolic reference.
 
 Resolution is the process of dynamically determining one or more concrete values from a symbolic reference in the run-time constant pool. Initially, all symbolic references in the run-time constant pool are unresolved.
 
@@ -708,11 +707,11 @@ Because errors occurring on an initial attempt at resolution are thrown again on
 
 Resolution of an unresolved symbolic reference to a dynamically-computed call site proceeds in accordance with the rules given in [§5.4.3.6](#jvms-5.4.3.6). Then:
 
-- If no error occurs during resolution of the symbolic reference, then resolution succeeds *solely for the instruction in the `class` file that required resolution*. This instruction necessarily has an opcode of *invokedynamic*.
+- If no error occurs during resolution of the symbolic reference, then resolution succeeds *solely for the instruction in the `class` file that required resolution*. This instruction necessarily has an opcode of `invokedynamic`.
 
   Subsequent attempts to resolve the symbolic reference *by that instruction in the `class` file* always succeed trivially and result in the same entity produced by the initial resolution. The bootstrap method is not re-executed for these subsequent attempts.
 
-  The symbolic reference is still unresolved for all other instructions in the `class` file, of any opcode, which indicate the same entry in the run-time constant pool as the *invokedynamic* instruction above.
+  The symbolic reference is still unresolved for all other instructions in the `class` file, of any opcode, which indicate the same entry in the run-time constant pool as the `invokedynamic` instruction above.
 
 - If an error occurs during resolution of the symbolic reference, then it is either (i) an instance of `IncompatibleClassChangeError` (or a subclass); (ii) an instance of `Error` (or a subclass) that arose from resolution or invocation of a bootstrap method; or (iii) an instance of `LinkageError` (or a subclass) that arose because class loading failed or a loader constraint was violated. The error must be thrown at a point in the program that (directly or indirectly) uses the symbolic reference.
 
