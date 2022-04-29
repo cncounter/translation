@@ -613,19 +613,19 @@ Because linking involves the allocation of new data structures, it may fail with
 <a name="jvms-5.4.1"></a>
 ### 5.4.1. Verification
 
+### 5.4.1. 验证(Verification)
+
 `Verification` ([§4.10](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-4.html#jvms-4.10)) ensures that the binary representation of a class or interface is structurally correct ([§4.9](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-4.html#jvms-4.9)). Verification may cause additional classes and interfaces to be loaded ([§5.3](#jvms-5.3)) but need not cause them to be verified or prepared.
+
+`验证` ([§4.10](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-4.html#jvms-4.10)) 确保类或接口的二进制表示, 在结构上是正确的（[§4.9](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-4.html#jvms-4.9)）。 验证过程中可能会导致其他类和接口加载 ([§5.3](#jvms-5.3)), 但不需要再验证或准备这些类。
 
 If the binary representation of a class or interface does not satisfy the static or structural constraints listed in [§4.9](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-4.html#jvms-4.9), then a `VerifyError` must be thrown at the point in the program that caused the class or interface to be verified.
 
+如果类或接口的二进制表示, 不满足 [§4.9](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-4.html#jvms-4.9) 中列出的静态或结构约束, 则必须在程序中导致类或接口被验证的代码处, 抛出一个 `VerifyError` 错误。
+
 If an attempt by the Java Virtual Machine to verify a class or interface fails because an error is thrown that is an instance of `LinkageError` (or a subclass), then subsequent attempts to verify the class or interface always fail with the same error that was thrown as a result of the initial verification attempt.
 
-### 5.4.1. 确认
-
-`验证` ([§4.10](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-4.html#jvms-4.10)) 确保类或接口的二进制表示在结构上是正确的（[§4.9](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-4.html#jvms-4.9)）。验证可能会导致加载其他类和接口 ([§5.3](#jvms-5.3)), 但不需要验证或准备它们。
-
-如果类或接口的二进制表示不满足 [§4.9](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-4.html#jvms-4.9), 则必须在程序中导致类或接口被验证的点处抛出一个 `VerifyError`。
-
-如果 Java 虚拟机验证类或接口的尝试失败, 因为抛出了一个错误, 该错误是 `LinkageError`（或子类）的一个实例, 那么随后验证类或接口的尝试总是会失败, 并返回相同的错误作为初始验证尝试的结果被抛出。
+如果 Java 虚拟机验证一个类或接口的尝试, 因为抛出了 `LinkageError` 或子类的一个实例而失败, 那么之后其他地方验证该类或接口的尝试, 需要全部失败, 并抛出与初次尝试验证失败时相同的错误。
 
 <a name="jvms-5.4.2"></a>
 ### 5.4.2. Preparation
