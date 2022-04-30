@@ -695,23 +695,43 @@ Preparation may occur at any time following creation but must be completed prior
 <a name="jvms-5.4.3"></a>
 ### 5.4.3. Resolution
 
+### 5.4.3. 解析(Resolution)
+
 Many Java Virtual Machine instructions - `anewarray`, `checkcast`, `getfield`, `getstatic`, `instanceof`, `invokedynamic`, `invokeinterface`, `invokespecial`, `invokestatic`, `invokevirtual`, `ldc`, `ldc_w`, `ldc2_w`, `multianewarray`, `new`, `putfield`, and `putstatic` - rely on symbolic references in the run-time constant pool. Execution of any of these instructions requires `resolution` of the symbolic reference.
+
+有一些JVM指令依赖于运行时常量池中的符号引用, 比如: `anewarray`, `checkcast`, `getfield`, `getstatic`, `instanceof`, `invokedynamic`, `invokeinterface`, `invokespecial`, `invokestatic`, `invokevirtual`, `ldc`, `ldc_w`, `ldc2_w`, `multianewarray`, `new`, `putfield`, 和 `putstatic`。 执行这些指令时, 都需要解析对应的符号引用。
 
 Resolution is the process of dynamically determining one or more concrete values from a symbolic reference in the run-time constant pool. Initially, all symbolic references in the run-time constant pool are unresolved.
 
+解析, 是从运行时常量池中的符号引用, 动态确定一个或多个具体值的过程。 最初, 运行时常量池中的所有符号引用都未解析。
+
 Resolution of an unresolved symbolic reference to (i) a class or interface, (ii) a field, (iii) a method, (iv) a method type, (v) a method handle, or (vi) a dynamically-computed constant, proceeds in accordance with the rules given in [§5.4.3.1](#jvms-5.4.3.1) through [§5.4.3.5](#jvms-5.4.3.5). In the first three of those sections, the class or interface in whose run-time constant pool the symbolic reference appears is labeled D. Then:
+
+符号引用, 包括:  (i) 类或接口, (ii) 字段, (iii) 方法, (iv) 方法类型, (v) 方法句柄,  (vi) 动态计算常量, 需要按照 [§5.4.3.1](#jvms-5.4.3.1) 到 [§5.4.3.5](#jvms-5.4.3.5) 中列出的规则进行解析。 在其中前三个小节, 在运行时常量池中, 类或接口的符号引用标记为 D。 那么:
 
 - If no error occurs during resolution of the symbolic reference, then resolution succeeds.
 
   Subsequent attempts to resolve the symbolic reference always succeed trivially and result in the same entity produced by the initial resolution. If the symbolic reference is to a dynamically-computed constant, the bootstrap method is not re-executed for these subsequent attempts.
 
+- 如果在解析符号引用期间没有发生错误, 则解析成功。
+
+  解析成功之后, 之后同一个符号引用解析都会成功, 并产生与初次解析相同的实体。 如果符号引用是动态计算常量, 则不会为后续解析重新执行引导方法。
+
 - If an error occurs during resolution of the symbolic reference, then it is either (i) an instance of `IncompatibleClassChangeError` (or a subclass); (ii) an instance of `Error` (or a subclass) that arose from resolution or invocation of a bootstrap method; or (iii) an instance of `LinkageError` (or a subclass) that arose because class loading failed or a loader constraint was violated. The error must be thrown at a point in the program that (directly or indirectly) uses the symbolic reference.
 
   Subsequent attempts to resolve the symbolic reference always fail with the same error that was thrown as a result of the initial resolution attempt. If the symbolic reference is to a dynamically-computed constant, the bootstrap method is not re-executed for these subsequent attempts.
 
+- 如果在解析符号引用期间发生错误, 则错误类型应该是: (i) `IncompatibleClassChangeError` 或子类的实例； (ii) 解析或调用引导方法引起的`Error` 或子类的实例； (iii) 由于类加载失败或违反加载器约束而出现的`LinkageError`或子类的实例。 错误必须在程序中（直接或间接）使用符号引用的地方抛出。
+
+  解析失败之后, 后续的尝试总是失败, 并抛出与初始解析相同的错误。 如果符号引用是动态计算常量, 则不会为后续尝试重新执行引导方法。
+
 Because errors occurring on an initial attempt at resolution are thrown again on subsequent attempts, a class in one module that attempts to access, via resolution of a symbolic reference in its run-time constant pool, an unexported `public` type in a different module will always receive the same error indicating an inaccessible type ([§5.4.4](#jvms-5.4.4)), *even if the Java SE Platform API is used to dynamically export the `public` type's package at some time after the class's first attempt*.
 
+因为在最初尝试解析时发生的错误会在后续尝试时再次抛出, 如果某个模块中的类, 试图通过解析运行时常量池中的符号引用, 来访问另一个模块中未导出的 `public` 类型时, 将始终收到相同的错误, 指示不可访问的类型 ([§5.4.4](#jvms-5.4.4)); 在该 class 初次尝试失败之后, 即使之后的某个时间通过 Java SE Platform API 动态导出了 `public` 类型的包, 也不行。
+
 Resolution of an unresolved symbolic reference to a dynamically-computed call site proceeds in accordance with the rules given in [§5.4.3.6](#jvms-5.4.3.6). Then:
+
+对动态计算调用点的符号引用解析, 根据 [§5.4.3.6](#jvms-5.4.3.6) 中给出的规则进行。 那么:
 
 - If no error occurs during resolution of the symbolic reference, then resolution succeeds *solely for the instruction in the `class` file that required resolution*. This instruction necessarily has an opcode of `invokedynamic`.
 
@@ -719,50 +739,31 @@ Resolution of an unresolved symbolic reference to a dynamically-computed call si
 
   The symbolic reference is still unresolved for all other instructions in the `class` file, of any opcode, which indicate the same entry in the run-time constant pool as the `invokedynamic` instruction above.
 
+- 如果在解析符号引用期间没有发生错误, 则解析成功; *仅针对的 `class` 文件中请求解析的指令*。该指令必须具有 `invokedynamic` 操作码。
+
+  随后该`class`文件中, 尝试通过指令解析符号引用, 总是成功并产生和初始解析相同的实体。 对于这些后续尝试, 不会重新执行引导方法。
+
+  对于 `class` 文件中其他所有操作码的指令, 符号引用仍未解析, 即使这些指令指示了与 `invokedynamic` 指令相同的运行时常量池中的条目。
+
 - If an error occurs during resolution of the symbolic reference, then it is either (i) an instance of `IncompatibleClassChangeError` (or a subclass); (ii) an instance of `Error` (or a subclass) that arose from resolution or invocation of a bootstrap method; or (iii) an instance of `LinkageError` (or a subclass) that arose because class loading failed or a loader constraint was violated. The error must be thrown at a point in the program that (directly or indirectly) uses the symbolic reference.
 
   Subsequent attempts *by the same instruction in the `class` file* to resolve the symbolic reference always fail with the same error that was thrown as a result of the initial resolution attempt. The bootstrap method is not re-executed for these subsequent attempts.
 
   The symbolic reference is still unresolved for all other instructions in the `class` file, of any opcode, which indicate the same entry in the run-time constant pool as the *invokedynamic* instruction above.
 
-Certain of the instructions above require additional linking checks when resolving symbolic references. For instance, in order for a *getfield* instruction to successfully resolve the symbolic reference to the field on which it operates, it must not only complete the field resolution steps given in [§5.4.3.2](#jvms-5.4.3.2) but also check that the field is not `static`. If it is a `static` field, a linking exception must be thrown.
+- 如果在解析符号引用期间发生错误, 则它是:  (i) `IncompatibleClassChangeError` 或子类的实例； (ii) 由解析或调用引导方法引起的`Error`或子类实例； (iii) 由于类加载失败或违反加载器约束而出现的 `LinkageError` 或子类实例。 错误必须在程序中（直接或间接）使用符号引用的地方抛出。
+
+  报错之后, `class` 文件中, 后续尝试通过的相同指令解析符号引用, 总是失败, 并出现与初始解析尝试相同的错误。 对于这些后续尝试, 不会重新执行引导方法。
+
+  对于 `class` 文件中其他所有操作码的指令, 符号引用仍未解析, 即使这些指令指示了与 `invokedynamic` 指令相同的运行时常量池中的条目。
+
+Certain of the instructions above require additional linking checks when resolving symbolic references. For instance, in order for a `getfield` instruction to successfully resolve the symbolic reference to the field on which it operates, it must not only complete the field resolution steps given in [§5.4.3.2](#jvms-5.4.3.2) but also check that the field is not `static`. If it is a `static` field, a linking exception must be thrown.
+
+在解析符号引用时，上述某些指令需要额外的链接检查。 例如，为了让 `getfield` 指令成功解析对其操作的字段的符号引用，它不仅必须完成 [§5.4.3.2](#jvms-5.4.3.2) 中给出的字段解析步骤, 还要检查该字段是不是`static`。 如果是“静态”字段，则必须抛出链接异常。
 
 Linking exceptions generated by checks that are specific to the execution of a particular Java Virtual Machine instruction are given in the description of that instruction and are not covered in this general discussion of resolution. Note that such exceptions, although described as part of the execution of Java Virtual Machine instructions rather than resolution, are still properly considered failures of resolution.
 
-### 5.4.3. 解析度
-
-许多 Java 虚拟机指令 - *anewarray*、*checkcast*、*getfield*、*getstatic*、*instanceof*、*invokedynamic*、*invokeinterface*、*invokespecial*、*invokestatic*、*invokevirtual*、*ldc*、 *ldc_w*、*ldc2_w*、*multianewarray*、*new*、*putfield* 和 *putstatic* - 依赖于运行时常量池中的符号引用。执行这些指令中的任何一个都需要符号引用的*解析*。
-
-解析是从运行时常量池中的符号引用动态确定一个或多个具体值的过程。最初, 运行时常量池中的所有符号引用都未解析。
-
-解析对 (i) 类或接口、(ii) 字段、(iii) 方法、(iv) 方法类型、(v) 方法句柄或 (vi) 动态计算常量的未解析符号引用, 按照 [§5.4.3.1](#jvms-5.4.3.1) 到 [§5.4.3.5](#jvms-5.4.3.5) 中给出的规则进行。在这些部分的前三个部分中, 符号引用出现在其运行时常量池中的类或接口标记为 D。然后:
-
-- 如果在解析符号引用期间没有发生错误, 则解析成功。
-
-  解析符号引用的后续尝试总是很成功, 并导致初始解析产生相同的实体。如果符号引用是对动态计算的常量, 则不会为这些后续尝试重新执行引导方法。
-
-- 如果在解析符号引用期间发生错误, 则它是 (i) `IncompatibleClassChangeError` 的实例（或子类）； (ii) 由解决或调用引导方法引起的`错误`（或子类）实例；或 (iii) 由于类加载失败或违反加载器约束而出现的`LinkageError`（或子类）实例。错误必须在程序中（直接或间接）使用符号引用的地方抛出。
-
-  解析符号引用的后续尝试总是失败, 并抛出与初始解析尝试相同的错误。如果符号引用是对动态计算的常量, 则不会为这些后续尝试重新执行引导方法。
-
-因为在最初尝试解析时发生的错误会在后续尝试中再次抛出, 一个模块中的类试图通过解析其运行时常量池中的符号引用来访问另一个模块中未导出的`公共`类型将始终收到相同的错误, 指示不可访问的类型 ([§5.4.4](#jvms-5.4.4)), *即使 Java SE 平台 API 用于在之后的某个时间动态导出 `public` 类型的包班级的第一次尝试*。
-
-根据 [§5.4.3.6](#jvms-5.4.3.6) 中给出的规则, 对动态计算的调用站点的未解析符号引用的解析进行。然后:
-
-- 如果在解析符号引用期间没有发生错误, 则解析成功*仅针对需要解析的 `class` 文件中的指令*。该指令必须具有 *invokedynamic* 的操作码。
-
-  随后尝试*通过`类`文件中的该指令*解析符号引用*总是成功并导致初始解析产生相同的实体。对于这些后续尝试, 不会重新执行引导方法。
-
-  对于任何操作码的 `class` 文件中的所有其他指令, 符号引用仍未解析, 这些指令指示运行时常量池中的条目与上面的 *invokedynamic* 指令相同。
-
-- 如果在解析符号引用期间发生错误, 则它是 (i) `IncompatibleClassChangeError` 的实例（或子类）； (ii) 由解决或调用引导方法引起的`错误`（或子类）实例；或 (iii) 由于类加载失败或违反加载器约束而出现的`LinkageError`（或子类）实例。错误必须在程序中（直接或间接）使用符号引用的地方抛出。
-
-  后续尝试*通过 `class` 文件中的相同指令* 解析符号引用总是失败, 并出现与初始解析尝试相同的错误。对于这些后续尝试, 不会重新执行引导方法。
-
-  对于任何操作码的 `class` 文件中的所有其他指令, 符号引用仍未解析, 这些指令指示运行时常量池中的条目与上面的 *invokedynamic* 指令相同。
-
-在解析符号引用时, 上述某些说明需要额外的链接检查。例如, 为了让 *getfield* 指令成功解析对其操作的字段的符号引用, 它不仅必须完成 [§5.4.3.2](#jvms-5.4.3.2) 中给出的字段解析步骤但还要检查该字段是否不是`静态`。如果我
-
+链接异常由具体JVM指令执行的检查生成, 并且在该指令的描述中给出链接异常说明，并且不包括在解析阶段的一般讨论中。 请注意，尽管此类异常被描述为 Java 虚拟机指令执行的一部分, 而不在解析这一节讨论，但他们仍被视为解析失败。
 
 
 <a name="jvms-5.4.3.1"></a>
