@@ -630,11 +630,17 @@ If an attempt by the Java Virtual Machine to verify a class or interface fails b
 <a name="jvms-5.4.2"></a>
 ### 5.4.2. Preparation
 
+### 5.4.2. 准备(Preparation)
+
 `Preparation` involves creating the static fields for a class or interface and initializing such fields to their default values ([§2.3](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-2.html#jvms-2.3), [§2.4](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-2.html#jvms-2.4)). This does not require the execution of any Java Virtual Machine code; explicit initializers for static fields are executed as part of initialization ([§5.5](#jvms-5.5)), not preparation.
+
+`准备` 阶段, 为类或接口创建静态字段, 并将这些字段初始化为默认值 ([§2.3](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-2.html#jvms-2.3), [§2.4](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-2.html#jvms-2.4))。 准备阶段不需要执行任何 Java 虚拟机代码; 静态字段的显式初始化赋值, 会作为初始化阶段的一部分执行（[§5.5](#jvms-5.5)）, 而不在准备阶段执行。
 
 During preparation of a class or interface C, the Java Virtual Machine also imposes loading constraints ([§5.3.4](#jvms-5.3.4)):
 
-1. Let `L1` be the defining loader of C. For each instance method `m` declared in C that can override ([§5.4.5](#jvms-5.4.5)) an instance method declared in a superclass or superinterface `<`D, `L2``>`, the Java Virtual Machine imposes loading constraints as follows.
+在准备类或接口 C的过程中, Java 虚拟机还施加了加载约束（[§5.3.4](#jvms-5.3.4)）:
+
+1. Let `L1` be the defining loader of C. For each instance method `m` declared in C that can override ([§5.4.5](#jvms-5.4.5)) an instance method declared in a superclass or superinterface `<D, L2>`, the Java Virtual Machine imposes loading constraints as follows.
 
    Given that the return type of `m` is Tr, and that the formal parameter types of `m` are Tf1, ..., Tfn:
 
@@ -644,7 +650,20 @@ During preparation of a class or interface C, the Java Virtual Machine also impo
 
    Then Ti`L1` = Ti`L2` for `i` = 0 to `n`.
 
-2. For each instance method `m` declared in a superinterface `<`I, `L3``>` of C, if C does not itself declare an instance method that can override `m`, then a method is selected ([§5.4.6](#jvms-5.4.6)) with respect to C and the method `m` in `<`I, `L3``>`. Let `<`D, `L2``>` be the class or interface that declares the selected method. The Java Virtual Machine imposes loading constraints as follows.
+1.  `L1` 是 C 的定义加载器。 对于在 C 中声明的每个实例方法 `m`, 如果覆写（[§5.4.5](#jvms-5.4.5)）了超类 `<D, L2>` 中声明的实例方法或超接口, Java虚拟机施加如下加载约束。
+
+   假设 `m` 的返回类型是 Tr, 并且 `m` 的形参类型是 Tf1, ..., Tfn:
+
+   如果 Tr 不是数组类型, 则令 T0 为 Tr, 否则, 令 T0 为 Tr 的元素类型。
+
+   循环迭代 `i` = 1 到 `n`: 如果 Tfi 不是数组类型, 则令 Ti 为 Tfi；否则, 令 Ti 为 Tfi 的元素类型。
+
+   那么要求: 对于 `i` = 0 到 `n`, `TiL1` 必须等于 `TiL2` 。
+
+   > 简而言之, 重写的方法, 子类和父类的方法参数和返回值类型, 不能因为加载器体系而导致互相不可见。
+
+
+2. For each instance method `m` declared in a superinterface `<I, L3>` of C, if C does not itself declare an instance method that can override `m`, then a method is selected ([§5.4.6](#jvms-5.4.6)) with respect to C and the method `m` in `<I, L3>`. Let `<D, L2>` be the class or interface that declares the selected method. The Java Virtual Machine imposes loading constraints as follows.
 
    Given that the return type of `m` is Tr, and that the formal parameter types of `m` are Tf1, ..., Tfn:
 
@@ -652,38 +671,25 @@ During preparation of a class or interface C, the Java Virtual Machine also impo
 
    For `i` = 1 to `n`: If Tfi is not an array type, let Ti be Tfi; otherwise, let Ti be the element type of Tfi.
 
-   Then Ti`L2` = Ti`L3` for `i` = 0 to `n`.
+   Then `TiL2` = `TiL3` for `i` = 0 to `n`.
 
-Preparation may occur at any time following creation but must be completed prior to initialization.
 
-### 5.4.2. 准备
-
-`准备`涉及为类或接口创建静态字段并将这些字段初始化为其默认值（[§2.3](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-2.html#jvms-2.3)、[§2.4](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-2.html#jvms-2.4))。这不需要执行任何 Java 虚拟机代码；静态字段的显式初始化程序作为初始化的一部分执行（[§5.5](#jvms-5.5)）, 而不是准备。
-
-在准备类或接口 C 期间, Java 虚拟机还施加了加载约束（[§5.3.4](#jvms-5.3.4)）:
-
-1. 让 `L1` 成为 C 的定义加载器。对于在 C 中声明的每个实例方法 `m` 可以覆盖（[§5.4.5](#jvms-5.4.5)）在超类中声明的实例方法或超接口`<`D, `L2`>`, Java虚拟机施加如下加载约束。
-
-   假设 `m` 的返回类型是 Tr, 并且 `m` 的形参类型是 Tf1, ..., Tfn:
-
-   如果 Tr 不是数组类型, 则令 T0 为 Tr；否则, 令 T0 为 Tr 的元素类型。
-
-   For `i` = 1 to `n`: 如果Tfi不是数组类型, 则令Ti为Tfi；否则, 令 Ti 为 Tfi 的元素类型。
-
-   那么 Ti`L1` = Ti`L2` 对于 `i` = 0 到 `n`。
-
-2.对于在C的超接口`<`I,`L3`>`中声明的每个实例方法`m`, 如果C本身没有声明可以覆盖`m`的实例方法, 则选择一个方法（[§5.4.6](#jvms-5.4.6)) 关于 C 和 `<`I, `L3`>` 中的方法 `m`。让 `<`D, `L2``>` 为声明所选方法的类或接口. Java 虚拟机施加如下加载约束。
-
-   假设 `m` 的返回类型是 Tr, 并且 `m` 的形参类型是 Tf1, ..., Tfn:
-
-   如果 Tr 不是数组类型, 则令 T0 为 Tr；否则, 令 T0 为 Tr 的元素类型。
-
-   For `i` = 1 to `n`: 如果Tfi不是数组类型, 则令Ti为Tfi；否则, 令 Ti 为 Tfi 的元素类型。
+2.对于在C的超接口 `<I, L3>` 中声明的每个实例方法`m`, 如果C本身没有声明覆写 `m` 的实例方法, 则选择一个方法（[§5.4.6](#jvms-5.4.6)) 关于 C 和 `<I, L3>` 中的方法 `m`。 让 `<D, L2>` 为声明所选方法的类或接口.  Java 虚拟机施加如下加载约束。
 
    然后 Ti`L2` = Ti`L3` 对于 `i` = 0 到 `n`。
 
-准备工作可以在创建后的任何时间进行, 但必须在初始化之前完成。
+   假设 `m` 的返回类型是 Tr, 并且 `m` 的形参类型是 Tf1, ..., Tfn:
 
+   如果 Tr 不是数组类型, 则令 T0 为 Tr, 否则, 令 T0 为 Tr 的元素类型。
+
+   循环迭代 `i` = 1 到 `n`: 如果 Tfi 不是数组类型, 则令 Ti 为 Tfi；否则, 令 Ti 为 Tfi 的元素类型。
+
+   那么要求: 对于 `i` = 0 到 `n`, `TiL2` 必须等于 `TiL3` 。
+
+
+Preparation may occur at any time following creation but must be completed prior to initialization.
+
+准备阶段可以在类创建后的任何时间进行, 但要求必须在初始化之前完成。
 
 
 <a name="jvms-5.4.3"></a>
