@@ -799,28 +799,30 @@ If steps 1 and 2 succeed but step 3 fails, C is still valid and usable. Neverthe
 <a name="jvms-5.4.3.2"></a>
 #### 5.4.3.2. Field Resolution
 
+#### 5.4.3.2. 字段解析(Field Resolution)
+
 To resolve an unresolved symbolic reference from D to a field in a class or interface C, the symbolic reference to C given by the field reference must first be resolved ([§5.4.3.1](#jvms-5.4.3.1)). Therefore, any exception that can be thrown as a result of failure of resolution of a class or interface reference can be thrown as a result of failure of field resolution. If the reference to C can be successfully resolved, an exception relating to the failure of resolution of the field reference itself can be thrown.
 
+要将未解析的符号引用 D, 解析为类或接口 C 中的字段, 必须先解析由字段引用给出的对 C 的符号引用 ([§5.4.3.1](#jvms-5.4.3.1))。 因此, 任何因类或接口引用解析失败而抛出的异常, 都可能在字段解析失败时抛出。 如果可以成功解析对 C 的引用,  则可能会抛出与字段引用本身解析失败有关的异常。
+
 When resolving a field reference, field resolution first attempts to look up the referenced field in C and its superclasses:
+
+解析字段引用时, 字段解析首先尝试在 C 及其超类中查找引用的字段:
 
 1. If C declares a field with the name and descriptor specified by the field reference, field lookup succeeds. The declared field is the result of the field lookup.
 2. Otherwise, field lookup is applied recursively to the direct superinterfaces of the specified class or interface C.
 3. Otherwise, if C has a superclass S, field lookup is applied recursively to S.
 4. Otherwise, field lookup fails.
 
-#### 5.4.3.2. 场分辨率
-
-要将未解析的符号引用从 D 解析到类或接口 C 中的字段, 必须首先解析由字段引用给出的对 C 的符号引用 ([§5.4.3.1](#jvms-5.4.3.1))。因此, 任何因类或接口引用解析失败而抛出的异常都可能因字段解析失败而抛出。如果可以成功解析对 C 的引用, 则可以抛出与字段引用本身解析失败有关的异常。
-
-解析字段引用时, 字段解析首先尝试在 C 及其超类中查找引用的字段:
-
-1. 如果 C 声明了一个字段引用指定的名称和描述符的字段, 则字段查找成功。声明的字段是字段查找的结果。
-2. 否则, 字段查找将递归地应用于指定类或接口 C 的直接超接口。
+1. 如果 C 声明了一个字段, 符合 字段引用指定的名称和描述符, 则字段查找成功。 声明的字段就是字段查找的结果。
+2. 否则, 在指定类或接口 C 的直接超接口中递归进行字段查找。
 3. 否则, 如果 C 具有超类 S, 则将字段查找递归地应用于 S。
 4. 否则, 字段查找失败。
 
 
 Then, the result of field resolution is determined:
+
+然后, 确定字段解析的结果:
 
 - If field lookup failed, field resolution throws a `NoSuchFieldError`.
 
@@ -830,27 +832,25 @@ Then, the result of field resolution is determined:
 
   - Otherwise, access control succeeded. Loading constraints are imposed, as follows.
 
-    Let `<`E, `L1``>` be the class or interface in which the referenced field is actually declared. Let `L2` be the defining loader of D. Given that the type of the referenced field is Tf: if Tf is not an array type, let T be Tf; otherwise, let T be the element type of Tf.
+    Let `<E, L1>` be the class or interface in which the referenced field is actually declared. Let `L2` be the defining loader of D. Given that the type of the referenced field is Tf: if Tf is not an array type, let T be Tf; otherwise, let T be the element type of Tf.
 
-    The Java Virtual Machine imposes the loading constraint that T`L1` = T`L2`.
+    The Java Virtual Machine imposes the loading constraint that `TL1` = `TL2`.
 
     If imposing this constraint results in any loading constraints being violated ([§5.3.4](#jvms-5.3.4)), then field resolution fails. Otherwise, field resolution succeeds.
 
-然后, 确定场解析的结果:
+- 如果字段查找失败, 字段解析会抛出 `NoSuchFieldError`。
 
-- 如果字段查找失败, 字段解析会抛出`NoSuchFieldError`。
+- 否则, 字段查找成功. 进行从 D 到字段的访问控制判定, 决定查找结果 ([§5.4.4](#jvms-5.4.4)). 那么:
 
-- 否则, 字段查找成功. 访问控制适用于从 D 访问作为字段查找结果的字段 ([§5.4.4](#jvms-5.4.4)). 然后:
+  - 如果访问控制失败, 则字段解析因相同原因而失败。
 
-   - 如果访问控制失败, 则字段解析因相同原因而失败。
+  - 否则, 访问控制成功. 加载约束如下:
 
-   - 否则, 访问控制成功. 加载约束如下。
+  让 `<E, L1>` 为实际声明引用字段的类或接口.  令 `L2` 为 D 的定义加载器。 假设引用字段的类型为 Tf: 如果 Tf 不是数组类型, 则令 T 为 Tf； 否则, 令 T 为 Tf 的元素类型。
 
-     让 `<`E, `L1``>` 为实际声明引用字段的类或接口. 令 L2 为 D 的定义加载器。假设引用字段的类型为 Tf: 如果 Tf 不是数组类型, 则令 T 为 Tf； 否则, 令 T 为 Tf 的元素类型。
+  Java 虚拟机施加了加载约束: `TL1` = `TL2`。
 
-     Java 虚拟机施加了 T`L1` = T`L2` 的加载约束。
-
-     如果施加此约束导致违反任何加载约束 ([§5.3.4](#jvms-5.3.4)), 则字段解析失败. 否则, 字段解析成功。
+  如果施加此约束时, 导致违反任何加载约束 ([§5.3.4](#jvms-5.3.4)), 则字段解析失败.  否则, 字段解析成功。
 
 
 <a name="jvms-5.4.3.3"></a>
