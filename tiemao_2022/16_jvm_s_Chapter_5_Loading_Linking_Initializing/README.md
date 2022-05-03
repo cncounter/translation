@@ -951,11 +951,11 @@ The result of method resolution is determined as follows:
 
   如果 Tr 不是数组类型, 则令 T0 为 Tr； 否则, 令 T0 为 Tr 的元素类型。
 
-    For `i` = 1 to `n`: 如果Tfi不是数组类型, 则令 Ti 为 Tfi；否则, 令 Ti 为 Tfi 的元素类型。
+   For `i` = 1 to `n`: 如果Tfi不是数组类型, 则令 Ti 为 Tfi；否则, 令 Ti 为 Tfi 的元素类型。
 
-    Java 虚拟机对 `i` = 0 到 `n` 施加加载约束 `TiL1` = `TiL2`。
+   Java 虚拟机对 `i` = 0 到 `n` 施加加载约束 `TiL1` = `TiL2`。
 
-    如果施加这些约束导致违反任何加载约束 ([§5.3.4](#jvms-5.3.4)), 则方法解析失败。 否则, 方法解析成功。
+   如果施加这些约束导致违反任何加载约束 ([§5.3.4](#jvms-5.3.4)), 则方法解析失败。 否则, 方法解析成功。
 
 
 When resolution searches for a method in the class's superinterfaces, the best outcome is to identify a maximally-specific non-`abstract` method. It is possible that this method will be chosen by method selection, so it is desirable to add class loader constraints for it.
@@ -980,7 +980,11 @@ Note that if the result of resolution is an `abstract` method, the referenced cl
 <a name="jvms-5.4.3.4"></a>
 #### 5.4.3.4. Interface Method Resolution
 
+#### 5.4.3.4. 接口方法解析
+
 To resolve an unresolved symbolic reference from D to an interface method in an interface C, the symbolic reference to C given by the interface method reference is first resolved ([§5.4.3.1](#jvms-5.4.3.1)). Therefore, any exception that can be thrown as a result of failure of resolution of an interface reference can be thrown as a result of failure of interface method resolution. If the reference to C can be successfully resolved, exceptions relating to the resolution of the interface method reference itself can be thrown.
+
+要将未解析的符号引用 D, 解析到接口 C 中的接口方法, 首先解析由接口方法引用给出的, 对 C 的符号引用 ([§5.4.3.1](#jvms-5.4.3.1))。 因此, 任何因接口引用解析失败而抛出的异常, 都可能因接口方法解析失败而抛出。 如果对 C 的引用可以成功解析, 则可以抛出与接口方法引用本身的解析相关的异常。
 
 When resolving an interface method reference:
 
@@ -991,22 +995,22 @@ When resolving an interface method reference:
 5. Otherwise, if any superinterface of C declares a method with the name and descriptor specified by the method reference that has neither its `ACC_PRIVATE` flag nor its `ACC_STATIC` flag set, one of these is arbitrarily chosen and method lookup succeeds.
 6. Otherwise, method lookup fails.
 
-#### 5.4.3.4. 接口方法解析
-
-要将未解析的符号引用从 D 解析到接口 C 中的接口方法, 首先解析由接口方法引用给出的对 C 的符号引用 ([§5.4.3.1](#jvms-5.4.3.1))。因此, 任何因接口引用解析失败而抛出的异常都可能因接口方法解析失败而抛出。如果对 C 的引用可以成功解析, 则可以抛出与接口方法引用本身的解析相关的异常。
-
 解析接口方法引用时:
 
-1.如果C不是接口, 接口方法解析会抛出`IncompatibleClassChangeError`。
-2.否则, 如果C用接口方法引用指定的名称和描述符声明了一个方法, 则方法查找成功。
-3. 否则, 如果类 `Object` 声明了具有接口方法引用指定的名称和描述符的方法, 该方法设置了 `ACC_PUBLIC` 标志但没有设置 `ACC_STATIC` 标志, 则方法查找成功。
-4. 否则, 如果 C 的最大特定超接口方法 ([§5.4.3.3](#jvms-5.4.3.3)) 用于方法引用指定的名称和描述符, 则恰好包含一个没有其 `ACC_ABSTRACT 的方法` 标志设置, 则选择此方法并且方法查找成功。
-5. 否则, 如果 C 的任何超接口声明了一个名称和描述符由方法引用指定的方法, 该方法既没有设置 `ACC_PRIVATE` 标志也没有设置 `ACC_STATIC` 标志, 则任意选择其中一个并且方法查找成功。
+1. 如果 C 不是接口, 接口方法解析会抛出 `IncompatibleClassChangeError`。
+2. 否则, 如果C声明了一个方法, 满足接口方法引用所指定的名称和描述符, 则方法查找成功。
+3. 否则, 如果类 `Object` 中声明的方法, 满足接口方法引用所指定的名称和描述符, 该方法设置了 `ACC_PUBLIC` 标志, 但没有设置 `ACC_STATIC` 标志, 则方法查找成功。
+4. 否则, 对于方法引用所指定的名称和描述符, 如果 C 的最大特定超接口方法 ([§5.4.3.3](#jvms-5.4.3.3)) 恰好包含一个没有 `ACC_ABSTRACT`标志的方法, 则选择此方法并且方法查找成功。
+5. 否则, 如果 C 的任何超接口, 声明了一个名称和描述符都满足方法引用指定的方法, 该方法既没有设置 `ACC_PRIVATE` 标志也没有设置 `ACC_STATIC` 标志, 则任意选择其中一个并且方法查找成功。
 6. 否则, 方法查找失败。
 
 The result of interface method resolution is determined as follows:
 
+接口方法解析的结果确定如下:
+
 - If method lookup failed, interface method resolution throws a `NoSuchMethodError`.
+
+- 如果方法查找失败, 接口方法解析会抛出 `NoSuchMethodError`。
 
 - Otherwise, method lookup succeeded. Access control is applied for the access from D to the method which is the result of method lookup ([§5.4.4](#jvms-5.4.4)). Then:
 
@@ -1024,29 +1028,27 @@ The result of interface method resolution is determined as follows:
 
     If imposing these constraints results in any loading constraints being violated ([§5.3.4](#jvms-5.3.4)), then interface method resolution fails. Otherwise, interface method resolution succeeds.
 
-Access control is necessary because interface method resolution may pick a `private` method of interface C. (Prior to Java SE 8, the result of interface method resolution could be a non-`public` method of class `Object` or a `static` method of class `Object`; such results were not consistent with the inheritance model of the Java programming language, and are disallowed in Java SE 8 and above.)
 
-接口方法解析的结果确定如下:
-
-- 如果方法查找失败, 接口方法解析会抛出 `NoSuchMethodError`。
-
-- 否则, 方法查找成功。访问控制适用于从 D 访问作为方法查找结果的方法 ([§5.4.4](#jvms-5.4.4))。然后:
+- 否则, 方法查找成功。 检查从 D 到结果方法的访问控制 ([§5.4.4](#jvms-5.4.4))。然后:
 
   - 如果访问控制失败, 接口方法解析失败, 原因相同。
 
   - 否则, 访问控制成功。加载约束如下。
 
-    让 `<`E, `L1``>` 是实际声明了引用的接口方法 `m` 的类或接口。让 `L2` 是 D 的定义加载器。假设 `m` 的返回类型是 Tr, 并且 `m` 的形参类型是 Tf1, ..., Tfn:
+  令 `<E, L1>` 为实际声明引用的接口方法 `m` 的类或接口。 令 `L2` 是 D 的定义加载器。 假设 `m` 的返回类型是 Tr, 并且 `m` 的形参类型是 Tf1, ..., Tfn:
 
-    如果 Tr 不是数组类型, 则令 T0 为 Tr；否则, 令 T0 为 Tr 的元素类型。
+  如果 Tr 不是数组类型, 则令 T0 为 Tr； 否则, 令 T0 为 Tr 的元素类型。
 
-    For *i* = 1 to *n*: 如果Tfi不是数组类型, 则令Ti为Tfi；否则, 令 Ti 为 Tfi 的元素类型。
+   For `i` = 1 to `n`: 如果Tfi不是数组类型, 则令 Ti 为 Tfi；否则, 令 Ti 为 Tfi 的元素类型。
 
-    Java 虚拟机对 *i* = 0 到 *n* 施加加载约束 Ti`L1` = Ti`L2`。
+   Java 虚拟机对 `i` = 0 到 `n` 施加加载约束 `TiL1` = `TiL2`。
 
-    如果施加这些约束导致违反任何加载约束（[§5.3.4](#jvms-5.3.4)）, 则接口方法解析失败。否则, 接口方法解析成功。
+   如果施加这些约束导致违反任何加载约束 ([§5.3.4](#jvms-5.3.4)), 则接口方法解析失败。 否则, 接口方法解析成功。
 
-访问控制是必要的, 因为接口方法解析可能会选择接口 C 的`私有`方法。（在 Java SE 8 之前, 接口方法解析的结果可能是`Object`类的非`公共`方法或`静态`方法`Object` 类的方法；这样的结果与 Java 编程语言的继承模型不一致, 在 Java SE 8 及更高版本中是不允许的。）
+
+Access control is necessary because interface method resolution may pick a `private` method of interface C. (Prior to Java SE 8, the result of interface method resolution could be a non-`public` method of class `Object` or a `static` method of class `Object`; such results were not consistent with the inheritance model of the Java programming language, and are disallowed in Java SE 8 and above.)
+
+访问控制是必要的, 因为接口方法解析可能会选择接口 C 的`private`方法。（在 Java SE 8 之前, 接口方法解析的结果可能是`Object`类的非`public`方法, 或`Object` 类的 `static` 方法；这样的结果与 Java 编程语言的继承模型不一致, 在 Java SE 8 及更高版本中是不允许的。）
 
 
 <a name="jvms-5.4.3.5"></a>
