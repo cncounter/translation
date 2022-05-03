@@ -856,11 +856,19 @@ Then, the result of field resolution is determined:
 <a name="jvms-5.4.3.3"></a>
 #### 5.4.3.3. Method Resolution
 
+#### 5.4.3.3. 方法解析(Method Resolution)
+
 To resolve an unresolved symbolic reference from D to a method in a class C, the symbolic reference to C given by the method reference is first resolved ([§5.4.3.1](#jvms-5.4.3.1)). Therefore, any exception that can be thrown as a result of failure of resolution of a class reference can be thrown as a result of failure of method resolution. If the reference to C can be successfully resolved, exceptions relating to the resolution of the method reference itself can be thrown.
+
+要将一个未解析的符号引用 D, 解析为类 C 中的方法, 首先需要解析由方法引用给出的对 C 的符号引用 ([§5.4.3.1](#jvms-5.4.3.1))。 因此, 任何因类引用解析失败而抛出的异常, 都可能因方法解析失败而抛出。 如果可以成功解析对 C 的引用, 则可能会抛出与方法引用本身的解析相关的异常。
 
 When resolving a method reference:
 
+解析方法引用时:
+
 1. If C is an interface, method resolution throws an `IncompatibleClassChangeError`.
+
+1. 如果C是接口, 方法解析会抛出 `IncompatibleClassChangeError`。
 
 2. Otherwise, method resolution attempts to locate the referenced method in C and its superclasses:
 
@@ -872,11 +880,27 @@ When resolving a method reference:
 
    - Otherwise, if C has a superclass, step 2 of method resolution is recursively invoked on the direct superclass of C.
 
+2. 否则, 方法解析会尝试在 C 及其超类中定位引用的方法:
+
+   - 如果 C 中声明了一个方法, 满足方法引用指定的名称, 并且声明是签名多态方法（[§2.9.3](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-2.html#jvms-2.9.3)), 则方法查找成功。 描述符中提到的所有类名都会被解析（[§5.4.3.1](#jvms-5.4.3.1)）。
+
+   解析的方法是签名多态方法声明。 C 声明的方法, 不一定要用方法引用指定的描述符。
+
+   - 否则, 如果 C 声明的某个方法, 满足方法引用指定的名称和描述符, 则方法查找成功。
+
+   - 否则, 如果 C 有超类, 则在 C 的直接超类上递归调用方法解析的步骤 2。
+
 3. Otherwise, method resolution attempts to locate the referenced method in the superinterfaces of the specified class C:
 
    - If the *maximally-specific superinterface methods* of C for the name and descriptor specified by the method reference include exactly one method that does not have its `ACC_ABSTRACT` flag set, then this method is chosen and method lookup succeeds.
    - Otherwise, if any superinterface of C declares a method with the name and descriptor specified by the method reference that has neither its `ACC_PRIVATE` flag nor its `ACC_STATIC` flag set, one of these is arbitrarily chosen and method lookup succeeds.
    - Otherwise, method lookup fails.
+
+3. 否则, 方法解析会尝试在指定类 C 的超接口中, 定位引用的方法:
+
+   - 如果 C 的 最大特定超接口方法, 包含唯一一个没有设置 `ACC_ABSTRACT` 标志的方法, 满足方法引用指定的名称和描述符,  则选择此方法并且方法查找成功。
+   - 否则, 如果 C 的任何超接口, 声明了一个方法, 具有方法引用指定的名称和描述符, 该方法既没有设置 `ACC_PRIVATE` 标志也没有设置 `ACC_STATIC` 标志, 则任意选择其中一个并且方法查找成功。
+   - 否则, 方法查找失败。
 
 A *maximally-specific superinterface method* of a class or interface C for a particular method name and descriptor is any method for which all of the following are true:
 
@@ -885,41 +909,21 @@ A *maximally-specific superinterface method* of a class or interface C for a par
 - The method has neither its `ACC_PRIVATE` flag nor its `ACC_STATIC` flag set.
 - Where the method is declared in interface I, there exists no other maximally-specific superinterface method of C with the specified name and descriptor that is declared in a subinterface of I.
 
-#### 5.4.3.3. 方法解析
+类或接口 C 的特定名称和描述符的方法, 最大特定超接口方法(maximally-specific superinterface method), 是满足以下所有条件的任何方法:
 
-要解析从 D 到类 C 中的方法的未解析符号引用, 首先解析由方法引用给出的对 C 的符号引用 ([§5.4.3.1](#jvms-5.4.3.1))。因此, 任何因类引用解析失败而抛出的异常都可能因方法解析失败而抛出。如果可以成功解析对 C 的引用, 则可以抛出与方法引用本身的解析相关的异常。
-
-解析方法引用时:
-
-1.如果C是接口, 方法解析会抛出`IncompatibleClassChangeError`。
-
-2. 否则, 方法解析会尝试在 C 及其超类中定位引用的方法:
-
-   - 如果 C 声明了一个方法引用指定的名称的方法, 并且声明是签名多态方法（[§2.9.3](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-2.html#jvms-2.9.3)), 则方法查找成功。描述符中提到的所有类名都已解析（[§5.4.3.1](#jvms-5.4.3.1)）。
-
-     *resolved 方法是签名多态方法声明。* C 没有必要用方法引用指定的描述符声明方法。
-
-   - 否则, 如果 C 用方法引用指定的名称和描述符声明方法, 则方法查找成功。
-
-   - 否则, 如果 C 具有超类, 则在 C 的直接超类上递归调用方法解析的步骤 2。
-
-3. 否则, 方法解析会尝试在指定类 C 的超接口中定位引用的方法:
-
-   - 如果 C 的 *maximally-specific superinterface methods* 为方法引用指定的名称和描述符包含一个没有设置其 `ACC_ABSTRACT` 标志的方法, 则选择此方法并且方法查找成功。
-   - 否则, 如果 C 的任何超接口声明了一个具有由方法引用指定的名称和描述符的方法, 该方法既没有设置 `ACC_PRIVATE` 标志也没有设置 `ACC_STATIC` 标志, 则任意选择其中一个并且方法查找成功。
-   - 否则, 方法查找失败。
-
-特定方法名称和描述符的类或接口 C 的*最大特定超接口方法*是满足以下所有条件的任何方法:
-
-- 该方法在 C 的超接口（直接或间接）中声明。
-- 使用指定的名称和描述符声明该方法。
-- 该方法既没有设置`ACC_PRIVATE`标志, 也没有设置`ACC_STATIC`标志。
-- 在接口 I 中声明该方法的情况下, 不存在具有在 I 的子接口中声明的指定名称和描述符的 C 的其他最大特定超接口方法。
+- 该方法在 C 的（直接或间接）超接口中声明。
+- 该方法使用指定的名称和描述符声明。
+- 该方法既没有设置 `ACC_PRIVATE` 标志, 也没有设置`ACC_STATIC`标志。
+- 在接口 I 中声明该方法的情况下, 在 I 的子接口中, 不存在 C 的, 满足同一个指定名称和描述符的最大特定超接口方法。
 
 
 The result of method resolution is determined as follows:
 
+方法解析的结果确定如下:
+
 - If method lookup failed, method resolution throws a `NoSuchMethodError`.
+
+- 如果方法查找失败, 方法解析会抛出 `NoSuchMethodError`。
 
 - Otherwise, method lookup succeeded. Access control is applied for the access from D to the method which is the result of method lookup ([§5.4.4](#jvms-5.4.4)). Then:
 
@@ -927,17 +931,36 @@ The result of method resolution is determined as follows:
 
   - Otherwise, access control succeeded. Loading constraints are imposed, as follows.
 
-    Let `<`E, `L1``>` be the class or interface in which the referenced method `m` is actually declared. Let `L2` be the defining loader of D. Given that the return type of `m` is Tr, and that the formal parameter types of `m` are Tf1, ..., Tfn:
+    Let `<E, L1>` be the class or interface in which the referenced method `m` is actually declared. Let `L2` be the defining loader of D. Given that the return type of `m` is Tr, and that the formal parameter types of `m` are Tf1, ..., Tfn:
 
     If Tr is not an array type, let T0 be Tr; otherwise, let T0 be the element type of Tr.
 
-    For *i* = 1 to *n*: If Tfi is not an array type, let Ti be Tfi; otherwise, let Ti be the element type of Tfi.
+    For `i` = 1 to `n`: If Tfi is not an array type, let Ti be Tfi; otherwise, let Ti be the element type of Tfi.
 
-    The Java Virtual Machine imposes the loading constraints Ti`L1` = Ti`L2` for *i* = 0 to *n*.
+    The Java Virtual Machine imposes the loading constraints `TiL1` = `TiL2` for `i` = 0 to `n`.
 
     If imposing these constraints results in any loading constraints being violated ([§5.3.4](#jvms-5.3.4)), then method resolution fails. Otherwise, method resolution succeeds.
 
+- 否则, 方法查找成功。访问控制适用于从 D 访问作为方法查找结果的方法 ([§5.4.4](#jvms-5.4.4))。 那么:
+
+  - 如果访问控制失败, 方法解析失败, 原因相同。
+
+  - 否则, 访问控制成功。加载约束如下:
+
+  令 `<E, L1>` 为实际声明引用方法 `m` 的类或接口。 令 `L2` 是 D 的定义加载器。 假设 `m` 的返回类型是 Tr, 并且 `m` 的形参类型是 Tf1, ..., Tfn:
+
+  如果 Tr 不是数组类型, 则令 T0 为 Tr； 否则, 令 T0 为 Tr 的元素类型。
+
+    For `i` = 1 to `n`: 如果Tfi不是数组类型, 则令 Ti 为 Tfi；否则, 令 Ti 为 Tfi 的元素类型。
+
+    Java 虚拟机对 `i` = 0 到 `n` 施加加载约束 `TiL1` = `TiL2`。
+
+    如果施加这些约束导致违反任何加载约束 ([§5.3.4](#jvms-5.3.4)), 则方法解析失败。 否则, 方法解析成功。
+
+
 When resolution searches for a method in the class's superinterfaces, the best outcome is to identify a maximally-specific non-`abstract` method. It is possible that this method will be chosen by method selection, so it is desirable to add class loader constraints for it.
+
+在类的超接口中搜索方法时, 最好的结果, 是确定一个最大特定的非抽象方法。 该方法可能会被方法选择所选择, 因此最好为其添加类加载器约束。
 
 Otherwise, the result is nondeterministic. This is not new: *The Java® Virtual Machine Specification* has never identified exactly which method is chosen, and how "ties" should be broken. Prior to Java SE 8, this was mostly an unobservable distinction. However, beginning with Java SE 8, the set of interface methods is more heterogenous, so care must be taken to avoid problems with nondeterministic behavior. Thus:
 
@@ -946,34 +969,12 @@ Otherwise, the result is nondeterministic. This is not new: *The Java® Virtual 
 
 Note that if the result of resolution is an `abstract` method, the referenced class C may be non-`abstract`. Requiring C to be `abstract` would conflict with the nondeterministic choice of superinterface methods. Instead, resolution assumes that the run time class of the invoked object has a concrete implementation of the method.
 
-方法解析的结果确定如下:
+否则, 结果是不确定的。这并不新鲜:  *Java® 虚拟机规范* 从未明确确定选择哪种方法, 以及应该如何打破`联系`。 在 Java SE 8 之前, 这主要是一种无法观察到的区别。 但是, 从 Java SE 8 开始, 接口方法集更加异构, 因此必须注意避免出现不确定行为的问题。 因此:
 
-- 如果方法查找失败, 方法解析会抛出 `NoSuchMethodError`。
+- `private` 和 `static` 的超接口方法被解析过程忽略。 这与 Java 编程语言一致, 不继承此类接口方法。
+- 由已解析方法控制的任何行为, 不应取决于该方法是否为 `abstract`。
 
-- 否则, 方法查找成功。访问控制适用于从 D 访问作为方法查找结果的方法 ([§5.4.4](#jvms-5.4.4))。然后:
-
-  - 如果访问控制失败, 方法解析失败, 原因相同。
-
-  - 否则, 访问控制成功。加载约束如下。
-
-    让 `<`E, `L1`>` 为实际声明引用方法 `m` 的类或接口。让 `L2` 是 D 的定义加载器。假设 `m` 的返回类型是 Tr, 并且 `m` 的形参类型是 Tf1, ..., Tfn:
-
-    如果 Tr 不是数组类型, 则令 T0 为 Tr；否则, 令 T0 为 Tr 的元素类型。
-
-    For *i* = 1 to *n*: 如果Tfi不是数组类型, 则令Ti为Tfi；否则, 令 Ti 为 Tfi 的元素类型。
-
-    Java 虚拟机对 *i* = 0 到 *n* 施加加载约束 Ti`L1` = Ti`L2`。
-
-    如果施加这些约束导致违反任何加载约束 ([§5.3.4](#jvms-5.3.4)), 则方法解析失败。否则, 方法解析成功。
-
-当解析在类的超接口中搜索方法时, 最好的结果是确定一个最大特定的非抽象方法。该方法可能会被方法选择所选择, 因此最好为其添加类加载器约束。
-
-否则, 结果是不确定的。这并不新鲜: *Java® 虚拟机规范* 从未明确确定选择了哪种方法, 以及应该如何打破`联系`。在 Java SE 8 之前, 这主要是一种无法观察到的区别。但是, 从 Java SE 8 开始, 接口方法集更加异构, 因此必须注意避免出现不确定行为的问题。因此:
-
-- `private` 和 `static` 的超接口方法被解析忽略。这与不继承此类接口方法的 Java 编程语言一致。
-- 由已解析方法控制的任何行为不应取决于该方法是否为`抽象`。
-
-请注意, 如果解析的结果是`抽象`方法, 则引用的类 C 可能不是`抽象`。要求 C 是`抽象的`会与超接口方法的非确定性选择相冲突。相反, 解析假定被调用对象的运行时类具有该方法的具体实现。
+请注意, 如果解析的结果是 `abstract` 方法, 则引用的类 C 可能不是抽象的。 要求 C 是`abstract`的, 会与超接口方法的非确定性选择相冲突。 相反, 解析假定被调用对象的运行时类具有该方法的具体实现。
 
 
 <a name="jvms-5.4.3.4"></a>
