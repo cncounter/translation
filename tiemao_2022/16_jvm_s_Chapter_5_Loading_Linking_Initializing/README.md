@@ -1191,43 +1191,43 @@ To resolve `MH`, all symbolic references to classes, interfaces, fields, and met
 
 In steps 1, 3, and 4, any exception that can be thrown as a result of failure of resolution of a symbolic reference to a class, interface, field, or method can be thrown as a result of failure of method handle resolution. In step 2, any failure due to the specified constraints causes a failure of method handle resolution due to an `IllegalAccessError`.
 
+在步骤 1、3 和 4 中, 由于对类、接口、字段或方法的符号引用解析失败而抛出的任何异常, 都可能因方法句柄解析失败而抛出。在第 2 步中, 由于指定约束导致的任何失败, 都会导致方法句柄解析失败, 导致 `IllegalAccessError`。
+
 The intent is that resolving a method handle can be done in exactly the same circumstances that the Java Virtual Machine would successfully verify and resolve the symbolic references in the bytecode behavior. In particular, method handles to `private`, `protected`, and `static` members can be created in exactly those classes for which the corresponding normal accesses are legal.
+
+解析方法句柄的意图, 可以在 Java 虚拟机成功验证和解析字节码行为中的符号引用的完全相同的情况下完成。 特别是, 对 `private`、`protected`和 `static` 成员的方法句柄, 可以在相应的正常访问是合法的那些类中创建。
 
 The result of successful method handle resolution is a `reference` to an instance of `java.lang.invoke.MethodHandle` which represents the method handle `MH`.
 
+方法句柄的成功解析结果, 是对代表方法句柄 MH 的 `java.lang.invoke.MethodHandle` 实例的引用。
+
 The type descriptor of this `java.lang.invoke.MethodHandle` instance is the `java.lang.invoke.MethodType` instance produced in the third step of method handle resolution above.
+
+这个 `java.lang.invoke.MethodHandle` 实例的类型描述符, 就是上面方法句柄解析第三步产生的 `java.lang.invoke.MethodType` 实例。
 
 The type descriptor of a method handle is such that a valid call to `invokeExact` in `java.lang.invoke.MethodHandle` on the method handle has exactly the same stack effects as the bytecode behavior. Calling this method handle on a valid set of arguments has exactly the same effect and returns the same result (if any) as the corresponding bytecode behavior.
 
+方法句柄的类型描述符, 使得对方法句柄上的 `java.lang.invoke.MethodHandle` 中的 `invokeExact` 的有效调用, 具有与字节码行为完全相同的操作数栈的效果。 传一组有效的参数, 调用此方法句柄, 具有完全相同的效果, 并返回与相应字节码行为相同的结果（如果有返回值）。
+
 If the method referenced by R has the `ACC_VARARGS` flag set ([§4.6](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-4.html#jvms-4.6)), then the `java.lang.invoke.MethodHandle` instance is a variable arity method handle; otherwise, it is a fixed arity method handle.
+
+如果 R 引用的方法, 设置了 `ACC_VARARGS` 标志（[§4.6](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-4.html#jvms-4.6)） , 那么 `java.lang.invoke.MethodHandle` 实例是一个参数数量可变的稀疏方法句柄； 否则, 它是一个固定参数的方法句柄。
 
 A variable arity method handle performs argument list boxing (JLS §15.12.4.2) when invoked via `invoke`, while its behavior with respect to `invokeExact` is as if the `ACC_VARARGS` flag were not set.
 
+参数可变的稀疏方法句柄, 在通过 `invoke` 调用时, 执行参数列表装箱（JLS §15.12.4.2）, 而它相对于 `invokeExact` 的行为就像没有设置 `ACC_VARARGS` 标志一样。
+
 Method handle resolution throws an `IncompatibleClassChangeError` if the method referenced by R has the `ACC_VARARGS` flag set and either A* is an empty sequence or the last parameter type in A* is not an array type. That is, creation of a variable arity method handle fails.
+
+如果 R 引用的方法设置了 `ACC_VARARGS` 标志, 并且 A' 是空序列, 或 A' 中的最后一个参数类型不是数组类型, 则方法句柄解析会抛出 `IncompatibleClassChangeError`。 也就是说, 创建变量稀疏方法句柄失败。
 
 An implementation of the Java Virtual Machine is not required to intern method types or method handles. That is, two distinct symbolic references to method types or method handles which are structurally identical might not resolve to the same instance of `java.lang.invoke.MethodType` or `java.lang.invoke.MethodHandle` respectively.
 
+Java 虚拟机的实现, 不需要内联方法类型或方法句柄。 也就是说, 对结构相同的方法类型或方法句柄的两个不同符号引用, 可能不会分别解析为相同的 `java.lang.invoke.MethodType` 或 `java.lang.invoke.MethodHandle` 实例。
+
 The `java.lang.invoke.MethodHandles` class in the Java SE Platform API allows creation of method handles with no bytecode behavior. Their behavior is defined by the method of `java.lang.invoke.MethodHandles` that creates them. For example, a method handle may, when invoked, first apply transformations to its argument values, then supply the transformed values to the invocation of another method handle, then apply a transformation to the value returned from that invocation, then return the transformed value as its own result.
 
-在步骤 1、3 和 4 中, 由于对类、接口、字段或方法的符号引用解析失败而抛出的任何异常都可能因方法句柄解析失败而抛出。在第 2 步中, 由于指定约束导致的任何失败都会导致由于`IllegalAccessError`而导致方法句柄解析失败。
-
-目的是解析方法句柄可以在 Java 虚拟机成功验证和解析字节码行为中的符号引用的完全相同的情况下完成。特别是, `private`、`protected`和`static`成员的方法句柄可以在相应的正常访问是合法的那些类中创建。
-
-成功的方法句柄解析的结果是对代表方法句柄 MH 的 java.lang.invoke.MethodHandle 实例的引用。
-
-这个java.lang.invoke.MethodHandle实例的类型描述符就是上面方法句柄解析第三步产生的java.lang.invoke.MethodType实例。
-
-方法句柄的类型描述符使得对方法句柄上的 `java.lang.invoke.MethodHandle` 中的 `invokeExact` 的有效调用具有与字节码行为完全相同的堆栈效果。对一组有效的参数调用此方法句柄具有完全相同的效果, 并返回与相应字节码行为相同的结果（如果有）。
-
-如果 R 引用的方法设置了 `ACC_VARARGS` 标志（[§4.6](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-4.html#jvms-4.6)） , 那么 `java.lang.invoke.MethodHandle` 实例是一个可变的 arity 方法句柄；否则, 它是一个固定的方法句柄。
-
-变量 arity 方法句柄在通过`invoke`调用时执行参数列表装箱（JLS §15.12.4.2）, 而它相对于`invokeExact`的行为就像没有设置`ACC_VARARGS`标志一样。
-
-如果 R 引用的方法设置了 `ACC_VARARGS` 标志并且 A* 是空序列或 A* 中的最后一个参数类型不是数组类型, 则方法句柄解析会抛出 `IncompatibleClassChangeError`。也就是说, 创建变量arity 方法句柄失败。
-
-Java 虚拟机的实现不需要实习方法类型或方法句柄。也就是说, 对结构相同的方法类型或方法句柄的两个不同符号引用可能不会分别解析为相同的 java.lang.invoke.MethodType 或 java.lang.invoke.MethodHandle 实例。
-
-Java SE Platform API 中的 `java.lang.invoke.MethodHandles` 类允许创建没有字节码行为的方法句柄。它们的行为由创建它们的 `java.lang.invoke.MethodHandles` 方法定义。例如, 一个方法句柄可以在被调用时首先对其参数值应用转换, 然后将转换后的值提供给另一个方法句柄的调用, 然后对从该调用返回的值应用转换, 然后将转换后的值返回为自己的结果。
+Java SE Platform API 中的 `java.lang.invoke.MethodHandles` 类, 允许创建没有字节码行为的方法句柄。 它们的行为由创建它们的 `java.lang.invoke.MethodHandles` 方法定义。 例如, 一个方法句柄, 可以在被调用时, 首先对其参数值进行转换, 然后将转换后的值, 提供给另一个方法句柄的调用, 然后对该调用返回的值, 再进行转换, 然后将转换后的值, 作为自己的返回结果。
 
 
 <a name="jvms-5.4.3.6"></a>
