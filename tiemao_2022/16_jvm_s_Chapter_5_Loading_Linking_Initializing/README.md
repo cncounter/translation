@@ -1054,36 +1054,38 @@ Access control is necessary because interface method resolution may pick a `priv
 <a name="jvms-5.4.3.5"></a>
 #### 5.4.3.5. Method Type and Method Handle Resolution
 
+#### 5.4.3.5. 方法类型和方法句柄解析
+
 To resolve an unresolved symbolic reference to a method type, it is as if resolution occurs of unresolved symbolic references to classes and interfaces ([§5.4.3.1](#jvms-5.4.3.1)) whose names correspond to the types given in the method descriptor ([§4.3.3](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-4.html#jvms-4.3.3)).
+
+要解析方法类型(method type)的符号引用, 就像解析类和接口的符号引用一样 ([§5.4.3.1](#jvms-5.4.3.1)), 其名称对应方法描述符（[§4.3.3](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-4.html#jvms-4.3.3)）。
 
 Any exception that can be thrown as a result of failure of resolution of a class reference can thus be thrown as a result of failure of method type resolution.
 
+因此, 由于类引用解析失败而抛出的任何异常, 都可能因方法类型解析失败而抛出。
+
 The result of successful method type resolution is a `reference` to an instance of `java.lang.invoke.MethodType` which represents the method descriptor.
+
+方法类型解析成功的结果, 是对表示方法描述符的 `java.lang.invoke.MethodType` 实例的引用。
 
 Method type resolution occurs regardless of whether the run-time constant pool actually contains symbolic references to classes and interfaces indicated in the method descriptor. Also, the resolution is deemed to occur on *unresolved* symbolic references, so a failure to resolve one method type will not necessarily lead to a later failure to resolve another method type with the same textual method descriptor, if suitable classes and interfaces can be loaded by the later time.
 
+无论运行时常量池是否包含对方法描述符中指示的类和接口的符号引用, 都会发生方法类型解析。 此外, 该解析被视为发生在 未解析的 符号引用上, 因此如果解析一个方法类型失败, 则不一定会导致之后的另一个, 具有相同方法描述符文本的方法类型解析失败, 如果之后可以加载到合适的类和接口的话。
+
 Resolution of an unresolved symbolic reference to a method handle is more complicated. Each method handle resolved by the Java Virtual Machine has an equivalent instruction sequence called its *bytecode behavior*, indicated by the method handle's *kind*. The integer values and descriptions of the nine kinds of method handle are given in [Table 5.4.3.5-A](#jvms-5.4.3.5-220).
+
+解析方法句柄(method handle)的符号引用更为复杂.  Java虚拟机解析的每个方法句柄都有一个等效的指令序列, 称为它的 *字节码行为(bytecode behavior)*, 指示方法句柄的 *种类(kind)*。 [表5.4.3.5-A](#jvms-5.4.3.5-220)中列出了 9 种方法句柄的整数值和描述信息。
 
 Symbolic references by an instruction sequence to fields or methods are indicated by `C.x:T`, where `x` and `T` are the name and descriptor ([§4.3.2](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-4.html#jvms-4.3.2), [§4.3.3](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-4.html#jvms-4.3.3)) of the field or method, and `C` is the class or interface in which the field or method is to be found.
 
-#### 5.4.3.5. 方法类型和方法句柄解析
-
-要解析对方法类型的未解析符号引用, 就好像解析对类和接口的未解析符号引用 ([§5.4.3.1](#jvms-5.4.3.1)), 其名称对应方法描述符（[§4.3.3](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-4.html#jvms-4.3.3)）。
-
-因此, 由于类引用解析失败而抛出的任何异常都可能因方法类型解析失败而抛出。
-
-成功的方法类型解析的结果是对表示方法描述符的 java.lang.invoke.MethodType 实例的`引用`。
-
-无论运行时常量池是否实际包含对方法描述符中指示的类和接口的符号引用, 都会发生方法类型解析。此外, 该解析被视为发生在 *未解析* 符号引用上, 因此如果可以使用合适的类和接口, 则解析一种方法类型的失败不一定会导致稍后无法解析具有相同文本方法描述符的另一种方法类型稍后加载。
-
-对方法句柄的未解析符号引用的解析更为复杂. Java虚拟机解析的每个方法句柄都有一个等效的指令序列, 称为它的*字节码行为*, 由方法句柄的*种类*指示。九种方法句柄的整数值和描述见[表5.4.3.5-A](#jvms-5.4.3.5-220)。
-
-指令序列对字段或方法的符号引用由`C.x:T`指示, 其中`x`和`T`是名称和描述符（[§4.3.2](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-4.html#jvms-4.3.2), [§4.3.3](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-4.html#jvms-4.3.3)) 的字段或方法, 而 `C` 是要在其中找到字段或方法的类或接口。
+指令序列, 对字段或方法的符号引用, 由`C.x:T`指示, 其中 `x` 和 `T` , 是字段或方法的名称和描述符（[§4.3.2](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-4.html#jvms-4.3.2), [§4.3.3](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-4.html#jvms-4.3.3)), 而 `C` 是要在其中找到字段或方法的类或接口。
 
 
-**Table 5.4.3.5-A. Bytecode Behaviors for Method Handles**
+> **Table 5.4.3.5-A. Bytecode Behaviors for Method Handles**
 
-| Kind | Description            | Interpretation                             |
+> **表 5.4.3.5-A. 方法句柄的字节码行为(Bytecode Behaviors)**
+
+| Kind | Description(说明)       | Interpretation(解释)                       |
 | ---- | ---------------------- | ------------------------------------------ |
 | 1    | `REF_getField`         | `getfield C.f:T`                           |
 | 2    | `REF_getStatic`        | `getstatic C.f:T`                          |
@@ -1103,7 +1105,7 @@ Let `MH` be the symbolic reference to a method handle ([§5.1](#jvms-5.1)) being
 
   R is derived from the `CONSTANT_Fieldref`, `CONSTANT_Methodref`, or `CONSTANT_InterfaceMethodref` structure referred to by the `reference_index` item of the `CONSTANT_MethodHandle` from which `MH` is derived.
 
-  For example, R is a symbolic reference to C `.` `f` for bytecode behavior of kind 1, and a symbolic reference to C `.` `<init>` for bytecode behavior of kind 8.
+  For example, R is a symbolic reference to `C.f` for bytecode behavior of kind 1, and a symbolic reference to `C.<init>` for bytecode behavior of kind 8.
 
   If `MH`'s bytecode behavior is kind 7 (`REF_invokeSpecial`), then C must be the current class or interface, a superclass of the current class, a direct superinterface of the current class or interface, or `Object`.
 
@@ -1111,76 +1113,80 @@ Let `MH` be the symbolic reference to a method handle ([§5.1](#jvms-5.1)) being
 
   T and A* are derived from the `CONSTANT_NameAndType` structure referred to by the `name_and_type_index` item in the `CONSTANT_Fieldref`, `CONSTANT_Methodref`, or `CONSTANT_InterfaceMethodref` structure from which R is derived.
 
-让 `MH` 是对正在解析的方法句柄 ([§5.1](#jvms-5.1)) 的符号引用。还:
+用 `MH` 表示正在解析的方法句柄 ([§5.1](#jvms-5.1)) 的符号引用。那么:
 
 - 令 R 为对 `MH` 中包含的字段或方法的符号引用。
 
-  R 派生自 `CONSTANT_Fieldref`、`CONSTANT_Methodref` 或 `CONSTANT_InterfaceMethodref` 结构, 由 `MH` 派生的`CONSTANT_MethodHandle` 的`reference_index` 项引用。
+  R 派生自 `CONSTANT_Fieldref`、`CONSTANT_Methodref` 或 `CONSTANT_InterfaceMethodref` 结构, 由 `MH` 派生的 `CONSTANT_MethodHandle` 的 `reference_index` 项引用。
 
-  例如, R 是对 C `.` `f` 的符号引用, 用于第 1 类字节码行为, 对 C `.` `<init>` 进行符号引用, 用于第 8 类字节码行为。
+  例如, R 是对第 1 类字节码行为中 `C.f` 的符号引用, 以及第 8 类字节码行为中对 `C.<init>` 的符号引用。
 
-  如果`MH`的字节码行为是种类7（`REF_invokeSpecial`）, 那么C必须是当前类或接口, 当前类的超类, 当前类或接口的直接超接口, 或`Object`。
+  如果 `MH` 的字节码行为是种类7（`REF_invokeSpecial`）, 那么 C 必须是当前类或接口, 当前类的超类, 当前类或接口的直接超接口, 或`Object` 类。
 
-- 令 T 为 R 引用的字段的类型, 或 R 引用的方法的返回类型。令 A* 为 R 引用的方法的参数类型的序列（可能为空）。
+- 令 T 为 R 引用的字段的类型, 或 R 引用的方法的返回类型。 令 A' 为 R 引用的方法的参数类型的序列（可能为空）。
 
-  T 和 A* 派生自 CONSTANT_NameAndType 结构, 由派生 R 的 `CONSTANT_Fieldref`、`CONSTANT_Methodref` 或 `CONSTANT_InterfaceMethodref` 结构中的 `name_and_type_index` 项引用。
+  T 和 A' 派生自 `CONSTANT_NameAndType` 结构, 由派生 R 的 `CONSTANT_Fieldref`、`CONSTANT_Methodref` 或 `CONSTANT_InterfaceMethodref` 结构中的 `name_and_type_index` 项引用。
 
 
 To resolve `MH`, all symbolic references to classes, interfaces, fields, and methods in `MH`'s bytecode behavior are resolved, using the following four steps:
 
+要解析`MH`, 则需要对 `MH`字节码行为中涉及的, 类、接口、字段和方法的所有符号引用进行解析, 使用以下四个步骤:
+
 1. R is resolved. This occurs as if by field resolution ([§5.4.3.2](#jvms-5.4.3.2)) when `MH`'s bytecode behavior is kind 1, 2, 3, or 4, and as if by method resolution ([§5.4.3.3](#jvms-5.4.3.3)) when `MH`'s bytecode behavior is kind 5, 6, 7, or 8, and as if by interface method resolution ([§5.4.3.4](#jvms-5.4.3.4)) when `MH`'s bytecode behavior is kind 9.
+
+1. R 已解析。 当 `MH` 的字节码行为是种类 1、2、3 或 4 时, 就像字段解析 ([§5.4.3.2](#jvms-5.4.3.2)) 一样; 当 `MH` 的字节码行为是种类 5、6、7 或 8时, 和方法解析 ([§5.4.3.3](#jvms-5.4.3.3)) 一样; 当 `MH` 的字节码行为是 kind 9 时, 好像接口方法解析一样 ([§5.4.3.4](#jvms-5.4.3.4)) 。
 
 2. The following constraints apply to the result of resolving R. These constraints correspond to those that would be enforced during verification or execution of the instruction sequence for the relevant bytecode behavior.
 
    - If `MH`'s bytecode behavior is kind 8 (`REF_newInvokeSpecial`), then R must resolve to an instance initialization method declared in class C.
    - If R resolves to a `protected` member, then the following rules apply depending on the kind of `MH`'s bytecode behavior:
      - For kinds 1, 3, and 5 (`REF_getField`, `REF_putField`, and `REF_invokeVirtual`): If `C.f` or `C.m` resolved to a `protected` field or method, and C is in a different run-time package than the current class, then C must be assignable to the current class.
-     - For kind 8 (`REF_newInvokeSpecial`): If C `.` `<init>` resolved to a `protected` method, then C must be declared in the same run-time package as the current class.
+     - For kind 8 (`REF_newInvokeSpecial`): If `C.<init>` resolved to a `protected` method, then C must be declared in the same run-time package as the current class.
    - R must resolve to a `static` or non-`static` member depending on the kind of `MH`'s bytecode behavior:
      - For kinds 1, 3, 5, 7, and 9 (`REF_getField`, `REF_putField`, `REF_invokeVirtual`, `REF_invokeSpecial`, and `REF_invokeInterface`): `C.f` or `C.m` must resolve to a non-`static` field or method.
      - For kinds 2, 4, and 6 (`REF_getStatic`, `REF_putStatic`, and `REF_invokeStatic`): `C.f` or `C.m` must resolve to a `static` field or method.
 
+
+2. 以下约束适用于解析 R 的结果。 这些约束, 对应于将在验证或执行相关字节码行为的指令序列期间, 强制执行的约束。
+
+- 如果 `MH` 的字节码行为是类型 8 (`REF_newInvokeSpecial`), 则 R 必须解析为 C 类中声明的实例初始化方法。
+- 如果 R 解析为 `protected` 成员, 则适用以下规则, 具体取决于 `MH` 字节码行为的类型:
+  - 对于种类 1、3 和 5（`REF_getField`、`REF_putField` 和 `REF_invokeVirtual`）: 如果 `C.f` 或 `C.m` 解析为 `protected` 字段或方法, 并且 C 和当前类在不同的运行时包中, 那么C必须可被当前类赋值。
+  - 对于种类 8 (`REF_newInvokeSpecial`): 如果 `C.<init>` 解析为 `protected` 方法, 则 C 必须在与当前类相同的运行时包中声明。
+- R 必须根据 `MH` 的字节码行为类型, 解析为`static` 或非 `static` 成员:
+  - 对于种类 1、3、5、7 和 9（`REF_getField`、`REF_putField`、`REF_invokeVirtual`、`REF_invokeSpecial` 和 `REF_invokeInterface`）: `C.f` 或 `C.m` 必须解析为非 `static` 字段或方法。
+  - 对于类型 2、4 和 6（`REF_getStatic`、`REF_putStatic` 和 `REF_invokeStatic`）: `C.f` 或 `C.m` 必须解析为 `static` 字段或方法。
+
 3. Resolution occurs as if of unresolved symbolic references to classes and interfaces whose names correspond to each type in A*, and to the type T, in that order.
+
+3. 解析就像对类和接口的未解析符号引用一样, 这些类和接口的名称, 按顺序, 对应于 A' 中的每个类型, 对应于类型 T。
 
 4. A reference to an instance of `java.lang.invoke.MethodType` is obtained as if by resolution of an unresolved symbolic reference to a method type that contains the method descriptor specified in [Table 5.4.3.5-B](#jvms-5.4.3.5-250) for the kind of `MH`.
 
    It is as if the symbolic reference to a method handle contains a symbolic reference to the method type that the resolved method handle will eventually have. The detailed structure of the method type is obtained by inspecting [Table 5.4.3.5-B](#jvms-5.4.3.5-250).
 
-要解析`MH`, 使用以下四个步骤来解析`MH`字节码行为中对类、接口、字段和方法的所有符号引用:
 
-1. R 已解决。当 `MH` 的字节码行为是种类 1、2、3 或 4 时, 就好像通过字段解析 ([§5.4.3.2](#jvms-5.4.3.2)) 和方法解析 ([§5.4.3.3](#jvms-5.4.3.3)) 当 `MH` 的字节码行为是种类 5、6、7 或 8, 并且好像通过接口方法解析 ([§5.4.3.4](#jvms-5.4.3.4)) 当 `MH` 的字节码行为是 kind 9 时。
+4. `java.lang.invoke.MethodType` 实例的引用,  对于 `MH` 的种类, 是通过解析 [Table 5.4.3.5-B](#jvms-5.4.3.5-250) 中指定的方法描述符的方法类型的未解析符号引用获得的。
 
-2. 以下约束适用于解析 R 的结果。这些约束对应于将在验证或执行相关字节码行为的指令序列期间强制执行的约束。
-
-   - 如果 `MH` 的字节码行为是类型 8 (`REF_newInvokeSpecial`), 则 R 必须解析为 C 类中声明的实例初始化方法。
-   - 如果 R 解析为 `protected` 成员, 则适用以下规则, 具体取决于 `MH` 字节码行为的类型:
-     - 对于种类 1、3 和 5（`REF_getField`、`REF_putField` 和 `REF_invokeVirtual`）: 如果 `C.f` 或 `C.m` 解析为 `protected` 字段或方法, 并且 C 在不同的运行中-时间包比当前类, 那么C必须可分配给当前类。
-     - 对于种类 8 (`REF_newInvokeSpecial`): 如果 C `.` `<init>` 解析为 `protected` 方法, 则 C 必须在与当前类相同的运行时包中声明。
-   - R 必须根据 `MH` 的字节码行为类型解析为`static` 或非`static` 成员:
-     - 对于种类 1、3、5、7 和 9（`REF_getField`、`REF_putField`、`REF_invokeVirtual`、`REF_invokeSpecial` 和 `REF_invokeInterface`）: `C.f` 或 `C.m` 必须解析为非` static` 字段或方法。
-     - 对于类型 2、4 和 6（`REF_getStatic`、`REF_putStatic` 和 `REF_invokeStatic`）: `C.f` 或 `C.m` 必须解析为 `static` 字段或方法。
-
-3. 解析就像对类和接口的未解析符号引用一样, 这些类和接口的名称对应于 A* 中的每个类型, 并按顺序对应于类型 T。
-
-4. 对 `java.lang.invoke.MethodType` 实例的引用是通过解析对包含 [表 5.4.3.5-B] 中指定的方法描述符的方法类型的未解析符号引用获得的（#jvms-5.4.3.5-250) 用于 `MH` 的种类。
-
-   就好像对方法句柄的符号引用包含对已解析方法句柄最终将具有的方法类型的符号引用。方法类型的详细结构通过查看[Table 5.4.3.5-B](#jvms-5.4.3.5-250)得到。
+   就好像对方法句柄的符号引用, 包含对已解析方法句柄最终将具有的方法类型的符号引用。 方法类型的详细结构通过查看 [Table 5.4.3.5-B](#jvms-5.4.3.5-250) 得到。
 
 
 
-   **Table 5.4.3.5-B. Method Descriptors for Method Handles**
+> **Table 5.4.3.5-B. Method Descriptors for Method Handles**
 
-   | Kind | Description            | Method descriptor |
-   | ---- | ---------------------- | ----------------- |
-   | 1    | `REF_getField`         | `(C)T`            |
-   | 2    | `REF_getStatic`        | `()T`             |
-   | 3    | `REF_putField`         | `(C,T)V`          |
-   | 4    | `REF_putStatic`        | `(T)V`            |
-   | 5    | `REF_invokeVirtual`    | `(C,A*)T`         |
-   | 6    | `REF_invokeStatic`     | `(A*)T`           |
-   | 7    | `REF_invokeSpecial`    | `(C,A*)T`         |
-   | 8    | `REF_newInvokeSpecial` | `(A*)C`           |
-   | 9    | `REF_invokeInterface`  | `(C,A*)T`         |
+> **Table 5.4.3.5-B. 方法句柄(Method Handles)的方法描述符(Method Descriptors)**
+
+| Kind | Description            | Method descriptor |
+| ---- | ---------------------- | ----------------- |
+| 1    | `REF_getField`         | `(C)T`            |
+| 2    | `REF_getStatic`        | `()T`             |
+| 3    | `REF_putField`         | `(C,T)V`          |
+| 4    | `REF_putStatic`        | `(T)V`            |
+| 5    | `REF_invokeVirtual`    | `(C,A*)T`         |
+| 6    | `REF_invokeStatic`     | `(A*)T`           |
+| 7    | `REF_invokeSpecial`    | `(C,A*)T`         |
+| 8    | `REF_newInvokeSpecial` | `(A*)C`           |
+| 9    | `REF_invokeInterface`  | `(C,A*)T`         |
 
 
 In steps 1, 3, and 4, any exception that can be thrown as a result of failure of resolution of a symbolic reference to a class, interface, field, or method can be thrown as a result of failure of method handle resolution. In step 2, any failure due to the specified constraints causes a failure of method handle resolution due to an `IllegalAccessError`.
