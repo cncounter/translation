@@ -1600,37 +1600,37 @@ then:
 <a name="jvms-5.4.6"></a>
 ### 5.4.6. Method Selection
 
+### 5.4.6. 方法选择(Method Selection)
+
 During execution of an *invokeinterface* or *invokevirtual* instruction, a method is *selected* with respect to (i) the run-time type of the object on the stack, and (ii) a method that was previously *resolved* by the instruction. The rules to select a method with respect to a class or interface C and a method `mR` are as follows:
+
+在执行 *invokeinterface* 或 *invokevirtual* 指令期间, 根据 (i) 栈上对象的运行时类型和 (ii) 该指令先前解析的方法, 来确定如何选择。 关于类或接口 C 和方法 `mR` 的选择规则如下:
 
 1. If `mR` is marked `ACC_PRIVATE`, then it is the selected method.
 
+1. 如果`mR`被标记为 `ACC_PRIVATE`, 那么它就是被选择的方法。
+
 2. Otherwise, the selected method is determined by the following lookup procedure:
 
-   - If C contains a declaration of an instance method `m` that can override `mR` ([§5.4.5](#jvms-5.4.5)), then `m` is the selected method.
+  - If C contains a declaration of an instance method `m` that can override `mR` ([§5.4.5](#jvms-5.4.5)), then `m` is the selected method.
 
-   - Otherwise, if C has a superclass, a search for a declaration of an instance method that can override `mR` is performed, starting with the direct superclass of C and continuing with the direct superclass of that class, and so forth, until a method is found or no further superclasses exist. If a method is found, it is the selected method.
+  - Otherwise, if C has a superclass, a search for a declaration of an instance method that can override `mR` is performed, starting with the direct superclass of C and continuing with the direct superclass of that class, and so forth, until a method is found or no further superclasses exist. If a method is found, it is the selected method.
 
-   - Otherwise, the maximally-specific superinterface methods of C are determined ([§5.4.3.3](#jvms-5.4.3.3)). If exactly one matches `mR`'s name and descriptor and is not `abstract`, then it is the selected method.
+  - Otherwise, the maximally-specific superinterface methods of C are determined ([§5.4.3.3](#jvms-5.4.3.3)). If exactly one matches `mR`'s name and descriptor and is not `abstract`, then it is the selected method.
 
-     Any maximally-specific superinterface method selected in this step can override `mR`; there is no need to check this explicitly.
-
-While C will typically be a class, it may be an interface when these rules are applied during preparation ([§5.4.2](#jvms-5.4.2)).
-
-### 5.4.6. 方法选择
-
-在执行 *invokeinterface* 或 *invokevirtual* 指令期间, 根据 (i) 堆栈上对象的运行时类型和 (ii) 先前 *resolved* 的方法*选择*该指令。关于类或接口 C 和方法 `mR` 选择方法的规则如下:
-
-1.如果`mR`被标记为`ACC_PRIVATE`, 那么它就是被选择的方法。
+   Any maximally-specific superinterface method selected in this step can override `mR`; there is no need to check this explicitly.
 
 2. 否则, 所选方法由以下查找过程确定:
 
-   - 如果 C 包含可以覆盖 `mR` 的实例方法 `m` 的声明（[§5.4.5](#jvms-5.4.5)）, 则 `m` 是选定的方法。
+  - 如果 C 包含可以覆盖 `mR` 的实例方法 `m` 的声明（[§5.4.5](#jvms-5.4.5)）, 则 `m` 是选定的方法。
 
-   - 否则, 如果 C 有超类, 则搜索可以覆盖 `mR` 的实例方法的声明, 从 C 的直接超类开始, 然后继续该类的直接超类, 依此类推, 直到找到方法或不存在进一步的超类。如果找到一个方法, 它就是选定的方法。
+  - 否则, 如果 C 有超类, 则搜索可以覆盖 `mR` 的实例方法的声明, 从 C 的直接超类开始, 然后继续该类的直接超类, 依此类推, 直到找到方法或不存在进一步的超类。 如果找到一个方法, 那它就是选定的方法。
 
-   - 否则, 确定 C 的最大特定超接口方法 ([§5.4.3.3](#jvms-5.4.3.3))。如果恰好有一个匹配`mR`的名称和描述符并且不是`abstract`, 那么它就是被选择的方法。
+  - 否则, 确定 C 的最大特定超接口方法 ([§5.4.3.3](#jvms-5.4.3.3))。 如果恰好有一个方法的名称和描述符匹配`mR`, 并且不是`abstract`, 那么它就是被选择的方法。
 
-     在此步骤中选择的任何最大特定超接口方法都可以覆盖`mR`；无需明确检查。
+   在此步骤中选择的任何最大特定超接口方法都可以覆盖`mR`；无需明确检查。
+
+While C will typically be a class, it may be an interface when these rules are applied during preparation ([§5.4.2](#jvms-5.4.2)).
 
 虽然 C 通常是一个类, 但在准备期间应用这些规则时, 它可能是一个接口 ([§5.4.2](#jvms-5.4.2))。
 
@@ -1735,23 +1735,23 @@ For each class or interface C, there is a unique initialization lock `LC`. The m
 
 6. Otherwise, record the fact that initialization of the `Class` object for C is in progress by the current thread, and release `LC`.
 
-   Then, initialize each `final` `static` field of C with the constant value in its `ConstantValue` attribute ([§4.7.2](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-4.html#jvms-4.7.2)), in the order the fields appear in the `ClassFile` structure.
+  Then, initialize each `final` `static` field of C with the constant value in its `ConstantValue` attribute ([§4.7.2](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-4.html#jvms-4.7.2)), in the order the fields appear in the `ClassFile` structure.
 
 6. 否则, 记录当前线程正在对C的`Class`对象进行初始化, 并释放`LC`。
 
-   然后, 用 `ConstantValue` 属性中的常量值, 按照字段在 `ClassFile` 结构中出现的顺序, 初始化C的每个 `final` `static` 字段（[§4.7.2](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-4.html#jvms-4.7.2))。
+  然后, 用 `ConstantValue` 属性中的常量值, 按照字段在 `ClassFile` 结构中出现的顺序, 初始化C的每个 `final` `static` 字段（[§4.7.2](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-4.html#jvms-4.7.2))。
 
 7. Next, if C is a class rather than an interface, then let SC be its superclass and let SI1, ..., SIn be all superinterfaces of C (whether direct or indirect) that declare at least one non-`abstract`, non-`static` method. The order of superinterfaces is given by a recursive enumeration over the superinterface hierarchy of each interface directly implemented by C. For each interface I directly implemented by C (in the order of the `interfaces` array of C), the enumeration recurs on I's superinterfaces (in the order of the `interfaces` array of I) before returning I.
 
-   For each S in the list [ SC, SI1, ..., SIn ], if S has not yet been initialized, then recursively perform this entire procedure for S. If necessary, verify and prepare S first.
+  For each S in the list [ SC, SI1, ..., SIn ], if S has not yet been initialized, then recursively perform this entire procedure for S. If necessary, verify and prepare S first.
 
-   If the initialization of S completes abruptly because of a thrown exception, then acquire `LC`, label the `Class` object for C as erroneous, notify all waiting threads, release `LC`, and complete abruptly, throwing the same exception that resulted from initializing SC.
+  If the initialization of S completes abruptly because of a thrown exception, then acquire `LC`, label the `Class` object for C as erroneous, notify all waiting threads, release `LC`, and complete abruptly, throwing the same exception that resulted from initializing SC.
 
 7. 接下来, 如果 C 是类而不是接口, 则令 SC 为其超类, 并令 SI1, ..., SIn 为 C 的声明至少一个非抽象方法、非`static`方法的所有超接口（无论是直接的还是间接的）。 超接口的顺序由 C 直接实现的每个接口的超级接口层次结构上的递归枚举给出。​​ 对于由 C 直接实现的每个接口 I （按照 C 的 `interfaces` 数组的顺序）, 在返回 I 之前, 枚举在  I  的超级接口上重复（按 I 的 `interfaces` 数组的顺序）。
 
-   对于列表 [ SC, SI1, ..., SIn ] 中的每个S, 如果S还没有被初始化, 那么递归地对S执行整个过程。 如果有必要, 首先验证和准备S。
+  对于列表 [ SC, SI1, ..., SIn ] 中的每个S, 如果S还没有被初始化, 那么递归地对S执行整个过程。 如果有必要, 首先验证和准备S。
 
-   如果 S 的初始化由于抛出异常而非正常完成, 则获取`LC`, 将 C 的`Class` 对象标记为错误, 通知所有等待线程, 释放`LC`, 然后非正常完成, 抛出与导致 SC 初始化结果异常相同的异常。
+  如果 S 的初始化由于抛出异常而非正常完成, 则获取`LC`, 将 C 的`Class` 对象标记为错误, 通知所有等待线程, 释放`LC`, 然后非正常完成, 抛出与导致 SC 初始化结果异常相同的异常。
 
 8. Next, determine whether assertions are enabled for C by querying its defining class loader.
 
