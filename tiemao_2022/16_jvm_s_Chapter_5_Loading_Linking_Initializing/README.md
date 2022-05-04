@@ -1546,7 +1546,11 @@ The nest host of a class or interface `M` is determined as follows:
 <a name="jvms-5.4.5"></a>
 ### 5.4.5. Method Overriding
 
+### 5.4.5. 方法覆盖(Method Overriding)
+
 An instance method `mC` *can override* another instance method `mA` iff all of the following are true:
+
+如果满足以下所有条件, 则实例方法 `mC` 可以覆盖另一个实例方法 `mA`:
 
 - `mC` has the same name and descriptor as `mA`.
 - `mC` is not marked `ACC_PRIVATE`.
@@ -1557,20 +1561,16 @@ An instance method `mC` *can override* another instance method `mA` iff all of t
 
 Part (b) of the final case allows for "transitive overriding" of methods with default access. For example, given the following class declarations in a package P:
 
-### 5.4.5. 方法覆盖
-
-如果满足以下所有条件, 则实例方法 `mC` *可以覆盖*另一个实例方法 `mA`:
-
 - `mC` 与 `mA` 具有相同的名称和描述符。
 - `mC` 未标记为 `ACC_PRIVATE`。
 - 以下其中一项为真:
    - `mA` 标记为 `ACC_PUBLIC`。
    - `mA` 标记为 `ACC_PROTECTED`。
-   - `mA` 既没有标记为 `ACC_PUBLIC` 也没有 `ACC_PROTECTED` 也没有 `ACC_PRIVATE`, 并且要么 (a) `mA` 的声明出现在与 `mC` 的声明相同的运行时包中, 或者 (b) 如果在 A 类中声明了`mA`, 在 C 类中声明了`mC`, 则在 B 类中声明了一个`mB`方法, 使得 C 是 B 的子类, B 是 A 的子类, 并且 `mC` 可以覆盖 `mB` 并且 `mB` 可以覆盖 `mA`。
+   - `mA` 既没有标记为 `ACC_PUBLIC` 也没有 `ACC_PROTECTED` 也没有 `ACC_PRIVATE`, 并且要么: (a) `mA` 的声明出现在与 `mC` 的声明相同的运行时包中; 或者: (b) 如果在 A 类中声明了`mA`, 在 C 类中声明了`mC`, 则在 B 类中声明了一个`mB`方法, 使得 C 是 B 的子类, B 是 A 的子类, 并且 `mC` 可以覆盖 `mB` 并且 `mB` 可以覆盖 `mA`。
 
-最后一种情况的 (b) 部分允许`传递覆盖`具有默认访问权限的方法. 例如, 给定包 P 中的以下类声明:
+最后一种情况的 (b) 部分允许 传递覆盖 具有默认访问权限的方法.  例如, 给定包 P 中的以下类声明:
 
-```
+```java
 public class A           {        void m() {} }
 public class B extends A { public void m() {} }
 public class C extends B {        void m() {} }
@@ -1590,7 +1590,7 @@ then:
 - `C.m` can override `B.m` and `A.m`.
 - `D.m` can override `B.m` and, transitively, `A.m`, but it cannot override `C.m`.
 
-然后:
+那么:
 
 - `B.m` 可以覆盖 `A.m`。
 - `C.m` 可以覆盖 `B.m` 和 `A.m`。
