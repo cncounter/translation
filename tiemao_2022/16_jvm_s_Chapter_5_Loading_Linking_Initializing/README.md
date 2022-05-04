@@ -365,15 +365,15 @@ Otherwise, the following steps are performed to create C:
 
    If the component type is a `reference` type, the accessibility of the array class is determined by the accessibility of its component type ([§5.4.4](#jvms-5.4.4)). Otherwise, the array class is accessible to all classes and interfaces.
 
-1. 如果组件类型是 `reference` 类型, 则使用类加载器 `L` , 递归应用本节的算法（[§5.3](#jvms-5.3)）, 以加载并创建组件类型C。
+1. 如果组件类型是 引用 类型, 则使用类加载器 `L` , 递归应用本节的算法（[§5.3](#jvms-5.3)）, 以加载并创建组件类型C。
 
 2. Java 虚拟机创建一个具有指定组件类型和维数的新数组类。
 
-   如果组件类型是 `引用` 类型, 则 C 被标记为已由组件类型的定义类加载器定义。 否则, C 被标记为已由启动类加载器定义。
+   如果组件类型是 引用 类型, 则 C 被标记为已由组件类型的定义类加载器定义。 否则, C 被标记为已由启动类加载器定义。
 
    在任何情况下, Java 虚拟机都会记录`L`是 C 的初始加载器（[§5.3.4](#jvms-5.3.4)）。
 
-   如果组件类型是`引用`类型, 则数组类的可访问性, 由其组件类型的可访问性决定（[§5.4.4](#jvms-5.4.4)）。 否则, 所有类和接口都可以访问数组类。
+   如果组件类型是引用类型, 则数组类的可访问性, 由其组件类型的可访问性决定（[§5.4.4](#jvms-5.4.4)）。 否则, 所有类和接口都可以访问数组类。
 
 
 <a name="jvms-5.3.4"></a>
@@ -1207,7 +1207,7 @@ The type descriptor of this `java.lang.invoke.MethodHandle` instance is the `jav
 
 The type descriptor of a method handle is such that a valid call to `invokeExact` in `java.lang.invoke.MethodHandle` on the method handle has exactly the same stack effects as the bytecode behavior. Calling this method handle on a valid set of arguments has exactly the same effect and returns the same result (if any) as the corresponding bytecode behavior.
 
-方法句柄的类型描述符, 使得对方法句柄上的 `java.lang.invoke.MethodHandle` 中的 `invokeExact` 的有效调用, 具有与字节码行为完全相同的操作数栈的效果。 传一组有效的参数, 调用此方法句柄, 具有完全相同的效果, 并返回与相应字节码行为相同的结果（如果有返回值）。
+方法句柄的类型描述符, 使得对方法句柄上的 `java.lang.invoke.MethodHandle` 中的 `invokeExact` 的有效调用, 具有与字节码行为完全相同的栈的效果。 传一组有效的参数, 调用此方法句柄, 具有完全相同的效果, 并返回与相应字节码行为相同的结果（如果有返回值）。
 
 If the method referenced by R has the `ACC_VARARGS` flag set ([§4.6](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-4.html#jvms-4.6)), then the `java.lang.invoke.MethodHandle` instance is a variable arity method handle; otherwise, it is a fixed arity method handle.
 
@@ -1233,13 +1233,16 @@ Java SE Platform API 中的 `java.lang.invoke.MethodHandles` 类, 允许创建�
 <a name="jvms-5.4.3.6"></a>
 #### 5.4.3.6. Dynamically-Computed Constant and Call Site Resolution
 
+#### 5.4.3.6. 动态计算常量和调用点解析
+
 To resolve an unresolved symbolic reference R to a dynamically-computed constant or call site, there are three tasks. First, R is examined to determine which code will serve as its *bootstrap method*, and which arguments will be passed to that code. Second, the arguments are packaged into an array and the bootstrap method is invoked. Third, the result of the bootstrap method is validated, and used as the result of resolution.
 
+要将未解析的符号引用 R, 解析为动态计算常量(dynamically-computed constant)或调用点(call site), 需要完成三个任务。
+首先, 检查 R 以确定哪些代码将用作其 *引导方法(bootstrap method)*, 以及哪些参数将传递给该代码。
+其次, 将参数打包到一个数组中, 并调用 bootstrap 方法。
+第三, 对bootstrap方法的结果进行验证, 并作为解析的结果。
+
 The first task involves the following steps:
-
-#### 5.4.3.6. 动态计算的常数和调用点分辨率
-
-要将未解析的符号引用 R 解析为动态计算的常量或调用站点, 需要完成三个任务。首先, 检查 R 以确定哪些代码将用作其*引导方法*, 以及哪些参数将传递给该代码。其次, 将参数打包到一个数组中, 并调用 bootstrap 方法。第三, 对bootstrap方法的结果进行验证, 并作为解析的结果。
 
 第一项任务涉及以下步骤:
 
@@ -1249,6 +1252,12 @@ The first task involves the following steps:
 
    If R is a symbolic reference to a dynamically-computed constant, then let D be the type descriptor of the bootstrap method handle. (That is, D is a `reference` to an instance of `java.lang.invoke.MethodType`.) The first parameter type indicated by D must be `java.lang.invoke.MethodHandles.Lookup`, or else resolution fails with a `BootstrapMethodError`. For historical reasons, the bootstrap method handle for a dynamically-computed call site is not similarly constrained.
 
+1. R 给出了一个 *引导方法句柄* 的符号引用。 引导方法句柄被解析 ([§5.4.3.5](#jvms-5.4.3.5)) 以获得 `java.lang.invoke.MethodHandle` 实例的引用。
+
+   任何由于方法句柄的符号引用解析失败而抛出的异常, 都可以在此步骤中抛出。
+
+   如果 R 是对动态计算常量的符号引用, 则令 D 为引导方法句柄的类型描述符. （也就是说, D 是对 `java.lang.invoke.MethodType` 实例的引用。） D 指示的第一个参数类型必须是 `java.lang.invoke.MethodHandles.Lookup`, 否则解析失败并附带 `BootstrapMethodError`。 由于历史原因, 动态计算调用点的引导方法句柄没有类似的约束。
+
 2. If R is a symbolic reference to a dynamically-computed constant, then it gives a field descriptor.
 
    If the field descriptor indicates a primitive type, then a `reference` to the pre-defined `Class` object representing that type is obtained (see the method `isPrimitive` in class `Class`).
@@ -1257,21 +1266,13 @@ The first task involves the following steps:
 
    Any exception that can be thrown as a result of failure of resolution of a symbolic reference to a class or interface can be thrown in this step.
 
-
-
-1. R 给出了一个*引导方法句柄*的符号引用。引导方法句柄被解析 ([§5.4.3.5](#jvms-5.4.3.5)) 以获得对 `java.lang.invoke.MethodHandle` 实例的`reference`。
-
-   任何由于方法句柄的符号引用解析失败而抛出的异常都可以在此步骤中抛出。
-
-   如果 R 是对动态计算常量的符号引用, 则令 D 为引导方法句柄的类型描述符. （也就是说, D 是对 `java.lang.invoke.MethodType` 实例的`reference`。） D 指示的第一个参数类型必须是 `java.lang.invoke.MethodHandles.Lookup`, 否则解析失败带有`BootstrapMethodError`。由于历史原因, 动态计算调用站点的引导方法句柄没有类似的约束。
-
 2. 如果 R 是对动态计算常量的符号引用, 则它给出一个字段描述符。
 
-   如果字段描述符指示原始类型, 则获得对表示该类型的预定义`Class`对象的`引用`（参见类`Class`中的`isPrimitive`方法）。
+   如果字段描述符指示原生类型(primitive type), 则获得对表示该类型的预定义 `Class` 对象的引用（参见`Class`类中的`isPrimitive`方法）。
 
-   否则, 字段描述符指示类或接口类型, 或数组类型。获得对表示字段描述符指示的类型的`Class`对象的`引用`, 就像通过解析对类或接口的未解析符号引用一样（[§5.4.3.1](#jvms-5.4.3.1) ), 其名称对应于字段描述符所指示的类型。
+   否则, 字段描述符指示类或接口类型, 或数组类型。 获得对表示字段描述符指示的类型的`Class`对象的引用, 就像通过解析对类或接口的未解析符号引用一样（[§5.4.3.1](#jvms-5.4.3.1) ), 其名称对应于字段描述符所指示的类型。
 
-   由于对类或接口的符号引用解析失败而抛出的任何异常都可以在此步骤中抛出。
+   由于对类或接口的符号引用解析失败而抛出的任何异常, 都可以在此步骤中抛出。
 
 3. If R is a symbolic reference to a dynamically-computed call site, then it gives a method descriptor.
 
@@ -1279,101 +1280,104 @@ The first task involves the following steps:
 
    Any exception that can be thrown as a result of failure of resolution of a symbolic reference to a method type can be thrown in this step.
 
-3. 如果 R 是对动态计算调用站点的符号引用, 则它给出方法描述符。
+3. 如果 R 是对动态计算调用点的符号引用, 则它给出方法描述符。
 
-    获得了对`java.lang.invoke.MethodType`实例的`引用`, 就好像通过解析对方法类型的未解析符号引用（[§5.4.3.5](#jvms-5.4.3.5)） 与方法描述符相同的参数和返回类型。
+    获得 `java.lang.invoke.MethodType` 实例的引用, 就像通过解析对方法类型的未解析符号引用一样（[§5.4.3.5](#jvms-5.4.3.5)）, 与方法描述符相同的参数和返回类型。
 
-    由于无法解析对方法类型的符号引用而抛出的任何异常都可以在此步骤中抛出。
+    由于无法解析方法类型的符号引用而抛出的任何异常, 都可以在此步骤中抛出。
 
 4. R gives zero or more *static arguments*, which communicate application-specific metadata to the bootstrap method. Each static argument A is resolved, in the order given by R, as follows:
 
-   - If A is a string constant, then a `reference` to its instance of class `String` is obtained.
-   - If A is a numeric constant, then a `reference` to an instance of `java.lang.invoke.MethodHandle` is obtained by the following procedure:
-     1. Let `v` be the value of the numeric constant, and let T be a field descriptor which corresponds to the type of the numeric constant.
-     2. Let `MH` be a method handle produced as if by invocation of the `identity` method of `java.lang.invoke.MethodHandles` with an argument representing the class `Object`.
-     3. A `reference` to an instance of `java.lang.invoke.MethodHandle` is obtained as if by the invocation `MH.invoke(v)` with method descriptor `(T)Ljava/lang/Object;`.
-   - If A is a symbolic reference to a dynamically-computed constant with a field descriptor indicating a primitive type T, then A is resolved, producing a primitive value `v`. Given `v` and T, a `reference` is obtained to an instance of `java.lang.invoke.MethodHandle` according to the procedure specified above for numeric constants.
-   - If A is any other kind of symbolic reference, then the result is the result of resolving A.
+  - If A is a string constant, then a `reference` to its instance of class `String` is obtained.
+  - If A is a numeric constant, then a `reference` to an instance of `java.lang.invoke.MethodHandle` is obtained by the following procedure:
+   1. Let `v` be the value of the numeric constant, and let T be a field descriptor which corresponds to the type of the numeric constant.
+   2. Let `MH` be a method handle produced as if by invocation of the `identity` method of `java.lang.invoke.MethodHandles` with an argument representing the class `Object`.
+   3. A `reference` to an instance of `java.lang.invoke.MethodHandle` is obtained as if by the invocation `MH.invoke(v)` with method descriptor `(T)Ljava/lang/Object;`.
+  - If A is a symbolic reference to a dynamically-computed constant with a field descriptor indicating a primitive type T, then A is resolved, producing a primitive value `v`. Given `v` and T, a `reference` is obtained to an instance of `java.lang.invoke.MethodHandle` according to the procedure specified above for numeric constants.
+  - If A is any other kind of symbolic reference, then the result is the result of resolving A.
 
-   Among the symbolic references in the run-time constant pool, symbolic references to dynamically-computed constants are special because they are derived from `constant_pool` entries that can syntactically refer to themselves via the `BootstrapMethods` attribute ([§4.7.23](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-4.html#jvms-4.7.23)). However, the Java Virtual Machine does not support resolving a symbolic reference to a dynamically-computed constant that depends on itself (that is, as a static argument to its own bootstrap method). Accordingly, when both R and A are symbolic references to dynamically-computed constants, if A is the same as R or A gives a static argument that (directly or indirectly) references R, then resolution fails with a `StackOverflowError` at the point where re-resolution of R would be required.
+4. R 给出零个或多个 *静态参数(static arguments)*, 它们将特定于应用程序的元数据, 传递给引导方法。 每个静态参数 A 都按照 R 给出的顺序解析, 如下所示:
 
-   Unlike class initialization ([§5.5](#jvms-5.5)), where cycles are allowed between uninitialized classes, resolution does not allow cycles in symbolic references to dynamically-computed constants. If an implementation of resolution makes recursive use of a stack, then a `StackOverflowError` will occur naturally. If not, the implementation is required to detect the cycle rather than, say, looping infinitely or returning a default value for the dynamically-computed constant.
+  - 如果 A 是字符串常量, 则获取到其类 `String` 实例的引用。
+  - 如果 A 是数字常量, 则通过以下过程获得对 `java.lang.invoke.MethodHandle` 实例的引用:
+   1. 设`v`为数值常量的值, 设T为对应于数值常量类型的字段描述符。
+   2. 让 `MH` 是一个方法句柄, 就像通过调用 `java.lang.invoke.MethodHandles` 的 `identity` 方法和代表`Object` 类的参数一样。
+   3. 获取 `java.lang.invoke.MethodHandle` 实例的引用, 通过使用方法描述符 `(T)Ljava/lang/Object;` 调用`MH.invoke(v)`获得。
+  - 如果 A 是动态计算常量的符号引用, 其字段描述符指示原始类型 T, 则解析 A, 生成原始值`v`。 给定 `v` 和 T, 根据上面为数字常量指定的过程, 获得对 `java.lang.invoke.MethodHandle` 实例的引用。
+  - 如果 A 是任何其他类型的符号引用, 则结果就是解析 A 得到的结果。
 
-   A similar cycle may arise if the body of a bootstrap method makes reference to a dynamically-computed constant currently being resolved. This has always been possible for *invokedynamic* bootstraps, and does not require special treatment in resolution; the recursive `invokeWithArguments` calls will naturally lead to a `StackOverflowError`.
+  Among the symbolic references in the run-time constant pool, symbolic references to dynamically-computed constants are special because they are derived from `constant_pool` entries that can syntactically refer to themselves via the `BootstrapMethods` attribute ([§4.7.23](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-4.html#jvms-4.7.23)). However, the Java Virtual Machine does not support resolving a symbolic reference to a dynamically-computed constant that depends on itself (that is, as a static argument to its own bootstrap method). Accordingly, when both R and A are symbolic references to dynamically-computed constants, if A is the same as R or A gives a static argument that (directly or indirectly) references R, then resolution fails with a `StackOverflowError` at the point where re-resolution of R would be required.
 
-   Any exception that can be thrown as a result of failure of resolution of a symbolic reference can be thrown in this step.
+  在运行时常量池中的符号引用中, 对动态计算常量的符号引用是特殊的, 因为它们派生自 `constant_pool` 条目, 这些条目可以通过 `BootstrapMethods` 属性, 在语法上引用它们自己（[§4.7.23](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-4.html#jvms-4.7.23))。 但是, Java 虚拟机不支持解析对依赖于自身的动态计算常量的符号引用（即, 作为其自身引导方法的静态参数）。 因此, 当 R 和 A 都是对动态计算常量的符号引用时, 如果 A 与 R 相同, 或者 A （直接或间接）给出引用 R 的静态参数, 则解析失败, 并在该点处抛出 `StackOverflowError`, 需要重新解析 R。
 
-4. R 给出零个或多个*静态参数*, 它们将特定于应用程序的元数据传递给引导方法。每个静态参数 A 都按照 R 给出的顺序解析, 如下所示:
+  Unlike class initialization ([§5.5](#jvms-5.5)), where cycles are allowed between uninitialized classes, resolution does not allow cycles in symbolic references to dynamically-computed constants. If an implementation of resolution makes recursive use of a stack, then a `StackOverflowError` will occur naturally. If not, the implementation is required to detect the cycle rather than, say, looping infinitely or returning a default value for the dynamically-computed constant.
 
-   - 如果 A 是字符串常量, 则获取到其类 `String` 实例的`reference`。
-   - 如果 A 是数字常量, 则通过以下过程获得对 `java.lang.invoke.MethodHandle` 实例的`reference`:
-     1.设`v`为数值常量的值, 设T为对应于数值常量类型的字段描述符。
-     2. 让`MH` 是一个方法句柄, 就好像通过调用`java.lang.invoke.MethodHandles` 的`identity` 方法和代表`Object` 类的参数一样。
-     3. 对`java.lang.invoke.MethodHandle`实例的`引用`是通过使用方法描述符`(T)Ljava/lang/Object;`调用`MH.invoke(v)`获得的。
-   - 如果 A 是对动态计算常量的符号引用, 其字段描述符指示原始类型 T, 则解析 A, 生成原始值`v`。给定 `v` 和 T, 根据上面为数字常量指定的过程, 获得对 `java.lang.invoke.MethodHandle` 实例的`reference`。
-   - 如果 A 是任何其他类型的符号引用, 则结果是解析 A 的结果。
+  与类初始化 ([§5.5](#jvms-5.5)) 不同, 在未初始化的类之间允许循环引用, 动态计算常量解析则不允许符号引用的循环。 如果JVM实现在解析时递归使用栈, 则自然会发生 `StackOverflowError`。 如果不是, 则需要JVM实现来检测循环, 而不是无限循环, 或返回动态计算常量的默认值。
 
-   在运行时常量池中的符号引用中, 对动态计算常量的符号引用是特殊的, 因为它们派生自 `constant_pool` 条目, 这些条目可以通过 `BootstrapMethods` 属性在语法上引用它们自己（[§4.7.23](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-4.html#jvms-4.7.23))。但是, Java 虚拟机不支持解析对依赖于自身的动态计算常量的符号引用（即, 作为其自身引导方法的静态参数）。因此, 当 R 和 A 都是对动态计算常量的符号引用时, 如果 A 与 R 相同, 或者 A 给出（直接或间接）引用 R 的静态参数, 则解析失败并在该点处出现`StackOverflowError`需要重新解析 R。
+  A similar cycle may arise if the body of a bootstrap method makes reference to a dynamically-computed constant currently being resolved. This has always been possible for *invokedynamic* bootstraps, and does not require special treatment in resolution; the recursive `invokeWithArguments` calls will naturally lead to a `StackOverflowError`.
 
-   与类初始化 ([§5.5](#jvms-5.5)) 不同, 在未初始化的类之间允许循环, 解析不允许符号引用动态计算常量的循环。如果解决方案的实现递归使用堆栈, 则自然会发生`StackOverflowError`。如果不是, 则需要实现来检测循环, 而不是无限循环或返回动态计算常量的默认值。
+  如果引导方法的主体, 引用当前正在解析的动态计算常量, 则可能会出现类似的循环。 对于 *invokedynamic* 引导程序, 这是可能的, 并且在解析中不需要进行特殊处理；递归的 `invokeWithArguments` 调用自然会导致 `StackOverflowError`。
 
-   如果引导方法的主体引用当前正在解析的动态计算常量, 则可能会出现类似的循环。对于 *invokedynamic* 引导程序, 这一直是可能的, 并且不需要在解析中进行特殊处理；递归的 `invokeWithArguments` 调用自然会导致 `StackOverflowError`。
+  Any exception that can be thrown as a result of failure of resolution of a symbolic reference can be thrown in this step.
 
-   由于符号引用解析失败而抛出的任何异常都可以在此步骤中抛出。
+  由于符号引用解析失败而抛出的任何异常, 都可以在此步骤中抛出。
 
 The second task, to invoke the bootstrap method handle, involves the following steps:
 
-1. An array is allocated with component type `Object` and length *n*+3, where *n* is the number of static arguments given by R (*n* ≥ 0).
+第二个任务, 调用引导方法句柄, 包括以下步骤:
 
-   The zeroth component of the array is set to a `reference` to an instance of `java.lang.invoke.MethodHandles.Lookup` for the class in which R occurs, produced as if by invocation of the `lookup` method of `java.lang.invoke.MethodHandles`.
+1. An array is allocated with component type `Object` and length `n+3`, where *n* is the number of static arguments given by R (*n* ≥ 0).
 
-   The first component of the array is set to a `reference` to an instance of `String` that denotes `N`, the unqualified name given by R.
+  The zeroth component of the array is set to a `reference` to an instance of `java.lang.invoke.MethodHandles.Lookup` for the class in which R occurs, produced as if by invocation of the `lookup` method of `java.lang.invoke.MethodHandles`.
 
-   The second component of the array is set to the `reference` to an instance of `Class` or `java.lang.invoke.MethodType` that was obtained earlier for the field descriptor or method descriptor given by R.
+  The first component of the array is set to a `reference` to an instance of `String` that denotes `N`, the unqualified name given by R.
 
-   Subsequent components of the array are set to the `reference`s that were obtained earlier from resolving R's static arguments, if any. The `reference`s appear in the array in the same order as the corresponding static arguments are given by R.
+  The second component of the array is set to the `reference` to an instance of `Class` or `java.lang.invoke.MethodType` that was obtained earlier for the field descriptor or method descriptor given by R.
 
-   A Java Virtual Machine implementation may be able to skip allocation of the array and, without any change in observable behavior, pass the arguments directly to the bootstrap method.
+  Subsequent components of the array are set to the `reference`s that were obtained earlier from resolving R's static arguments, if any. The `reference`s appear in the array in the same order as the corresponding static arguments are given by R.
+
+  A Java Virtual Machine implementation may be able to skip allocation of the array and, without any change in observable behavior, pass the arguments directly to the bootstrap method.
+
+1. 分配一个数组, 其组件类型为 `Object`, 长度为 `n+3`, 其中 *n* 是 R 给出的静态参数的数量（*n* ≥ 0）。
+
+  数组的第0部分, 设置为对出现 R 的类的 `java.lang.invoke.MethodHandles.Lookup` 实例的引用, 就像调用 `java.lang.invoke.MethodHandles` 的`lookup`方法一样。
+
+  数组的第1个组件, 被设置为一个由 `N` 代表的 `String` 实例引用, N 是 R 给出的非限定名称。
+
+  数组的第2个组件, 设置为  `Class` 或者 `java.lang.invoke.MethodType` 实例的引用, 由先前 R 给出的字段描述符或方法描述符获得。
+
+  数组的后续组件, 设置为之前从解析 R 的静态参数（如果有）中获得的引用. 出现在数组中的引用的顺序, 与 R 给出的相应静态参数的顺序相同。
+
+  Java 虚拟机实现可能跳过数组的分配, 并且在不改变可观察行为的情况下, 将参数直接传递给引导方法。
+
 
 2. The bootstrap method handle is invoked, as if by the invocation `BMH.invokeWithArguments(args)`, where `BMH` is the bootstrap method handle and `args` is the array allocated above.
 
-   Due to the behavior of the `invokeWithArguments` method of `java.lang.invoke.MethodHandle`, the type descriptor of the bootstrap method handle need not exactly match the run-time types of the arguments. For example, the second parameter type of the bootstrap method handle (corresponding to the unqualified name given in the first component of the array above) could be `Object` instead of `String`. If the bootstrap method handle is variable arity, then some or all of the arguments may be collected into a trailing array parameter.
+  Due to the behavior of the `invokeWithArguments` method of `java.lang.invoke.MethodHandle`, the type descriptor of the bootstrap method handle need not exactly match the run-time types of the arguments. For example, the second parameter type of the bootstrap method handle (corresponding to the unqualified name given in the first component of the array above) could be `Object` instead of `String`. If the bootstrap method handle is variable arity, then some or all of the arguments may be collected into a trailing array parameter.
 
-   The invocation occurs within a thread that is attempting resolution of this symbolic reference. If there are several such threads, the bootstrap method handle may be invoked concurrently. Bootstrap methods which access global application data should take the usual precautions against race conditions.
+  The invocation occurs within a thread that is attempting resolution of this symbolic reference. If there are several such threads, the bootstrap method handle may be invoked concurrently. Bootstrap methods which access global application data should take the usual precautions against race conditions.
 
-   If the invocation fails by throwing an instance of `Error` or a subclass of `Error`, resolution fails with that exception.
+  If the invocation fails by throwing an instance of `Error` or a subclass of `Error`, resolution fails with that exception.
 
-   If the invocation fails by throwing an exception that is not an instance of `Error` or a subclass of `Error`, resolution fails with a `BootstrapMethodError` whose cause is the thrown exception.
+  If the invocation fails by throwing an exception that is not an instance of `Error` or a subclass of `Error`, resolution fails with a `BootstrapMethodError` whose cause is the thrown exception.
 
-   If several threads concurrently invoke the bootstrap method handle for this symbolic reference, the Java Virtual Machine chooses the result of one invocation and installs it visibly to all threads. Any other bootstrap methods executing for this symbolic reference are allowed to complete, but their results are ignored.
+  If several threads concurrently invoke the bootstrap method handle for this symbolic reference, the Java Virtual Machine chooses the result of one invocation and installs it visibly to all threads. Any other bootstrap methods executing for this symbolic reference are allowed to complete, but their results are ignored.
 
-第二个任务, 调用引导方法句柄, 包括以下步骤:
+2. 调用引导方法句柄, 就像调用 `BMH.invokeWithArguments(args)` 一样, 其中`BMH`是引导方法句柄, `args`是上面分配的数组。
 
-1. 分配一个数组, 其组件类型为 `Object`, 长度为 *n*+3, 其中 *n* 是 R 给出的静态参数的数量（*n* ≥ 0）。
+  由于 `java.lang.invoke.MethodHandle` 的 `invokeWithArguments` 方法的行为, 引导方法句柄的类型描述符不需要与参数的运行时类型完全匹配。 例如, 引导方法句柄的第二个参数的类型（对应于上面数组的第1个组件中给出的非限定名称）, 可以是`Object`而不是`String`。 如果引导方法句柄是可变参数, 则可以将部分或全部参数收集到结尾参数数组中。
 
-   数组的第零部分设置为对出现 R 的类的 java.lang.invoke.MethodHandles.Lookup 实例的`引用`, 就像调用 java 的`lookup`方法一样.lang.invoke.MethodHandles`。
+  调用发生在尝试解析此符号引用的线程中。 如果有多个这样的线程, 则可以同时调用引导方法句柄。 访问全局数据的引导方法, 应该对竞争条件采取通常的预防措施。
 
-   数组的第一个组件被设置为一个 `reference` 到一个 `String` 的实例, 它表示 `N`, R 给出的非限定名称。
+  如果调用因抛出 `Error` 或子类的实例而失败, 则解析失败并出现该异常。
 
-   数组的第二个组件设置为对 R 给出的字段描述符或方法描述符先前获得的 Class 或 java.lang.invoke.MethodType 实例的引用。
+  如果调用因抛出不是 `Error` 或子类的异常而失败, 则解析失败并出现 `BootstrapMethodError`, 其原因是抛出的异常。
 
-   数组的后续组件设置为之前从解析 R 的静态参数（如果有）中获得的`引用`. `reference` 出现在数组中的顺序与 R 给出的相应静态参数的顺序相同。
-
-   Java 虚拟机实现可能能够跳过数组的分配, 并且在不改变可观察行为的情况下, 将参数直接传递给引导方法。
-
-2. 调用引导方法句柄, 就像调用`BMH.invokeWithArguments(args)`, 其中`BMH`是引导方法句柄, `args`是上面分配的数组。
-
-   由于 `java.lang.invoke.MethodHandle` 的 `invokeWithArguments` 方法的行为, 引导方法句柄的类型描述符不需要与参数的运行时类型完全匹配。例如, 引导方法句柄的第二个参数类型（对应于上面数组的第一个组件中给出的非限定名称）可以是`Object`而不是`String`。如果引导方法句柄是可变参数, 则可以将部分或全部参数收集到尾随数组参数中。
-
-   调用发生在尝试解析此符号引用的线程中。如果有多个这样的线程, 则可以同时调用引导方法句柄。访问全局应用程序数据的引导方法应该对竞争条件采取通常的预防措施。
-
-   如果调用因抛出 `Error` 的实例或 `Error` 的子类而失败, 则解析失败并出现该异常。
-
-   如果调用因抛出不是`Error`实例或`Error`子类的异常而失败, 则解析失败并出现`BootstrapMethodError`, 其原因是抛出的异常。
-
-   如果多个线程同时调用此符号引用的引导方法句柄, Java 虚拟机将选择一次调用的结果并将其安装到所有线程可见。允许为此符号引用执行的任何其他引导方法完成, 但它们的结果将被忽略。
+  如果多个线程同时调用此符号引用的引导方法句柄, Java 虚拟机将选择某次调用的结果并将其装载上, 让所有线程可见。 为此符号引用执行的任何其他引导方法都允许执行完成, 但它们的结果将被忽略。
 
 The third task, to validate the `reference`, `o`, produced by invocation of the bootstrap method handle, is as follows:
+
+第三个任务, 验证调用引导方法句柄产生的引用, `o`, 如下所示:
 
 - If R is a symbolic reference to a dynamically-computed constant, then `o` is converted to type T, the type indicated by the field descriptor given by R.
 
@@ -1383,6 +1387,14 @@ The third task, to validate the `reference`, `o`, produced by invocation of the 
 
   If the conversion fails by throwing a `NullPointerException` or a `ClassCastException`, resolution fails with a `BootstrapMethodError`.
 
+- 如果 R 是动态计算常量的符号引用, 则 `o` 转换为类型 T, 由 R 给出的字段描述符指示的类型。
+
+  `o` 的转换就像使用方法描述符 `(Ljava/lang/Object;)T` 调用 `MH.invoke(o)` 发生的一样, 其中`MH` 是一个方法句柄, 像调用 `java.lang.invoke.MethodHandles` 的 `identity` 方法, 其参数表示 `Object` 类。
+
+  `o` 的转换结果就是解析的结果。
+
+  如果转换因抛出 `NullPointerException` 或 `ClassCastException` 而失败, 则解析失败并出现 `BootstrapMethodError`。
+
 - If R is a symbolic reference to a dynamically-computed call site, then `o` is the result of resolution if it has all of the following properties:
 
   - `o` is not `null`.
@@ -1391,31 +1403,21 @@ The third task, to validate the `reference`, `o`, produced by invocation of the 
 
   If `o` does not have these properties, resolution fails with a `BootstrapMethodError`.
 
-第三个任务, 验证通过调用引导方法句柄产生的`reference`, `o`, 如下所示:
-
-- 如果 R 是对动态计算常量的符号引用, 则 `o` 转换为类型 T, 由 R 给出的字段描述符指示的类型。
-
-  `o` 的转换就像通过使用方法描述符`(Ljava/lang/Object;)T` 调用`MH.invoke(o)` 发生, 其中`MH` 是一个方法句柄, 好像通过调用`java.lang.invoke.MethodHandles` 的`identity` 方法, 其参数表示`Object` 类。
-
-  `o` 的转换结果是解析的结果。
-
-  如果转换因抛出`NullPointerException`或`ClassCastException`而失败, 则解析失败并出现`BootstrapMethodError`。
-
-- 如果 R 是对动态计算调用站点的符号引用, 那么如果它具有以下所有属性, 则 `o` 是解析的结果:
+- 如果 R 是动态计算调用点的符号引用, 那么如果它满足以下所有属性, 则 `o` 是解析的结果:
 
   - `o` 不是 `null`。
-  - `o` 是 `java.lang.invoke.CallSite` 的实例或 `java.lang.invoke.CallSite` 的子类。
-  - `java.lang.invoke.CallSite` 的类型在语义上等于 R 给出的方法描述符。
+  - `o` 是 `java.lang.invoke.CallSite` 或子类的实例。
+  - `java.lang.invoke.CallSite` 的类型, 在语义上等于 R 给出的方法描述符。
 
-  如果 `o` 没有这些属性, 则解析失败并出现 `BootstrapMethodError`。
+  如果 `o` 不满足这些属性, 则解析失败并出现 `BootstrapMethodError`。
 
 Many of the steps above perform computations "as if by invocation" of certain methods. In each case, the invocation behavior is given in detail by the specifications for *invokestatic* and *invokevirtual*. The invocation occurs in the thread and from the class that is attempting resolution of the symbolic reference R. However, no corresponding method references are required to appear in the run-time constant pool, no particular method's operand stack is necessarily used, and the value of the `max_stack` item of any method's `Code` attribute is not enforced for the invocation.
 
+上面的许多步骤, 使用了 "好像通过调用某些方法执行计算".  在每种情况下, 调用行为由 *invokestatic* 和 *invokevirtual* 的规范详细给出. 调用发生在线程中, 并来自尝试解析符号引用 R 的类。 但是, 运行时常量池中不需要出现相应的方法引用, 也不需要使用特定方法的操作数栈, 并且任何方法的 `Code` 属性的 `max_stack` 项的值, 都不会被调用强制执行。
+
 If several threads attempt resolution of R at the same time, the bootstrap method may be invoked concurrently. Therefore, bootstrap methods which access global application data must take precautions against race conditions.
 
-上面的许多步骤`好像通过调用`某些方法执行计算. 在每种情况下, 调用行为由 *invokestatic* 和 *invokevirtual* 的规范详细给出. 调用发生在线程中, 并且来自尝试解析符号引用 R 的类。但是, 运行时常量池中不需要出现相应的方法引用, 也不需要使用特定方法的操作数堆栈, 并且值 任何方法的 `Code` 属性的 `max_stack` 项的调用都不会被强制执行。
-
-如果多个线程同时尝试解析 R, 则可能会同时调用引导方法. 因此, 访问全局应用程序数据的引导方法必须对竞争条件采取预防措施。
+如果多个线程同时尝试解析 R, 则可能会并发调用引导方法. 因此, 访问全局数据的引导方法, 必须对竞争条件采取预防措施。
 
 
 <a name="jvms-5.4.4"></a>
