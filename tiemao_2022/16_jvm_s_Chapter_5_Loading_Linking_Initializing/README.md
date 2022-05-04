@@ -791,7 +791,7 @@ If steps 1 and 2 succeed but step 3 fails, C is still valid and usable. Neverthe
 
 2. 如果 C 是一个数组类, 并且它的元素是引用类型, 那么通过递归调用 [§5.4.3.1](#jvms-5.4.3.1) 中的算法, 对元素类型的类或接口的符号引用进行解析。
 
-3. 最后, 对从 D 到 C 的访问应用访问控制（[§5.4.4](#jvms-5.4.4)）。
+3. 最后, 对从 D 到 C 的访问进行访问控制判定（[§5.4.4](#jvms-5.4.4)）。
 
 如果步骤 1 和 2 成功, 但步骤 3 失败, 则 C 仍然有效且可用.  然而, 解析失败, D被禁止访问C。
 
@@ -1423,6 +1423,8 @@ If several threads attempt resolution of R at the same time, the bootstrap metho
 <a name="jvms-5.4.4"></a>
 ### 5.4.4. Access Control
 
+### 5.4.4. 访问控制
+
 Access control is applied during resolution ([§5.4.3](#jvms-5.4.3)) to ensure that a reference to a class, interface, field, or method is permitted. Access control succeeds if a specified class, interface, field, or method is *accessible* to the referring class or interface.
 
 A class or interface C is accessible to a class or interface D if and only if one of the following is true:
@@ -1431,20 +1433,22 @@ A class or interface C is accessible to a class or interface D if and only if on
 - C is `public`, and a member of a different run-time module than D, and C's run-time module is read by D's run-time module, and C's run-time module exports C's run-time package to D's run-time module.
 - C is not `public`, and C and D are members of the same run-time package.
 
-### 5.4.4. 访问控制
-
-在解析期间应用访问控制 ([§5.4.3](#jvms-5.4.3)) 以确保允许对类、接口、字段或方法的引用. 如果指定的类、接口、字段或方法对引用的类或接口*可访问*, 则访问控制成功。
+在解析期间会判定访问控制 ([§5.4.3](#jvms-5.4.3)), 以确保允许对类、接口、字段或方法的引用.  如果指定的类、接口、字段或方法对引用的类或接口 *可访问*, 则访问控制成功。
 
 当且仅当满足以下条件之一时, 类或接口 D 才能访问类或接口 C:
 
-- C 是`公共`, 并且是与 D 相同的运行时模块的成员（[§5.3.6](#jvms-5.3.6)）。
-- C是`public`, 并且是与D不同的运行时模块的成员, 并且C的运行时模块被D的运行时模块读取, 并且C的运行时模块将C的运行时包导出到D的运行 -时间模块。
-- C 不是 `public`, 并且 C 和 D 是同一个运行时包的成员。
+- C 是`public`, 并与 D 是同一个运行时模块的成员（[§5.3.6](#jvms-5.3.6)）。
+- C 是`public`, 与D是不同的运行时模块的成员, 并且C的运行时模块被D的运行时模块读取, 并且C的运行时模块将C的运行时包导出到D的运行时模块。
+- C 不是 `public`, 但是 C 和 D 是同一个运行时包的成员。
 
 
 If C is not accessible to D, access control throws an `IllegalAccessError`. Otherwise, access control succeeds.
 
+如果 D 无法访问 C, 则访问控制会抛出 `IllegalAccessError`。 否则, 访问控制成功。
+
 A field or method R is accessible to a class or interface D if and only if any of the following is true:
+
+当且仅当满足以下任一条件时, 字段或方法 R, 才能被类或接口 D 访问:
 
 - R is `public`.
 
@@ -1458,21 +1462,17 @@ A field or method R is accessible to a class or interface D if and only if any o
 
 - R is `private` and is declared by a class or interface C that belongs to the same nest as D, according to the nestmate test below.
 
-如果 D 无法访问 C, 则访问控制会抛出`IllegalAccessError`。否则, 访问控制成功。
+- R 是`public`。
 
-当且仅当满足以下任一条件时, 类或接口 D 才能访问字段或方法 R:
+- R 是`protected`, 并在 C 类中声明, 而 D 是 C 的子类或 C 本身。
 
-- R 是`公共`。
+  此外, 如果 R 不是`static`, 那么对 R 的符号引用, 必须包含对类 T 的符号引用, 这样 T 要么是 D 的子类, 要么是 D 的超类, 要么是 D 本身。
 
-- R 是`受保护的`并在 C 类中声明, 而 D 是 C 的子类或 C 本身。
+  在验证 D 期间, 即使 T 是 D 的超类, `protected`字段访问或方法调用的目标引用, 也必须是 D 的实例或 D 的子类（ [§4.10.1.8](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-4.html#jvms-4.10.1.8））。
 
-  此外, 如果 R 不是`静态的`, 那么对 R 的符号引用必须包含对类 T 的符号引用, 这样 T 要么是 D 的子类, 要么是 D 的超类, 要么是 D 本身。
+- R 要么是`protected`, 要么具有默认访问权限（即, 既不是 `public`, 也不是`protected`, 也不是 `private`）, 并且由与 D 相同的运行时包中的类声明。
 
-  在验证 D 期间, 即使 T 是 D 的超类, `受保护`字段访问或方法调用的目标引用也必须是 D 的实例或 D 的子类（[§4.10.1.8] （https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-4.html#jvms-4.10.1.8））。
-
-- R 要么是`受保护`, 要么具有默认访问权限（即, 既不是`公共`也不是`受保护`或`私有`）, 并且由与 D 相同的运行时包中的类声明。
-
-- R 是`私有的`, 由与 D 属于同一嵌套的类或接口 C 声明, 根据下面的嵌套测试。
+- R 是`private`, 由与 D 属于同一窝巢的类或接口 C 声明, 根据下面的窝巢测试。
 
 
 If R is not accessible to D, then:
@@ -1487,12 +1487,11 @@ A *nest* is a set of classes and interfaces that allow mutual access to their `p
 如果 D 无法访问 R, 则:
 
 - 如果 R 是 `public`、`protected` 或具有默认访问权限, 则访问控制会抛出 `IllegalAccessError`。
-- 如果 R 是`private`, 则nestmate 测试失败, 并且访问控制由于同样的原因而失败。
+- 如果 R 是`private`, 则 窝巢测试失败, 并且访问控制由于同样的原因而失败。
 
 否则, 访问控制成功。
 
-*nest* 是一组允许相互访问其`私有`成员的类和接口。类或接口之一是*嵌套主机*。它使用`NestMembers`属性（[§4.7.29](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-4.html#jvms-4.7.29))。它们中的每一个依次使用 `NestHost` 属性将其指定为嵌套主机（[§4.7.28](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-4.html#jvms-4.7.28))。缺少`NestHost`属性的类或接口属于自己托管的嵌套；如果它还缺少`NestMembers`属性, 则该嵌套是仅由类或接口本身组成的单例。
-
+*窝巢测试(nest)* 是一组允许相互访问其 `private` 成员的类和接口。 其中的一个类或接口是 *窝巢宿主(nest host)*。 它使用 `NestMembers`属性（[§4.7.29](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-4.html#jvms-4.7.29))。 它们中的每一个依次使用 `NestHost` 属性将其指定为窝巢宿主（[§4.7.28](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-4.html#jvms-4.7.28))。缺少 `NestHost` 属性的类或接口, 从属于自己的窝巢宿主； 如果它还缺少`NestMembers`属性, 则该窝巢是仅由类或接口本身组成的单例。
 
 
 To determine whether a class or interface C belongs to the same nest as a class or interface D, the *nestmate test* is applied. C and D belong to the same nest if and only if the nestmate test succeeds. The nestmate test is as follows:
@@ -1503,14 +1502,13 @@ To determine whether a class or interface C belongs to the same nest as a class 
   2. The nest host of C, H', is determined (below). If an exception is thrown, then the nestmate test fails for the same reason.
   3. H and H' are compared. If H and H' are the same class or interface, then the nestmate test succeeds. Otherwise, the nestmate test fails by throwing an `IllegalAccessError`.
 
-为了确定类或接口 C 是否与类或接口 D 属于同一个嵌套, 应用 *nestmate test*. C 和 D 属于同一个巢当且仅当巢友测试成功. 巢友测试如下:
+为了确定类或接口 C 是否与类或接口 D 属于同一个窝巢宿主,  执行 *nestmate test*.  当且仅当窝巢测试成功, C 和 D 才属于同一个窝巢. 窝巢测试如下:
 
-- 如果 C 和 D 是相同的类或接口, 则nestmate 测试成功。
+- 如果 C 和 D 是相同的类或接口, 则 nestmate 测试成功。
 - 否则, 按顺序执行以下步骤:
-   1、确定D、H的巢宿主（下）. 如果抛出异常, 则由于同样的原因, nestmate 测试会失败。
-   2. 确定C, H'的巢宿主（下）. 如果抛出异常, 则由于同样的原因, nestmate 测试会失败。
-   3. 比较 H 和 H'. 如果 H 和 H' 是相同的类或接口, 则 nestmate 测试成功. 否则, nestmate 测试会因抛出`IllegalAccessError`而失败。
-
+   1. 确定 D、H 的窝巢宿主. 如果抛出异常, 则由于同样的原因, nestmate 测试失败。
+   2. 确定 C, H' 的窝巢宿主. 如果抛出异常, 则由于同样的原因, nestmate 测试失败。
+   3. 比较 H 和 H'.  如果 H 和 H' 是相同的类或接口, 则 nestmate 测试成功.  否则, nestmate 测试抛出 `IllegalAccessError` 并失败。
 
 The nest host of a class or interface `M` is determined as follows:
 
@@ -1528,21 +1526,21 @@ The nest host of a class or interface `M` is determined as follows:
 
   Otherwise, H is the nest host of `M`.
 
-类或接口`M`的嵌套宿主确定如下:
+类或接口 `M` 的窝巢宿主确定如下:
 
-- 如果 `M` 缺少 `NestHost` 属性, 则 `M` 是它自己的嵌套主机。
+- 如果 `M` 缺少 `NestHost` 属性, 则 `M` 是它自己的窝巢宿主。
 
-- 否则, `M` 具有`NestHost` 属性, 并且它的`host_class_index` 项用作`M` 的运行时常量池的索引. 该索引处的符号引用被解析为类或接口 H ([§5.4.3.1](#jvms-5.4.3.1))。
+- 否则, `M` 具有 `NestHost` 属性, 并且它的 `host_class_index` 项用作`M` 的运行时常量池的索引.  该索引处的符号引用被解析为类或接口 H ([§5.4.3.1](#jvms-5.4.3.1))。
 
-   在解析此符号引用期间, 可以抛出与类或接口解析有关的任何异常. 否则, H 的解析成功。
+   在解析此符号引用期间, 可以抛出与类或接口解析有关的任何异常.  如果不抛异常, H 的解析成功。
 
-   如果以下任何一项为真, 则会抛出`IncompatibleClassChangeError`:
+   如果以下任何一项为真, 则会抛出 `IncompatibleClassChangeError`:
 
    - H 与 `M` 不在同一个运行时包中。
-   - H 缺少`NestMembers`属性。
-   - H 有一个 `NestMembers` 属性, 但它的 `classes` 数组中没有条目引用名为 `N` 的类或接口, 其中 `N` 是 `M` 的名称。
+   - H 缺少 `NestMembers` 属性。
+   - H 有 `NestMembers` 属性, 但它的 `classes` 数组中没有条目引用名为 `N` 的类或接口, 其中 `N` 是 `M` 的名称。
 
-   否则, H 是 `M` 的嵌套宿主。
+   否则, H 是 `M` 的窝巢宿主。
 
 
 <a name="jvms-5.4.5"></a>
