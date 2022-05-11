@@ -354,6 +354,7 @@ GitHub地址: <https://github.com/cncounter/translation>
 <summary>点击展开推荐书单</summary>
 
 1. 《人类简史》: 关于人类管理与组织的简要发展历史。
+2. 《Java核心技术卷》: 面向需要提升的中高级Java开发者; 不适合初学者。
 2. 《性能之巅》:
 
 </details>

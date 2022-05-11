@@ -86,6 +86,9 @@
 
 ## 43、`safepoint`、安全点是什么？有什么特征，有哪些可以称为安全点？
 
+可参考: [JVM实现原理分析之safepoint](https://juejin.cn/post/7040652332362629128)
+
+
 ## 44、`sea-of-nodes`、节点海、哪个编译器在用？
 
 ## 45、`Serviceability Agent (SA)`、可服务性代理、是做什么用的？
