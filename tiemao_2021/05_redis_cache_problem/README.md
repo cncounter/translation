@@ -163,3 +163,9 @@ public CacheManager localCacheManager() {
 2. 使用英文冒号分隔, 这算是使用规约。
 3. 特殊类型的数据结构在key中加上标识, 方便运维. 例如: `cnc:web:to_stop:zset`
 4. 输出监控指标时, 使用 key_pattern 而不输出可变key, 例如: `cnc:web:user:{userId}`, 再把花括号变为下划线。
+
+
+## 相关链接
+
+- [How to monitor Redis performance metrics](https://www.datadoghq.com/blog/how-to-monitor-redis-performance-metrics/)
+- [Monitoring MySQL performance metrics](https://www.datadoghq.com/blog/monitoring-mysql-performance-metrics/)

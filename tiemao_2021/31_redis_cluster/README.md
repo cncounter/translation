@@ -21,9 +21,15 @@ Redis官方文档的地址为: <https://redis.io/documentation>
 - [Download Redis](https://redis.io/download)
 - [Windows下安装并设置Redis](https://renfufei.blog.csdn.net/article/details/38474435)
 - [铁锚的Redis专栏](https://blog.csdn.net/renfufei/category_2470713.html)
+- [Redis 源码分析(七) ：skiplist](https://www.jianshu.com/p/a85e392118a9)
 - [Redis Documentation](https://redis.io/documentation)
 - [Redis cluster tutorial](https://redis.io/topics/cluster-tutorial)
 - [Redis Cluster Specification](https://redis.io/topics/cluster-spec)
+
+
+- [How to monitor Redis performance metrics](https://www.datadoghq.com/blog/how-to-monitor-redis-performance-metrics/)
+- [Monitoring MySQL performance metrics](https://www.datadoghq.com/blog/monitoring-mysql-performance-metrics/)
+
 
 - [免费好用的Redis图形界面客户端: AnotherRedisDesktopManager](https://gitee.com/qishibo/AnotherRedisDesktopManager)
 - [Redis官方提供的免费图形界面工具: RedisInsight(2.x比1.1好用)](https://redis.com/redis-enterprise/redis-insight/)

@@ -51,3 +51,10 @@ private List<WhitelistVO> buildWhitelistVOS(List<TCncWhitelist> cncWhitelists, i
     return whitelistVOS;
 }
 ```
+
+
+
+## 相关链接
+
+- [How to monitor Redis performance metrics](https://www.datadoghq.com/blog/how-to-monitor-redis-performance-metrics/)
+- [Monitoring MySQL performance metrics](https://www.datadoghq.com/blog/monitoring-mysql-performance-metrics/)

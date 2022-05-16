@@ -829,4 +829,6 @@ Time complexity (Worst): `O(n)`
 
 - Skip List Video: <https://youtu.be/ypod5jeYzAU>
 
+- [Redis 源码分析(七) ：skiplist](https://www.jianshu.com/p/a85e392118a9)
+
 - 原文链接: <https://www.geeksforgeeks.org/skip-list/>
