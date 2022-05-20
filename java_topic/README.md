@@ -1,7 +1,7 @@
 # Java基础知识专题
 
 
-设计:
+## 专题设计
 
 - 专题: Java学习资源与相关网站
 - 专题: String与Java
@@ -25,3 +25,9 @@
 - 专题: Java与Debug
 - 专题: Java与系统性能
 - 专题: Java与监控
+
+
+
+## 相关信息
+
+来来来，提问一个：Java日期时间格式化的时候，uuuuMMdd  yyyyMMdd  YYYYMMdd，有什么区别？
