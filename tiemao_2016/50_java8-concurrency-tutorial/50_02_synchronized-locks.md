@@ -362,6 +362,13 @@ Benjamin is Software Engineer, Full Stack Developer at [Pondus](http://pondus.de
 *   [# Java 8 API by Example: Strings, Numbers, Math and Files](http://winterbe.com/posts/2015/03/25/java8-examples-string-number-math-files/)
 
 
+### 相关链接
+
+- [深入浅出Java并发包—锁机制(一)](https://www.cnblogs.com/longshiyVip/p/5213771.html)
+- [深入浅出Java并发包—锁机制(二)](https://www.cnblogs.com/longshiyVip/p/5213812.html)
+- [深入浅出Java并发包—锁机制(三)](https://www.cnblogs.com/longshiyVip/p/5213821.html)
+- [内存屏障](https://www.cnblogs.com/longshiyVip/p/5189629.html)
+- 人生设计师: <http://blog.longjiazuo.com/>
 
 原文链接: [http://winterbe.com/posts/2015/04/30/java8-concurrency-tutorial-synchronized-locks-examples/](http://winterbe.com/posts/2015/04/30/java8-concurrency-tutorial-synchronized-locks-examples/)
 

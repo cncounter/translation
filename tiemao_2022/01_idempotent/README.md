@@ -45,3 +45,5 @@ HTTP请求的幂等性，只要服务端的最终结果是一致的，以及响�
 - [聊聊开发中幂等性问题 - 掘金](https://juejin.cn/post/6844903815552958477)
 - [深入理解幂等性 - 博客园](https://www.cnblogs.com/javalyy/p/8882144.html)
 - [幂等性的含义和HTTP请求方法的幂等性 - 博客园](https://www.cnblogs.com/zhangzl419/p/7323289.html)
+- [分布式高并发系统如何保证对外接口的幂等性？](https://www.cnblogs.com/longshiyVip/p/5426505.html)
+- [高并发系统数据幂等的技术尝试](https://www.cnblogs.com/longshiyVip/p/5426500.html)
