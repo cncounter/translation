@@ -399,11 +399,20 @@ Where `gc*` means log all tag combinations that contain the gc tag, and `:gc.log
 
 ## ZGC相关的更新日志
 
+下面列出了JDK版本与ZGC相关的更新日志。
+
 ### JDK 18
 
-- Support for String Deduplication (-XX:+UseStringDeduplication)
+- Support for String Deduplication (`-XX:+UseStringDeduplication`)
 - Linux/PowerPC support
 - Various bug-fixes and optimizations
+
+### JDK 18版本
+
+- 支持字符串去重 (`-XX:+UseStringDeduplication`)
+- 支持 Linux/PowerPC 平台
+- 多项BUG修复与性能优化
+
 
 ### JDK 17
 
@@ -413,16 +422,31 @@ Where `gc*` means log all tag combinations that contain the gc tag, and `:gc.log
 - GarbageCollectorMXBeans for both pauses and cycles
 - Fast JVM termination
 
+### JDK 17版本
+
+- 动态GC线程数
+- 减少标记栈(mark stack)的内存占用
+- 支持 macOS/aarch64 平台
+- GarbageCollectorMXBeans 支持暂停时间与GC周期两种不同的指标
+- 快速JVM终止
+
+
 ### JDK 16
 
-- Concurrent Thread Stack Scanning (JEP 376)
+- Concurrent Thread Stack Scanning ([JEP 376](http://openjdk.java.net/jeps/376) )
 - Support for in-place relocation
 - Performance improvements (allocation/initialization of forwarding tables, etc)
 
+### JDK 16版本
+
+- 并发执行线程栈扫描(Concurrent Thread Stack Scanning, [JEP 376](http://openjdk.java.net/jeps/376) )
+- 支持原地替换方式的内存分配(in-place relocation)
+- 性能改进(包括跳转表(forwarding tables)的分配/初始化 )
+
+
 ### JDK 15
 
-
-- Production ready (JEP 377)
+- Production ready ([JEP 377](http://openjdk.java.net/jeps/377))
 - Improved NUMA awareness
 - Improved allocation concurrency
 - Support for Class Data Sharing (CDS)
@@ -432,25 +456,21 @@ Where `gc*` means log all tag combinations that contain the gc tag, and `:gc.log
 - Fixed support for transparent huge pages
 - Additional JFR events
 
-### JDK 15 (under development)
-- Production ready (JEP 377)
-- Improved NUMA awareness
-- Support for Class Data Sharing (CDS)
-- Support for placing the heap on NVRAM
-- Support for compressed class pointers
-- Additional JFR events
-
-### JDK 15 (2020年06月: 正在开发中。。。)
-- 正式发版准备就绪 (JEP 377)
+### JDK 15版本
+- ZGC生产版本准备就绪 ([JEP 377](http://openjdk.java.net/jeps/377))
 - 提高 NUMA 的识别灵敏度
+- 改进内存分配的并发度
 - 支持类信息共享, Class Data Sharing (CDS)
 - 支持将堆内存分配到 NVRAM
 - 支持压缩class指针(compressed class pointers)
+- 支持增量式内存返还
+- 修正对透明大页的支持
 - 新增部分 JFR 事件
 
+
 ### JDK 14
-- macOS support (JEP 364)
-- Windows support (JEP 365)
+- macOS support ([JEP 364](http://openjdk.java.net/jeps/364))
+- Windows support ([JEP 365](http://openjdk.java.net/jeps/365))
 - Support for tiny/small heaps (down to 8M)
 - Support for JFR leak profiler
 - Support for limited and discontiguous address space
@@ -459,8 +479,8 @@ Where `gc*` means log all tag combinations that contain the gc tag, and `:gc.log
 - Stability improvements
 
 ### JDK 14 版本
-- 支持 macOS 系统 (JEP 364)
-- 支持 Windows 系统 (JEP 365)
+- 支持 macOS 系统 ([JEP 364](http://openjdk.java.net/jeps/364))
+- 支持 Windows 系统 ([JEP 365](http://openjdk.java.net/jeps/365))
 - 支持超小堆内存(tiny/small heaps, 下限为8M)
 - 支持JFR泄漏分析器
 - 支持受限的和不连续的地址空间
