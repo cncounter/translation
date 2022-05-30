@@ -2,22 +2,23 @@
 
 # ZGC简介
 
-
 ![](http://cr.openjdk.java.net/~pliden/zgc/banner.png)
-
-
 
 The Z Garbage Collector, also known as ZGC, is a scalable low latency garbage collector designed to meet the following goals:
 
-- Max pause times of a few milliseconds (*)
-- Pause times do not increase with the heap or live-set size (*)
+- Sub-millisecond max pause times
+- Pause times do not increase with the heap, live-set or root-set size
 - Handle heaps ranging from a 8MB to 16TB in size
 
-ZGC, 全称为Z Garbage Collector, 是一款适用范围广泛的低延迟垃圾收集器，设计目标包括：
+Z垃圾收集器, 简称ZGC, 全称为 Z Garbage Collector, 是一款低延迟的垃圾收集器, 适配各种规模的系统资源配置。 其设计目标包括:
 
-- 最大暂停时间为毫秒级 (✔️)
-- 暂停时间不会随堆内存或活动集的扩大而增加 (✔️)
-- 兼容的堆内存大小，范围包括 `8MB ~ 16TB`。
+- 毫秒级以下的最大暂停时间(Sub-millisecond)
+- 暂停时间跟内存配置无关, 不会随堆内存, 存活对象(live-set), GC根(root-set) 的扩大而增加
+- 适用的堆内存大小范围, 涵盖 `8MB ~ 16TB`
+
+ZGC was initially introduced as an experimental feature in JDK 11, and was declared Production Ready in JDK 15.
+
+ZGC 最早在JDK11中作为实验性质的功能特性引入, 并在JDK15中成为准生产版(Production Ready).
 
 At a glance, ZGC is:
 
@@ -41,25 +42,24 @@ At its core, ZGC is a concurrent garbage collector, meaning all heavy lifting wo
 
 This OpenJDK project is sponsored by the HotSpot Group.
 
-ZGC的核心特征是并发垃圾收集器，并发的意思就是说： 在Java应用线程正常运行的时候， GC线程会同时执行大部分繁重的垃圾收集任务。 这大大降低了GC对系统响应时间的影响。
+ZGC最核心的特征是并发垃圾收集，并发的意思就是说： 在Java应用线程正常工作的时候， GC线程会与业务线程并发执行, 处理大部分繁重的垃圾收集任务。 这种方式大大降低了GC对系统响应时间(response time)的影响。
 
-ZGC是一个OpenJDK项目，由HotSpot Group赞助。
+ZGC是OpenJDK中的一个项目，由HotSpot Group赞助。
 
-
-> `^_^` Work is ongoing, which will make ZGC a sub-millisecond max pause time GC, where pause times do not increase with heap, live-set, or root-set size.
-
-> 开发工作还在进行中，目标是让 ZGC 达成毫秒级以下的 "最大GC暂停时间"，而且不会随着堆内存，存活数据集，GC根数据集的扩大而增加暂停时间。
 
 ## Supported Platforms
 
 ## 系统支持情况
 
 | 系统平台(Platform) | 是否支持(Supported) | 起始版本(Since) | 备注(Comment) |
-| :---------- | :---------- | :---------- | :------- |
-| Linux/x64	| ✔️	| JDK 11 | |
-| Linux/AArch64	| ✔️ | JDK 13 | |
-| macOS	| ✔️	| JDK 14 | |
-| Windows	| ✔️	| JDK 14	| 要求Windows 1803 及以上版本 (即Windows 10 或者 Windows Server 2019). |
+| :------------     | :----------  | :----------         | :------- |
+| Linux/x64	        | ✔️        	| JDK 15 (Experimental since JDK 11)	 | (x86) |
+| Linux/AArch64     | ✔️            | JDK 15 (Experimental since JDK 13)	 | (ARM版) |
+| Linux/PowerPC     | ✔️            | JDK 18		                         | |
+| macOS/x64	        | ✔️           	| JDK 15 (Experimental since JDK 14)	 | |
+| macOS/AArch64	    | ✔️           	| JDK 15 (Experimental since JDK 14)	 | (ARM版) |
+| Windows/x64	    | ✔️           	| JDK 15 (Experimental since JDK 14)	 | 要求Windows 1803 及以上版本 (即Windows 10 或者 Windows Server 2019). |
+| Windows/AArch64   | ✔️           	| JDK 16		                         | (ARM版) |
 
 
 ## Quick Start
@@ -82,13 +82,16 @@ For more detailed logging, use the following options:
 -XX:+UnlockExperimentalVMOptions -XX:+UseZGC -Xmx<size> -Xlog:gc*
 ```
 
+如果是高版本JDK, 已经正式支持 ZGC, 则不需要使用 `-XX:+UnlockExperimentalVMOptions` 参数解锁实验特性;
+
 See below for more information on these and additional options.
 
-请参考下文获取更多参数的说明信息。
+更多参数说明信息的参阅下文。
+
 
 ## Configuration & Tuning
 
-## 参数配置与性能优化
+## 参数配置与调优
 
 ### Overview
 
@@ -96,47 +99,53 @@ See below for more information on these and additional options.
 
 The following JVM options can be used with ZGC:
 
-下面是使用ZGC时支持的JVM参数：
+下面是使用ZGC时可以配置的JVM参数：
 
-> JVM通用的GC参数
+> 1. JVM通用的GC参数配置(某些参数只在高版本JDK中支持)
 
-| **JVM通用的GC参数** | **说明** |
-| :----------- | :------- |
-| -XX:MinHeapSize, -Xms| |
-| -XX:InitialHeapSize, -Xms| |
-| -XX:MaxHeapSize, -Xmx| |
-| -XX:SoftMaxHeapSize| |
-| -XX:ConcGCThreads| |
-| -XX:ParallelGCThreads| |
-| -XX:UseLargePages| |
+| **JVM通用GC参数**           | **说明** |
+| :-----------               | :------- |
+| -XX:MinHeapSize, -Xms      | 最小堆内存 |
+| -XX:InitialHeapSize, -Xms  | 初始堆内存 |
+| -XX:MaxHeapSize, -Xmx      | 最大堆内存 |
+| -XX:SoftMaxHeapSize        | 最大堆内存软指标 |
+| -XX:ConcGCThreads          | 并发GC线程数|
+| -XX:ParallelGCThreads      | 并行GC线程数 |
+| -XX:UseDynamicNumberOfGCThreads | 使用动态数量的GC线程数 |
+| -XX:UseLargePages          | 使用内存大页面|
 | -XX:UseTransparentHugePages| |
-| -XX:UseNUMA| |
+| -XX:UseNUMA                | 使用NUMA架构 |
 | -XX:SoftRefLRUPolicyMSPerMB| |
-| -XX:AllocateHeapAt| |
+| -XX:AllocateHeapAt         | 指定堆内存需要分配到哪个大页面内存池(挂载路径) |
 
-> ZGC配置参数
 
-| ZGC 参数 | 说明 |
-| :------- | :-- |
-| -XX:ZAllocationSpikeTolerance| |
-| -XX:ZCollectionInterval| |
-| -XX:ZFragmentationLimit| |
-| -XX:ZMarkStackSpaceLimit| |
-| -XX:ZProactive| |
-| -XX:ZUncommit| |
-| -XX:ZUncommitDelay| |
+> 2. ZGC专属配置参数
 
-> ZGC诊断调优参数
 
-| ZGC诊断调优参数 (需要在前面指定 -XX:+UnlockDiagnosticVMOptions)  | 说明 |
+| **ZGC专属配置参数**             | **说明** |
+| :-----------                  | :------- |
+| -XX:ZAllocationSpikeTolerance | |
+| -XX:ZCollectionInterval       | 定时触发垃圾收集的周期 |
+| -XX:ZFragmentationLimit       | |
+| -XX:ZMarkStackSpaceLimit      | |
+| -XX:ZProactive                | ZGC主动触发垃圾收集 |
+| -XX:ZUncommit                 | |
+| -XX:ZUncommitDelay            | |
+
+
+> 3. ZGC诊断参数(需要在前面指定 -XX:+UnlockDiagnosticVMOptions 参数)
+
+| **ZGC诊断参数** (需要在前面指定 -XX:+UnlockDiagnosticVMOptions 参数)  | 说明 |
 | :---------------------------------- | :------- |
-| -XX:ZStatisticsInterval| |
-| -XX:ZVerifyForwarding| |
-| -XX:ZVerifyMarking| |
-| -XX:ZVerifyObjects| |
-| -XX:ZVerifyRoots| |
-| -XX:ZVerifyViews| |
+| -XX:ZStatisticsInterval             | |
+| -XX:ZVerifyForwarding               | |
+| -XX:ZVerifyMarking                  | |
+| -XX:ZVerifyObjects                  | |
+| -XX:ZVerifyRoots                    | |
+| -XX:ZVerifyViews                    | |
 
+
+下面介绍相关的参数说明。
 
 
 ### Enabling ZGC
@@ -145,21 +154,26 @@ Use the `-XX:+UnlockExperimentalVMOptions -XX:+UseZGC` options to enable ZGC.
 
 ### 开启 ZGC 垃圾收集器
 
-当前，请使用 `-XX:+UnlockExperimentalVMOptions -XX:+UseZGC` 参数来开启ZGC。
+如果是JDK 11，请使用 `-XX:+UnlockExperimentalVMOptions -XX:+UseZGC` 参数来开启ZGC。
+
+如果是前面表格中列出的支持ZGC的版本, 请使用 `-XX:+UseZGC` 参数来开启ZGC。
+
 
 ### Setting Heap Size
 
 The most important tuning option for ZGC is setting the max heap size (`-Xmx<size>`). Since ZGC is a concurrent collector a max heap size must be selected such that, 1) the heap can accommodate the live-set of your application, and 2) there is enough headroom in the heap to allow allocations to be serviced while the GC is running. How much headroom is needed very much depends on the allocation rate and the live-set size of the application. In general, the more memory you give to ZGC the better. But at the same time, wasting memory is undesirable, so it’s all about finding a balance between memory usage and how often the GC needs to run.
 
+
 ### 指定堆内存的大小
 
-ZGC最重要的配置参数是设置堆内存的最大值(`-Xmx<size>`)。
-ZGC是一款并发垃圾收集器，必须指定这个参数，原因在于：
-- 1）堆内存必须能够存放应用程序运行所需的活动集；
-- 2）在GC处于运行状态时，堆中需要有足够的空闲内存，以允许正常的内存分配。
+ZGC最重要的配置参数是设置堆内存的最大值(`-Xmx<size>`)。 因为ZGC是一款并发垃圾收集器，所以必须指定这个参数。 原因是:
 
-需要多少空间主要取决于分配率，以及应用程序的活动集大小。
-通常，给ZGC的内存越多越好，但也没必要故意去浪费内存，所以需要在程序的内存量使用量，以及GC需要的运行频率之间进行权衡。
+- 1）堆内存必须足够存放程序运行所需的活动集(live-set);
+- 2）在执行并发GC的过程中，堆内存必须要有足够的空闲内存，以允许程序的正常运行和对应的内存分配。
+
+需要多少空间主要取决于分配速率(allocation rate)，以及应用程序的活动集有多大。
+通常来说，给ZGC的内存越多越好，但也没必要故意去浪费用不到的内存，所以需要评估程序所需的内存量使用量，并与GC执行的频次之间进行权衡。
+
 
 ### Setting Concurrent GC Threads
 
@@ -169,13 +183,13 @@ NOTE! In general, if low latency (i.e. low application response time) is importa
 
 ### 设置并发GC线程数
 
-第二个配置参数是设置并发GC线程的数量（`-XX:ConcGCThreads=<number>`）。
-ZGC具有启发式的特性，可以自动选择此数字。 大部分情况下这种启发式的方法效果都很好，但有些系统比较特殊，可能需要手工进行调整。
+第二个需要配置的参数, 是设置并发GC线程的数量（`-XX:ConcGCThreads=<number>`）。
+ZGC具有启发式的特性，可以自动选择此数字。 大部分情况下这种启发式的方法效果都很好，但有些系统运行环境比较特殊，可能需要进行手工调整。
 这个参数从根本上决定了应该给垃圾收集器多少比例的CPU时间。
-给的太多，GC的开销就比较大，甚至抢占一些应用程序的CPU时间。
-给的太少，GC回收内存的速度又跟不上应用程序分配内存的速度。
+给的太多，GC开销就比较大，甚至抢占一些业务线程的CPU时间。
+给的太少，GC回收内存的速度可能跟不上应用程序分配内存的速度。
 
-> **警告！**  如果低延迟（即系统响应时间）是非常重要的系统指标，就不能让系统负载太高。 理想情况下，系统的CPU利用率应该在70％以下。
+> **说明!**  如果低延迟（即系统响应时间）是非常关键的性能指标，那么整个系统的负载就不能太高。 理想情况下，系统的CPU使用率应该在70％以下, 很多金融系统的CPU使用率要求在30%以下。
 
 ### Returning Unused Memory to the Operating System
 
@@ -185,16 +199,17 @@ An uncommit delay can be configured using `-XX:ZUncommitDelay=<seconds>` (defaul
 
 NOTE! On Linux, uncommitting unused memory requires fallocate(2) with FALLOC_FL_PUNCH_HOLE support, which first appeared in kernel version 3.5 (for tmpfs) and 4.3 (for hugetlbfs).
 
-### 将不使用的内存还给操作系统
+### 将不使用的内存归还给操作系统
 
-默认情况下，ZGC取消分配未使用的内存，还给操作系统。 这对于关注内存占用的应用程序和环境很有用。
-如果要禁用此功能可以设置开关参数 `-XX:-ZUncommit`。
-当然，取消分配内存的操作不会让内存使用量低于最小堆内存空间(`-Xms`)。
-也就是说, 如果最小堆内存空间(`-Xms`) 等于 最大堆内存空间(`-Xmx`)，则将隐式地禁用此功能。
+默认情况下，ZGC会将未使用的内存申请撤销(uncommits)，归还给操作系统。 这对于关注内存占用的应用程序环境很有用。
+如果要禁用此功能可以设置参数开关 `-XX:-ZUncommit`。
+当然，撤销内存分配的时候, 不会让堆内存低于最小堆内存空间(`-Xms`)。
+换句话说, 加入将最小堆内存空间(`-Xms`) 和 最大堆内存空间(`-Xmx`) 设置为一样大小，则此功能将被隐式地禁用。
 
-可以使用 `-XX:ZUncommitDelay=<seconds>` 参数（默认值为300秒）来配置取消分配内存的延迟。 这个延迟参数指定了在取消提交之前应使用多长时间的内存。
+可以使用 `-XX:ZUncommitDelay=<seconds>` 参数（默认值为300秒）来配置撤销分配内存的延迟时间。 这个延迟参数指定了在撤销内存提交之前, 应等待多长时间。
 
-注意！ 在Linux上，取消分配未使用的内存需要带有  `FALLOC_FL_PUNCH_HOLE` 支持的 `fallocate(2)`， 要求Linux内核版本3.5（对于tmpfs）和4.3版本（对于 hugetlbfs）及以上。
+> **注意！** 在Linux系统中，未使用的内存撤销分配时, 需要支持  `FALLOC_FL_PUNCH_HOLE` 的 `fallocate(2)` 系统函数， 所以要求 Linux内核版本 3.5（对于tmpfs）和 4.3版本（对于 hugetlbfs）及以上。
+
 
 ### Enabling Large Pages On Linux
 
@@ -208,20 +223,20 @@ First assign at least 16G (8192 pages) of memory to the pool of huge pages. The 
 
 Configure the system's huge page pool to have the required number pages (requires root privileges):
 
-### Linux系统开启大页面
 
-配置ZGC使用大页面通常会产生更好的性能（包括吞吐量，延迟和启动时间），除了设置稍微复杂指纹并没有什么缺点。
-但配置的过程中需要root权限，这也是为什么默认情况下不开启的原因。
+### Linux系统中启用内存大页面
 
-在 Linux/x86 平台上，大页面(large pages) 也称为“巨型页面”(huge pages)， 其大小为2MB。
+配置ZGC使用大页面通常会产生更好的性能（包括吞吐量，延迟和启动时间），除了设置稍微复杂之外并没有什么缺点。 但配置的过程中需要root权限，这也是为什么默认情况下不开启的原因。
+
+在 Linux/x86 平台上，大页面(large pages) 也称为 "巨型页面"(huge pages)， 其大小为2MB。
 
 假设Java堆内存为16G, 那么需要的大页面数量为: `16G / 2M = 8192`。
 
-首先，将至少16G（8192页）的内存分配给大页池。
-“至少” 这个描述很关键，因为在JVM中启用大页面的使用, 意味着不仅GC会将这些页面用于Java堆，其他JVM组件也会将其用于各种内部数据结构，比如 code heap, marking bitmaps（标记位图）等等。
-在此案例中，我们将会保留9216页（18G），其中分配2G的大页来作为非堆部分（non-Java heap）。
+首先，将至少16G（8192页）的内存分配给大页面内存池(huge page pool)。 “至少” 这个描述很关键，因为在JVM中启用大页面, 意味着不仅GC会使用大页面来处理Java堆，其他JVM组件也会将其用于各种内部数据结构，比如 code heap, marking bitmaps 等等。
 
-配置系统的大页池需要root权限，比如设置为所需页数的命令：
+在这个示例中，我们将分配2G的大页来作为非堆部分（non-Java heap）, 所以设置保留9216页（也就是18G）。
+
+配置系统的大页面内存池需要root权限，下面是设置所需页数的命令：
 
 ```shell
 $ echo 9216 > /sys/kernel/mm/hugepages/hugepages-2048kB/nr_hugepages
@@ -229,8 +244,8 @@ $ echo 9216 > /sys/kernel/mm/hugepages/hugepages-2048kB/nr_hugepages
 
 Note that the above command is not guaranteed to be successful if the kernel can not find enough free huge pages to satisfy the request. Also note that it might take some time for the kernel to process the request. Before proceeding, check the number of huge pages assigned to the pool to make sure the request was successful and has completed.
 
-请注意上述命令不一定能保证成功，比如内核找不到足够的空闲大页面等情况。
-另请注意，内核可能需要一段时间来处理这种请求。 在继续之前，请检查分配给池的大页面数，以确保请求成功并已完成。
+请注意以上命令不一定保证能执行成功，比如内核找不到足够的空闲大页面等情况。
+另外请注意，内核可能需要一段时间来处理这种请求。 在继续之前，请检查分配给大页面内存池的页面数，以确保请求已成功完成。
 
 ```shell
 $ cat /sys/kernel/mm/hugepages/hugepages-2048kB/nr_hugepages
@@ -242,13 +257,12 @@ NOTE! If you're using a Linux kernel >= 4.14, then the next step (where you moun
 
 Mount a hugetlbfs filesystem (requires root privileges) and make it accessible to the user running the JVM (in this example we're assuming this user has 123 as its uid).
 
-如果 `Linux kernel >= 4.14`， 则可以跳过接下来挂载 hugetlbfs 文件系统的步骤。
-但如果使用的内核版本比这个老，则ZGC需要通过 hugetlbfs 文件系统来访问大页面。
+如果 `Linux 内核版本号 >= 4.14`， 则可以跳过接下来挂载 hugetlbfs 文件系统的步骤。
+但如果使用的内核版本较老，则ZGC需要通过 hugetlbfs 文件系统来访问大页面。
 
-挂载hugetlbfs文件系统需要root权限，而且需要让启动JVM的用户可以访问。
-假定该用户的uid为123：
+挂载 hugetlbfs 文件系统需要root权限，而且需要让启动JVM的用户(假定该用户的uid为123)可以访问：
 
-```
+```sh
 $ mkdir /hugepages
 $ mount -t hugetlbfs -o uid=123 nodev /hugepages
 ```
@@ -263,8 +277,8 @@ $ java -XX:+UnlockExperimentalVMOptions -XX:+UseZGC -Xms16G -Xmx16G -XX:+UseLarg
 
 If there are more than one accessible hugetlbfs filesystem available, then (and only then) do you also have to use -XX:AllocateHeapAt to specify the path to the filesystems you want to use. For example, assume there are multiple accessible hugetlbfs filesystems mounted, but the filesystem you specifically want to use it mounted on /hugepages, then use the following options.
 
-如果有多个可用的hugetlbfs文件系统， 那么我们必须同时使用 `-XX:AllocateHeapAt` 参数来指定需要使用的文件系统路径。
-例如，假设安装了多个可访问的hugetlbfs文件系统，但我们想使用挂载到 `/hugepages` 目录的这个，则使用的参数为:
+如果有多个可用的 hugetlbfs 文件系统， 那么我们必须同时使用 `-XX:AllocateHeapAt` 参数来指定需要使用哪个挂载路径。
+例如，假设系统中挂载了多个可访问的 hugetlbfs 文件系统，但我们想使用挂载到 `/hugepages` 目录的这个，则使用的参数为:
 
 ```
 $ java -XX:+UnlockExperimentalVMOptions -XX:+UseZGC -Xms16G -Xmx16G -XX:+UseLargePages -XX:AllocateHeapAt=/hugepages ...
@@ -272,7 +286,7 @@ $ java -XX:+UnlockExperimentalVMOptions -XX:+UseZGC -Xms16G -Xmx16G -XX:+UseLarg
 
 NOTE! The configuration of the huge page pool and the mounting of the hugetlbfs file system is not persistent across reboots, unless adequate measures are taken.
 
-注意！ 大页池的配置和 hugetlbfs 文件系统的挂载不会自动持久化，除非采取其他措施，否则系统重启后就丢失。
+> 注意！ 大页面内存池的配置和 hugetlbfs 文件系统的挂载不会自动持久化，除非采取其他措施，否则系统重启后就会丢失。
 
 
 ### Enabling Transparent Huge Pages On Linux
@@ -284,28 +298,32 @@ NOTE! On Linux, using ZGC with transparent huge pages enabled requires kernel >=
 Use the following options to enable transparent huge pages in the VM:
 
 
-### 在Linux系统开启透明式大页面
+### 在Linux系统中开启透明大页
 
-除了明确指定使用大页面之外， 还可以使用透明方式的大页面。
-对延迟非常敏感的系统来说，一般不建议使用透明式大页面，因为有可能会导致不必要的延迟峰值。
-但可能尝试一下，看看是否会影响工作负载。 当然，具体情况可能各个系统会有所不同。
+除了上面提到的通过参数明确指定使用大页面之外， 还可以使用透明方式的大页面。
+对于响应延迟非常敏感的系统，一般不建议使用透明大页，因为有可能会导致不必要的延迟尖刺。
+但系统调优时也可以尝试一下，看看是否会影响工作负载。 当然，根据各个业务系统的特征，具体情况可能会有所不同。
 
-注意！ 在Linux上，使用透明式大页面要求内核 `kernel >= 4.7`。
+> 注意！ 在Linux上，使用透明大页要求内核版本 `kernel >= 4.7`。
 
-开启透明大页面的JVM参数为：
+开启透明大页的JVM参数为：
 
 ```
 # 低延迟敏感的系统不推荐
 -XX:+UseLargePages -XX:+UseTransparentHugePages
 ```
 
+> Transparent HugePages 是在运行时动态分配内存的，而标准的 HugePages 是在程序启动时预先分配内存，并在系统运行时不再改变。
+>
+> 因为 Transparent HugePages 是在运行时动态分配内存的，所以会在分配内存时产生延迟。
+
 These options tell the JVM to issue `madvise(..., MADV_HUGEPAGE)` calls for memory it mapps, which is useful when using transparent huge pages in madvise mode.
 
 To enable transparent huge pages you also need to configure the kernel, by enabling the madvise mode.
 
-这些参数让JVM对其映射的内存执行 `madvise(..., MADV_HUGEPAGE)` 调用， 这在 madvise 模式下使用透明大页面时非常有用。
+这些参数让JVM对其映射的内存执行 `madvise(..., MADV_HUGEPAGE)` 调用， 这在 madvise 模式下使用透明大页时非常有用。
 
-要启用透明大页面， 还需要系统管理员启用madvise模式， 配置内核的方法为：
+要启用透明大页， 还需要系统管理员启用madvise模式， 配置内核的方法为：
 
 ```
 $ echo madvise > /sys/kernel/mm/transparent_hugepage/enabled
@@ -318,6 +336,7 @@ See the [kernel documentation](https://www.kernel.org/doc/Documentation/vm/trans
 
 更多信息请参考 [Linux内核参考文档](https://www.kernel.org/doc/Documentation/vm/transhuge.txt)
 
+
 ### Enabling NUMA Support
 
 ZGC has NUMA support, which means it will try it's best to direct Java heap allocations to NUMA-local memory. This feature is enabled by default. However, it will automatically be disabled if the JVM detects that it's bound to a sub-set of the CPUs in the system. In general, you don't need to worry about this setting, but if you want to explicitly override the JVM's decision you can do so by using the `-XX:+UseNUMA` or `-XX:-UseNUMA` options.
@@ -326,11 +345,14 @@ When running on a NUMA machine (e.g. a multi-socket x86 machine), having NUMA su
 
 ### 启用NUMA支持
 
-ZGC 对 NUMA 提供支持，也就是说， 会尽最大努力将Java堆分配定向到 NUMA-local 内存。
-默认情况下这个功能是开启的。 但如果JVM进程检测到自身被绑定到某一部分CPU内核，则会自动禁用。
+> NUMA (non-Uniform Memory Access), 非均匀内存访问架构, 在多处理器系统中，内存的访问时间是依赖处理器和内存之间相对位置的。 在这种设计里面存在和处理器相近的内存，称作本地内存(NUMA-local)；还有和处理器相对远的内存，称为远端内存。
+
+ZGC 对 NUMA 提供支持，也就是说， 会尽可能地将Java堆内存分配定向到 NUMA-local 内存。
+默认情况下这个功能是开启的。 但如果JVM进程检测到自身被绑定到某一部分CPU，则会自动禁用。
 一般情况下我们不需要关心此项配置, 如果要明确指定JVM的行为，则可以使用 `-XX:+UseNUMA` 或者 `-XX:-UseNUMA` 参数开关。
 
-在 NUMA 机器（例如多个插槽的x86机器）上运行时， 启用NUMA支持通常会获得显着的性能提升。
+在 NUMA 机器（例如多个插槽的x86机器）上运行时， 启用NUMA支持通常会获得显著的性能提升。
+
 
 ### Enabling GC Logging
 
@@ -354,7 +376,7 @@ java -Xlog:help
 
 To enable basic logging (one line of output per GC):
 
-打印基本的GC日志， 每次GC打印1行：
+打印基本的GC日志， 每次GC只打印1行日志：
 
 ```
 -Xlog:gc:gc.log
@@ -362,7 +384,7 @@ To enable basic logging (one line of output per GC):
 
 To enable GC logging that is useful for tuning/performance analysis:
 
-在性能分析和调优时，打印更详细的GC日志:
+在性能分析和调优时，可以打印更详细的GC日志:
 
 ```
 -Xlog:gc*:gc.log
@@ -370,14 +392,45 @@ To enable GC logging that is useful for tuning/performance analysis:
 
 Where `gc*` means log all tag combinations that contain the gc tag, and `:gc.log` means write the log to a file named gc.log.
 
-其中， `gc*` 的含义是： 标签(tag)中包含 gc 这两个字母的所有日志信息都打印出来。
-
-`:gc.log` 则表示将日志信息输出到文件 `gc.log` 之中。
+其中， `gc*` 的含义是： 标签(tag)中以 gc 这两个字母开头的所有日志信息都打印出来。 `:gc.log` 则表示将日志信息输出到文件 `gc.log` 之中。
 
 
 ## Change Log
 
 ## ZGC相关的更新日志
+
+### JDK 18
+
+- Support for String Deduplication (-XX:+UseStringDeduplication)
+- Linux/PowerPC support
+- Various bug-fixes and optimizations
+
+### JDK 17
+
+- Dynamic Number of GC threads
+- Reduced mark stack memory usage
+- macOS/aarch64 support
+- GarbageCollectorMXBeans for both pauses and cycles
+- Fast JVM termination
+
+### JDK 16
+
+- Concurrent Thread Stack Scanning (JEP 376)
+- Support for in-place relocation
+- Performance improvements (allocation/initialization of forwarding tables, etc)
+
+### JDK 15
+
+
+- Production ready (JEP 377)
+- Improved NUMA awareness
+- Improved allocation concurrency
+- Support for Class Data Sharing (CDS)
+- Support for placing the heap on NVRAM
+- Support for compressed class pointers
+- Support for incremental uncommit
+- Fixed support for transparent huge pages
+- Additional JFR events
 
 ### JDK 15 (under development)
 - Production ready (JEP 377)
@@ -461,7 +514,7 @@ It doesn't stand for anything, ZGC is just a name. It was originally inspired by
 最初名字的来源是为了致敬伟大的 ZFS 文件系统。 最初 ZFS 的含义是 "Zettabyte File System", 但后来这个含义也被放弃了。
 所以这个ZGC就只是一个代号，具体的信息可以参考: [Jeff Bonwick's Blog](https://web.archive.org/web/20170223222515/https://blogs.oracle.com/bonwick/en_US/entry/you_say_zeta_i_say)。
 
-> `^_^` 其实有一点 Zero 的意思，无停顿垃圾收集器， 然而这个目标没有达到。
+> `^_^` 其实业界猜测有一点 Zero 的意思，无停顿垃圾收集算法(Pauseless GC Algorithm)， 然而这个目标还没有完全达到。
 
 
 
