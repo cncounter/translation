@@ -118,7 +118,7 @@ GitHub地址: <https://github.com/cncounter/translation>
 * [20.真实用户监控与综合性能监控](./tiemao_2020/20_monitoring-vs-synthetic-monitoring/README.md)【机器翻译】
 * [21.深入JVM - Code Cache内存池](./tiemao_2020/21_jvm-code-cache/README.md)【已完成】
 * [22.Java 9 Module System(系列)](./tiemao_2020/22_Java_9_Module_System/README.md) 【系列文章】
-* [23.ZGC简介](./tiemao_2020/23_zgc_intro/README.md)【粗翻】
+* [23.ZGC简介](./tiemao_2020/23_zgc_intro/README.md)【已校对】
 * [24.Python Tutorial](./tiemao_2020/24_python-tutorial/README.md)【系列文章】
 * [25.系统设计最佳实践](./tiemao_2020/25_embedded-rules-of-thumb/README.md)【系列文章】
 * [26.Java规范系列：JAR文件规范](./tiemao_2020/26_jar_specs/README.md)
