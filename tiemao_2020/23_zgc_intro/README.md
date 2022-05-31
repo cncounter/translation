@@ -497,7 +497,7 @@ Where `gc*` means log all tag combinations that contain the gc tag, and `:gc.log
 - Reduced Time-To-Safepoint
 
 ### JDK 13 版本
-- 最大堆内存从 `4TB` 增加到 `16TB`
+- 最大堆内存从 `4TB` 扩展到 `16TB`
 - 支持返还未使用的内存 (JEP 351)
 - 支持 `-XX:SoftMaxHeapSIze`
 - 支持 Linux/AArch64 平台
@@ -737,6 +737,13 @@ ZGC英文版视频教程与PPT：
 - https://dzone.com/articles/garbage-collectors-affect-microbenchmarks
 - https://www.reddit.com/r/java/comments/a4q7xs/anyone_using_zgc/
 - https://bugs.openjdk.java.net/browse/JDK-8240679
+- [Z Garbage Collector in Java](https://www.geeksforgeeks.org/z-garbage-collector-in-java/)
+- [Getting started with Z Garbage Collector (ZGC) in Java 11](https://hub.packtpub.com/getting-started-with-z-garbage-collectorzgc-in-java-11-tutorial/)
+- [Z Garbage Collector (ZGC)](https://www.techgeeknext.com/java/z-garbage-collector)
+
+- [着色指针(Colored pointers)](https://www.oreilly.com/library/view/java-11-and/9781789133271/99bc8b28-9595-4065-aec8-5eaddddbdda4.xhtml)
+- [ZGC Notes: Colored Pointers](https://www.sobyte.net/post/2022-01/notes-zgc/)
+- [4TB地址空间扩充到16TB](https://github.com/openjdk/jdk/blob/master/src/hotspot/cpu/x86/gc/z/zGlobals_x86.cpp)
 
 原文链接:
 
