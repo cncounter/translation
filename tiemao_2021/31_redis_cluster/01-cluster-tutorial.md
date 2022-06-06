@@ -532,7 +532,7 @@ call <cmd>  -- Call a command (up to 7 arguments) on all nodes.
 # 如果要修改端口号, 直接修改脚本 create-cluster 即可
 # 注意: 如果需要内网其他机器访问, 需要关闭保护模式;
 
-# 启动示例
+# 启动实例
 ./create-cluster start
 
 # 创建集群
@@ -548,7 +548,7 @@ You can now interact with the cluster, the first node will start at port 30001 b
 
 然后可以看到类似这样的提示信息:
 
-```c
+```sh
 ...
 [OK] All nodes agree about slots configuration.
 >>> Check for open slots...
@@ -559,7 +559,7 @@ You can now interact with the cluster, the first node will start at port 30001 b
 然后就可以与集群交互,默认情况下第一个节点将从端口 30001 开始。
 
 
-```
+```sh
 # Linux 下查看端口号监听
 lsof -iTCP -sTCP:LISTEN -n -P | grep TCP
 ```

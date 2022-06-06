@@ -1,5 +1,6 @@
+# Java与数字
 
-# 数据结构
+按照Java语言标准, Java支持整数与浮点数。
 
 
 ## 二进制基础
@@ -64,6 +65,3 @@ HashMap
 
 B-Tree
 B+Tree
-
-
-
