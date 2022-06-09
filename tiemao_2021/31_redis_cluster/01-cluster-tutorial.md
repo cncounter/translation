@@ -12,6 +12,13 @@ If you plan to run a serious Redis Cluster deployment, the more formal specifica
 <a name="cluster-tutorial"></a>
 # 1. Redis集群入门教程
 
+
+系列文章:
+
+- 1. Redis集群入门教程: [01-cluster-tutorial.md](./01-cluster-tutorial.md)
+- 2. Redis集群规范文档: [02-cluster-spec.md](./02-cluster-spec.md)
+- 3. 5分钟快速创建Redis集群: [03-cluster-5-minutes](./03-cluster-5-minutes.md)
+
 本教程对Redis Cluster进行简要的介绍, 不涉及难以理解的分布式系统概念。
 主要涵盖的内容包括:
 
@@ -776,13 +783,17 @@ To start a resharding just type:
 
 ```
 redis-cli --cluster reshard 127.0.0.1:7000
+
+# 如果有密码
+redis-cli -a anypasswd --cluster reshard 127.0.0.1:7000
+
 ```
 
 You only need to specify a single node, redis-cli will find the other nodes automatically.
 
 Currently redis-cli is only able to reshard with the administrator support, you can't just say move 5% of slots from this node to the other one (but this is pretty trivial to implement). So it starts with questions. The first is how much a big resharding do you want to do:
 
-只需要指定一个节点即可,redis-cli 会自动找到其他节点。
+只需要指定一个节点即可, redis-cli 会自动找到其他节点。
 
 目前 redis-cli 只能在管理员的支持下重新分片,不能说只将 5% 的哈希槽从一个节点移动到另一个节点(当然要实现起来也很简单)。
 所以客户端会提示你进行选择。
@@ -805,6 +816,11 @@ Then redis-cli needs to know what is the target of the resharding, that is, the 
 ```
 $ redis-cli -p 7000 cluster nodes | grep myself
 97a3a64667477371c4479320d683e4c8db5858b1 :0 myself,master - 0 0 0 connected 0-5460
+
+
+# 查看集群信息
+redis-cli -h 127.0.0.1 -p 7000 -a anypasswd  cluster nodes | grep myself
+
 ```
 
 Ok so my target node is `97a3a64667477371c4479320d683e4c8db5858b1`.

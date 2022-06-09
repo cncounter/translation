@@ -6,6 +6,15 @@ Welcome to the **Redis Cluster Specification**. Here you'll find information abo
 <a name="cluster-spec"></a>
 # 2. Redis集群规范文档
 
+
+系列文章:
+
+- 1. Redis集群入门教程: [01-cluster-tutorial.md](./01-cluster-tutorial.md)
+- 2. Redis集群规范文档: [02-cluster-spec.md](./02-cluster-spec.md)
+- 3. 5分钟快速创建Redis集群: [03-cluster-5-minutes](./03-cluster-5-minutes.md)
+
+
+
 欢迎查阅 《Redis集群规范文档》。  
 本文档介绍有关 Redis 集群的算法和设计原理。
 这是一份不断更新的文档, 与 Redis 的具体实现保持密切同步。

@@ -14,6 +14,7 @@ Redis官方文档的地址为: <https://redis.io/documentation>
 
 - 1. Redis集群入门教程: [01-cluster-tutorial.md](./01-cluster-tutorial.md)
 - 2. Redis集群规范文档: [02-cluster-spec.md](./02-cluster-spec.md)
+- 3. 5分钟快速创建Redis集群: [03-cluster-5-minutes](./03-cluster-5-minutes.md)
 
 
 ## 相关链接

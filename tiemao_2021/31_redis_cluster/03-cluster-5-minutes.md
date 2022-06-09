@@ -1,6 +1,16 @@
 # 5分钟快速创建Redis集群
 
+
+系列文章:
+
+- 1. Redis集群入门教程: [01-cluster-tutorial.md](./01-cluster-tutorial.md)
+- 2. Redis集群规范文档: [02-cluster-spec.md](./02-cluster-spec.md)
+- 3. 5分钟快速创建Redis集群: [03-cluster-5-minutes](./03-cluster-5-minutes.md)
+
+
 本文介绍如何快速搭建一个简单的集群。
+
+本文档对应的可执行脚本文件为: [./install-redis-cluster.sh](./install-redis-cluster.sh); 可按需修改;
 
 系统环境:
 
@@ -74,6 +84,20 @@ lsof -iTCP -sTCP:LISTEN -n -P | grep TCP
 
 
 
+查看客户端帮助信息:
+
+```
+redis-cli --help
+```
+
+查看客户端集群命令帮助信息:
+
+```
+redis-cli --cluster help
+```
+
+
+本文档对应的可执行脚本文件为: [./install-redis-cluster.sh](./install-redis-cluster.sh)
 
 
 -

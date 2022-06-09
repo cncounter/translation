@@ -43,3 +43,5 @@ AdatperSizeThreadPoolQueue
 
 
 - 动态线程池（Hippo4J）: <https://github.com/acmenlt/dynamic-threadpool>
+- 线程池实时管理与监控工具的实现与思考: <https://www.jianshu.com/p/6f6e2bcb8128>
+- 通过micrometer实时监控线程池的各项指标: <https://cloud.tencent.com/developer/article/1650102>
