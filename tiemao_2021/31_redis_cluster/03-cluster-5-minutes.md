@@ -80,7 +80,31 @@ lsof -iTCP -sTCP:LISTEN -n -P | grep TCP
 
 默认启动的是30001开始的端口【30001 ~ 30006】。
 
-如果需要修改端口号, 可以修改 `utils/create-cluster/create-cluster` 脚本文件;
+如果需要修改端口号, 可以修改 `utils/create-cluster/create-cluster` 脚本文件中的 `PORT` 信息;
+
+```
+CLUSTER_HOST=127.0.0.1
+PORT=30000
+TIMEOUT=2000
+NODES=6
+REPLICAS=1
+PROTECTED_MODE=yes
+ADDITIONAL_OPTIONS=""
+```
+
+将其中的 `PROTECTED_MODE` 修改为 `no`,
+将其中的 `CLUSTER_HOST`   修改为 当前机器的IP,
+
+```
+CLUSTER_HOST=192.168.1.100
+PORT=30000
+TIMEOUT=2000
+NODES=6
+REPLICAS=1
+PROTECTED_MODE=no
+ADDITIONAL_OPTIONS=""
+```
+
 
 
 
