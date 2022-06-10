@@ -4,13 +4,19 @@
 ## 当前线程池的痛点
 
 1. 队列小了容易引发拒绝
-2. 队列大了线程数不会扩容。
+2. 队列大了线程数不会扩容。 扩容的瞬间会导致性能抖动;
 3. 固定线程则抢占资源, 对大部分时候的指标不友好。
+4. 任务队列满了之后，新提交的任务会短时间内触发大量的线程创建操作。 这种现象叫什么，有什么专业术语？
+5. 有没有发现，线程池这么搞，比较落后，只适合N年前的应用模式？
 
 ## 背景需求
 
 在同一个Java应用中存在多个线程池, 为了应对突然到来的大量并发请求, 线程池中的线程数需要根据 queue 中堆积的任务数量进行自动扩容。
 
+我们只需要根据等待队列的容量, 动态增长核心线程数即可。 `ThreadPoolExecutor#setCorePoolSize()` 实例方法会自动处理其余的事情;
+
+
+## 实现思路
 
 线程池参数
 
@@ -45,3 +51,4 @@ AdatperSizeThreadPoolQueue
 - 动态线程池（Hippo4J）: <https://github.com/acmenlt/dynamic-threadpool>
 - 线程池实时管理与监控工具的实现与思考: <https://www.jianshu.com/p/6f6e2bcb8128>
 - 通过micrometer实时监控线程池的各项指标: <https://cloud.tencent.com/developer/article/1650102>
+- 惊群效应: <https://www.zhangbj.com/p/768.html>
