@@ -31,7 +31,7 @@
 例如: （高水位线 - 低水位线）/ (最大线程 - 初始核心线程 + 当前线程数) ?
 
 
-AdatperSizeThreadPoolQueue
+AdapterSizeThreadPoolQueue
 
 自动根据 corePoolSize, maxPoolSize, 以及 queue.size 来进行处理, 以确定是否需要:
 

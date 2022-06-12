@@ -167,8 +167,12 @@ If there are more than eight logical processors, sets the value of n to approxim
 - 如果逻辑处理器小于等于8个，则默认 `n` 等于逻辑处理器的数量。
 - 如果逻辑处理器大于8个，则 `n` 默认约等于处理器数量的`5/8`。
 - 如果是高配置的 SPARC 系统，则默认 `n` 大约等于逻辑处理器数量的`5/16`。
-- 大多数情况下使用默认值即可。
-- 有一种情况除外，就是Docker容器中使用了低版本JDK，案例参考:  [JVM 问题排查分析下篇（案例实战）](https://gitbook.cn/gitchat/column/5de76cc38d374b7721a15cec/topic/5df0bfb644f0aa237c287870)。
+
+
+具体请参考: [JVM调优系列: 默认GC线程数的计算公式](../../tiemao_2022/03_gc_thread_count/README.md)
+
+大多数情况下使用默认值即可。 有一种情况除外，就是Docker容器中使用了低版本JDK，案例参考:  [JVM 问题排查分析下篇（案例实战）](https://gitbook.cn/gitchat/column/5de76cc38d374b7721a15cec/topic/5df0bfb644f0aa237c287870)。
+
 
 
 #### `-XX:ConcGCThreads=n`
@@ -176,6 +180,9 @@ If there are more than eight logical processors, sets the value of n to approxim
 Sets the number of parallel marking threads. Sets n to approximately 1/4 of the number of parallel garbage collection threads (`ParallelGCThreads`).
 
 设置并发标记的GC线程数。 默认值约等于 `ParallelGCThreads` 值的 `1/4`。
+
+具体请参考: [JVM调优系列: 默认GC线程数的计算公式](../../tiemao_2022/03_gc_thread_count/README.md)
+
 
 #### `-XX:InitiatingHeapOccupancyPercent=45`
 
