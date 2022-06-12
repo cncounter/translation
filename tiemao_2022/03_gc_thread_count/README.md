@@ -31,8 +31,8 @@ If you are using Parallel GC algorithm, then number of GC threads is controlled 
 
 ### 并行垃圾收集器(Parallel GC)
 
-如果使用 Parallel GC 算法, 则 GC 线程数由 `-XX:ParallelGCThreads` 属性控制。
-Linux/x86 机器上的 `-XX:ParallelGCThreads` 默认值由以下公式计算得出:
+如果使用 Parallel GC 算法, 则 GC 线程数由 `-XX:ParallelGCThreads` 参数控制。
+如果没有明确指定, 那么 Linux/x86 机器上的 `-XX:ParallelGCThreads` 默认值由以下公式计算得出:
 
 ```c
 if (num of processors <=8) {
@@ -53,8 +53,8 @@ If you are using CMS GC algorithm, then number of GC threads is controlled by `-
 
 ### CMS 垃圾收集器
 
-如果使用 CMS GC 算法, 则 GC 线程数由 `-XX:ParallelGCThreads` 和 `-XX:ConcGCThreads` 属性来控制。
-`-XX:ConcGCThreads` 的默认值根据以下公式计算得出:
+如果使用 CMS GC 算法, 则 GC 线程数由 `-XX:ParallelGCThreads` 和 `-XX:ConcGCThreads` 参数来确定。
+如果没有明确指定, 那么 `-XX:ConcGCThreads` 的默认值根据以下公式计算得出:
 
 > `max( (ParallelGCThreads+2)/4, 1 )`
 
