@@ -31,8 +31,22 @@
 
 实现原理;
 
+## 包装类equals
+
+Long.valueOf(1).equals(1);
+
 
 ## BigDecimal
 
+0值比较是否相等;
+
+四则运算;
+
+精度与四舍五入;
+
+## BigInteger
+
 
 ## 伪随机数
+
+随机数种子;
