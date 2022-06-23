@@ -8,7 +8,7 @@ Linux和MaxOSX的 alias 命令使用技巧
 
 注意: 等号两边不能有空格;
 
-可以放到 `~/.bash_profile` 文件中, 或者
+可以放到 `~/.bash_profile` 文件中;
 
 ```shell
 # SYS ALIAS
@@ -37,6 +37,10 @@ export HISTSIZE=10000
 export HISTIGNORE='pwd:ls:ll:history:exit'
 
 ```
+
+或者放到 `~/.bashrc` 之中, 比如 `su` 或者 `sudo su` 或者 `sudo sudo su` 切换root 用户时会生效。
+
+具体的生效规则, 请参考: [Bash 启动环境](https://wangdoc.com/bash/startup.html)
 
 如果你有好用的alias，欢迎补充: pr, wiki, comment 都可以。
 
@@ -95,6 +99,38 @@ yum -y install sysstat
 
 ```
 
+# 设置top工具的界面颜色
+
+1. 首先执行top命令:
+
+```sh
+top
+```
+
+进入top命令的展示界面。
+
+2. 进入颜色设置界面:
+
+在top命令的展示界面, 使用命令 `Shift + z`; 进入颜色设置界面.
+
+3. 修改颜色:
+
+在颜色设置界面, 根据提示, 可以设置的部分包括:
+
+- 1) 目标, 也就是设置哪一部分的颜色, 我们通过输入大写的 `S` 和 `T` 等等, 来切换不同的设置目标。
+- 2) 对目标使用哪种颜色, 输入 `0-7` 即可。
+- 2) 设置好一种颜色之后, 可以通过第1步的命令切换不同的设置目标。
+- 3) 结束设置; 输入 `Enter` 退出设置界面。
+- 3) 这一步也 支持 `a` 或 `w` 来切换各种颜色, 不太好用;
+
+这样设置之后, 退回到 top 命令的显示界面。 注意的是这里并没有持久化保存设置
+
+4. 持久化保存设置:
+
+在top命令的展示界面, 使用命令 `Shift + W`; 持久化保存设置.
+
+
+
 
 # dns
 
@@ -148,7 +184,7 @@ github.com.		47	IN	A	20.205.243.166
 ```
 
 
-相关链接:
+# 相关链接:
 
 Bash 脚本教程: <https://wangdoc.com/bash/index.html>
 
