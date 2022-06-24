@@ -6,14 +6,14 @@
 - 专题: Java学习资源与相关网站
 - 专题: String与Java
 - 专题: Java与正则表达式
-- 专题: 数字和Java
-- 专题: Java与集合
+- 专题: [数字和Java](./Java_and_Number/README.md)
+- 专题: [Java与集合](./data_structure/README.md)
 - 专题: Java运行时标准库与常用API
 - 专题: 日期时间和时区
 - 专题: Java与同步
 - 专题: Java与命令行: classpath类路径
 - 专题: Java与反编译
-- 专题: Java与GC
+- 专题: [Java与GC](./Java_GC/README.md)
 - 专题: Java与线程
 - 专题: Java与IO
 - 专题: Java与Maven
