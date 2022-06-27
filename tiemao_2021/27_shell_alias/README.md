@@ -183,6 +183,13 @@ github.com.		47	IN	A	20.205.243.166
 
 ```
 
+# MAC相关
+
+解除下载软件来源限制:
+
+```shell
+sudo spctl --master-disable
+```
 
 # 相关链接:
 
