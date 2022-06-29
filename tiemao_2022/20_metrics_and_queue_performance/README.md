@@ -1,4 +1,4 @@
-# 指标监控影响系统性能问题排查
+# 业务指标采集影响系统性能问题排查
 
 背景:
 
@@ -18,7 +18,7 @@
 经过排查，发现2个瓶颈点:
 
 - 并行流: `parallelStream()`;
-- 指标监控:  Micrometer的 `Timed` 注解, 以及 `StatsDClient#time()` 方法;
+- 指标采集:  Micrometer的 `Timed` 注解, 以及 `StatsDClient#time()` 方法;
 
 
 并行流的性能问题: 
@@ -139,3 +139,5 @@ CPU使用率也降低到30~40%左右;
 - [RxJava3: 响应式编程(Reactive Extensions)的java实现](https://github.com/ReactiveX/RxJava)
 - [Micrometer Application Metrics](https://github.com/micrometer-metrics/micrometer)
 - [java-dogstatsd-client](https://github.com/DataDog/java-dogstatsd-client)
+- [火焰图](https://blog.openresty.com.cn/cn/lua-cpu-flame-graph/)
+- [性能分析工具-HPROF简介](https://github.com/cncounter/translation/blob/master/tiemao_2017/20_hprof/20_hprof.md)
