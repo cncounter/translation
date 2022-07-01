@@ -16,7 +16,7 @@ Table of Contents
 - [8.6 Optimizing for MyISAM Tables](./README.md)
 - [8.7 Optimizing for MEMORY Tables](./README.md)
 - [8.8 Understanding the Query Execution Plan](./8.8-execution-plan-information.md)
-- [8.9 Controlling the Query Optimizer](./8.9-controlling-optimizer.md)
+- [8.9 Controlling the Query Optimizer](./8.9-controlling-optimizer.md)【部分】
 - [8.10 Buffering and Caching](./8.10-buffering-caching.md)
 - [8.11 Optimizing Locking Operations](./8.11-locking-issues.md)
 - [8.12 Optimizing the MySQL Server](./8.12-optimizing-server.md)
