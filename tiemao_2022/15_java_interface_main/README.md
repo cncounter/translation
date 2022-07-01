@@ -39,3 +39,5 @@ interface TestMain {
 知识点:
 
 - JDK8引入了新的语言特性, interface中可以声明并实现 static 方法以及 default 方法;
+
+- [原文链接](https://github.com/cncounter/translation/blob/master/tiemao_2022/15_java_interface_main/README.md)

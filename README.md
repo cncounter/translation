@@ -36,7 +36,7 @@ GitHub地址: <https://github.com/cncounter/translation>
 * [12.Java语言规范文档: 第12章. 执行(Execution)](./tiemao_2022/12_Java_LS_Chapter_12_Execution/README.md)【粗翻】
 * [13.面试题-Java中long和double类型的最大取值](./tiemao_2022/13_Java_Number/README.md)【初稿】
 * [14.Spring Boot and Kafka Configuration Tuning](./tiemao_2022/14_spring-boot-kafka-config-tuning/README.md)
-* [15.Java基础面试题：main方法可以写在interface中吗？](./tiemao_2022/15_java_interface_main/README.md)
+* [15.Java基础面试题：main方法可以写在interface中吗？](./tiemao_2022/15_java_interface_main/README.md)【初稿】
 * [16.Java虚拟机规范文档: 第5章. 加载、链接和初始化](./tiemao_2022/16_jvm_s_Chapter_5_Loading_Linking_Initializing/README.md)【粗翻】
 * [17.深入JVM - 一个class文件中最多包含多少个常量?](./tiemao_2022/17_java_class_constants_opcode_num_limit/README.md)【已校对】
 * [18.Synchronization in Java](./tiemao_2022/18_java-thread-synchronization/README.md)
