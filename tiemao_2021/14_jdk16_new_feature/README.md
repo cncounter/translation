@@ -1,5 +1,6 @@
 # JDK 16 New Features:  Java Runtime
 
+# JDK16的空指针异常长这样
 
 ```
 // JDK16的空指针异常长这样
