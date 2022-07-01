@@ -130,6 +130,32 @@ top
 在top命令的展示界面, 使用命令 `Shift + W`; 持久化保存设置.
 
 
+# 设置命令提示符的颜色
+
+
+MAC下zsh的设置:
+
+```shell
+cat ~/.zshrc
+
+autoload -U colors && colors
+PS1="%{$fg[green]%}%n%{$reset_color%}@%{$fg[green]%}%m %{$fg[yellow]%}%~ %{$reset_color%}%% "
+```
+
+Linux下的设置:
+
+```sh
+cat ~/.bashrc
+# .bashrc
+
+# set shell prompt
+# https://wangdoc.com/bash/prompt.html
+PS1="\[\e[31;1m\][\u@\h \W ]$ \[\e[0m\]"
+
+```
+
+参考: <https://stackoverflow.com/questions/689765/>
+
 
 
 # dns
