@@ -1,19 +1,21 @@
 # 业务指标采集影响系统性能问题排查
 
+[toc]
+
 背景:
 
 - 规则引擎 + 图结构的执行逻辑
 - Datadog 指标监控系统
 - 多组 Kafka 集群
 
-## 现象描述
+## 1. 现象描述
 
-执行代码的效率上不去, 系统吞吐量不足。 
+业务处理逻辑比较重, 执行代码的效率上不去, 系统吞吐量不足。 
 
 部署了N个Docker节点（8C8G）, CPU使用率80~90%, 每秒吞吐量总计只有2万左右，远远小于生产者的速度。
 
 
-## 原因分析
+## 2. 原因分析
 
 经过排查，发现2个瓶颈点:
 
@@ -82,7 +84,7 @@ public class LinkedBlockingQueue<E> extends AbstractQueue<E>
 
 
 
-## 解决办法
+## 3. 解决办法
 
 1. 将并行流改成普通流, 或者取消流:
 
@@ -126,7 +128,7 @@ public class LinkedBlockingQueue<E> extends AbstractQueue<E>
 这个阈值看具体业务来确定, 也可以在业务代码中按批次进行聚合与上报, 减小指标系统压力;
 
 
-## 效果
+## 4. 优化效果
 
 重新发版之后, 每秒总吞吐量达到了 80 万左右, 基本跟上生产者的速度;
 
@@ -134,7 +136,7 @@ CPU使用率也降低到30~40%左右;
 
 至此, 本次优化基本完成, 后续需要在提高并发度的同时防止背压问题。
 
-## 总结
+## 5. 总结
 
 早期进行性能优化时, 追踪了详细的业务指标监控信息。 当然，业务复杂度也在持续上升, 等到吞吐量达到一定阶段时, 指标采集的部分又形成了新的瓶颈点, 根据需求, 去除不必要的指标采集之后, 性能得到了大幅度提升。
 
@@ -157,3 +159,4 @@ CPU使用率也降低到30~40%左右;
 - [java-dogstatsd-client](https://github.com/DataDog/java-dogstatsd-client)
 - [火焰图](https://blog.openresty.com.cn/cn/lua-cpu-flame-graph/)
 - [性能分析工具-HPROF简介](https://github.com/cncounter/translation/blob/master/tiemao_2017/20_hprof/20_hprof.md)
+- [原文链接](https://github.com/cncounter/translation/blob/master/tiemao_2022/20_metrics_and_queue_performance/README.md)
