@@ -11,6 +11,7 @@
 - 专题: Java运行时标准库与常用API
 - 专题: 日期时间和时区
 - 专题: Java与同步
+- [专题: Java与反射](./Java_Reflect/README.md)
 - 专题: Java与命令行: classpath类路径
 - 专题: Java与反编译
 - 专题: [Java与GC](./Java_GC/README.md)
@@ -35,3 +36,8 @@
 
 
 来来来，提问一个：Java日期时间格式化的时候，uuuuMMdd  yyyyMMdd  YYYYMMdd，有什么区别？
+
+
+国际化项目第一个要考虑的就是时区问题，看一个人用bigint还是datetime来存储时间就知道他有没有实际的开发经验。
+
+
