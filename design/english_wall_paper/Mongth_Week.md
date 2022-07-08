@@ -37,5 +37,10 @@ English vs. Chinese
 | Workday       | 工作日         |
 
 
+图片待完善:
+
+![](./month_and_week.jpg)
+
+
 更多欢迎补充
 
