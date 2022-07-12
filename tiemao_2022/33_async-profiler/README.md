@@ -18,9 +18,29 @@ async-profiler 可以跟踪以下类型的事件:
 See our Wiki or 3 hours playlist to learn about all features.
 
 
-> 应用: IntelliJ IDEA Ultimate 2018.3 及以上版本内置集成了 async-profiler 工具, 更多信息请关注 [IntelliJ IDEA documentation](https://blog.jetbrains.com/idea/2018/09/intellij-idea-2018-3-eap-git-submodules-jvm-profiler-macos-and-linux-and-more/).
+## Idea中执行CPU耗时采样分析
+
+IntelliJ IDEA Ultimate 2018.3 及以上版本内置集成了 async-profiler 工具, 更多详细信息请查看 [IntelliJ IDEA documentation](https://blog.jetbrains.com/idea/2018/09/intellij-idea-2018-3-eap-git-submodules-jvm-profiler-macos-and-linux-and-more/).
+
+虽然在开发环境执行性能分析看着有点Low, 但很多问题其实也能分析出来。
+
+先进入配置界面:
 
 ![](idea-cpu-profiler.png)
+
+然后保存配置并关闭, 接着运行程序:
+
+![](idea-run-with-profiler.jpg)
+
+再次运行程序时, 可以从这里打开:
+
+![](idea-run-with-profiler-2.jpg)
+
+查看分析结果:
+
+![](idea-cpu-profiler-result.jpg)
+
+这里提供了3种界面, 选择你喜欢的方式查看即可。
 
 
 ## 相关链接
