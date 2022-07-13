@@ -22,13 +22,13 @@ See our Wiki or 3 hours playlist to learn about all features.
 
 IntelliJ IDEA Ultimate 2018.3 及以上版本内置集成了 async-profiler 工具, 更多详细信息请查看 [IntelliJ IDEA documentation](https://blog.jetbrains.com/idea/2018/09/intellij-idea-2018-3-eap-git-submodules-jvm-profiler-macos-and-linux-and-more/).
 
-虽然在开发环境执行性能分析看着有点Low, 但很多问题其实也能分析出来。
+虽然在开发环境执行性能分析看着有点Low, 但很多问题其实也能分析出来。 各个版本的使用大同小异, 大致流程都是一样的。
 
 先进入配置界面:
 
 ![](idea-cpu-profiler.png)
 
-然后保存配置并关闭, 接着运行程序:
+可以配置采样周期, 然后保存并关闭, 接着以选项运行程序:
 
 ![](idea-run-with-profiler.jpg)
 
@@ -36,11 +36,22 @@ IntelliJ IDEA Ultimate 2018.3 及以上版本内置集成了 async-profiler 工�
 
 ![](idea-run-with-profiler-2.jpg)
 
+
+或者是挂载(Attach)到运行中的Java进程, 选择菜单:
+
+![](idea-attach-profiler.jpg)
+
+然后选择进程即可。
+
+程序持续运行, 我们可以在适当的时间点击停止采样分析。
+
 查看分析结果:
 
 ![](idea-cpu-profiler-result.jpg)
 
 这里提供了3种界面, 选择你喜欢的方式查看即可。
+
+Idea还提供了一些配套的功能和菜单, 各位小伙伴可以多多探索。
 
 
 ## 相关链接
@@ -48,6 +59,7 @@ IntelliJ IDEA Ultimate 2018.3 及以上版本内置集成了 async-profiler 工�
 - [async-profiler GitHub项目首页](https://github.com/jvm-profiling-tools/async-profiler)
 - [async-profiler WIKI](https://github.com/jvm-profiling-tools/async-profiler/wiki)
 - [Async-profiler 视频教程](https://www.youtube.com/playlist?list=PLNCLTEx3B8h4Yo_WvKWdLvI9mj1XpTKBr)
-- [Why (Most) Sampling Java Profilers Are Fucking Terrible](http://psy-lob-saw.blogspot.com/2016/02/why-most-sampling-java-profilers-are.html)
+- [安全点偏差问题: Why (Most) Sampling Java Profilers Are Fucking Terrible](http://psy-lob-saw.blogspot.com/2016/02/why-most-sampling-java-profilers-are.html)
+- [火焰图(CPU Flame Graphs)](https://www.brendangregg.com/FlameGraphs/cpuflamegraphs.html)
 - [JVM CPU Profiler技术原理及源码深度解析](https://tech.meituan.com/2019/10/10/jvm-cpu-profiler.html)
 
