@@ -7,6 +7,7 @@ async-profiler 是一款低开销的 Java 采样分析器(sampling profiler), �
 
 
 
+
 async-profiler 可以跟踪以下类型的事件:
 
 - CPU cycles
@@ -35,9 +36,14 @@ sampling profiler, 采样分析器, 有时候也称为 "抽样分析器"。 通�
 
 ## 传统抽样分析器面临的问题
 
-- 安全点偏差问题: 只能获取到安全点状态的其他线程调用栈;
-- 性能问题: 请求安全点对齐的代价高, 执行缓慢, 严重影响系统性能;
-- 本地方法: 偏差
+大多数分析器都存在一些问题:
+
+- 安全点偏差问题: 采样分析器(Sampling profilers), 只在安全点状态进行采样, 很多时候会掩盖真实的问题点;
+- 性能问题: 检测类型(Instrumenting)的分析器, 请求安全点对齐的代价高, 执行效率差, 严重影响系统性能, 一般不能用于生产环境;
+- 设计缺陷: 无法检测本地方法, 导致繁忙线程和空闲线程的抽样都是相同的调用栈;
+
+
+您可以自己尝试，尝试使用您最喜欢的分析器分析此 StringBuilderTest 并找出占用您 CPU 时间最多的部分（VisualVM 的视频）
 
 
 ## async-profiler的执行原理
@@ -47,6 +53,11 @@ sampling profiler, 采样分析器, 有时候也称为 "抽样分析器"。 通�
 - 只会采样存活线程
 - 没有安全点偏差问题
 - 无法追踪Native代码
+
+visualvm --jdkhome /Users/renfufei/SOFT_ALL/jdk-11.0.6.jdk/Contents/Home
+
+
+/Applications/VisualVM.app/Contents/Resources/visualvm/etc/visualvm.conf
 
 
 ## Idea中执行CPU耗时采样分析
@@ -256,7 +267,9 @@ not_walkable_Java   : 174 (0.24%)
 
 发现是ZGC占用的CPU时间比较多; 
 
-我们通过top命令来确认, 结果如下所示:
+这里能看到 async-profiler 的优势了, 如果是普通的线程栈抽样工具, 是很难排查到这些内部的线程的。
+
+殊途同归, 我们通过top命令来确认一下, 结果如下所示:
 
 
 ```
@@ -270,7 +283,7 @@ top -H
   148 root      20   0   17.0t  18.2g  17.3g R  31.9 189.3 328:43.10 input-exec
 ```
 
-确实是GC的问题, 换成G1垃圾收集器试试.
+继续观察和分析, 发现确实是GC的问题。 因为G1的吞吐量比ZGC好一些, 我们换成G1垃圾收集器试试.
 
 ```
 JAVA_OPTS_Z=-Xmx6g -Xms5g \
@@ -284,7 +297,14 @@ JAVA_OPTS=-Xmx6g -Xms6g -XX:+UseG1GC \
 ```
 
 切换为G1之后, 吞吐量上升了 1 倍左右。
-看来 ZGC 在暂停时间方面优势很大，但是在高并发高负载高分配的场景下, 吞吐量并不如G1。
+
+我们这里的应用场景是Kafka消费端, 在进行了多次性能优化之后, 系统吞吐量到了一定级别, 并且业务特征导致了内存中的很多对象会持续存活很多次GC周期。
+一个类似的案例, 是我们团队的专家解决的: 在Kafka服务端使用ZGC也会造成吞吐量瓶颈问题, 切换成G1之后吞吐量大幅上升。
+至于 Kafka 生产者, 大部分情况下使用ZGC减少业务暂停时间, 避免响应延迟的尖刺问题, 还是很有帮助的。
+
+看来, 虽然 ZGC 在暂停时间方面优势很大，但是在高并发高负载高分配的场景下, 吞吐量可能并不如G1。
+我们的很多业务系统更关注响应延迟和GC暂停时间, 所以还需要具体情况具体分析。
+
 
 持续运行, 持续监控。
 
@@ -306,6 +326,7 @@ jcmd 7 help
 - [安全点偏差问题: Why (Most) Sampling Java Profilers Are Fucking Terrible](http://psy-lob-saw.blogspot.com/2016/02/why-most-sampling-java-profilers-are.html)
 - [火焰图(CPU Flame Graphs)](https://www.brendangregg.com/FlameGraphs/cpuflamegraphs.html)
 - [如何读懂火焰图？](http://www.ruanyifeng.com/blog/2017/09/flame-graph.html)
+- [A Guide to Java Profilers](https://www.baeldung.com/java-profilers)
 - [JVM CPU Profiler技术原理及源码深度解析](https://tech.meituan.com/2019/10/10/jvm-cpu-profiler.html)
 
 
