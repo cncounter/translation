@@ -60,6 +60,112 @@ visualvm --jdkhome /Users/renfufei/SOFT_ALL/jdk-11.0.6.jdk/Contents/Home
 /Applications/VisualVM.app/Contents/Resources/visualvm/etc/visualvm.conf
 
 
+## 演示程序
+
+官方给出了一个示例程序:
+
+```java
+import org.junit.Test;
+
+public class StringBuilderTest {
+
+    @Test
+    public void testMain() {
+        main(null);
+    }
+
+    public static void main(String[] args) {
+        //
+        StringBuilder builder = new StringBuilder();
+        builder.append(new char[100_0000]);
+        do {
+            builder.append(10086);
+            builder.delete(0, 5);
+        } while ("".length() < 10);
+        //
+        System.out.println(builder);
+    }
+}
+```
+
+
+## 基本使用
+
+帮助信息:
+
+```
+./profiler.sh
+Usage: ./profiler.sh [action] [options] <pid>
+Actions:
+  start             start profiling and return immediately
+  resume            resume profiling without resetting collected data
+  stop              stop profiling
+  dump              dump collected data without stopping profiling session
+  check             check if the specified profiling event is available
+  status            print profiling status
+  list              list profiling events supported by the target JVM
+  collect           collect profile for the specified period of time
+                    and then stop (default action)
+Options:
+  -e event          profiling event: cpu|alloc|lock|cache-misses etc.
+  -d duration       run profiling for <duration> seconds
+  -f filename       dump output to <filename>
+  -i interval       sampling interval in nanoseconds
+  -j jstackdepth    maximum Java stack depth
+  -t                profile different threads separately
+  -s                simple class names instead of FQN
+  -g                print method signatures
+  -a                annotate Java methods
+  -l                prepend library names
+  -o fmt            output format: flat|traces|collapsed|flamegraph|tree|jfr
+  -I include        output only stack traces containing the specified pattern
+  -X exclude        exclude stack traces with the specified pattern
+  -v, --version     display version string
+
+  --title string    FlameGraph title
+  --minwidth pct    skip frames smaller than pct%
+  --reverse         generate stack-reversed FlameGraph / Call tree
+
+  --loop time       run profiler in a loop
+  --alloc bytes     allocation profiling interval in bytes
+  --lock duration   lock profiling threshold in nanoseconds
+  --total           accumulate the total value (time, bytes, etc.)
+  --all-user        only include user-mode events
+  --sched           group threads by scheduling policy
+  --cstack mode     how to traverse C stack: fp|dwarf|lbr|no
+  --begin function  begin profiling when function is executed
+  --end function    end profiling when function is executed
+  --ttsp            time-to-safepoint profiling
+  --jfrsync config  synchronize profiler with JFR recording
+  --lib path        full path to libasyncProfiler.so in the container
+  --fdtransfer      use fdtransfer to serve perf requests
+                    from the non-privileged target
+
+<pid> is a numeric process ID of the target JVM
+      or 'jps' keyword to find running JVM automatically
+      or the application's name as it would appear in the jps tool
+
+Example: ./profiler.sh -d 30 -f profile.html 3456
+         ./profiler.sh start -i 999000 jps
+         ./profiler.sh stop -o flat jps
+         ./profiler.sh -d 5 -e alloc MyAppName
+```
+
+查看支持哪些命令
+
+```sh
+./profiler.sh list
+Basic events:
+  cpu
+  alloc
+  lock
+  wall
+  itimer
+Java method calls:
+  ClassName.methodName
+```
+
+
 ## Idea中执行CPU耗时采样分析
 
 IntelliJ IDEA Ultimate 2018.3 及以上版本内置集成了 async-profiler 工具, 更多详细信息请查看 [IntelliJ IDEA documentation](https://blog.jetbrains.com/idea/2018/09/intellij-idea-2018-3-eap-git-submodules-jvm-profiler-macos-and-linux-and-more/).
@@ -298,7 +404,7 @@ JAVA_OPTS=-Xmx6g -Xms6g -XX:+UseG1GC \
 
 切换为G1之后, 吞吐量上升了 1 倍左右。
 
-我们这里的应用场景是Kafka消费端, 在进行了多次性能优化之后, 系统吞吐量到了一定级别, 并且业务特征导致了内存中的很多对象会持续存活很多次GC周期。
+我们这里的应用场景是Kafka消费端, 在进行了多次性能优化之后, 为了继续提升CPU使用率和系统吞吐量, 引入了RxJava框架, 这种业务特征导致了内存中的很多对象会持续存活很多个GC周期。
 一个类似的案例, 是我们团队的专家解决的: 在Kafka服务端使用ZGC也会造成吞吐量瓶颈问题, 切换成G1之后吞吐量大幅上升。
 至于 Kafka 生产者, 大部分情况下使用ZGC减少业务暂停时间, 避免响应延迟的尖刺问题, 还是很有帮助的。
 
