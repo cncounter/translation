@@ -88,12 +88,45 @@ public class StringBuilderTest {
 }
 ```
 
+## 下载与安装
 
-## 基本使用
+先打开官方项目页面: 
 
-帮助信息:
+> https://github.com/jvm-profiling-tools/async-profiler
+
+其中列出了支持的各种平台:
+
+- Linux x64 (glibc): async-profiler-2.8.1-linux-x64.tar.gz
+- Linux x64 (musl): async-profiler-2.8.1-linux-musl-x64.tar.gz
+- Linux arm64: async-profiler-2.8.1-linux-arm64.tar.gz
+- macOS x64/arm64: async-profiler-2.8.1-macos.zip
+- Converters between profile formats: (JFR to Flame Graph, JFR to FlameScope, collapsed stacks to Flame Graph)
+
+最新的下载链接请参考官方页面, 部分参考下载脚本为:
 
 ```
+# Linux x64平台
+wget https://github.com/jvm-profiling-tools/async-profiler/releases/download/v2.8.1/async-profiler-2.8.1-linux-x64.tar.gz
+
+# Mac
+wget https://github.com/jvm-profiling-tools/async-profiler/releases/download/v2.8.1/async-profiler-2.8.1-macos.zip
+
+```
+
+下载之后解压即可。 
+
+这款工具使用了 Java、C、C++、shell等语言进行开发, 按照常识, 需要配置好JDK相关的 `JAVA_HOME` 和 `PATH` 环境变量。
+
+
+## 基本使用介绍
+
+
+
+### 帮助信息
+
+直接执行启动命令脚本 `profiler.sh`, 会显示帮助信息:
+
+```sql
 ./profiler.sh
 Usage: ./profiler.sh [action] [options] <pid>
 Actions:
@@ -149,12 +182,75 @@ Example: ./profiler.sh -d 30 -f profile.html 3456
          ./profiler.sh start -i 999000 jps
          ./profiler.sh stop -o flat jps
          ./profiler.sh -d 5 -e alloc MyAppName
+
 ```
 
-查看支持哪些命令
+
+下面我们对帮助信息进行基本的解读。
+
+
+### 命令格式
+
+从提示信息中可以看到, 命令的使用格式为:
+
+```
+./profiler.sh [action] [options] <pid>
+```
+
+### 指定进程
+
+先从简单的部分说起:
+
+`<pid>` 部分表示目标JVM:
+
+- 精准定位的进程ID, 一般是数字格式; 我们可以使用 `ps` 或者 'jps -v' 等命令来查看本机运行的JVM进程, 根据相应的名称和参数确定具体的PID即可;
+- 可以使用 'jps' 关键字, 自动查找执行中的JVM;
+- 还可以指定应用名称, 和 jps 工具显示的一致即可;
+
+一般来说我们直接指定进程ID会比较好, 但是在只运行单个Java进程的机器环境中, 也可以使用便捷的方式, 有时候是多台机器/多个shell窗口同时操作, 使用 shell 标签的命令广播时会很方便。
+
+### 示例用法
+
+看看示例用法:
+
+```
+# 这是最常用的方式, 分析指定进程30秒, 火焰图结果输出到html文件
+./profiler.sh -d 30 -f profile.html 3456
+
+# 在后台开始分析, 指定采样间隔, 使用 jps 关键字自动定位进程;
+./profiler.sh start -i 999000 jps
+
+# 结束分析, 指定输出格式, 使用 jps 关键字自动定位进程;
+./profiler.sh stop -o flat jps
+
+# 持续时间5秒, 内存分配分析, 使用应用名称定位JVM进程;
+./profiler.sh -d 5 -e alloc MyAppName
+```
+
+如果具有多个进程, 自动定位的方式可能会存在一些问题, 这时候使用具体的PID才能精准定位;
+
+
+### 动作列表
+
+支持的 action 动作列表为:
+
+- `start`             开始分析, 在后台异步执行, 并立即返回
+- `stop`              停止分析, 并将分析结果打印到标准输出
+- `resume`            恢复分析, 并且不要丢弃之前采集的数据
+- `dump`              导出数据, 将采集到的数据转储, 但是不停止分析过程
+- `check`             检查是否支持指定的分析事件类型
+- `status`            打印分析状态
+- `list`              列出目标JVM支持的分析事件列表
+- `collect`           采集指定的时间周期, 使用默认动作, 到时间之后自动停止。
+
+部分动作的示例如下:
+
+
+查看支持哪些事件:
 
 ```sh
 ./profiler.sh list
+
 Basic events:
   cpu
   alloc
@@ -164,6 +260,53 @@ Basic events:
 Java method calls:
   ClassName.methodName
 ```
+
+某些环境下不支持特定事件, 可以通过 `-e` 来切换其他事件。
+
+
+
+### 参数选项
+
+
+Options:
+  -e event          profiling event: cpu|alloc|lock|cache-misses etc.
+  -d duration       run profiling for <duration> seconds
+  -f filename       dump output to <filename>
+  -i interval       sampling interval in nanoseconds
+  -j jstackdepth    maximum Java stack depth
+  -t                profile different threads separately
+  -s                simple class names instead of FQN
+  -g                print method signatures
+  -a                annotate Java methods
+  -l                prepend library names
+  -o fmt            output format: flat|traces|collapsed|flamegraph|tree|jfr
+  -I include        output only stack traces containing the specified pattern
+  -X exclude        exclude stack traces with the specified pattern
+  -v, --version     display version string
+
+  --title string    FlameGraph title
+  --minwidth pct    skip frames smaller than pct%
+  --reverse         generate stack-reversed FlameGraph / Call tree
+
+  --loop time       run profiler in a loop
+  --alloc bytes     allocation profiling interval in bytes
+  --lock duration   lock profiling threshold in nanoseconds
+  --total           accumulate the total value (time, bytes, etc.)
+  --all-user        only include user-mode events
+  --sched           group threads by scheduling policy
+  --cstack mode     how to traverse C stack: fp|dwarf|lbr|no
+  --begin function  begin profiling when function is executed
+  --end function    end profiling when function is executed
+  --ttsp            time-to-safepoint profiling
+  --jfrsync config  synchronize profiler with JFR recording
+  --lib path        full path to libasyncProfiler.so in the container
+  --fdtransfer      use fdtransfer to serve perf requests
+                    from the non-privileged target
+
+
+
+### 其他
+
 
 
 ## Idea中执行CPU耗时采样分析
@@ -200,69 +343,6 @@ IntelliJ IDEA Ultimate 2018.3 及以上版本内置集成了 async-profiler 工�
 这里提供了3种界面, Flame Chart(火焰图), Call Tree(树形调用链), Method List(方法调用数统计列表), 选择你喜欢的方式查看即可。
 
 Idea还提供了一些配套的功能和菜单, 各位小伙伴可以多多探索。
-
-## 帮助信息
-
-直接执行启动命令, 会显示帮助信息:
-
-```
-./profiler.sh
-Usage: ./profiler.sh [action] [options] <pid>
-Actions:
-  start             start profiling and return immediately
-  resume            resume profiling without resetting collected data
-  stop              stop profiling
-  dump              dump collected data without stopping profiling session
-  check             check if the specified profiling event is available
-  status            print profiling status
-  list              list profiling events supported by the target JVM
-  collect           collect profile for the specified period of time
-                    and then stop (default action)
-Options:
-  -e event          profiling event: cpu|alloc|lock|cache-misses etc.
-  -d duration       run profiling for <duration> seconds
-  -f filename       dump output to <filename>
-  -i interval       sampling interval in nanoseconds
-  -j jstackdepth    maximum Java stack depth
-  -t                profile different threads separately
-  -s                simple class names instead of FQN
-  -g                print method signatures
-  -a                annotate Java methods
-  -l                prepend library names
-  -o fmt            output format: flat|traces|collapsed|flamegraph|tree|jfr
-  -I include        output only stack traces containing the specified pattern
-  -X exclude        exclude stack traces with the specified pattern
-  -v, --version     display version string
-
-  --title string    FlameGraph title
-  --minwidth pct    skip frames smaller than pct%
-  --reverse         generate stack-reversed FlameGraph / Call tree
-
-  --loop time       run profiler in a loop
-  --alloc bytes     allocation profiling interval in bytes
-  --lock duration   lock profiling threshold in nanoseconds
-  --total           accumulate the total value (time, bytes, etc.)
-  --all-user        only include user-mode events
-  --sched           group threads by scheduling policy
-  --cstack mode     how to traverse C stack: fp|dwarf|lbr|no
-  --begin function  begin profiling when function is executed
-  --end function    end profiling when function is executed
-  --ttsp            time-to-safepoint profiling
-  --jfrsync config  synchronize profiler with JFR recording
-  --lib path        full path to libasyncProfiler.so in the container
-  --fdtransfer      use fdtransfer to serve perf requests
-                    from the non-privileged target
-
-<pid> is a numeric process ID of the target JVM
-      or 'jps' keyword to find running JVM automatically
-      or the application's name as it would appear in the jps tool
-
-Example: ./profiler.sh -d 30 -f profile.html 3456
-         ./profiler.sh start -i 999000 jps
-         ./profiler.sh stop -o flat jps
-         ./profiler.sh -d 5 -e alloc MyAppName
-
-```
 
 
 ## Docker之中的使用案例
