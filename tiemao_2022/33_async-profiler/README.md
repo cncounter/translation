@@ -3,19 +3,19 @@
 
 async-profiler 是一款低开销的 Java 采样分析器(sampling profiler), 最大的亮点是避免了 [安全点偏差问题](http://psy-lob-saw.blogspot.com/2016/02/why-most-sampling-java-profilers-are.html)。
 
-大致实现原理, 是利用 HotSpot 专有的 API, 采集调用栈(stack traces)信息, 以及追踪内存分配。 兼容 OpenJDK、Oracle JDK 以及其他基于 HotSpot JVM 的 Java 运行时。
+大致实现原理, 是利用 HotSpot 专有的 API, 采集调用栈(stack traces)信息, 以及追踪内存分配信息。 兼容 OpenJDK、Oracle JDK 以及其他基于 HotSpot JVM 的 Java 运行时。
 
 
+async-profiler 可以跟踪的事件类型包括:
+
+- CPU周期
+- 硬件/软件性能计数器: 比如CPU高速缓存未命中, 代码分支未命中, 页面错误, 线程上下文切换等等.
+- Java堆内存中的对象分配
+- 锁尝试, 包括管程锁(Java object monitor) 以及 ReentrantLock
 
 
-async-profiler 可以跟踪以下类型的事件:
+很多工具内部都使用了 async-profiler, 比如 IntelliJ Idea, Arthas等等。
 
-- CPU cycles
-- Hardware and Software performance counters like cache misses, branch misses, page faults, context switches etc.
-- Allocations in Java Heap
-- Contented lock attempts, including both Java object monitors and ReentrantLocks
-
-See our Wiki or 3 hours playlist to learn about all features.
 
 ## 采样分析器
 
@@ -514,7 +514,7 @@ jcmd 7 help
 - [如何读懂火焰图？](http://www.ruanyifeng.com/blog/2017/09/flame-graph.html)
 - [A Guide to Java Profilers](https://www.baeldung.com/java-profilers)
 - [JVM CPU Profiler技术原理及源码深度解析](https://tech.meituan.com/2019/10/10/jvm-cpu-profiler.html)
-
+- [Arthas中使用profiler](https://github.com/alibaba/arthas/blob/master/site/docs/doc/profiler.md)
 
 
 > EAP, Early Access Program, 抢先体验计划;
