@@ -1,7 +1,9 @@
 # async-profiler简介
 
 
-async-profiler 是一款低开销的 Java 采样分析器(sampling profiler), 最大的亮点是避免了 [安全点偏差问题](http://psy-lob-saw.blogspot.com/2016/02/why-most-sampling-java-profilers-are.html)。
+async-profiler 是一款低开销的 Java 采样分析器(sampling profiler), 最大的亮点是避免了 `安全点偏差问题`:
+
+> http://psy-lob-saw.blogspot.com/2016/02/why-most-sampling-java-profilers-are.html
 
 其大致的实现原理, 是利用 HotSpot 专有的 API, 采集调用栈(stack traces)信息, 以及追踪内存分配信息。 兼容 OpenJDK、Oracle JDK 以及其他基于 HotSpot JVM 的 Java 运行时。
 
@@ -86,7 +88,9 @@ async-profiler的执行原理和特征可以概括为:
 - 发送信号
 - 只会采样存活线程
 - 没有安全点偏差问题
-- 无法追踪Native代码
+
+
+某些版本的JDK下无法追踪Native代码。
 
 
 ## 下载与安装
@@ -100,7 +104,7 @@ async-profiler的执行原理和特征可以概括为:
 - Linux x64 (glibc): glibc基于GNU C Library所实现的C语言标准库, 主要是桌面和服务器系统使用;
 - Linux x64 (musl): musl是一个轻量级的C标准库, 用于嵌入式系统和移动设备;
 - Linux arm64: arm芯片的系统版本
-- macOS x64/arm64: MacOS不区分芯片, 因为苹果自己做了兼容转换。
+- macOS x64/arm64: MacOS系统可以不区分芯片, 因为苹果自己做了兼容转换。
 
 页面中还提供了一个各种 profile 格式的转换器:
 
@@ -121,7 +125,7 @@ https://github.com/jvm-profiling-tools/async-profiler/releases/download/v2.8.1/a
 
 这款工具使用了 Java、C、C++、shell等多种语言进行开发; 按照常识, Java相关的工具, 需要配置好JDK相关的 `JAVA_HOME` 和 `PATH` 环境变量。
 
-> 如果网络不好, 或者下载缓慢, 可以试试 gitee 提供的克隆功能; 或者咨询其他小伙伴, 本文不方便提供支持。
+> 如果网络不好, 或者下载缓慢, 可以试试 gitee 提供的项目克隆功能; 也可以咨询其他小伙伴, 本文不方便提供支持。
 
 
 ## 基本使用介绍
@@ -203,21 +207,84 @@ Example: ./profiler.sh -d 30 -f profile.html 3456
 ./profiler.sh [action] [options] <pid>
 ```
 
-### 指定进程
-
-先从简单的部分说起:
-
-`<pid>` 部分表示目标JVM:
+先从简单的部分说起, `<pid>` 部分表示目标JVM:
 
 - 精准定位的进程ID, 一般是数字格式; 我们可以使用 `ps` 或者 'jps -v' 等命令来查看本机运行的JVM进程, 根据相应的名称和参数确定具体的PID即可;
-- 可以使用 'jps' 关键字, 自动查找执行中的JVM;
+- 可以使用 'jps' 关键字, 自动查找运行中的JVM;
 - 还可以指定应用名称, 和 jps 工具显示的一致即可;
 
-一般来说我们直接指定进程ID会比较好, 但是在只运行单个Java进程的机器环境中, 也可以使用便捷的方式, 有时候是多台机器/多个shell窗口同时操作, 使用 shell 标签的命令广播时会很方便。
+一般来说我们直接指定进程ID会比较好, 准确定位; 但是在只运行单个Java进程的机器环境中, 也可以使用便捷的方式; 比如使用多个shell窗口同时操作多台机器时, 通过命令广播, 使用自动查找的方式会很方便。
 
-### 示例用法
+命令格式中, 还支持 `[action]` 和 `[options]` 这两部分; 可以通过单复数语法看出, `[action]` 部分只支持0-1个动作, 而 `[options]` 部分支持 0-n 个选项;
 
-看看示例用法:
+帮助信息中也列出了简单的说明。
+
+
+### 动作列表
+
+支持的 action 动作列表为:
+
+- `start`             开始分析, 在后台异步执行, 并立即返回;
+- `stop`              停止分析, 并将分析结果打印到标准输出, 一般是控制台, 我们也可以将输出内容重定位到文件;
+- `resume`            恢复分析, 并且不要丢弃之前采集的数据;
+- `dump`              导出数据, 将采集到的数据转储, 但是继续分析过程而不停止;
+- `check`             检查是否支持指定的事件, 请参考下文;
+- `status`            打印当前的分析状态
+- `list`              列出目标JVM支持的分析事件列表
+- `collect`           采集指定的时间周期, 使用默认动作, 到时间之后自动停止。
+
+这些动作对应的是用法格式中的 `[action]` 这部分。
+
+
+### 参数选项
+
+参数选项对应的就是用法格式中的 `[options]` 这部分。
+
+支持的选项包括:
+
+-  `-e event`          分析什么事件,可选值为: `cpu|alloc|lock|cache-misses` 等等; 我们可以使用 list 列出目标JVM支持的分析事件列表.
+-  `-d duration`       持续多长时间, 单位是秒(second), 这是最常用的参数之一; 如果没有指定 start, resume, stop 或者 status 动作,  则到时间之后自动停止, 
+-  `-f filename`       将输出内容导出到指定文件
+-  `-i interval`       指定采样间隔时间(interval), 单位是纳秒(nanosecond, 10的负9次方)
+-  `-j jstackdepth`    指定Java调用栈的最大深度(maximum Java stack depth)
+-  `-t`                对不同的线程分别进行分析(profile different threads separately)
+-  `-s`                使用类的短名(simple class name), 而不是完全限定名(FQN)
+-  `-g`                打印方法签名
+-  `-a`                标注Java方法(annotate Java methods)
+-  `-l`                预先添加库名称(prepend library names)
+-  `-o fmt`            指定输出格式, 支持的格式为: `flat|traces|collapsed|flamegraph|tree|jfr`
+-  `-I include`        只输出包含(include)指定正则模式(pattern)的调用栈信息
+-  `-X exclude`        排除(exclude)指定正则模式(pattern)的调用栈信息
+-  `-v, --version`     显示本工具的版本信息
+
+-  `--title string`    火焰图(FlameGraph)的标题
+-  `--minwidth pct`    忽略(skip)小于 `pct%` 的帧(frames)
+-  `--reverse`         生成上下反转(stack-reversed)的火焰图/调用栈树(Call tree)
+
+-  `--loop time`       循环多次运行 profiler
+-  `--alloc bytes`     分配分析的间隔周期(interval), 单位: 字节(byte)
+-  `--lock duration`   锁分析的触发阈值(threshold), 单位是纳秒(nanosecond, 10的负9次方)
+-  `--total`           累积(accumulate)计算总的值(time, bytes, 等等.)
+-  `--all-user`        只包含用户模式的事件(user-mode events)
+-  `--sched`           通过调度策略(scheduling policy)来分组线程
+-  `--cstack mode`     如何遍历(traverse) C 的调用栈, 支持: `fp|dwarf|lbr|no`
+-  `--begin function`  在特定函数被执行时才开始进行采样分析
+-  `--end function`    在特定函数被执行时结束采样分析
+-  `--ttsp`            到达安全点的分析(time-to-safepoint profiling)
+-  `--jfrsync config`  使用 JFR 记录方式进行同步分析
+-  `--lib path`        指定容器中 `libasyncProfiler.so` 的全路径
+-  `--fdtransfer`      在非特权用户(non-privileged target)的情况下, 使用 fdtransfer 来处理 perf requests
+
+这些选项作为一个参考即可, 下面我们接着看示例用法。
+
+
+## 使用示例
+
+工具是死的, 人是活的, 具体怎么样才能灵活使用, 需要各位读者多多实践和探索。
+
+### 用法示例
+
+帮助信息中给出的用法示例为:
 
 ```
 # 这是最常用的方式, 分析指定进程30秒, 火焰图结果输出到html文件
@@ -236,33 +303,23 @@ Example: ./profiler.sh -d 30 -f profile.html 3456
 如果具有多个进程, 自动定位的方式可能会存在一些问题, 这时候使用具体的PID才能精准定位;
 
 
-### 动作列表
-
-支持的 action 动作列表为:
-
-- `start`             开始分析, 在后台异步执行, 并立即返回
-- `stop`              停止分析, 并将分析结果打印到标准输出
-- `resume`            恢复分析, 并且不要丢弃之前采集的数据
-- `dump`              导出数据, 将采集到的数据转储, 但是不停止分析过程
-- `check`             检查是否支持指定的分析事件类型
-- `status`            打印分析状态
-- `list`              列出目标JVM支持的分析事件列表
-- `collect`           采集指定的时间周期, 使用默认动作, 到时间之后自动停止。
-
-部分动作的示例如下:
+接下来, 我们介绍一些更具体的使用示例; 
 
 
-### 事件列表
+### 查看分析器支持哪些事件
 
-不同的硬件平台和操作系统, 支持的事件有所不同.
 
-查看支持哪些事件:
+不同的硬件平台和操作系统环境下, 支持的事件有所不同.
 
-MacOSX系统下执行:
+我们可以通过 list 动作查看分析器支持哪些事件。
+
+查看MacOSX系统支持哪些事件:
 
 ```sh
 # Mac系统
+# ./profiler.sh list 3456
 ./profiler.sh list
+
 
 Basic events:
   cpu
@@ -274,11 +331,12 @@ Java method calls:
   ClassName.methodName
 ```
 
-Linux系统中执行:
+查看Linux系统支持哪些事件:
 
 ```sh
 # Linux系统
-./profiler.sh list
+# ./profiler.sh list
+./profiler.sh list 3456
 
 Basic events:
   cpu
@@ -309,60 +367,27 @@ Perf events:
   uprobe:path
 ```
 
+大部分情况下, 如果JDK版本一致, list动作不指定 pid 也是可以的;
+
+还可以通过 check 动作来判断是否支持指定事件;
+
+如果某些环境下, 不支持默认事件(`cpu`)或者特定事件, 可以通过 `-e` 来切换其他事件。
+
+有些事件需要特定库或者特定权限的支持, 碰到问题可以上网搜索。
 
 
-
-某些环境下不支持特定事件, 可以通过 `-e` 来切换其他事件。
-
-
-
-### 参数选项
-
-
-Options:
-  -e event          profiling event: cpu|alloc|lock|cache-misses etc.
-  -d duration       run profiling for <duration> seconds
-  -f filename       dump output to <filename>
-  -i interval       sampling interval in nanoseconds
-  -j jstackdepth    maximum Java stack depth
-  -t                profile different threads separately
-  -s                simple class names instead of FQN
-  -g                print method signatures
-  -a                annotate Java methods
-  -l                prepend library names
-  -o fmt            output format: flat|traces|collapsed|flamegraph|tree|jfr
-  -I include        output only stack traces containing the specified pattern
-  -X exclude        exclude stack traces with the specified pattern
-  -v, --version     display version string
-
-  --title string    FlameGraph title
-  --minwidth pct    skip frames smaller than pct%
-  --reverse         generate stack-reversed FlameGraph / Call tree
-
-  --loop time       run profiler in a loop
-  --alloc bytes     allocation profiling interval in bytes
-  --lock duration   lock profiling threshold in nanoseconds
-  --total           accumulate the total value (time, bytes, etc.)
-  --all-user        only include user-mode events
-  --sched           group threads by scheduling policy
-  --cstack mode     how to traverse C stack: fp|dwarf|lbr|no
-  --begin function  begin profiling when function is executed
-  --end function    end profiling when function is executed
-  --ttsp            time-to-safepoint profiling
-  --jfrsync config  synchronize profiler with JFR recording
-  --lib path        full path to libasyncProfiler.so in the container
-  --fdtransfer      use fdtransfer to serve perf requests
-                    from the non-privileged target
-
+### 
 
 
 ### 其他
 
 
 
-## Idea中执行CPU耗时采样分析
+## 示例: Idea中执行CPU采样分析
 
-IntelliJ IDEA Ultimate 2018.3 及以上版本内置集成了 async-profiler 工具, 更多详细信息请查看 [IntelliJ IDEA documentation](https://blog.jetbrains.com/idea/2018/09/intellij-idea-2018-3-eap-git-submodules-jvm-profiler-macos-and-linux-and-more/).
+IntelliJ IDEA Ultimate 2018.3 及以上版本内置集成了 async-profiler 工具, 详细信息请查看 IntelliJ IDEA documentation:
+
+> https://blog.jetbrains.com/idea/2018/09/intellij-idea-2018-3-eap-git-submodules-jvm-profiler-macos-and-linux-and-more/
 
 虽然在开发环境执行性能分析看着有点Low, 但很多问题其实也能分析出来。 各个版本的使用大同小异, 大致流程都是一样的。
 
