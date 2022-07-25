@@ -37,14 +37,21 @@ public class StringBuilderTest {
         do {
             builder.append(10086);
             builder.delete(0, 5);
-        } while ("".length() < 10);
-        // 实际上因为死循环, 没有退出条件, 代码执行不到此处;
+        } while (Thread.currentThread().isAlive());
+        // 实际上因为类似死循环, 没有退出条件, 代码执行不到此处;
         System.out.println(builder);
     }
 }
 ```
 
-代码很简单, 一直在追加和删除 StringBuilder 中的内容; 读者可以使用最喜欢的分析器, 来分析这个程序，看看是否可以找出占用 CPU 时间最多的热点代码。
+代码很简单, 一直在 StringBuilder 末尾追加 5 个字符, 并删除 StringBuilder 开头的5哥字符; 这里真正的瓶颈是 `delete()`, 因为需要移动 100 万个字符。  
+
+大多数采样分析器的结果都有问题。 基于安全点的分析器会将 `Thread.isAlive()` 显示为热点方法。 JFR 根本不会报告任何有用的信息，因为它无法在 JVM 执行 `System.arraycopy()` 时遍历调用栈。
+
+读者也可以试试自己常用的分析器, 来分析这个程序，看看是否可以找出占用 CPU 时间最多的热点代码。
+
+> 如果手头上没有其他适合的测试程序, 可以使用这段代码来作为样本进行后续的学习。 
+
 
 接下来我们先介绍一些背景知识。
 
@@ -224,13 +231,13 @@ Example: ./profiler.sh -d 30 -f profile.html 3456
 
 支持的 action 动作列表为:
 
-- `start`             开始分析, 在后台异步执行, 并立即返回;
+- `start`             开始分析, 自动在后台异步执行, 并立即返回; 需要与 `stop` 之类的动作配合使用;
 - `stop`              停止分析, 并将分析结果打印到标准输出, 一般是控制台, 我们也可以将输出内容重定位到文件;
-- `resume`            恢复分析, 并且不要丢弃之前采集的数据;
+- `resume`            恢复分析, 并且不要丢弃之前采集的数据; 但是不会继承之前的配置选项, 每次都需要单独指定;
 - `dump`              导出数据, 将采集到的数据转储, 但是继续分析过程而不停止;
 - `check`             检查是否支持指定的事件, 请参考下文;
-- `status`            打印当前的分析状态
-- `list`              列出目标JVM支持的分析事件列表
+- `status`            打印当前的分析状态, 是否在运行, 以及运行了多长时间;
+- `list`              列出目标JVM支持的分析事件列表; 一般来说都需要指定JVM ID;
 - `collect`           采集指定的时间周期, 使用默认动作, 到时间之后自动停止。
 
 这些动作对应的是用法格式中的 `[action]` 这部分。
@@ -242,35 +249,35 @@ Example: ./profiler.sh -d 30 -f profile.html 3456
 
 支持的选项包括:
 
--  `-e event`          分析什么事件,可选值为: `cpu|alloc|lock|cache-misses` 等等; 我们可以使用 list 列出目标JVM支持的分析事件列表.
--  `-d duration`       持续多长时间, 单位是秒(second), 这是最常用的参数之一; 如果没有指定 start, resume, stop 或者 status 动作,  则到时间之后自动停止, 
--  `-f filename`       将输出内容导出到指定文件
--  `-i interval`       指定采样间隔时间(interval), 单位是纳秒(nanosecond, 10的负9次方)
--  `-j jstackdepth`    指定Java调用栈的最大深度(maximum Java stack depth)
+-  `-e event`          分析什么事件,可选值为: `cpu|alloc|lock|cache-misses` 等等; 可以通过 list 动作查询目标JVM支持哪些分析事件.
+-  `-d duration`       持续多长时间, 单位是秒(second), 这是最常用的参数之一; 如果没有指定 start, resume, stop 或者 status 动作,  则到时间之后自动停止;
+-  `-f filename`       将输出内容导出到指定文件; 支持进程PID `%p`, 当前时间戳 `%t`;
+-  `-i interval`       指定采样间隔时间(interval), 默认值为10ms; 默认单位是纳秒(nanosecond, 10的负9次方); 可以附带单位, 例如 `10ms`, `1s`, `1us` 等;
+-  `-j jstackdepth`    指定Java调用栈的最大深度(maximum Java stack depth); 允许的最大值为 2048;
 -  `-t`                对不同的线程分别进行分析(profile different threads separately)
 -  `-s`                使用类的短名(simple class name), 而不是完全限定名(FQN)
--  `-g`                打印方法签名
--  `-a`                标注Java方法(annotate Java methods)
+-  `-g`                打印方法签名(method signatures)
+-  `-a`                标注Java方法(annotate Java methods); 加上 `_[j]` 后缀;
 -  `-l`                预先添加库名称(prepend library names)
 -  `-o fmt`            指定输出格式, 支持的格式为: `flat|traces|collapsed|flamegraph|tree|jfr`
--  `-I include`        只输出包含(include)指定正则模式(pattern)的调用栈信息
--  `-X exclude`        排除(exclude)指定正则模式(pattern)的调用栈信息
--  `-v, --version`     显示本工具的版本信息
+-  `-I include`        过滤: 只输出包含(include)指定模式(pattern, 支持星号`*`)的调用栈信息; 可以指定多次
+-  `-X exclude`        过滤: 排除(exclude)包含指定模式(pattern, 支持星号`*`)的所有调用栈信息; 可以指定多次
+-  `-v, --version`     显示分析工具的库版本信息;  如果指定了 PID, 则获取指定进程加载的库版本信息. 
 
 -  `--title string`    火焰图(FlameGraph)的标题
 -  `--minwidth pct`    忽略(skip)小于 `pct%` 的帧(frames)
 -  `--reverse`         生成上下反转(stack-reversed)的火焰图/调用栈树(Call tree)
 
 -  `--loop time`       循环多次运行 profiler
--  `--alloc bytes`     分配分析的间隔周期(interval), 单位: 字节(byte)
--  `--lock duration`   锁分析的触发阈值(threshold), 单位是纳秒(nanosecond, 10的负9次方)
+-  `--alloc bytes`     分配分析模式下的间隔周期(interval), 默认单位: 字节(byte); 也可以附带单位, 例如 `100k`, `1m`, `1g` 等;
+-  `--lock duration`   锁分析模式下的触发阈值(threshold), 默认单位是纳秒(nanosecond, 10的负9次方); 即JVM等待锁超过指定阈值的部分就会记录;
 -  `--total`           累积(accumulate)计算总的值(time, bytes, 等等.)
 -  `--all-user`        只包含用户模式的事件(user-mode events)
 -  `--sched`           通过调度策略(scheduling policy)来分组线程
 -  `--cstack mode`     如何遍历(traverse) C 的调用栈, 支持: `fp|dwarf|lbr|no`
--  `--begin function`  在特定函数被执行时才开始进行采样分析
--  `--end function`    在特定函数被执行时结束采样分析
--  `--ttsp`            到达安全点的分析(time-to-safepoint profiling)
+-  `--begin function`  在特定函数被执行时自动开始采样分析
+-  `--end function`    在特定函数被执行时自动结束采样分析
+-  `--ttsp`            到达安全点的分析(time-to-safepoint profiling); 等价于 `--begin SafepointSynchronize::begin --end RuntimeService::record_safepoint_synchronized`
 -  `--jfrsync config`  使用 JFR 记录方式进行同步分析
 -  `--lib path`        指定容器中 `libasyncProfiler.so` 的全路径
 -  `--fdtransfer`      在非特权用户(non-privileged target)的情况下, 使用 fdtransfer 来处理 perf requests
@@ -376,7 +383,36 @@ Perf events:
 有些事件需要特定库或者特定权限的支持, 碰到问题可以上网搜索。
 
 
-### 
+### 指定事件
+
+-e event - the profiling event: cpu, alloc, lock, cache-misses etc. Use list to see the complete list of available events.
+
+In allocation profiling mode the top frame of every call trace is the class of the allocated object, and the counter is the heap pressure (the total size of allocated TLABs or objects outside TLAB).
+
+In lock profiling mode the top frame is the class of lock/monitor, and the counter is number of nanoseconds it took to enter this lock/monitor.
+
+Two special event types are supported on Linux: hardware breakpoints and kernel tracepoints:
+
+-e mem:<func>[:rwx] sets read/write/exec breakpoint at function <func>. The format of mem event is the same as in perf-record. Execution breakpoints can be also specified by the function name, e.g. -e malloc will trace all calls of native malloc function.
+-e trace:<id> sets a kernel tracepoint. It is possible to specify tracepoint symbolic name, e.g. -e syscalls:sys_enter_open will trace all open syscalls.
+
+
+By default, C stack is shown in cpu, itimer, wall-clock and perf-events profiles. 
+
+Java-level events like alloc and lock collect only Java stack.
+
+### 格式
+
+-o fmt - specifies what information to dump when profiling ends. fmt can be one of the following options:
+
+traces[=N] - dump call traces (at most N samples);
+flat[=N] - dump flat profile (top N hot methods);
+can be combined with traces, e.g. traces=200,flat=200
+jfr - dump events in Java Flight Recorder format readable by Java Mission Control. This does not require JDK commercial features to be enabled.
+collapsed - dump collapsed call traces in the format used by FlameGraph script. This is a collection of call stacks, where each line is a semicolon separated list of frames followed by a counter.
+flamegraph - produce Flame Graph in HTML format.
+tree - produce Call Tree in HTML format.
+--reverse option will generate backtrace view.
 
 
 ### 其他
@@ -436,7 +472,7 @@ docker container exec -it test-docker-container-id /bin/bash
 
 ```
 
-在Docker之中执行一些解压之类的准备工作:
+因为是压缩包, 所以我们在Docker之中执行一些解压之类的准备工作:
 
 ```
 # 解压
@@ -454,6 +490,7 @@ jps -v
       -XX:ZCollectionInterval=50 -Xlog:gc*=info:file=gc.log:time:filecount=0
 651 Jps -Dapplication.home=/usr/local/openjdk-11 -Xms8m -Djdk.module.main=jdk.jcmd
 ```
+
 
 可以看到, 我们的目标进程PID=7; 为什么是7呢? 这是因为使用了自定义的Docker入口脚本, 并且在其中执行了一些初始化操作。
 
@@ -587,6 +624,7 @@ RxJava框架的一个特征是内存中分配的对象会持续存活多个GC周
 - [async-profiler GitHub项目首页](https://github.com/jvm-profiling-tools/async-profiler)
 - [async-profiler WIKI](https://github.com/jvm-profiling-tools/async-profiler/wiki)
 - [Async-profiler作者的分享视频](https://www.youtube.com/playlist?list=PLNCLTEx3B8h4Yo_WvKWdLvI9mj1XpTKBr)
+- [Async-profiler作者的分享PPT: java-profiling.pdf)](https://github.com/apangin/java-profiling-presentation/blob/master/presentation/java-profiling.pdf)
 - [安全点偏差问题: Why (Most) Sampling Java Profilers Are Fucking Terrible](http://psy-lob-saw.blogspot.com/2016/02/why-most-sampling-java-profilers-are.html)
 - [火焰图(CPU Flame Graphs)](https://www.brendangregg.com/FlameGraphs/cpuflamegraphs.html)
 - [如何读懂火焰图？](http://www.ruanyifeng.com/blog/2017/09/flame-graph.html)
@@ -595,4 +633,3 @@ RxJava框架的一个特征是内存中分配的对象会持续存活多个GC周
 - [Arthas中使用profiler](https://github.com/alibaba/arthas/blob/master/site/docs/doc/profiler.md)
 
 
-> EAP, Early Access Program, 抢先体验计划;

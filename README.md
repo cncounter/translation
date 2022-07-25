@@ -418,6 +418,7 @@ GitHub地址: <https://github.com/cncounter/translation>
 
 - `toc`: Table of Contents; 目录; 某些md解析系统支持 `[TOC]` 自动生成目录。
 - `FQN`: Fully Qualified Name; Java中Class的完全限定名。
+- `EAP`: Early Access Program, 抢先体验计划。
 
 
 ### 推荐书单
