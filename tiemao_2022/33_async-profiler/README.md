@@ -470,14 +470,16 @@ jps -v
 [ERROR] No access to perf events. Try --fdtransfer or --all-user option or 'sysctl kernel.perf_event_paranoid=1'
 ```
 
-exit 退回到宿主机, 在宿主机中使用root权限执行:
+看到报错了,  `No access to perf events`, 给了一些提示信息;
 
-```
+按照提示, 我们 exit 退回到宿主机, 在宿主机中以 root 权限执行命令:
+
+```sh
 sysctl kernel.perf_event_paranoid=1
 
 ```
 
-然后继续进入Docker之中执行:
+然后再次进入Docker之中执行:
 
 ```
 ./profiler.sh -d 30 7
@@ -490,14 +492,14 @@ sysctl kernel.perf_event_paranoid=1
 [ERROR] Perf events unavailable
 ```
 
-怎么办? 在官方仓库中搜索 `Perf events unavailable`, 找到一个解决方案:
+还是不行, 怎么办? 在官方仓库中搜索 `Perf events unavailable`, 找到一个解决方案; 使用 `-e` 选项, 切换监听的事件为 `itimer`:
 
 ```
 ./profiler.sh -e itimer -d 30 7
 Profiling for 30 seconds
 ```
 
-输出的内容太长, 我们将其重定向到一个文件中:
+输出的内容太长, 不好分析, 我们将其重定向到一个文件中:
 
 
 ```
@@ -509,7 +511,9 @@ Done
 
 分析导出的结果, 这里是:
 
-```
+```sh
+cat profiler_log.txt
+
 --- Execution profile ---
 Total samples       : 72809
 GC_active           : 1 (0.00%)
@@ -527,11 +531,11 @@ not_walkable_Java   : 174 (0.24%)
   [ 7] start_thread
 ```
 
-发现是ZGC占用的CPU时间比较多; 
+可以发现, 是ZGC的操作占用的CPU时间比较多; 
 
-这里能看到 async-profiler 的优势了, 如果是普通的线程栈抽样工具, 是很难排查到这些内部的线程的。
+这里能看到 async-profiler 的优势了, 如果是普通的线程栈抽样工具, 很难排查到这些内部线程的调用栈。
 
-殊途同归, 我们通过top命令来确认一下, 结果如下所示:
+殊途同归, 我们通过top命令再来确认一下, 结果如下所示:
 
 
 ```
@@ -545,7 +549,9 @@ top -H
   148 root      20   0   17.0t  18.2g  17.3g R  31.9 189.3 328:43.10 input-exec
 ```
 
-继续观察和分析, 发现确实是GC的问题。 因为G1的吞吐量比ZGC好一些, 我们换成G1垃圾收集器试试.
+发现确实是GC占用了大量CPU的问题。 
+
+因为G1的吞吐量在高负载场景下比ZGC好一些, 我们换成G1垃圾收集器, 重新启动应用.
 
 ```
 JAVA_OPTS_Z=-Xmx6g -Xms5g \
@@ -558,25 +564,21 @@ JAVA_OPTS=-Xmx6g -Xms6g -XX:+UseG1GC \
 
 ```
 
-切换为G1之后, 吞吐量上升了 1 倍左右。
+切换为G1之后, 继续观察和分析, 发现吞吐量上升了 1 倍左右。
 
-我们这里的应用场景是Kafka消费端, 在进行了多次性能优化之后, 为了继续提升CPU使用率和系统吞吐量, 引入了RxJava框架, 这种业务特征导致了内存中的很多对象会持续存活很多个GC周期。
-一个类似的案例, 是我们团队的专家解决的: 在Kafka服务端使用ZGC也会造成吞吐量瓶颈问题, 切换成G1之后吞吐量大幅上升。
-至于 Kafka 生产者, 大部分情况下使用ZGC减少业务暂停时间, 避免响应延迟的尖刺问题, 还是很有帮助的。
+我们这里的应用场景是Kafka消费端, 在进行了多次性能优化和迭代升级之后, 为了继续提升CPU使用率和系统吞吐量, 引入了RxJava框架。 
+RxJava框架的一个特征是内存中分配的对象会持续存活多个GC周期, 这就是ZGC消耗了很多CPU的原因。
 
-看来, 虽然 ZGC 在暂停时间方面优势很大，但是在高并发高负载高分配的场景下, 吞吐量可能并不如G1。
-我们的很多业务系统更关注响应延迟和GC暂停时间, 所以还需要具体情况具体分析。
+一个类似的案例, 是我们团队的性能专家发现: 在Kafka服务端使用ZGC也会造成吞吐量瓶颈问题, 切换成G1之后吞吐量得到大幅上升。
+至于 Kafka 消息的生产端, 在大部分情况下使用ZGC能有效减少业务暂停时间, 避免响应延迟的尖刺问题, 这种情况下使用ZGC还是很有帮助的。
 
-
-持续运行, 持续监控。
-
+看来, 虽然 ZGC 在暂停时间方面优势很大，但是在高并发高负载高分配的压力环境下, 吞吐量并不如G1。
+目前，业界的很多业务系统更关注响应延迟和GC暂停时间, 所以是否使用ZGC还需要根据具体情况具体分析。
 
 
-```
-jcmd
+持续运行, 持续监控。 优化之路永无止境, 关键还是看工程领域的核心: ROI.
 
-jcmd 7 help
-```
+
 
 
 
