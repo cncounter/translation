@@ -1040,3 +1040,4 @@ uint16_t crc16(const char *buf, int len) {
 - [Redis Documentation](https://redis.io/documentation)
 - [Redis cluster tutorial](https://redis.io/topics/cluster-tutorial)
 - [Redis Cluster Specification](https://redis.io/topics/cluster-spec)
+- [Redis cluster specification - Detailed](https://redis.io/docs/reference/cluster-spec/)

@@ -46,7 +46,7 @@ public class StringBuilderTest {
 
 代码很简单, 一直在 StringBuilder 末尾追加 5 个字符, 并删除 StringBuilder 开头的5哥字符; 这里真正的瓶颈是 `delete()`, 因为需要移动 100 万个字符。  
 
-大多数采样分析器的结果都有问题。 基于安全点的分析器会将 `Thread.isAlive()` 显示为热点方法。 JFR 根本不会报告任何有用的信息，因为它无法在 JVM 执行 `System.arraycopy()` 时遍历调用栈。
+大多数采样分析器的结果都有问题。 基于安全点的分析器会将 `Thread.isAlive()` 显示为热点方法。 JFR 则根本不会报告任何有用的信息，因为它无法在 JVM 执行 `System.arraycopy()` 时遍历调用栈。
 
 读者也可以试试自己常用的分析器, 来分析这个程序，看看是否可以找出占用 CPU 时间最多的热点代码。
 
