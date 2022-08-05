@@ -193,12 +193,6 @@ async-profiler 具有 TLAB 驱动的采样功能。 依赖于 HotSpot 特定的�
 ### Java方法分析模式(Java method profiling)
 
 
-`-e ClassName.methodName` option instruments the given Java method in order to record all invocations of this method with the stack traces.
-
-Example: `-e java.util.Properties.getProperty` will profile all places where `getProperty` method is called from.
-
-Only non-native Java methods are supported. To profile a native method, use hardware breakpoint event instead, e.g. `-e Java_java_lang_Throwable_fillInStackTrace`
-
 可以通过 `-e ClassName.methodName` 选项, 指定需要检测的 Java 方法, 以获取调用栈中所有调用该方法的记录。
 
 例如:  `-e java.util.Properties.getProperty` 将分析调用 `getProperty` 方法的所有位置。
@@ -206,9 +200,13 @@ Only non-native Java methods are supported. To profile a native method, use hard
 此模式仅支持非本地(non-native)的 Java 方法。 要分析 native 方法，请改用硬件断点事件，例如 `-e Java_java_lang_Throwable_fillInStackTrace`
 
 
-### Wall clock profiling
+### 挂钟分析(Wall clock profiling)
 
-> https://github.com/jvm-profiling-tools/async-profiler/wiki/Wall-clock-profiling
+可以通过  `-e wall` 选项, 让 async-profiler 在每个给定的时间段内, 对所有线程进行平均采样，而不管线程状态：Running(运行), Sleeping(睡眠) 还是 Blocked(阻塞)。 例如，这在分析应用程序启动时间(start-up time)时会很有帮助。
+
+挂钟分析, 在每线程模式(`-t`)下最有用。
+
+示例: `./profiler.sh -e wall -t -i 5ms -f result.html 8983`
 
 
 ### Embedded profiling as Java Agent
