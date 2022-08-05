@@ -449,6 +449,77 @@ Alternatively, if changing Docker configuration is not possible, you may fall ba
 如果无法更改 Docker 配置的话，我们也可以降级到 `-e itimer` 分析模式，具体细节可以参考: [故障排除](https://github.com/jvm-profiling-tools/async-profiler/wiki/Troubleshooting)。
 
 
+### 疑难问题排查与错误处理(Troubleshooting)
+
+> Failed to change credentials to match the target process: Operation not permitted
+
+
+Due to limitation of HotSpot Dynamic Attach mechanism, the profiler must be run by exactly the same user (and group) as the owner of target JVM process. If profiler is run by a different user, it will try to automatically change current user and group. This will likely succeed for `root`, but not for other users, resulting in the above error.
+
+> Could not start attach mechanism: No such file or directory
+
+The profiler cannot establish communication with the target JVM through UNIX domain socket.
+
+Usually this happens in one of the following cases:
+
+1. Attach socket `/tmp/.java_pidNNN` has been deleted. It is a common practice to clean `/tmp` automatically with some scheduled script. Configure the cleanup software to exclude `.java_pid*` files from deletion.
+
+  How to check: `run lsof -p PID | grep java_pid`
+
+  If it lists a socket file, but the file does not exist, then this is exactly the described problem.
+
+2. JVM is started with `-XX:+DisableAttachMechanism` option.
+
+3. `/tmp` directory of Java process is not physically the same directory as `/tmp` of your shell, because Java is running in a container or in `chroot` environment. `jattach` attempts to solve this automatically, but it might lack the required permissions to do so.
+
+  Check `strace build/jattach PID properties`
+
+4. JVM is busy and cannot reach a safepoint. For instance, JVM is in the middle of long-running garbage collection.
+
+  How to check: run kill -3 PID. Healthy JVM process should print a thread dump and heap info in its console.
+
+
+> `Failed to inject profiler into <pid>`
+
+
+The connection with the target JVM has been established, but JVM is unable to load profiler shared library. Make sure the user of JVM process has permissions to access `libasyncProfiler.so` by exactly the same absolute path. For more information see [#78](https://github.com/jvm-profiling-tools/async-profiler/issues/78).
+
+> No access to perf events. Try `--all-user` option or `'sysctl kernel.perf_event_paranoid=1'`
+
+or
+
+> Perf events unavailable
+
+`perf_event_open()` syscall has failed.
+
+Typical reasons include:
+
+- `/proc/sys/kernel/perf_event_paranoid` is set to restricted mode (`>=2`).
+- seccomp disables perf_event_open API in a container.
+- OS runs under a hypervisor that does not virtualize performance counters.
+- perf_event_open API is not supported on this system, e.g. WSL.
+
+If changing the configuration is not possible, you may fall back to -e itimer profiling mode. It is similar to cpu mode, but does not require perf_events support. As a drawback, there will be no kernel stack traces.
+
+> No AllocTracer symbols found. Are JDK debug symbols installed?
+
+The OpenJDK debug symbols are required for allocation profiling. See [Installing Debug Symbols](./README.md) for more details. If the error message persists after a successful installation of the debug symbols, it is possible that the JDK was upgraded when installing the debug symbols. In this case, profiling any Java process which had started prior to the installation will continue to display this message, since the process had loaded the older version of the JDK which lacked debug symbols. Restarting the affected Java processes should resolve the issue.
+
+> VMStructs unavailable. Unsupported JVM?
+
+JVM shared library does not export `gHotSpotVMStructs*` symbols - apparently this is not a HotSpot JVM. Sometimes the same message can be also caused by an incorrectly built JDK (see [#218](https://github.com/jvm-profiling-tools/async-profiler/issues/218) ). In these cases installing JDK debug symbols may solve the problem.
+
+> Could not parse symbols from `<libname.so>`
+
+Async-profiler was unable to parse non-Java function names because of the corrupted contents in `/proc/[pid]/maps`. The problem is known to occur in a container when running Ubuntu with Linux kernel 5.x. This is the OS bug, see https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1843018 .
+
+> Could not open output file
+
+Output file is written by the target JVM process, not by the profiler script. Make sure the path specified in -f option is correct and is accessible by the JVM.
+
+> https://github.com/jvm-profiling-tools/async-profiler/wiki/Troubleshooting
+
+
 ## 使用示例
 
 工具是死的, 人是活的, 具体怎么样才能灵活使用, 需要各位读者多多实践和探索。
@@ -787,7 +858,6 @@ RxJava框架的一个特征是内存中分配的对象会持续存活多个GC周
 
 
 持续运行, 持续监控。 优化之路永无止境, 关键还是看工程领域的核心: ROI.
-
 
 
 
