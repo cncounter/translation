@@ -71,7 +71,7 @@ sampling profiler, 采样分析器, 有时候也称为 "抽样分析器"。
 
 通过 CPU Profiling 技术得到这些信息之后, 我们就可以针对热点代码进行专门的优化，从而解决很多性能领域的疑难问题，提升吞吐量和响应速度，同时也降低资源消耗。
 
-除CPU采样分析器之外, 常见的还有分配分析器(Allocation Profiler), 可用来确定哪些代码执行路径分配了大量的对象，从而针对性优化。 内存的分配分析以及对象的内存占用是另一个话题, 请参考其他章节。
+除CPU采样分析器之外, 常见的还有分配分析器(Allocation Profiler), 可用来确定哪些代码执行路径分配了大量的对象，从而针对性优化。 内存的分配分析以及对象的内存占用也可以参考前面的章节。
 
 
 ## 其他分析器存在的问题 
@@ -98,6 +98,112 @@ async-profiler的执行原理和特征可以概括为:
 
 
 某些版本的JDK下无法追踪Native代码。
+
+
+### CPU分析模式(CPU profiling)
+
+
+在CPU分析模式下，分析器收集以下这些类型的调用栈跟踪样本: 
+
+- Java方法
+- 本地调用(native call)
+- JVM 代码
+- 内核函数
+
+一般的实现方法, 是接收由 perf_events 生成的调用栈, 并将这些信息与 AsyncGetCallTrace 生成的调用栈进行匹配，以便生成 Java 和 native代码的准确分析。 此外, 在某些极端情况下, 如果 AsyncGetCallTrace 失效, async-profiler 提供了一种可以恢复栈跟踪的降级方案。
+
+如果直接通过 Java agent 方式使用 perf_events, 是将地址转换为 Java 方法的名称; 与此相比, 这种方案的优点在于:
+
+- 兼容较老的 Java 版本, 不需要指定 `-XX:+PreserveFramePointer`, 因为这个参数在 JDK 8u60 及更高版本中才支持。
+- 避免了 `-XX:+PreserveFramePointer` 造成的额外性能开销，某些情况下这种开销可能高达 10%。
+- 不需要生成映射文件(map file)来将 Java 代码地址映射为方法名称。
+- 兼容解释器模式下的栈帧(frame)。
+- 不需要写入在用户空间脚本中进行后续处理的 perf.data 文件。
+
+If you wish to resolve frames within libjvm, the debug symbols are required.
+
+
+如果需要解析 libjvm 中的帧，则需要使用到调试符号表:
+
+#### 调试符号表
+
+The allocation profiler requires HotSpot debug symbols. Oracle JDK already has them embedded in libjvm.so, but in OpenJDK builds they are typically shipped in a separate package. For example, to install OpenJDK debug symbols on Debian / Ubuntu, run:
+
+分配分析器等功能需要使用到 HotSpot 调试符号表(debug symbols)。 
+
+> Oracle JDK 与 OpenJDK 的区别:
+> Oracle JDK 已经将调试符号表嵌入到 libjvm.so 中;
+> 但在 OpenJDK 的构建方式中，通常是在单独的包中提供。 
+
+1. 要在 Debian/Ubuntu 系统上安装 OpenJDK 调试符号表。
+
+
+OpenJDK 8 可以使用以下命令：
+
+> `apt install openjdk-8-dbg`
+
+OpenJDK 11可以使用以下命令：
+
+> `apt install openjdk-11-dbg`
+
+
+2. 在 CentOS, RHEL 以及 RPM-based 的 Linux 系统中, 可以通过 debuginfo-install 工具来安装:
+
+> `debuginfo-install java-1.8.0-openjdk`
+
+
+3. 在 Gentoo 系统中，可以在构建时对每个包设置 `FEATURES="nostrip"`, 让打包的 icedtea OpenJDK 保留调试符号表。
+
+
+可以使用 gdb 工具来验证是否为 libjvm 库正确安装了调试符号表。 例如在 Linux 上执行：
+
+
+> `gdb $JAVA_HOME/lib/server/libjvm.so -ex 'info address UseG1GC'`
+
+This command's output will either contain Symbol "UseG1GC" is at 0xxxxx or No symbol "UseG1GC" in current context.
+
+此命令的输出可能是:
+
+- 正确安装的消息类似于: `Symbol "UseG1GC" is at 0xxxxx` 
+- 没有找到的提示消息为: `No symbol "UseG1GC" in current context`
+
+
+### 分配分析模式(Allocation profiling)
+
+async-profiler 也支持分配分析模式, 可以通过数据采集, 确定分配了大量堆内存的代码位置。
+
+async-profiler 没有使用侵入性的技术，比如字节码检测(bytecode instrumentation), 或者昂贵的 DTrace 探测器等技术。 因为这类技术会对系统性能产生很大影响。  也不会影响逃逸分析, 或者阻止分配擦除之类的 JIT 优化。 
+而是只测量实际的堆内存分配。
+
+async-profiler 具有 TLAB 驱动的采样功能。 依赖于 HotSpot 特定的回调钩子来接收两种通知:
+
+
+- 当一个对象被分配到新创建的TLAB中 (火焰图中的水色帧, aqua frames);
+- 当一个对象被分配到 TLAB 之外的慢速路径上时（棕色帧, brown frames）。
+
+
+这意味着并不是每次对象分配都会统计, 而是只在每分配 `N` kB空间时计数， 其中 N 是 TLAB 的平均大小。 这使得堆内存采样非常轻量, 适用于生产环境。 另一方面，收集的数据可能不完整，尽管在实践使用时一般都能反映出最高的分配来源。
+
+
+可以使用 `--alloc` 选项来调整采样间隔。 例如参数 `--alloc 500k` 将在平均分配 500 KB 的内存空间后进行一次采样。 但是，如果配置的参数小于一块 TLAB 空间大小, 则参数无效。
+
+支持 TLAB 回调的最低版本为JDK 7u40。
+
+
+### Java method profiling
+
+> https://github.com/jvm-profiling-tools/async-profiler/wiki/Java-method-profiling
+
+
+### Wall clock profiling
+
+> https://github.com/jvm-profiling-tools/async-profiler/wiki/Wall-clock-profiling
+
+
+### Embedded profiling as Java Agent
+
+
+> https://github.com/jvm-profiling-tools/async-profiler/wiki/Embedded-profiling-as-Java-Agent
 
 
 ## 下载与安装
@@ -285,6 +391,35 @@ Example: ./profiler.sh -d 30 -f profile.html 3456
 这些选项作为一个参考即可, 下面我们接着看示例用法。
 
 
+### 容器环境中的注意事项
+
+async-profiler 可以对 Docker 容器或者 LXC 容器中运行的 Java 进程进行分析:
+
+- 既可以在容器内部进行分析
+- 也可以在宿主机系统中分析
+
+When profiling from the host, pid should be the Java process ID in the host namespace. Use ps aux | grep java or docker top <container> to find the process ID.
+
+如果是在宿主机进行分析，对应的 pid 应该是主机命名空间中的 Java 进程ID。 可以使用下面的命令来查找进程ID:
+
+- `ps aux | grep java`
+- `docker top <container>`
+
+
+需要使用宿主机的超级权限用户(privileged user, 一般是 root) 来启动 async-profiler, 分析器会自动切换到正确的 pid/mount 命名空间, 并更改用户凭据以匹配目标进程。 
+当然, 还要确保目标容器可以通过与宿主机上相同的绝对路径能访问到 `libasyncProfiler.so` 库。
+
+By default, Docker container restricts the access to perf_event_open syscall. So, in order to allow profiling inside a container, you'll need to modify seccomp profile or disable it altogether with --security-opt seccomp=unconfined option. In addition, --cap-add SYS_ADMIN may be required.
+
+Alternatively, if changing Docker configuration is not possible, you may fall back to -e itimer profiling mode, see Troubleshooting.
+
+默认情况下，Docker 容器限制了对 perf_event_open 系统调用的访问。 
+如果要允许在容器内进行分析，我们需要修改 seccomp profile 配置文件, 或者使用 `--security-opt seccomp=unconfined` 选项完全禁用它。
+此外，可能还需要 `--cap-add SYS_ADMIN`。
+
+如果无法更改 Docker 配置的话，我们也可以降级到 `-e itimer` 分析模式，具体细节可以参考: [故障排除](https://github.com/jvm-profiling-tools/async-profiler/wiki/Troubleshooting)。
+
+
 ## 使用示例
 
 工具是死的, 人是活的, 具体怎么样才能灵活使用, 需要各位读者多多实践和探索。
@@ -460,6 +595,15 @@ Idea还提供了一些配套的功能和菜单, 各位小伙伴可以多多探�
 ## Docker之中的使用案例
 
 
+Linux宿主机上, 使用超级管理员权限执行:
+
+```sh
+# sudo su
+sysctl kernel.perf_event_paranoid=1
+sysctl kernel.kptr_restrict=0
+```
+
+
 假设我们的 docker 容器名称为 `test-docker-container-id`。
 
 进入Docker:
@@ -618,7 +762,6 @@ RxJava框架的一个特征是内存中分配的对象会持续存活多个GC周
 
 
 
-
 ## 相关链接
 
 - [async-profiler GitHub项目首页](https://github.com/jvm-profiling-tools/async-profiler)
@@ -631,5 +774,5 @@ RxJava框架的一个特征是内存中分配的对象会持续存活多个GC周
 - [A Guide to Java Profilers](https://www.baeldung.com/java-profilers)
 - [JVM CPU Profiler技术原理及源码深度解析](https://tech.meituan.com/2019/10/10/jvm-cpu-profiler.html)
 - [Arthas中使用profiler](https://github.com/alibaba/arthas/blob/master/site/docs/doc/profiler.md)
-
+- [JVM中TLAB的技术细节](https://alidg.me/blog/2019/6/21/tlab-jvm)
 
