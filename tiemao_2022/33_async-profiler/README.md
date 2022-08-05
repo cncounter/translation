@@ -209,10 +209,30 @@ async-profiler 具有 TLAB 驱动的采样功能。 依赖于 HotSpot 特定的�
 示例: `./profiler.sh -e wall -t -i 5ms -f result.html 8983`
 
 
-### Embedded profiling as Java Agent
+### 以Java Agent方式内置启动async-profiler
+
+If you need to profile some code as soon as the JVM starts up, instead of using the `profiler.sh` script, it is possible to attach async-profiler as an agent on the command line. For example:
+
+如果不想用 `profiler.sh` 脚本的方式启动, 我们可以在Java程序的启动命令中设置 async-profiler 作为agent, 这样就可以在 JVM 启动后立即分析某些代码。 例如:
+
+> $ `java -agentpath:/path/to/libasyncProfiler.so=start,event=cpu,file=profile.html ...`
 
 
-> https://github.com/jvm-profiling-tools/async-profiler/wiki/Embedded-profiling-as-Java-Agent
+Agent library is configured through the JVMTI argument interface. The format of the arguments string is described in the source code. The `profiler.sh` script actually converts command line arguments to that format.
+
+For instance, `-e wall` is converted to `event=wall`, `-f profile.html` is converted to `file=profile.html`, and so on. However, some arguments are processed directly by `profiler.sh` script. E.g. `-d 5` results in 3 actions: attaching profiler agent with start command, sleeping for 5 seconds, and then attaching the agent again with stop command.
+
+Agent库是通过 JVMTI 参数接口配置的。 参数字符串的格式也可以翻看源代码。
+
+实际上 `profiler.sh` 脚本也是将命令行参数转换为这种格式的。
+
+例如，`-e wall` 会转换为 `event=wall`，`-f profile.html` 会转换成 `file=profile.html`，等等。 
+当然，有些参数是直接由 `profiler.sh` 脚本处理的。 
+例如。 `-d 5` 导致 3 个动作:
+
+- 使用 `start` 命令挂载 agent; 
+- 休眠 5 秒;
+- 然后再使用 `stop` 命令再次挂载 agent。
 
 
 ## 下载与安装
