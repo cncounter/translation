@@ -386,7 +386,7 @@ Example: ./profiler.sh -d 30 -f profile.html 3456
 
 -  `-e event`          分析什么事件,可选值为: `cpu|alloc|lock|cache-misses` 等等; 可以通过 list 动作查询目标JVM支持哪些分析事件.
 -  `-d duration`       持续多长时间, 单位是秒(second), 这是最常用的参数之一; 如果没有指定 start, resume, stop 或者 status 动作,  则到时间之后自动停止;
--  `-f filename`       将输出内容导出到指定文件; 支持进程PID `%p`, 当前时间戳 `%t`;
+-  `-f filename`       将输出内容导出到指定文件; 支持进程PID `%p`, 当前时间戳 `%t`; 如果文件名后缀为  `.html` 则自动设置为火焰图( `-o flamegraph` );
 -  `-i interval`       指定采样间隔时间(interval), 默认值为10ms; 默认单位是纳秒(nanosecond, 10的负9次方); 可以附带单位, 例如 `10ms`, `1s`, `1us` 等;
 -  `-j jstackdepth`    指定Java调用栈的最大深度(maximum Java stack depth); 允许的最大值为 2048;
 -  `-t`                对不同的线程分别进行分析(profile different threads separately)
@@ -888,6 +888,7 @@ RxJava框架的一个特征是内存中分配的对象会持续存活多个GC周
 - [Async-profiler作者的分享视频](https://www.youtube.com/playlist?list=PLNCLTEx3B8h4Yo_WvKWdLvI9mj1XpTKBr)
 - [Async-profiler作者的分享PPT: java-profiling.pdf)](https://github.com/apangin/java-profiling-presentation/blob/master/presentation/java-profiling.pdf)
 - [安全点偏差问题: Why (Most) Sampling Java Profilers Are Fucking Terrible](http://psy-lob-saw.blogspot.com/2016/02/why-most-sampling-java-profilers-are.html)
+- [Profiling Java Applications with Async Profiler](https://hackernoon.com/profiling-java-applications-with-async-profiler-049s2790)
 - [火焰图(CPU Flame Graphs)](https://www.brendangregg.com/FlameGraphs/cpuflamegraphs.html)
 - [如何读懂火焰图？](http://www.ruanyifeng.com/blog/2017/09/flame-graph.html)
 - [A Guide to Java Profilers](https://www.baeldung.com/java-profilers)
