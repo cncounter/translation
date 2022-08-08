@@ -449,75 +449,83 @@ Alternatively, if changing Docker configuration is not possible, you may fall ba
 如果无法更改 Docker 配置的话，我们也可以降级到 `-e itimer` 分析模式，具体细节可以参考: [故障排除](https://github.com/jvm-profiling-tools/async-profiler/wiki/Troubleshooting)。
 
 
-### 疑难问题排查与错误处理(Troubleshooting)
+### 环境问题排查与报错处理(Troubleshooting)
 
 > Failed to change credentials to match the target process: Operation not permitted
 
+直接翻译为: `为匹配目标进程,切换用户失败: 操作不被允许`; 由于 HotSpot Dynamic Attach 机制的限制, 运行 async-profiler 的用户, 必须与目标 JVM 进程的所有者是同一个用户(并且是相同组)。 
+如果 async-profiler 由其他系统用户启动, 则会尝试自动更改当前用户和组。 这对于 `root` 用户来说可能会成功，但对于其他用户则可能会失败，从而导致上述错误。
 
-Due to limitation of HotSpot Dynamic Attach mechanism, the profiler must be run by exactly the same user (and group) as the owner of target JVM process. If profiler is run by a different user, it will try to automatically change current user and group. This will likely succeed for `root`, but not for other users, resulting in the above error.
 
 > Could not start attach mechanism: No such file or directory
 
-The profiler cannot establish communication with the target JVM through UNIX domain socket.
+直接翻译为: `不能开启挂载机制: 没有对应的文件或目录`; async-profiler 无法通过 UNIX domain socket 与目标 JVM 建立通信。
 
-Usually this happens in one of the following cases:
+可能是这些原因:
 
-1. Attach socket `/tmp/.java_pidNNN` has been deleted. It is a common practice to clean `/tmp` automatically with some scheduled script. Configure the cleanup software to exclude `.java_pid*` files from deletion.
+- 1. 挂接的套接字(Attach socket) `/tmp/.java_pidNNN` 被删除。 可能是Linux系统的一些自动清理脚本定期将  `/tmp` 清空。 如果是这种情况, 可以设置清理程序, 不要清理 `.java_pid*` 之类的文件。
 
-  How to check: `run lsof -p PID | grep java_pid`
+  检查方式: `run lsof -p PID | grep java_pid`
 
-  If it lists a socket file, but the file does not exist, then this is exactly the described problem.
+  如果结果输出了 socket 文件, 但该文件不存在, 那么这就定位问题了。
 
-2. JVM is started with `-XX:+DisableAttachMechanism` option.
+- 2. JVM启动时指定了 `-XX:+DisableAttachMechanism` 选项, 禁用了挂载机制, 这时候根据需要处理即可。
 
-3. `/tmp` directory of Java process is not physically the same directory as `/tmp` of your shell, because Java is running in a container or in `chroot` environment. `jattach` attempts to solve this automatically, but it might lack the required permissions to do so.
+- 3. Java进程指定的 `/tmp` 目录与shell环境的 `/tmp` 目录不一致, 因为Java可能运行在容器或`chroot` 环境中。 `jattach` 会自动尝试解决该问题，但可能缺乏所需的权限。
 
-  Check `strace build/jattach PID properties`
+  检查方式: `strace build/jattach PID properties`
 
-4. JVM is busy and cannot reach a safepoint. For instance, JVM is in the middle of long-running garbage collection.
+- 4. JVM繁忙, 无法到达安全点。 例如，JVM 正在进行长时间运行的垃圾收集。
 
-  How to check: run kill -3 PID. Healthy JVM process should print a thread dump and heap info in its console.
+  检查方式: 运行 `kill -3 PID`。 健康的 JVM 进程会在自身对应的制台中打印线程转储和堆内存信息。
 
 
 > `Failed to inject profiler into <pid>`
 
+直接翻译为: `对xxx进程注入profiler失败`;  与目标 JVM 能正常建立连接, 但 JVM 无法加载 profiler 共享库。 请确保启动 JVM 进程的用户有权限通过相同的绝对路径访问 `libasyncProfiler.so` 库。 更多信息请参阅 [#78](https://github.com/jvm-profiling-tools/async-profiler/issues/78)。
 
-The connection with the target JVM has been established, but JVM is unable to load profiler shared library. Make sure the user of JVM process has permissions to access `libasyncProfiler.so` by exactly the same absolute path. For more information see [#78](https://github.com/jvm-profiling-tools/async-profiler/issues/78).
 
 > No access to perf events. Try `--all-user` option or `'sysctl kernel.perf_event_paranoid=1'`
 
-or
+或者:
 
 > Perf events unavailable
 
-`perf_event_open()` syscall has failed.
+直接翻译为: `不能访问 perf events, 或者 perf events 不可用`;  调用系统函数 `perf_event_open()` 失败; 按提示可以使用 `--all-user` 选项启动, 或者在启动之前执行 `'sysctl kernel.perf_event_paranoid=1'`;
 
-Typical reasons include:
+一般来说, 原因包括：
 
-- `/proc/sys/kernel/perf_event_paranoid` is set to restricted mode (`>=2`).
-- seccomp disables perf_event_open API in a container.
-- OS runs under a hypervisor that does not virtualize performance counters.
-- perf_event_open API is not supported on this system, e.g. WSL.
+- `/proc/sys/kernel/perf_event_paranoid` 的值被设置为受限模式 (`>=2`)。
+- 容器中的安全计算模式(Secure Computing, seccomp)禁用了 `perf_event_open` API。
+- 操作系统OS在没有虚拟化性能计数器的 hypervisor 管理程序下运行。
+- 操作系统不支持 perf_event_open API，例如 WSL。
 
-If changing the configuration is not possible, you may fall back to -e itimer profiling mode. It is similar to cpu mode, but does not require perf_events support. As a drawback, there will be no kernel stack traces.
+如果无法更改配置，我们可以回退/降级到 `-e itimer` 分析模式。 这种模式类似于 cpu 分析模式，但不需要 perf_events 的支持。 缺点则是没有内核调用栈跟踪。
+
 
 > No AllocTracer symbols found. Are JDK debug symbols installed?
 
-The OpenJDK debug symbols are required for allocation profiling. See [Installing Debug Symbols](./README.md) for more details. If the error message persists after a successful installation of the debug symbols, it is possible that the JDK was upgraded when installing the debug symbols. In this case, profiling any Java process which had started prior to the installation will continue to display this message, since the process had loaded the older version of the JDK which lacked debug symbols. Restarting the affected Java processes should resolve the issue.
+直接翻译为: `没有找到 AllocTracer 符号表, 是否正确安装了 JDK 调试符号表?`;  分配分析需要泳道 OpenJDK 调试符号。 有关信息请参阅 [安装调试符号](./README.md)。  如果成功安装调试符号后这个错误消息仍然存在, 则可能是在安装调试符号时升级了 JDK。 在这种情况下, 想要分析在安装之前就已经启动的任何 Java 进程, 都会一直显示此消息, 因为JVM进程已加载了缺少调试符号的旧版本 JDK。 重启受影响的 Java 进程, 应该可以解决这个问题。
+
 
 > VMStructs unavailable. Unsupported JVM?
 
-JVM shared library does not export `gHotSpotVMStructs*` symbols - apparently this is not a HotSpot JVM. Sometimes the same message can be also caused by an incorrectly built JDK (see [#218](https://github.com/jvm-profiling-tools/async-profiler/issues/218) ). In these cases installing JDK debug symbols may solve the problem.
+直接翻译为: `没有找到 AllocTracer 符号表, 是否正确安装了 JDK 调试符号表?`;  JVM 共享库没有导出 `gHotSpotVMStructs*` 符号表 - 很显然这不是 HotSpot JVM。 有时候，构建错误的 JDK 也可能导致相同的消息; 请参阅 [#218](https://github.com/jvm-profiling-tools/async-profiler/issues/218)。 在这种情况下，安装 JDK 调试符号有可能会解决问题。
+
 
 > Could not parse symbols from `<libname.so>`
 
-Async-profiler was unable to parse non-Java function names because of the corrupted contents in `/proc/[pid]/maps`. The problem is known to occur in a container when running Ubuntu with Linux kernel 5.x. This is the OS bug, see https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1843018 .
+直接翻译为: `不能从 xxxxxx.so 库中解析符号`;  由于 `/proc/[pid]/maps` 中的内容损坏, Async-profiler 无法解析非 Java 函数的名称。 这是一个已知问题, 当使用 Linux 内核 5.x 运行 Ubuntu 时, 在容器中就会发生该问题。 这是操作系统的问题，请参阅: https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1843018 。
+
 
 > Could not open output file
 
-Output file is written by the target JVM process, not by the profiler script. Make sure the path specified in -f option is correct and is accessible by the JVM.
+直接翻译为: `不能打开输出文件`;  输出文件是由目标 JVM 进程直接写出的, 而不是由 profiler 脚本输出。  请确保 `-f` 选项中指定的路径是正确的并且可以被 JVM 访问。
 
-> https://github.com/jvm-profiling-tools/async-profiler/wiki/Troubleshooting
+
+### Restrictions and Limitations
+
+> https://github.com/jvm-profiling-tools/async-profiler/wiki/Restrictions-and-Limitations
 
 
 ## 使用示例
