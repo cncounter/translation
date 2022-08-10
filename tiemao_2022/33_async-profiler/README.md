@@ -76,18 +76,35 @@ sampling profiler, 采样分析器, 有时候也称为 "抽样分析器"。
 
 ## 其他分析器存在的问题 
 
-很多分析器都不太完善, 或多或少存在一些问题, 例如:
+大部分的Java采样分析器都不太完善, 或多或少存在一些问题:
 
 - 安全点偏差问题: 采样分析器(Sampling profilers), 只在安全点状态进行采样, 很多时候会掩盖真实的问题点;
 - 性能问题: 检测类型(Instrumenting)的分析器, 请求安全点对齐的代价高, 执行效率差, 严重影响系统性能, 一般不能用于生产环境;
 - 设计缺陷: 无法检测本地方法, 导致繁忙线程和空闲线程的抽样都是相同的调用栈;
 - 功能较少: 缺少一些必要的手段和功能, 无法处理复杂的问题。
 
-虽然这么说，但是工具无对错, 业界的很多分析器都有其存在的价值, 帮助大家解决了很多问题, 关键还是看用的人。
+
+JVM TI的全称是: Java虚拟机工具接口(Java Virtual Machine Tool Interface)。 这种技术存在一些固有的限制, 只能在安全点位置(safepoint) 采集调用栈数据。 所以使用 JVM TI 技术的采样分析器, 都会遇到安全点偏差问题(safepoint bias problem)。
+
+我们先简单了解一下什么是安全点:
+
+> 安全点(safepoint), 是指一个线程的数据、线程内部状态, 以及 JVM 中对该线程的表示, 对于其他线程的观察都是安全的。
+
+也就是说在安全点位置, 从Java程序的角度来看, 没有不一致或者不确定的状态。 例如这些位置都是安全点:
+
+- 1. 解释模式下(interpreter mode), 任意两个字节码之间的位置。
+- 2. 非计数循环(non-counted loops)的边界位置。
+- 3. 方法退出的位置, 也就是调用其他方法的结束位置。
+- 4. JNI方法调用的退出位置。
+
+
+
+虽然这么说，但是工具无对错, 业界的很多分析器都有其存在的价值, 帮助大家在实际工作中解决了很多问题, 关键还是看用的人。
 
 
 ## async-profiler的特征
 
+async-profiler 没有使用 JVMTI 来获取调用栈跟踪样本，因此，也就避免了安全点偏差问题。 
 
 async-profiler的执行原理和特征可以概括为:
 
@@ -120,14 +137,11 @@ async-profiler的执行原理和特征可以概括为:
 - 兼容解释器模式下的栈帧(frame)。
 - 不需要写入在用户空间脚本中进行后续处理的 perf.data 文件。
 
-If you wish to resolve frames within libjvm, the debug symbols are required.
-
 
 如果需要解析 libjvm 中的帧，则需要使用到调试符号表:
 
 #### 调试符号表
 
-The allocation profiler requires HotSpot debug symbols. Oracle JDK already has them embedded in libjvm.so, but in OpenJDK builds they are typically shipped in a separate package. For example, to install OpenJDK debug symbols on Debian / Ubuntu, run:
 
 分配分析器等功能需要使用到 HotSpot 调试符号表(debug symbols)。 
 
@@ -159,8 +173,6 @@ OpenJDK 11可以使用以下命令：
 
 
 > `gdb $JAVA_HOME/lib/server/libjvm.so -ex 'info address UseG1GC'`
-
-This command's output will either contain Symbol "UseG1GC" is at 0xxxxx or No symbol "UseG1GC" in current context.
 
 此命令的输出可能是:
 
@@ -217,10 +229,6 @@ If you need to profile some code as soon as the JVM starts up, instead of using 
 
 > $ `java -agentpath:/path/to/libasyncProfiler.so=start,event=cpu,file=profile.html ...`
 
-
-Agent library is configured through the JVMTI argument interface. The format of the arguments string is described in the source code. The `profiler.sh` script actually converts command line arguments to that format.
-
-For instance, `-e wall` is converted to `event=wall`, `-f profile.html` is converted to `file=profile.html`, and so on. However, some arguments are processed directly by `profiler.sh` script. E.g. `-d 5` results in 3 actions: attaching profiler agent with start command, sleeping for 5 seconds, and then attaching the agent again with stop command.
 
 Agent库是通过 JVMTI 参数接口配置的。 参数字符串的格式也可以翻看源代码。
 
@@ -887,7 +895,8 @@ RxJava框架的一个特征是内存中分配的对象会持续存活多个GC周
 - [async-profiler WIKI](https://github.com/jvm-profiling-tools/async-profiler/wiki)
 - [Async-profiler作者的分享视频](https://www.youtube.com/playlist?list=PLNCLTEx3B8h4Yo_WvKWdLvI9mj1XpTKBr)
 - [Async-profiler作者的分享PPT: java-profiling.pdf)](https://github.com/apangin/java-profiling-presentation/blob/master/presentation/java-profiling.pdf)
-- [安全点偏差问题: Why (Most) Sampling Java Profilers Are Fucking Terrible](http://psy-lob-saw.blogspot.com/2016/02/why-most-sampling-java-profilers-are.html)
+- [Safepoints: Meaning, Side Effects and Overheads](http://psy-lob-saw.blogspot.com/2015/12/safepoints.html)
+- [安全点偏差问题: Why (Most) Sampling Java Profilers Are Fu*cking Terrible](http://psy-lob-saw.blogspot.com/2016/02/why-most-sampling-java-profilers-are.html)
 - [Profiling Java Applications with Async Profiler](https://hackernoon.com/profiling-java-applications-with-async-profiler-049s2790)
 - [火焰图(CPU Flame Graphs)](https://www.brendangregg.com/FlameGraphs/cpuflamegraphs.html)
 - [如何读懂火焰图？](http://www.ruanyifeng.com/blog/2017/09/flame-graph.html)
