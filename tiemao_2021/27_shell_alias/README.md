@@ -144,7 +144,7 @@ PS1="%{$fg[green]%}%n%{$reset_color%}@%{$fg[green]%}%m %{$fg[yellow]%}%~ %{$rese
 
 Linux下的设置:
 
-```sh
+```shell
 cat ~/.bashrc
 # .bashrc
 
@@ -153,6 +153,8 @@ cat ~/.bashrc
 PS1="\[\e[31;1m\][\u@\h \W ]$ \[\e[0m\]"
 
 ```
+
+`.bashrc` 与 `.bash_profile` 的区别在于:  `su` 切换用户时不会自动执行 `.bash_profile` 文件;
 
 参考: <https://stackoverflow.com/questions/689765/>
 
