@@ -217,6 +217,10 @@ github.com.		47	IN	A	20.205.243.166
 sudo spctl --master-disable
 ```
 
+一个好用的图形化界面shell终端(支持 MAC, Win, Linux):
+
+- [https://github.com/Eugeny/tabby](https://github.com/Eugeny/tabby)
+
 # 相关链接:
 
 Bash 脚本教程: <https://wangdoc.com/bash/index.html>
@@ -225,3 +229,4 @@ Bash 脚本教程: <https://wangdoc.com/bash/index.html>
 Github仓库链接: <https://github.com/cncounter/translation/tree/master/tiemao_2021/27_shell_alias>
 
 Gitee仓库链接: <https://gitee.com/cncounter/translation/tree/master/tiemao_2021/27_shell_alias>
+
