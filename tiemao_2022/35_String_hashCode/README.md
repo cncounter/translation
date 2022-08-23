@@ -1,7 +1,8 @@
 # 浅析String与hashCode
 
+ String 类的 hash 冲突比较严重, 我们在系统开发和设计中, 要避开这个潜在的性能坑。
 
-## 示例代码
+## 1. 示例代码
 
 先来看一段示例代码:
 
@@ -40,7 +41,7 @@ public class StringHashCodeTest {
 > [Java中hashCode与equals方法的约定及重写原则](https://renfufei.blog.csdn.net/article/details/14163329)
 
 
-## `String#hashCode()`实现
+## 2. `String#hashCode()`实现
 
 点开String类的源代码, 参考注释信息, 可以看到 `String#hashCode()` 的计算公式为:
 
@@ -113,7 +114,7 @@ final class StringLatin1 {
 这个实现和前面列出的公式是等价的。
 
 
-接着我们看看 `StringLatin1.hashCode(value)` 方法的实现: 
+接着我们看看 `StringUTF16.hashCode(value)` 方法的实现: 
 
 
 ```java
@@ -131,7 +132,7 @@ final class StringUTF16 {
     }
 ```
 
-## 字节序
+## 3. 字节序
 
 这里面 `getChar` 方法的实现有意思, 涉及到了字节序这个东西。
 
@@ -180,11 +181,11 @@ final class StringUTF16 {
 
 回头看前面的 `StringLatin1#getChar(byte[] val, int index)` 方法, 可以加深理解, 同时我们也可以看到移位操作服的作用是什么。
 
-## 小结
+## 4. 小结
 
-既然 String 类的 hash 比较严重, 我们在系统开发和设计中, 就要避开这个潜在的性能坑。
+既然 String 类的 hash 冲突比较严重, 我们在系统开发和设计中, 就要避开这个潜在的性能坑。
 
-2022年08月23日
+> 2022年08月23日
 
 
 
