@@ -25,6 +25,6 @@ JVM performance optimization: Read the series
 - <https://www.javaworld.com/article/2078623/core-java/core-java-jvm-performance-optimization-part-1-a-jvm-technology-primer.html>
 - <https://www.javaworld.com/article/2078635/enterprise-middleware/jvm-performance-optimization-part-2-compilers.html>
 - <https://www.javaworld.com/article/2078645/java-se/jvm-performance-optimization-part-3-garbage-collection.html>
-- <https://www.javaworld.com/article/2078661/java-concurrency/jvm-performance-optimization--part-4--c4-garbage-collection-for-low-latency-java-ap.html>
+- <https://www.infoworld.com/article/2078661/jvm-performance-optimization--part-4--c4-garbage-collection-for-low-latency-java-ap.html>
 - <https://www.javaworld.com/article/2078731/java-platform/jvm-performance-optimization--part-5--is-java-scalability-an-oxymoron-.html>
 
