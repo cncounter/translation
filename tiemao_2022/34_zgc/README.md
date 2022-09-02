@@ -1,6 +1,6 @@
 # ZGC实现原理与使用示例
 
-Z垃圾收集器, 全称为 Z Garbage Collector, 简称ZGC, 是Java中的一款低延迟垃圾收集器, 在各种内存规模的环境下都能良好运行。
+Z垃圾收集器, 简称ZGC, 全称为 Z Garbage Collector, 是一款低延迟垃圾收集器, 适应各种大小的内存规模, 伸缩性良好, 性能优异, 在各种环境下都能良好运行。
 
 ## ZGC简介
 
@@ -430,5 +430,5 @@ I hope I could give a short introduction into ZGC. I certainly couldn’t descri
 - [A FIRST LOOK INTO ZGC](https://dinfuehr.github.io/blog/a-first-look-into-zgc/)
 - [JDK11版: HotSpot Virtual Machine Garbage Collection Tuning Guide](https://docs.oracle.com/en/java/javase/11/gctuning/introduction-garbage-collection-tuning.html)
 - [JDK18版: HotSpot Virtual Machine Garbage Collection Tuning Guide](https://docs.oracle.com/en/java/javase/18/gctuning/introduction-garbage-collection-tuning.html)
-
+- [C4 garbage collection for low-latency Java applications](https://www.infoworld.com/article/2078661/jvm-performance-optimization--part-4--c4-garbage-collection-for-low-latency-java-ap.html)
 
