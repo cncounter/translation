@@ -1,3 +1,10 @@
+一个JavaWeb项目中使用的部分技术
+
+
+CSDN博客链接:
+
+> https://renfufei.blog.csdn.net/article/details/47399037 
+
 
 -- 2015年8月8日
 
@@ -38,4 +45,24 @@
 	Edraw : 漂亮的作图工具，支持各种图形,常用: UML,流程,部署,时序等。
 	Project : 微软的项目管理工具,应用范围广.
 
+
+
+8. 使用到的服务/中间件:
+
+- MySQL: 关系数据库
+- Redis: 分布式缓存: Standalone/Sentinel/Cluster
+- Kafka: 消息队列
+- Superset: BI工具
+- Hive: 数仓
+- TiDB: 分布式NewSQL, 兼容MySQL
+- ElasticSearch: 搜索引擎
+- Kibana: 日志检索
+- ShardingJDBC: 分库分表
+- Nginx: 反向代理与负载均衡
+- Docker: 容器
+- Kubernetes: 容器编排
+- Datadog: 指标服务
+- Grafana: 指标监控
+- Prometheus: 助记 Pro-me-the-us, 指标服务
+- SonarQube: 代码质量管理
 
