@@ -1,12 +1,14 @@
 # ZGC实现原理与使用示例
 
-Z垃圾收集器, 简称ZGC, 全称为 Z Garbage Collector, 是一款低延迟垃圾收集器, 适应各种大小的内存规模, 伸缩性良好, 性能优异, 在各种环境下都能良好运行。
+Z垃圾收集器, 简称ZGC(全称为 Z Garbage Collector）, 是一款低延迟垃圾收集器, 代码开源, 由 Oracle 公司开发, 主要作者为 Per Liden。
+
+从JDK11开始支持ZGC, 能适应各种大小的堆内存, 伸缩性良好, 性能优异, 在各种环境下都能良好运行。
 
 ## ZGC简介
 
-ZGC is a new garbage collector recently open-sourced by Oracle for the OpenJDK. It was mainly written by Per Liden. ZGC is similar to Shenandoah or Azul’s C4 that focus on reducing pause-times while still compacting the heap. Although I won’t give a full introduction here, “compacting the heap” just means moving the still-alive objects to the start (or some other region) of the heap. This helps to reduce fragmentation but usually this also means that the whole application (that includes all of its threads) needs to be halted while the GC does its magic, this is usually referred to as stopping the world. Only when the GC is finished, the application can be resumed. In GC literature the application is often called mutator, since from the GC’s point of view the application mutates the heap. Depending on the size of the heap such a pause could take several seconds, which could be quite problematic for interactive applications.
-
-ZGC 是 Oracle 最近为 OpenJDK 开源的新垃圾收集器。 它主要由 Per Liden 编写。 ZGC 类似于 Shenandoah 或 Azul 的 C4，专注于减少暂停时间，同时仍然压缩堆。 虽然我不会在这里给出完整的介绍，但“压缩堆”只是意味着将仍然活着的对象移动到堆的开始（或其他一些区域）。 这有助于减少碎片，但通常这也意味着整个应用程序（包括其所有线程）需要在 GC 发挥其魔力时停止，这通常称为停止世界。 只有 GC 完成后，才能恢复应用。 在 GC 文献中，该应用程序通常称为 mutator，因为从 GC 的角度来看，该应用程序会改变堆。 根据堆的大小，这样的暂停可能需要几秒钟，这对于交互式应用程序来说可能是相当有问题的。
+ZGC 有点类似于 Azul 公司开发的C4垃圾收集器(C4, Continuously Concurrent Compacting Collector), 主要目标是大幅度降低GC暂停时间。 同时也支持堆内存碎片整理, 堆内存整理(compacting the heap) 一般就是将零散的存活对象移动到一起。 
+传统的垃圾收集器在进行堆内存整理时, 需要将整个JVM中的业务线程全部暂停, 也就会造成 STW 停顿(stopping the world)。 
+在 GC 相关的论文中，将业务线程称为 mutator, 简单理解就是修改者, 因为这些应用程序线程会改变堆内存中的值。 如果堆内存大一点，STW停顿可能持续好几秒, 对于交互式系统而言, 这么长的卡顿时间简直就是个灾难。
 
 There are several ways to reduce pause times:
 
