@@ -6,29 +6,24 @@ Z垃圾收集器, 简称ZGC(全称为 Z Garbage Collector）, 是一款低延迟
 
 ## ZGC简介
 
-ZGC 有点类似于 Azul 公司开发的C4垃圾收集器(C4, Continuously Concurrent Compacting Collector), 主要目标是大幅度降低GC暂停时间。 同时也支持堆内存碎片整理, 堆内存整理(compacting the heap) 一般就是将零散的存活对象移动到一起。 
+ZGC 有点类似于 Azul 公司开发的C4垃圾收集器(C4, Continuously Concurrent Compacting Collector), 主要目标是大幅度降低GC暂停时间。 同时也支持堆内存碎片整理, 堆内存整理(compacting the heap)的本质, 就是将零散的存活对象移动到一起。 
 传统的垃圾收集器在进行堆内存整理时, 需要将整个JVM中的业务线程全部暂停, 也就会造成 STW 停顿(stopping the world)。 
 在 GC 相关的论文中，将业务线程称为 mutator, 简单理解就是修改者, 因为这些应用程序线程会改变堆内存中的值。 如果堆内存中的存活对象较多，STW停顿可能持续好几秒, 对于交互式系统而言, 这么长的卡顿时间简直就是个灾难。
 
-随着GC理论和实践的发展, 发现了一些可以减少暂停时间的方法:
+随着GC理论和发展, 实践出了一些可以减少暂停时间的方法:
 
-- 并行执行: 可以使用多个线程并行整理内存(parallel)。
+- 并行执行: 可以使用多个线程并行整理内存(parallel), G1在整理阶段主要用的就是这种方案。
 - 增量执行: 将内存整理工作, 拆分为多次执行, 这样每次暂停的时间就缩短了。
 - 并发执行: 让内存整理工作与业务线程并发执行, 这样就不需要STW停顿,或者只需要很短时间的STW。
 - 不执行整理: 例如 Go 运行时的 GC就采用这种方法。
 
 
-ZGC uses concurrent compaction to keep pauses to a minimum, this is certainly not obvious to implement so I want to describe how this works. Why is this complicated?
+ZGC的内存整理技术, 采用并发执行方案, 极大幅度降低了GC暂停时间。 当然, 这种技术实现起来并不简单, 所以需要一些笔墨来介绍其实现原理, 以及为什么实现起来会很复杂。
 
-You need to copy an object to another memory address, at the same time another thread could read from or write into the old object.
-If copying succeeded there might still be arbitrary many references somewhere in the heap to the old object address that need to be updated to the new address.
-I should also mention that although concurrent compaction seems to be the best solution to reduce pause time of the alternatives given above, there are definitely some tradeoffs involved. So if you don’t care about pause times, you might be better off using a GC that focuses on throughput instead.
+- 内存整理时, 需要将一个对象复制到另一个内存地址, 这个过程中, 其他线程有可能会通过老的地址来读取或修改这个对象。
+- 复制成功之后, 在堆内存中, 可能还有很多的引用, 指向了老的地址, 那么需要将这些引用更新为新地址。
 
-ZGC 使用并发压缩来将停顿保持在最低限度，这当然不是很容易实现，所以我想描述一下它是如何工作的。 为什么这很复杂？
-
-您需要将一个对象复制到另一个内存地址，同时另一个线程可以读取或写入旧对象。
-如果复制成功，在堆中的某处可能仍然有许多对旧对象地址的任意引用，这些引用需要更新到新地址。
-我还应该提到，虽然并发压缩似乎是减少上述替代方案的暂停时间的最佳解决方案，但肯定有一些权衡。 因此，如果您不关心暂停时间，则最好使用专注于吞吐量的 GC。
+顺便提一句, 虽然并发整理技术是目前市面上最好的降低暂停时间的解决方案, 但我们也不能一股脑的上。 如果我们的应用不是特别在意暂停时间, 比如大部分的批处理系统, 某些Kafka消费端系统等等, 那么可以选择吞吐量更好的GC算法。
 
 
 ### 设计目标
