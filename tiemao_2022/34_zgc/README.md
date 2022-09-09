@@ -26,25 +26,16 @@ ZGC的内存整理技术, 采用并发执行方案, 极大幅度降低了GC暂�
 顺便提一句, 虽然并发整理技术是目前市面上最好的降低暂停时间的解决方案, 但我们也不能一股脑的上。 如果我们的应用不是特别在意暂停时间, 比如大部分的批处理系统, 某些Kafka消费端系统等等, 那么可以选择吞吐量更好的GC算法。
 
 
-### 设计目标
-
-- Multi-terabyte heaps: TB级
-- Max GC pause time: 10ms; 
-- Easy to tune
-- Max application throughput reduction: 15%
+### ZGC的设计目标
 
 
-Scalable:
+ZGC致力于解决前代GC的问题, 设计目标包括:
 
-ZGC pause times do not increase with the heap or live-set size;
-ZGC pause times do increase with the root-set size;
-
-
-其设计目标包括:
-
-- 毫秒级以下的最大暂停时间(Sub-millisecond)
-- 暂停时间跟内存配置无关, 不会随堆内存, 存活对象(live-set), GC根(root-set) 的扩大而增加
-- 适用的堆内存大小范围, 涵盖 `8MB ~ 16TB`
+- 支持大内存: TB级别的堆内存, 适用的堆内存大小范围, 涵盖 `8MB ~ 16TB`
+- 极致低延迟: 降低最大GC暂停时间至10ms以内, 理想情况在亚毫秒级(Sub-millisecond)
+- 可扩缩性(Scalable): 停顿时间与内存配置无关, 与堆内存大小, 存活对象(live-set)数量 都没有直接关系, 但是GC根(root-set)对象的数量还是有一定影响。
+- 方便调优: 增加了很多灵活的调优控制参数。
+- 兼顾吐吞量: 大部分应用场景下, 极端情况只降低 15% 以内的吞吐量, 换句话说就是GC损耗最多只占用15%的CPU资源。
 
 
 
