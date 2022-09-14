@@ -51,10 +51,10 @@ JDK18版本的ZGC介绍文档是这样写的:
 
 
 
-## ZGC使用示例
+## 2. ZGC使用示例
 
 
-### ZGC的启用参数
+### 2.1 启用ZGC的JVM参数
 
 
 JDK11版本开始支持ZGC, 但作为实验性功能提供, 需要使用命令行选项 `-XX:+UnlockExperimentalVMOptions -XX:+UseZGC` 来启用ZGC。
@@ -63,20 +63,20 @@ JDK11版本开始支持ZGC, 但作为实验性功能提供, 需要使用命令�
 
 
 
+### 2.2 设置堆内存大小
 
-> 11
+和其他GC实现一样, ZGC最重要的调优参数也是设置最大堆内存 (`-Xmx`)。 
+
+由于 ZGC 是并发垃圾收集器, 因此必须确定最大堆内存是多少, 以便于:
+
+- 1) 堆内存可以满足业务需求, 足够容纳运行过程中的存活对象;  
+- 2) 在执行 GC 的时候, 堆中有足够的空间来分配对象。
+
+具体需要多少空间, 取决于应用程序的分配速度, 以及存活对象占用多大空间。 
+一般来说, 给 ZGC 的内存越多越好, 但也没必要浪费内存。 需要权衡考虑内存使用率, 以及GC周期的触发频率, 在两者之间找到一个平衡点。
 
 
-### Setting the Heap Size
 
-The most important tuning option for ZGC is setting the max heap size (`-Xmx`). Since ZGC is a concurrent collector a max heap size must be selected such that, 1) the heap can accommodate the live-set of your application, and 2) there is enough headroom in the heap to allow allocations to be serviced while the GC is running. How much headroom is needed very much depends on the allocation rate and the live-set size of the application. In general, the more memory you give to ZGC the better. But at the same time, wasting memory is undesirable, so it’s all about finding a balance between memory usage and how often the GC needs to run.
-
-
-> 18:
-
-### Setting the Heap Size
-
-The most important tuning option for ZGC is setting the max heap size (`-Xmx`). Since ZGC is a concurrent collector a max heap size must be selected such that, 1) the heap can accommodate the live-set of your application, and 2) there is enough headroom in the heap to allow allocations to be serviced while the GC is running. How much headroom is needed very much depends on the allocation rate and the live-set size of the application. In general, the more memory you give to ZGC the better. But at the same time, wasting memory is undesirable, so it’s all about finding a balance between memory usage and how often the GC needs to run.
 
 
 > 11
