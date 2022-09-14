@@ -47,23 +47,21 @@ JDK18版本的ZGC介绍文档是这样写的:
 
 > ZGC是一款可扩展性非常好的低延迟垃圾收集器, 全称为 Z Garbage Collector, 我们也可以称之为 "Z垃圾收集器"。 ZGC将所有繁重的垃圾收集任务采用并发方式来执行, 应用程序线程暂停执行的时间不超过`几`毫秒, 这使得它适用于需要低延迟的系统。其暂停时间, 与使用的堆内存大小无关。 ZGC 支持从 `8MB` 到 `16TB` 范围的堆内存大小。
 
-翻看 OpenJDK 的代码, 后期如果需要更大的堆内存, 也是很容易实现的, 具体的原理会在着色指针部分进行介绍。
+翻看 OpenJDK 的代码, 如果以后还需要超过16TB以上的堆内存, 也是很容易实现的, 具体的原理会在着色指针部分进行介绍。
 
 
 
 ## ZGC使用示例
 
 
+### ZGC的启用参数
 
-### 常用配置
 
-> 11
+JDK11版本开始支持ZGC, 但作为实验性功能提供, 需要使用命令行选项 `-XX:+UnlockExperimentalVMOptions -XX:+UseZGC` 来启用ZGC。
 
-The Z Garbage Collector is available as an experimental feature, and is enabled with the command-line options `-XX:+UnlockExperimentalVMOptions -XX:+UseZGC`.
+根据 [JEP 377](https://openjdk.org/jeps/377) 规范, 从JDK15版本开始, ZGC成为准生产版本, 不再需要指定开启实验性质的JVM选项, 直接使用 `-XX:+UseZGC` 即可。
 
-> 18:
 
-The Z Garbage Collector is enabled with the command-line option `-XX:+UseZGC`.
 
 
 > 11
