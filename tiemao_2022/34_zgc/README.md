@@ -77,20 +77,12 @@ JDK11版本开始支持ZGC, 但作为实验性功能提供, 需要使用命令�
 
 
 
+### 2.3 设置并发GC线程数
 
 
-> 11
-
-### Setting Number of Concurrent GC Threads
-
-The second tuning option one might want to look at is setting the number of concurrent GC threads (`-XX:ConcGCThreads`). ZGC has heuristics to automatically select this number. This heuristic usually works well but depending on the characteristics of the application this might need to be adjusted. This option essentially dictates how much CPU-time the GC should be given. Give it too much and the GC will steal too much CPU-time from the application. Give it too little, and the application might allocate garbage faster than the GC can collect it.
-
-> 18:
-
-### Setting Number of Concurrent GC Threads
-
-The second tuning option one might want to look at is setting the number of concurrent GC threads (`-XX:ConcGCThreads`). ZGC has heuristics to automatically select this number. This heuristic usually works well but depending on the characteristics of the application this might need to be adjusted. This option essentially dictates how much CPU-time the GC should be given. Give it too much and the GC will steal too much CPU-time from the application. Give it too little, and the application might allocate garbage faster than the GC can collect it.
-
+由于 ZGC 是完全并发的垃圾收集器, 所以只需要设置并发GC线程数(`-XX:ConcGCThreads`), 而不需要设置并行GC线程数。 
+ZGC 具有自动选择该线程数量的启发式方法。 这种启发式通常效果很好, 但根据应用程序的特性，有些情况下可能需要进行调整。 
+这个选项本质上决定了应该给 GC 分配多少 CPU 时间。 给的太多，GC 就会和应用线程争抢过多的 CPU 时间。 给的太少， GC 收集的速度, 可能会赶不上应用程序分配对象并变成垃圾的速度。
 
 
 > 18:
@@ -102,6 +94,11 @@ By default, ZGC uncommits unused memory, returning it to the operating system. T
 An uncommit delay can be configured using `-XX:ZUncommitDelay=<seconds>` (default is 300 seconds). This delay specifies for how long memory should have been unused before it's eligible for uncommit.
 
 
+### 2.4 将未使用的内存返回给操作系统
+
+默认情况下，ZGC 取消提交未使用的内存，将其返回给操作系统。 这对于关注内存占用的应用程序和环境很有用。 可以使用 `-XX:-ZUncommit` 禁用此功能。 此外，内存不会被取消提交，因此堆大小会缩小到最小堆大小（`-Xms`）以下。 这意味着如果将最小堆大小（`-Xms`）配置为等于最大堆大小（`-Xmx`），则此功能将被隐式禁用。
+
+可以使用 `-XX:ZUncommitDelay=<seconds>` 配置取消提交延迟（默认为 300 秒）。 此延迟指定内存在有资格取消提交之前应该未使用多长时间。
 
 
 
