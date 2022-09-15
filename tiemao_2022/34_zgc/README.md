@@ -51,7 +51,7 @@ JDK18版本的ZGC介绍文档是这样写的:
 
 
 
-## 2. ZGC使用示例
+## 2. ZGC常用配置
 
 
 ### 2.1 启用ZGC的JVM参数
@@ -85,20 +85,16 @@ ZGC 具有自动选择该线程数量的启发式方法。 这种启发式通常
 这个选项本质上决定了应该给 GC 分配多少 CPU 时间。 给的太多，GC 就会和应用线程争抢过多的 CPU 时间。 给的太少， GC 收集的速度, 可能会赶不上应用程序分配对象并变成垃圾的速度。
 
 
-> 18:
 
-### Returning Unused Memory to the Operating System
+### 2.4 将不使用的内存返还给操作系统
 
-By default, ZGC uncommits unused memory, returning it to the operating system. This is useful for applications and environments where memory footprint is a concern. This feature can be disabled using `-XX:-ZUncommit`. Furthermore, memory will not be uncommitted so that the heap size shrinks below the minimum heap size (`-Xms`). This means this feature will be implicitly disabled if the minimum heap size (`-Xms`) is configured to be equal to the maximum heap size (`-Xmx`).
+从JDK13版本开始, ZGC支持将不使用的内存返还给操作系统, 详细规范可以参考 [JEP 351](https://openjdk.org/jeps/351) 。
+默认情况下，ZGC 会自动将不用的内存部分返还给操作系统。 对于关注内存占用的系统或部署环境, 这个功能非常有用。 
+但当水位缩减到最小堆内存 (`-Xms`) 时, 就不会继续返还未使用的内存了。 根据这个情况可以推断得知: 如果最小堆内存(`-Xms`) 和 最大堆内存(`-Xmx`) 配置相等，则此功能将被隐式禁用。
 
-An uncommit delay can be configured using `-XX:ZUncommitDelay=<seconds>` (default is 300 seconds). This delay specifies for how long memory should have been unused before it's eligible for uncommit.
+如果不需要返还, 可以通过减号标志来明确禁用此功能: `-XX:-ZUncommit`。 
 
-
-### 2.4 将未使用的内存返回给操作系统
-
-默认情况下，ZGC 取消提交未使用的内存，将其返回给操作系统。 这对于关注内存占用的应用程序和环境很有用。 可以使用 `-XX:-ZUncommit` 禁用此功能。 此外，内存不会被取消提交，因此堆大小会缩小到最小堆大小（`-Xms`）以下。 这意味着如果将最小堆大小（`-Xms`）配置为等于最大堆大小（`-Xmx`），则此功能将被隐式禁用。
-
-可以使用 `-XX:ZUncommitDelay=<seconds>` 配置取消提交延迟（默认为 300 秒）。 此延迟指定内存在有资格取消提交之前应该未使用多长时间。
+内存返还的延迟时间, 可以使用 `-XX:ZUncommitDelay=<seconds>` 来配置(默认值为 `300` 秒)。 这个延迟时间, 指定了在返还给操作系统之前, 应该至少空闲多长时间。
 
 
 
