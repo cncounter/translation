@@ -101,22 +101,23 @@ ZGC 具有自动选择该线程数量的启发式方法。 这种启发式通常
 ## ZGC实现原理
 
 
+ZGC的基本特征包括:
 
+- 并发GC(Concurrent)
+- 良好的执行过程追踪日志(Tracing)
+- 支持内存碎片整理(Compacting)
+- 不分代(Single generation)
+- 基于多个小堆区(Region-based), 可以进行增量式GC
+- 支持NUMA架构(NUMA-aware)
+- 依赖读屏障(Load barriers)
+- 着色指针(Colored pointers)
 
+接下来我们进一步来查看ZGC的实现原理。
 
-ZGC的基本特征:
-
-- Concurrent
-- Tracing
-- Compacting
-- Single generation
-- Region-based
-- NUMA-aware
-- Load barriers
-- Colored pointers
 
 ### GC Cycle 示意图
 
+![]()
 
 
 #### Mark
