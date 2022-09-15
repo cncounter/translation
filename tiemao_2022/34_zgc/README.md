@@ -117,7 +117,7 @@ ZGC的基本特征包括:
 
 ### ZGC的各个阶段
 
-ZGC的垃圾收集周期示意图如下所示:
+ZGC中每个垃圾收集周期的示意图如下所示:
 
 ![]()
 
@@ -127,11 +127,11 @@ ZGC的垃圾收集周期示意图如下所示:
 
 标记阶段有这些特征:
 
-- 并发+并行方式执行(Concurrent & Parallel)
+* 并发+并行方式执行(Concurrent & Parallel)
 
-- 使用读屏障(Load barrier): 通过读屏障标识出尚未标记的对象指针(non-marked object pointers)的加载
+* 使用读屏障(Load barrier): 通过读屏障检测到尚未标记的对象指针(non-marked object pointers)的加载
 
-- 条带式的(Striped)标记周期:
+* 条带式的(Striped)标记周期:
   – 堆内存被划分为多个逻辑上的条带(stripes)
   – 每个 GC 线程都是独立的, 只负责指派给他的条带(stripe)
   – 互相之间保持最低限度的状态共享(Minimized shared state)
@@ -155,16 +155,23 @@ Pause Mark End 示意图
 ![]()
 
 
-#### Relocation
 
-* Concurrent & Parallel
-* Load barrier
-  – Detects loads of object pointers pointing into the relocation set
-  – Java threads help out with relocation if needed
+#### 重分配阶段(Relocation, 对象迁移)
 
-* Off-heap forwarding tables
-  – No forwarding information stored in old copies of objects
-  – Important for immediate reuse of heap memory
+* 并发+并行方式执行(Concurrent & Parallel)
+* 使用读屏障(Load barrier): 
+  - 通过读屏障检测出指向重分配集(relocation set)中的对象指针的加载
+  – 如果碰到了, Java应用线程可以辅助进行对象迁移。
+
+* 不使用堆内存转发表(Off-heap forwarding tables)
+   – 不在对象的旧副本中存储转发信息
+   - 不使用的堆内存立即可以重用
+
+
+示意图
+
+
+![]()
 
 
 #### Marking & Relocating objects
