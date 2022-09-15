@@ -115,28 +115,45 @@ ZGC的基本特征包括:
 接下来我们进一步来查看ZGC的实现原理。
 
 
-### GC Cycle 示意图
+### ZGC的各个阶段
+
+ZGC的垃圾收集周期示意图如下所示:
 
 ![]()
 
+我们挨个进行介绍。
 
-#### Mark
+#### 标记阶段(Mark）
 
-- Concurrent & Parallel
+标记阶段有这些特征:
 
-- Load barrier: Detects loads of non-marked object pointers
+- 并发+并行方式执行(Concurrent & Parallel)
 
-- Striped
-  – Heap divided into logical stripes
-  – Isolate each GC thread to work on its own stripe
-  – Minimized shared state
+- 使用读屏障(Load barrier): 通过读屏障标识出尚未标记的对象指针(non-marked object pointers)的加载
 
+- 条带式的(Striped)标记周期:
+  – 堆内存被划分为多个逻辑上的条带(stripes)
+  – 每个 GC 线程都是独立的, 只负责指派给他的条带(stripe)
+  – 互相之间保持最低限度的状态共享(Minimized shared state)
+
+
+标记阶段大致可以从三个部分来观察:
 
 Pause Mark Start 示意图
 
+
+![]()
+
 Concurrent Mark 示意图
 
+
+![]()
+
 Pause Mark End 示意图
+
+
+![]()
+
 
 #### Relocation
 
