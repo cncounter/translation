@@ -322,48 +322,51 @@ At any point of time only one of these 3 views is in use. So for debugging the u
 ```
 
 
-### Load Barrier
-
-GC barriers
-
-The key to understanding how ZGC does concurrent compaction is the load barrier (often called read barrier in GC literature). Although I have an own section about ZGC’s load-barrier, I want to give a short overview since not all readers might be familiar with them. If a GC has load-barriers, the GC needs to do some additional action when reading a reference from the heap. Basically in Java this happens every time you see some code like obj.field. A GC could also need a write/store-barrier for operations like obj.field = value. Both operations are special since they read from or write into the heap. The names are a bit confusing, but GC barriers are different from memory barriers used in CPUs or compilers.
-
-气相色谱障碍
-
-理解 ZGC 如何进行并发压缩的关键是读屏障(在 GC 文献中通常称为读取屏障)。尽管我有一个关于 ZGC 的读屏障的部分, 但我想给出一个简短的概述, 因为并非所有读者都熟悉它们。如果 GC 具有读屏障, 则 GC 在从堆中读取引用时需要执行一些额外的操作。基本上在 Java 中, 每次你看到像 obj.field 这样的代码时都会发生这种情况。 GC 还可能需要一个写入/存储屏障来执行 obj.field = value 之类的操作。这两个操作都很特殊, 因为它们从堆中读取或写入。名称有点混乱, 但 GC 屏障与 CPU 或编译器中使用的内存屏障不同。
+### 3.2.3 读屏障(Load Barrier)
 
 
-Both reading and writing in the heap is extremely common, so both GC-barriers need to be super efficient. That means just a few assembly instructions in the common case. Read barriers are an order of magnitude more likely than write-barriers (although this can certainly vary depending on the application), so read-barriers are even more performance-sensitive. Generational GC’s for example usually get by with just a write barrier, no read barrier needed. ZGC needs a read barrier but no write barrier. For concurrent compaction I haven’t seen a solution without read barriers.
+### 3.2.3.1 GC屏障简介
 
-Another factor to consider: Even if a GC needs some type of barrier, they might “only” be required when reading or writing references in the heap. Reading or writing primitives like int or double might not require the barrier.
+ZGC如何执行并发内存整理, 最关键的是理解读屏障(load barrier, 在GC相关的论文中称之为 read barrier, 一般来说两者是一个意思)。
+可能有些读者不太了解, 所以这里先进行简单的介绍。 
+如果 GC 有读屏障的支持, 那么JVM从堆内存中读取引用时, 需要执行一些额外的操作。
+在 Java 中, 基本上每次看到像 `obj.field` 这样的代码时, 都会读取 `obj` 指向的对象。 
+GC 可能还需要一个写屏障(write-barrier, store-barrier)来执行 `obj.field = value` 之类的赋值操作。
+这两类操作的特殊性在于, 它们会从堆中读取或写入数据。
+虽然都叫做屏障, 但 GC 屏障与常见的内存屏障(CPU屏障,编译器屏障) 并不是一回事; 要简单理解的话, 可以认为是在代码里进行了代理包装或者插桩。
 
-在堆中读取和写入都非常普遍, 因此两个 GC 屏障都需要非常高效。这意味着在常见情况下只有一些汇编指令。读屏障的可能性比写屏障高一个数量级(尽管这肯定会因应用程序而异), 因此读屏障对性能更加敏感。例如, 分代 GC 通常只需要一个写屏障, 不需要读屏障。 ZGC 需要读屏障, 但不需要写屏障。对于并发压缩, 我还没有看到没有读取障碍的解决方案。
+在堆内存中进行读取和写入操作简直是太频繁了, 因此这两种 GC 屏障都必须非常高效。 这意味着在常见情况下只能是很少量的汇编指令。
+尽管不同系统的实现代码可能千差万别, 但读屏障出现的次数, 一般要比写屏障高出一个数量级, 因此读屏障对性能的要求更高。
+举个例子, 分代的GC算法, 通常只需要一个写屏障, 不需要读屏障。  ZGC不一样, 需要使用读屏障, 但不用写屏障。
+对于并发内存碎片整理, 目前业界还没有不依赖读读屏障的解决方案。
 
-另一个需要考虑的因素：即使 GC 需要某种类型的屏障, 它们可能“仅”在读取或写入堆中的引用时才需要。读取或写入 int 或 double 等原语可能不需要屏障。
+另一个需要考虑的点是: 即使 GC 需要某种类型的屏障, 也可能只在从堆内存读取引用类型, 或者将引用写入堆内存时才需要。 读取或写入int, double之类的原生类型可能并不需要用到GC屏障。
 
-
-- A small piece of code injected by the JIT in strategic places: When loading an object reference from the heap
-
-- Checks if the loaded object reference has a bad color: If so, take action and heal it
+- JIT在关键位置植入一小段代码: 从堆内存中加载对象引用时;
+- 检查加载的对象引用颜色是否有问题: 如果有问题, 则采取措施并修复;
 
 
 加载堆内存中的对象属性:
 
 ```java
-String personName = person.name;      // Loading an object reference from heap
-<load barrier needed here>
-int nameLenth = personName.length();  //No barrier, not a load from heap
-int personAge = person.age;           // No barrier, not an object reference
+String personName = person.name;      // 从堆内存中加载一个对象引用
+<此处需要植入读屏障(load barrier)>
+int nameLenth = personName.length();  // 没有GC屏障, 因为读取的不是引用类型; 
+int personAge = person.age;           // 没有GC屏障, 因为读取的不是引用类型;
+// 至于加载 person 引用的操作, 这里代码中没有涉及, 在更前面的代码中也会植入读屏障
 ```
 
-判断:
+伪代码是类似这样的判断:
 
-barrier: // Bad color? jnz slow_path // Yes -> Enter slow path and mark/relocate/remap, adjust 0x10(%rax) and %rbx
+```
+barrier: 
+  // Bad color? jnz slow_path 
+  // Yes -> Enter slow path and mark/relocate/remap, adjust 0x10(%rax) and %rbx
 
 ~4% execution overhead o
+```
 
-
-Load-Barrier
+### 3.2.3.2 读屏障(Load-Barrier)
 
 ZGC needs a so called load-barrier (also referred to as read-barrier) when reading a reference from the heap. We need to insert this load-barrier each time the Java program accesses a field of object type, e.g. obj.field. Accessing fields of some other primitive type do not need a barrier, e.g. obj.anInt or obj.anDouble. ZGC doesn’t need store/write-barriers for obj.field = someValue.
 
@@ -451,23 +454,21 @@ ZGC 的另一个不错的特性是, 它还区分了物理内存和虚拟内存�
 在 Linux 上, 物理内存基本上是一个匿名文件, 只存储在 RAM 中(而不是磁盘上), ZGC 使用 memfd_create 创建它。然后可以使用 ftruncate 扩展文件, 允许 ZGC 将物理内存(=匿名文件)扩展到最大堆大小。然后将物理内存映射到虚拟地址空间。
 
 
-## ZGC日志分析
+## 4. ZGC日志分析
 
 
-## Conclusion
+## 5. 小结
 
-I hope I could give a short introduction into ZGC. I certainly couldn’t describe every detail about this GC in a single blog post. If you need more information, ZGC is open-source, so it is possible to study the whole implementation.
-
-结论
-我希望我能对 ZGC 做一个简短的介绍。 我当然无法在一篇博文中描述这个 GC 的所有细节。 如果您需要更多信息, ZGC 是开源的, 因此可以研究整个实现。
+希望本文能让你对 ZGC 有一定的了解。 ZGC的细节实在是太多了, 只有多多使用和实践, 才可能深入了解; 碰到某些网上没有的细节知识点, 查看 ZGC 的开源代码是最有效的解决方案。
 
 
-## 相关链接
+## 6. 相关链接
 
 - [23_zgc_intro(2020)](../../tiemao_2020/23_zgc_intro/README.md)
 - [20.Pauseless-GC算法(2019)](../../tiemao_2019/20_Azul-The-Pauseless-GC-Algorithm/README.md)
 - [The Design of ZGC: ZGC-PLMeetup-2019.pdf](https://cr.openjdk.java.net/~pliden/slides/ZGC-PLMeetup-2019.pdf)
 - [A FIRST LOOK INTO ZGC](https://dinfuehr.github.io/blog/a-first-look-into-zgc/)
+- [ZGC源代码: 4TB扩展到16TB](https://github.com/openjdk/jdk/blob/master/src/hotspot/cpu/x86/gc/z/zGlobals_x86.cpp)
 - [JDK11版: HotSpot Virtual Machine Garbage Collection Tuning Guide](https://docs.oracle.com/en/java/javase/11/gctuning/introduction-garbage-collection-tuning.html)
 - [JDK18版: HotSpot Virtual Machine Garbage Collection Tuning Guide](https://docs.oracle.com/en/java/javase/18/gctuning/introduction-garbage-collection-tuning.html)
 - [C4 garbage collection for low-latency Java applications](https://www.infoworld.com/article/2078661/jvm-performance-optimization--part-4--c4-garbage-collection-for-low-latency-java-ap.html)
