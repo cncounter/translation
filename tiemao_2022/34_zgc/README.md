@@ -202,61 +202,66 @@ GC 线程会遍历待迁移集合中的存活对象, 并为所有尚未迁移的
 
 
 
+### 3.2 着色指针(Colored Pointers)
 
 
-### Colored Pointers
+Java中的数据, 分为基础数据类型与对象引用类型, 引用就是指向某个对象的指针, 存储在堆中(对象的字段)或者栈中(方法中的局部变量)。 
 
-Reference coloring
-The key to understanding ZGC is reference coloring. ZGC stores additional metadata in heap references. On x64 a reference is 64-bit wide (ZGC doesn’t support compressed oops or class pointers at the moment), but today’s hardware actually limits a reference to 48-bit for virtual memory addresses. Although to be exact only 47-bit, since bit 47 determines the value of bits 48-63 (for our purpose those bits are always 0).
+### 3.2.1 引用着色(Reference coloring)
 
-ZGC reserves the first 42-bits for the actual address of the object (referenced to as offset in the source code). 42-bit addresses give you a theoretical heap limitation of 4TB in ZGC. The remaining bits are used for these flags: finalizable, remapped, marked1 and marked0 (one bit is reserved for future use). There is a really nice ASCII drawing in ZGC’s source that shows all these bits:
+ZGC中需要理解的关键技术是引用着色。
+ZGC对引用指针做了一些hack, 额外存储了一些元数据。 
+ZGC不支持 oops 或 class指针 的压缩, 在 x64 平台上, 引用类型的存储空间是 64 bit, 也就是8字节。 但目前的硬件在物理实现上, 限制了虚拟内存地址只能使用 48 位。 
+但确切而言, JDK11的ZGC只用了47位, 因为 bit 47 用来确定 48-63 bits的值(为了需要, 这些位全是0)。
 
-参考着色
-理解 ZGC 的关键是参考着色。 ZGC将其他元数据存储在堆参考中。 在 x64 上, 引用是 64 位宽的(ZGC 目前不支持压缩 oop 或类指针), 但今天的硬件实际上将虚拟内存地址的引用限制为 48 位。 尽管完全只有47位, 但由于BIT 47确定位48-63的值(为了我们的目的, 这些位总是0)。
+在JDK11的实现中, ZGC将前42位(0-41 bits, 在源码中称为Offset)留作对象的实际地址。  42位的地址在理论上为 ZGC 提供了 4TB 的最大堆内存。 
+其余还有4个bit位用于这些标志: finalizable、remapped、marked1 和marked0; 这里还保留了1个bit以供将来版本使用。 
+ZGC的源代码中有一幅非常不错的ASCII绘图, 展示了这些bit:
 
-ZGC保留对象的实际地址的前42位(在源代码中称为偏移)。 42 位地址在 ZGC 中为您提供了 4TB 的理论堆限制。 其余位用于这些标志：finalizable、remapped、marked1 和marked0(保留一位以供将来使用)。 ZGC的来源中有一幅非常不错的ASCII绘图, 显示了所有这些位：
 
-```
+```sh
+# JDK11
  6                 4 4 4  4 4                                             0
  3                 7 6 5  2 1                                             0
 +-------------------+-+----+-----------------------------------------------+
 |00000000 00000000 0|0|1111|11 11111111 11111111 11111111 11111111 11111111|
 +-------------------+-+----+-----------------------------------------------+
 |                   | |    |
-|                   | |    * 41-0 Object Offset (42-bits, 4TB address space)
+|                   | |    * 41-0 Object Offset (42-bits, 4TB 地址空间)
 |                   | |
 |                   | * 45-42 Metadata Bits (4-bits)  0001 = Marked0
 |                   |                                 0010 = Marked1
 |                   |                                 0100 = Remapped
 |                   |                                 1000 = Finalizable
 |                   |
-|                   * 46-46 Unused (1-bit, always zero)
+|                   * 46-46 Unused (1-bit, 保持为0)
 |
-* 63-47 Fixed (17-bits, always zero)
+* 63-47 固定 (17-bits, 全是0)
 ```
 
-> 42位地址=4TB; 44位=16TB;
+> 简单解读: 上面的示意图中, 第一行是6,第二行是3, 标识第63位; 00则代表第0位, 其他类似;  
 
 
-Having metadata information in heap references does make dereferencing more expensive, since the address needs to be masked to get the real address (without metainformation). ZGC employs a nice trick to avoid this: When reading from memory exactly one bit of marked0, marked1 or remapped is set. When allocating a page at offset x, ZGC maps the same page to 3 different address:
+在指针引用中包含元数据信息, 确实会使取消引用的操作代价更高, 因为需要对地址进行转码(masked), 才能获得没有元信息的真实地址。 
+ZGC通过一个绝妙的技巧来避免这种情况: 当从内存中读取的某一位精确匹配 marked0, marked1 或者 remapped 标记位。 
+在JDK11中, 当在 x 偏移处分配页面时, ZGC 将同一个物理页面映射到 3 个不同的虚拟地址：
 
-for marked0: (0b0001 << 42) | x
-for marked1: (0b0010 << 42) | x
-for remapped: (0b0100 << 42) | x
+
+- 给 marked0 的: `(0b0001 << 42) | x`
+- 给 marked1 的: `(0b0010 << 42) | x`
+- 给 remapped 的: `(0b0100 << 42) | x`
+
+
 ZGC therefore just reserves 16TB of address space (but not actually uses all of this memory) starting at address 4TB. Here is another nice drawing from ZGC’s source:
 
-在堆引用中包含元数据信息确实会使取消引用更加昂贵, 因为需要屏蔽地址才能获得真实地址(没有元信息)。 ZGC 使用了一个很好的技巧来避免这种情况：当从内存中读取一个位的标记0、标记1 或重映射时, 它会被设置。 当在偏移 x 处分配页面时, ZGC 将同一页面映射到 3 个不同的地址：
+因此, ZGC 只需要保留总共 16TB 的地址空间; 从 4TB 地址开始, 到20TB为止, 因为marked0和marked1不能同时为1, 中间还有一段未使用的内存地址空间。 
+下面是 ZGC 源码中的另一个注释说明: 
 
-对于标记0：(0b0001 << 42)| X
-对于标记1：(0b0010 << 42)| X
-重映射：(0b0100 << 42) | X
-因此, ZGC 仅保留从地址 4TB 开始的 16TB 地址空间(但实际上并未使用所有这些内存)。 这是 ZGC 来源的另一幅精美图：
-
-```
+```sh
  +--------------------------------+ 0x0000140000000000 (20TB)
   |         Remapped View          |
   +--------------------------------+ 0x0000100000000000 (16TB)
-  |     (Reserved, but unused)     |
+  |     (未使用的地址空间)            |
   +--------------------------------+ 0x00000c0000000000 (12TB)
   |         Marked1 View           |
   +--------------------------------+ 0x0000080000000000 (8TB)
@@ -266,8 +271,55 @@ ZGC therefore just reserves 16TB of address space (but not actually uses all of 
 
 At any point of time only one of these 3 views is in use. So for debugging the unused views can be unmapped to better verify correctness.
 
-在任何时间点, 只有这 3 个视图中的一个在使用中。 因此, 为了调试未使用的视图, 可以取消映射以更好地验证正确性。
+在任何时间点, 这 3 个视图中只有一个在使用。 因此, 可以通过调试, 将未使用的部分取消映射, 来验证这个知识点。
 
+
+### 3.2.2 如何从4TB扩展到16TB
+
+从 JDK 13 版本开始, ZGC 最大堆内存从 `4TB` 扩展到 `16TB`, 也就是可以将前44位(0-43 bits)用来标识对象的实际地址; 42位地址=4TB; 44位地址=16TB; 
+
+详细信息可查阅JDK18的源代码:
+
+> https://github.com/openjdk/jdk/blob/jdk-18-ga/src/hotspot/cpu/x86/gc/z/zGlobals_x86.cpp
+
+
+打开链接, 从中可以看到类似下面这样的注释信息:
+
+```sh
+// JDK18: 地址空间: 引用指针内存布局3
+// --------------------------------
+//
++--------------------------------+ 0x00007FFFFFFFFFFF (127TB)
+.                                .
+.                                .
+.                                .
++--------------------------------+ 0x0000500000000000 (80TB)
+|         Remapped View          |
++--------------------------------+ 0x0000400000000000 (64TB)
+.                                . (这部分地址空间未使用, 因为marked0和marked1不能同时为1)
++--------------------------------+ 0x0000300000000000 (48TB)
+|         Marked1 View           |
++--------------------------------+ 0x0000200000000000 (32TB)
+|         Marked0 View           |
++--------------------------------+ 0x0000100000000000 (16TB)
+.                                .
++--------------------------------+ 0x0000000000000000
+//
+ 6               4  4  4 4
+ 3               8  7  4 3                                               0
++------------------+----+-------------------------------------------------+
+|00000000 00000000 |1111|1111 11111111 11111111 11111111 11111111 11111111|
++------------------+----+-------------------------------------------------+
+|                  |    |
+|                  |    * 43-0 Object Offset (44-bits, 16TB 地址空间)
+|                  |
+|                  * 47-44 Metadata Bits (4-bits)  0001 = Marked0      (Address view 16-32TB)
+|                                                  0010 = Marked1      (Address view 32-48TB)
+|                                                  0100 = Remapped     (Address view 64-80TB)
+|                                                  1000 = Finalizable  (Address view N/A)
+|
+* 63-48 Fixed (16-bits, always zero)
+```
 
 
 ### Load Barrier
@@ -350,9 +402,9 @@ The first assembly instruction reads a reference from the heap: r10 stores the o
 
 Since every single reference needs to be marked or relocated, throughput is likely to decrease right after starting a marking- or relocation-phase. This should get better quite fast when most references are healed.
 
-第一条汇编指令从堆中读取一个引用：r10 存储对象引用, 而 some_field_offset 是一些常量字段偏移量。加载的引用存储在 rax 寄存器中。然后针对当前的错误掩码测试此引用(这只是按位与)。这里不需要同步, 因为 ZAddressBadMask 只有在世界停止时才会更新。如果结果非零, 我们需要执行屏障。屏障需要根据我们当前所处的 GC 阶段标记或重分配对象。在此操作之后, 它需要使用良好引用更新存储在 r10 + some_field_offset 中的引用。这是必要的, 以便从此字段的后续加载返回一个很好的参考。由于我们可能需要更新引用地址, 我们需要使用两个寄存器 r10 和 rax 来存储加载的引用和对象地址。好的引用也需要存储到寄存器 rax 中, 这样就可以继续执行, 就像我们加载好的引用一样。
+第一条汇编指令从堆中读取一个引用：r10 存储对象引用, 而 some_field_offset 是一些常量字段偏移量。加载的引用存储在 rax 寄存器中。然后针对当前的错误掩码测试此引用(这只是按位与)。这里不需要同步, 因为 ZAddressBadMask 只有在世界停止时才会更新。如果结果非零, 我们需要执行屏障。屏障需要根据我们当前所处的 GC 阶段标记或重分配对象。在此操作之后, 它需要使用良好引用更新存储在 r10 + some_field_offset 中的引用。这是必要的, 以便从此字段的后续加载返回一个很好的指针。由于我们可能需要更新引用地址, 我们需要使用两个寄存器 r10 和 rax 来存储加载的引用和对象地址。好的引用也需要存储到寄存器 rax 中, 这样就可以继续执行, 就像我们加载好的引用一样。
 
-由于每个引用都需要标记或重分配, 因此在开始标记或重分配阶段后吞吐量可能会立即降低。当大多数参考都被治愈时, 这应该会很快变得更好。
+由于每个引用都需要标记或重分配, 因此在开始标记或重分配阶段后吞吐量可能会立即降低。当大多数指针都被治愈时, 这应该会很快变得更好。
 
 
 Stop-the-World Pauses
