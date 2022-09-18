@@ -330,8 +330,8 @@ At any point of time only one of these 3 views is in use. So for debugging the u
 ZGC如何执行并发内存整理, 最关键的是理解读屏障(load barrier, 在GC相关的论文中称之为 read barrier, 一般来说两者是一个意思)。
 可能有些读者不太了解, 所以这里先进行简单的介绍。 
 如果 GC 有读屏障的支持, 那么JVM从堆内存中读取引用时, 需要执行一些额外的操作。
-在 Java 中, 基本上每次看到像 `obj.field` 这样的代码时, 都会读取 `obj` 指向的对象。 
-GC 可能还需要一个写屏障(write-barrier, store-barrier)来执行 `obj.field = value` 之类的赋值操作。
+在 Java 中, 基本上每次看到像 `obj.refField` 这样的代码时, 都会读取 `obj` 指向的对象。 
+GC 可能还需要一个写屏障(write-barrier, store-barrier)来执行 `obj.refField = value` 之类的赋值操作。
 这两类操作的特殊性在于, 它们会从堆中读取或写入数据。
 虽然都叫做屏障, 但 GC 屏障与常见的内存屏障(CPU屏障,编译器屏障) 并不是一回事; 要简单理解的话, 可以认为是在代码里进行了代理包装或者插桩。
 
@@ -358,7 +358,7 @@ int personAge = person.age;           // 没有GC屏障, 因为读取的不是�
 
 伪代码是类似这样的判断:
 
-```
+```c
 barrier: 
   // Bad color? jnz slow_path 
   // Yes -> Enter slow path and mark/relocate/remap, adjust 0x10(%rax) and %rbx
@@ -368,20 +368,28 @@ barrier:
 
 ### 3.2.3.2 读屏障(Load-Barrier)
 
-ZGC needs a so called load-barrier (also referred to as read-barrier) when reading a reference from the heap. We need to insert this load-barrier each time the Java program accesses a field of object type, e.g. obj.field. Accessing fields of some other primitive type do not need a barrier, e.g. obj.anInt or obj.anDouble. ZGC doesn’t need store/write-barriers for obj.field = someValue.
+ZGC needs a so called load-barrier (also referred to as read-barrier) when reading a reference from the heap. We need to insert this load-barrier each time the Java program accesses a field of object type, e.g. obj.refField. Accessing fields of some other primitive type do not need a barrier, e.g. obj.anInt or obj.anDouble. ZGC doesn’t need store/write-barriers for obj.refField = someValue.
+
+
+ZGC 从堆内存中读取引用时, 需要用到读屏障(load-barrier, 也称为read-barrier)。 
+每次 Java 程序访问对象引用类型的字段时, 都需要插入这个读屏障, 例如  `obj.refField`。 
+访问原生数据类型的字段不需要屏障, 例如 `obj.anInt` 或 `obj.anDouble`。 
+对于 `obj.refField = someValue` 之类的赋值操作, ZGC 并不需要写屏障(store/write-barriers)。
 
 Depending on the stage the GC is currently in (stored in the global variable ZGlobalPhase), the barrier either marks the object or relocates it if the reference isn’t already marked or remapped.
 
+根据 GC 当前所处的阶段(存储在全局变量 `ZGlobalPhase` 中)：
+
+- 如果引用尚未标记, 那么读屏障则会标记对象;
+- 如果引用尚未重映射, 那么读屏障就会重新定位。
+
 The global variables ZAddressGoodMask and ZAddressBadMask store the mask that determines if a reference is already considered good (that means already marked or remapped/relocated) or if there is still some action necessary. These variables are only changed at the start of marking- and relocation-phase and both at the same time. This table from ZGC’s source gives a nice overview in which state these masks can be:
 
-读屏障
-ZGC 在从堆中读取引用时需要一个所谓的读屏障(也称为读屏障)。每次 Java 程序访问对象类型的字段时, 我们都需要插入这个读屏障, 例如对象字段。访问一些其他原始类型的字段不需要屏障, 例如obj.anInt 或 obj.anDouble。 ZGC 不需要 obj.field = someValue 的存储/写入屏障。
+全局变量 `ZAddressGoodMask` 和 `ZAddressBadMask` 保存着位码(mask), 用于确定引用是否已经被认为是健康状态(已经被标记, 或者重映射/重分配); 或者仍然需要一些操作。
+这些变量仅在标记(marking-)开始时, 以及重分配(relocation-)阶段开始时发生变更, 并且两者会同时更改。
+这张来自 ZGC 源码中的注释表格, 很好地概述了这些掩码的状态：
 
-根据 GC 当前所处的阶段(存储在全局变量 ZGlobalPhase 中), 屏障要么标记对象, 要么在引用尚未标记或重映射时重分配它。
-
-全局变量 ZAddressGoodMask 和 ZAddressBadMask 存储掩码, 用于确定引用是否已经被认为是好的(这意味着已经标记或重映射/重分配)或者是否仍然需要一些操作。这些变量仅在标记和重分配阶段开始时更改, 并且两者同时更改。这张来自 ZGC 来源的表格很好地概述了这些掩码的状态：
-
-```
+```c
                GoodMask         BadMask          WeakGoodMask     WeakBadMask
                --------------------------------------------------------------
 Marked0        001              110              101              010
@@ -391,26 +399,32 @@ Remapped       100              011              100              011
 
 Assembly code for the barrier can be seen in the MacroAssembler for x64, I will only show some pseudo assembly code for this barrier:
 
-屏障的汇编代码可以在 x64 的 MacroAssembler 中看到, 我将只展示这个屏障的一些伪汇编代码：
+屏障的汇编代码, 可以在 x64 的 [MacroAssembler](https://github.com/openjdk/jdk/blob/jdk-18-ga/src/hotspot/cpu/x86/macroAssembler_x86.cpp) 中看到, 这里只展示这个屏障的一些伪汇编代码:
 
-```
+```sh
 mov rax, [r10 + some_field_offset]
 test rax, [address of ZAddressBadMask]
 jnz load_barrier_mark_or_relocate
 
-# otherwise reference in rax is considered good
+# 如果没有触发屏障, rax 中的引用就是健康的
 ```
 
-The first assembly instruction reads a reference from the heap: r10 stores the object reference and some_field_offset is some constant field offset. The loaded reference is stored in the rax register. This reference is then tested (this is just an bitwise-and) against the current bad mask. Synchronization isn’t necessary here since ZAddressBadMask only gets updated when the world is stopped. If the result is non-zero, we need to execute the barrier. The barrier needs to either mark or relocate the object depending on which GC phase we are currently in. After this action it needs to update the reference stored in r10 + some_field_offset with the good reference. This is necessary such that subsequent loads from this field return a good reference. Since we might need to update the reference-address, we need to use two registers r10 and rax for the loaded reference and the objects address. The good reference also needs to be stored into register rax, such that execution can continue just as when we would have loaded a good reference.
+第一条汇编指令从堆中读取一个引用: `r10` 保存的是对象的引用, 而 `some_field_offset` 则是某个字段固定的偏移量。 加载的引用存储在 `rax` 寄存器中。
+然后针对当前的错误掩码(ZAddressBadMask)测试该引用(使用按位与操作)。 这里不需要同步操作, 因为 `ZAddressBadMask` 只有在STW时才会更新。 
+如果结果非零, 则需要执行屏障。 屏障会根据当前所处的 GC 阶段执行标记或重分配操作。
+在此操作之后, 它需要将健康的引用地址,更新到 `r10 + some_field_offset` 存储位置。 更新操作完成, 后续通过此字段加载到的就是一个健康的指针。 
+因为可能需要更新引用地址, 所以使用到了两个寄存器 `r10` 和 `rax`, 分别存储对象地址, 和加载的引用。
+健康的引用也需要存储到寄存器 `rax` 中, 这样就和我们加载到了健康的引用等效, 程序可以继续执行。
+
 
 Since every single reference needs to be marked or relocated, throughput is likely to decrease right after starting a marking- or relocation-phase. This should get better quite fast when most references are healed.
 
-第一条汇编指令从堆中读取一个引用：r10 存储对象引用, 而 some_field_offset 是一些常量字段偏移量。加载的引用存储在 rax 寄存器中。然后针对当前的错误掩码测试此引用(这只是按位与)。这里不需要同步, 因为 ZAddressBadMask 只有在世界停止时才会更新。如果结果非零, 我们需要执行屏障。屏障需要根据我们当前所处的 GC 阶段标记或重分配对象。在此操作之后, 它需要使用良好引用更新存储在 r10 + some_field_offset 中的引用。这是必要的, 以便从此字段的后续加载返回一个很好的指针。由于我们可能需要更新引用地址, 我们需要使用两个寄存器 r10 和 rax 来存储加载的引用和对象地址。好的引用也需要存储到寄存器 rax 中, 这样就可以继续执行, 就像我们加载好的引用一样。
-
-由于每个引用都需要标记或重分配, 因此在开始标记或重分配阶段后吞吐量可能会立即降低。当大多数指针都被治愈时, 这应该会很快变得更好。
+由于每个引用都需要被标记或重分配, 因此在开始标记或重分配阶段后, 吞吐量可能会立即降低。 当大多数指针都被修正时, 吞吐量也应该会迅速好转。
 
 
-Stop-the-World Pauses
+### 3.2.3.3 STW暂停(Stop-the-World Pauses)
+
+
 ZGC doesn’t get rid of stop-the-world pauses completely. The collector needs pauses when starting marking, ending marking and starting relocation. But this pauses are usually quite short - only a few milliseconds.
 
 When starting marking ZGC traverses all thread stacks to mark the applications root set. The root set is the set of object references from where traversing the object graph starts. It usually consists of local and global variables, but also other internal VM structures (e.g. JNI handles).
@@ -419,7 +433,6 @@ Another pause is required when ending the marking phase. In this pause the GC ne
 
 Starting relocation phase pauses the application again. This phase is quite similar to starting marking, with the difference that this phase relocates the objects in the root set.
 
-停止世界暂停
 ZGC 并没有完全摆脱 stop-the-world 暂停。收集器在开始标记、结束标记和开始重分配时需要暂停。但是这种停顿通常很短——只有几毫秒。
 
 在开始标记时, ZGC 会遍历所有线程堆栈来标记应用程序根集。根集是开始遍历对象图的对象引用集。它通常由局部和全局变量组成, 但也包括其他内部 VM 结构(例如 JNI 句柄)。
