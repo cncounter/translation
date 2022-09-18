@@ -422,24 +422,17 @@ Since every single reference needs to be marked or relocated, throughput is like
 由于每个引用都需要被标记或重分配, 因此在开始标记或重分配阶段后, 吞吐量可能会立即降低。 当大多数指针都被修正时, 吞吐量也应该会迅速好转。
 
 
-### 3.2.3.3 STW暂停(Stop-the-World Pauses)
+### 3.2.3.3 ZGC与STW暂停
 
 
-ZGC doesn’t get rid of stop-the-world pauses completely. The collector needs pauses when starting marking, ending marking and starting relocation. But this pauses are usually quite short - only a few milliseconds.
+ZGC并没有完全摆脱 stop-the-world 暂停。 垃圾收集器在开始标记、结束标记和开始重分配时, 都需要STW暂停(Stop-the-World Pauses)。 但这种停顿通常很短: 只需要几毫秒。
 
-When starting marking ZGC traverses all thread stacks to mark the applications root set. The root set is the set of object references from where traversing the object graph starts. It usually consists of local and global variables, but also other internal VM structures (e.g. JNI handles).
+在开始标记时, ZGC会遍历所有线程栈, 来标记GC根。 GC根集合(root set), 是开始遍历对象图的对象引用集。 它通常由线程调用链中的方法局部变量, 以及全局变量组成, 当然也包括其他内部 VM 结构题(例如 JNI 句柄)。
 
-Another pause is required when ending the marking phase. In this pause the GC needs to empty and traverse all thread-local marking buffers. Since the GC could discover a large unmarked sub-graph this could take longer. ZGC tries to avoid this by stopping the end of marking phase after 1 millisecond. It returns into the concurrent marking phase until the whole graph is traversed, then the end of marking phase can be started again.
+标记阶段结束时, 也需要一次STW暂停。 在此暂停中, GC 需要遍历所有线程本地标记缓冲区(thread-local marking buffers), 并负责清空。 由于 GC 可能会看到很大的未标记子图, 所以这个操作可能会耗时较长。 
+ZGC会尝试在 1 毫秒后就停止标记阶段, 以避免这种情况。 它再次进入并发标记阶段, 直到遍历整个图, 然后再次结束标记阶段。
 
-Starting relocation phase pauses the application again. This phase is quite similar to starting marking, with the difference that this phase relocates the objects in the root set.
-
-ZGC 并没有完全摆脱 stop-the-world 暂停。收集器在开始标记、结束标记和开始重分配时需要暂停。但是这种停顿通常很短——只有几毫秒。
-
-在开始标记时, ZGC 会遍历所有线程堆栈来标记应用程序根集。根集是开始遍历对象图的对象引用集。它通常由局部和全局变量组成, 但也包括其他内部 VM 结构(例如 JNI 句柄)。
-
-结束标记阶段时需要再次暂停。在此暂停中, GC 需要清空并遍历所有线程本地标记缓冲区。由于 GC 可以发现一个大的未标记子图, 这可能需要更长的时间。 ZGC 试图通过在 1 毫秒后停止标记阶段的结束来避免这种情况。它返回到并发标记阶段, 直到遍历整个图, 然后可以再次开始标记阶段的结束。
-
-启动重分配阶段会再次暂停应用程序。此阶段与开始标记非常相似, 不同之处在于此阶段重分配根集中的对象。
+重分配阶段开始时, 会再次暂停应用程序。 这与开始标记非常相似, 不同之处在于这时候是重分配根集(root set)中的对象。
 
 
 
