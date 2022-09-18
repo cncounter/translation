@@ -244,7 +244,7 @@ ZGC的源代码中有一幅非常不错的ASCII绘图, 展示了这些bit:
 
 在指针引用中包含元数据信息, 确实会使取消引用的操作代价更高, 因为需要对地址进行转码(masked), 才能获得没有元信息的真实地址。 
 ZGC通过一个绝妙的技巧来避免这种情况: 当从内存中读取的某一位精确匹配 marked0, marked1 或者 remapped 标记位。 
-在JDK11中, 当在 x 偏移处分配页面时, ZGC 将同一个物理页面映射到 3 个不同的虚拟地址：
+在JDK11中, 当在 x 偏移处分配页面时, ZGC 将同一个物理页面映射到 3 个不同的虚拟地址: 
 
 
 - 给 marked0 的: `(0b0001 << 42) | x`
@@ -322,10 +322,8 @@ At any point of time only one of these 3 views is in use. So for debugging the u
 ```
 
 
-### 3.2.3 读屏障(Load Barrier)
 
-
-### 3.2.3.1 GC屏障简介
+### 3.2.4 GC屏障简介
 
 ZGC如何执行并发内存整理, 最关键的是理解读屏障(load barrier, 在GC相关的论文中称之为 read barrier, 一般来说两者是一个意思)。
 可能有些读者不太了解, 所以这里先进行简单的介绍。 
@@ -366,7 +364,7 @@ barrier:
 ~4% execution overhead o
 ```
 
-### 3.2.3.2 读屏障(Load-Barrier)
+### 3.2.5 读屏障(Load-Barrier)
 
 ZGC needs a so called load-barrier (also referred to as read-barrier) when reading a reference from the heap. We need to insert this load-barrier each time the Java program accesses a field of object type, e.g. obj.refField. Accessing fields of some other primitive type do not need a barrier, e.g. obj.anInt or obj.anDouble. ZGC doesn’t need store/write-barriers for obj.refField = someValue.
 
@@ -378,7 +376,7 @@ ZGC 从堆内存中读取引用时, 需要用到读屏障(load-barrier, 也称�
 
 Depending on the stage the GC is currently in (stored in the global variable ZGlobalPhase), the barrier either marks the object or relocates it if the reference isn’t already marked or remapped.
 
-根据 GC 当前所处的阶段(存储在全局变量 `ZGlobalPhase` 中)：
+根据 GC 当前所处的阶段(存储在全局变量 `ZGlobalPhase` 中): 
 
 - 如果引用尚未标记, 那么读屏障则会标记对象;
 - 如果引用尚未重映射, 那么读屏障就会重新定位。
@@ -387,7 +385,7 @@ The global variables ZAddressGoodMask and ZAddressBadMask store the mask that de
 
 全局变量 `ZAddressGoodMask` 和 `ZAddressBadMask` 保存着位码(mask), 用于确定引用是否已经被认为是健康状态(已经被标记, 或者重映射/重分配); 或者仍然需要一些操作。
 这些变量仅在标记(marking-)开始时, 以及重分配(relocation-)阶段开始时发生变更, 并且两者会同时更改。
-这张来自 ZGC 源码中的注释表格, 很好地概述了这些掩码的状态：
+这张来自 ZGC 源码中的注释表格, 很好地概述了这些掩码的状态: 
 
 ```c
                GoodMask         BadMask          WeakGoodMask     WeakBadMask
@@ -422,7 +420,7 @@ Since every single reference needs to be marked or relocated, throughput is like
 由于每个引用都需要被标记或重分配, 因此在开始标记或重分配阶段后, 吞吐量可能会立即降低。 当大多数指针都被修正时, 吞吐量也应该会迅速好转。
 
 
-### 3.2.3.3 ZGC与STW暂停
+### 3.2.6 ZGC与STW暂停
 
 
 ZGC并没有完全摆脱 stop-the-world 暂停。 垃圾收集器在开始标记、结束标记和开始重分配时, 都需要STW暂停(Stop-the-World Pauses)。 但这种停顿通常很短: 只需要几毫秒。
@@ -436,28 +434,30 @@ ZGC会尝试在 1 毫秒后就停止标记阶段, 以避免这种情况。 它�
 
 
 
-### Pages & Physical & Virtual Memory
+### 3.2.7 ZGC与页面
 
-Shenandoah separates the heap into a large number of equally-sized regions. An object usually does not span multiple regions, except for large objects that do not fit into a single region. Those large objects need to be allocated in multiple contiguous regions. I quite like this approach because it is so simple.
+雪兰多GC算法(Shenandoah)可以算是G1的升级版, 将堆内存划分为多个大小相等的区域(regions)。 每个对象通常只在一个区域内, 但是大对象除外。 大对象(large objects)需要分配到多个连续的区域中, 这种实现方式很简洁。
 
-ZGC is quite similar to Shenandoah in this regard. In ZGC’s parlance regions are called pages. The major difference to Shenandoah: Pages in ZGC can have different sizes (but always a multiple of 2MB on x64). There are 3 different page types in ZGC: small (2MB size), medium (32MB size) and large (some multiple of 2MB). Small objects (up to 256KB size) are allocated in small pages, medium-sized objects (up to 4MB) are allocated in medium pages. Objects larger than 4MB are allocated in large pages. Large pages can only store exactly one object, in constrast to small or medium pages. Somewhat confusingly large pages can actually be smaller than medium pages (e.g. for a large object with a size of 6MB).
+在内存分块方面, ZGC与雪兰多相似。 在 ZGC 中, 区域(regions)称为页面(pages)。 
+ZGC与 Shenandoah 的主要区别是: ZGC 中的页面可以有不同的大小(在 x64 平台上必须是 2MB 的整数倍)。 
+ZGC 中有 3 种不同的页面类型: 小页面(`2MB`)、中页面(`32MB`)和大页面(`2MB的整数倍`)。
+小对象(小于等于`256KB`)会在小页面中分配存储空间, 中型对象(小于等于`4MB`)会在中页面分配。 大于`4MB`的对象则会分配在大页面中。
+与小页面或中页面相比, 大页面只能存储单个对象。
+当然, 纯从页面大小这个维度看的话可能有点令人困惑, 有时候, 大页面占用的空间可能会比中页面还小; 比如, 大对象占用的空间在4MB~30MB之间。
 
-Another nice property of ZGC is, that it also differentiates between physical and virtual memory. The idea behind this is that there usually is plenty of virtual memory available (always 4TB in ZGC) while physical memory is more scarce. Physical memory can be expanded up to the maximum heap size (set with -Xmx for the JVM), so this tends to be much less than the 4 TB of virtual memory. Allocating a page of a certain size in ZGC means allocating both physical and virtual memory. With ZGC the physical memory doesn’t need to be contiguous - only the virtual memory space. So why is this actually a nice property?
+ZGC 还有一个很棒的特性: 区分了物理内存(Physical Memory)和虚拟内存(Virtual Memory)。 
+这背后的逻辑是, ZGC 中通常有大量的虚拟内存空间(至少是 4TB), 而物理内存一般不会有这么多。 物理内存可以扩展到最大堆内存大小(`-Xmx`), 这个值远小于 4 TB 的虚拟内存地址空间。
+在 ZGC 中分配一定大小的页面, 意味着会同时分配物理内存和虚拟内存。
+使用 ZGC时, 物理内存并不需要是连续的块 - 只需虚拟地址空间是连续的就行。
+为什么我们说这个特性非常有用呢？
 
-Allocating a contiguous range of virtual memory should be easy, since we usually have more than enough of it. But it is quite easy to imagine a situation where we have 3 free pages with size 2MB somewhere in the physical memory, but we need 6MB of contiguous memory for a large object allocation. There is enough free physical memory but unfortunately this memory is non-contiguous. ZGC is able to map this non-contiguous physical pages to a single contiguous virtual memory space. If this wasn’t possible, we would have run out of memory.
 
-On Linux the physical memory is basically an anonymous file that is only stored in RAM (and not on disk), ZGC uses memfd_create to create it. The file can then be extended with ftruncate, ZGC is allowed to extend the physical memory (= the anonymous file) up to the maximum heap size. Physical memory is then mmaped into the virtual address space.
+要分配地址连续的虚拟内存很容易, 因为我们通常拥有足够多的虚拟内存。
+但假设有这样一种情况, 物理内存中有 3 个不连续的, 大小为 2MB 的空闲页面, 但我们需要 6MB 的连续内存来分配大对象。 
+这就是内存碎片问题: 有足够的物理内存空间, 但这些内存不是连在一块的。 
+ZGC的这种实现方案, 能够将多个不连续的物理内存页, 映射到单个连续的虚拟内存空间。如果不能做到这一点, 内存可能很快就不够用了。
 
-页面 & 物理 & 虚拟内存
-Shenandoah 将堆分成大量大小相等的区域。一个对象通常不跨越多个区域, 但不适合单个区域的大型对象除外。这些大对象需要分配在多个连续的区域中。我非常喜欢这种方法, 因为它非常简单。
-
-ZGC在这方面与雪兰多相似。在 ZGC 的说法中, 区域称为页面。与 Shenandoah 的主要区别：ZGC 中的页面可以有不同的大小(但在 x64 上总是 2MB 的倍数)。 ZGC 中有 3 种不同的页面类型：小(2MB 大小)、中(32MB 大小)和大(2MB 的倍数)。小对象(最大 256KB 大小)分配在小页面中, 中型对象(最大 4MB)分配在中页面中。大于 4MB 的对象分配在大页面中。与小页面或中页面相比, 大页面只能存储一个对象。有点令人困惑的大页面实际上可能比中页面小(例如, 对于大小为 6MB 的大对象)。
-
-ZGC 的另一个不错的特性是, 它还区分了物理内存和虚拟内存。这背后的想法是, 通常有大量可用的虚拟内存(ZGC 中总是 4TB), 而物理内存则更加稀缺。物理内存可以扩展到最大堆大小(使用 JVM 的 -Xmx 设置), 因此这往往远小于 4 TB 的虚拟内存。在 ZGC 中分配一定大小的页面意味着同时分配物理内存和虚拟内存。使用 ZGC, 物理内存不需要是连续的 - 只需虚拟内存空间。那么为什么这实际上是一个不错的属性呢？
-
-分配连续范围的虚拟内存应该很容易, 因为我们通常拥有足够多的虚拟内存。但是很容易想象这样一种情况, 我们在物理内存的某个地方有 3 个大小为 2MB 的空闲页面, 但我们需要 6MB 的连续内存来分配大对象。有足够的可用物理内存, 但不幸的是, 这个内存是不连续的。 ZGC 能够将这个不连续的物理页面映射到单个连续的虚拟内存空间。如果这不可能, 我们就会耗尽内存。
-
-在 Linux 上, 物理内存基本上是一个匿名文件, 只存储在 RAM 中(而不是磁盘上), ZGC 使用 memfd_create 创建它。然后可以使用 ftruncate 扩展文件, 允许 ZGC 将物理内存(=匿名文件)扩展到最大堆大小。然后将物理内存映射到虚拟地址空间。
+在 Linux 系统上, 物理内存本质上是一个匿名文件, 只能存储到RAM中(而不能是磁盘上), ZGC 使用 `memfd_create` 来创建它。 然后可以使用 `ftruncate` 扩展文件, 允许将物理内存(等价于匿名文件)扩展到最大堆大小。 然后再将物理内存映射到虚拟地址空间。
 
 
 ## 4. ZGC日志分析
