@@ -1,8 +1,14 @@
 # ZGC实现原理与使用示例
 
-Z垃圾收集器, 简称ZGC(全称为 Z Garbage Collector), 是一款低延迟垃圾收集器, 代码开源, 由 Oracle 公司开发, 主要作者为 Per Liden。
+Z垃圾收集器, 简称ZGC(全称为 Z Garbage Collector), 是一款专注于低延迟的垃圾收集器。
 
-从JDK11开始支持ZGC, 能适应各种大小的堆内存, 伸缩性良好, 性能优异, 在各种环境下都能良好运行。
+ZGC是OpenJDK中的一个项目，由HotSpot Group赞助。代码开源, 由 Oracle 公司主力开发, 主要作者为 Per Liden。 
+
+JDK 11版本开始支持ZGC, 适配各种堆内存大小的运行环境, 伸缩性良好, 性能优异, 在大部分业务环境下都能良好运行。
+
+Per Liden 目前已经从Oracle公司离职了, 但继续为 OpenJDK 项目做贡献, 他的博客地址是:
+
+> https://www.malloc.se/
 
 ## 1. ZGC简介
 
@@ -29,13 +35,16 @@ ZGC的内存整理技术, 采用并发执行方案, 极大幅度降低了GC暂�
 ### 1.1 ZGC的设计目标
 
 
-ZGC致力于解决前代GC的问题, 设计目标包括:
+ZGC致力于解决前代GC存在的一些问题, 设计目标包括:
 
 - 支持大内存: TB级别的堆内存, 适用的堆内存大小范围, 涵盖 `8MB ~ 16TB`, 其中JDK11版本最大支持`4TB`。
-- 极致低延迟: 降低最大GC暂停时间至10ms以内, 理想情况在亚毫秒级(Sub-millisecond)
+- 极致低延迟: 最大GC暂停时间降低至10ms以内, 大部分时候在毫秒级以下(Sub-millisecond)
 - 可扩缩性(Scalable): 停顿时间与内存配置无关, 与堆内存大小, 存活对象(live-set)数量 都没有直接关系, 但是GC根(root-set)对象的数量还是有一定影响。
 - 方便调优: 增加了很多灵活的调优控制参数。
 - 兼顾吐吞量: 大部分应用场景下, 极端情况只降低 15% 以内的吞吐量, 换句话说就是GC损耗最多只占用15%的CPU资源。
+
+
+ZGC 最早在JDK11中作为实验性质的功能特性引入, 并在JDK15中成为准生产版(Production Ready).
 
 
 JDK11文档中对ZGC的介绍是这样写的:
@@ -47,70 +56,266 @@ JDK18版本的ZGC介绍文档是这样写的:
 
 > ZGC是一款可扩展性非常好的低延迟垃圾收集器, 全称为 Z Garbage Collector, 我们也可以称之为 "Z垃圾收集器"。 ZGC将所有繁重的垃圾收集任务采用并发方式来执行, 应用程序线程暂停执行的时间不超过`几`毫秒, 这使得它适用于需要低延迟的系统。其暂停时间, 与使用的堆内存大小无关。 ZGC 支持从 `8MB` 到 `16TB` 范围的堆内存大小。
 
-翻看 OpenJDK 的代码, 如果以后还需要超过16TB以上的堆内存, 也是很容易实现的, 具体的原理会在着色指针部分进行介绍。
+
+### 1.2 系统支持情况
+
+| 系统平台(Platform) | 是否支持(Supported) | 起始版本(Since) | 备注(Comment) |
+| :------------     | :----------  | :----------         | :------- |
+| Linux/x64	        | ✔️          	| JDK 15 (Experimental since JDK 11)	 | (x86) |
+| Linux/AArch64     | ✔️            | JDK 15 (Experimental since JDK 13)	 | (ARM版) |
+| Linux/PowerPC     | ✔️            | JDK 18		                           | |
+| macOS/x64	        | ✔️           	| JDK 15 (Experimental since JDK 14)	 | |
+| macOS/AArch64	    | ✔️           	| JDK 15 (Experimental since JDK 14)	 | (ARM版) |
+| Windows/x64	      | ✔️           	| JDK 15 (Experimental since JDK 14)	 | 要求Windows 1803 及以上版本 (即Windows 10 或者 Windows Server 2019). |
+| Windows/AArch64   | ✔️           	| JDK 16		                         | (ARM版) |
+
+
+### 1.3 ZGC中字母Z的含义
+
+作者说这个 `Z` 字母其实没有什么特殊的含义，ZGC就是一个名字而已。
+名字最初的来源是为了致敬伟大的 ZFS 文件系统。 最初 ZFS 的含义是 "Zettabyte File System", 但后来这个含义也被放弃了。
+所以ZGC就只一个代号，具体的信息可以参考 Jeff Bonwick 的博客: 
+
+> https://web.archive.org/web/20170223222515/https://blogs.oracle.com/bonwick/en_US/entry/you_say_zeta_i_say
+
+业界有一些程序员猜测这个Z有一点 Zero 的意思, 理由则是 无停顿垃圾收集算法(Pauseless GC Algorithm), 然而这个目标还没有完全达到, 所以我们可以排除这个含义了。
 
 
 
 ## 2. ZGC常用配置
 
+### 2.1 ZGC相关的配置
 
-### 2.1 启用ZGC的JVM参数
+下面是使用ZGC时可以配置的JVM参数:
+
+> 1. JVM通用的GC参数配置(某些参数只在高版本JDK中支持)
+
+| **JVM通用GC参数**           | **说明** |
+| :-----------               | :------- |
+| -XX:MinHeapSize, -Xms      | 最小堆内存 |
+| -XX:InitialHeapSize, -Xms  | 初始堆内存 |
+| -XX:MaxHeapSize, -Xmx      | 最大堆内存 |
+| -XX:SoftMaxHeapSize        | 最大堆内存软指标 |
+| -XX:ConcGCThreads          | 并发GC线程数|
+| -XX:ParallelGCThreads      | 并行GC线程数 |
+| -XX:UseDynamicNumberOfGCThreads | 使用动态数量的GC线程数 |
+| -XX:UseLargePages          | 使用内存大页面|
+| -XX:UseTransparentHugePages| |
+| -XX:UseNUMA                | 使用NUMA架构 |
+| -XX:SoftRefLRUPolicyMSPerMB| |
+| -XX:AllocateHeapAt         | 指定堆内存需要分配到哪个大页面内存池(挂载路径) |
 
 
-JDK11版本开始支持ZGC, 但作为实验性功能提供, 需要使用命令行选项 `-XX:+UnlockExperimentalVMOptions -XX:+UseZGC` 来启用ZGC。
+> 2. ZGC专属配置参数
+
+
+| **ZGC专属配置参数**             | **说明** |
+| :-----------                  | :------- |
+| -XX:ZAllocationSpikeTolerance | |
+| -XX:ZCollectionInterval       | 定时触发垃圾收集的周期 |
+| -XX:ZFragmentationLimit       | |
+| -XX:ZMarkStackSpaceLimit      | |
+| -XX:ZProactive                | ZGC主动触发垃圾收集 |
+| -XX:ZUncommit                 | |
+| -XX:ZUncommitDelay            | |
+
+
+> 3. ZGC诊断参数(需要在前面指定 -XX:+UnlockDiagnosticVMOptions 参数)
+
+| **ZGC诊断参数** (需要在前面指定 -XX:+UnlockDiagnosticVMOptions 参数)  | 说明 |
+| :---------------------------------- | :------- |
+| -XX:ZStatisticsInterval             | |
+| -XX:ZVerifyForwarding               | |
+| -XX:ZVerifyMarking                  | |
+| -XX:ZVerifyObjects                  | |
+| -XX:ZVerifyRoots                    | |
+| -XX:ZVerifyViews                    | |
+
+
+
+### 2.2 启用ZGC的JVM参数
+
+
+JDK11版本开始支持ZGC, 但作为实验性功能提供, 使用命令行选项 `-XX:+UnlockExperimentalVMOptions -XX:+UseZGC` 来启用ZGC。
+
 
 根据 [JEP 377](https://openjdk.org/jeps/377) 规范, 从JDK15版本开始, ZGC成为准生产版本, 不再需要指定开启实验性质的JVM选项, 直接使用 `-XX:+UseZGC` 即可。
 
 
 
-### 2.2 设置堆内存大小
+### 2.3 设置堆内存大小
 
-和其他GC实现一样, ZGC最重要的调优参数也是设置最大堆内存 (`-Xmx`)。 
+和其他GC实现一样, ZGC最重要的配置参数也是设置堆内存的最大值(`-Xmx<size>`)。 
 
-由于 ZGC 是并发垃圾收集器, 因此必须确定最大堆内存是多少, 以便于:
+由于 ZGC 是一款并发垃圾收集器, 因此必须确定最大堆内存是多少, 以便于:
 
-- 1) 堆内存可以满足业务需求, 足够容纳运行过程中的存活对象;  
-- 2) 在执行 GC 的时候, 堆中有足够的空间来分配对象。
+- 1) 堆内存可以满足业务需求, 足够容纳Java程序执行过程中的存活对象;  
+- 2) 在执行并发GC的过程中, 堆内存必须要有足够的空闲内存， 以允许程序的正常运行和对应的内存分配。
 
-具体需要多少空间, 取决于应用程序的分配速度, 以及存活对象占用多大空间。 
-一般来说, 给 ZGC 的内存越多越好, 但也没必要浪费内存。 需要权衡考虑内存使用率, 以及GC周期的触发频率, 在两者之间找到一个平衡点。
-
-
-
-### 2.3 设置并发GC线程数
-
-
-由于 ZGC 是完全并发的垃圾收集器, 所以只需要设置并发GC线程数(`-XX:ConcGCThreads`), 而不需要设置并行GC线程数。 
-ZGC 具有自动选择该线程数量的启发式方法。 这种启发式通常效果很好, 但根据应用程序的特性, 有些情况下可能需要进行调整。 
-这个选项本质上决定了应该给 GC 分配多少 CPU 时间。 给的太多, GC 就会和应用线程争抢过多的 CPU 时间。 给的太少,  GC 收集的速度, 可能会赶不上应用程序分配对象并变成垃圾的速度。
+具体需要多少空间, 取决于应用程序的分配速率(allocation rate), 以及应用程序的存活集有多大(live-set, 存活对象的集合)。 
+通常来说, 给 ZGC 的内存越多越好, 但也没必要故意去浪费用不到的内存。 所以需要评估内存使用量, 以及GC周期的触发频率, 在两者之间找到一个较好的平衡点。
 
 
 
-### 2.4 将不使用的内存返还给操作系统
-
-从JDK13版本开始, ZGC支持将不使用的内存返还给操作系统, 详细规范可以参考 [JEP 351](https://openjdk.org/jeps/351) 。
-默认情况下, ZGC 会自动将不用的内存部分返还给操作系统。 对于关注内存占用的系统或部署环境, 这个功能非常有用。 
-但当水位缩减到最小堆内存 (`-Xms`) 时, 就不会继续返还未使用的内存了。 根据这个情况可以推断得知: 如果最小堆内存(`-Xms`) 和 最大堆内存(`-Xmx`) 配置相等, 则此功能将被隐式禁用。
-
-如果不需要返还, 可以通过减号标志来明确禁用此功能: `-XX:-ZUncommit`。 
-
-内存返还的延迟时间, 可以使用 `-XX:ZUncommitDelay=<seconds>` 来配置(默认值为 `300` 秒)。 这个延迟时间, 指定了在返还给操作系统之前, 应该至少空闲多长时间。
+### 2.4 设置并发GC线程数
 
 
+ZGC最核心的特征是并发垃圾收集，`并发`的意思就是说: 在Java应用线程正常工作的时候， GC线程会与业务线程并发执行, 处理大部分繁重的垃圾收集任务。 这种方式大大降低了GC对系统响应时间(response time)的影响。
+
+由于 ZGC 是完全并发的垃圾收集器, 所以需要设置并发GC线程的数量(`-XX:ConcGCThreads=<number>`), 而不需要设置并行GC线程数。 
+ZGC具有启发式的特性，可以自动选择并发线程数量。 这种启发式大部分情况下效果都很好, 但有些系统运行环境比较特殊, 可能需要进行手工调整。 
+这个选项从根本上决定了应该给 GC 分配多少比例的 CPU 时间。 给的太多, GC开销就比较大, 会和应用线程争抢过多的 CPU 时间。 给的太少,  GC 回收内存的速度, 可能会跟不上应用程序分配内存的速度(分配对象并变成垃圾的速度)。
+
+
+> **说明!**  如果低延迟(即系统响应时间)是非常关键的性能指标，那么整个系统的负载就不能太高。 理想情况下，系统的CPU使用率应该在70％以下, 很多金融系统的CPU使用率要求在30%以下。
+
+
+### 2.5 将不使用的内存归还给操作系统
+
+从JDK13版本开始, ZGC支持将不使用的内存返还给操作系统, 详细规范可以参考 JEP 351:
+
+> https://openjdk.org/jeps/351
+
+默认情况下, ZGC 会自动将不用的内存申请撤销(uncommits), 归还给操作系统。 这对于关注内存占用的系统或部署环境非常有用。 
+
+当然，撤销内存分配的时候, 不会让堆内存低于最小堆内存空间(`-Xms`)。 也就是当水位缩减到最小堆内存 (`-Xms`) 时, 就不会继续返还未使用的内存了。 根据这个情况可以推断得知: 如果最小堆内存(`-Xms`) 和 最大堆内存(`-Xmx`) 设置为一样大小, 则此功能将被隐式禁用。
+
+如果不需要归还, 可以设置减号参数开关, 来明确禁用此功能: `-XX:-ZUncommit`。 
+
+内存归还的延迟时间, 可以使用 `-XX:ZUncommitDelay=<seconds>` 来配置(默认值为 `300` 秒), 指定ZGC在将空闲内存返还给操作系统之前, 应该至少空闲多长时间。
+
+
+> **注意！** 在Linux系统中，未使用的内存撤销分配时, 需要支持  `FALLOC_FL_PUNCH_HOLE` 的 `fallocate(2)` 系统函数， 所以要求 Linux内核版本 3.5（对于tmpfs）和 4.3版本（对于 hugetlbfs）及以上。
+
+
+### 2.6 Linux系统层面启用内存大页面
+
+配置ZGC使用大页面通常会产生更好的性能（包括吞吐量，延迟和启动时间），除了设置稍微复杂之外并没有什么缺点。 但配置的过程中需要root权限，这也是为什么默认不开启的原因。
+
+在 Linux/x86 平台上，大页面(large pages) 也称为 "巨型页面"(huge pages), 其大小为2MB。
+
+假设Java堆内存为16G, 那么需要的大页面数量为: `16G / 2M = 8192`。
+
+首先，将至少16G（8192页）的内存分配给大页面内存池(huge page pool)。 “至少” 这个描述很关键，因为在JVM中启用大页面, 意味着不仅GC会使用大页面来处理Java堆，其他JVM组件也会将其用于各种内部数据结构，比如 code heap, marking bitmaps 等等。
+
+在这个示例中，我们将分配2G的大页来作为非堆部分（non-Java heap）, 所以设置保留9216页（也就是18G）。
+
+配置系统的大页面内存池需要root权限，下面是设置所需页数的命令:
+
+```shell
+$ echo 9216 > /sys/kernel/mm/hugepages/hugepages-2048kB/nr_hugepages
+```
+
+请注意以上命令不一定保证能执行成功，比如内核找不到足够的空闲大页面等情况。
+另外请注意，内核可能需要一段时间来处理这种请求。 在继续之前，请检查分配给大页面内存池的页面数，以确保请求已成功完成。
+
+```shell
+$ cat /sys/kernel/mm/hugepages/hugepages-2048kB/nr_hugepages
+
+9216
+```
+
+如果 `Linux 内核版本号 >= 4.14`， 则可以跳过接下来挂载 hugetlbfs 文件系统的步骤。
+但如果使用的内核版本较老，则ZGC需要通过 hugetlbfs 文件系统来访问大页面。
+
+挂载 hugetlbfs 文件系统需要root权限，而且需要让启动JVM的用户(假定该用户的uid为123)可以访问:
+
+```sh
+$ mkdir /hugepages
+$ mount -t hugetlbfs -o uid=123 nodev /hugepages
+```
+
+这些条件都具备之后，我们可以使用 `-XX:+UseLargePages` 参数来开启大页面:
+
+```
+$ java -XX:+UnlockExperimentalVMOptions -XX:+UseZGC -Xms16G -Xmx16G -XX:+UseLargePages ...
+```
+
+如果有多个可用的 hugetlbfs 文件系统， 那么我们必须同时使用 `-XX:AllocateHeapAt` 参数来指定需要使用哪个挂载路径。
+例如，假设系统中挂载了多个可访问的 hugetlbfs 文件系统，但我们想使用挂载到 `/hugepages` 目录的这个，则使用的参数为:
+
+```
+$ java -XX:+UnlockExperimentalVMOptions -XX:+UseZGC -Xms16G -Xmx16G -XX:+UseLargePages -XX:AllocateHeapAt=/hugepages ...
+```
+
+另外请注意, 大页面内存池的配置和 hugetlbfs 文件系统的挂载不会自动持久化，除非采取其他措施，否则系统重启后就会丢失。
+
+
+
+### 2.7 启用NUMA支持
+
+> NUMA (non-Uniform Memory Access), 非均匀内存访问架构, 在多处理器系统中，内存的访问时间是依赖处理器和内存之间相对位置的。 在这种设计里面存在和处理器相近的内存，称作本地内存(NUMA-local)；还有和处理器相对远的内存，称为远端内存。
+
+ZGC 对 NUMA 提供支持，也就是说， 会尽可能地将Java堆内存分配定向到 NUMA-local 内存。
+默认情况下这个功能是开启的。 但如果JVM进程检测到自身被绑定到某一部分CPU，则会自动禁用。
+一般情况下我们不需要关心此项配置, 如果要明确指定JVM的行为，则可以使用 `-XX:+UseNUMA` 或者 `-XX:-UseNUMA` 参数开关。
+
+在 NUMA 机器（例如多个插槽的x86机器）上运行时， 启用NUMA支持通常会获得显著的性能提升。
+
+
+### 2.8 开启GC日志
+
+JDK9以后, 开启GC日志的参数格式为:
+
+```
+-Xlog:<tag set>,[<tag set>, ...]:<log file>
+```
+
+如果记不住, 可以使用以下命令查看GC日志相关的帮助信息:
+
+```
+java -Xlog:help
+```
+
+如果要打印基本的GC日志, 每次GC只打印1行日志:
+
+```
+-Xlog:gc:gc.log
+```
+
+在性能分析和调优时，可以打印更详细的GC日志:
+
+```
+-Xlog:gc*:gc.log
+```
+
+其中， `gc*` 的含义是: 标签(tag)中以 gc 这两个字母开头的所有日志信息都打印出来。 `:gc.log` 则表示将日志信息输出到文件 `gc.log` 之中。
+
+
+### 2.9 一个示例配置
+
+虽然ZGC支持的配置项很多, 允许进行细粒度的优化, 但对于一般场景来说, 并不需要那么复杂的配置。
+
+这里给出一个简单的示例配置, 读者可以根据需要进行增减:
+
+```
+JAVA_OPTS=-Xmx12g -Xms4g \
+ -XX:+UnlockExperimentalVMOptions -XX:+UseZGC \
+ -XX:+UseZGC \
+ -XX:ZCollectionInterval=30 \
+ -XX:ZAllocationSpikeTolerance=5 \
+ -XX:ReservedCodeCacheSize=256m \
+ -XX:InitialCodeCacheSize=256m \
+ -XX:ConcGCThreads=8 \
+ -Xlog:gc*=info:file=gc.log:time:filecount=0
+```
+
+这里为了排版方便进行了折行, 每行末尾的反斜线(`\`) 是 shell 脚本中单个命令折成多行命令的写法。
+
+如果是JDK 15 及以上的版本, 已经正式支持 ZGC, 则不需要使用 `-XX:+UnlockExperimentalVMOptions` 参数解锁实验特性。
 
 ## 3. ZGC实现原理
 
-
-ZGC的基本特征包括:
+简单来说, ZGC的基本特征包括:
 
 - 并发GC(Concurrent)
 - 良好的执行过程追踪日志(Tracing)
 - 支持内存碎片整理(Compacting)
 - 不分代(Single generation)
-- 基于多个小堆区(Region-based), 可以进行增量式GC
-- 支持NUMA架构(NUMA-aware)
+- 增量式GC: 内存分为多个小块(Region-based), 实际实现上则是分为多个内存页。
+- 支持NUMA体系结构(NUMA-aware, Non-Uniform Memory Access, 非一致性内存访问)
+- 使用着色指针(Colored pointers)
 - 依赖读屏障(Load barriers)
-- 着色指针(Colored pointers)
 
 接下来我们进一步来查看ZGC的实现原理。
 
@@ -278,7 +483,8 @@ At any point of time only one of these 3 views is in use. So for debugging the u
 
 从 JDK 13 版本开始, ZGC 最大堆内存从 `4TB` 扩展到 `16TB`, 也就是可以将前44位(0-43 bits)用来标识对象的实际地址; 42位地址=4TB; 44位地址=16TB; 
 
-详细信息可查阅JDK18的源代码:
+
+详细信息可查阅 OpenJDK 的开源代码:
 
 > https://github.com/openjdk/jdk/blob/jdk-18-ga/src/hotspot/cpu/x86/gc/z/zGlobals_x86.cpp
 
@@ -460,10 +666,205 @@ ZGC的这种实现方案, 能够将多个不连续的物理内存页, 映射到�
 在 Linux 系统上, 物理内存本质上是一个匿名文件, 只能存储到RAM中(而不能是磁盘上), ZGC 使用 `memfd_create` 来创建它。 然后可以使用 `ftruncate` 扩展文件, 允许将物理内存(等价于匿名文件)扩展到最大堆大小。 然后再将物理内存映射到虚拟地址空间。
 
 
-## 4. ZGC日志分析
+## 4. ZGC日志与监控
+
+实际测试使用的系统版本信息:
+
+```sh
+# cat /etc/lsb-release
+DISTRIB_ID=Ubuntu
+DISTRIB_RELEASE=16.04
+DISTRIB_CODENAME=xenial
+DISTRIB_DESCRIPTION="Ubuntu 16.04.4 LTS"
+```
+
+这里使用的JDK 11版本。
+
+JVM 启动参数为:
+
+```sh
+export JAVA_OPTS="-Xmx6g -Xms6g \
+ -XX:+UnlockExperimentalVMOptions -XX:+UseZGC \
+ -XX:ConcGCThreads=28 -XX:ZCollectionInterval=5"
+```
 
 
-## 5. 小结
+对应的系统负载信息:
+
+```sh
+# ps -ef | wc -l
+242
+
+# free -h
+              total        used        free      shared  buff/cache   available
+Mem:            31G        1.0G         21G        6.3G        9.0G         23G
+Swap:          4.0G          0B        4.0G
+
+# top
+top - 11:07:28 up 777 days, 18:57,  1 user,  load average: 1.28, 1.14, 1.18
+Tasks: 240 total,   1 running, 134 sleeping,   0 stopped,   0 zombie
+%Cpu(s):  0.2 us,  0.1 sy,  0.0 ni, 99.4 id,  0.3 wa,  0.0 hi,  0.0 si,  0.0 st
+KiB Mem : 32917052 total, 22454852 free,  1018152 used,  9444048 buff/cache
+KiB Swap:  4190204 total,  4190204 free,        0 used. 24765604 avail Mem
+```
+
+可以看到系统负载较低。
+
+
+使用 GarbageCollectorMXBean 监听的结果为:
+
+```java
+[GC日志监听-GC事件]gcId=8; duration:61; gcDetail: 
+  {"duration":61,"maxPauseMillis":61,"gcCause":"Timer","collectionTime":37,
+  "gcAction":"end of major GC","afterUsage":
+    {"ZHeap":"738MB","CodeHeap 'profiled nmethods'":"20MB",
+      "CodeHeap 'non-profiled nmethods'":"7MB","Metaspace":"85MB",
+      "CodeHeap 'non-nmethods'":"1MB"},
+  "gcId":8,"collectionCount":8,"gcName":"ZGC","type":"jvm.gc.pause"}
+
+[GC日志监听-GC事件]gcId=165; duration:34; gcDetail: 
+  {"duration":34,"maxPauseMillis":61,"gcCause":"Timer","collectionTime":973,
+  "gcAction":"end of major GC","afterUsage":
+    {"ZHeap":"184MB","CodeHeap 'profiled nmethods'":"26MB",
+      "CodeHeap 'non-profiled nmethods'":"9MB","Metaspace":"93MB",
+      "CodeHeap 'non-nmethods'":"1MB"},
+   "gcId":165,"collectionCount":165,"gcName":"ZGC","type":"jvm.gc.pause"}
+
+[GC日志监听-GC事件]gcId=179; duration:38; gcDetail: 
+  {"duration":38,"maxPauseMillis":61,"gcCause":"Timer","collectionTime":1060,
+  "gcAction":"end of major GC","afterUsage":
+    {"ZHeap":"184MB","CodeHeap 'profiled nmethods'":"26MB",
+      "CodeHeap 'non-profiled nmethods'":"9MB","Metaspace":"93MB",
+      "CodeHeap 'non-nmethods'":"1MB"},
+  "gcId":179,"collectionCount":179,"gcName":"ZGC","type":"jvm.gc.pause"}
+...
+```
+
+我们监控的GC持续时间稳定在30ms~40ms之间，没有达到10ms的状态, 为什么呢?
+
+这是因为 `GarbageCollectorMXBean` 是一个比较老的API, ZGC跟他不太兼容导致的。
+ZGC垃圾收集器的duration，表示一次并发GC周期持续的时间，并不代表暂停时间，排查问题时需要鉴别。
+这个问题直到JDK17版本中才得到了修复: `GarbageCollectorMXBeans` 支持暂停时间(pause)与GC周期(cycle)两种不同的指标。
+
+
+对应的 GC 日志：
+
+```s
+[2020-07-22T19:54:13.335+0800] GC(6) Garbage Collection (Proactive)
+[2020-07-22T19:54:13.338+0800] GC(6) Pause Mark Start 2.223ms
+[2020-07-22T19:54:13.358+0800] GC(6) Concurrent Mark 19.991ms
+[2020-07-22T19:54:13.358+0800] GC(6) Pause Mark End 0.119ms
+[2020-07-22T19:54:13.359+0800] GC(6) Concurrent Process Non-Strong References 0.385ms
+[2020-07-22T19:54:13.359+0800] GC(6) Concurrent Reset Relocation Set 0.010ms
+[2020-07-22T19:54:13.359+0800] GC(6) Concurrent Destroy Detached Pages 0.001ms
+[2020-07-22T19:54:13.359+0800] GC(6) Concurrent Select Relocation Set 0.758ms
+[2020-07-22T19:54:13.359+0800] GC(6) Concurrent Prepare Relocation Set 0.086ms
+[2020-07-22T19:54:13.361+0800] GC(6) Pause Relocate Start 1.410ms
+[2020-07-22T19:54:13.363+0800] GC(6) Concurrent Relocate 2.162ms
+[2020-07-22T19:54:13.363+0800] GC(6) Load: 0.01/0.03/0.01
+[2020-07-22T19:54:13.363+0800] GC(6) MMU: 2ms/0.0%, 5ms/0.0%, 10ms/44.5%, 20ms/72.3%, 50ms/87.6%, 100ms/91.1%
+[2020-07-22T19:54:13.363+0800] GC(6) Mark: 8 stripe(s), 2 proactive flush(es), 1 terminate flush(es), 0 completion(s), 0 continuation(s)
+[2020-07-22T19:54:13.363+0800] GC(6) Relocation: Successful, 8M relocated
+[2020-07-22T19:54:13.363+0800] GC(6) NMethods: 8271 registered, 1622 unregistered
+[2020-07-22T19:54:13.363+0800] GC(6) Metaspace: 95M used, 97M capacity, 97M committed, 98M reserved
+[2020-07-22T19:54:13.363+0800] GC(6) Soft: 7427 encountered, 0 discovered, 0 enqueued
+[2020-07-22T19:54:13.363+0800] GC(6) Weak: 4925 encountered, 2543 discovered, 0 enqueued
+[2020-07-22T19:54:13.363+0800] GC(6) Final: 305 encountered, 13 discovered, 0 enqueued
+[2020-07-22T19:54:13.363+0800] GC(6) Phantom: 54 encountered, 38 discovered, 2 enqueued
+[2020-07-22T19:54:13.363+0800] GC(6)                Mark Start          Mark End        Relocate Start      Relocate End           High               Low         
+[2020-07-22T19:54:13.363+0800] GC(6)  Capacity:     6144M (100%)       6144M (100%)       6144M (100%)       6144M (100%)       6144M (100%)       6144M (100%)   
+[2020-07-22T19:54:13.363+0800] GC(6)   Reserve:       48M (1%)           48M (1%)           48M (1%)           48M (1%)           48M (1%)           48M (1%)     
+[2020-07-22T19:54:13.363+0800] GC(6)      Free:     5864M (95%)        5864M (95%)        5898M (96%)        5938M (97%)        5938M (97%)        5864M (95%)    
+[2020-07-22T19:54:13.363+0800] GC(6)      Used:      232M (4%)          232M (4%)          198M (3%)          158M (3%)          232M (4%)          158M (3%)     
+[2020-07-22T19:54:13.363+0800] GC(6)      Live:         -               102M (2%)          102M (2%)          102M (2%)             -                  -          
+[2020-07-22T19:54:13.363+0800] GC(6) Allocated:         -                 0M (0%)            0M (0%)           20M (0%)             -                  -          
+[2020-07-22T19:54:13.363+0800] GC(6)   Garbage:         -               129M (2%)           95M (2%)           51M (1%)             -                  -          
+[2020-07-22T19:54:13.363+0800] GC(6) Reclaimed:         -                  -                34M (1%)           78M (1%)             -                  -          
+[2020-07-22T19:54:13.363+0800] GC(6) Garbage Collection (Proactive) 232M(4%)->158M(3%)
+```
+
+
+在GC日志中通过查找关键字 `Pause`, 可以看到真实的STW暂停时间:
+
+```s
+
+[2020-07-22T19:54:13.338+0800] GC(6) Pause Mark Start 2.223ms
+[2020-07-22T19:54:13.358+0800] GC(6) Pause Mark End 0.119ms
+[2020-07-22T19:54:13.361+0800] GC(6) Pause Relocate Start 1.410ms
+```
+
+可以看到STW时间其实很短。
+
+
+
+## 5. 与ZGC相关的JDK版本更新日志
+
+下面列出了JDK版本与ZGC相关的更新日志。
+
+### JDK 18版本
+
+- 支持字符串去重 (`-XX:+UseStringDeduplication`)
+- 支持 Linux/PowerPC 平台
+- 多项BUG修复与性能优化
+
+
+### JDK 17版本
+
+- 动态GC线程数
+- 减少标记栈(mark stack)的内存占用
+- 支持 macOS/aarch64 平台
+- GarbageCollectorMXBeans 支持暂停时间与GC周期两种不同的指标
+- 快速JVM终止
+
+
+### JDK 16版本
+
+- 并发执行线程栈扫描(Concurrent Thread Stack Scanning, [JEP 376](http://openjdk.java.net/jeps/376) )
+- 支持原地替换方式的内存分配(in-place relocation)
+- 性能改进(包括跳转表(forwarding tables)的分配/初始化 )
+
+
+### JDK 15版本
+- ZGC生产版本准备就绪 ([JEP 377](http://openjdk.java.net/jeps/377))
+- 提高 NUMA 的识别灵敏度
+- 改进内存分配的并发度
+- 支持类信息共享, Class Data Sharing (CDS)
+- 支持将堆内存分配到 NVRAM
+- 支持压缩class指针(compressed class pointers)
+- 支持增量式内存返还
+- 修正对透明大页的支持
+- 新增部分 JFR 事件
+
+
+### JDK 14 版本
+- 支持 macOS 系统 ([JEP 364](http://openjdk.java.net/jeps/364))
+- 支持 Windows 系统 ([JEP 365](http://openjdk.java.net/jeps/365))
+- 支持超小堆内存(tiny/small heaps, 下限为8M)
+- 支持JFR泄漏分析器
+- 支持受限的和不连续的地址空间
+- 并行 pre-touch (使用参数 `-XX:+AlwaysPreTouch`)
+- 性能优化 (clone intrinsic, etc)
+- 提升稳定性
+
+
+### JDK 13 版本
+- 最大堆内存从 `4TB` 扩展到 `16TB`
+- 支持返还未使用的内存 (JEP 351)
+- 支持 `-XX:SoftMaxHeapSIze`
+- 支持 Linux/AArch64 平台
+- 缩短安全点时间(Time-To-Safepoint)
+
+
+### JDK 12 版本
+- 支持并发方式的类卸载(class unloading)
+- 进一步减少GC暂停时间
+
+
+### JDK 11 版本
+- ZGC的第一版
+- 不支持类卸载（ `-XX:+ClassUnloading` 参数在此版本中无效）
+
+
 
 希望本文能让你对 ZGC 有一定的了解。 ZGC的细节实在是太多了, 只有多多使用和实践, 才可能深入了解; 碰到某些网上没有的细节知识点, 查看 ZGC 的开源代码是最有效的解决方案。
 

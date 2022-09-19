@@ -2,6 +2,12 @@
 
 # ZGC简介
 
+
+本文已合并, 请查看: 
+
+> https://github.com/cncounter/translation/tiemao_2022/34_zgc/README.md
+
+
 ![](http://cr.openjdk.java.net/~pliden/zgc/banner.png)
 
 The Z Garbage Collector, also known as ZGC, is a scalable low latency garbage collector designed to meet the following goals:
@@ -542,13 +548,12 @@ It doesn't stand for anything, ZGC is just a name. It was originally inspired by
 
 系统版本:
 
-```
+```c
 # cat /etc/lsb-release
 DISTRIB_ID=Ubuntu
 DISTRIB_RELEASE=16.04
 DISTRIB_CODENAME=xenial
 DISTRIB_DESCRIPTION="Ubuntu 16.04.4 LTS"
-
 ```
 
 JVM 启动参数:
@@ -658,42 +663,6 @@ AWS+K8S运行环境:
 [GC日志监听-GC事件]gcId=7; duration:25; gcDetail: {"duration":25,"maxPauseMillis":71,"gcCause":"Proactive","collectionTime":31,"gcAction":"end of major GC","afterUsage":{"ZHeap":"214MB","CodeHeap 'profiled nmethods'":"26MB","CodeHeap 'non-profiled nmethods'":"8MB","Metaspace":"95MB","CodeHeap 'non-nmethods'":"1MB"},"gcId":7,"collectionCount":7,"gcName":"ZGC","type":"jvm.gc.pause"}
 ```
 
-
-对应的 GC 日志：
-
-```
-[2020-07-22T19:54:13.335+0800] GC(6) Garbage Collection (Proactive)
-[2020-07-22T19:54:13.338+0800] GC(6) Pause Mark Start 2.223ms
-[2020-07-22T19:54:13.358+0800] GC(6) Concurrent Mark 19.991ms
-[2020-07-22T19:54:13.358+0800] GC(6) Pause Mark End 0.119ms
-[2020-07-22T19:54:13.359+0800] GC(6) Concurrent Process Non-Strong References 0.385ms
-[2020-07-22T19:54:13.359+0800] GC(6) Concurrent Reset Relocation Set 0.010ms
-[2020-07-22T19:54:13.359+0800] GC(6) Concurrent Destroy Detached Pages 0.001ms
-[2020-07-22T19:54:13.359+0800] GC(6) Concurrent Select Relocation Set 0.758ms
-[2020-07-22T19:54:13.359+0800] GC(6) Concurrent Prepare Relocation Set 0.086ms
-[2020-07-22T19:54:13.361+0800] GC(6) Pause Relocate Start 1.410ms
-[2020-07-22T19:54:13.363+0800] GC(6) Concurrent Relocate 2.162ms
-[2020-07-22T19:54:13.363+0800] GC(6) Load: 0.01/0.03/0.01
-[2020-07-22T19:54:13.363+0800] GC(6) MMU: 2ms/0.0%, 5ms/0.0%, 10ms/44.5%, 20ms/72.3%, 50ms/87.6%, 100ms/91.1%
-[2020-07-22T19:54:13.363+0800] GC(6) Mark: 8 stripe(s), 2 proactive flush(es), 1 terminate flush(es), 0 completion(s), 0 continuation(s)
-[2020-07-22T19:54:13.363+0800] GC(6) Relocation: Successful, 8M relocated
-[2020-07-22T19:54:13.363+0800] GC(6) NMethods: 8271 registered, 1622 unregistered
-[2020-07-22T19:54:13.363+0800] GC(6) Metaspace: 95M used, 97M capacity, 97M committed, 98M reserved
-[2020-07-22T19:54:13.363+0800] GC(6) Soft: 7427 encountered, 0 discovered, 0 enqueued
-[2020-07-22T19:54:13.363+0800] GC(6) Weak: 4925 encountered, 2543 discovered, 0 enqueued
-[2020-07-22T19:54:13.363+0800] GC(6) Final: 305 encountered, 13 discovered, 0 enqueued
-[2020-07-22T19:54:13.363+0800] GC(6) Phantom: 54 encountered, 38 discovered, 2 enqueued
-[2020-07-22T19:54:13.363+0800] GC(6)                Mark Start          Mark End        Relocate Start      Relocate End           High               Low         
-[2020-07-22T19:54:13.363+0800] GC(6)  Capacity:     6144M (100%)       6144M (100%)       6144M (100%)       6144M (100%)       6144M (100%)       6144M (100%)   
-[2020-07-22T19:54:13.363+0800] GC(6)   Reserve:       48M (1%)           48M (1%)           48M (1%)           48M (1%)           48M (1%)           48M (1%)     
-[2020-07-22T19:54:13.363+0800] GC(6)      Free:     5864M (95%)        5864M (95%)        5898M (96%)        5938M (97%)        5938M (97%)        5864M (95%)    
-[2020-07-22T19:54:13.363+0800] GC(6)      Used:      232M (4%)          232M (4%)          198M (3%)          158M (3%)          232M (4%)          158M (3%)     
-[2020-07-22T19:54:13.363+0800] GC(6)      Live:         -               102M (2%)          102M (2%)          102M (2%)             -                  -          
-[2020-07-22T19:54:13.363+0800] GC(6) Allocated:         -                 0M (0%)            0M (0%)           20M (0%)             -                  -          
-[2020-07-22T19:54:13.363+0800] GC(6)   Garbage:         -               129M (2%)           95M (2%)           51M (1%)             -                  -          
-[2020-07-22T19:54:13.363+0800] GC(6) Reclaimed:         -                  -                34M (1%)           78M (1%)             -                  -          
-[2020-07-22T19:54:13.363+0800] GC(6) Garbage Collection (Proactive) 232M(4%)->158M(3%)
-```
 
 结论: GC
 
