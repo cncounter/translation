@@ -714,6 +714,8 @@ ZGC英文版视频教程与PPT：
 - [ZGC Notes: Colored Pointers](https://www.sobyte.net/post/2022-01/notes-zgc/)
 - [4TB地址空间扩充到16TB](https://github.com/openjdk/jdk/blob/master/src/hotspot/cpu/x86/gc/z/zGlobals_x86.cpp)
 
+- [ZGC学习笔记：ZGC简介和JDK17对ZGC的优化](https://mp.weixin.qq.com/s/x5gujgSjpkO4JLq7GlJsXg)
+
 原文链接:
 
 - https://wiki.openjdk.java.net/display/zgc
