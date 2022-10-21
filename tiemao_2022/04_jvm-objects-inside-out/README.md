@@ -1,25 +1,42 @@
 # Java Objects Inside Out
 
-# Java对象的里里外外漫谈
+# 从里到外认识Java对象
 
-Gory details you sometimes wondered about, but then did not really wanted to know about
+> Gory details you sometimes wondered about, but then did not really wanted to know about
+
+> 有时你想知道, 但最终却不想知道的残酷的细节。
+
+[TOC]
+
+## 作者信息
 
 
-Aleksey Shipilёv, JVM/Performance Geek, ![redhat logo](https://shipilev.net/jvm/objects-inside-out/redhat-logo.svg)
-Shout out at Twitter: [@shipilev](http://twitter.com/shipilev)
-Questions, comments, suggestions: [aleksey@shipilev.net](mailto:aleksey@shipilev.net)
+- 作者: Aleksey Shipilёv, JVM/Performance Geek
+- Twitter地址: [@shipilev](http://twitter.com/shipilev)
+- 公开邮箱: `aleksey@shipilev.net`
+- 校对人员: [Richard Startin](https://twitter.com/richardstartin), [Alex Blewitt](https://twitter.com/alblue), 等.
 
-|      | This post is also available in [ePUB](https://shipilev.net/jvm/objects-inside-out/article.epub) and [mobi](https://shipilev.net/jvm/objects-inside-out/article.mobi). |
-| ---- | ------------------------------------------------------------ |
-|      |                                                              |
-
-Thanks to [Richard Startin](https://twitter.com/richardstartin), [Alex Blewitt](https://twitter.com/alblue), and others for reviews, edits and helpful suggestions!
 
 ## 1. Introduction
 
-It is a recurrent question how much memory does a Java object take. In the absence of accessible `sizeof` operator,[[1](https://shipilev.net/jvm/objects-inside-out/#_footnotedef_1)] people left to wonder about the footprint impact on their code and/or resort to urban legends and tales from the wizards. In this post, we shall try to peek inside the Java objects and see what lies beneath. Once we do this, many tricks around object footprint would become apparent, some of the runtime footprint quirks would be explained, and some low-level performance behavior would hopefully be more clear.
+It is a recurrent question how much memory does a Java object take. In the absence of accessible `sizeof` operator, people left to wonder about the footprint impact on their code and/or resort to urban legends and tales from the wizards. In this post, we shall try to peek inside the Java objects and see what lies beneath. Once we do this, many tricks around object footprint would become apparent, some of the runtime footprint quirks would be explained, and some low-level performance behavior would hopefully be more clear.
 
 This post is rather long, so you might want to consider reading it in pieces. The chapters in this post should be more or less independent, and you can get back at reading them after leaving for a while. In contrast to other posts, it was not very thoroughly reviewed before posting, and it would be updated and fixed up as people read it and identify mistakes, omissions, or have more questions. Use and/or trust this at your own risk.
+
+## 1. 简介
+
+Java 对象占用多少内存是一个经常出现的问题。 
+在没有 `sizeof` 运算符的情况下, 程序员想要知道自己写的代码对内存占用有多少影响, 很多时候只能求助于万能的魔法。 
+在这篇文章中，我们将尝试窥探 Java 对象的内部，看看里面是什么。 
+一旦我们了解了这些，围绕对象内存占用的许多技巧就会变得明显，一些运行时内存占用的奇怪问题就能说得清了，一些底层的性能优化行为也会更加清晰。
+
+这篇文章相当长，因此您可以考虑分成多次阅读。 
+本文中的章节, 或多或少应该都是独立的，你可以在之后的时间重新阅读。 
+与其他文章相比，本文在发布之前没有经过非常彻底的审查，并且会随着读者的阅读和发现错误、遗漏或有更多问题而进行更新和修复。 
+使用和/或信任本文的内容需要您自担风险。
+
+> http://hg.openjdk.java.net/code-tools/jmh/rev/ee4b8b1f1523
+
 
 ## 2. Deeper Design and Implementation Questions (DDIQ)
 
@@ -1839,7 +1856,7 @@ Last updated 2020-08-24 13:15:45 +0200
 
 
 
+## 相关链接
 
 
-
-- https://shipilev.net/jvm/objects-inside-out/
+- 原文链接: https://shipilev.net/jvm/objects-inside-out/
