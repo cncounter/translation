@@ -51,7 +51,7 @@ For feedback and questions about ZGC, feel free to post to the [mailing list](ht
 有关 ZGC 的反馈和问题，请随时发送给 [zgc-dev邮件列表](https://mail.openjdk.java.net/mailman/listinfo/zgc-dev)。
 
 
-## 支持Windows 和 macOS 操作系统
+## 2.1 支持Windows 和 macOS 操作系统
 
 [JEP 365](http://openjdk.java.net/jeps/365) and [JEP 364](http://openjdk.java.net/jeps/364) brought Windows and macOS support to ZGC. Support for these platforms has perhaps been the most common feature request we received. All commonly used platforms are now supported, and the complete list looks like this.
 
@@ -87,6 +87,25 @@ Windows 则需要做更多的工作，主要是因为它的内存管理 API 不�
 When using `-XX:+AlwaysPreTouch` you’re telling the GC to touch the heap (up to `-Xms` or `-XX:InitialHeapSize`) at startup. This will ensure that memory pages backing the heap are 1) actually allocated and 2) faulted in. By doing this at startup you avoid taking this cost later when the application is running and starts touching memory. Pre-touching the heap can be a sensible choice for some applications, but as always, it’s a trade-off since the startup time will be prolonged.
 
 Prior to JDK 14, ZGC only used a single thread to do heap pre-touching. This meant that pre-touching could take a long time if the heap was huge. Now, ZGC uses multiple threads to do this work, which shortens the startup/pre-touch time substantially. On large machines with terabytes of memory, this reduction can translate into startup times on the order of **seconds instead of minutes**.
+
+## 2.2 并行执行堆内存预取操作(heap pre-touching)
+
+当指定JVM启动参数 `-XX:+AlwaysPreTouch` 时，是告诉 GC 要在JVM启动时获取堆内存（一直获取到 `-Xms` 或 `-XX:InitialHeapSize` ）。 
+这将确保堆内存相关的页面:
+
+- 1) 实际得到分配
+- 2) 不够的话就立即失败。
+
+通过在启动时执行此操作，可以避免应用程序在之后的运行过程中才分配物理内存并造成性能抖动。 
+对于某些应用程序来说，预先获取堆内存可能是一个明智的选择，但与往常一样，这也是一种权衡，因为启动时间会延长。
+
+在 JDK 14 之前，ZGC 只使用单个线程来做堆预触。  如果堆内存很大，预触可能需要很长时间。 
+现在，ZGC 使用多线程来完成这项工作，大大缩短了启动/预触时间。 
+在具有 TB 级内存的大型机器上，这种方式可以将启动时间缩短到 **秒级,而不是分钟级** 。
+
+测试示例:
+
+> `java -XX:+AlwaysPreTouch -version`
 
 ## Tiny heaps
 
