@@ -23,7 +23,7 @@ Stay tuned!
 
 敬请关注！
 
-# 2. ZGC | What's new in JDK 14
+# 2. ZGC | 在JDK 14中的新特性
 
 发表日期: 2020年3月23日
 
@@ -51,9 +51,12 @@ For feedback and questions about ZGC, feel free to post to the [mailing list](ht
 有关 ZGC 的反馈和问题，请随时发送给 [zgc-dev邮件列表](https://mail.openjdk.java.net/mailman/listinfo/zgc-dev)。
 
 
-## Windows and macOS support
+## 支持Windows 和 macOS 操作系统
 
 [JEP 365](http://openjdk.java.net/jeps/365) and [JEP 364](http://openjdk.java.net/jeps/364) brought Windows and macOS support to ZGC. Support for these platforms has perhaps been the most common feature request we received. All commonly used platforms are now supported, and the complete list looks like this.
+
+
+[JEP 365](http://openjdk.java.net/jeps/365) 和 [JEP 364](http://openjdk.java.net/jeps/364) 为 ZGC 带来了 Windows 和 macOS 支持。 对这些平台的支持可能是我们收到的最常见的功能请求。 JDK11支持的所有平台列表如下所示。
 
 - **Linux/x86_64** (since JDK 11)
 - **Linux/aarch64** (since JDK 13)
@@ -66,7 +69,18 @@ Windows users should note that ZGC requires **Windows version 1803** (i.e. Windo
 
 Is adding support for a new OS hard? Does it require a lot of work? Nah, not really. The part of ZGC that has OS-specific code is the part that does memory multi-mapping, i.e. mapping the same physical memory into more than one location in the process address space. So, it all comes down to what memory management API the OS offers, and how easy it is to work with. macOS is by far the most flexible in this regard, with its wonderful `mach_vm_remap()` system call (nope, Linux’s `mremap()` is not as wonderful). The macOS-specific code weighs in at about [300 lines of code](https://github.com/openjdk/jdk/tree/74f0ef505094761c0eb16a7f3fe09b62d335369d/src/hotspot/os/bsd/gc/z). Windows needed slightly more work, mainly because its memory management API (especially the part dealing with address space reservations using `MEM_{RESERVE,REPLACE,COALESCE}_PLACEHOLDERS`) is not quite as flexible as the POSIX and Mach APIs. Still, it’s not that bad and the Windows-specific code weighs in at just under [1000 lines of code](https://github.com/openjdk/jdk/tree/74f0ef505094761c0eb16a7f3fe09b62d335369d/src/hotspot/os/windows/gc/z). As of this writing, 84% of the ZGC code is platform independent, shared by all operating systems and CPU architectures.
 
-![img](https://www.malloc.se/img/zgc-jdk14/code_distribution.svg)
+
+作为记录，ZGC 曾经支持过 [Solaris/SPARC](https://github.com/openjdk/zgc/commit/5cf01ce95b3ade3710c578b473edfe0404128e9e) 架构。  但从未被上传到主线, 因为我们看到了 [JEP 362: Deprecate the Solaris and SPARC Ports](http://openjdk.java.net/jeps/362) 的早期迹象。
+
+Windows 用户请注意，ZGC 需要 **Windows 1803 版本**（即 Windows 10 或 Windows Server 2019）以及更高版本。 原因是 Windows 的早期版本缺少了 ZGC 用来对堆内存做多重映射的内存管理 API。
+
+增加支持新的操作系统很难吗？ 需要做很多工作吗？ 不，并不是很难。 ZGC 中针对具体 OS 的代码, 是执行内存多重映射的部分，即将相同的物理内存映射到进程地址空间中的多个位置。
+因此，这一切都归结为操作系统提供的内存管理 API，以及使用它的难易程度。 
+macOS 在这方面是迄今为止最灵活的，它具有出色的 `mach_vm_remap()` 系统调用(相对应的，Linux 中的 `mremap()` 则没有那么出色）。 macOS 的特定代码量只有为 [300行](https://github.com/openjdk/jdk/tree/74f0ef505094761c0eb16a7f3fe09b62d335369d/src/hotspot/os/bsd/gc/z)。 
+Windows 则需要做更多的工作，主要是因为它的内存管理 API 不如 POSIX 和 Mach API 灵活（尤其是使用 `MEM_{RESERVE,REPLACE,COALESCE}_PLACEHOLDERS` 处理地址空间保留的部分）。尽管如此，它并没有那么糟糕，特定于 Windows 的代码量不到 [1000行](https://github.com/openjdk/jdk/tree/74f0ef505094761c0eb16a7f3fe09b62d335369d/src/hotspot/os/windows/gc/z)。 在撰写本文时，84% 的 ZGC 代码与平台无关，由所有操作系统和 CPU 架构共享。
+
+![ZGC中各个操作系统的代码分布](./code_distribution.svg)
+
 
 ## Parallel heap pre-touching
 
