@@ -113,6 +113,13 @@ ZGC has always been awesome at scaling up to very large heaps, but not so awesom
 
 The heap reserve is a portion of the heap that is set aside to cope with “emergency situations”, like when ZGC needs to compact the heap when it’s already full. The size of the heap reserve is calculated as follows.
 
+## 2.3 支持极小的堆内存
+
+ZGC 在大型堆内存扩展方面一直表现的很棒，但在超小型的堆内存方面并不那么出色。 
+在 JDK 14 之前，使用小于 128M 的堆内存, 并不具备很好的体验。 主要原因是ZGC保留的堆内存, 与可用堆的比例太大，有时会导致过早的 `OutOfMemoryError`。
+
+保留堆储备(heap reserve)是为应对 “紧急情况” 而预留的一部分堆，例如当 ZGC 需要在堆内存用满之后整理堆内存时。 堆保留的大小计算公式如下。
+
 ```
 heap_reserve = (number_of_gc_worker_threads * 2M) + 32M
 ```
@@ -126,7 +133,17 @@ As we can see, the reserve can become proportionally large when the heap is smal
 
 With these adjustments, ZGC scales down to **8M** (and up to **16T**) heaps without problems. The heap reserve is now at most 5% of the heap, but at least one *small* ZPage (2M). To better illustrate the improvement, let’s compare JDK 14 with JDK 13, and see what percentage of the heap is set aside for the reserve.
 
-![img](https://www.malloc.se/img/zgc-jdk14/heap_reserve.svg)
+简而言之，保留的大小是为了让每个 GC工作线程有足够的空间来分配一个私有的 *small* ZPage (2M)，并让所有 GC worker 共享一个全局的 *medium* ZPage (32M)。
+
+正如我们所见，当堆较小时，预留空间会按比例变大，从而为应用程序留下的可用空间很小。 为了解决这个问题，我们没有改变堆储备必须有多大的原则。相反，我们通过以下方式调整了该计算公式的输入。
+
+- 1. 我们使 *medium* ZPages 变成动态化的大小。 它过去总是 32M，但现在它在运行时确定, 并随堆大小扩缩，因此单个 *medium* ZPage 永远不会占用超过 3% 的堆。 对于非常小的堆，这意味着 *medium* ZPages 将被有效地禁用，并且正常情况下在 *medium* ZPage 中分配的对象, 改为在 *large* ZPage 中分配（*large* ZPages 不需要预留堆内存，因为它们永远不会被重新定位）。
+- 2. 我们调整了使用的 GC 工作线程的数量，以便堆储备中所需的 *small* ZPage 总数不会超过堆的 2%（但至少有一个 GC 工作线程, 最少需要一个 *small* ZPage 的空间）。
+
+通过这些调整，ZGC 可以毫无问题地缩减到 **8M** 堆内存（最大则支持 **16T**）。 保留内存现在最多为堆的 5%，但最小为一个 *small* ZPage (2M)。
+为了更好地说明改进，让我们将 JDK 14 与 JDK 13 进行比较，看看有多少个百分比的堆被当做保留空间。
+
+![JDK14中ZGC最小可以只占用2MB](./heap_reserve.svg)
 
 ## JFR leak profiler
 
