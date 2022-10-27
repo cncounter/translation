@@ -175,6 +175,14 @@ In JDK 14 we completely overhauled how C2 generates ZGC load barriers. Now, we�
 
 This overhaul significantly improved ZGC stability. In fact, it was so successful that this change was immediately backported to JDK 13.0.2 (at the time, the release of JDK 14 was still months away).
 
+## 2.5 C2读屏障修正
+
+即时编译器C2生成的 ZGC 读屏障, 通常是 ZGC 中 bug 的根本原因。 它们的实现方式有时会导致与 C2 的一些优化通道的不良交互，从而导致次优甚至损坏的代码。
+
+在 JDK 14 中，我们彻底检查了 C2 如何生成 ZGC 负载屏障。现在，我们基本上是在 C2 的视线之外，直到编译器管道的最后阶段。我不会在这里详细介绍所有细节，但这基本上意味着我们避免了与优化过程的所有交互，并且我们获得了对代码生成的更多控制。例如，我们现在可以轻松地保证不能在加载指令及其相关的加载屏障之间调度安全点轮询指令，这在以前很难控制并且是许多错误的根源。
+
+这次大修显着提高了 ZGC 的稳定性。事实上，它非常成功，以至于这个更改立即被向后移植到 JDK 13.0.2（当时，JDK 14 的发布还有几个月的时间）。
+
 ## Safepoint-aware array allocations
 
 When the JVM executes a Safepoint (aka Stop-The-World) operation it first brings all Java threads to a stop in a controlled manner (Java threads are stopped at “safe points”, where their execution state is known). Once all threads are stopped, it proceeds to execute the actual Safepoint operation (which can be a GC operation, or something else). Since all Java threads remain stopped until the Safepoint operation completes, keeping that operation short is essential for good application response times.
