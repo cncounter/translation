@@ -175,13 +175,17 @@ In JDK 14 we completely overhauled how C2 generates ZGC load barriers. Now, we�
 
 This overhaul significantly improved ZGC stability. In fact, it was so successful that this change was immediately backported to JDK 13.0.2 (at the time, the release of JDK 14 was still months away).
 
-## 2.5 C2读屏障修正
+## 2.5 C2生成的读屏障修正
 
-即时编译器C2生成的 ZGC 读屏障, 通常是 ZGC 中 bug 的根本原因。 它们的实现方式有时会导致与 C2 的一些优化通道的不良交互，从而导致次优甚至损坏的代码。
+ZGC中, 即时编译器C2生成的读屏障, 通常是 ZGC 中产生 bug 的根源。 
+ZGC的实现方式，有时会与 C2 的一些优化通道产生不良交互，从而导致优化不完全, 甚至是有问题的代码。
 
-在 JDK 14 中，我们彻底检查了 C2 如何生成 ZGC 负载屏障。现在，我们基本上是在 C2 的视线之外，直到编译器管道的最后阶段。我不会在这里详细介绍所有细节，但这基本上意味着我们避免了与优化过程的所有交互，并且我们获得了对代码生成的更多控制。例如，我们现在可以轻松地保证不能在加载指令及其相关的加载屏障之间调度安全点轮询指令，这在以前很难控制并且是许多错误的根源。
+在 JDK 14 中, 我们彻彻底底过了一遍 C2 生成 ZGC 负载屏障的代码。 现在，在整个编译和优化过程中，在编译流水线的最后阶段之前, C2不会受ZGC的干扰。
+在这里我不会详细介绍所有细节，但可以说, ZGC避免了与编译器优化过程的所有交互，并且还获得了对代码生成的更多控制。
+例如，我们现在可以轻松地保证, 在 load 指令和对应的读屏障(load barrier)之间, 不会安排安全点轮询指令(safepoint-poll instruction)，这在之前是很难控制的, 并且是许多错误的根源。
 
-这次大修显着提高了 ZGC 的稳定性。事实上，它非常成功，以至于这个更改立即被向后移植到 JDK 13.0.2（当时，JDK 14 的发布还有几个月的时间）。
+这次大修, 显著提高了 ZGC 的稳定性。 事实上，它非常成功，以至于这个升级立即被移植到了之前的 JDK 13.0.2 版本中（此时距离 JDK 14 的发布还有几个月的时间）。
+
 
 ## Safepoint-aware array allocations
 
