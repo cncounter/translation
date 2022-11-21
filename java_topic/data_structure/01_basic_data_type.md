@@ -61,6 +61,8 @@ hashcode与equals
 
 
 
+最后, 完成一个可监控内部状态的HashMap, 
+
 
 
 
