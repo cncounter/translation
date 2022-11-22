@@ -20,7 +20,7 @@ The network itself requires minimal structure.
 Messages are broadcast on a best effort basis, and nodes can leave and rejoin the network at will, accepting the longest proof-of-work chain as proof of what happened while they were gone.
 >
 > ## 摘要:
-比特币是一个纯粹的点对点电子现金系统, 可以通过在线支付方式，直接将资金支付给收款方，而无需银行等金融机构的参与。
+比特币是一种纯粹的点对点电子现金系统, 可以通过在线支付方式，将资金直接付给收款方，而无需银行等金融机构的参与。
 数字签名技术是其中的一部分解决方案，但如果还需要引入第三方可信机构来防止双花问题的话，那就有点自废武功，将自身最大的优势给抛弃了。
 我们推出了一种新的方案: 使用对等网络来解决双花问题。
 这个网络系统，会对交易信息执行哈希运算，并放置到当前正在进行的、基于哈希的工作量证明链上面，从而对该交易标上时间戳，进而形成一条不可更改的记录（除非重做工作量证明，否则都是不可篡改的）。
