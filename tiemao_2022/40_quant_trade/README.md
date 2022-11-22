@@ -31,9 +31,15 @@ bitcoinj的官网:
 - 发送/接收交易信息(send/receive transactions);
 - 本地机器无需安装比特币核心(Bitcoin Core)
 
-使用Java语言开发, 所以兼容JVM上面运行的各种开发语言; 比如 Python 或者JavaScript都是支持的;
+使用Java语言开发, 所以兼容JVM上面运行的各种开发语言; 
+
+bitcoinj 实现的语言版本是 Java 7, 只要是可以在JVM上运行的语言都可以调用,  比如 Java, 以及 JavaScript, Python, Scala, Clojure , Kotlin, Ruby, 等等语言.
 
 文档完备且友好, 很多大公司和比特币服务都用了这个库。
+
+
+
+
 
 
 ### 
