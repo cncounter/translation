@@ -2,6 +2,8 @@
 
 # 合理使用DTO(Data Transfer Object)
 
+DTO, 全称为 Data Transfer Object, 我们一般称之为: 数据传输对象。
+
 ## 1. Introduction to DTO
 
 Having a big application that has multiple layers you will need to “transport” that data between different layers. To transport the data you have to encapsulate it into objects (DTO), that you can easily send it. This type of object doesn’t have any kind of logic, just some accessors, mutators, and parsers for serialization or deserialization.
@@ -50,6 +52,8 @@ We can consider that all DTOs are POJO objects but not all POJOs can be DTOs. An
 POJO是普通Java对象的首字母缩略词(Plain Old Java Object), 目的是为了区分EJB (Enterprise Java Beans)或其他必须处理依赖关系的东西。
 
 POJO的内在含义是指那些没有从任何类继承, 也没有实现任何接口, 更没有被其它框架侵入的Java对象。
+
+到底有多简单呢? 举个例子, 对象里面，某些字段是复杂类型的对象(比如List, Map, 或者自定义类型), 那就叫不简单。 
 
 在不同层级或子系统之间传输数据，一般使用 DTO 更为普遍。
 
