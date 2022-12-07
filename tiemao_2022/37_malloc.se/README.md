@@ -246,6 +246,21 @@ ZGC used to reserve a lot of address space (many terabytes), even when the heap 
 
 Starting with JDK 14, ZGC will detect that it’s running in a constrained environment and automatically adjust the amount of address space it uses to stay well within the limits. As a result, using ZGC in address space constrained environments is now a smoother experience.
 
+
+## 2.7 支持受限环境
+
+ZGC 需要很大范围的地址空间。 
+通过地址空间的方式, 使ZGC免受操作系统内存碎片的影响，从而避免遇到必须整理堆内存才能找到足够大的空闲内存块来分配的情况。 
+这就是 ZGC 能够很好地处理大量分配的原因之一。 
+保留大量进程地址空间基本上没什么代价。 这只是一个预留空间(reservation), 并不需要真实的物理内存来支持该空间。 
+当然，内核需要一小部分内存来跟踪预留情况，一般来说我们可以放心地忽略它。
+
+之前的ZGC版本, 即使配置的堆内存很小, 也会保留大量地址空间（TB级）。 这不仅是多余的，而且在 JVM 可用地址空间受限的环境中也会存在问题。 
+例如，在小型/受限容器中, 或者使用 `ulimit -v` 限制地址空间来启动JVM。
+
+从 JDK 14 开始，ZGC 将自动检测是否在受限环境中运行，并自动调整它使用的地址空间量以保持在限制范围内。 因此，在地址空间受限的环境中使用 ZGC 现在会有一种更流畅的体验。
+
+
 ## Discontiguous address space
 
 Prior to JDK 14, HotSpot required the Java heap to be placed in a contiguous address space. This had both pros and cons. Some fairly common operations, like figuring out if a pointer is pointing into the heap became an easy and efficient operation. You just need to compare the pointer with the start and the end address of the heap. On the other hand, sometimes the GC wants to place the heap in a specific address range (like when using compressed or colored oops). This could become problematic if, say, some part in the middle of the desired range was already occupied. For example, because of [address space layout randomization](https://en.wikipedia.org/wiki/Address_space_layout_randomization), or because a custom Java launcher might have mapped memory in that range.
