@@ -219,6 +219,8 @@ github.com.		47	IN	A	20.205.243.166
 sudo spctl --master-disable
 ```
 
+例如提示: `无法打开“JD-GUI.app”，因为无法验证开发者`
+
 一个好用的图形化界面shell终端(支持 MAC, Win, Linux):
 
 - [https://github.com/Eugeny/tabby](https://github.com/Eugeny/tabby)

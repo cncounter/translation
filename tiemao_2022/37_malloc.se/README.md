@@ -189,22 +189,54 @@ ZGC的实现方式，有时会与 C2 的一些优化通道产生不良交互，�
 
 ## Safepoint-aware array allocations
 
+## 2.6 能感知到安全点的数组分配
+
 When the JVM executes a Safepoint (aka Stop-The-World) operation it first brings all Java threads to a stop in a controlled manner (Java threads are stopped at “safe points”, where their execution state is known). Once all threads are stopped, it proceeds to execute the actual Safepoint operation (which can be a GC operation, or something else). Since all Java threads remain stopped until the Safepoint operation completes, keeping that operation short is essential for good application response times.
 
+当 JVM 执行安全点操作时（也称为 Stop-The-World）, 首先以一种受控的方式, 暂停所有 Java 线程。
+也就是说, Java线程在“安全点”位置停顿，所以它们的执行状态是已知的，比如方法栈和各种状态。 
+确保所有Java线程都进入停顿状态，JVM将继续执行实际的 Safepoint 操作（比如 GC或其他行为）。
+因为在 Safepoint 操作完成之前, 所有 Java 线程都保持停顿状态，啥也干不了， 所以让安全点操作保持精简，对响应时间敏感的系统而言尤为重要。
+
 Time-To-Safepoint (TTSP) is the time from when the JVM orders all Java threads to stop until they have stopped. All threads will typically not come to a stop immediately or at the same time. A thread might be in the middle of some sensitive operation that needs to complete before it can reach a safepoint. A long TTSP can be just as bad as a long Safepoint operation, since it will prolong the time some of the threads are stopped. Again, this will have a negative impact on application response times.
+
+安全点等待时间 (TTSP, Time-To-Safepoint) 是指: 从JVM 命令所有 Java 线程暂停, 到它们全部暂停完成的时间。
+很多线程不会立即暂停, 通常也不可能同一时刻全部暂停。 某些线程可能正在执行敏感操作，需要先完成这些操作才能到达安全点状态。
+较长的 TTSP, 和长时间的 Safepoint 操作一样糟糕， 因为两者都会延长某些线程停顿的时间。 也就对系统响应时间产生负面影响。
 
 ![img](https://www.malloc.se/img/zgc-jdk14/ttsp.svg)
 
 Ok, that was a quick introdution to Safepoint and Time-To-Safepoint. Now, when the application asks the JVM to allocate an object, the JVM will not only allocate the object on the heap somewhere, it will also make sure the object’s fields are zero initialized. During zero initialization, the JVM is in a sensitive state where it has a half-baked object on the heap. The Java thread allocating this object is not allowed to stop at a safepoint until zero initialization has completed. If it were to stop at a safepoint, a GC cycle could potentially start and the GC would quickly stumble over an object with random data in it, resulting in a JVM crash.
 
+这里对 Safepoint 和 Time-To-Safepoint 进行了简短的介绍。
+那么，当应用程序要求 JVM 为对象分配内存空间时，JVM 不仅会在堆上的某个地方分配对象，还会确保对象的字段都初始化为零值(zero initialization)。 
+在初始化零值期间，JVM 处于敏感状态，因为堆内存里面有一个半生不熟的对象。
+在初始化零值完成之前，不允许执行内存分配的 Java线程进入安全点状态。 
+假若允许它没完成之前就进入安全点状态，如果执行的是 GC 周期，那么 GC 可能会因为对象字段中的一些随机数值出错，从而导致 JVM 崩溃。
+
 So, Safepoint operations are effectively blocked/delayed during object allocation and initialization, which directly impacts TTSP negatively. This is not an problem when allocating normal/small objects. However, is it a problem when allocating large arrays (remember, the largest Java array can be 16GB in size), where the time it takes to zero initialize all array elements can be substantial, like several hundred milliseconds (or more if you’re unlucky).
+
+因此，安全点操作在对象分配和初始化期间被有效地阻止/延迟，这直接对 TTSP 产生负面影响。
+在分配普通对象/小对象时不是什么问题。 但是，分配大数组(也就是大对象)时很可能会出现问题。
+请记住，一个Java数组理论上最大可以占用 16GB的空间，如果情况恶劣的话, 将整个数组的元素全部初始化为零值所花费的时间, 可能需要几百毫秒。
 
 To avoid this type of latency issue, we’ve implemented safepoint-aware array allocations in ZGC. This means that Java threads *can* come to a safepoint during zero initialization, without the risks mentioned above, and without impacting TTSP. Under the hood, ZGC will track these half-baked objects using a special root-set, internally called “invisible roots”. Array objects pointed to by invisible roots are treated differently in two ways.
 
 1. They are invisible to the Java application. Not discoverable through JVMTI, etc.
 2. During marking, array elements containing object references are not examined/followed, since they are known to not point to any other object that needs to be kept alive.
 
+为了避免此类延迟问题，我们在 ZGC 中实现了能感知到安全点的数组分配。
+这意味着 `允许` Java 线程在初始化零值期间到达安全点, 而不会出现半生不熟的风险，也不会影响 TTSP。
+其内部的原理是，ZGC 将使用一个特殊的GC根集, 来跟踪这些半生不熟的对象， 内部称为“不可见根(invisible roots)”。
+不可见根所指向的数组对象有两种不同的处理方式。
+
+1. 它们对 Java 应用程序来说是不可见的。 也无法通过 JVMTI 等方式来发现。
+2. 在标记期间，包含对象引用的数组元素, 不会被遍历/检查/追踪， 因为它们不指向任何一个需要保持存活的对象。
+
 In summary, with ZGC you can now allocate arrays of any size, without worrying about TTSP-related latency issues. ZGC is at this time the only garbage collector in HotSpot to offer this feature.
+
+总之，使用JDK14以上版本的ZGC时，我们可以分配任意大小的数组，而无需担心 TTSP 相关的延迟问题。  在HotSpot JVM中, ZGC 目前是唯一提供这个功能的垃圾收集器。
+
 
 ## Constrained environments
 
