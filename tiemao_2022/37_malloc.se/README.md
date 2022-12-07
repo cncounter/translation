@@ -255,7 +255,7 @@ ZGC 需要很大范围的地址空间。
 保留大量进程地址空间基本上没什么代价。 这只是一个预留空间(reservation), 并不需要真实的物理内存来支持该空间。 
 当然，内核需要一小部分内存来跟踪预留情况，一般来说我们可以放心地忽略它。
 
-之前的ZGC版本, 即使配置的堆内存很小, 也会保留大量地址空间（TB级）。 这不仅是多余的，而且在 JVM 可用地址空间受限的环境中也会存在问题。 
+之前的JDK版本中, 即使配置的堆内存很小, ZGC也会保留大量地址空间（TB级）。 这不仅是多余的，而且在 JVM 可用地址空间受限的环境中也会存在问题。 
 例如，在小型/受限容器中, 或者使用 `ulimit -v` 限制地址空间来启动JVM。
 
 从 JDK 14 开始，ZGC 将自动检测是否在受限环境中运行，并自动调整它使用的地址空间量以保持在限制范围内。 因此，在地址空间受限的环境中使用 ZGC 现在会有一种更流畅的体验。
@@ -266,6 +266,16 @@ ZGC 需要很大范围的地址空间。
 Prior to JDK 14, HotSpot required the Java heap to be placed in a contiguous address space. This had both pros and cons. Some fairly common operations, like figuring out if a pointer is pointing into the heap became an easy and efficient operation. You just need to compare the pointer with the start and the end address of the heap. On the other hand, sometimes the GC wants to place the heap in a specific address range (like when using compressed or colored oops). This could become problematic if, say, some part in the middle of the desired range was already occupied. For example, because of [address space layout randomization](https://en.wikipedia.org/wiki/Address_space_layout_randomization), or because a custom Java launcher might have mapped memory in that range.
 
 In JDK 14 we modified HotSpot to support Java heaps with a discontiguous address space. ZGC takes advantage of this by splitting the Java heap into two or more address spaces, should address space conflicts arise.
+
+
+## 2.8 支持不连续的地址空间
+
+在 JDK 14 之前，HotSpot 要求将 Java 堆放置在连续的地址空间中。 
+这有利也有弊。 一些常见的操作，比如确定某个指针是否指向堆，变得简单而高效。 只需要将指针地址, 与堆的起始地址和结束地址进行比较即可。 
+另一方面，有时 GC 想要将堆放在特定的地址范围内（例如使用压缩指针, 或者着色oops），如果所需范围中间的某个部分已经被占用，这可能会出现问题。 
+例如，由于[地址空间布局随机化(address space layout randomization)](https://en.wikipedia.org/wiki/Address_space_layout_randomization), 或者因为自定义 Java 启动器已在该范围内映射内存等情况。
+
+在 JDK 14 中，我们修改了 HotSpot 以支持具有不连续地址空间的 Java 堆。 如果出现地址空间冲突， ZGC通过将 Java 堆分成两个或更多个地址空间来利用这一点。
 
 ## On the horizon
 
