@@ -88,12 +88,12 @@ When using `-XX:+AlwaysPreTouch` you’re telling the GC to touch the heap (up t
 
 Prior to JDK 14, ZGC only used a single thread to do heap pre-touching. This meant that pre-touching could take a long time if the heap was huge. Now, ZGC uses multiple threads to do this work, which shortens the startup/pre-touch time substantially. On large machines with terabytes of memory, this reduction can translate into startup times on the order of **seconds instead of minutes**.
 
-## 2.2 并行执行堆内存预取操作(heap pre-touching)
+## 2.2 并行执行堆内存预分配(heap pre-touching)
 
-当指定JVM启动参数 `-XX:+AlwaysPreTouch` 时, 是告诉 GC 要在JVM启动时获取堆内存(一直获取到 `-Xms` 或 `-XX:InitialHeapSize` )。 
+当指定JVM启动参数 `-XX:+AlwaysPreTouch` 时, 是告诉 GC 在JVM启动时要预分配堆内存(一直获取到 `-Xms` 或 `-XX:InitialHeapSize` )。 
 这将确保堆内存相关的页面:
 
-- 1) 实际得到分配
+- 1) 可以实际得到分配
 - 2) 不够的话就立即失败。
 
 通过在启动时执行此操作, 可以避免应用程序在之后的运行过程中才分配物理内存并造成性能抖动。 
@@ -189,7 +189,7 @@ ZGC的实现方式, 有时会与 C2 的一些优化通道产生不良交互, 从
 
 ## Safepoint-aware array allocations
 
-## 2.6 能感知到安全点的数组分配
+## 2.6 数组分配操作能感知到安全点
 
 When the JVM executes a Safepoint (aka Stop-The-World) operation it first brings all Java threads to a stop in a controlled manner (Java threads are stopped at “safe points”, where their execution state is known). Once all threads are stopped, it proceeds to execute the actual Safepoint operation (which can be a GC operation, or something else). Since all Java threads remain stopped until the Safepoint operation completes, keeping that operation short is essential for good application response times.
 
@@ -309,3 +309,71 @@ More about these and other enhancements in a future post.
 > 需要特别说明, 在撰写本文时, 这些 JEP 和增强功能尚未发布。 我们希望他们能进入 JDK 15, 但并不能百分百保证。
 
 后续的文章将会详细介绍他们以及其他的增强功能。
+
+
+# 3.  ZGC 中使用 `-XX:SoftMaxHeapSize` 参数
+
+
+发表日期: 2020年7月2日
+
+原文链接: https://www.malloc.se/blog/zgc-softmaxheapsize
+
+
+JDK 13 引入了一个新的 JVM 选项:  `-XX:SoftMaxHeapSize=<size>`。 
+迄今为止(2020年7月2日), ZGC 是HotSpot 中唯一支持此选项的垃圾收集器; 当然 G1 也准备支持, 开发工作正在进行中。 
+由于此选项相对较新，并且可能还不被大多数人所了解，因此我想写篇文章来介绍一下什么时候可以使用它, 以及如何使用它。
+
+## 3.1 SoftMaxHeapSize在哪些场景下适用?
+
+As the name implies, this new option sets a soft limit on how large the Java heap can grow. When set, the GC will strive to not grow the heap beyond the soft max heap size. But, the GC is still allowed to grow the heap beyond the specified size if it really needs to, like when the only other alternatives left is to stall an allocation or throw an `OutOfMemoryError`.
+
+顾名思义，这个新的JVM启动参数, 对 Java 堆内存的最大值设置了软限制。 
+设置该参数后，GC 将努力使堆的使用量不超过这个软参数。 
+但是，如果确实需要，仍然允许 GC 将堆增长到超过指定的大小，就像当唯一剩下的其他选择是停止分配或抛出 OutOfMemoryError 时。
+
+
+There are different use cases where setting a soft max heap size can be useful. For example:
+
+- When you want to keep the heap footprint down, while maintaining the capability to handle a temporary increase in heap space requirement.
+- Or when you want to play it safe, to increase confidence that you will not run into an allocation stall or have an OutOfMemoryError because of an unforeseen increase in allocation rate or live-set size.
+
+Let’s make up an example, to illustrate the first use case listed above. Pretend that your workload under normal conditions needs 2G of heap to run well. But once in a while you see workload spikes (maybe you’re providing a service that attracts a lot more users a certain day of the week/month, or something similar). With this increase in workload your application now needs, say, 5G to run well. To deal with this situation you would normally set the max heap size (`-Xmx`) to 5G to cover for the occasional workload spikes. However, that also means you will be wasting 3G of memory 98% (or something) of the time when it’s not needed, since those unused 3G will still be tied up in the Java heap. This is where a soft max heap size can come in handy, which together with ZGC’s ability to uncommit unused memory allows you to have your cake and eat it too. Set the max heap size to the max amount of heap your application will ever need (`-Xmx5G` in this case), and set the soft max heap size to what your application needs under normal conditions (`-XX:SoftMaxHeapSize=2G` in this case). You’re now covered to handle those workload spikes nicely, without always wasting 3G. Once the workload spike has passed and the need for memory drops down to normal again, ZGC will shrink the heap and continue to do it’s best to honor the `-XX:SoftMaxHeapSize` setting. When those extra 3G of heap have been sitting unused for a while, ZGC will uncommit that memory, returning it to the operating system for other processes (or the disk cache, or something else) to use.
+
+在不同的用例中，设置软最大堆大小可能很有用。 例如：
+
+- 当您希望减少堆占用空间，同时保持处理临时增加的堆空间需求的能力时。
+- 或者当你想安全地玩时，为了增加你不会遇到分配停顿或由于分配率或活动集大小的意外增加而出现 OutOfMemoryError 的信心。
+
+让我们举个例子来说明上面列出的第一个用例。 假设您的工作负载在正常情况下需要 2G 的堆才能正常运行。 但是偶尔您会看到工作量激增（也许您提供的服务在一周/一个月的某一天或类似的某天吸引了更多用户）。 随着工作负载的增加，您的应用程序现在需要 5G 才能正常运行。 要处理这种情况，您通常会将最大堆大小 (`-Xmx`) 设置为 5G 以应对偶尔出现的工作负载高峰。 然而，这也意味着您将在 98%（或更多）不需要的时候浪费 3G 内存，因为那些未使用的 3G 内存仍将占用 Java 堆。 这就是软最大堆大小可以派上用场的地方，它与 ZGC 取消提交未使用内存的能力一起让您可以吃蛋糕和吃蛋糕。 将最大堆大小设置为您的应用程序将永远需要的最大堆大小（在本例中为 `-Xmx5G`），并将软最大堆大小设置为您的应用程序在正常情况下需要的大小（`-XX:SoftMaxHeapSize=2G` 在这种情况下）。 您现在可以很好地处理这些工作负载高峰，而不会总是浪费 3G。 一旦工作负载高峰过去并且对内存的需求再次下降到正常水平，ZGC 将缩小堆并继续尽最大努力遵守 `-XX:SoftMaxHeapSize` 设置。 当那些额外的 3G 堆有一段时间未使用时，ZGC 将取消提交该内存，将其返回给操作系统以供其他进程（或磁盘缓存或其他）使用。
+
+
+## 3.2 系统运行过程中动态修改 SoftMaxHeapSize
+
+`SoftMaxHeapSize` 是可管理的选项, 支持运行时动态修改, 也就是说不用重启JVM就可以变更配置。 
+我们可以使用 `HotSpotDiagnosticMXBean` 管理API, 或者通过 `jcmd` 工具修改可管理的配置项:
+
+> `jcmd <pid> VM.set_flag SoftMaxHeapSize <size>`
+
+
+最大堆内存软指标(SoftMaxHeapSize) 的值, 不能超过最大堆内存; 如果没有在JVM启动参数中指定这个软指标的值, 则默认等于最大堆内存.
+
+
+## 3.3 内存返还的积极性
+
+可以通过 `-XX:ZUncommitDelay=<seconds>` 参数, 来控制ZGC返还未使用内存的积极程度(Uncommit aggressiveness), 默认值为 300秒(5分钟)。 
+换句话说，默认情况下，必须至少有 5 分钟没被使用的内存，才有机会返还给操作系统。 
+请注意，提交(committing)和返还(uncommitting)内存都是相对昂贵的操作。 
+过于激进（太短）的返还时间, 只会导致刚刚返还的内存很快再次提交，这会浪费 CPU 周期，最终可能还会影响应用程序的整体性能。
+
+
+## 3.4 其他信息 (TL;DR, Too Long, Didn’t Read)
+
+例如, 我们指定了JVM启动参数 `-XX:SoftMaxHeapSize=2G -Xmx5G`, 则是告诉ZGC, 保持最大堆内存使用量在 2G, 但如果来不及回收或者有可能内存溢出, 也允许堆内存增长到5G。
+如果在多个应用共存的机器上, 想要让JVM的内存使用量降低, 这个配置就很有用, 同时也具备了应对流量突然增加或者内存增长的能力。
+
+更多关于ZGC的信息, 请关注 [OpenJDK的Wiki](https://wiki.openjdk.java.net/display/zgc/Main), 或者作者的博客: https://malloc.se
+
+
+
+
+

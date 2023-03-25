@@ -229,6 +229,8 @@ sudo spctl --master-disable
 
 Bash 脚本教程: <https://wangdoc.com/bash/index.html>
 
+命令行的艺术: https://github.com/jlevy/the-art-of-command-line/blob/master/README-zh.md
+
 
 Github仓库链接: <https://github.com/cncounter/translation/tree/master/tiemao_2021/27_shell_alias>
 
