@@ -30,6 +30,9 @@
 | 20           |  |
 
 
+负数
+
+
 
 ## 2. 分数(Fraction)
 
@@ -73,5 +76,39 @@
 | 实数 | real number |
 | 虚数 | unreal figure, imaginary number |
 
-## 5. 符号
+## 5. 运算符
+
+
+
+
+| :--  | :--           |
+| 加号  |  |
+| 减号  |  |
+| 乘号  |  |
+| 除号  |  |
+| 大于 | 
+| 相等 | equation |
+
+
+
+
+
+## 6. 坐标系
+
+
+| :--  | :--           |
+| X轴 |  |
+| Y轴 |  |
+| 原点 |  |
+| 点  |  |
+| 线  | line  |
+| 线段  | line segment  |
+| 水平线  | horizontal line |
+| 垂直线  | vertical line |
+| 斜率  | slope |
+
+
+
+## 7. 多边形(Polygon)
+
 
