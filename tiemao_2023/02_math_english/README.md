@@ -93,14 +93,15 @@
 
 
 
-## 6. 坐标系
+## 6. 坐标系(Coordinate System)
 
 
 | :--  | :--           |
-| X轴 |  |
-| Y轴 |  |
-| 原点 |  |
-| 点  |  |
+| X轴 | X-axis |
+| Y轴 | Y-axis |
+| 坐标平面 | coordinate plane |
+| 原点 | origin |
+| 点  | point |
 | 线  | line  |
 | 线段  | line segment  |
 | 水平线  | horizontal line |
