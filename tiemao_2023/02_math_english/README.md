@@ -111,9 +111,11 @@ twins: 双胞胎
 | 减去  | minus, subtract, subtracting |
 | 乘以  | times, multiply by, multiplying |
 | 除以  | divide by, dividing |
-| 幂,指数,乘方  | power |
+| 幂,指数,乘方  | exponent |
+| x次方  | power |
 | 平方  | square |
 | 立方  | cube |
+| 底数  | base |
 
 
 示例1: 
@@ -209,4 +211,10 @@ twins: 双胞胎
 
 
 
+
+
+## 相关链接
+
+
+- [Math | Khan Academy](https://www.khanacademy.org/math/)
 
