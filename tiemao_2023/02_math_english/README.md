@@ -111,17 +111,19 @@ twins: 双胞胎
 | 减去  | minus, subtract, subtracting |
 | 乘以  | times, multiply by, multiplying |
 | 除以  | divide by, dividing |
-| 幂,指数,乘方  | exponent |
-| x次方  | power |
+| 幂,指数,乘方  | power |
 | 平方  | square |
 | 立方  | cube |
 | 底数  | base |
+| 指数  | exponent |
+| 平方根 | square root |
 
 
 示例1: 
 
 > `5乘以3`, 可以表述为: `five times three`;
 > `6乘以8`, 可以表述为: `six times eight`;
+> `9的平方根`, 可以表述为: `square root of nine`;
 
 示例2: 
 
@@ -149,9 +151,9 @@ twins: 双胞胎
 | 实数 | real number |
 | 虚数 | unreal figure, imaginary number |
 | 数学 | Mathematics, math |
-| 算数 |  |
-| 几何 |  |
-| 代数 | Algebra |
+| 算数 | Arithmetic |
+| 几何 | Geometry |
+| 代数 | Algebra  |
 
 
 
