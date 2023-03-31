@@ -2,6 +2,8 @@
 
 > Some Common English Expressions in Mathematics
 
+
+
 ## 1. 数字(Number)
 
 
@@ -18,19 +20,27 @@
 | 8            | eight |
 | 9            | nine |
 | 10           | ten |
-| 11           |  |
-| 12           |  |
-| 13           |  |
-| 14           |  |
-| 15           |  |
-| 16           |  |
-| 17           |  |
-| 18           |  |
-| 19           |  |
-| 20           |  |
+| 11           | eleven |
+| 12           | twelve |
+| 13           | thirteen |
+| 14           | fourteen |
+| 15           | fifteen |
+| 16           | sixteen |
+| 17           | seventeen |
+| 18           | eighteen |
+| 19           | nineteen |
+| 20           | tweenty |
 
 
-负数
+一些相关的词语:
+
+teenager  青少年
+twins: 双胞胎
+
+
+负数(Negative Number)
+
+
 
 
 
@@ -44,6 +54,8 @@
 | 1/2            | half |
 | 1/3            | one third |
 | 1/4            | one fourth, a quarter |
+| 分子            | numerator   |
+| 分母            | denominator |
 
 
 
@@ -52,29 +64,53 @@
 
 | :--  | :--           |
 | 方法  | 英文(English) |
-| 加法  | Addition |
-| 减法  | Substraction |
+| 加法  | Add, Adding, Addition |
+| 减法  | Subtraction |
 | 加上  | plus, add |
-| 减去  | minus, substract |
-| 乘以  | multiply by |
-| 除以  | divide by |
-| 幂指数  | power |
+| 减去  | minus, subtract, subtracting |
+| 乘以  | times, multiply by, multiplying |
+| 除以  | divide by, dividing |
+| 幂,指数,乘方  | power |
 | 平方  | square |
 | 立方  | cube |
+
+
+示例1: 
+
+> `5乘以3`, 可以表述为: `five times three`;
+> `6乘以8`, 可以表述为: `six times eight`;
+
+示例2: 
+
+> `5的3次方`, 可以表述为: `five to the third power`;
+> `6的8次方`, 可以表述为: `six to the eight power`;
+
+
 
 
 ## 4. 概念
 
 
 | :--  | :--           |
-| 正数  | positive |
-| 负数  | negative |
-| 分数  | fraction |
+| 数字  | number |
+| 正数  | positive number|
+| 负数  | negative number|
+| 符号  | sign |
+| 相反  | opposite |
+| 绝对值  | Absolute Value |
+| 分数,小数  | fraction |
+| 十进制小数  | decimal fraction |
 | 整数(0+正整数)  | whole number |
 | 整数(+负整数)  | integer |
 | 自然数 | Natural number |
 | 实数 | real number |
 | 虚数 | unreal figure, imaginary number |
+| 数学 | Mathematics, math |
+| 算数 |  |
+| 几何 |  |
+| 代数 | Algebra |
+
+
 
 ## 5. 运算符
 
@@ -107,9 +143,29 @@
 | 水平线  | horizontal line |
 | 垂直线  | vertical line |
 | 斜率  | slope |
+| 与X轴交点 | x-intercept |
+| 与Y轴交点 | y-intercept |
 
 
 
 ## 7. 多边形(Polygon)
+
+
+
+| :--  | :--           |
+| 三角形 | triangle, Tri-angle |
+| 四边形 |  |
+| 平行四边形 |  |
+| 正方形 |  |
+| 长方形 |  |
+| 菱形 |  |
+
+
+思维导图:
+
+
+## 8. 多面体
+
+
 
 
