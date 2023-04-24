@@ -13,3 +13,8 @@
     }
 
 ```
+
+
+## 相关链接
+
+- [How to Handle InterruptedException in Java](https://www.baeldung.com/java-interrupted-exception)

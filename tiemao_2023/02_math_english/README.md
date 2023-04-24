@@ -119,7 +119,7 @@ twins: 双胞胎
 | 加法  | Add, Adding, Addition |
 | 减法  | Subtraction |
 | 加上  | plus, add |
-| 减去  | minus, subtract, subtracting |
+| 减去  | subtract, subtracting, minus |
 | 差   | difference  |
 | 和   | sum |
 | 乘以  | times, multiply by, multiplying |
@@ -174,14 +174,16 @@ twins: 双胞胎
 
 
 
-## 5. 运算符
+## 5. 符号
 
 
 
 
-| :--  | :--           |
+| :--  | :--           | :--           |
+| 符号  | 英文表示       | 示例           |
 | 加号  |  |
-| 减号  |  |
+| 减号  | minus |
+| 加减号  | plus or minus | `±` |
 | 乘号  |  |
 | 除号  |  |
 | 乘积  | Product |
@@ -189,7 +191,9 @@ twins: 双胞胎
 | 商  | Quotient |
 | 根号  | radical |
 | 大于 | 
-| 相等 | equation |
+| 相等 | equation | `=` |
+| B一撇 | B-prime | `B'` |
+| 逗号 | comma | `,` |
 
 
 
@@ -231,7 +235,10 @@ twins: 双胞胎
 
 
 
-## 7. 多边形(Polygon)
+## 7. 几何(geometry)
+
+
+> 多边形(Polygon)
 
 
 
@@ -242,6 +249,7 @@ twins: 双胞胎
 | 正方形 |  |
 | 长方形 |  |
 | 菱形   |  |
+| 圆形   | circle |
 | 直角   | right angle |
 | 对顶角 | vertical angle |
 
@@ -256,9 +264,23 @@ twins: 双胞胎
 思维导图:
 
 
-## 8. 多面体
+> 多面体
 
 
+| :--  | :--           |
+| 立方体 | cube | 
+| 球型/球体   | sphere |
+
+
+
+> 工具
+
+| :--  | :--           |
+| 量角器 | protractor |
+| 顺时针 | clockwise |
+| 逆时针 | counterclockwise |
+| 旋转   | Rotation, rotate |
+| 轴对称 | Reflection |
 
 
 
