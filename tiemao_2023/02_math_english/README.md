@@ -250,8 +250,10 @@ twins: 双胞胎
 | 长方形 |  |
 | 菱形   |  |
 | 圆形   | circle |
+| 形状   | shape |
 | 直角   | right angle |
 | 对顶角 | vertical angle |
+| 相交  | intersect |
 
 
 
@@ -259,6 +261,8 @@ twins: 双胞胎
 | 半径 | radius |
 | 周长 | perimeter |
 | 面积 | area |
+| 中心 | center |
+| 垂直平分线 | perpendicular bisector |
 
 
 思维导图:
@@ -277,10 +281,14 @@ twins: 双胞胎
 
 | :--  | :--           |
 | 量角器 | protractor |
+| 直尺 | straightedge |
 | 顺时针 | clockwise |
 | 逆时针 | counterclockwise |
-| 旋转   | Rotation, rotate |
+| 平移 | Translation |
+| 旋转   | Rotation |
 | 轴对称 | Reflection |
+| 刚性变换 | rigid transformation |
+| 扩缩  | dilation |
 
 
 
