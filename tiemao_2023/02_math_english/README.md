@@ -192,7 +192,12 @@ twins: 双胞胎
 | 根号  | radical |
 | 大于 | 
 | 相等 | equation | `=` |
+| 标点符号 | punctuation |
+| 英文句号 | period | `.` |
+| 感叹号 | exclamation point | `!` |
+| 问号 | queston mark | `?` |
 | B一撇 | B-prime | `B'` |
+| 撇 | apostrophe | `'` |
 | 逗号 | comma | `,` |
 
 
