@@ -59,7 +59,7 @@
 | 200           |  |
 | 300           |  |
 | x00           |  |
-| 1000           |  |
+| 1000           | one thousand |
 | 1001           |  |
 | 1002           |  |
 | 1010           |  |
@@ -69,7 +69,14 @@
 | 1121           |  |
 | 1200           |  |
 | 1xxx           |  |
-| 2000           |  |
+| 2000           | two thousand |
+| 3000           | three thousand |
+| 4000           | four thousand |
+| 5000           | five thousand |
+| 6000           | two thousand |
+| 7000           | two thousand |
+| 8000           | two thousand |
+| 9000           | two thousand |
 | 10000          |  |
 
 
@@ -105,6 +112,7 @@ twins: 双胞胎
 | 1/100          | one hundredth |
 | 0.01           | one hundredth, zero point zero one |
 | 1/1000         | one thousandth |
+| 2/1000         | two thousandths |
 | 1/10000        | one ten-thousandth |
 
 
