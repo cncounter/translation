@@ -376,4 +376,96 @@ Let’s make up an example, to illustrate the first use case listed above. Prete
 
 
 
+# 4. ZGC | 在JDK 15中的新特性
+
+
+发表日期: 2020年9月22日
+
+> 原文链接: https://www.malloc.se/blog/zgc-jdk15
+
+
+In this post I will highlight some of the more interesting changes that went into ZGC in JDK 15. As always, if you’re looking for additional information on ZGC, please see the OpenJDK Wiki, the GC section on Inside Java, or this blog.
+
+本文中, 我会重点介绍ZGC在 JDK15 版本中的变化。 
+
+友情提醒, 如果想查看ZGC的更多信息, 请参考:
+
+- [OpenJDK Wiki](https://wiki.openjdk.org/display/zgc)
+- [Inside Java中GC标签](https://inside.java/tag/gc)
+- [malloc.se网站](https://malloc.se/)
+
+
+## 4.1 Production ready!
+
+In JDK 15, ZGC became production ready. In other words, it is now a product (non-experimental) feature in the JDK and you are encouraged to use it in production. This change came in through JEP 377 and was the culmination of several years of hard work by many people.
+
+This was of course a major milestone for the ZGC project, that we’ve all been eager to reach. But rest assured that removing the experimental status was not something we took lightly. No user would ever trust a GC that now and then corrupts the heap or crashes the JVM. Of course, users also expect a production ready GC to perform well and offer features relevant for today’s needs.
+
+Since its initial introduction in JDK 11, ZGC has in the following releases received a number of new features, a steady stream of performance and stability improvements, and support for all commonly used platforms. It has also gone through a lot of testing.
+
+In summary, ZGC is now a stable, high performance, low-latency GC, that is ready to take on your production workloads.
+
+## 4.2 New features and enhancements
+
+### 4.2.1 Improved allocation concurrency
+
+Allocating a Java object is typically very fast. Exactly how a new object gets allocated depends on which GC you are using. In ZGC, the allocation path goes through a number of tiers. The vast majority of allocations are satisfied by the first tier, which is very fast. Only very few allocations need to go all the way down to the last tier, which is much slower.
+
+
+
+An allocation will end up in the last tier only when all of the previous tiers were unable to satisfy the allocation. This is the last resort, where ZGC will ask the operating system to commit more memory to expand the heap. If this also fails, or we’ve reached max heap size (-Xmx), then an OutOfMemoryError will be thrown.
+
+Prior to JDK 15, ZGC held a global lock while committing (and uncommitting) memory. That of course meant that only a single thread could expand (or shrink) the heap at any given time. Committing and uncommitting memory are also relatively expensive operations, that can take some time to complete. As a result, this global lock sometimes became a point of contention.
+
+In JDK 15, this part of the allocation path was re-worked so that this lock is no longer held while committing and uncommitting memory. As a result, the average cost of doing an allocation in the last tier was reduced, and this tier’s ability to handle concurrent allocations was significantly improved.
+
+### 4.2.2 Incremental uncommit
+
+ZGC’s uncommit capability was initially introduced in JDK 13. This mechanism allows ZGC to uncommit unused memory to shrink the heap, and return that unused memory to the operating system for other processes to use. For memory to become eligible for uncommit it must have been unused for some amount of time (by default 300 seconds, controlled by -XX:ZUncommitDelay=<seconds>). If more memory is needed at some point later, then ZGC will commit new memory to grow the heap again.
+
+Uncommitting memory is a relatively expensive operation and the time it takes for this operation to complete tends to scale with the size of the memory you’re operating on. Prior to JDK 15, it didn’t matter if ZGC found 2MB or 2TB of memory eligible for uncommit, it would still just issue a single uncommit operation to the operating system. This turned out to be potentially problematic since uncommitting large amounts of memory (like hundreds of gigabytes or terabytes) can take quite some time. During this time the memory pressure could change dramatically, but there was no way for ZGC to abort or revise the uncommit operation mid-flight. If the memory pressure increased, ZGC would first have to wait for any in-flight uncommit operation to complete and then immediately commit some of that memory again.
+
+The uncommit mechanism was re-worked in JDK 15 to uncommit memory incrementally. Instead of a single uncommit operation, ZGC will now issue many smaller uncommit operations to the operating system. This allows a change in memory pressure to be promptly detected and the uncommit process to be aborted or revised mid-flight.
+
+### 4.2.3 Improved NUMA awareness
+
+ZGC has always been NUMA aware on Linux, in the sense that when a Java thread allocates an object, that object will end up in memory that is local to the CPU that Java thread is executing on. On a NUMA machine, accessing memory that is local to the CPU results in lower memory latencies, which in turn results in better overall performance. However, ZGC’s NUMA awareness only came into its full potential when using large pages (-XX:+UseLargePages). This was addressed in JDK 15, and ZGC’s NUMA-awareness now always comes into its full glory, regardless of whether large pages are used or not.
+
+### 4.2.4 JFR events
+
+The following JFR events were added or are no longer marked experimental.
+
+ZAllocationStall: Generated if a Java threads is subject to an allocation stall.
+ZPageAllocation: Generated each time a new ZPage (heap region) is allocated.
+ZRelocationSet & ZRelocationSetGroup: Generated each GC cycle and describe what parts of the heap was compacted/reclaimed.
+ZUncommit: Generated each time ZGC uncommits some unused part of the Java heap, i.e. returns that unused memory to the operating system.
+ZUnmap: Generated each time ZGC unmaps memory. ZGC will asynchronously unmap memory when a set of scattered pages needs to be remapped as a larger contiguous page.
+
+
+### 4.2.5 Java heap on NVRAM
+
+Advancements in the area of NVRAM have in the last few years made such memory considerably faster and a lot cheaper. In some environments and for some types of applications, placing the entire Java heap on NVRAM (instead of RAM) can actually be an attractive option, where you trade some performance for cheaper memory. In fact, all GCs in HotSpot (except ZGC) have had support for this since JDK 10, with the -XX:AllocateHeapAt option. However, as of JDK 15, this is now also supported by ZGC.
+
+
+### 4.2.6 Compressed class pointers
+
+In HotSpot, all Java objects have a header comprised of two fields, a mark word and a class pointer. On 64-bit CPUs, both of these fields are normally 64 bits wide, where the class pointer is a plain pointer to memory that describes the object’s class (type information, vtable, etc). The Compressed Class Pointers feature (-XX:+UseCompressedClassPointers) helps reduce overall heap usage by reducing the size of all object headers. It does this by compressing the class pointer field to 32 bits (instead of 64 bits). Instead of being a plain pointer, the compressed class pointer is an offset into the Compressed Class Space, which has a known base address. To retrieve the real class pointer the JVM simply adds the (possibly bit-shifted) compressed class pointer to the base address of the Compressed Class Space.
+
+The implementation of the Compressed Class Pointers feature has historically been tied to the Compressed Oops feature, which meant that you could not enable Compressed Class Pointers without also enabling Compressed Oops. This was just an artificial dependency, as there are no technical reasons why you can’t enable one but not the other. Since ZGC doesn’t support Compressed Oops today, it meant that ZGC was also blocked from using of Compressed Class Pointers, for no good reason. In JDK 15, the artificial dependency between Compressed Class Pointers and Compressed Oops was broken, and as a result ZGC now works nicely with Compressed Class Pointers.
+
+
+### 4.2.7 Class data sharing
+
+The Class Data Sharing (CDS) feature in HotSpot helps reduce the startup time and memory footprint between multiple instances of the JVM. This feature only worked when the Compressed Oops feature was enabled (-XX:+UseCompressedOops). In JDK 15, Class Data Sharing was enhanced to also work when the Compressed Oops feature is disabled. As a result, Class Data Sharing now works nicely together with ZGC (where the Compressed Oops feature is disabled).
+
+
+
+
+
+
+
+
+
+
+
 
