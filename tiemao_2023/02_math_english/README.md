@@ -200,7 +200,7 @@ twins: 双胞胎
 | 根号  | radical |
 | 大于 | 
 | 相等 | equation | `=` |
-| 标点符号 | punctuation |
+| 标点符号 | punctuation marks |
 | 英文句号 | period | `.` |
 | 感叹号 | exclamation point | `!` |
 | 问号 | queston mark | `?` |
@@ -258,7 +258,7 @@ twins: 双胞胎
 | :--  | :--           |
 | 三角形 | triangle, Tri-angle |
 | 四边形 |  |
-| 平行四边形 |  |
+| 平行四边形 | parallelogram |
 | 正方形 |  |
 | 长方形 |  |
 | 菱形   |  |

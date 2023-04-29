@@ -41,7 +41,7 @@ In this post I’ll highlight some of the more important and interesting ZGC enh
 For feedback and questions about ZGC, feel free to post to the [mailing list](https://mail.openjdk.java.net/mailman/listinfo/zgc-dev).
 
 
-像发条一样, [JDK 14](https://openjdk.java.net/projects/jdk/14) 于2020年3月23日正式发布, 距离 [JDK 13](https://openjdk.java.net/projects/) 发布时间只有6个月。
+像闹钟一样, [JDK 14](https://openjdk.java.net/projects/jdk/14) 正式版于2020年3月23日准时发布, 距离 [JDK 13](https://openjdk.java.net/projects/) 的发布时间仅有6个月。
 对于 [ZGC](https://wiki.openjdk.java.net/display/zgc/Main) 来说, 这是一个重大更新版本, 因为我们成功达成了多个重要的里程碑和改进, 使其成为完全可以投入使用的生产环境版本。
 总共 [超过80项](https://bugs.openjdk.org/browse/JDK-8236110?filter=34672&jql=labels%20%3D%20zgc%20AND%20status%20in%20(Resolved%2C%20Closed)%20AND%20fixVersion%20%3D%2014%20AND%20resolution%20!%3D%20Duplicate)的增强和错误修复被提交到 ZGC 中。
 如果统计在 HotSpot 的其他部分完成的 “ZGC相关” 的提交, 则数量更多。
@@ -339,7 +339,7 @@ There are different use cases where setting a soft max heap size can be useful. 
 
 Let’s make up an example, to illustrate the first use case listed above. Pretend that your workload under normal conditions needs 2G of heap to run well. But once in a while you see workload spikes (maybe you’re providing a service that attracts a lot more users a certain day of the week/month, or something similar). With this increase in workload your application now needs, say, 5G to run well. To deal with this situation you would normally set the max heap size (`-Xmx`) to 5G to cover for the occasional workload spikes. However, that also means you will be wasting 3G of memory 98% (or something) of the time when it’s not needed, since those unused 3G will still be tied up in the Java heap. This is where a soft max heap size can come in handy, which together with ZGC’s ability to uncommit unused memory allows you to have your cake and eat it too. Set the max heap size to the max amount of heap your application will ever need (`-Xmx5G` in this case), and set the soft max heap size to what your application needs under normal conditions (`-XX:SoftMaxHeapSize=2G` in this case). You’re now covered to handle those workload spikes nicely, without always wasting 3G. Once the workload spike has passed and the need for memory drops down to normal again, ZGC will shrink the heap and continue to do it’s best to honor the `-XX:SoftMaxHeapSize` setting. When those extra 3G of heap have been sitting unused for a while, ZGC will uncommit that memory, returning it to the operating system for other processes (or the disk cache, or something else) to use.
 
-在不同的用例中，设置软最大堆大小可能很有用。 例如：
+在不同的用例中，设置最大堆内存的软开关可能很有用。 例如：
 
 - 当您希望减少堆占用空间，同时保持处理临时增加的堆空间需求的能力时。
 - 或者当你想安全地玩时，为了增加你不会遇到分配停顿或由于分配率或活动集大小的意外增加而出现 OutOfMemoryError 的信心。
@@ -349,8 +349,8 @@ Let’s make up an example, to illustrate the first use case listed above. Prete
 
 ## 3.2 系统运行过程中动态修改 SoftMaxHeapSize
 
-`SoftMaxHeapSize` 是可管理的选项, 支持运行时动态修改, 也就是说不用重启JVM就可以变更配置。 
-我们可以使用 `HotSpotDiagnosticMXBean` 管理API, 或者通过 `jcmd` 工具修改可管理的配置项:
+`SoftMaxHeapSize` 是可管理的JMX选项, 在JVM运行过程中支持动态修改, 也就是说不用重启JVM就可以修改配置。 
+我们可以使用管理API `HotSpotDiagnosticMXBean`, 或者通过 `jcmd` 等工具修改可管理的配置项:
 
 > `jcmd <pid> VM.set_flag SoftMaxHeapSize <size>`
 
