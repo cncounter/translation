@@ -405,6 +405,25 @@ Since its initial introduction in JDK 11, ZGC has in the following releases rece
 
 In summary, ZGC is now a stable, high performance, low-latency GC, that is ready to take on your production workloads.
 
+
+## 4.1 ZGC正式成为产品级稳定版
+
+在 JDK 15 中，ZGC 正式成为产品级稳定版(production ready)。 
+换句话说，ZGC成为了 JDK 中的一个产品功能, 而不再是实验性能的功能，官方鼓励用户在生产中使用它。 
+
+这一变化通过 [JEP 377](http://openjdk.java.net/jeps/377) 实现，是很多人多年来共同努力的结晶。
+
+当然， 这也是 ZGC 项目的一个重要里程碑，我们一直都渴望达到这个目标。 
+请放心，取消实验状态并不是我们随便下决定的事情。 
+没有用户会信任一款时不时导致JVM 崩溃的垃圾收集器。 
+当然，用户肯定希望产品级的 GC 性能良好的同时, 还提供与当今业务需求相关的特性。
+
+自从在 JDK 11 中首次引入以来，ZGC 在后续版本中实现了许多新特性、增强了性能, 提升了稳定性, 并支持所有主流平台。  这期间经历了很多轮严谨的测试。
+
+总之，ZGC 现在是一款稳定的、高性能的低延迟GC，可以随时承担我们在生产环境的工作负载。
+
+
+
 ## 4.2 New features and enhancements
 
 ### 4.2.1 Improved allocation concurrency

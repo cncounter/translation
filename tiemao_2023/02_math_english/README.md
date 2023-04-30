@@ -207,6 +207,8 @@ twins: 双胞胎
 | B一撇 | B-prime | `B'` |
 | 撇 | apostrophe | `'` |
 | 逗号 | comma | `,` |
+| 冒号 | colon | `:` |
+| 分号 | semicolon | `;` |
 
 
 
