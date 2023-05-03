@@ -475,12 +475,12 @@ The uncommit mechanism was re-worked in JDK 15 to uncommit memory incrementally.
 
 ZGC 的 uncommit 能力是在 JDK 13 中开始引入的。
 这种机制允许 ZGC 将不使用的内存反向申请, 以缩减堆内存，并返还给操作系统, 以供其他进程使用。 
-一段内存要满足反向申请条件，必须有一段时间未使用（默认时间是 300 秒，由参数 `-XX:ZUncommitDelay=<seconds>` 控制）。 
+一段内存要满足反向申请条件，必须有一段时间未使用(默认时间是 300 秒，由参数 `-XX:ZUncommitDelay=<seconds>` 控制)。 
 如果后续又需要更多内存，则 ZGC 将调拨新内存以再次增加堆内存。
 
 反向申请内存是一项相对昂贵的操作，完成此操作所需的时间, 往往与正在操作的内存大小成正比。 
 在 JDK 15 之前，ZGC 并不在乎满足反向申请条件得是 2MB 还是 2TB 的内存，它只会向操作系统发出一个反向申请操作。 
-实践证明这里有一个潜在的问题，因为反向申请大量内存（如几百GB, 或几TB）, 可能需要耗费相当长的时间。 
+实践证明这里有一个潜在的问题，因为反向申请大量内存(如几百GB, 或几TB), 可能需要耗费相当长的时间。 
 在此期间，内存压力可能会发生巨大变化，但 ZGC 无法中止或修改反向申请操作。 
 如果内存压力增加，ZGC 必须先等正在执行的反向申请操作完成，然后才能再次申请内存。
 
@@ -521,7 +521,7 @@ ZUnmap: Generated each time ZGC unmaps memory. ZGC will asynchronously unmap mem
 正式支持下列 [JFR](https://en.wikipedia.org/wiki/JDK_Flight_Recorder) 事件:
 
 - `ZAllocationStall`: 如果 Java 线程遇到内存分配缓慢，则生成此事件。
-- `ZPageAllocation`: 每次分配一个新的 ZPage 页面（堆区）时, 生成此事件。
+- `ZPageAllocation`: 每次分配一个新的 ZPage 页面(堆区)时, 生成此事件。
 - `ZRelocationSet` 和 `ZRelocationSetGroup`: 每个 GC 周期都生成此事件, 并描述堆内存的哪些部分被压缩/回收。
 - `ZUncommit`: 每次 ZGC 取消提交一些不使用的部分时, 都生成此事件，也就是将不使用的内存返回给操作系统时。
 - `ZUnmap`: 每次 ZGC 取消映射内存(unmaps memory)时生成此事件。 当一组分散的页面需要重新映射为更大的连续页面时，ZGC 将异步取消映射内存。
@@ -534,7 +534,7 @@ Advancements in the area of NVRAM have in the last few years made such memory co
 ### 4.2.5 支持 NVRAM 上的 Java 堆
 
 在过去的几年里，技术领域的进步使 NVRAM 这种内存的速度大大提高，而且价格便宜很多。 
-在某些环境和应用系统中，将整个 Java 堆放在 NVRAM上（而不是常规 RAM 中), 变成一个非常具有吸引力的选择， 我们可以牺牲一些性能, 以换取更便宜的内存。 
+在某些环境和应用系统中，将整个 Java 堆放在 NVRAM上(而不是常规 RAM 中), 变成一个非常具有吸引力的选择， 我们可以牺牲一些性能, 以换取更便宜的内存。 
 事实上，自 JDK 10 以来，除 ZGC 外, HotSpot 中的所有 GC 都支持此功能，并支持 `-XX:AllocateHeapAt` 选项。 
 现在，从 JDK 15 开始，ZGC 也支持了。
 
@@ -544,6 +544,21 @@ Advancements in the area of NVRAM have in the last few years made such memory co
 In HotSpot, all Java objects have a header comprised of two fields, a mark word and a class pointer. On 64-bit CPUs, both of these fields are normally 64 bits wide, where the class pointer is a plain pointer to memory that describes the object’s class (type information, vtable, etc). The Compressed Class Pointers feature (-XX:+UseCompressedClassPointers) helps reduce overall heap usage by reducing the size of all object headers. It does this by compressing the class pointer field to 32 bits (instead of 64 bits). Instead of being a plain pointer, the compressed class pointer is an offset into the Compressed Class Space, which has a known base address. To retrieve the real class pointer the JVM simply adds the (possibly bit-shifted) compressed class pointer to the base address of the Compressed Class Space.
 
 The implementation of the Compressed Class Pointers feature has historically been tied to the Compressed Oops feature, which meant that you could not enable Compressed Class Pointers without also enabling Compressed Oops. This was just an artificial dependency, as there are no technical reasons why you can’t enable one but not the other. Since ZGC doesn’t support Compressed Oops today, it meant that ZGC was also blocked from using of Compressed Class Pointers, for no good reason. In JDK 15, the artificial dependency between Compressed Class Pointers and Compressed Oops was broken, and as a result ZGC now works nicely with Compressed Class Pointers.
+
+### 4.2.6 类指针压缩(Compressed class pointers)
+
+在 HotSpot 中，所有 Java 对象都有一个对象头, 由两个字段组成: 包含一个标记字(mark word), 一个类指针(class pointer)。 
+在 64 位 CPU 上，这两个字段通常都是 64 位，其中, 类指针是指向描述对象所属类的普通内存指针。 
+类指针压缩功能 (`-XX:+UseCompressedClassPointers`) 可以减小所有对象标头的大小, 来降低堆内存的占用空间。 
+这个压缩功能, 是将类指针字段的长度压缩为 32 位(原本是 64 位)。 
+
+压缩后的类指针(compressed class pointer), 和普通指针不同了, 是压缩类空间(CCS, Compressed Class Space)的偏移量，具有已知的基地址(base address)。 
+为了获取实际的类指针，JVM 只需要将压缩类指针的值, 与压缩类空间的基地址值相加即可。
+
+类指针压缩功能(Compressed Class Pointers)的实现, 历来与 Compressed Oops 功能相关联， 也就是说我们无法在禁用 Compressed Oops 的情况下, 启用类指针压缩功能。
+当然, 这只是一种人为的依赖，因为没有技术上的限制说, 我们不能启用一个, 而禁用另一个。 
+由于 ZGC 在低版本中还不支持 Compressed Oops，这意味着 ZGC 也就被禁止使用 Compressed Class Pointers。 
+在 JDK 15 中，压缩类指针和压缩 Oops 之间的人为依赖被打破了，因此 ZGC 现在可以很好地与压缩类指针一起工作。
 
 
 ### 4.2.7 Class data sharing
@@ -556,7 +571,7 @@ The Class Data Sharing (CDS) feature in HotSpot helps reduce the startup time an
 HotSpot 中, 多个 JVM 实例之间的类数据共享功能 (CDS, Class Data Sharing) , 有助于减少启动耗时和内存占用。 
 此特性仅在开启压缩 Oops 功能(`-XX:+UseCompressedOops`)时有效。 
 在 JDK 15 中，类数据共享得到增强， 即使禁用 Oops 压缩功能, 也能正常工作。 
-因此，类数据共享现在可以与 ZGC（禁用 Oops 压缩功能）一起协同工作。
+因此，类数据共享现在可以与 ZGC(禁用 Oops 压缩功能)一起协同工作。
 
 
 
