@@ -531,6 +531,13 @@ ZUnmap: Generated each time ZGC unmaps memory. ZGC will asynchronously unmap mem
 
 Advancements in the area of NVRAM have in the last few years made such memory considerably faster and a lot cheaper. In some environments and for some types of applications, placing the entire Java heap on NVRAM (instead of RAM) can actually be an attractive option, where you trade some performance for cheaper memory. In fact, all GCs in HotSpot (except ZGC) have had support for this since JDK 10, with the -XX:AllocateHeapAt option. However, as of JDK 15, this is now also supported by ZGC.
 
+### 4.2.5 支持 NVRAM 上的 Java 堆
+
+在过去的几年里，技术领域的进步使 NVRAM 这种内存的速度大大提高，而且价格便宜很多。 
+在某些环境和应用系统中，将整个 Java 堆放在 NVRAM上（而不是常规 RAM 中), 变成一个非常具有吸引力的选择， 我们可以牺牲一些性能, 以换取更便宜的内存。 
+事实上，自 JDK 10 以来，除 ZGC 外, HotSpot 中的所有 GC 都支持此功能，并支持 `-XX:AllocateHeapAt` 选项。 
+现在，从 JDK 15 开始，ZGC 也支持了。
+
 
 ### 4.2.6 Compressed class pointers
 
