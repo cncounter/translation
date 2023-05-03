@@ -551,6 +551,12 @@ The implementation of the Compressed Class Pointers feature has historically bee
 The Class Data Sharing (CDS) feature in HotSpot helps reduce the startup time and memory footprint between multiple instances of the JVM. This feature only worked when the Compressed Oops feature was enabled (-XX:+UseCompressedOops). In JDK 15, Class Data Sharing was enhanced to also work when the Compressed Oops feature is disabled. As a result, Class Data Sharing now works nicely together with ZGC (where the Compressed Oops feature is disabled).
 
 
+### 4.2.7 类数据共享
+
+HotSpot 中, 多个 JVM 实例之间的类数据共享功能 (CDS, Class Data Sharing) , 有助于减少启动耗时和内存占用。 
+此特性仅在开启压缩 Oops 功能(`-XX:+UseCompressedOops`)时有效。 
+在 JDK 15 中，类数据共享得到增强， 即使禁用 Oops 压缩功能, 也能正常工作。 
+因此，类数据共享现在可以与 ZGC（禁用 Oops 压缩功能）一起协同工作。
 
 
 
