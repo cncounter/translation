@@ -14,7 +14,7 @@
  <text class="TextShape"><tspan class="TextParagraph" font-family="Liberation Sans, sans-serif" font-size="353px" font-weight="400"><tspan class="TextPosition" x="4451" y="2242"><tspan fill="rgb(0,0,0)" stroke="none">4%</tspan></tspan></tspan></text>
  <text class="TextShape"><tspan class="TextParagraph" font-family="Liberation Sans, sans-serif" font-size="353px" font-weight="400"><tspan class="TextPosition" x="3907" y="2787"><tspan fill="rgb(0,0,0)" stroke="none">4%</tspan></tspan></tspan></text>
  <text class="TextShape"><tspan class="TextParagraph" font-family="Liberation Sans, sans-serif" font-size="353px" font-weight="400"><tspan class="TextPosition" x="8491" y="7944"><tspan fill="rgb(0,0,0)" stroke="none">84%</tspan></tspan></tspan></text>
- <text class="TextShape"><tspan class="TextParagraph" font-family="Liberation Sans, sans-serif" font-size="459px" font-weight="400"><tspan class="TextPosition" x="6143" y="839"><tspan fill="rgb(0,0,0)" stroke="none">Code Distribution</tspan></tspan></tspan></text>
+ <text class="TextShape"><tspan class="TextParagraph" font-family="Liberation Sans, sans-serif" font-size="459px" font-weight="400"><tspan class="TextPosition" x="6143" y="839"><tspan fill="rgb(0,0,0)" stroke="none">平台专用的代码比例</tspan></tspan></tspan></text>
  <path fill="rgb(0,69,134)" stroke="none" d="M 13871,3076 L 13765,3076 13765,2865 13976,2865 13976,3076 13871,3076 Z"/>
  <path fill="rgb(255,66,14)" stroke="none" d="M 13871,3574 L 13765,3574 13765,3363 13976,3363 13976,3574 13871,3574 Z"/>
  <path fill="rgb(255,211,32)" stroke="none" d="M 13871,4072 L 13765,4072 13765,3861 13976,3861 13976,4072 13871,4072 Z"/>

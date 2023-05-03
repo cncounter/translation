@@ -441,11 +441,13 @@ Prior to JDK 15, ZGC held a global lock while committing (and uncommitting) memo
 In JDK 15, this part of the allocation path was re-worked so that this lock is no longer held while committing and uncommitting memory. As a result, the average cost of doing an allocation in the last tier was reduced, and this tier’s ability to handle concurrent allocations was significantly improved.
 
 
-### 4.2.1 并发分配的优化
+### 4.2.1 改进了内存分配的并发效率
 
 一般给 Java 对象分配内存都非常快。 
 新对象具体的分配方式取决于我们使用的垃圾收集器(虽然叫做GC, 但实际上GC包括了内存分配程序)。 
 在 ZGC 的实现中,分配的过程透过了多个不同的层。 绝大多数分配相关的操作都能由第1层搞定,速度非常快。 只有极个别的分配, 需要一直向下走到最后一层,这时候就会慢得多。
+
+![](./allocation_tiers.svg)
 
 只有当前面所有的层都无法满足分配时,才会走到最后一层。 
 这是最后的保底手段,ZGC 将要求操作系统调拨(commit)更多的内存以扩展堆。 
@@ -467,6 +469,16 @@ ZGC’s uncommit capability was initially introduced in JDK 13. This mechanism a
 Uncommitting memory is a relatively expensive operation and the time it takes for this operation to complete tends to scale with the size of the memory you’re operating on. Prior to JDK 15, it didn’t matter if ZGC found 2MB or 2TB of memory eligible for uncommit, it would still just issue a single uncommit operation to the operating system. This turned out to be potentially problematic since uncommitting large amounts of memory (like hundreds of gigabytes or terabytes) can take quite some time. During this time the memory pressure could change dramatically, but there was no way for ZGC to abort or revise the uncommit operation mid-flight. If the memory pressure increased, ZGC would first have to wait for any in-flight uncommit operation to complete and then immediately commit some of that memory again.
 
 The uncommit mechanism was re-worked in JDK 15 to uncommit memory incrementally. Instead of a single uncommit operation, ZGC will now issue many smaller uncommit operations to the operating system. This allows a change in memory pressure to be promptly detected and the uncommit process to be aborted or revised mid-flight.
+
+
+### 4.2.2 增量方式 uncommit
+
+ZGC 的 uncommit 能力最初是在 JDK 13 中引入的。这种机制允许 ZGC 取消提交未使用的内存以缩小堆，并将未使用的内存返回给操作系统以供其他进程使用。 要使内存符合取消提交条件，它必须有一段时间未使用（默认 300 秒，由 -XX:ZUncommitDelay=<seconds> 控制）。 如果稍后需要更多内存，则 ZGC 将提交新内存以再次增长堆。
+
+取消提交内存是一项相对昂贵的操作，完成此操作所需的时间往往与您正在操作的内存大小成比例。 在 JDK 15 之前，ZGC 是否发现 2MB 或 2TB 的内存符合取消提交条件并不重要，它仍然只会向操作系统发出一个取消提交操作。 结果证明这是一个潜在的问题，因为取消提交大量内存（如数百 GB 或 TB）可能需要相当长的时间。 在此期间，内存压力可能会发生巨大变化，但 ZGC 无法中止或修改未提交操作。 如果内存压力增加，ZGC 将首先必须等待任何正在进行的取消提交操作完成，然后立即再次提交部分内存。
+
+取消提交机制在 JDK 15 中进行了重新设计，以逐步取消提交内存。 ZGC 现在将向操作系统发出许多较小的取消提交操作，而不是单个取消提交操作。 这允许及时检测到内存压力的变化，并且可以中止或修改未提交的进程。
+
 
 ### 4.2.3 Improved NUMA awareness
 
