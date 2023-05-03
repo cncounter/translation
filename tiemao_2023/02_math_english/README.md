@@ -209,6 +209,10 @@ twins: 双胞胎
 | 逗号 | comma | `,` |
 | 冒号 | colon | `:` |
 | 分号 | semicolon | `;` |
+| 破折号 | dash | `—` |
+| 连字符 | Hyphen | `bye-bye` |
+| 括号 | parentheses, parenthesis | `()` |
+| 省略号 | Ellipses, Ellipsis | `…` |
 
 
 
@@ -227,6 +231,7 @@ twins: 双胞胎
 | 线段  | line segment  |
 | 水平线  | horizontal line |
 | 垂直线  | vertical line |
+| 平行线  | parallel lines |
 | 斜率  | slope |
 | 与X轴交点 | x-intercept |
 | 与Y轴交点 | y-intercept |
@@ -259,11 +264,14 @@ twins: 双胞胎
 
 | :--  | :--           |
 | 三角形 | triangle, Tri-angle |
-| 四边形 |  |
+| 等腰三角形 | Isosceles triangle |
+| 等边三角形 | Equilateral triangle |
+| 四边形 | quadrilateral |
 | 平行四边形 | parallelogram |
-| 正方形 |  |
-| 长方形 |  |
-| 菱形   |  |
+| 正方形 | square |
+| 长方形, 矩形 | rectangle |
+| 风筝形 | kite |
+| 菱形   | Rhombus |
 | 圆形   | circle |
 | 形状   | shape |
 | 直角   | right angle |
@@ -278,6 +286,7 @@ twins: 双胞胎
 | 面积 | area |
 | 中心 | center |
 | 垂直平分线 | perpendicular bisector |
+| 对角线 | diagonals |
 
 
 思维导图:

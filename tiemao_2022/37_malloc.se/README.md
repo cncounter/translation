@@ -321,15 +321,15 @@ More about these and other enhancements in a future post.
 
 JDK 13 引入了一个新的 JVM 选项:  `-XX:SoftMaxHeapSize=<size>`。 
 迄今为止(2020年7月2日), ZGC 是HotSpot 中唯一支持此选项的垃圾收集器; 当然 G1 也准备支持, 开发工作正在进行中。 
-由于此选项相对较新，并且可能还不被大多数人所了解，因此我想写篇文章来介绍一下什么时候可以使用它, 以及如何使用它。
+由于此选项相对较新,并且可能还不被大多数人所了解,因此我想写篇文章来介绍一下什么时候可以使用它, 以及如何使用它。
 
 ## 3.1 SoftMaxHeapSize在哪些场景下适用?
 
 As the name implies, this new option sets a soft limit on how large the Java heap can grow. When set, the GC will strive to not grow the heap beyond the soft max heap size. But, the GC is still allowed to grow the heap beyond the specified size if it really needs to, like when the only other alternatives left is to stall an allocation or throw an `OutOfMemoryError`.
 
-顾名思义，这个新的JVM启动参数, 对 Java 堆内存的最大值设置了软限制。 
-设置该参数后，GC 将努力使堆的使用量不超过这个软参数。 
-但是，如果确实需要，仍然允许 GC 将堆增长到超过指定的大小，就像当唯一剩下的其他选择是停止分配或抛出 OutOfMemoryError 时。
+顾名思义,这个新的JVM启动参数, 对 Java 堆内存的最大值设置了软限制。 
+设置该参数后,GC 将努力使堆的使用量不超过这个软参数。 
+但是,如果确实需要,仍然允许 GC 将堆增长到超过指定的大小,就像当唯一剩下的其他选择是停止分配或抛出 OutOfMemoryError 时。
 
 
 There are different use cases where setting a soft max heap size can be useful. For example:
@@ -339,12 +339,12 @@ There are different use cases where setting a soft max heap size can be useful. 
 
 Let’s make up an example, to illustrate the first use case listed above. Pretend that your workload under normal conditions needs 2G of heap to run well. But once in a while you see workload spikes (maybe you’re providing a service that attracts a lot more users a certain day of the week/month, or something similar). With this increase in workload your application now needs, say, 5G to run well. To deal with this situation you would normally set the max heap size (`-Xmx`) to 5G to cover for the occasional workload spikes. However, that also means you will be wasting 3G of memory 98% (or something) of the time when it’s not needed, since those unused 3G will still be tied up in the Java heap. This is where a soft max heap size can come in handy, which together with ZGC’s ability to uncommit unused memory allows you to have your cake and eat it too. Set the max heap size to the max amount of heap your application will ever need (`-Xmx5G` in this case), and set the soft max heap size to what your application needs under normal conditions (`-XX:SoftMaxHeapSize=2G` in this case). You’re now covered to handle those workload spikes nicely, without always wasting 3G. Once the workload spike has passed and the need for memory drops down to normal again, ZGC will shrink the heap and continue to do it’s best to honor the `-XX:SoftMaxHeapSize` setting. When those extra 3G of heap have been sitting unused for a while, ZGC will uncommit that memory, returning it to the operating system for other processes (or the disk cache, or something else) to use.
 
-在不同的用例中，设置最大堆内存的软开关可能很有用。 例如：
+在不同的用例中,设置最大堆内存的软开关可能很有用。 例如：
 
-- 当您希望减少堆占用空间，同时保持处理临时增加的堆空间需求的能力时。
-- 或者当你想安全地玩时，为了增加你不会遇到分配停顿或由于分配率或活动集大小的意外增加而出现 OutOfMemoryError 的信心。
+- 当您希望减少堆占用空间,同时保持处理临时增加的堆空间需求的能力时。
+- 或者当你想安全地玩时,为了增加你不会遇到分配停顿或由于分配率或活动集大小的意外增加而出现 OutOfMemoryError 的信心。
 
-让我们举个例子来说明上面列出的第一个用例。 假设您的工作负载在正常情况下需要 2G 的堆才能正常运行。 但是偶尔您会看到工作量激增（也许您提供的服务在一周/一个月的某一天或类似的某天吸引了更多用户）。 随着工作负载的增加，您的应用程序现在需要 5G 才能正常运行。 要处理这种情况，您通常会将最大堆大小 (`-Xmx`) 设置为 5G 以应对偶尔出现的工作负载高峰。 然而，这也意味着您将在 98%（或更多）不需要的时候浪费 3G 内存，因为那些未使用的 3G 内存仍将占用 Java 堆。 这就是软最大堆大小可以派上用场的地方，它与 ZGC 取消提交未使用内存的能力一起让您可以吃蛋糕和吃蛋糕。 将最大堆大小设置为您的应用程序将永远需要的最大堆大小（在本例中为 `-Xmx5G`），并将软最大堆大小设置为您的应用程序在正常情况下需要的大小（`-XX:SoftMaxHeapSize=2G` 在这种情况下）。 您现在可以很好地处理这些工作负载高峰，而不会总是浪费 3G。 一旦工作负载高峰过去并且对内存的需求再次下降到正常水平，ZGC 将缩小堆并继续尽最大努力遵守 `-XX:SoftMaxHeapSize` 设置。 当那些额外的 3G 堆有一段时间未使用时，ZGC 将取消提交该内存，将其返回给操作系统以供其他进程（或磁盘缓存或其他）使用。
+让我们举个例子来说明上面列出的第一个用例。 假设您的工作负载在正常情况下需要 2G 的堆才能正常运行。 但是偶尔您会看到工作量激增(也许您提供的服务在一周/一个月的某一天或类似的某天吸引了更多用户)。 随着工作负载的增加,您的应用程序现在需要 5G 才能正常运行。 要处理这种情况,您通常会将最大堆大小 (`-Xmx`) 设置为 5G 以应对偶尔出现的工作负载高峰。 然而,这也意味着您将在 98%(或更多)不需要的时候浪费 3G 内存,因为那些未使用的 3G 内存仍将占用 Java 堆。 这就是软最大堆大小可以派上用场的地方,它与 ZGC 取消提交未使用内存的能力一起让您可以吃蛋糕和吃蛋糕。 将最大堆大小设置为您的应用程序将永远需要的最大堆大小(在本例中为 `-Xmx5G`),并将软最大堆大小设置为您的应用程序在正常情况下需要的大小(`-XX:SoftMaxHeapSize=2G` 在这种情况下)。 您现在可以很好地处理这些工作负载高峰,而不会总是浪费 3G。 一旦工作负载高峰过去并且对内存的需求再次下降到正常水平,ZGC 将缩小堆并继续尽最大努力遵守 `-XX:SoftMaxHeapSize` 设置。 当那些额外的 3G 堆有一段时间未使用时,ZGC 将取消提交该内存,将其返回给操作系统以供其他进程(或磁盘缓存或其他)使用。
 
 
 ## 3.2 系统运行过程中动态修改 SoftMaxHeapSize
@@ -361,9 +361,9 @@ Let’s make up an example, to illustrate the first use case listed above. Prete
 ## 3.3 内存返还的积极性
 
 可以通过 `-XX:ZUncommitDelay=<seconds>` 参数, 来控制ZGC返还未使用内存的积极程度(Uncommit aggressiveness), 默认值为 300秒(5分钟)。 
-换句话说，默认情况下，必须至少有 5 分钟没被使用的内存，才有机会返还给操作系统。 
-请注意，提交(committing)和返还(uncommitting)内存都是相对昂贵的操作。 
-过于激进（太短）的返还时间, 只会导致刚刚返还的内存很快再次提交，这会浪费 CPU 周期，最终可能还会影响应用程序的整体性能。
+换句话说,默认情况下,必须至少有 5 分钟没被使用的内存,才有机会返还给操作系统。 
+请注意,提交(committing)和返还(uncommitting)内存都是相对昂贵的操作。 
+过于激进(太短)的返还时间, 只会导致刚刚返还的内存很快再次提交,这会浪费 CPU 周期,最终可能还会影响应用程序的整体性能。
 
 
 ## 3.4 其他信息 (TL;DR, Too Long, Didn’t Read)
@@ -406,30 +406,32 @@ Since its initial introduction in JDK 11, ZGC has in the following releases rece
 In summary, ZGC is now a stable, high performance, low-latency GC, that is ready to take on your production workloads.
 
 
-## 4.1 ZGC正式成为产品级稳定版
+## 4.1 ZGC正式成为稳定版产品
 
-在 JDK 15 中，ZGC 正式成为产品级稳定版(production ready)。 
-换句话说，ZGC成为了 JDK 中的一个产品功能, 而不再是实验性能的功能，官方鼓励用户在生产中使用它。 
+在 JDK 15 中,ZGC 正式成为产品级稳定版(production ready)。 
+换句话说,ZGC成为了 JDK 中的一个产品功能, 而不再是实验性能的功能,官方鼓励用户在生产中使用它。 
 
-这一变化通过 [JEP 377](http://openjdk.java.net/jeps/377) 实现，是很多人多年来共同努力的结晶。
+这一变化通过 [JEP 377](http://openjdk.java.net/jeps/377) 实现,是很多人多年来共同努力的结晶。
 
-当然， 这也是 ZGC 项目的一个重要里程碑，我们一直都渴望达到这个目标。 
-请放心，取消实验状态并不是我们随便下决定的事情。 
+当然, 这也是 ZGC 项目的一个重要里程碑,我们一直都渴望达到这个目标。 
+请放心,取消实验状态并不是我们随便下决定的事情。 
 没有用户会信任一款时不时导致JVM 崩溃的垃圾收集器。 
-当然，用户肯定希望产品级的 GC 性能良好的同时, 还提供与当今业务需求相关的特性。
+当然,用户肯定希望产品级的 GC 性能良好的同时, 还提供与当今业务需求相关的特性。
 
-自从在 JDK 11 中首次引入以来，ZGC 在后续版本中实现了许多新特性、增强了性能, 提升了稳定性, 并支持所有主流平台。  这期间经历了很多轮严谨的测试。
+自从在 JDK 11 中首次引入以来,ZGC 在后续版本中实现了许多新特性、增强了性能, 提升了稳定性, 并支持所有主流平台。  这期间经历了很多轮严谨的测试。
 
-总之，ZGC 现在是一款稳定的、高性能的低延迟GC，可以随时承担我们在生产环境的工作负载。
+总之,ZGC 现在是一款稳定的、高性能的低延迟GC,可以随时承担我们在生产环境的工作负载。
 
 
 
 ## 4.2 New features and enhancements
 
+
+## 4.2 JDK15版本中ZGC的新特性与升级
+
 ### 4.2.1 Improved allocation concurrency
 
 Allocating a Java object is typically very fast. Exactly how a new object gets allocated depends on which GC you are using. In ZGC, the allocation path goes through a number of tiers. The vast majority of allocations are satisfied by the first tier, which is very fast. Only very few allocations need to go all the way down to the last tier, which is much slower.
-
 
 
 An allocation will end up in the last tier only when all of the previous tiers were unable to satisfy the allocation. This is the last resort, where ZGC will ask the operating system to commit more memory to expand the heap. If this also fails, or we’ve reached max heap size (-Xmx), then an OutOfMemoryError will be thrown.
@@ -437,6 +439,26 @@ An allocation will end up in the last tier only when all of the previous tiers w
 Prior to JDK 15, ZGC held a global lock while committing (and uncommitting) memory. That of course meant that only a single thread could expand (or shrink) the heap at any given time. Committing and uncommitting memory are also relatively expensive operations, that can take some time to complete. As a result, this global lock sometimes became a point of contention.
 
 In JDK 15, this part of the allocation path was re-worked so that this lock is no longer held while committing and uncommitting memory. As a result, the average cost of doing an allocation in the last tier was reduced, and this tier’s ability to handle concurrent allocations was significantly improved.
+
+
+### 4.2.1 并发分配的优化
+
+一般给 Java 对象分配内存都非常快。 
+新对象具体的分配方式取决于我们使用的垃圾收集器(虽然叫做GC, 但实际上GC包括了内存分配程序)。 
+在 ZGC 的实现中,分配的过程透过了多个不同的层。 绝大多数分配相关的操作都能由第1层搞定,速度非常快。 只有极个别的分配, 需要一直向下走到最后一层,这时候就会慢得多。
+
+只有当前面所有的层都无法满足分配时,才会走到最后一层。 
+这是最后的保底手段,ZGC 将要求操作系统调拨(commit)更多的内存以扩展堆。 
+如果这一步也失败了,或者已达到最大堆内存限制(`-Xmx`),那么将抛出 `OutOfMemoryError`。
+
+在 JDK 15 之前的版本中, ZGC 在调拨(committing)和取消调拨(uncommitting)内存时, 会持有一个全局锁。 
+当然这也就意味着在任何给定时刻, 只有一个线程可以扩展(或缩减)堆内存。 
+调拨和取消内存调拨, 是相对昂贵的操作, 可能需要一段时间才能完成。 
+所以这个全局锁有时就会成为争抢点。
+
+在 JDK 15 中, 重新设计了这些分配路径, 以便在调拨和取消内存调拨时不再需要这个全局锁。 
+这样实现的好处, 是降低了最后一层分配内存的平均成本, 而且显著提高了这一层处理分配的并发能力。
+
 
 ### 4.2.2 Incremental uncommit
 
