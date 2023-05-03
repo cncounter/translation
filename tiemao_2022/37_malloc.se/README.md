@@ -496,7 +496,7 @@ ZGC has always been NUMA aware on Linux, in the sense that when a Java thread al
 
 ### 4.2.3 增强 NUMA 支持
 
-![](numa.svg)
+![](./numa.svg)
 
 ZGC 在 Linux 平台上一直是支持 NUMA 识别的，在某种意义上，当 Java 线程分配对象时，相应的对象, 最终会分配到执行 Java 线程的 CPU 相对应的本地内存中。 
 在 NUMA 结构的机器上，访问 CPU 本地的内存可以降低内存延迟，从而提高整体性能。 
@@ -532,6 +532,8 @@ ZUnmap: Generated each time ZGC unmaps memory. ZGC will asynchronously unmap mem
 Advancements in the area of NVRAM have in the last few years made such memory considerably faster and a lot cheaper. In some environments and for some types of applications, placing the entire Java heap on NVRAM (instead of RAM) can actually be an attractive option, where you trade some performance for cheaper memory. In fact, all GCs in HotSpot (except ZGC) have had support for this since JDK 10, with the -XX:AllocateHeapAt option. However, as of JDK 15, this is now also supported by ZGC.
 
 ### 4.2.5 支持 NVRAM 上的 Java 堆
+
+![](./nvram.svg)
 
 在过去的几年里，技术领域的进步使 NVRAM 这种内存的速度大大提高，而且价格便宜很多。 
 在某些环境和应用系统中，将整个 Java 堆放在 NVRAM上(而不是常规 RAM 中), 变成一个非常具有吸引力的选择， 我们可以牺牲一些性能, 以换取更便宜的内存。 
