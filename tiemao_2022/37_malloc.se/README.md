@@ -526,6 +526,8 @@ ZUnmap: Generated each time ZGC unmaps memory. ZGC will asynchronously unmap mem
 - `ZUncommit`: 每次 ZGC 取消提交一些不使用的部分时, 都生成此事件，也就是将不使用的内存返回给操作系统时。
 - `ZUnmap`: 每次 ZGC 取消映射内存(unmaps memory)时生成此事件。 当一组分散的页面需要重新映射为更大的连续页面时，ZGC 将异步取消映射内存。
 
+相关的事件, 可参考JDK的源码: [jdk/src/hotspot/share/jfr/metadata/metadata.xml](https://github.com/openjdk/jdk/blob/83b2411fd15d0890042ede118a08731ca162b951/src/hotspot/share/jfr/metadata/metadata.xml#L1052)
+
 
 ### 4.2.5 Java heap on NVRAM
 
@@ -535,9 +537,9 @@ Advancements in the area of NVRAM have in the last few years made such memory co
 
 ![](./nvram.svg)
 
-在过去的几年里，技术领域的进步使 NVRAM 这种内存的速度大大提高，而且价格便宜很多。 
+在过去的几年里，技术领域的进步使 [NVRAM](https://en.wikipedia.org/wiki/Non-volatile_random-access_memory) 这种内存的速度大大提高，而且价格便宜很多。 
 在某些环境和应用系统中，将整个 Java 堆放在 NVRAM上(而不是常规 RAM 中), 变成一个非常具有吸引力的选择， 我们可以牺牲一些性能, 以换取更便宜的内存。 
-事实上，自 JDK 10 以来，除 ZGC 外, HotSpot 中的所有 GC 都支持此功能，并支持 `-XX:AllocateHeapAt` 选项。 
+事实上，自 [JDK 10](http://openjdk.java.net/jeps/316) 以来，除 ZGC 外, HotSpot 中的所有 GC 都支持此功能，并支持 `-XX:AllocateHeapAt` 选项。 
 现在，从 JDK 15 开始，ZGC 也支持了。
 
 
@@ -570,7 +572,7 @@ The Class Data Sharing (CDS) feature in HotSpot helps reduce the startup time an
 
 ### 4.2.7 类数据共享
 
-HotSpot 中, 多个 JVM 实例之间的类数据共享功能 (CDS, Class Data Sharing) , 有助于减少启动耗时和内存占用。 
+HotSpot 中, 多个 JVM 实例之间的类数据共享功能 ([CDS, Class Data Sharing](https://docs.oracle.com/en/java/javase/15/vm/class-data-sharing.html)) , 有助于减少启动耗时和内存占用。 
 此特性仅在开启压缩 Oops 功能(`-XX:+UseCompressedOops`)时有效。 
 在 JDK 15 中，类数据共享得到增强， 即使禁用 Oops 压缩功能, 也能正常工作。 
 因此，类数据共享现在可以与 ZGC(禁用 Oops 压缩功能)一起协同工作。
