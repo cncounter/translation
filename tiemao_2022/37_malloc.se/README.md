@@ -339,12 +339,12 @@ There are different use cases where setting a soft max heap size can be useful. 
 
 Let’s make up an example, to illustrate the first use case listed above. Pretend that your workload under normal conditions needs 2G of heap to run well. But once in a while you see workload spikes (maybe you’re providing a service that attracts a lot more users a certain day of the week/month, or something similar). With this increase in workload your application now needs, say, 5G to run well. To deal with this situation you would normally set the max heap size (`-Xmx`) to 5G to cover for the occasional workload spikes. However, that also means you will be wasting 3G of memory 98% (or something) of the time when it’s not needed, since those unused 3G will still be tied up in the Java heap. This is where a soft max heap size can come in handy, which together with ZGC’s ability to uncommit unused memory allows you to have your cake and eat it too. Set the max heap size to the max amount of heap your application will ever need (`-Xmx5G` in this case), and set the soft max heap size to what your application needs under normal conditions (`-XX:SoftMaxHeapSize=2G` in this case). You’re now covered to handle those workload spikes nicely, without always wasting 3G. Once the workload spike has passed and the need for memory drops down to normal again, ZGC will shrink the heap and continue to do it’s best to honor the `-XX:SoftMaxHeapSize` setting. When those extra 3G of heap have been sitting unused for a while, ZGC will uncommit that memory, returning it to the operating system for other processes (or the disk cache, or something else) to use.
 
-在不同的用例中,设置最大堆内存的软开关可能很有用。 例如：
+在不同的用例中,设置最大堆内存的软开关可能很有用。 例如:
 
 - 当您希望减少堆占用空间,同时保持处理临时增加的堆空间需求的能力时。
 - 或者当你想安全地玩时,为了增加你不会遇到分配停顿或由于分配率或活动集大小的意外增加而出现 OutOfMemoryError 的信心。
 
-让我们举个例子来说明上面列出的第一个用例。 假设您的工作负载在正常情况下需要 2G 的堆才能正常运行。 但是偶尔您会看到工作量激增(也许您提供的服务在一周/一个月的某一天或类似的某天吸引了更多用户)。 随着工作负载的增加,您的应用程序现在需要 5G 才能正常运行。 要处理这种情况,您通常会将最大堆大小 (`-Xmx`) 设置为 5G 以应对偶尔出现的工作负载高峰。 然而,这也意味着您将在 98%(或更多)不需要的时候浪费 3G 内存,因为那些未使用的 3G 内存仍将占用 Java 堆。 这就是软最大堆大小可以派上用场的地方,它与 ZGC 取消提交未使用内存的能力一起让您可以吃蛋糕和吃蛋糕。 将最大堆大小设置为您的应用程序将永远需要的最大堆大小(在本例中为 `-Xmx5G`),并将软最大堆大小设置为您的应用程序在正常情况下需要的大小(`-XX:SoftMaxHeapSize=2G` 在这种情况下)。 您现在可以很好地处理这些工作负载高峰,而不会总是浪费 3G。 一旦工作负载高峰过去并且对内存的需求再次下降到正常水平,ZGC 将缩小堆并继续尽最大努力遵守 `-XX:SoftMaxHeapSize` 设置。 当那些额外的 3G 堆有一段时间未使用时,ZGC 将取消提交该内存,将其返回给操作系统以供其他进程(或磁盘缓存或其他)使用。
+让我们举个例子来说明上面列出的第一个用例。 假设您的工作负载在正常情况下需要 2G 的堆才能正常运行。 但是偶尔您会看到工作量激增(也许您提供的服务在一周/一个月的某一天或类似的某天吸引了更多用户)。 随着工作负载的增加,您的应用程序现在需要 5G 才能正常运行。 要处理这种情况,您通常会将最大堆大小 (`-Xmx`) 设置为 5G 以应对偶尔出现的工作负载高峰。 然而,这也意味着您将在 98%(或更多)不需要的时候浪费 3G 内存,因为那些未使用的 3G 内存仍将占用 Java 堆。 这就是软最大堆大小可以派上用场的地方,它与 ZGC 反向申请未使用内存的能力一起让您可以吃蛋糕和吃蛋糕。 将最大堆大小设置为您的应用程序将永远需要的最大堆大小(在本例中为 `-Xmx5G`),并将软最大堆大小设置为您的应用程序在正常情况下需要的大小(`-XX:SoftMaxHeapSize=2G` 在这种情况下)。 您现在可以很好地处理这些工作负载高峰,而不会总是浪费 3G。 一旦工作负载高峰过去并且对内存的需求再次下降到正常水平,ZGC 将缩小堆并继续尽最大努力遵守 `-XX:SoftMaxHeapSize` 设置。 当那些额外的 3G 堆有一段时间未使用时,ZGC 将反向申请该内存,将其返回给操作系统以供其他进程(或磁盘缓存或其他)使用。
 
 
 ## 3.2 系统运行过程中动态修改 SoftMaxHeapSize
@@ -471,18 +471,39 @@ Uncommitting memory is a relatively expensive operation and the time it takes fo
 The uncommit mechanism was re-worked in JDK 15 to uncommit memory incrementally. Instead of a single uncommit operation, ZGC will now issue many smaller uncommit operations to the operating system. This allows a change in memory pressure to be promptly detected and the uncommit process to be aborted or revised mid-flight.
 
 
-### 4.2.2 增量方式 uncommit
+### 4.2.2 增量式内存撤销(Incremental uncommit)
 
-ZGC 的 uncommit 能力最初是在 JDK 13 中引入的。这种机制允许 ZGC 取消提交未使用的内存以缩小堆，并将未使用的内存返回给操作系统以供其他进程使用。 要使内存符合取消提交条件，它必须有一段时间未使用（默认 300 秒，由 -XX:ZUncommitDelay=<seconds> 控制）。 如果稍后需要更多内存，则 ZGC 将提交新内存以再次增长堆。
+ZGC 的 uncommit 能力是在 JDK 13 中开始引入的。
+这种机制允许 ZGC 将不使用的内存反向申请, 以缩减堆内存，并返还给操作系统, 以供其他进程使用。 
+一段内存要满足反向申请条件，必须有一段时间未使用（默认时间是 300 秒，由参数 `-XX:ZUncommitDelay=<seconds>` 控制）。 
+如果后续又需要更多内存，则 ZGC 将调拨新内存以再次增加堆内存。
 
-取消提交内存是一项相对昂贵的操作，完成此操作所需的时间往往与您正在操作的内存大小成比例。 在 JDK 15 之前，ZGC 是否发现 2MB 或 2TB 的内存符合取消提交条件并不重要，它仍然只会向操作系统发出一个取消提交操作。 结果证明这是一个潜在的问题，因为取消提交大量内存（如数百 GB 或 TB）可能需要相当长的时间。 在此期间，内存压力可能会发生巨大变化，但 ZGC 无法中止或修改未提交操作。 如果内存压力增加，ZGC 将首先必须等待任何正在进行的取消提交操作完成，然后立即再次提交部分内存。
+反向申请内存是一项相对昂贵的操作，完成此操作所需的时间, 往往与正在操作的内存大小成正比。 
+在 JDK 15 之前，ZGC 并不在乎满足反向申请条件得是 2MB 还是 2TB 的内存，它只会向操作系统发出一个反向申请操作。 
+实践证明这里有一个潜在的问题，因为反向申请大量内存（如几百GB, 或几TB）, 可能需要耗费相当长的时间。 
+在此期间，内存压力可能会发生巨大变化，但 ZGC 无法中止或修改反向申请操作。 
+如果内存压力增加，ZGC 必须先等正在执行的反向申请操作完成，然后才能再次申请内存。
 
-取消提交机制在 JDK 15 中进行了重新设计，以逐步取消提交内存。 ZGC 现在将向操作系统发出许多较小的取消提交操作，而不是单个取消提交操作。 这允许及时检测到内存压力的变化，并且可以中止或修改未提交的进程。
+在 JDK 15 中, 重新设计了反向申请机制，以增量方式反向申请内存。 
+现在, ZGC 将向操作系统发出许多个规模较小的反向申请操作。 
+这允许ZGC及时检测到内存压力的变化，并且可以中止或修改尚未正式提给操作系统的那些反向申请。
 
 
 ### 4.2.3 Improved NUMA awareness
 
 ZGC has always been NUMA aware on Linux, in the sense that when a Java thread allocates an object, that object will end up in memory that is local to the CPU that Java thread is executing on. On a NUMA machine, accessing memory that is local to the CPU results in lower memory latencies, which in turn results in better overall performance. However, ZGC’s NUMA awareness only came into its full potential when using large pages (-XX:+UseLargePages). This was addressed in JDK 15, and ZGC’s NUMA-awareness now always comes into its full glory, regardless of whether large pages are used or not.
+
+
+### 4.2.3 增强 NUMA 支持
+
+![](numa.svg)
+
+ZGC 在 Linux 平台上一直是支持 NUMA 识别的，在某种意义上，当 Java 线程分配对象时，相应的对象, 最终会分配到执行 Java 线程的 CPU 相对应的本地内存中。 
+在 NUMA 结构的机器上，访问 CPU 本地的内存可以降低内存延迟，从而提高整体性能。 
+然而，ZGC 的 NUMA 识别只有在开启大页面(`-XX:+UseLargePages`)时, 才能发挥其全部潜力。 
+
+JDK 15 版本解决了这个问题，无论是否使用大页面，ZGC 的 NUMA-awareness 都能充分发挥作用。
+
 
 ### 4.2.4 JFR events
 
@@ -493,6 +514,17 @@ ZPageAllocation: Generated each time a new ZPage (heap region) is allocated.
 ZRelocationSet & ZRelocationSetGroup: Generated each GC cycle and describe what parts of the heap was compacted/reclaimed.
 ZUncommit: Generated each time ZGC uncommits some unused part of the Java heap, i.e. returns that unused memory to the operating system.
 ZUnmap: Generated each time ZGC unmaps memory. ZGC will asynchronously unmap memory when a set of scattered pages needs to be remapped as a larger contiguous page.
+
+
+### 4.2.4 JFR事件
+
+正式支持下列 [JFR](https://en.wikipedia.org/wiki/JDK_Flight_Recorder) 事件:
+
+- `ZAllocationStall`: 如果 Java 线程遇到内存分配缓慢，则生成此事件。
+- `ZPageAllocation`: 每次分配一个新的 ZPage 页面（堆区）时, 生成此事件。
+- `ZRelocationSet` 和 `ZRelocationSetGroup`: 每个 GC 周期都生成此事件, 并描述堆内存的哪些部分被压缩/回收。
+- `ZUncommit`: 每次 ZGC 取消提交一些不使用的部分时, 都生成此事件，也就是将不使用的内存返回给操作系统时。
+- `ZUnmap`: 每次 ZGC 取消映射内存(unmaps memory)时生成此事件。 当一组分散的页面需要重新映射为更大的连续页面时，ZGC 将异步取消映射内存。
 
 
 ### 4.2.5 Java heap on NVRAM
