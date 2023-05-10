@@ -170,8 +170,8 @@ In this article, we learned how to configure the listeners so that clients can c
 # 相关链接
 
 
-- [Connect to Apache Kafka Running in Docker](https://www.baeldung.com/kafka-docker-connection)
 - [Guide to Setting Up Apache Kafka Using Docker](https://www.baeldung.com/ops/kafka-docker-setup)
+- [Connect to Apache Kafka Running in Docker](https://www.baeldung.com/kafka-docker-connection)
 - [docker-compose.yaml 简介](https://www.baeldung.com/ops/docker-compose)
 - [Apache Kafka 官网](https://kafka.apache.org/)
 - [Docker 官网](https://www.docker.com/)
