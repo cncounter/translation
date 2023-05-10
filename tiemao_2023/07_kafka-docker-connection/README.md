@@ -1,6 +1,11 @@
 # 开发环境搭建: 如何从宿主机和外部访问Docker容器中的Kafka
 
 
+本文有一篇前置教程:
+
+
+- [Guide to Setting Up Apache Kafka Using Docker](https://www.baeldung.com/ops/kafka-docker-setup)
+
 
 ## 1. Overview
 
