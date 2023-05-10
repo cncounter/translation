@@ -580,6 +580,32 @@ HotSpot 中, 多个 JVM 实例之间的类数据共享功能 ([CDS, Class Data S
 
 
 
+## 5. ZGC | Oracle开发者线上大会2020
+
+
+发表日期: 2020年9月23日
+
+> 原文链接: https://www.malloc.se/blog/zgc-oracle-developer-live-2020
+
+
+[JDK 15](https://openjdk.java.net/projects/jdk/15) was released on September 15. To celebrate the release, Oracle hosted the virtual conference Oracle Developer Live - Java, where I gave a talk on [ZGC](https://wiki.openjdk.java.net/display/zgc). If you missed the event, all sessions were recorded and are available [here](https://developer.oracle.com/developer-live/java/).
+
+Here is my talk, titled [ZGC - The Next Generation Low-Latency Garbage Collector](https://www.youtube.com/watch?v=88E86quLmQA). Slides are also available as [here](http://cr.openjdk.java.net/~pliden/slides/ZGC-OracleDevLive-2020.pdf).
+
+
+2020年09月15日, [JDK 15](https://openjdk.java.net/projects/jdk/15) 正式发布; 
+
+为了庆祝这次发布, Oracle 举办了一次 开发者线上大会,
+- [Oracle Developer Live - Java](https://developer.oracle.com/community/events/devlive-java-recordings.html)。
+
+在2020年的会议中,  pliden 分享了 [ZGC](https://wiki.openjdk.java.net/display/zgc) 相关的内容。 
+
+- [http://cr.openjdk.java.net/~pliden/slides/ZGC-OracleDevLive-2020.pdf](http://cr.openjdk.java.net/~pliden/slides/ZGC-OracleDevLive-2020.pdf)
+
+视频链接在这里:
+
+- [ZGC - The Next Generation Low-Latency Garbage Collector](https://www.youtube.com/watch?v=88E86quLmQA)
+
 
 
 
