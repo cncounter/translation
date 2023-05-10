@@ -607,6 +607,30 @@ Here is my talk, titled [ZGC - The Next Generation Low-Latency Garbage Collector
 - [ZGC - The Next Generation Low-Latency Garbage Collector](https://www.youtube.com/watch?v=88E86quLmQA)
 
 
+## 6. ZGC | Inside Java Podcast
+
+
+发表日期: 2020年10月18日
+
+> 原文链接: https://www.malloc.se/blog/zgc-oracle-developer-live-2020
+
+
+I had the pleasure of being invited to the Inside Java Podcast, where David Delabassee and I talked about ZGC. We covered some of the things that is new in JDK 15 as well as what’s coming in JDK 16. Listen to it right here, or head over to the home of the podcast to find a feed or listen to other episodes.
+
+[Inside Java Podcast](https://inside.java/podcast/) 邀请 pliden 和 [David Delabassee](https://inside.java/u/DavidDelabassee/) 参与了 ZGC 相关的讨论, 在视频中, 主要讨论的 JDK15 的新特性和 JDK16 预期的功能特征; 
+
+链接如下: 
+
+> [https://inside.java/2020/10/14/podcast-005/](https://inside.java/2020/10/14/podcast-005/)
+
+
+## 7. ZGC | What's new in JDK 16
+
+
+发表日期: 2021年3月22日
+
+> 原文链接: https://www.malloc.se/blog/zgc-jdk16
+
 
 
 
