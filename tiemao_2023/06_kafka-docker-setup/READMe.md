@@ -1,5 +1,7 @@
 # 开发环境搭建: 通过Docker运行并配置Apache Kafka
 
+> 网上的很多Docker镜像和教程都比较坑, 我们团队折腾了好久, 都没法在开发环境连接Docker内部的Kafka并发送或者接收消息。 所以才有了这篇文章。
+
 ## 1. Overview
 
 Docker is one of the most popular container engines used in the software industry to create, package and deploy applications.
@@ -64,12 +66,16 @@ Creating kafka_kafka_1     ... done
 
 Now let's use the [nc](https://www.baeldung.com/linux/netcat-command#scanning-for-open-ports-using-netcat) command to verify that both the servers are listening on the respective ports:
 
+接着, 我们使用万能网络工具 [nc](https://www.baeldung.com/linux/netcat-command#scanning-for-open-ports-using-netcat)  来测试一下相应的端口是否成功监听:
+
 ```sh
 $ nc -z localhost 22181
 Connection to localhost port 22181 [tcp/*] succeeded!
 $ nc -z localhost 29092
 Connection to localhost port 29092 [tcp/*] succeeded!
 ```
+
+如果本地环境没有安装 nc, 也可以使用 netstat 或者 telnet 的工具来测试.
 
 
 Additionally, we can also check the verbose logs while the containers are starting up and verify that the Kafka server is up:
@@ -82,27 +88,57 @@ kafka_1      | [2021-04-10 22:57:40,418] DEBUG [PartitionStateMachine controller
 kafka_1      | [2021-04-10 22:57:40,447] INFO [SocketServer brokerId=1] Started data-plane acceptor and processor(s) for endpoint : ListenerName(PLAINTEXT) (kafka.network.SocketServer)
 kafka_1      | [2021-04-10 22:57:40,448] INFO [SocketServer brokerId=1] Started socket server acceptors and processors (kafka.network.SocketServer)
 kafka_1      | [2021-04-10 22:57:40,458] INFO [KafkaServer id=1] started (kafka.server.KafkaServer)
+
 ```
 
 With that, our Kafka setup is ready for use.
 
-### 2.3. Connection Using Kafka Tool
+如果没有报错, 有 started 类似的日志信息, 则表示 Kafka 配置并启动成功了。
+
+
+### 2.3. 使用图形客户端 Kafka Tool 来连接
 
 Finally, let's use the [Kafka Tool GUI utility](https://kafkatool.com/download.html) to establish a connection with our newly created Kafka server, and later, we'll visualize this setup:
 
-![](https://www.baeldung.com/wp-content/uploads/2021/04/Screenshot-2021-04-11-at-4.51.32-AM.png)
+[Kafka Tool](https://kafkatool.com/download.html) ,  是一款图形界面的 Kafka 客户端, 可以用来连接我们创建的 Kafka 服务; 
 
-```yml
-Bootstrap servers: localhost:29092
-```
+> 个人使用是免费的, 现在改名叫做 Offset Explorer。
+
+下载、安装、并启动。
+
+首次启动, 会提示我们需要创建链接。 
+点击OK之后,  自动弹出创建连接界面。 
+默认标签页是 【Properties】, 连接名字可以随便取, 根据我们的配置信息, 输入Zookeeper的信息, 注意端口号是 `22181`。
+
+![](./02-kafka-util-create-1.jpg)
+
+因为我们的Kafka端口号不是默认的9092, 所以还需要进入 【Advanced】进行配置 :
+
 
 We must note that we need to use the `Bootstrap servers propert`y to connect to the Kafka server listening at port `29092` for the host machine.
 
 Finally, we should be able to visualize the connection on the left sidebar:
 
-![](https://www.baeldung.com/wp-content/uploads/2021/04/Screenshot-2021-04-11-at-5.46.48-AM.png)
+主要配置的信息是 Bootstrap servers:  `localhost:29092`, 
+
+![](./03-kafka-util-advanced-2.jpg)
+
+输入信息后，可以点击 【Test】 按钮，测试是否能成功连接上。
+
+提示是否添加连接, 我们选择 【Yes】。 
+
+接下来，可以点击左侧菜单的三角形按钮， 展开，并且会自动连接。
+
+![](04-kafka-utils-linked.jpg)
+
 
 As such, the entries for Topics and Consumers are empty because it's a new setup. Once the topics are created, we should be able to visualize data across partitions. Moreover, if there are active consumers connected to our Kafka server, we can view their details too.
+
+
+可以在这个界面中展开对应的菜单，查看所有的 Broker 服务端、 Topic 主题, 以及对应的 Partition 分片、 还有 Consumer 消费者。
+
+绿色的点表示已经连接上Kafka服务端。  如果刚刚启动服务器, Topic和 Consumer 可能是空的, 属于正常现象。
+
 
 ## 3. Kafka Cluster Setup
 
