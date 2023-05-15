@@ -66,3 +66,11 @@ CSDN博客链接:
 - Prometheus: 助记 Pro-me-the-us, 指标服务
 - SonarQube: 代码质量管理
 
+
+- 2023年05月15日
+
+集群(cluster), 按目的可分类为:
+
+- 高性能集群(High Performance cluster)
+- 高可用集群(High Availablity cluster)
+- 负载均衡集群(Load Balancing cluster)
