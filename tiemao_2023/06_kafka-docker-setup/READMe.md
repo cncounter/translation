@@ -1,4 +1,4 @@
-# 开发环境搭建: 通过Docker运行并配置Apache Kafka
+# 开发环境搭建: 用Docker来配置和启动Kafka
 
 > 网上的很多Docker镜像和教程都比较坑, 我们团队折腾了好久, 都没法在开发环境连接Docker内部的Kafka并发送或者接收消息。 所以才有了这篇文章。
 
@@ -9,9 +9,23 @@ Docker is one of the most popular container engines used in the software industr
 In this tutorial, we'll learn how to do an [Apache Kafka](https://kafka.apache.org/) setup using Docker.
 
 
+## 1. 概述
+
+Docker 是当今软件行业最流行的一种容器引擎, 可用于创建、打包和部署应用程序。
+
+本文主要介绍如果通过Docker来运行 [Apache Kafka](https://kafka.apache.org/), 并通过示例提供一些常用配置。
+
+
 ## 2. Single Node Setup
 
 A single node Kafka broker setup would meet most of the local development needs, so let's start by learning this simple setup.
+
+
+## 2. 启动单个节点的Kafka
+
+单个 Kafka broker 节点, 已经可以满足大部分开发环境的需要。 
+所以先解决有无问题, 我们在Docker容器中启动一个简单的Kafka。
+
 
 ### 2.1. docker-compose.yml Configuration
 
@@ -20,6 +34,18 @@ To start an Apache Kafka server, we'd first need to start a [Zookeeper](https://
 We can configure this dependency in a [docker-compose.yml](https://www.baeldung.com/docker-compose) file, which will ensure that the Zookeeper server always starts before the Kafka server and stops after it.
 
 Let's create a simple `docker-compose.yml` file with two services, namely `zookeeper` and `kafka`:
+
+
+
+### 2.1. `docker-compose.yml`文件配置
+
+要启动 Apache Kafka 服务节点, 需要先启动一台 [Zookeeper](https://www.baeldung.com/java-zookeeper#overview) 服务.
+
+我们可以通过  [docker-compose.yml](https://www.baeldung.com/docker-compose) 配置文件, 来解决这种依赖问题, 确保 Zookeeper 服务总是在 Kafka 之前启动, 并在Kafka关闭后才关闭。
+
+Let's create a simple `docker-compose.yml` file with two services, namely `zookeeper` and `kafka`:
+
+> `docker-compose.yml` 文件示例如下:
 
 ```yml
 version: '2'
@@ -48,9 +74,14 @@ services:
 
 ```
 
+其中包含了 2个服务(services), 名字分别是 `zookeeper` 和 `kafka`。
+
+
 In this setup, our Zookeeper server is listening on `port=2181` for the kafka service, which is defined within the same container setup. However, for any client running on the host, it'll be exposed on port `22181`.
 
 Similarly, the kafka service is exposed to the host applications through port `29092`, but it is actually advertised on port `9092` within the container environment configured by the `KAFKA_ADVERTISED_LISTENERS` property.
+
+可以看到， 配置文件中的 Zookeeper 服务, 监听的端口是  `port=2181`, 但是对外暴露的端口是 22181;
 
 
 ### 2.2. Start Kafka Server
@@ -138,6 +169,8 @@ As such, the entries for Topics and Consumers are empty because it's a new setup
 可以在这个界面中展开对应的菜单，查看所有的 Broker 服务端、 Topic 主题, 以及对应的 Partition 分片、 还有 Consumer 消费者。
 
 绿色的点表示已经连接上Kafka服务端。  如果刚刚启动服务器, Topic和 Consumer 可能是空的, 属于正常现象。
+
+当然, 作为一个图形界面客户端，功能是很完备的。 包括生产者和消费者的能力都是具备的。 如果Partition里面有数据, 可以很容易进行查看。
 
 
 ## 3. Kafka Cluster Setup

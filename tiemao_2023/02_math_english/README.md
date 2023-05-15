@@ -308,11 +308,13 @@ twins: 双胞胎
 | 直尺 | straightedge |
 | 顺时针 | clockwise |
 | 逆时针 | counterclockwise |
-| 平移 | Translation |
+| 平移   | Translation |
 | 旋转   | Rotation |
-| 轴对称 | Reflection |
+| 镜像 | Reflection |
 | 刚性变换 | rigid transformation |
 | 扩缩  | dilation |
+| 扩大  | enlarge |
+| 缩小  | shrink |
 
 
 
