@@ -56,7 +56,14 @@ C2会监测和分析编译后的代码执行情况, 通过这些分析数据, �
 
 在Java8之前的版本中, 需要指定 `-server` 启动参数来设置 C2 编译器, 但在Java8以及更高的Java版本中, 这个参数就没有任何作用了, 保留下来也是为了不报错。
 
-Java 10及之后的版本, 开始支持 Graal JIT 编译器, 这是一款可以平替 C2 的编译器。 其特征是既支持即时编译(just-in-time), 也支持预先编译模式(ahead-of-time compilation mode), 在程序启动之前, 将Java字节码编译为本地代码。
+
+### 2.3. Graal JIT 编译器
+
+Java 10及之后的版本, 开始支持 Graal JIT 编译器, 这是一款可以平替 C2 的编译器。 
+
+其特征是既支持即时编译模式(just-in-time compilation mode), 也支持预先编译模式(ahead-of-time compilation mode)。
+
+预先编译模式就是在程序启动之前, 将Java字节码全部编译为本地代码。
 
 
 
