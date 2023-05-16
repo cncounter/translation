@@ -122,6 +122,19 @@ OpenJDK 64-Bit Server VM (build 25.191-b12, mixed mode)
 
 
 
+### 3.3. 代码缓存池(Code Cache)
+
+Code cache 是JVM中的一块内存区域, 用来存储所有JIT编译后生成的本地机器码。 
+使用分层编译技术, 需要的代码缓存使用量, 增长到了原来的4倍左右。
+
+Java 9 以及之后的版本, 将 JVM 的代码缓存分成三块区域:
+
+- 非Java方法使用的代码缓存区(non-method): 存储 JVM 内部的本地代码; 默认值是 5 MB 左右, 可通过启动参数 `-XX:NonNMethodCodeHeapSize` 指定。
+- 带信息收集的代码缓存区(profiled-code):  存放 C1 编译后的本地代码; 一般来说这部分代码的存活周期并不长, 默认值是 122 MB 左右, 可通过启动参数  `-XX:ProfiledCodeHeapSize` 指定。
+- 不带信息收集的代码缓存区(non-profiled):  存放 C2 编译和优化后的本地代码; 一般来说这部分代码的存活周期较长, 默认值也是 122 MB 左右, 可通过启动参数  `-XX:NonProfiledCodeHeapSize` 指定。
+
+将代码缓存池拆分为多个模块, 整体性能提升了不少, 因为贴近了编译后相关的代码, 并减少了内存碎片问题。
+
 
 
 ## 参考文档
