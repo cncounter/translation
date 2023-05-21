@@ -272,11 +272,20 @@ twins: 双胞胎
 | 长方形, 矩形 | rectangle |
 | 风筝形 | kite |
 | 菱形   | Rhombus |
+| 五边(角)形 | Pentagon |
+| 六边(角)形 | Hexagon |
+| 正六边形   | regular hexagon |
 | 圆形   | circle |
 | 形状   | shape |
 | 直角   | right angle |
 | 对顶角 | vertical angle |
 | 相交  | intersect |
+| 斜边  | Hypotenuse |
+| 对边  | opposite |
+| 临边  | adjacent |
+| 正弦  | sine |
+| 余弦  | cosine |
+| 正切  | tangent |
 
 
 

@@ -135,6 +135,53 @@ Java 9 以及之后的版本, 将 JVM 的代码缓存分成三块区域:
 
 将代码缓存池拆分为多个模块, 整体性能提升了不少, 因为贴近了编译后相关的代码, 并减少了内存碎片问题。
 
+
+### 3.4. 逆优化(Deoptimization)
+
+虽然 C2 编译后是高度优化的本地代码, 一般会长时间留存, 但有时候也可能会发生逆优化操作。 结果就是对应的代码回退到 JVM 解释模式。
+
+逆优化发生的原因是编译器的乐观预期被打破, 例如, 如果收集到的分析信息, 与方法的实际行为不匹配时:
+
+Even though C2 compiled code is highly optimized and long-lived, it can be deoptimized. As a result, the JVM would temporarily roll back to interpretation.
+
+Deoptimization happens when the compiler’s optimistic assumptions are proven wrong — for example, when profile information does not match method behavior:
+
+![](2)
+
+In our example, once the hot path changes, the JVM deoptimizes the compiled and inlined code.
+
+在这个例子中, 一旦热点路径发生改变, JVM 就会逆优化编译后的内连代码。
+
+
+
+
+
+## 4. 编译级别(Compilation Levels)
+
+JVM 内置了解释器, 以及2款JIT编译器, 共有5种可能的编译级别;
+
+C1 可以在3种编译级别上操作, 互相之间的区别在于采样分析工作是否完成。
+
+
+### 4.1 0级 - 解释后的代码
+
+JVM启动之后，解释执行所有的Java代码。 在这个初始阶段, 性能一般比不上编译语言。
+
+但是, JIT编译器在预热阶段之后启动，并在运行时编译热代码。
+
+JIT编译器使用 级别0 期间收集的分析信息来执行优化。
+
+
+### 4.2 级别1 - C1简单编译的代码
+
+在这个级别，JVM使用C1编译器编译代码，但不会采集任何分析信息。 JVM将级别1用于简单的方法。
+
+由于很多方法没有什么复杂性，即时使用C2再编译一次也不会提升什么性能。
+
+因此，JVM得出的结论是，采集分析信息也无法优化性能, 所以对应的分析信息也没有什么用处。
+
+
+
 ## 7. 小结
 
 本文简要介绍了 JVM 中的分层编译技术。 
