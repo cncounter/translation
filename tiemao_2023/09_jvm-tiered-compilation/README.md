@@ -369,15 +369,15 @@ intx Tier4CompileThreshold = 15000
 - 属性状态(Attributes) – 编译任务对应的状态有5种可能的取值:
   * `%` – 栈上替换(On-stack replacement)
   * `s` – 该方法是 synchronized 方法
-  * `!` – 方法中包含异常捕获处理(exception handler)
+  * `!` – 方法中包含异常捕获块(exception handler)
   * `b` – 阻塞模式(blocking mode)
-  * `n` – 将包装方法转换为本地方法(native method)
+  * `n` – 本地方法标志(native method), 实际上编译的是包装方法
 - 编译级别: 取值为 `0` 到 `4`
 - 方法名称(Method name)
 - 字节码大小(Bytecode size)
 - 逆优化指示标志, 有2种可能的取值:
-  * 置为不可进入(made not entrant) – 比如发生标准的 C1 逆优化, 或者编译器的乐观推断错误时。
-  * 置为僵死模式(made zombie) – 垃圾收集器在释放 code cache 空间时的一种清理机制。
+  * 置为不可进入(made not entrant) – 比如发生标准的 C1 逆优化, 或者编译器的乐观推断错误。
+  * 置为僵死模式(made zombie) – 不再使用, 随时可清理, 垃圾收集器在释放 code cache 空间时的一种清理机制。
 
 某一行编译日志样例如下:
 
@@ -634,7 +634,9 @@ cat compile-log-sample.txt| grep cncounter
 1133  933       3       com.cncounter.demo.compile.TieredCompilation::main (58 bytes)
 ```
 
-这里的百分号(`%`)表示发生了栈上替换;  main方法一直在执行时间, 方法栈存活周期较长, 所以发生了栈上替换。 
+这里的百分号(`%`)表示发生了栈上替换;  
+
+被编译的 main 方法, 正有某个线程在执行该方法, 所以发生了栈上替换。 
 
 
 #### 6.3.6. 级别4和栈上替换
@@ -736,3 +738,5 @@ cat compile-log-sample.txt| grep cncounter
 - <https://docs.azul.com/prime/analyzing-tuning-warmup>
 - <https://opensource.com/article/22/8/interpret-compile-java>
 - <https://www.oracle.com/technical-resources/articles/java/architect-evans-pt1.html>
+- <https://blog.joda.org/2011/08/printcompilation-jvm-flag.html>
+- <https://gist.github.com/chrisvest/2932907>
