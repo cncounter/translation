@@ -247,7 +247,7 @@ Java 8 版本之后, 默认启用了分层编译。 除非有说得过去的特�
 
 `java -version` 是一个探测JVM参数很好用的手段。
 
-例如, 我们可以带上  `-XX:+PrintFlagsFinal` 标志来运行 `java -version`, 检查特定Java版本上的默认阈值，
+例如, 我们可以带上  `-XX:+PrintFlagsFinal` 标志来运行 `java -version`, 检查某个Java版本上的默认阈值，
 
 
 Java 8 版本的示例如下:
@@ -351,6 +351,20 @@ intx Tier4CompileThreshold = 15000
 可以推断得知: 
 
 > 如果启用了分层编译, 那么通用的编译阈值参数 `CompileThreshold = 10000` 不再生效。
+
+
+## 6. 方法编译
+
+
+方法编译(method compilation)的生命周期如下图所示:
+
+![](3)
+
+总体来说, 一个方法最初由 JVM 解释执行。 直到调用次数达到阈值 `Tier3CompileThreshold`。  
+达到阈值后, JVM就会使用C1编译器来编译该方法, 同时继续采集分析信息。
+当方法调用次数达到 `Tier4CompileThreshold` 时， JVM使用C2编译器来编译该方法。
+
+当然，JVM有可能会取消 C2编译器对代码的优化。 那么这个过程可能就会重复。
 
 
 
