@@ -392,6 +392,72 @@ intx Tier4CompileThreshold = 15000
   * 置为僵死模式(Made zombie) – A cleanup mechanism for the garbage collector to free space from the code cache
 
 
+### 6.2. 演示代码
+
+下面通过一个具体的示例，来展示方法编译的生命周期。
+
+首先创建一个简单的 JSON 格式化/序列化的class:
+
+
+```java
+public class JsonFormatter implements Formatter {
+
+    private static final JsonMapper mapper = new JsonMapper();
+
+    @Override
+    public <T> String format(T object) throws JsonProcessingException {
+        return mapper.writeValueAsString(object);
+    }
+
+}
+```
+
+> 严格来说, 格式化和序列化是有区别的: 格式化=将对象转换为字符串; 序列化=将对象转换为字节序列。
+
+再创建一个 XML 格式化/序列化的class:
+
+
+```java
+public class XmlFormatter implements Formatter {
+
+    private static final XmlMapper mapper = new XmlMapper();
+
+    @Override
+    public <T> String format(T object) throws JsonProcessingException {
+        return mapper.writeValueAsString(object);
+    }
+
+}
+```
+
+这两个类准备好之后, 编写一个包含 main 方法的类来调用这两个格式化程序.
+
+```java
+public class TieredCompilation {
+
+    public static void main(String[] args) throws Exception {
+        for (int i = 0; i < 1_000_000; i++) {
+            Formatter formatter;
+            if (i < 500_000) {
+                formatter = new JsonFormatter();
+            } else {
+                formatter = new XmlFormatter();
+            }
+            formatter.format(new Article("Tiered Compilation in JVM", "Baeldung"));
+        }
+    }
+
+}
+```
+
+`for`循环中有 `if` 语句来判断循环次数, 先调用的是 `JsonFormatter` 实现, 后调用的是 `XmlFormatter` 实现。
+
+代码编写完成后, 执行程序时, 需要指定 JVM 启动参数 `-XX:+PrintCompilation`, 注意启动参数的加号(`+`)用来开启这个标志， 如果是减号(`-`)则表示关闭。
+
+执行程序之后, 可以看到对应的编译日志。
+
+
+
 ## 7. 小结
 
 本文简要介绍了 JVM 中的分层编译技术。 
