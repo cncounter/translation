@@ -346,11 +346,14 @@ intx Tier3CompileThreshold = 2000
 intx Tier4CompileThreshold = 15000
 ```
 
-需要注意参数 `Tier2CompileThreshold = 0`, 其所代表的含义是: 方法执行超过0次就会触发 Tier2 编译。
+需要注意, 如果启用了分层编译, 那么通用的编译阈值参数 `CompileThreshold = 10000` 不再生效。
+
+
+参数 `Tier2CompileThreshold = 0`, 其所代表的含义是: 方法执行超过0次就会触发 Tier2 编译。
 
 可以推断得知: 
 
-> 如果启用了分层编译, 那么通用的编译阈值参数 `CompileThreshold = 10000` 不再生效。
+> , 
 
 
 ## 6. 方法编译
@@ -366,6 +369,27 @@ intx Tier4CompileThreshold = 15000
 
 当然，JVM有可能会取消 C2编译器对代码的优化。 那么这个过程可能就会重复。
 
+
+### 6.1. 编译日志
+
+默认情况下, JVM 是禁止输出 JIT编译日志 的。 想要启用, 需要设置启动参数 `-XX:+PrintCompilation`。
+
+编译日志的格式包括这些部分:
+
+- 时间戳(Timestamp) – 编译时距离JVM启动时间的毫秒值。 很多JVM日志的时间都是这个相对时间。
+- 编译ID(Compile ID) – 每个被编译的方法对应的自增ID。 
+- 属性状态(Attributes) – 编译任务对应的状态有5种可能的取值:
+  * `%` – 栈上替换(On-stack replacement)
+  * `s` – 该方法是 synchronized 方法
+  * `!` – 方法中包含异常捕获处理(exception handler)
+  * `b` – 阻塞模式(blocking mode)
+  * `n` – 将包装方法转换为本地方法(native method)
+- 编译级别: 取值为 `0` 到 `4`
+- 方法名称(Method name)
+- 字节码个数(Bytecode size)
+- 逆优化指示标志, 有2种可能的取值:
+  * 置为不可进入(Made not entrant) – 发生标准的 C1 逆优化, 或者编译器的乐观推断错误时。
+  * 置为僵死模式(Made zombie) – A cleanup mechanism for the garbage collector to free space from the code cache
 
 
 ## 7. 小结
@@ -385,3 +409,4 @@ intx Tier4CompileThreshold = 15000
 ## 参考文档
 
 - <https://www.baeldung.com/jvm-tiered-compilation>
+- <https://docs.azul.com/prime/analyzing-tuning-warmup>
