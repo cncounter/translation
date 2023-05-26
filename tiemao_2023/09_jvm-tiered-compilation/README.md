@@ -1,4 +1,4 @@
-# 深入JVM: 案例详解JIT分层编译技术
+# 深入JVM: JIT分层编译技术与日志解读
 
 > 最后更新日期: 2022年11月09日
 
@@ -142,17 +142,10 @@ Java 9 以及之后的版本, 将 JVM 的代码缓存分成三块区域:
 
 逆优化发生的原因是编译器的乐观预期被打破, 例如, 如果收集到的分析信息, 与方法的实际行为不匹配时:
 
-Even though C2 compiled code is highly optimized and long-lived, it can be deoptimized. As a result, the JVM would temporarily roll back to interpretation.
-
-Deoptimization happens when the compiler’s optimistic assumptions are proven wrong — for example, when profile information does not match method behavior:
 
 ![](2)
 
-In our example, once the hot path changes, the JVM deoptimizes the compiled and inlined code.
-
-在这个例子中, 一旦热点路径发生改变, JVM 就会逆优化编译后的内连代码。
-
-
+在这个例子中, 一旦热点路径发生改变, JVM 就会逆优化编译后的内连优化代码。
 
 
 
@@ -250,7 +243,7 @@ Java 8 版本之后, 默认启用了分层编译。 除非有说得过去的特�
 例如, 我们可以带上  `-XX:+PrintFlagsFinal` 标志来运行 `java -version`, 检查某个Java版本上的默认阈值，
 
 
-Java 8 版本的示例如下:
+Java 8 版本的参数示例如下:
 
 ```sh
 java -XX:+PrintFlagsFinal -version | grep Threshold
@@ -293,7 +286,7 @@ OpenJDK Runtime Environment (build 1.8.0_191-b12)
 OpenJDK 64-Bit Server VM (build 25.191-b12, mixed mode)
 ```
 
-Java 11 版本的示例如下:
+Java 11 版本的参数示例如下:
 
 ```sh
 java -XX:+PrintFlagsFinal -version | grep Threshold
@@ -391,8 +384,8 @@ intx Tier4CompileThreshold = 15000
 ```java
 # 这里为了排版进行了折行
 2258 1324 %     4
-       com.cncounter.demo.compile.TieredCompilation::main @ 2 (58 bytes)
-          made not entrant
+       com.cncounter.demo.compile.TieredCompilation::main @ 2
+        (58 bytes)  made not entrant
 
 ```
 
