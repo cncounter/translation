@@ -349,11 +349,6 @@ intx Tier4CompileThreshold = 15000
 需要注意, 如果启用了分层编译, 那么通用的编译阈值参数 `CompileThreshold = 10000` 不再生效。
 
 
-参数 `Tier2CompileThreshold = 0`, 其所代表的含义是: 方法执行超过0次就会触发 Tier2 编译。
-
-可以推断得知: 
-
-> , 
 
 
 ## 6. 方法编译
@@ -370,7 +365,7 @@ intx Tier4CompileThreshold = 15000
 当然，JVM有可能会取消 C2编译器对代码的优化。 那么这个过程可能就会重复。
 
 
-### 6.1. 编译日志
+### 6.1. 编译日志格式
 
 默认情况下, JVM 是禁止输出 JIT编译日志 的。 想要启用, 需要设置启动参数 `-XX:+PrintCompilation`。
 
@@ -386,38 +381,83 @@ intx Tier4CompileThreshold = 15000
   * `n` – 将包装方法转换为本地方法(native method)
 - 编译级别: 取值为 `0` 到 `4`
 - 方法名称(Method name)
-- 字节码个数(Bytecode size)
+- 字节码大小(Bytecode size)
 - 逆优化指示标志, 有2种可能的取值:
-  * 置为不可进入(Made not entrant) – 发生标准的 C1 逆优化, 或者编译器的乐观推断错误时。
-  * 置为僵死模式(Made zombie) – A cleanup mechanism for the garbage collector to free space from the code cache
+  * 置为不可进入(made not entrant) – 比如发生标准的 C1 逆优化, 或者编译器的乐观推断错误时。
+  * 置为僵死模式(made zombie) – 垃圾收集器在释放 code cache 空间时的一种清理机制。
+
+某一行编译日志样例如下:
+
+```java
+# 这里为了排版进行了折行
+2258 1324 %     4
+       com.cncounter.demo.compile.TieredCompilation::main @ 2 (58 bytes)
+          made not entrant
+
+```
+
+从左到右简单解读:
+
+- `2258` 就是距离JVM启动的时间戳毫秒数;
+- `1324` 就是某一个方法对应的编译ID, 有多条编译记录的情况下, 可以用这个id来定位。
+- `%` 表示栈上替换;
+- `4` 表示编译级别是第4级别(取值0-4)
+- `com.cncounter.demo.compile.TieredCompilation::main` 表示方法
+- `@ 2` 这个不是必须的, 分析编译日志可以看到其他的数字, 总是和 `%` 栈上替换一起出现, 可能和栈内存槽位有关。
+- `(58 bytes)` 表示该方法对应的字节码为 58字节。
+- `made not entrant` 如果有这串字符, 就是逆优化指示标志。
+
+
+JDK11执行的某一次编译日志样例可以参考文件: [compile-log-sample.txt](./compile-log-sample.txt) 
 
 
 ### 6.2. 演示代码
 
 下面通过一个具体的示例，来展示方法编译的生命周期。
 
-首先创建一个简单的 JSON 格式化/序列化的class:
+首先创建一个简单的 `Formatter` 接口:
 
 
 ```java
+package com.cncounter.demo.compile;
+
+public interface Formatter {
+    <T> String format(T object) throws Exception;
+}
+```
+
+然后创建一个简单的 JSON 格式的 Formatter 实现类:
+
+
+```java
+package com.cncounter.demo.compile;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.json.JsonMapper;
+
 public class JsonFormatter implements Formatter {
 
     private static final JsonMapper mapper = new JsonMapper();
-
     @Override
     public <T> String format(T object) throws JsonProcessingException {
         return mapper.writeValueAsString(object);
     }
-
 }
 ```
 
+代码中对应的依赖可以到这个网站搜索: <https://mvnrepository.com/>
+
+
 > 严格来说, 格式化和序列化是有区别的: 格式化=将对象转换为字符串; 序列化=将对象转换为字节序列。
 
-再创建一个 XML 格式化/序列化的class:
+再创建一个 XML 格式化/序列化的 Formatter 实现类:
 
 
 ```java
+package com.cncounter.demo.compile;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+
 public class XmlFormatter implements Formatter {
 
     private static final XmlMapper mapper = new XmlMapper();
@@ -430,9 +470,39 @@ public class XmlFormatter implements Formatter {
 }
 ```
 
-这两个类准备好之后, 编写一个包含 main 方法的类来调用这两个格式化程序.
+
+
+以及一个简单的包装类:
 
 ```java
+package com.cncounter.demo.compile;
+
+public class Article {
+
+    private String name;
+    private String author;
+
+    public Article(String name, String author) {
+        this.name = name;
+        this.author = author;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getAuthor() {
+        return author;
+    }
+
+}
+```
+
+这几个类准备好之后, 编写一个包含 main 方法的类来调用这两个格式化程序.
+
+```java
+package com.cncounter.demo.compile;
+
 public class TieredCompilation {
 
     public static void main(String[] args) throws Exception {
@@ -443,7 +513,7 @@ public class TieredCompilation {
             } else {
                 formatter = new XmlFormatter();
             }
-            formatter.format(new Article("Tiered Compilation in JVM", "Baeldung"));
+            formatter.format(new Article("Tiered Compilation in JVM", "CNC"));
         }
     }
 
@@ -455,6 +525,201 @@ public class TieredCompilation {
 代码编写完成后, 执行程序时, 需要指定 JVM 启动参数 `-XX:+PrintCompilation`, 注意启动参数的加号(`+`)用来开启这个标志， 如果是减号(`-`)则表示关闭。
 
 执行程序之后, 可以看到对应的编译日志。
+
+
+
+### 6.3. 解读编译日志
+
+> 多次执行同一个程序, 对应的编译日志可能都不一样, 需要具体情况具体分析。
+
+输出的编译日志内容较多, 使用 JDK11 某一次执行的日志样例可以参考文件: [compile-log-sample.txt](./compile-log-sample.txt) 
+
+使用 grep cncounter 管道, 过滤出感兴趣的部分:
+
+```java
+cat compile-log-sample.txt| grep cncounter
+
+1023  788       1       com.cncounter.demo.compile.Article::getName (5 bytes)
+1025  789       1       com.cncounter.demo.compile.Article::getAuthor (5 bytes)
+
+1032  800       3       com.cncounter.demo.compile.JsonFormatter::<init> (5 bytes)
+1032  801       3       com.cncounter.demo.compile.Article::<init> (15 bytes)
+1041  820       3       com.cncounter.demo.compile.JsonFormatter::format (8 bytes)
+
+1122  903       4       com.cncounter.demo.compile.JsonFormatter::<init> (5 bytes)
+1123  800       3       com.cncounter.demo.compile.JsonFormatter::<init> (5 bytes)   made not entrant
+1123  904       4       com.cncounter.demo.compile.Article::<init> (15 bytes)
+1124  801       3       com.cncounter.demo.compile.Article::<init> (15 bytes)   made not entrant
+
+1132  932 %     3       com.cncounter.demo.compile.TieredCompilation::main @ 2 (58 bytes)
+1133  933       3       com.cncounter.demo.compile.TieredCompilation::main (58 bytes)
+
+1146  905       4       com.cncounter.demo.compile.JsonFormatter::format (8 bytes)
+1281  820       3       com.cncounter.demo.compile.JsonFormatter::format (8 bytes)   made not entrant
+1281  934 %     4       com.cncounter.demo.compile.TieredCompilation::main @ 2 (58 bytes)
+1285  932 %     3       com.cncounter.demo.compile.TieredCompilation::main @ 2 (58 bytes)   made not entrant
+
+1346  934 %     4       com.cncounter.demo.compile.TieredCompilation::main @ 2 (58 bytes)   made not entrant
+1350  933       3       com.cncounter.demo.compile.TieredCompilation::main (58 bytes)   made not entrant
+1361  905       4       com.cncounter.demo.compile.JsonFormatter::format (8 bytes)   made not entrant
+
+1543 1228       2       com.cncounter.demo.compile.XmlFormatter::<init> (5 bytes)
+1546 1235       2       com.cncounter.demo.compile.XmlFormatter::format (8 bytes)
+
+1561 1298 %     3       com.cncounter.demo.compile.TieredCompilation::main @ 2 (58 bytes)
+1577 1310       3       com.cncounter.demo.compile.TieredCompilation::main (58 bytes)
+1935 1324 %     4       com.cncounter.demo.compile.TieredCompilation::main @ 2 (58 bytes)
+1939 1298 %     3       com.cncounter.demo.compile.TieredCompilation::main @ 2 (58 bytes)   made not entrant
+
+2258 1324 %     4       com.cncounter.demo.compile.TieredCompilation::main @ 2 (58 bytes)   made not entrant
+```
+
+#### 6.3.1. 时间戳
+
+第一列表示时间戳; 表示距离JVM启动时间点的毫秒数, 可以看到编译日志输出的时间戳是有序的。
+
+
+下面对其他部分进行简单的解读;
+
+#### 6.3.2. 级别1
+
+最前面的2行编译日志对应 `Article` 类的 `getName` 和 `getAuthor` 方法:
+
+```java
+1023  788       1       com.cncounter.demo.compile.Article::getName (5 bytes)
+1025  789       1       com.cncounter.demo.compile.Article::getAuthor (5 bytes)
+```
+
+这两个get方法的实现很简单, 没什么优化空间。 
+
+回顾前面的知识点: 
+
+> Level 1 这个级别, 表示 C1 简单编译的代码, JVM将级别1用于简单的方法。
+
+#### 6.3.3. 级别3
+
+接下来的编译日志是级别3, 级别1到级别3对应的都是 C1编译器。
+
+
+```java
+1032  800       3       com.cncounter.demo.compile.JsonFormatter::<init> (5 bytes)
+1032  801       3       com.cncounter.demo.compile.Article::<init> (15 bytes)
+1041  820       3       com.cncounter.demo.compile.JsonFormatter::format (8 bytes)
+```
+
+`<init>` 方法, 实际上就是编译器将 `构造方法` 和 `实例初始化块` 整合后生成的一个方法, 在创建对象时自动调用。 
+
+`JsonFormatter` 类的 `format` 方法也进入了级别3。
+
+
+#### 6.3.4. 级别4
+
+接下来的编译日志是级别4, 级别4对应的是 C2编译器。
+
+
+```java
+1122  903       4       com.cncounter.demo.compile.JsonFormatter::<init> (5 bytes)
+1123  800       3       com.cncounter.demo.compile.JsonFormatter::<init> (5 bytes)   made not entrant
+1123  904       4       com.cncounter.demo.compile.Article::<init> (15 bytes)
+1124  801       3       com.cncounter.demo.compile.Article::<init> (15 bytes)   made not entrant
+```
+
+对应的方法是 `<init>`, 这个编译日志有点意思。
+
+仔细看这部分日志, 可以发现, 每条级别4的编译日志之后, 都对应着一条低级别的不可进入标志(`made not entrant`); 
+
+原因很好理解, 升级了嘛, 老的就过时了(obsolete)。
+
+
+
+#### 6.3.5. 栈上替换
+
+接下来的编译日志还是级别3。
+
+```java
+1132  932 %     3       com.cncounter.demo.compile.TieredCompilation::main @ 2 (58 bytes)
+1133  933       3       com.cncounter.demo.compile.TieredCompilation::main (58 bytes)
+```
+
+这里的百分号(`%`)表示发生了栈上替换;  main方法一直在执行时间, 方法栈存活周期较长, 所以发生了栈上替换。 
+
+
+#### 6.3.6. 级别4和栈上替换
+
+接下来的编译日志是级别4。
+
+```java
+1146  905       4       com.cncounter.demo.compile.JsonFormatter::format (8 bytes)
+1281  820       3       com.cncounter.demo.compile.JsonFormatter::format (8 bytes)   made not entrant
+1281  934 %     4       com.cncounter.demo.compile.TieredCompilation::main @ 2 (58 bytes)
+1285  932 %     3       com.cncounter.demo.compile.TieredCompilation::main @ 2 (58 bytes)   made not entrant
+```
+
+`JsonFormatter::format` 方法的编译升到了级别4, 前面介绍过。
+
+栈上替换的 `TieredCompilation::main` 方法也升级到了级别4, 并将级别3的部分标记为不可进入。
+
+
+#### 6.3.7. 逆优化
+
+接下来发生了一些预料之外的事情。
+
+```java
+1346  934 %     4       com.cncounter.demo.compile.TieredCompilation::main @ 2 (58 bytes)   made not entrant
+1350  933       3       com.cncounter.demo.compile.TieredCompilation::main (58 bytes)   made not entrant
+1361  905       4       com.cncounter.demo.compile.JsonFormatter::format (8 bytes)   made not entrant
+```
+
+`TieredCompilation::main` 方法被JVM执行了逆优化;
+
+回顾 `main` 方法的Java代码, 我们看到, 在执行了50万次循环之后, if 条件的结果改变了。
+
+可能C2做了一些剪枝之类的激进优化, 乐观推断对应的前提条件不再有效, 于是JVM将优化过的代码回退到解释模式。 
+
+
+#### 6.3.8. 级别2
+
+接下来是 `XmlFormatter` 类的方法编译。
+
+```java
+1543 1228       2       com.cncounter.demo.compile.XmlFormatter::<init> (5 bytes)
+1546 1235       2       com.cncounter.demo.compile.XmlFormatter::format (8 bytes)
+```
+
+回顾一下, 级别2 - C1编译的受限代码; 
+
+> 在 Level 2 级别，JVM使用C1编译器编译代码，并进行简单的采样分析。 
+
+可能是编译队列满了, 或者是被刚才的回退伤了心。 JVM 使用C1对 `XmlFormatter::format` 方法进行 Level2 的快速编译。
+
+本次执行, 直到程序退出, 也没有对该类的方法继续优化。
+
+
+#### 6.3.9. 再次优化
+
+又执行一段时间过后, main 方法再次升级了。
+
+```java
+1561 1298 %     3       com.cncounter.demo.compile.TieredCompilation::main @ 2 (58 bytes)
+1577 1310       3       com.cncounter.demo.compile.TieredCompilation::main (58 bytes)
+1935 1324 %     4       com.cncounter.demo.compile.TieredCompilation::main @ 2 (58 bytes)
+1939 1298 %     3       com.cncounter.demo.compile.TieredCompilation::main @ 2 (58 bytes)   made not entrant
+```
+
+这里先是发生了级别3的栈上替换, 以及级别3的编译。
+
+然后又发生了级别4的栈上替换, 以及低级别栈上替换的过时标记。
+
+
+#### 6.3.9. 方法退出
+
+最后, `main` 方法执行结束, 对应的方法栈也就不在了。
+
+```java
+2258 1324 %     4       com.cncounter.demo.compile.TieredCompilation::main @ 2 (58 bytes)   made not entrant
+```
+
+所以栈上替换的 Level 4 优化方法, 也被标记为不可进入。
 
 
 
@@ -476,3 +741,5 @@ public class TieredCompilation {
 
 - <https://www.baeldung.com/jvm-tiered-compilation>
 - <https://docs.azul.com/prime/analyzing-tuning-warmup>
+- <https://opensource.com/article/22/8/interpret-compile-java>
+- <https://www.oracle.com/technical-resources/articles/java/architect-evans-pt1.html>
