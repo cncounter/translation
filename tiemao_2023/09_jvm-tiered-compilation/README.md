@@ -214,6 +214,146 @@ JIT编译中最常见的场景, 是直接从解释后的代码(Level 0级） 跳
 但是，也有可能会取消优化并将其回退至 Level 0 级别。
 
 
+## 5. 编译器参数设置
+
+Java 8 版本之后, 默认启用了分层编译。 除非有说得过去的特殊理由，否则不要禁用这个分层编译。
+
+
+### 5.1. 禁用分层编译
+
+通过设置  `–XX:-TieredCompilation` 减号标志, 来禁用分级编译。
+用减号禁用这个标志时，JVM就不会在编译级别之间转换。
+所以还需要选择使用的JIT编译器: C1, 还是C2。
+
+如果没有明确指定，JVM将根据CPU特征来决定默认的JIT编译器。
+对于多核处理器或64位虚拟机，JVM将选择C2。
+
+如果要禁用C2, 只使用C1, 而不增加分析的性能损耗，可以传入启动参数 `-XX:TieredStopAtLevel=1`。
+
+要完全禁用JIT编译器, 使用解释器来运行所有内容, 可以指定启动参数 `-Xint`。 当然, 禁用JIT编译器会对性能产生一些负面影响。
+
+> 某些情况下, 比如程序代码中使用了复杂的泛型组合, 由于JIT优化可能会擦除泛型信息, 这时候可以尝试禁用分层编译或者JIT编译。
+
+> 对于并发量很小的简单CRUD程序而言, 因为计算量在响应时间上的占比很小, 解释执行和编译执行的区别并不明显。
+
+
+### 5.2. 设置各个层级编译的触发阈值(Threshold)
+
+编译阈值(compile threshold), 是指在代码被编译之前, 方法调用需要到达的次数。 
+
+在分层编译的情况下，可以为 `2~4` 的编译级别设置这些阈值。
+
+例如，我们可以将 Tier4 的阈值降低到1万: `-XX:Tier4CompileThreshold=10000`。
+
+`java -version` 是一个探测JVM参数很好用的手段。
+
+例如, 我们可以带上  `-XX:+PrintFlagsFinal` 标志来运行 `java -version`, 检查特定Java版本上的默认阈值，
+
+
+Java 8 版本的示例如下:
+
+```sh
+java -XX:+PrintFlagsFinal -version | grep Threshold
+
+ intx BackEdgeThreshold                         = 100000    {pd product}
+ intx BiasedLockingBulkRebiasThreshold          = 20        {product}
+ intx BiasedLockingBulkRevokeThreshold          = 40        {product}
+uintx CMSPrecleanThreshold                      = 1000      {product}
+uintx CMSScheduleRemarkEdenSizeThreshold        = 2097152   {product}
+uintx CMSWorkQueueDrainThreshold                = 10        {product}
+uintx CMS_SweepTimerThresholdMillis             = 10        {product}
+ intx CompileThreshold= 10000     {pd product}
+ intx G1ConcRefinementThresholdStep             = 0         {product}
+uintx G1SATBBufferEnqueueingThresholdPercent    = 60        {product}
+uintx IncreaseFirstTierCompileThresholdAt       = 50        {product}
+uintx InitialTenuringThreshold                  = 7         {product}
+uintx LargePageHeapSizeThreshold                = 134217728 {product}
+uintx MaxTenuringThreshold                      = 15        {product}
+ intx MinInliningThreshold                      = 250       {product}
+uintx PretenureSizeThreshold                    = 0         {product}
+uintx ShenandoahAllocationThreshold             = 0         {product rw}
+uintx ShenandoahFreeThreshold                   = 10        {product rw}
+uintx ShenandoahFullGCThreshold                 = 3         {product rw}
+uintx ShenandoahGarbageThreshold                = 60        {product rw}
+uintx StringDeduplicationAgeThreshold           = 3         {product}
+uintx ThresholdTolerance                        = 10        {product}
+ intx Tier2BackEdgeThreshold                    = 0         {product}
+ intx Tier2CompileThreshold                     = 0         {product}
+ intx Tier3BackEdgeThreshold                    = 60000     {product}
+ intx Tier3CompileThreshold                     = 2000      {product}
+ intx Tier3InvocationThreshold                  = 200       {product}
+ intx Tier3MinInvocationThreshold               = 100       {product}
+ intx Tier4BackEdgeThreshold                    = 40000     {product}
+ intx Tier4CompileThreshold                     = 15000     {product}
+ intx Tier4InvocationThreshold                  = 5000      {product}
+ intx Tier4MinInvocationThreshold               = 600       {product}
+
+openjdk version "1.8.0_191"
+OpenJDK Runtime Environment (build 1.8.0_191-b12)
+OpenJDK 64-Bit Server VM (build 25.191-b12, mixed mode)
+```
+
+Java 11 版本的示例如下:
+
+```sh
+java -XX:+PrintFlagsFinal -version | grep Threshold
+
+ intx BiasedLockingBulkRebiasThreshold         = 20              {product} {default}
+ intx BiasedLockingBulkRevokeThreshold         = 40              {product} {default}
+uintx CMSPrecleanThreshold                     = 1000            {product} {default}
+size_t CMSScheduleRemarkEdenSizeThreshold      = 2097152         {product} {default}
+uintx CMSWorkQueueDrainThreshold               = 10              {product} {default}
+uintx CMS_SweepTimerThresholdMillis            = 10              {product} {default}
+ intx CompileThreshold                         = 10000        {pd product} {default}
+double CompileThresholdScaling                 = 1.000000        {product} {default}
+size_t G1ConcRefinementThresholdStep           = 2               {product} {default}
+uintx G1SATBBufferEnqueueingThresholdPercent   = 60              {product} {default}
+uintx IncreaseFirstTierCompileThresholdAt      = 50              {product} {default}
+uintx InitialTenuringThreshold                 = 7               {product} {default}
+size_t LargePageHeapSizeThreshold              = 134217728       {product} {default}
+uintx MaxTenuringThreshold                     = 15              {product} {default}
+ intx MinInliningThreshold                     = 250             {product} {default}
+size_t PretenureSizeThreshold                  = 0               {product} {default}
+uintx StringDeduplicationAgeThreshold          = 3               {product} {default}
+uintx ThresholdTolerance                       = 10              {product} {default}
+ intx Tier2BackEdgeThreshold                   = 0               {product} {default}
+ intx Tier2CompileThreshold                    = 0               {product} {default}
+ intx Tier3AOTBackEdgeThreshold                = 120000          {product} {default}
+ intx Tier3AOTCompileThreshold                 = 15000           {product} {default}
+ intx Tier3AOTInvocationThreshold              = 10000           {product} {default}
+ intx Tier3AOTMinInvocationThreshold           = 1000            {product} {default}
+ intx Tier3BackEdgeThreshold                   = 60000           {product} {default}
+ intx Tier3CompileThreshold                    = 2000            {product} {default}
+ intx Tier3InvocationThreshold                 = 200             {product} {default}
+ intx Tier3MinInvocationThreshold              = 100             {product} {default}
+ intx Tier4BackEdgeThreshold                   = 40000           {product} {default}
+ intx Tier4CompileThreshold                    = 15000           {product} {default}
+ intx Tier4InvocationThreshold                 = 5000            {product} {default}
+ intx Tier4MinInvocationThreshold              = 600             {product} {default}
+
+java version "11.0.6" 2020-01-14 LTS
+Java(TM) SE Runtime Environment 18.9 (build 11.0.6+8-LTS)
+Java HotSpot(TM) 64-Bit Server VM 18.9 (build 11.0.6+8-LTS, mixed mode)
+```
+
+主要关注以下几个 `CompileThreshold` 标志:
+
+```sh
+java -XX:+PrintFlagsFinal -version | grep CompileThreshold
+intx CompileThreshold = 10000
+intx Tier2CompileThreshold = 0
+intx Tier3CompileThreshold = 2000
+intx Tier4CompileThreshold = 15000
+```
+
+需要注意参数 `Tier2CompileThreshold = 0`, 其所代表的含义是: 方法执行超过0次就会触发 Tier2 编译。
+
+可以推断得知: 
+
+> 如果启用了分层编译, 那么通用的编译阈值参数 `CompileThreshold = 10000` 不再生效。
+
+
+
 ## 7. 小结
 
 本文简要介绍了 JVM 中的分层编译技术。 
