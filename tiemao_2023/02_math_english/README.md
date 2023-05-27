@@ -231,7 +231,6 @@ twins: 双胞胎
 | 线段  | line segment  |
 | 水平线  | horizontal line |
 | 垂直线  | vertical line |
-| 平行线  | parallel lines |
 | 斜率  | slope |
 | 与X轴交点 | x-intercept |
 | 与Y轴交点 | y-intercept |
@@ -295,7 +294,10 @@ twins: 双胞胎
 | 周长 | perimeter |
 | 面积 | area |
 | 中心 | center |
+| 垂直 | perpendicular |
 | 垂直平分线 | perpendicular bisector |
+| 平行  | parallel |
+| 平行线  | parallel lines |
 | 对角线 | diagonals |
 
 
