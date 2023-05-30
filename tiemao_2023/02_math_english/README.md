@@ -227,14 +227,21 @@ twins: 双胞胎
 | 坐标平面 | coordinate plane |
 | 原点 | origin |
 | 点  | point |
-| 线  | line  |
+| 直线  | line  |
 | 线段  | line segment  |
 | 水平线  | horizontal line |
 | 垂直线  | vertical line |
+| 垂直 | perpendicular |
+| 垂直平分线 | perpendicular bisector |
+| 平行  | parallel |
+| 平行线  | parallel lines |
 | 斜率  | slope |
 | 与X轴交点 | x-intercept |
 | 与Y轴交点 | y-intercept |
 | 象限  | quadrant |
+| 曲线  | curve  |
+| 抛物线 | parabola |
+| 双曲线 | hyperbola |
 
 
 
@@ -266,6 +273,7 @@ twins: 双胞胎
 | 等腰三角形 | Isosceles triangle |
 | 等边三角形 | Equilateral triangle |
 | 四边形 | quadrilateral |
+| 梯形 | trapezoid |
 | 平行四边形 | parallelogram |
 | 正方形 | square |
 | 长方形, 矩形 | rectangle |
@@ -275,7 +283,9 @@ twins: 双胞胎
 | 六边(角)形 | Hexagon |
 | 正六边形   | regular hexagon |
 | 圆形   | circle |
+| 椭圆   | ellipse |
 | 形状   | shape |
+| 图形   | figure |
 | 直角   | right angle |
 | 对顶角 | vertical angle |
 | 相交  | intersect |
@@ -293,6 +303,7 @@ twins: 双胞胎
 | 半径 | radius |
 | 周长 | perimeter |
 | 面积 | area |
+| 距离 | distance |
 | 中心 | center |
 | 垂直 | perpendicular |
 | 垂直平分线 | perpendicular bisector |
@@ -309,6 +320,7 @@ twins: 双胞胎
 
 | :--  | :--           |
 | 立方体 | cube | 
+| 锥体 | cone | 
 | 球型/球体   | sphere |
 
 
