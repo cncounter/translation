@@ -225,6 +225,7 @@ twins: 双胞胎
 | X轴 | X-axis |
 | Y轴 | Y-axis |
 | 坐标平面 | coordinate plane |
+| 面 | plane |
 | 原点 | origin |
 | 点  | point |
 | 直线  | line  |
@@ -242,6 +243,7 @@ twins: 双胞胎
 | 曲线  | curve  |
 | 抛物线 | parabola |
 | 双曲线 | hyperbola |
+| 二次曲线 | conic |
 
 
 
