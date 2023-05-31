@@ -43,41 +43,41 @@
 | 80           | eighty |
 | 90           | ninety |
 | 100          | one hundred |
-| 101           |  |
-| 102           |  |
-| 10x           |  |
-| 110           |  |
-| 111           |  |
-| 112           |  |
-| 113           |  |
-| 114           |  |
-| 115           |  |
-| 11x           |  |
-| 120           |  |
-| 130           |  |
-| 1xx           |  |
-| 200           |  |
-| 300           |  |
-| x00           |  |
-| 1000           | one thousand |
-| 1001           |  |
-| 1002           |  |
-| 1010           |  |
-| 1100           |  |
-| 1110           |  |
-| 1120           |  |
-| 1121           |  |
-| 1200           |  |
-| 1xxx           |  |
-| 2000           | two thousand |
-| 3000           | three thousand |
-| 4000           | four thousand |
-| 5000           | five thousand |
-| 6000           | two thousand |
-| 7000           | two thousand |
-| 8000           | two thousand |
-| 9000           | two thousand |
-| 10000          |  |
+| 101          | one hundred and one |
+| 102          | one hundred and two |
+| 10x          | one hundred and x |
+| 110          | one hundred and ten |
+| 111          | one hundred and eleven |
+| 112          | one hundred and twelve |
+| 113          | one hundred and thirteen |
+| 114          | one hundred and fourteen |
+| 115          | one hundred and fifteen |
+| 11x          | one hundred and x-teen |
+| 120          | one hundred and tweenty |
+| 130          | one hundred and thirty |
+| 1xx          | one hundred and xx |
+| 200          | two hundred |
+| 300          | three hundred |
+| x00          | x hundred  |
+| 1000         | one thousand |
+| 1001         | one thousand and one |
+| 1002         | one thousand and two |
+| 1010         | one thousand and ten |
+| 1100         | one thousand one hundred, eleven hundred |
+| 1110         | one thousand one hundred and ten |
+| 1120         | one thousand one hundred and tweenty |
+| 1121         | one thousand one hundred and tweenty one |
+| 1200         | one thousand two hundred |
+| 1xxx         | one thousand xxx |
+| 2000         | two thousand |
+| 3000         | three thousand |
+| 4000         | four thousand |
+| 5000         | five thousand |
+| 6000         | six thousand |
+| 7000         | seven thousand |
+| 8000         | eight thousand |
+| 9000         | nine thousand |
+| 10000        | ten thousand |
 
 
 一些相关的词语:
