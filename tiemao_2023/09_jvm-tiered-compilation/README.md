@@ -437,7 +437,10 @@ public class JsonFormatter implements Formatter {
 }
 ```
 
-代码中对应的依赖可以到这个网站搜索: <https://mvnrepository.com/>
+代码中对应的依赖可以到 <https://mvnrepository.com> 网站搜索: 
+
+- [com.fasterxml.jackson.core](https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind)
+- [com.fasterxml.jackson.dataformat](https://mvnrepository.com/artifact/com.fasterxml.jackson.dataformat/jackson-dataformat-xml)
 
 
 > 严格来说, 格式化和序列化是有区别的: 格式化=将对象转换为字符串; 序列化=将对象转换为字节序列。
