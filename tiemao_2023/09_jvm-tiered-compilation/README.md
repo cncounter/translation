@@ -526,7 +526,7 @@ public class TieredCompilation {
 
 ### 6.3. 解读编译日志
 
-> 多次执行同一个程序, 对应的编译日志可能都不一样, 需要具体情况具体分析。
+> 提示: 多次执行同一个程序, 对应的编译日志可能都不一样, 需要具体情况具体分析。
 
 输出的编译日志内容较多, 使用 JDK11 某一次执行的日志样例可以参考文件: [compile-log-sample.txt](./compile-log-sample.txt) 
 
