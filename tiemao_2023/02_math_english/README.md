@@ -243,7 +243,8 @@ twins: 双胞胎
 | 曲线  | curve  |
 | 抛物线 | parabola |
 | 双曲线 | hyperbola |
-| 二次曲线 | conic |
+| 圆锥   | conic |
+| 圆锥曲线 | conic sections |
 
 
 
