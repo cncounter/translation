@@ -631,8 +631,155 @@ I had the pleasure of being invited to the Inside Java Podcast, where David Dela
 
 > 原文链接: https://www.malloc.se/blog/zgc-jdk16
 
+[JDK 16](https://openjdk.java.net/projects/jdk/16) is out, and as usual, each new release comes with a bunch of new features, enhancements and bug fixes. [ZGC](https://wiki.openjdk.java.net/display/zgc) received [46 enhancements](https://bugs.openjdk.java.net/issues/?jql=project%20%3D%20jdk%20and%20component%20%3D%20hotspot%20and%20labels%20in%20(zgc)%20and%20fixVersion%20%3D%2016%20and%20type%20%3D%20Enhancement%20) and [25 bug fixes](https://bugs.openjdk.java.net/issues/?jql=project%20%3D%20jdk%20and%20component%20%3D%20hotspot%20and%20labels%20in%20(zgc)%20and%20fixVersion%20%3D%2016%20and%20type%20%3D%20Bug%20). Here I’ll cover a few of the more interesting enhancements.
 
 
+JDK 16 已经发布，包含一系列的新功能、增强功能和BUG修复。 
+
+其中, ZGC 的更新包括:
+
+- [46项增强功能]((https://bugs.openjdk.java.net/issues/?jql=project%20%3D%20jdk%20and%20component%20%3D%20hotspot%20and%20labels%20in%20(zgc)%20and%20fixVersion%20%3D%2016%20and%20type%20%3D%20Enhancement%20))
+- [25项BUG修复](https://bugs.openjdk.java.net/issues/?jql=project%20%3D%20jdk%20and%20component%20%3D%20hotspot%20and%20labels%20in%20(zgc)%20and%20fixVersion%20%3D%2016%20and%20type%20%3D%20Bug%20)
+
+下面介绍一些有趣的增强功能。
+
+
+### 7.1 Sub-milliseond Max Pause Times
+
+> (a.k.a. Concurrent Thread-Stack Processing)
+
+When we started the ZGC project, our goal was to never have a GC pause take longer than 10ms. At the time, 10ms seemed like an ambitious goal. Other GCs in HotSpot typically offered max pause times several magnitudes worse than that, especially when using large heaps. Reaching this goal was to a large extent a matter of doing all the really heavy work, such as relocation, reference processing, and class unloading, in a concurrent phase rather than in a Stop-The-World phase. Back then, HotSpot lacked a lot of the infrastructure needed to do this concurrently, so it took a few years of development to get there.
+
+### 7.1 不到毫秒级的最大暂停时间
+
+> 这项技术也被称为: 线程栈并发处理(Concurrent Thread-Stack Processing)
+
+ZGC项目刚开始启动时，设计目标是 GC 暂停时间绝对不要超过 10 毫秒。 在当时，10ms 是一个野心勃勃的目标。 
+HotSpot 虚拟机中的其他 GC 实现, 通常只能保证几个数量级之外的最大暂停时间, 尤其是堆内存非常庞大时。 
+实现这个目标的原理很简单, 将 Stop-The-World 阶段的各种任务全部拆出去, 在并发阶段来完成。 
+这些繁重的工作，包括: 重定位(relocation), 引用处理(reference processing), 类卸载(class unloading) 等等。
+当时，HotSpot 还没有支持这些并发操作的各种基础组件，因此整个研发过程消耗了好几年才实现。
+
+> Pauseless GC 实现无停顿的一个方法, 是通过钩子/安全点, 将部分任务, 让业务线程来帮忙顺带执行。
+
+
+![](./max_pause_time.svg)
+
+After reaching that initial 10ms goal, we re-aimed and set our target on something more ambitious. Namely that a GC pause should never be longer than 1ms. Starting with JDK 16, I’m happy to report that we’ve reached that goal too. ZGC now has O(1) pause times. In other words, they execute in constant time and do not increase with the heap, live-set, or root-set size (or anything else for that matter). Of course, we’re still at the mercy of the operating system scheduler to give GC threads CPU time. But as long as your system isn’t heavily over-provisioned, you can expect to see average GC pause times of around 0.05ms (50µs) and max pause times of around 0.5ms (500µs).
+
+达成最初的 10 毫秒目标以后，我们重新瞄准并设定了更严苛的目标:
+
+> GC 暂停时间不要超过 1 毫秒。 
+
+从 JDK 16 开始，我们很高兴地宣布: 这个目标已经达成。 
+
+现在, 新版 ZGC 的暂停时间复杂度为 `O(1)`。  换句话说，它们执行时间是恒定的。 
+不再随着堆内存大小(heap)、存活对象多少(live-set), 或者GC根的数量(root-set )而发生变化。 
+
+当然，ZGC仍然受制于操作系统调度程序来为 GC 线程分配 CPU 时间。 
+
+但只要系统没有严重过载，就可以看到GC 暂停时间平均 约为 0.05 毫秒左右(50 微秒, 0.05ms=50µs)，最大暂停时间约为 0.5 毫秒(500 微秒, 0.5ms=500µs)。
+
+So, what did we do to get here? Well, prior to JDK 16, ZGC pause times still scaled with the size of (a subset of) the root-set. To be more precise, we still scanned thread stacks in a Stop-The-World phase. This meant that if a Java application had a large number threads, then pause times would increase. The pause times would increase even more if those threads had deep call stacks. Starting with JDK 16, scanning of thread stacks is done concurrently, i.e. while the Java application continues to run.
+
+那这又是如何实现的呢?
+
+在 JDK 16 之前，ZGC 的暂停时间仍然与根集（root-set）的大小成比例。更准确地说，ZGC 仍然在 Stop-The-World 阶段扫描线程栈。 
+
+这就意味着, 如果 Java 应用程序中有大量线程在执行，则暂停时间就会增加。 如果这些线程还有很深的调用栈，暂停时间会增加更多。 
+
+从 JDK 16 开始，线程栈的扫描改由并发阶段完成。 这里“并发”的意思就是 GC线程 和 普通的Java业务线程 并发执行。
+
+
+As you can imagine, poking around in thread stacks, while threads are running, requires a bit of magic. This is accomplished by something called a Stack Watermark Barrier. In short, this is a mechanism that prevents a Java thread from returning into a stack frame without first checking if it’s safe to do so. This is an inexpensive check that is folded into the already existing safe-point check at method return. Conceptually you could think of it as a load barrier for a stack frame, which, if needed, will force the Java thread to take some form of action to bring the stack frame into a safe state before returning into it. Each Java thread has one or more stack watermarks, which tell the barrier how far down the stack it’s safe to walk without any special action. To walk past a watermark, a slow path is taken to bring one or more frames into the currently safe state, and the watermark is updated. The work to bring all thread stacks into a safe state is normally handled by one or more GC threads, but since this is done concurrently, Java threads will sometimes have to fix a few of their own frames, if they return into frames that the GC hasn’t gotten to yet. If you’re interested in more details, please have a look at [JEP 376: ZGC: Concurrent Thread-Stack Processing](http://openjdk.java.net/jeps/376), which describes this work.
+
+可以想象, 在线程执行的过程中, 去扫描线程调用栈, 需要一些黑科技。 
+这是通过一种叫做 栈水印屏障(Stack Watermark Barrier) 的技术实现的。 
+简而言之，这种机制可以防止 Java 线程在未进行安全检查的情况下返回栈帧。 
+
+这是一种开销很小的检查，在方法返回时, 被组合到已存在的安全点检查中。 
+
+从概念上讲，可以将其看作是栈帧的读屏障(load barrier)， 如有必要，会强制 Java 线程执行某种形式的钩子操作，在返回之前让栈帧进入安全状态。 
+
+每个 Java 线程, 都有一个或多个栈水印(stack watermarks)，它告诉屏障在没有任何特殊操作的情况下, 栈可以安全地向下走多远。 
+要经过某个水印， 需要采用慢速路径将一个或多个帧带入当前的安全状态，并更新水印。
+
+将所有线程栈置于安全状态的工作通常由一个或多个 GC 线程来处理，但由于这是一个并发过程，如果碰到某些 GC 无法处理的栈帧,  Java 线程就必须修复自己的一些帧。 
+
+如果你对具体的细节感兴趣，请查看 [JEP 376: ZGC: Concurrent Thread-Stack Processing](http://openjdk.java.net/jeps/376), 其中详细描述了这项工作。
+
+With JEP 376 in place, ZGC now scans exactly zero roots in Stop-The-World phases. For many workloads, you saw really low max pause times even before JDK 16. But if you ran on a large machine, and your workload had a large number of threads, you could still see max pause times well above 1ms. To visualize the improvement, here’s an example comparing JDK 15 and JDK 16, running SPECjbb®2015 on a large machine with a couple of thousand Java threads.
+
+通过 [JEP 376](http://openjdk.java.net/jeps/376) 的实现方式，ZGC 在 Stop-The-World 阶段可以一个GC根都不需要扫描。 
+对于许多小型应用系统和低负载工况下，我们甚至在 JDK 16 之前就可以看到非常低的GC暂停时间。
+但如果是在大型机器上运行的高负载应用, 伴随着大量线程， 仍然可以看到最大暂停时间远高于 1 毫秒。 
+
+为了方便对比，下图列出了 JDK 15 和 JDK 16 的对比示例，在具有几千个 Java 线程的大型机器上运行 `SPECjbb®2015`。
+
+![](./specjbb2015.svg)
+
+
+### 7.2 In-Place Relocation
+
+In JDK 16, ZGC got support for in-place relocation. This feature helps avoid OutOfMemoryError in situations where the GC needs to collect garbage when the heap is already filled to the brim. Normally, ZGC compacts the heap (and thereby frees up memory) by moving objects from sparsely populated heap regions into one or more empty heap regions where these objects can be densely packed. This strategy is simple and straightforward and lends itself very well for parallel processing. However, it has one drawback. It requires some amount of free memory (at least one empty heap region of each size type) to get the relocation process started. If the heap is full, i.e. all heap regions are already in use, then we have nowhere to move objects to.
+
+Prior to JDK 16, ZGC solved this by having a heap reserve. This heap reserve was a set of heap regions that was set aside and made unavailable for normal allocations from Java threads. Instead only the GC itself was allowed to use the heap reserve when relocating objects. This ensured that empty heap regions were available, even if the heap was full from a Java thread’s perspective, to get the relocation process started. The heap reserve was typically a small fraction of the heap. In a previous blog post, I wrote about how we improved it in JDK 14 to better support tiny heaps.
+
+![](./relocation_with_heap_reserve.svg)
+
+Still, the heap reserve approach had a few problems. For example, since the heap reserve was not available to Java threads doing relocation, there was no hard guarantee that the relocation process could complete and hence the GC couldn’t reclaim (enough) memory. This was a non-issue for basically all normal workloads, but our testing revealed that it was possible to construct a program that provoked this problem, which in turn resulted in premature OutOfMemoryError. Also, setting aside some (though small) portion of the heap, just in case it was needed during relocation, was a waste of memory for most workloads.
+
+Another approach to free up contiguous chunks of memory is to compact the heap in-place. Other HotSpot collectors (e.g. G1, Parallel and Serial) do some version of this when they do a so called Full GC. The main advantage of this approach is that it doesn’t need memory to free up memory. In other words, it will happily compact a full heap, without needing a heap reserve of some sort.
+
+![](./in_place_relocation.svg)
+
+
+However, compacting the heap in-place also has some challenges and typically comes with an overhead. For example, the order in which objects are moved now matter a lot, as you otherwise risk overwriting not-yet-moved objects. This requires more coordination between GC threads, doesn’t lend itself as well to parallel processing, and also affects what Java threads can and can’t do when they relocate an object on behalf of the GC.
+
+In summary, both approaches have advantages. Not relocating in-place typically performs better when empty heap regions are available, while relocating in-place can guarantee that the relocation process successfully completes even when no empty heap regions are available.
+
+Starting with JDK 16, ZGC now uses both approaches to get the best of both worlds. This allows us to get rid of the need for a heap reserve, while maintaining good relocation performance in the common case, and guaranteeing that relocation always successfully completes in the edge case. By default, ZGC will not relocate in-place as long as there is an empty heap region available to move objects to. Should that not be the case, ZGC will switch to relocate in-place. As soon as an empty heap region becomes available, ZGC will again switch back to not relocating in-place.
+
+
+not_in_place_relocation:
+
+![](./not_in_place_relocation.svg)
+
+
+in_place_relocation: 
+
+![](./in_place_relocation2.svg)
+
+Switching back and forth between these relocation modes happens seamlessly, and if needed, multiple times in the same GC cycle. However, most workloads will never run into a situation where the need to switch arises in the first place. But knowing that ZGC will cope with these situations well, and never throw a premature OutOfMemoryError because of failure to compact the heap, should give some peace of mind.
+
+The ZGC logging was also extended to show how many heap regions (ZPages) of each size group (Small/Medium/Large) were relocated in-place. Here’s an example where 54MB worth of small objects were relocated, and 3 small pages needed to be relocated in-place.
+
+
+![](./gc_log.svg)
+
+### 7.3 Allocation & Initialization of Forwarding Tables
+
+When ZGC relocates an object, the new address of that object is recorded in a forwarding table, a data structure allocated outside of the Java heap. Each heap region selected to be part of the relocation set (the set of heap regions to compact to free up memory) gets a forwarding table associated with it.
+
+Prior to JDK 16, the allocation and initialization of forwarding tables could take a significant part of the overall GC cycle time when the relocation set was very large. The size of the relocation set correlates with the number of objects moved during relocation. If you have, for example, a >100GB heap and the workload causes lots of fragmentation, with small holes evenly distributed across the heap, then the relocation set will be large and allocating/initializing it can take a while. Of course, this work has always been done in a concurrent phase, so it has never affected GC pause times. Still, there was room for improvements here.
+
+In JDK 16, ZGC now allocates forwarding tables in bulk. Instead of making numerous calls (potentially many thousands) to malloc/new to allocate memory for each table, we now do a single call to allocate all memory needed by all tables in one go. This helps avoid typically allocation overheads and potential lock contention, and significantly reduces the time it takes to allocate these tables.
+
+The initialization of these tables was another bottleneck. The forwarding table is a hash table, so initializing it means setting up a small header and zeroing out a (potentially large) array of forwarding table entries. Starting with JDK 16, ZGC now does this initialization in parallel using multiple threads, instead of with a single thread.
+
+In summary, these changes significantly reduce the time is takes to allocate and initialize forwarding tables, especially when collecting very large heaps that are sparsely populated, where the reduction can be on the order of one or two magnitudes.
+
+![](./phases.svg)
+
+### 7.4 Summary
+
+- With concurrent thread-stack scanning, ZGC now has pause times in the microsecond domain, with average pause times of ~50µs and max pause times of ~500µs. Pause times are unaffected by the heap, live-set and root-set size.
+
+- The heap reserve is now gone, and ZGC will instead do in-place relocation when needed. This saves memory, but also guarantees that the heap can be successfully compacted in all situations.
+
+- Forwarding tables are now allocated and initialized more efficiently, which shortens the time it takes to complete a GC cycle, especially when collecting large heaps that are sparsely populated.
+
+For more information on ZGC, please see the [OpenJDK Wiki](https://wiki.openjdk.java.net/display/zgc/Main), the [GC section on Inside Java](https://inside.java/tag/gc), or [this blog](https://malloc.se/).
 
 
 

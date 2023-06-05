@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="160mm" height="87mm" viewBox="0 0 16000 8700" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" stroke-width="28.222" stroke-linejoin="round" xml:space="preserve">
+ <path fill="rgb(255,255,255)" stroke="none" d="M 7993,8716 L 0,8716 0,0 15986,0 15986,8716 7993,8716 Z"/>
+ <path fill="none" stroke="rgb(179,179,179)" stroke-linejoin="round" d="M 7697,6910 L 1762,6910 1762,1862 13632,1862 13632,6910 7697,6910 Z"/>
+ <path fill="none" stroke="rgb(179,179,179)" stroke-linejoin="round" d="M 13632,6909 L 1762,6909"/>
+ <path fill="none" stroke="rgb(179,179,179)" stroke-linejoin="round" d="M 13632,6277 L 1762,6277"/>
+ <path fill="none" stroke="rgb(179,179,179)" stroke-linejoin="round" d="M 13632,5646 L 1762,5646"/>
+ <path fill="none" stroke="rgb(179,179,179)" stroke-linejoin="round" d="M 13632,5015 L 1762,5015"/>
+ <path fill="none" stroke="rgb(179,179,179)" stroke-linejoin="round" d="M 13632,4384 L 1762,4384"/>
+ <path fill="none" stroke="rgb(179,179,179)" stroke-linejoin="round" d="M 13632,3754 L 1762,3754"/>
+ <path fill="none" stroke="rgb(179,179,179)" stroke-linejoin="round" d="M 13632,3123 L 1762,3123"/>
+ <path fill="none" stroke="rgb(179,179,179)" stroke-linejoin="round" d="M 13632,2492 L 1762,2492"/>
+ <path fill="none" stroke="rgb(179,179,179)" stroke-linejoin="round" d="M 13632,1861 L 1762,1861"/>
+ <path fill="none" stroke="rgb(179,179,179)" stroke-linejoin="round" d="M 1762,7059 L 1762,6909"/>
+ <path fill="none" stroke="rgb(179,179,179)" stroke-linejoin="round" d="M 1762,7059 L 1762,6909"/>
+ <path fill="none" stroke="rgb(179,179,179)" stroke-linejoin="round" d="M 7697,7059 L 7697,6909"/>
+ <path fill="none" stroke="rgb(179,179,179)" stroke-linejoin="round" d="M 7697,7059 L 7697,6909"/>
+ <path fill="none" stroke="rgb(179,179,179)" stroke-linejoin="round" d="M 13632,7059 L 13632,6909"/>
+ <path fill="none" stroke="rgb(179,179,179)" stroke-linejoin="round" d="M 13632,7059 L 13632,6909"/>
+ <path fill="none" stroke="rgb(179,179,179)" stroke-linejoin="round" d="M 1762,6909 L 13632,6909"/>
+ <path fill="none" stroke="rgb(179,179,179)" stroke-linejoin="round" d="M 1612,6909 L 1762,6909"/>
+ <path fill="none" stroke="rgb(179,179,179)" stroke-linejoin="round" d="M 1612,6909 L 1762,6909"/>
+ <path fill="none" stroke="rgb(179,179,179)" stroke-linejoin="round" d="M 1612,6277 L 1762,6277"/>
+ <path fill="none" stroke="rgb(179,179,179)" stroke-linejoin="round" d="M 1612,6277 L 1762,6277"/>
+ <path fill="none" stroke="rgb(179,179,179)" stroke-linejoin="round" d="M 1612,5646 L 1762,5646"/>
+ <path fill="none" stroke="rgb(179,179,179)" stroke-linejoin="round" d="M 1612,5646 L 1762,5646"/>
+ <path fill="none" stroke="rgb(179,179,179)" stroke-linejoin="round" d="M 1612,5015 L 1762,5015"/>
+ <path fill="none" stroke="rgb(179,179,179)" stroke-linejoin="round" d="M 1612,5015 L 1762,5015"/>
+ <path fill="none" stroke="rgb(179,179,179)" stroke-linejoin="round" d="M 1612,4384 L 1762,4384"/>
+ <path fill="none" stroke="rgb(179,179,179)" stroke-linejoin="round" d="M 1612,4384 L 1762,4384"/>
+ <path fill="none" stroke="rgb(179,179,179)" stroke-linejoin="round" d="M 1612,3754 L 1762,3754"/>
+ <path fill="none" stroke="rgb(179,179,179)" stroke-linejoin="round" d="M 1612,3754 L 1762,3754"/>
+ <path fill="none" stroke="rgb(179,179,179)" stroke-linejoin="round" d="M 1612,3123 L 1762,3123"/>
+ <path fill="none" stroke="rgb(179,179,179)" stroke-linejoin="round" d="M 1612,3123 L 1762,3123"/>
+ <path fill="none" stroke="rgb(179,179,179)" stroke-linejoin="round" d="M 1612,2492 L 1762,2492"/>
+ <path fill="none" stroke="rgb(179,179,179)" stroke-linejoin="round" d="M 1612,2492 L 1762,2492"/>
+ <path fill="none" stroke="rgb(179,179,179)" stroke-linejoin="round" d="M 1612,1861 L 1762,1861"/>
+ <path fill="none" stroke="rgb(179,179,179)" stroke-linejoin="round" d="M 1612,1861 L 1762,1861"/>
+ <path fill="none" stroke="rgb(179,179,179)" stroke-linejoin="round" d="M 1762,6909 L 1762,1861"/>
+ <path fill="rgb(52,101,164)" stroke="none" d="M 8685,6909 L 10664,6909 10664,6845 8685,6845 8685,6909 Z"/>
+ <path fill="rgb(52,101,164)" stroke="none" d="M 2751,6909 L 4729,6909 4729,6277 2751,6277 2751,6909 Z"/>
+ <path fill="rgb(255,64,0)" stroke="none" d="M 10664,6909 L 12642,6909 12642,6593 10664,6593 10664,6909 Z"/>
+ <path fill="rgb(255,64,0)" stroke="none" d="M 4729,6909 L 6708,6909 6708,2492 4729,2492 4729,6909 Z"/>
+ <text class="TextShape"><tspan class="TextParagraph" font-family="Liberation Sans, sans-serif" font-size="353px" font-weight="400"><tspan class="TextPosition" x="4160" y="7477"><tspan fill="rgb(0,0,0)" stroke="none">JDK 15</tspan></tspan></tspan></text>
+ <text class="TextShape"><tspan class="TextParagraph" font-family="Liberation Sans, sans-serif" font-size="353px" font-weight="400"><tspan class="TextPosition" x="10096" y="7477"><tspan fill="rgb(0,0,0)" stroke="none">JDK 16</tspan></tspan></tspan></text>
+ <text class="TextShape"><tspan class="TextParagraph" font-family="Liberation Sans, sans-serif" font-size="353px" font-weight="400"><tspan class="TextPosition" x="1327" y="7030"><tspan fill="rgb(0,0,0)" stroke="none">0</tspan></tspan></tspan></text>
+ <text class="TextShape"><tspan class="TextParagraph" font-family="Liberation Sans, sans-serif" font-size="353px" font-weight="400"><tspan class="TextPosition" x="1327" y="6398"><tspan fill="rgb(0,0,0)" stroke="none">1</tspan></tspan></tspan></text>
+ <text class="TextShape"><tspan class="TextParagraph" font-family="Liberation Sans, sans-serif" font-size="353px" font-weight="400"><tspan class="TextPosition" x="1327" y="5767"><tspan fill="rgb(0,0,0)" stroke="none">2</tspan></tspan></tspan></text>
+ <text class="TextShape"><tspan class="TextParagraph" font-family="Liberation Sans, sans-serif" font-size="353px" font-weight="400"><tspan class="TextPosition" x="1327" y="5136"><tspan fill="rgb(0,0,0)" stroke="none">3</tspan></tspan></tspan></text>
+ <text class="TextShape"><tspan class="TextParagraph" font-family="Liberation Sans, sans-serif" font-size="353px" font-weight="400"><tspan class="TextPosition" x="1327" y="4505"><tspan fill="rgb(0,0,0)" stroke="none">4</tspan></tspan></tspan></text>
+ <text class="TextShape"><tspan class="TextParagraph" font-family="Liberation Sans, sans-serif" font-size="353px" font-weight="400"><tspan class="TextPosition" x="1327" y="3874"><tspan fill="rgb(0,0,0)" stroke="none">5</tspan></tspan></tspan></text>
+ <text class="TextShape"><tspan class="TextParagraph" font-family="Liberation Sans, sans-serif" font-size="353px" font-weight="400"><tspan class="TextPosition" x="1327" y="3243"><tspan fill="rgb(0,0,0)" stroke="none">6</tspan></tspan></tspan></text>
+ <text class="TextShape"><tspan class="TextParagraph" font-family="Liberation Sans, sans-serif" font-size="353px" font-weight="400"><tspan class="TextPosition" x="1327" y="2612"><tspan fill="rgb(0,0,0)" stroke="none">7</tspan></tspan></tspan></text>
+ <text class="TextShape"><tspan class="TextParagraph" font-family="Liberation Sans, sans-serif" font-size="353px" font-weight="400"><tspan class="TextPosition" x="1327" y="1981"><tspan fill="rgb(0,0,0)" stroke="none">8</tspan></tspan></tspan></text>
+ <text class="TextShape"><tspan class="TextParagraph" font-family="Liberation Sans, sans-serif" font-size="459px" font-weight="700"><tspan class="TextPosition" x="4341" y="845"><tspan fill="rgb(0,0,0)" stroke="none">SPECjbb®2015 - ZGC暂停时间</tspan></tspan></tspan></text>
+ <text class="TextShape"><tspan class="TextParagraph" font-family="Liberation Sans, sans-serif" font-size="282px" font-weight="400"><tspan class="TextPosition" x="6934" y="1513"><tspan fill="rgb(153,153,153)" stroke="none">(时间越短,性能越强)</tspan></tspan></tspan></text>
+ <path fill="rgb(52,101,164)" stroke="none" d="M 14183,4215 L 14077,4215 14077,4004 14288,4004 14288,4215 14183,4215 Z"/>
+ <path fill="rgb(255,64,0)" stroke="none" d="M 14183,4712 L 14077,4712 14077,4501 14288,4501 14288,4712 14183,4712 Z"/>
+ <text class="TextShape"><tspan class="TextParagraph" font-family="Liberation Sans, sans-serif" font-size="353px" font-weight="400"><tspan class="TextPosition" x="14388" y="4229"><tspan fill="rgb(0,0,0)" stroke="none">平均值</tspan></tspan></tspan></text>
+ <text class="TextShape"><tspan class="TextParagraph" font-family="Liberation Sans, sans-serif" font-size="353px" font-weight="400"><tspan class="TextPosition" x="14388" y="4726"><tspan fill="rgb(0,0,0)" stroke="none">最大值</tspan></tspan></tspan></text>
+ <text class="TextShape" transform="rotate(-90 833 6184)"><tspan class="TextParagraph" font-family="Liberation Sans, sans-serif" font-size="318px" font-weight="400"><tspan class="TextPosition" x="833" y="6184"><tspan fill="rgb(0,0,0)" stroke="none">GC暂停时间(ms)</tspan></tspan></tspan></text>
+ <text class="TextShape"><tspan class="TextParagraph" font-family="Liberation Sans, sans-serif" font-size="212px" font-weight="400"><tspan class="TextPosition" x="2151" y="8180"><tspan fill="rgb(0,0,0)" stroke="none">SPECjbb®2015是标准性能评估公司(spec.org)的一个注册商标. </tspan></tspan><tspan class="TextPosition" x="2151" y="8418"><tspan fill="rgb(0,0,0)" stroke="none">实际的运行结果和评估标准略有误差, 因为测试环境可能不是完全满足 SPEC 的前置要求.</tspan></tspan></tspan></text>
+ <text class="TextShape"><tspan class="TextParagraph" font-family="Liberation Sans, sans-serif" font-size="247px" font-weight="700"><tspan class="TextPosition" x="12898" y="883"><tspan fill="rgb(0,0,0)" stroke="none">3TB</tspan><tspan font-weight="400" fill="rgb(0,0,0)" stroke="none">堆内存</tspan></tspan></tspan><tspan class="TextParagraph" font-family="Liberation Sans, sans-serif" font-size="247px" font-weight="700"><tspan class="TextPosition" x="12898" y="1148"><tspan fill="rgb(0,0,0)" stroke="none">224</tspan><tspan font-weight="400" fill="rgb(0,0,0)" stroke="none">个超线程的处理器(Intel)</tspan></tspan></tspan><tspan class="TextParagraph" font-family="Liberation Sans, sans-serif" font-size="247px" font-weight="700"><tspan class="TextPosition" x="12898" y="1413"><tspan fill="rgb(0,0,0)" stroke="none">~2100</tspan><tspan font-weight="400" fill="rgb(0,0,0)" stroke="none">个Java线程</tspan></tspan></tspan></text>
+</svg>

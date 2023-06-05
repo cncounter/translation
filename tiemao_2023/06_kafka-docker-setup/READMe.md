@@ -88,6 +88,11 @@ Similarly, the kafka service is exposed to the host applications through port `2
 
 Let's start the Kafka server by spinning up the containers using the [docker-compose](https://docs.docker.com/compose/reference/) command:
 
+### 2.2. 启动 Kafka 服务端
+
+通过 [docker-compose](https://docs.docker.com/compose/reference/) 命令, 启动前面配置的容器化 Kafka 服务端:
+
+
 ```sh
 $ docker-compose up -d
 Creating network "kafka_default" with the default driver
@@ -97,7 +102,7 @@ Creating kafka_kafka_1     ... done
 
 Now let's use the [nc](https://www.baeldung.com/linux/netcat-command#scanning-for-open-ports-using-netcat) command to verify that both the servers are listening on the respective ports:
 
-接着, 我们使用万能网络工具 [nc](https://www.baeldung.com/linux/netcat-command#scanning-for-open-ports-using-netcat)  来测试一下相应的端口是否成功监听:
+接着, 使用万能网络工具 [nc](https://www.baeldung.com/linux/netcat-command#scanning-for-open-ports-using-netcat)  来测试一下相应的端口是否成功监听:
 
 ```sh
 $ nc -z localhost 22181
@@ -110,6 +115,8 @@ Connection to localhost port 29092 [tcp/*] succeeded!
 
 
 Additionally, we can also check the verbose logs while the containers are starting up and verify that the Kafka server is up:
+
+另外，我们可以通过docker日志来查看 Kafka 的启动信息:
 
 
 ```sh
@@ -124,7 +131,7 @@ kafka_1      | [2021-04-10 22:57:40,458] INFO [KafkaServer id=1] started (kafka.
 
 With that, our Kafka setup is ready for use.
 
-如果没有报错, 有 started 类似的日志信息, 则表示 Kafka 配置并启动成功了。
+如果没有报错, 有类似 `started` 的日志信息, 则表示 Kafka 配置并启动成功了。
 
 
 ### 2.3. 使用图形客户端 Kafka Tool 来连接
@@ -133,7 +140,7 @@ Finally, let's use the [Kafka Tool GUI utility](https://kafkatool.com/download.h
 
 [Kafka Tool](https://kafkatool.com/download.html) ,  是一款图形界面的 Kafka 客户端, 可以用来连接我们创建的 Kafka 服务; 
 
-> 个人使用是免费的, 现在改名叫做 Offset Explorer。
+> 这款工具个人使用是免费的, 现在改名叫做 Offset Explorer。
 
 下载、安装、并启动。
 
@@ -176,6 +183,13 @@ As such, the entries for Topics and Consumers are empty because it's a new setup
 ## 3. Kafka Cluster Setup
 
 For more stable environments, we'll need a resilient setup. Let's extend our `docker-compose.yml` file to create a multi-node Kafka cluster setup.
+
+## 3. 配置 Kafka 集群服务
+
+如果要求更稳定一些的服务, 则需要配置 Kafka 集群服务。
+
+基于前面的 `docker-compose.yml` 配置文件, 稍微改动一下, 就可以创建由多个服务节点组成的 Kafka 集群。
+
 
 ### 3.1. docker-compose.yml Configuration
 
