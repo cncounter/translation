@@ -179,6 +179,8 @@ twins: 双胞胎
 | 算数 | Arithmetic |
 | 几何 | Geometry |
 | 代数 | Algebra  |
+| 三角函数 | Trigonometry  |
+| 微积分学 | calculus  |
 
 
 
@@ -287,6 +289,7 @@ twins: 双胞胎
 | 正六边形   | regular hexagon |
 | 圆形   | circle |
 | 椭圆   | ellipse |
+| 扇形   | sector |
 | 形状   | shape |
 | 图形   | figure |
 | 直角   | right angle |
@@ -298,21 +301,34 @@ twins: 双胞胎
 | 正弦  | sine |
 | 余弦  | cosine |
 | 正切  | tangent |
+| 切线  | tangent line |
+| 割线  | secant line |
 | 互补  | complementary |
 
 
 
 | 直径 | diameter |
-| 半径 | radius |
+| 半径 | radius, radii |
 | 周长 | perimeter |
 | 面积 | area |
 | 距离 | distance |
+| 长度 | length |
 | 中心 | center |
+| 圆周 | circumference |
 | 垂直 | perpendicular |
 | 垂直平分线 | perpendicular bisector |
 | 平行  | parallel |
 | 平行线  | parallel lines |
 | 对角线 | diagonals |
+| 角 | angle |
+| 边 | side, edge |
+| 弧 | arc |
+| 度 | degree |
+| 角度 | angle, degree |
+| 弧度 | radian, arc measure, angle measure |
+| 比率 | ratio |
+| 内切角 | inscribed angle |
+| 内切形 | inscribed shape |
 
 
 思维导图:
