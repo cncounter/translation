@@ -84,6 +84,34 @@ Vim快捷键:
 - 光标退回行尾: 在命令模式下输入数字 `$`
 ```
 
+# sudo免密
+
+修改 `/etc/sudoers` 文件增加对应的用户名和 `NOPASSWD:` 标志.
+
+```shell
+% sudo cat /etc/sudoers
+#
+# Sample /etc/sudoers file.
+#
+# This file MUST be edited with the 'visudo' command as root.
+
+##
+# User specification
+##
+
+# root and users in group wheel can run anything on any machine as any user
+#root		ALL = (ALL) ALL
+#%admin		ALL = (ALL) ALL
+
+# 免密SUDO, 改成类似这样的格式
+root		ALL = (ALL) NOPASSWD:ALL
+renfufei	ALL = (ALL) NOPASSWD:ALL
+%admin		ALL = (ALL) NOPASSWD:ALL
+
+```
+
+修改完成后, 使用 `:wq!` 保存。 重新启用shell即可。
+
 
 # 系统工具安装
 
