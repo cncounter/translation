@@ -556,7 +556,7 @@ public static void main(String[] args) {
 - Redis官方文档: [SCAN命令](https://redis.io/commands/scan/)
 - [Scan a Redis Cluster](https://www.dontpanicblog.co.uk/2022/07/30/scan-a-redis-cluster/)
 - [List All Available Redis Keys](https://www.baeldung.com/redis-list-available-keys)
-
+- [铁锚的CSDN博客](https://renfufei.blog.csdn.net/)
 
 作者: [铁锚](https://github.com/cncounter/translation/)
 日期: 2023年06月14日
