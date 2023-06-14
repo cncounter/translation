@@ -135,6 +135,7 @@ twins: 双胞胎
 | 幂,指数,乘方  | power |
 | 平方  | square |
 | 立方  | cube |
+| 立方米  | cubic meter |
 | 底数  | base |
 | 指数  | exponent |
 | 平方根 | square root |
@@ -291,6 +292,7 @@ twins: 双胞胎
 | 椭圆   | ellipse |
 | 扇形   | sector |
 | 形状   | shape |
+| 实体   | solid |
 | 图形   | figure |
 | 直角   | right angle |
 | 对顶角 | vertical angle |
@@ -311,8 +313,13 @@ twins: 双胞胎
 | 半径 | radius, radii |
 | 周长 | perimeter |
 | 面积 | area |
+| 体积 | volume |
+| 空间 | space |
 | 距离 | distance |
 | 长度 | length |
+| 宽度 | width |
+| 高度 | height |
+| 深度 | depth |
 | 中心 | center |
 | 圆周 | circumference |
 | 垂直 | perpendicular |
@@ -334,13 +341,41 @@ twins: 双胞胎
 思维导图:
 
 
-> 多面体
+> 多面体(polyhedron)
+
 
 
 | :--  | :--           |
 | 立方体 | cube | 
-| 锥体 | cone | 
+| 椎体, 金字塔 | pyramid | 
+| 金字塔图形 | pyramid-like figure | 
+| 圆环   | torus |
+| 管子 | tube | 
+| 空心锥台 | hollow cone frustum | 
+| 圆锥体 | cone | 
+| 圆锥  | circular cone | 
+| 斜圆锥 | blique circular cone | 
+| 正锥体 | right pyramid | 
+| 斜棱锥 | oblique pyramid | 
+| 棱柱 | prism |
+| 棱柱状图形 | prism-like figure |
+| 直棱柱 | right prism|
+| 斜棱柱 | oblique prism|
+| 圆柱 | cylinder |
+| 斜圆柱 | oblique cylinder |
 | 球型/球体   | sphere |
+| 半球   | hemisphere |
+
+
+| 面   | face |
+| 表面   | surface |
+| 平坦表面   | flat surface |
+| 连续表面   | continuous surface |
+| 横截面   | cross-section |
+| 边   | Edge |
+| 顶点   | Vertex |
+| 顶   | apex |
+| 底  | base |
 
 
 
@@ -358,6 +393,7 @@ twins: 双胞胎
 | 扩缩  | dilation |
 | 扩大  | enlarge |
 | 缩小  | shrink |
+| 密度  | Density |
 
 
 
