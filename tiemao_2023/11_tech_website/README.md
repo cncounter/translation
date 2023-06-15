@@ -15,6 +15,7 @@
 - [TED 演讲 - 网易公开课](https://open.163.com/ted/) : 网易教育汉化字幕的版本
 - [天才的数学和计算机课程学习 brilliant ](https://brilliant.org/) : 很多角度简直是天才的设想
 - [Oracle Developer Live — Java](https://developer.oracle.com/community/events/devlive-java-recordings.html) : 一些Java视频分享
+- [ZGC作者 perliden 的博客](https://www.malloc.se/)
 - [programcreek技术文章](https://www.programcreek.com/) : 博客类文章分享
 - [How To Do in Java](https://howtodoinjava.com/java/garbage-collection/) : 顾名思义,Java教程
 - [rgagnon 案例教程](https://www.rgagnon.com/topics/java-language.html) : Java和JS相关的教程网
@@ -26,6 +27,8 @@
 - [IT修理工: itfixed](https://www.itfixed.com/blog/) : 运维和工具相关
 - [正则表达式 - regular-expressions](https://www.regular-expressions.info/lookaround.html) : 里面有很多高级的正则技巧
 - [Java教程 vogella](https://www.vogella.com/tutorials/JavaRegularExpressions/article.html) : 也是很多教程
+- [CSDN技术博客](https://renfufei.blog.csdn.net/) : 虽然商业化严重, 但奈何竞争对手给面子
+
 
 ## 语言学习
 
@@ -58,6 +61,7 @@
 
 - [经典的小漫画网站 - The Oatmeal](https://theoatmeal.com/comics)
 - [漫画和笑话 comic ](https://comic.browserling.com/)
+- [大漠老师 91fache](https://www.91fache.com/)
 - [网络匿名漫游指南](https://anonymousplanet.org/guide.html)
 - [探索好点子 - medium.com](https://medium.com/)
 - [你所知道的都是错的系列](https://bravenewgeek.com/everything-you-know-about-latency-is-wrong/)
