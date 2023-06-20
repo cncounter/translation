@@ -1,5 +1,7 @@
 # MAC M1 搭建 stable-diffusion 环境
 
+[TOC]
+
 苹果公司的程序员为 M1,M2 之类的ARM64芯片专门创建了一个  stable-diffusion 的仓库:
 
 > Run Stable Diffusion on Apple Silicon with Core ML
@@ -12,16 +14,16 @@
 
 ## 环境准备
 
-1. 硬件环境
+### 1. 硬件环境
 
 - M1芯片的Apple MacBook Pro
 - 16G内存; 8G也可以, 但是需要一些额外的配置。
 
-2. 系统环境
+### 2. 系统环境
 
 - MAC OS 13.4; 至少得升级到 13 版本(Ventura); 参考: [System Requirements](https://github.com/apple/ml-stable-diffusion#system-requirements)
 
-3. 基础软件环境
+### 3. 基础软件环境
 
 - git: 下载仓库源码;  理论上需要更新到最新版
 - conda: 主要用来创建Python环境
@@ -43,13 +45,13 @@ conda下载页面为: <https://docs.conda.io/en/latest/miniconda.html>
 
 ## 操作步骤
 
-1. 下载git
+### 1. 下载git
 
 参考官方网站: <https://git-scm.com/downloads>
 
 下载或者安装好即可。
 
-2. 下载conda
+### 2. 下载conda
 
 参考官方网站: <https://docs.conda.io/en/latest/miniconda.html>
 
@@ -57,13 +59,13 @@ conda下载页面为: <https://docs.conda.io/en/latest/miniconda.html>
 
 miniconda是一个简化版, 只内置了python。 其他什么 C++, Java什么的环境都暂时去除了。
 
-3. 创建python环境
+### 3. 创建python环境
 
 参考: <https://zhuanlan.zhihu.com/p/590869015>
 
 对应的命令为:
 
-```sh
+```shell
 # 创建和准备Python环境
 conda create -n coreml_stable_diffusion python=3.8 -y
 
@@ -80,11 +82,11 @@ python -V
 
 这些环境的作用域范围是操作系统用户级别的。 主要是shell中使用。
 
-4. 下载仓库
+### 4. 下载仓库
 
 使用的命令为:
 
-```sh
+```shell
 git clone https://github.com/apple/ml-stable-diffusion.git
 
 ```
@@ -94,9 +96,9 @@ github支持下载zip包, 但身处天国的话得需要一些技巧才能下载
 如果速度过慢, 可能你需要一些下载技巧, 比如购买网络服务。
 
 
-5. 安装依赖
+### 5. 安装依赖
 
-```sh
+```shell
 # 进入仓库目录
 cd ml-stable-diffusion
 
@@ -113,14 +115,14 @@ pip install -r requirements.txt
 如果因为网速原因安装失败, 可以再次重复执行安装。
 
 
-6. 转换模型
+### 6. 转换模型
 
 为了利用  M1 内置的人工智能芯片(神经网络芯片), 需要转换 PyTorch 模型为 Apple Core ML 模型。
 
 
 转换模型对应的命令为:
 
-```sh
+```shell
 # 进入仓库目录
 cd ml-stable-diffusion
 
@@ -131,7 +133,20 @@ conda activate coreml_stable_diffusion
 # (默认值是脚本里面内置的1.4版本)
 python -m python_coreml_stable_diffusion.torch2coreml --convert-unet --convert-text-encoder --convert-vae-decoder --convert-safety-checker -o ./models
 
+
+# 转换其他模型
+python -m python_coreml_stable_diffusion.torch2coreml --convert-unet --convert-text-encoder --convert-vae-decoder --convert-safety-checker --model-version runwayml/stable-diffusion-v1-5 -o ./models_1.5
+
+python -m python_coreml_stable_diffusion.torch2coreml --convert-unet --convert-text-encoder --convert-vae-decoder --convert-safety-checker --model-version stabilityai/stable-diffusion-2-base -o ./models_2
+
+python -m python_coreml_stable_diffusion.torch2coreml --convert-unet --convert-text-encoder --convert-vae-decoder --convert-safety-checker --model-version stabilityai/stable-diffusion-2-1-base -o ./models_2.1
+
+python -m python_coreml_stable_diffusion.torch2coreml --convert-unet --convert-text-encoder --convert-vae-decoder --convert-safety-checker --model-version xiaolxl/GuoFeng3 -o ./models_GuoFeng3
+
+
 ```
+
+执行正常的话, 可以看到有一个 `ANECompilerService` 进程在消耗CPU, 这就是苹果的神经网络引擎(Apple Neural Engine)编译器。
 
 如果内存不够的话, 尝试先关掉一些其他程序。
 
@@ -144,7 +159,7 @@ RuntimeError: PyTorch convert function for op 'scaled_dot_product_attention' not
 
 解决办法, 参考: <https://blog.csdn.net/cainiao1412/article/details/131204867>
 
-```sh
+```shell
 pip show torch # 查看torch版本
 pip uninstall torch # 卸载torch版本
 pip install torch==1.13.1 # 安装指定版本
@@ -153,12 +168,13 @@ pip install torch==1.13.1 # 安装指定版本
 报错的话, 切换 torch 版本, 然后再次执行模型转换的命令。
 
 
-7. 验证和测试
+
+### 7. 验证和测试
 
 
 使用的命令为:
 
-```sh
+```shell
 python -m python_coreml_stable_diffusion.pipeline --prompt "magic book on the table" -i ./models -o ./output --compute-unit ALL --seed 93
 
 ```
@@ -167,7 +183,7 @@ python -m python_coreml_stable_diffusion.pipeline --prompt "magic book on the ta
 
 
 
-9. 构造Web界面
+### 8. 构造Web界面
 
 好处是不需要每次执行提示词 prompt 都去初始化一次环境。
 
@@ -175,7 +191,7 @@ python -m python_coreml_stable_diffusion.pipeline --prompt "magic book on the ta
 
 对应的安装命令为:
 
-```sh
+```shell
 pip install gradio
 
 ```
@@ -186,7 +202,7 @@ pip install gradio
 
 [web.py](./web.py) 文件准备完成后, 启动命令为:
 
-```sh
+```shell
 # 进入仓库目录
 cd ml-stable-diffusion
 
@@ -202,14 +218,14 @@ python -m python_coreml_stable_diffusion.web -i ./models --compute-unit ALL
 
 启动完成后, 会看到命令行给出访问网址, 例如: <http://0.0.0.0:7860>
 
-10. 测试WebUI
+### 9. 测试WebUI
 
 
 打开访问网址, 例如: <http://0.0.0.0:7860>
 
 找一个支持的模板, 改造一下, 例如:
 
-```sh
+```shell
 rabbit, anthro, very cute kid's film character, disney pixar zootopia character concept artwork, 3d concept, detailed fur, high detail iconic character for upcoming film, trending on artstation, character design, 3d artistic render, highly detailed, octane, blender, cartoon, shadows, lighting
 ```
 
@@ -230,7 +246,7 @@ rabbit, anthro, very cute kid's film character, disney pixar zootopia character 
 
 
 
-11. 关闭环境
+### 10. 关闭环境
 
 webUI 开启的时候, python 会占用很多内存, 不需要时, 从控制台 `CTRL+C` 关闭即可, 或者粗暴一点直接杀进程。
 
@@ -239,7 +255,7 @@ webUI 开启的时候, python 会占用很多内存, 不需要时, 从控制台 
 
 ## 踩坑日记
 
-1. brew 更新不成功
+### 1. brew 更新不成功
 
 原因是切换了国内的源。 但是, 国内的源比较坑, 经常不兼容或者报错。
 
@@ -247,7 +263,7 @@ webUI 开启的时候, python 会占用很多内存, 不需要时, 从控制台 
 
 本质上 brew 就是依赖了几个 git 仓库, 所以有问题的话可以直接通过git处理一下对应的那几个目录。
 
-2. 转换模型报错
+### 2. 转换模型报错
 
 报错信息为:
 
@@ -257,7 +273,7 @@ RuntimeError: PyTorch convert function for op 'scaled_dot_product_attention' not
 
 解决办法, 参考: https://blog.csdn.net/cainiao1412/article/details/131204867
 
-```sh
+```shell
 pip show torch # 查看torch版本
 pip uninstall torch # 卸载torch版本
 pip install torch==1.13.1 # 安装指定版本
@@ -266,7 +282,7 @@ pip install torch==1.13.1 # 安装指定版本
 OK, 1.3.1 版本可以成功处理。
 
 
-3. 网络问题
+### 3. 网络问题
 
 强的厉害, 经常网络超时, 这时候就需要技巧了。
 
