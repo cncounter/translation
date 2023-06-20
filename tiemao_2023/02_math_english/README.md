@@ -176,6 +176,7 @@ twins: 双胞胎
 | 自然数 | Natural number |
 | 实数 | real number |
 | 虚数 | unreal figure, imaginary number |
+| 复数 | complex number |
 | 数学 | Mathematics, math |
 | 算数 | Arithmetic |
 | 几何 | Geometry |
