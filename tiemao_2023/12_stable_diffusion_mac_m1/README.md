@@ -184,7 +184,7 @@ pip install gradio
 
 - [python_coreml_stable_diffusion/web.py](https://raw.githubusercontent.com/apple/ml-stable-diffusion/be26d3cc5b682479762f37301668cc9c95ec68e2/python_coreml_stable_diffusion/web.py)
 
-文件准备完成后, 启动命令为:
+[web.py](./web.py) 文件准备完成后, 启动命令为:
 
 ```sh
 # 进入仓库目录
