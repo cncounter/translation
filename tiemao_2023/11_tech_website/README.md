@@ -68,3 +68,6 @@
 - [量子国度](https://quantum.country/)
 - [Google Codelabs](https://codelabs.developers.google.com/)
 
+
+作者: [铁锚](https://github.com/cncounter/translation/)
+日期: 2023年06月15日

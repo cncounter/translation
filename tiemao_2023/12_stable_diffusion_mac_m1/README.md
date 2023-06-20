@@ -34,7 +34,7 @@ conda下载页面为: <https://docs.conda.io/en/latest/miniconda.html>
 
 ## 主要参考资料
 
-网上找了很多资料, 发现这篇比较好:
+网上找了很多资料, 折腾了很多次, 发现这篇比较好:
 
 - [在搭载 M1 及 M2 芯片 MacBook 设备上玩 Stable Diffusion 模型 - 知乎](https://zhuanlan.zhihu.com/p/590869015)
 
@@ -277,3 +277,5 @@ OK, 1.3.1 版本可以成功处理。
 - [在搭载 M1 及 M2 芯片 MacBook 设备上玩 Stable Diffusion 模型 - 知乎](https://zhuanlan.zhihu.com/p/590869015)
 
 
+作者: [铁锚](https://github.com/cncounter/translation/)
+日期: 2023年06月20日
