@@ -395,6 +395,13 @@ twins: 双胞胎
 | 扩大  | enlarge |
 | 缩小  | shrink |
 | 密度  | Density |
+| 降级  | degrade |
+| 降级  | downgrade |
+| 升级  | upgrade |
+| 夸大  | overstate |
+| 保守  | understate |
+| 高估  | overestimate |
+| 低估  | underestimate |
 
 
 
