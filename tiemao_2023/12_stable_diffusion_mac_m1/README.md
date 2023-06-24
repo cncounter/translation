@@ -251,6 +251,17 @@ rabbit, anthro, very cute kid's film character, disney pixar zootopia character 
 webUI 开启的时候, python 会占用很多内存, 不需要时, 从控制台 `CTRL+C` 关闭即可, 或者粗暴一点直接杀进程。
 
 
+### 11. 集成App
+
+
+Windows系统下有很多一键安装脚本, 搜索关键字即可: `windows stable diffusion 一键安装`
+
+
+找了一下, MAC系统中也有类似的, 支持 Intel 以及M1/M2芯片。
+
+- [Diffusion Bee - Stable Diffusion GUI App for MacOS](https://diffusionbee.com/)
+
+
 
 
 ## 踩坑日记
