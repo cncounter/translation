@@ -132,6 +132,7 @@ twins: 双胞胎
 | 和   | sum |
 | 乘以  | times, multiply by, multiplying |
 | 除以  | divide by, dividing |
+| 除    | divide into |
 | 幂,指数,乘方  | power |
 | 平方  | square |
 | 立方  | cube |

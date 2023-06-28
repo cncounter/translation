@@ -14,6 +14,8 @@
 - [TED 演讲 - 英文版](https://ed.ted.com/ted_ed_collections) : 演讲资源
 - [TED 演讲 - 网易公开课](https://open.163.com/ted/) : 网易教育汉化字幕的版本
 - [天才的数学和计算机课程学习 brilliant ](https://brilliant.org/) : 很多角度简直是天才的设想
+- [教程点睛 - tutorialspoint](https://www.tutorialspoint.com/index.htm): 各种IT资源和工程领域教程
+- [代码学院 - codecademy](https://www.codecademy.com/): 各种开发语言学习
 - [Oracle Developer Live — Java](https://developer.oracle.com/community/events/devlive-java-recordings.html) : 一些Java视频分享
 - [ZGC作者 perliden 的博客](https://www.malloc.se/)
 - [programcreek技术文章](https://www.programcreek.com/) : 博客类文章分享
