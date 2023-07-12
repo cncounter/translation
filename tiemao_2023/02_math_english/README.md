@@ -131,15 +131,19 @@ twins: 双胞胎
 | 差   | difference  |
 | 和   | sum |
 | 乘以  | times, multiply by, multiplying |
+| 乘法  | multiplication |
 | 除以  | divide by, dividing |
-| 除    | divide into |
+| 除法  | division |
+| 除    | divide into, (示例: "3除6", 换个说法就是 "6除以3"; ) |
+| 取余,取模    | remainder, modulo, mod |
 | 幂,指数,乘方  | power |
 | 平方  | square |
 | 立方  | cube |
 | 立方米  | cubic meter |
 | 底数  | base |
 | 指数  | exponent |
-| 平方根 | square root |
+| 指数  | exponent |
+| 平方根 | square root, sqrt |
 | 立方根 | Cube root |
 | 4次方根 | 4th root |
 | 5次方根 | 5th root |
@@ -216,7 +220,7 @@ twins: 双胞胎
 | 分号 | semicolon | `;` |
 | 破折号 | dash | `—` |
 | 连字符 | Hyphen | `bye-bye` |
-| 括号 | parentheses, parenthesis | `()` |
+| 小括号 | parentheses, parenthesis | `()` |
 | 省略号 | Ellipses, Ellipsis | `…` |
 
 
@@ -386,6 +390,7 @@ twins: 双胞胎
 | :--  | :--           |
 | 量角器 | protractor |
 | 直尺 | straightedge |
+| 计算器 | calculator |
 | 顺时针 | clockwise |
 | 逆时针 | counterclockwise |
 | 平移   | Translation |
