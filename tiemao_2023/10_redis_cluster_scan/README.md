@@ -550,6 +550,17 @@ public static void main(String[] args) {
 5. 回调和统计
 
 
+## 8. Key数量与Redis内存的关系
+
+Key与内存使用量的关系:
+
+清理完成后, 存活Key的数量为 `3.9亿``, Redis主节点的内存占用量为: `70G`。
+
+
+Key的长度平均为 `18字符`, Value的长度大约为 `40~50个字符`。
+
+换算下来, `1千万`个Key和对应的VALUE, 只占用了 `2GB` 的Redis内存。
+
 
 ## 参考链接
 
