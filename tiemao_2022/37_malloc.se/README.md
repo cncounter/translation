@@ -721,7 +721,15 @@ With JEP 376 in place, ZGC now scans exactly zero roots in Stop-The-World phases
 
 ### 7.2 In-Place Relocation
 
-In JDK 16, ZGC got support for in-place relocation. This feature helps avoid OutOfMemoryError in situations where the GC needs to collect garbage when the heap is already filled to the brim. Normally, ZGC compacts the heap (and thereby frees up memory) by moving objects from sparsely populated heap regions into one or more empty heap regions where these objects can be densely packed. This strategy is simple and straightforward and lends itself very well for parallel processing. However, it has one drawback. It requires some amount of free memory (at least one empty heap region of each size type) to get the relocation process started. If the heap is full, i.e. all heap regions are already in use, then we have nowhere to move objects to.
+In JDK 16, ZGC got support for in-place relocation. This feature helps avoid `OutOfMemoryError` in situations where the GC needs to collect garbage when the heap is already filled to the brim. Normally, ZGC compacts the heap (and thereby frees up memory) by moving objects from sparsely populated heap regions into one or more empty heap regions where these objects can be densely packed. This strategy is simple and straightforward and lends itself very well for parallel processing. However, it has one drawback. It requires some amount of free memory (at least one empty heap region of each size type) to get the relocation process started. If the heap is full, i.e. all heap regions are already in use, then we have nowhere to move objects to.
+
+### 7.2 原地执行重定位(Relocation)
+
+在 JDK 16 中，ZGC 开始支持原地重定位。 
+在堆内存基本上用满的情况下, 需要GC收集垃圾时，这个特性可以有效避免 `OutOfMemoryError`。 
+正常情况下，ZGC整理堆内存(并释放内存)的执行逻辑是: 将对象从多个稀疏区, 整理压实, 移动到一个或者多个空闲区。
+这种方式简单直接, 很适合并行处理。 但也有缺点, 就是额外需要一定数量的空闲内存（每种尺寸的region都至少需要一个）才能启动重定位过程。 
+如果堆内存已经用满, 那就没有地方用来腾挪和移动对象。
 
 Prior to JDK 16, ZGC solved this by having a heap reserve. This heap reserve was a set of heap regions that was set aside and made unavailable for normal allocations from Java threads. Instead only the GC itself was allowed to use the heap reserve when relocating objects. This ensured that empty heap regions were available, even if the heap was full from a Java thread’s perspective, to get the relocation process started. The heap reserve was typically a small fraction of the heap. In a previous blog post, I wrote about how we improved it in JDK 14 to better support tiny heaps.
 
