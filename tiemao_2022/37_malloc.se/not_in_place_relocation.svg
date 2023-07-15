@@ -364,19 +364,19 @@
   <g class="com.sun.star.drawing.TextShape">
    <g id="id41">
     <rect class="BoundingBox" stroke="none" fill="none" x="1889" y="4233" width="2922" height="1200"/>
-    <text class="TextShape"><tspan class="TextParagraph" font-family="Liberation Sans, sans-serif" font-size="423px" font-weight="700"><tspan class="TextPosition" x="2139" y="4743"><tspan fill="rgb(0,0,0)" stroke="none">Before </tspan></tspan><tspan class="TextPosition" x="2139" y="5217"><tspan fill="rgb(0,0,0)" stroke="none">Relocation</tspan></tspan></tspan></text>
+    <text class="TextShape"><tspan class="TextParagraph" font-family="Liberation Sans, sans-serif" font-size="423px" font-weight="700"><tspan class="TextPosition" x="2139" y="4743"><tspan fill="rgb(0,0,0)" stroke="none">对象迁移 </tspan></tspan><tspan class="TextPosition" x="2139" y="5217"><tspan fill="rgb(0,0,0)" stroke="none">开始之前</tspan></tspan></tspan></text>
    </g>
   </g>
   <g class="com.sun.star.drawing.TextShape">
    <g id="id42">
     <rect class="BoundingBox" stroke="none" fill="none" x="1762" y="8461" width="2922" height="1200"/>
-    <text class="TextShape"><tspan class="TextParagraph" font-family="Liberation Sans, sans-serif" font-size="423px" font-weight="700"><tspan class="TextPosition" x="2012" y="8971"><tspan fill="rgb(0,0,0)" stroke="none">After </tspan></tspan><tspan class="TextPosition" x="2012" y="9445"><tspan fill="rgb(0,0,0)" stroke="none">Relocation</tspan></tspan></tspan></text>
+    <text class="TextShape"><tspan class="TextParagraph" font-family="Liberation Sans, sans-serif" font-size="423px" font-weight="700"><tspan class="TextPosition" x="2012" y="8971"><tspan fill="rgb(0,0,0)" stroke="none">对象迁移 </tspan></tspan><tspan class="TextPosition" x="2012" y="9445"><tspan fill="rgb(0,0,0)" stroke="none">完成以后</tspan></tspan></tspan></text>
    </g>
   </g>
   <g class="com.sun.star.drawing.TextShape">
    <g id="id43">
     <rect class="BoundingBox" stroke="none" fill="none" x="4810" y="2493" width="3303" height="726"/>
-    <text class="TextShape"><tspan class="TextParagraph" font-family="Liberation Sans, sans-serif" font-size="423px" font-weight="400"><tspan class="TextPosition" x="5060" y="3003"><tspan fill="rgb(102,102,102)" stroke="none">Heap Regions</tspan></tspan></tspan></text>
+    <text class="TextShape"><tspan class="TextParagraph" font-family="Liberation Sans, sans-serif" font-size="423px" font-weight="400"><tspan class="TextPosition" x="5060" y="3003"><tspan fill="rgb(102,102,102)" stroke="none">堆内存块</tspan></tspan></tspan></text>
    </g>
   </g>
   <g class="com.sun.star.drawing.CustomShape">
@@ -389,7 +389,7 @@
   <g class="com.sun.star.drawing.TextShape">
    <g id="id45">
     <rect class="BoundingBox" stroke="none" fill="none" x="16875" y="1291" width="3303" height="726"/>
-    <text class="TextShape"><tspan class="TextParagraph" font-family="Liberation Sans, sans-serif" font-size="423px" font-weight="400"><tspan class="TextPosition" x="17125" y="1801"><tspan fill="rgb(102,102,102)" stroke="none">Free Memory</tspan></tspan></tspan></text>
+    <text class="TextShape"><tspan class="TextParagraph" font-family="Liberation Sans, sans-serif" font-size="423px" font-weight="400"><tspan class="TextPosition" x="17125" y="1801"><tspan fill="rgb(102,102,102)" stroke="none">空闲内存</tspan></tspan></tspan></text>
    </g>
   </g>
   <g class="com.sun.star.drawing.CustomShape">
@@ -402,13 +402,13 @@
   <g class="com.sun.star.drawing.TextShape">
    <g id="id47">
     <rect class="BoundingBox" stroke="none" fill="none" x="16875" y="2053" width="3303" height="726"/>
-    <text class="TextShape"><tspan class="TextParagraph" font-family="Liberation Sans, sans-serif" font-size="423px" font-weight="400"><tspan class="TextPosition" x="17125" y="2563"><tspan fill="rgb(102,102,102)" stroke="none">Live Object</tspan></tspan></tspan></text>
+    <text class="TextShape"><tspan class="TextParagraph" font-family="Liberation Sans, sans-serif" font-size="423px" font-weight="400"><tspan class="TextPosition" x="17125" y="2563"><tspan fill="rgb(102,102,102)" stroke="none">存活对象</tspan></tspan></tspan></text>
    </g>
   </g>
   <g class="com.sun.star.drawing.TextShape">
    <g id="id48">
     <rect class="BoundingBox" stroke="none" fill="none" x="1000" y="1071" width="13082" height="1200"/>
-    <text class="TextShape"><tspan class="TextParagraph" font-family="Liberation Sans, sans-serif" font-size="423px" font-weight="700"><tspan class="TextPosition" x="1250" y="1581"><tspan fill="rgb(0,0,0)" stroke="none">Not-In-Place Relocation</tspan></tspan></tspan><tspan class="TextParagraph" font-family="Liberation Sans, sans-serif" font-size="353px" font-weight="700"><tspan class="TextPosition" x="1250" y="1988"><tspan fill="rgb(102,102,102)" stroke="none">(Empty heap region is available)</tspan></tspan></tspan></text>
+    <text class="TextShape"><tspan class="TextParagraph" font-family="Liberation Sans, sans-serif" font-size="423px" font-weight="700"><tspan class="TextPosition" x="1250" y="1581"><tspan fill="rgb(0,0,0)" stroke="none">非-就地方式执行对象迁移</tspan></tspan></tspan><tspan class="TextParagraph" font-family="Liberation Sans, sans-serif" font-size="353px" font-weight="700"><tspan class="TextPosition" x="1250" y="1988"><tspan fill="rgb(102,102,102)" stroke="none">(此时可以使用空闲堆内存块)</tspan></tspan></tspan></text>
    </g>
   </g>
   <g class="com.sun.star.drawing.CustomShape">
