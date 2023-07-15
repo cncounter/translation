@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="157mm" height="84mm" viewBox="0 0 15700 8400" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" stroke-width="28.222" stroke-linejoin="round" xml:space="preserve">
+ <path fill="rgb(255,255,255)" stroke="none" d="M 7850,8431 L 0,8431 0,0 15700,0 15700,8431 7850,8431 Z"/>
+ <path fill="rgb(0,69,134)" stroke="none" d="M 6930,1789 C 6682,1789 6436,1819 6195,1878 L 6930,4832 6930,4832 6930,1789 Z"/>
+ <path fill="rgb(255,66,14)" stroke="none" d="M 6195,1878 C 5947,1940 5708,2033 5483,2154 L 6930,4832 6930,4832 6195,1878 Z"/>
+ <path fill="rgb(255,211,32)" stroke="none" d="M 5483,2154 C 5428,2184 5373,2216 5319,2249 L 6930,4832 6930,4832 5483,2154 Z"/>
+ <path fill="rgb(87,157,28)" stroke="none" d="M 5319,2249 C 5117,2375 4931,2525 4763,2694 L 6930,4832 6930,4832 5319,2249 Z"/>
+ <path fill="rgb(126,0,33)" stroke="none" d="M 4763,2694 C 4613,2846 4480,3013 4365,3193 L 6930,4832 6930,4832 4763,2694 Z"/>
+ <path fill="rgb(131,202,255)" stroke="none" d="M 4365,3193 C 4226,3411 4114,3646 4035,3892 3936,4196 3886,4513 3886,4832 3886,5151 3936,5469 4035,5773 4133,6077 4279,6363 4467,6622 4655,6880 4882,7107 5140,7295 5399,7483 5685,7629 5989,7727 6293,7826 6611,7877 6930,7877 7249,7877 7567,7826 7870,7727 8174,7629 8460,7483 8719,7295 8977,7107 9204,6880 9392,6622 9580,6363 9726,6077 9824,5773 9923,5469 9974,5151 9974,4832 9974,4513 9923,4196 9824,3892 9726,3588 9580,3302 9392,3043 9204,2785 8977,2558 8719,2370 8460,2182 8174,2036 7870,1938 7567,1839 7249,1789 6930,1789 L 6930,4832 6930,4832 6930,4832 6930,4832 6930,4832 6930,4832 6930,4832 6930,4832 6930,4832 6930,4832 6930,4832 6930,4832 6930,4832 6930,4832 6930,4832 6930,4832 6930,4832 6930,4832 4365,3193 Z"/>
+ <text class="TextShape"><tspan class="TextParagraph" font-family="Liberation Sans, sans-serif" font-size="353px" font-weight="400"><tspan class="TextPosition" x="6290" y="1584"><tspan fill="rgb(0,0,0)" stroke="none">4%</tspan></tspan></tspan></text>
+ <text class="TextShape"><tspan class="TextParagraph" font-family="Liberation Sans, sans-serif" font-size="353px" font-weight="400"><tspan class="TextPosition" x="5525" y="1776"><tspan fill="rgb(0,0,0)" stroke="none">4%</tspan></tspan></tspan></text>
+ <text class="TextShape"><tspan class="TextParagraph" font-family="Liberation Sans, sans-serif" font-size="353px" font-weight="400"><tspan class="TextPosition" x="4823" y="1992"><tspan fill="rgb(0,0,0)" stroke="none">1%</tspan></tspan></tspan></text>
+ <text class="TextShape"><tspan class="TextParagraph" font-family="Liberation Sans, sans-serif" font-size="353px" font-weight="400"><tspan class="TextPosition" x="4431" y="2261"><tspan fill="rgb(0,0,0)" stroke="none">4%</tspan></tspan></tspan></text>
+ <text class="TextShape"><tspan class="TextParagraph" font-family="Liberation Sans, sans-serif" font-size="353px" font-weight="400"><tspan class="TextPosition" x="3931" y="2761"><tspan fill="rgb(0,0,0)" stroke="none">3%</tspan></tspan></tspan></text>
+ <text class="TextShape"><tspan class="TextParagraph" font-family="Liberation Sans, sans-serif" font-size="353px" font-weight="400"><tspan class="TextPosition" x="8463" y="7952"><tspan fill="rgb(0,0,0)" stroke="none">84%</tspan></tspan></tspan></text>
+ <text class="TextShape"><tspan class="TextParagraph" font-family="Liberation Sans, sans-serif" font-size="459px" font-weight="400"><tspan class="TextPosition" x="6143" y="839"><tspan fill="rgb(0,0,0)" stroke="none">Code Distribution</tspan></tspan></tspan></text>
+ <path fill="rgb(0,69,134)" stroke="none" d="M 13871,3076 L 13765,3076 13765,2865 13976,2865 13976,3076 13871,3076 Z"/>
+ <path fill="rgb(255,66,14)" stroke="none" d="M 13871,3574 L 13765,3574 13765,3363 13976,3363 13976,3574 13871,3574 Z"/>
+ <path fill="rgb(255,211,32)" stroke="none" d="M 13871,4072 L 13765,4072 13765,3861 13976,3861 13976,4072 13871,4072 Z"/>
+ <path fill="rgb(87,157,28)" stroke="none" d="M 13871,4569 L 13765,4569 13765,4358 13976,4358 13976,4569 13871,4569 Z"/>
+ <path fill="rgb(126,0,33)" stroke="none" d="M 13871,5067 L 13765,5067 13765,4856 13976,4856 13976,5067 13871,5067 Z"/>
+ <path fill="rgb(131,202,255)" stroke="none" d="M 13871,5565 L 13765,5565 13765,5354 13976,5354 13976,5565 13871,5565 Z"/>
+ <text class="TextShape"><tspan class="TextParagraph" font-family="Liberation Sans, sans-serif" font-size="353px" font-weight="400"><tspan class="TextPosition" x="14076" y="3090"><tspan fill="rgb(0,0,0)" stroke="none">linux</tspan></tspan></tspan></text>
+ <text class="TextShape"><tspan class="TextParagraph" font-family="Liberation Sans, sans-serif" font-size="353px" font-weight="400"><tspan class="TextPosition" x="14076" y="3588"><tspan fill="rgb(0,0,0)" stroke="none">windows</tspan></tspan></tspan></text>
+ <text class="TextShape"><tspan class="TextParagraph" font-family="Liberation Sans, sans-serif" font-size="353px" font-weight="400"><tspan class="TextPosition" x="14076" y="4086"><tspan fill="rgb(0,0,0)" stroke="none">macos</tspan></tspan></tspan></text>
+ <text class="TextShape"><tspan class="TextParagraph" font-family="Liberation Sans, sans-serif" font-size="353px" font-weight="400"><tspan class="TextPosition" x="14076" y="4583"><tspan fill="rgb(0,0,0)" stroke="none">x86</tspan></tspan></tspan></text>
+ <text class="TextShape"><tspan class="TextParagraph" font-family="Liberation Sans, sans-serif" font-size="353px" font-weight="400"><tspan class="TextPosition" x="14076" y="5081"><tspan fill="rgb(0,0,0)" stroke="none">aarch64</tspan></tspan></tspan></text>
+ <text class="TextShape"><tspan class="TextParagraph" font-family="Liberation Sans, sans-serif" font-size="353px" font-weight="400"><tspan class="TextPosition" x="14076" y="5579"><tspan fill="rgb(0,0,0)" stroke="none">shared</tspan></tspan></tspan></text>
+</svg>

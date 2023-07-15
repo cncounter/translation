@@ -892,6 +892,163 @@ For more information on ZGC, please see the [OpenJDK Wiki](https://wiki.openjdk.
 > 原文链接: https://www.malloc.se/blog/zgc-jdk17
 
 
+[JDK 17](http://jdk.java.net/17) was released on September 14. This is a Long-Term Support (LTS) release, meaning it will be supported and receive updates for many years. This is also the first LTS release where a production ready version of ZGC is included. To refresh your memory, an experimental version of ZGC was included in JDK 11 (the previous LTS release) and the first production ready version of ZGC appeared in JDK 15 (a non-LTS release).
+
+ZGC received [41 bugfixes and enhancements](https://bugs.openjdk.org/browse/JDK-8271064?jql=labels%20%3D%20zgc%20AND%20status%20in%20(Resolved%2C%20Closed)%20AND%20fixVersion%20%3D%2017) in JDK 17, and I’ll highlight a few of them here. But before diving into that, if you’re interested in knowing more about ZGC features/enhancements in previous JDK releases, then please read my previous posts.
+
+- What’s new in JDK 16
+- What’s new in JDK 15
+- What’s new in JDK 14
+
+Now let’s dive into what’s new in JDK 17 from a ZGC perspective.
+
+### 8.1 Dynamic Number of GC Threads
+
+The JVM has for a long time had an option called `-XX:+UseDynamicNumberOfGCThreads`. It’s enabled by default and tells the GC to be smart about how many GC threads it’s using for various operations. The number of threads used will be constantly re-evaluated and can thus vary over time. This option is useful for several reasons. For example, it can be hard to figure out what the optimal number of GC threads is for a given workload. What usually happens is that you try various settings of `-XX:ParallelGCThreads` and/or `-XX:ConcGCThreads` (depending on which GC you are using) to see which seems to give the best result. To complicate things, the optimal number of GC threads might vary over time as the application goes through different phases, so setting a fixed number of GC threads can be inherently sub-optimal.
+
+Until JDK 17, ZGC ignored `-XX:+UseDynamicNumberOfGCThreads` and always used a fixed number of threads. During JVM startup, ZGC used heuristics to decide what that fixed number (`-XX:ConcGCThreads`) should be. Once that number was set it never changed again. Starting with JDK 17, ZGC now honors `-XX:+UseDynamicNumberOfGCThreads` and tries to use as few threads as possible, but enough threads to keep up collecting garbage at the rate it’s created. This helps to avoid using more CPU time than needed, which in turn will make more CPU time available to Java threads.
+
+Also note that when this feature is enabled, the meaning of `-XX:ConcGCThreads` changes from “Use this many threads” to “Use at most this many threads”. But unless you have an unconventional workload you typically don’t need to fiddle with `-XX:ConcGCThreads`. ZGC’s heuristics will pick a good max number of threads for you, based on the size of the system you are running on.
+
+To illustrate this feature in action let’s take a look at some graphs when running SPECjbb2015.
+
+The first graph shows the number of GC threads used throughout the run. SPECjbb2015 has an initial ramp-up phase, followed by a longer phase where the load (injection rate) is gradually increased. We can see that the number of threads used by ZGC reflects the amount of work it needs to do to keep up. Only in a few cases does it require all (in this case 5) threads.
+
+![](./specjbb2015_number_of_threads.svg)
+
+
+In the second graph we see the benchmark scores. Because ZGC is no longer using all GC threads all the time, we’re giving more CPU time to the Java threads, which results in better throughput (max-jOPS) and better latency (critical-jOPS).
+
+![](./specjbb2015_score.svg)
+
+If you for some reason want to always use a fixed number of GC threads (like in JDK 16 and earlier) then you can disable this feature by using `-XX:-UseDynamicNumberOfGCThreads`.
+
+
+### 8.2 Fast JVM Termination
+
+When using ZGC, you might have noticed that terminating a running Java process (e.g. by hitting Ctrl+C or by having the application call `System.exit()` ) hasn’t always had an immediate effect. It can sometimes can take a while (in the worst case many seconds) for the JVM to actually terminate. This can be pretty annoying and cause problems in environments where being able to promptly terminate is important.
+
+So, why does it sometimes take time for the JVM to terminate when using ZGC? The reason is that the JVM shutdown sequence needs to coordinate with the GC, so that the GC stops doing what it’s doing and enters a “safe” state. ZGC was only in a “safe” state when it was idle, i.e. not currently collecting garbage. If a very long GC cycle was in progress when the termination signal arrived, then the JVM shutdown sequence simply had to wait for that GC cycle to completed before ZGC became idle and entered a “safe” state again.
+
+This was addressed in JDK 17. ZGC is now able to abort an ongoing GC cycle to quickly reach the “safe” state on demand. Terminating a JVM running ZGC is now more or less instant.
+
+### 8.3 Reduced Mark Stack Memory Usage
+
+ZGC does striped marking. This refers to the heap being divided into stripes and each GC thread gets assigned to mark objects in one of those stripes. This helps minimize shared state among the GC threads and make the marking process more cache friendly, since two GC threads will not be marking objects in the same part of the heap. This approach also results in a natural work balancing between GC threads, as stripes tend to have roughly the same amount of work in them.
+
+![](./striped_marking.svg)
+
+Prior to JDK 17, ZGC’s marking strictly adhered to the striping. If a GC thread, while tracing through the object graph, came across a object reference pointing to a part of the heap that didn’t belong to its assigned stripe, then that object reference was placed on a thread local mark stack associated with that other stripe. Once that stack got full (254 entries) it was handed over to the GC thread that was assigned to handle marking for that stripe. A Java thread loading a object reference to a not-yet-marked object would do the same thing, except that it would always place the object reference on the associated thread local mark stack and never do any actual mark work itself.
+
+This approach works well for most workloads, but there’s also a pathological problem. If you have an object graph with one or more N:1 relationships, where N is a very large number, then you risk using a lot of memory (like many gigabytes) for the mark stacks. We’ve always known about this potentially being an issue, and you can write a small synthetic test to provoke it, but we never really came across a real world workload that exposed it. That is, until OpenJDK contributors from Tencent reported that they had come across this problem in the wild. So, it was time to do something about this.
+
+The fix for this in JDK 17 involves relaxing the strict striping in the following way:
+
+- For GC threads, regardless of which stripe the object reference points to, first try to mark the object (i.e. potentially step out of the GC thread’s assigned stripe), and if it wasn’t already marked, push the object reference to the associated mark stack.
+- For Java threads, first check if the object is already marked, and if it wasn’t already marked, push the object reference to the associated mark stack.
+
+These tweaks help stop excessive mark stack memory usage in the pathological N:1 case, where GC threads come across the same object reference over and over again, pushing lots of duplicate object references onto mark stacks. Duplicates are useless because an object only needs to be marked once. By marking before pushing, and only pushing previously unmarked objects, the production of duplicates stops.
+
+We were initially a bit reluctant to do this, since GC threads are now doing atomic compare-and-swap operations to mark objects in memory that belongs to stripes that other GC threads are assigned to work on. This breaks the strict striping, making it less cache-friendly. Java threads are now also doing atomic loads to see if objects are marked, something they didn’t do before. At the same time, other work done by GC threads (scanning/following object fields and tracking number of live objects/bytes per heap region) still adheres to strict striping. In the end, benchmarking showed that our initial concerns were unfounded. GC marking times were unaffected and the impact on Java threads wasn’t noticeable either. On the flip side, we now have a more robust marking scheme that isn’t prone to excessive memory usage.
+
+### 8.4 macOS on ARM Supported
+
+Some time ago, Apple announced a long-term plan to transition their line of Mac computers from x86 to ARM. Not long after, JEP 391: macOS/AArch64 Port proposed a port of the JDK to this new platform. The JVM code base is fairly modular, with OS- and CPU-specific code isolated from the shared platform independent code. The JDK already supported macOS/x86 and Linux/Aarch64, so the main pieces needed to support macOS/Aarch64 were already there. Of course, work is still needed by anyone who plans to ship and support a macOS/Aarch64 build of the JDK, like invest in new hardware, integrate this new platform in CI-pipelines, etc.
+
+The story is pretty much the same when it comes to ZGC. Both macOS/x86 and Linux/Aarch64 were already supported, so it was mostly a matter of enabling build and test of this new OS/CPU combination. As of JDK 17, ZGC runs on the following platforms (see [this table](https://wiki.openjdk.org/display/zgc#Main-SupportedPlatforms) for more details):
+
+- Linux/x64
+- Linux/AArch64
+- macOS/x64
+- macOS/AArch64
+- Windows/x64
+- Windows/AArch64
+
+Most of the ZGC code base continues to be platform independent. The current code distribution looks like this:
+
+![](./zgc_jdk17_code_distribution.svg)
+
+
+### 8.5 GarbageCollectorMXBeans for Cycles and Pauses
+
+A GarbageCollectorMXBean provides information about the GC. Through this bean, an application can extract summary information (number of GCs done so far, accumulated time spent doing GC, etc) and listen to GarbageCollectionNotificationInfo notifications to get more fine-grained information on individual GCs (GC cause, start time, end time, etc).
+
+Prior to JDK 17, ZGC published a single bean called `ZGC`. This bean provided information about `ZGC cycles`. A cycle includes all the GC phases from start to finish. Most of the phases are concurrent, but some are Stop-The-World pauses. While information about the cycles is useful, you might also be interested in knowing how much of the time spent doing GC was spent in Stop-The-World pauses. This information wasn’t available with a single ZGC bean. To address this, ZGC now publishes two beans, one called `ZGC Cycles` and one called `ZGC Pauses`. As the names suggest, the information provided by each bean maps to cycles and pauses, respectively.
+
+Here’s a small example to illustrate the difference between JDK 16 and 17. The example first makes a 100 calls to `System.gc()` and then extracts summary information from the available `GarbageCollectorMXBean`(s).
+
+```java
+import java.lang.management.ManagementFactory;
+
+public class ExampleGarbageCollectorMXBean {
+    public static void main(String[] args) {
+        // Run 100 GCs
+        for (int i = 0; i < 100; i++) {
+            System.gc();
+        }
+
+        // Print basic information from available beans
+        for (final var bean : ManagementFactory.getGarbageCollectorMXBeans()) {
+            System.out.println(bean.getName());
+            System.out.println("   Count: " + bean.getCollectionCount());
+            System.out.println("   Total Time: " + bean.getCollectionTime() + "ms");
+            System.out.println("   Average Time: " + (bean.getCollectionTime() / (double)bean.getCollectionCount()) + "ms");
+        }
+    }
+}
+```
+
+Running this with JDK 16 produces the following output:
+
+```sh
+$ java -XX:+UseZGC ExampleGarbageCollectorMXBean
+ZGC
+          Count: 100
+     Total Time: 424ms
+   Average Time: 4.24ms
+```
+
+And running this with JDK 17 produces the following output:
+
+
+```sh
+$ java -XX:+UseZGC ExampleGarbageCollectorMXBean
+ZGC Cycles
+          Count: 100
+     Total Time: 412ms
+   Average Time: 4.12ms
+ZGC Pauses
+          Count: 300
+     Total Time: 2ms
+   Average Time: 0.006666666666666667ms
+
+```
+
+In both cases we see that the GC ran 100 cycles and each cycle took on average ~4ms to run. With JDK 17, we can now also see that we had 3 Stop-the-World pauses for each cycle, and each pause was on average ~0.007ms (~7µs) long.
+
+### 8.6 Summary
+
+
+- The JVM option `-XX:+UseDynamicNumberOfGCThreads` is now supported. This is feature is enabled by default and tells ZGC to be smart about how many GC threads it’s using, which often leads to higher throughput and lower latency at the Java application level.
+
+- Terminating a JVM running ZGC is now more or less instant.
+
+- The marking algorithm now uses less memory in general, and is no longer prone to excessive memory usage.
+
+- ZGC now runs on macOS/Aarch64.
+
+- Two GarbageCollectorMXBeans are now published by ZGC, to provide information on both GC cycles and GC pauses.
+
+
+For more information on ZGC, please see the [OpenJDK Wiki](https://wiki.openjdk.java.net/display/zgc/Main), the [GC section on Inside Java](https://inside.java/tag/gc), or [this blog](https://malloc.se/).
+
+更多有关 ZGC 的信息, 请参考:
+
+- [OpenJDK Wiki](https://wiki.openjdk.java.net/display/zgc/Main)
+- [GC section on Inside Java](https://inside.java/tag/gc)
+- [this blog](https://malloc.se/).
+
+
 
 
 
