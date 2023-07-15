@@ -166,7 +166,7 @@ Metronome的业务线程利用率大约是50%.
 
 Our read-barrier is used for Baker-style relocation [5][23], where the loaded value is corrected before the mutator is allowed to use it. We focus collection efforts on regions which are known to be mostly dead, similar to Garbage-First [14]. Our mark phase uses an incremental update style instead of Snapshot-At-The-Beginning (SATB) style [30]. SATB requires a modestly expensive write-barrier which first does a read (and generally a series of dependent tests). The Pauseless collector does not require a write barrier.
 
-读屏障用于 Baker 风格的重定位(见[5][23]), 在允许业务线程使用加载的value前, 加载值已经被修正了.
+读屏障用于 Baker 风格的对象迁移(见[5][23]), 在允许业务线程使用加载的value前, 加载值已经被修正了.
 我们将垃圾收集的重点放在已知大部分对象已死的区域, 类似于Garbage-First收集器(见[14]).
 标记阶段使用增量更新方式, 不再使用快照方式(Snapshot-At-The-Beginning,SATB, 见[30]).
 快照方式需要使用开销较大的写屏障, 写之前还要先读取(通常伴随一连串的判断)。
@@ -292,7 +292,7 @@ The read barrier “looks like” a standard load instruction, in that it has a 
 如果 ref 指向受GC保护的页面，则会调用快速用户模式陷阱处理程序，下文称为GC陷阱。
 读屏障会忽略null引用。
 Brooks(见[10])间接屏障与读屏障不同，它没有null检查，没有内存访问，没有loaduse惩罚，对象头中也没有多余的字，也没有缓存占用。
-在并发重定位阶段（concurrent Relocate phase）使用此行为。
+在并发对象迁移阶段（concurrent Relocate phase）使用此行为。
 
 We also steal 1 address bit from the 64-bit address space; the hardware ignores this bit (masks it off). This bit is called the Not-Marked-Through (NMT) bit and is used during the concurrent Marking phase. The hardware maintains a desired value for this bit and will trap to the NMT-trap if the ref has the wrong flavor. Null refs are ignored here as well.
 
@@ -320,20 +320,20 @@ NMT检查的模拟，可以通过双重映射内存，加上更改页面保护�
 
 The Pauseless GC Algorithm is divided into three main phases: Mark, Relocate and Remap. Each phase is fully parallel and concurrent. Mark bits go stale; objects die over time and the mark bits do not reflect the changes. The Mark phase is responsible for periodically refreshing the mark bits. The Relocate phase uses the most recently available mark bits to find pages with little live data, to relocate and compact those pages and to free the backing physical memory. The Remap phase updates every relocated pointer in the heap.
 
-重定位阶段使用最近可用的标记位来查找具有少量存活对象的页面，以重定位和压缩这些页面, 释放物理内存。重映射阶段更新堆中的每个重定位指针。
+对象迁移阶段使用最近可用的标记位来查找具有少量存活对象的页面，以迁移和压缩这些页面, 释放物理内存。重映射阶段更新堆中的每个对象迁移指针。
 
-Pauseless GC 算法分为三个主要阶段：标记(`Mark`)，重定位(`Relocate`)和重映射(`Remap`)。 每个阶段都是完全并行和并发执行的。
+Pauseless GC 算法分为三个主要阶段：标记(`Mark`)，对象迁移(`Relocate`)和重映射(`Remap`)。 每个阶段都是完全并行和并发执行的。
 标记位(Mark bits)慢慢变得陈旧； 随着对象在一段时间后死亡，但标记位却没能反映出这种变化。
 `标记` 阶段, 负责定时刷新标记位。
-`重定位` 阶段, 使用最新的标记位数据, 来查找只有少量存活数据的页面, 以重定位和压缩这些页面，并并释放底层的物理内存。
-`重映射` 阶段, 主要是更新堆内存中的每一个重定位指针。
+`对象迁移` 阶段, 使用最新的标记位数据, 来查找只有少量存活数据的页面, 以迁移和压缩这些页面，并并释放底层的物理内存。
+`重映射` 阶段, 主要是更新堆内存中的每一个对象迁移指针。
 
 > 译者注: `并行`指GC线程之间并行执行, `并发`指GC线程与业务线程之间并发执行。
 
 
 **There is no “rush” to finish any given phase.** No phase places a substantial burden on the mutators that needs to be relieved by ending the phase quickly. There is no “race” to finish some phase before collection can begin again – Relocation runs continuously and can immediately free memory at any point. Since all phases are parallel, GC can keep up with any number of mutator threads simply by adding more GC threads. Unlike other incremental update algorithms, there is no re-Mark or final- Mark phase; the concurrent Mark phase will complete in a single pass despite the mutators busily modifying the heap. GC threads do compete with mutator threads for CPU time. On Azul's hardware there are generally spare CPUs available to do GC work. However, “at the limit” some fraction of CPUs will be doing GC and will not be available to the mutators.
 
-**任何阶段都不需要“急于”完成**。 没有哪个阶段需要快速完成，也就不会给业务线程带来很大的负担。 在垃圾收集再次开始之前不必“抢着”完成某个阶段 - 其中重定位会持续运行，可以在任意时刻释放内存。 由于各个阶段都是并行执行的，因此只需要增加GC线程，GC速度就可以赶上任意数量的业务线程。 与其他增量更新算法不同，这里没有重新标记或最终标记阶段; 尽管业务线程会一直修改堆内存，但并发标记阶段将在一次传递中完成。 GC线程确实会与业务线程争抢CPU时间。 在Azul的硬件上，通常有备用CPU来执行GC工作。 当然，“在极限情况下”某些CPU只执行GC操作, 不会让业务线程使用。
+**任何阶段都不需要“急于”完成**。 没有哪个阶段需要快速完成，也就不会给业务线程带来很大的负担。 在垃圾收集再次开始之前不必“抢着”完成某个阶段 - 其中对象迁移会持续运行，可以在任意时刻释放内存。 由于各个阶段都是并行执行的，因此只需要增加GC线程，GC速度就可以赶上任意数量的业务线程。 与其他增量更新算法不同，这里没有重新标记或最终标记阶段; 尽管业务线程会一直修改堆内存，但并发标记阶段将在一次传递中完成。 GC线程确实会与业务线程争抢CPU时间。 在Azul的硬件上，通常有备用CPU来执行GC工作。 当然，“在极限情况下”某些CPU只执行GC操作, 不会让业务线程使用。
 
 
 **Each of the phases involves a “self-healing” aspect,** where the mutators immediately correct the cause of each read barrier trap by updating the ref in memory. This assures the same ref will not trigger another trap. The work involved varies by trap type and is detailed below. Once the mutators' working sets have been handled they can execute at full speed with no more traps. During certain phase shifts mutators suffer through a “trap storm”, a high volume of traps that amount to a pause smeared out in time. We measured the trap storms using Minimum Mutator Utilization, and they cost around 20ms spread out over a few hundred milliseconds.
@@ -355,7 +355,7 @@ The Mark phase is a parallel and concurrent incremental update (not SATB) markin
 标记阶段是并行的，增加了读屏障，采样并发增量更新标记算法（而不是SATB）(见[17])。
 标记阶段负责标记所有的存活对象，并以某种方式打上标签，将其与死亡对象区分开。
 此外，每个引用的NMT标志位都设置为期望值。
-标记阶段还统计每个1M页的存活量。 存活量数据只是页面上存活数据的保守估计（因此保证了可回收空间的量），在“重定位”阶段中使用。
+标记阶段还统计每个1M页的存活量。 存活量数据只是页面上存活数据的保守估计（因此保证了可回收空间的量），在“对象迁移”阶段中使用。
 
 
 The basic idea is straightforward: the Marker starts from some root set (generally static global variables and mutator stack contents) and begins marking reachable objects. After marking an object (and setting the NMT bit), the Marker then marksthrough the object – recursively marking all refs it finds inside the marked object. Extensions to make this algorithm parallel have been previously published [17]. Making marking fully concurrent is a little harder and the issues are described further below.
@@ -369,16 +369,16 @@ The basic idea is straightforward: the Marker starts from some root set (general
 
 ### 4.2 Relocate Phase
 
-### 4.2 Relocate Phase(重定位阶段)
+### 4.2 Relocate Phase(对象迁移阶段)
 
 The Relocate phase is where objects are relocated and pages are reclaimed. A page with mostly dead objects is made wholly unused by relocating the remaining live objects to other pages. The Relocate phase starts by selecting a set of pages that are above a given threshold of sparseness. Each page in this set is protected from mutator access, and then live objects are copied out. Forwarding information tracking the location of relocated objects is maintained outside the page.
 
-重定位阶段进行对象重新定位以及内存页面回收。
+对象迁移阶段进行对象重新定位以及内存页面回收。
 如果某个页面中大部分都是死亡对象，则可以将剩下的存活对象重新分配到其他页面中去，然后这个页面就不再使用。
-重定位阶段首先会圈定一批大于某个稀疏值阈值的页面。
+对象迁移阶段首先会圈定一批大于某个稀疏值阈值的页面。
 然后将这些被选中的页面保护起来，防止业务线程访问，
 接着将存活对象拷贝出去。
-重定位对象的地址转发跟踪信息在页面外进行维护。
+迁移对象的地址转发跟踪信息在页面外进行维护。
 
 
 If a mutator loads a reference to a protected page, the read-barrier instruction will trigger a GC-trap. The mutator is never allowed to use the protected-page reference in a language-visible way. The GC-trap handler is responsible for changing the stale protected-page reference to the correctly forwarded reference.
@@ -389,14 +389,14 @@ If a mutator loads a reference to a protected page, the read-barrier instruction
 
 After the page contents have been relocated, the Relocate phase frees the **physical** memory; it's contents are never needed again. The physical memory is recycled by the OS and can immediately be used for new allocations. **Virtual** memory cannot be freed until no more stale references to that page remain in the heap, and that is the job of the Remap phase.
 
-页面内容全部重定位后，“重定位”阶段就释放 **物理内存**;  因为其中的内容永远不再需要了。
+页面内容全部迁移后，“对象迁移”阶段就释放 **物理内存**;  因为其中的内容永远不再需要了。
 物理内存由操作系统回收后，可立即分配给需要的地方。
 但是 **虚拟内存** 地址则不会立即释放，需要等到没有对该页面的过时引用存在，当然后面的事情就是重映射阶段来做了。
 
 
 As hinted at in Figure 1, a Relocate phase runs constantly freeing memory to keep pace with the mutators' allocations. Sometimes it runs alone and sometimes concurrent with the next Mark phase.
 
-如下面的图1所示，重定位阶段不断运行来释放内存, 以跟上业务线程分配内存的速度。 有时候会单独运行，有时也会和下一个标记阶段同时运行。
+如下面的图1所示，对象迁移阶段不断运行来释放内存, 以跟上业务线程分配内存的速度。 有时候会单独运行，有时也会和下一个标记阶段同时运行。
 
 
 ### 4.3 Remap Phase
@@ -407,7 +407,7 @@ During the Remap phase, GC threads traverse the object graph executing a read ba
 
 在重映射阶段，GC线程遍历对象图，对堆内存中的每个引用执行读屏障。
 如果引用指向受保护的页面，那么就是陈旧的, 需要进行转发，就如同业务线程掉进这个引用上的陷阱。
-重映射阶段完成后，不再有任何一个存活对象的引用指向先前的重定位阶段保护的页面。
+重映射阶段完成后，不再有任何一个存活对象的引用指向先前的迁移阶段保护的页面。
 这时候，这些页面的虚拟内存也就释放了。
 
 
@@ -424,9 +424,9 @@ Since both the Remap and Mark phases need to touch all live objects, we fold the
 
 The Remap phase is also running concurrently with the 2nd half of the Relocate phase. The Relocate phase is creating new stale pointers that can only be fixed by a complete run of the Remap phase, so stale pointers created during the 2nd half of this Relocate phase are only cleaned out at the end of the next Remap phase. The next few sections will discuss each phase in more depth.
 
-重映射阶段， 和重定位阶段的后半部分也可以并发运行。
-重定位阶段会创建新的过时指针，只在完整运行的重映射阶段修复，
-因此在本次重定位阶段后半部分创建的过时指针, 仅在下一个重映射阶段结束时清除。 接下来的小节将深入讨论每一个阶段。
+重映射阶段， 和对象迁移阶段的后半部分也可以并发运行。
+对象迁移阶段会创建新的过时指针，只在完整运行的重映射阶段修复，
+因此在本次对象迁移阶段后半部分创建的过时指针, 仅在下一个重映射阶段结束时清除。 接下来的小节将深入讨论每一个阶段。
 
 
 -----------
@@ -453,7 +453,7 @@ After the root-sets are all marked we proceed with a parallel and concurrent mar
 
 New objects created by concurrent mutators are allocated in pages which will not be relocated in this GC cycle, hence the state of their live bits is not consulted by the Relocate phase. All refs being stored into new objects (or any object for that matter) have either already been marked or are queued in the Mark phase's worklists. Hence the initial state of the live bit for new objects doesn't matter for the Mark phase.
 
-并发的业务线程创建的新对象只能在其他页面中分配，这些页面不会在此GC周期中被重定位，因此 重定位阶段不会涉及到这些新对象的存活状态标志位。新对象（或任何对象）中的所有引用，要么已经被标记，要么还在标记阶段的工作列表中等着处理。因此，对于标记阶段来说，新对象的存活标志位的初始值是无关紧要的。
+并发的业务线程创建的新对象只能在其他页面中分配，这些页面不会在此GC周期中被迁移，因此 对象迁移阶段不会涉及到这些新对象的存活状态标志位。新对象（或任何对象）中的所有引用，要么已经被标记，要么还在标记阶段的工作列表中等着处理。因此，对于标记阶段来说，新对象的存活标志位的初始值是无关紧要的。
 
 ### 5.1 The NMT Bit
 
@@ -507,22 +507,22 @@ When the marking threads run out of work, Marking is nearly done. The marking th
 
 ## 6. RELOCATE AND REMAP PHASES
 
-## 6. 重定位阶段 与 Remap 阶段详解
+## 6. 对象迁移阶段 与 Remap 阶段详解
 
 The Relocate phase is where objects get relocated and compacted, and unused pages get freed. Recall that the Mark phase computed the amount of live data per 1M page. A page with zero live data can obviously be reclaimed. A page with only a little live data can be made wholly unused by relocating the live objects out to other pages.
 
-重定位阶段进行对象重定位和内存整理，并释放不使用的页面。 回想一下，标记阶段计算每个1M页面中的存活数据量。很明显存活数据为0的页面是可以被回收的。 仅有少量存活数据的页面，可以通过将存活对象重定位到其他页面，使得此页面整个不再被使用。
+迁移阶段进行对象迁移和内存整理，并释放不使用的页面。 回想一下，标记阶段计算每个1M页面中的存活数据量。很明显存活数据为0的页面是可以被回收的。 仅有少量存活数据的页面，可以通过将存活对象迁移到其他页面，使得此页面整个不再被使用。
 
 As hinted at in Figure 1, a Relocate phase is constantly running, continuously freeing memory at a pace to stay ahead of the mutators. Relocation uses the current GC-cycle's mark bits. A cycle's Relocate phase will overlap with the next cycle's mark phase. When the next cycle's Mark phase starts it uses a new set of marking bits, leaving the current cycle's mark bits untouched. The Relocate phase starts by finding unused or mostly unused pages. In theory full or mostly full pages can be relocated as well but there's little to be gained. Figure 2 shows a series of 1M heap pages; live object space is shown textured. There is a ref coming from a fully live page into a nearly empty page. We want to relocate the few remaining objects in the “Mostly Dead” page and compact them into a “New, Free” page, then reclaim the “Mostly Dead” page.
 
-从图1中可以看到，重定位阶段不断运行，不断释放内存，以保持领先于业务线程。重定位时会使用当前GC周期的标记位。
-每次GC循环的重定位阶段和下一周期的标记阶段有部分重叠。当下一周期的标记阶段开始时，会使用一组新的标记位，保持前一周期的标记位不变。
-重定位阶段首先排查未使用或者大部分空间未使用的页面。理论上，用满或者基本用满的页面也能进行重定位，但没多少意义。
-图2显示了一些1M堆内存页面; 存活对象占用的部分使用条纹表示。在图2中，全是存活对象的页面中有个引用，指向了一个几乎是空的页面。我们想要将“Mostly Dead”页面中的少量存活对象重定位，将它们整理到“New，Free”页面，然后回收“Mostly Dead”页面。
+从图1中可以看到，对象迁移阶段不断运行，不断释放内存，以保持领先于业务线程。迁移时会使用当前GC周期的标记位。
+每次GC循环的对象迁移阶段和下一周期的标记阶段有部分重叠。当下一周期的标记阶段开始时，会使用一组新的标记位，保持前一周期的标记位不变。
+对象迁移阶段首先排查未使用或者大部分空间未使用的页面。理论上，用满或者基本用满的页面也能进行迁移，但没多少意义。
+图2显示了一些1M堆内存页面; 存活对象占用的部分使用条纹表示。在图2中，全是存活对象的页面中有个引用，指向了一个几乎是空的页面。我们想要将“Mostly Dead”页面中的少量存活对象迁移，将它们整理到“New，Free”页面，然后回收“Mostly Dead”页面。
 
 Next the Relocate phase builds side arrays to hold forwarding pointers. The forwarding pointers cannot be kept in the old copy of the objects because we will reclaim the physical storage immediately after copying and long before all refs are remapped.
 
-接下来，重定位阶段构建 side arrays 来保存转发指针。转发指针不能保存在对象的旧副本中，因为在复制后会立即回收物理内存，而且在所有引用重新映射之前还有很长一段时间。
+接下来，对象迁移阶段构建 side arrays 来保存转发指针。转发指针不能保存在对象的旧副本中，因为在复制后会立即回收物理内存，而且在所有引用重新映射之前还有很长一段时间。
 
 ![](02_Finding_sparsely_populated_pages.jpg)
 
@@ -543,12 +543,12 @@ Next the Relocate phase builds side arrays to hold forwarding pointers. The forw
 
 The side array data isn't large because we relocate sparse pages. We implement it as a straightforward hash table. Figure 3 shows the side array.
 
-side array 的数据量并不大，因为重定位的是稀疏页面。我们使用一个简单的哈希表来实现这种映射。side array 如图3所示。
+side array 的数据量并不大，因为迁移的是稀疏页面。我们使用一个简单的哈希表来实现这种映射。side array 如图3所示。
 
 
 The Relocate phase then GC-protects the “Mostly Dead” page, shown in gray, from the mutators. Objects in this page are now considered stale; no more modifications of these objects are allowed. If a mutator loads a ref into the protected page, it's readbarrier will now take a GC-trap.
 
-然后 重定位阶段 保护 “Mostly Dead”页面，阻止业务线程修改,图中以灰色显示。 现在将此页面中的对象当做是陈旧的; 不允许对这些对象进行修改。 如果mutator将引用加载到受保护的页面，则对应的读屏障就会陷入到GC陷阱中。
+然后 对象迁移阶段 保护 “Mostly Dead”页面，阻止业务线程修改,图中以灰色显示。 现在将此页面中的对象当做是陈旧的; 不允许对这些对象进行修改。 如果mutator将引用加载到受保护的页面，则对应的读屏障就会陷入到GC陷阱中。
 
 
 Next the live objects are copied out and the forwarding table is modified to reflect the objects' new locations as shown in Figure 4. Copying is done concurrently with the mutators; the readbarrier keeps the mutators from seeing a stale object before it has finished moving. Live objects are found using the most recent mark-bits available and sweeping the page.
@@ -557,7 +557,7 @@ Next the live objects are copied out and the forwarding table is modified to ref
 
 Once copying has completed, the **physical** memory behind the page is freed. Virtual memory cannot be reclaimed until there are no more stale refs pointing into the freed page. Stale refs are left in the heap to be lazily discovered by running mutators using the read-barrier, and will be completely updated in the next Remap phase. Freed physical memory is immediately recycled by the OS and may be handed out to this or another process. After freeing memory, the GC threads are idled until the next need to relocate and free memory, or until the next Mark and Remap phase begins.
 
-复制完成后，底层的 **物理内存** 将被释放。 直到没有过时引用指向已释放的页面，虚拟内存地址才会被回收。 堆内存中的过时引用，使用懒发现策略，依靠的是业务线程的读屏障，且在下一次Remap阶段会完全更新。 释放的物理内存可以立即被操作系统回收，并分配给某个进程。释放内存后，GC线程将处于空闲状态，直到下一次需要重定位和释放内存，或者直到下一次 Mark 和 Remap 阶段开始。
+复制完成后，底层的 **物理内存** 将被释放。 直到没有过时引用指向已释放的页面，虚拟内存地址才会被回收。 堆内存中的过时引用，使用懒发现策略，依靠的是业务线程的读屏障，且在下一次Remap阶段会完全更新。 释放的物理内存可以立即被操作系统回收，并分配给某个进程。释放内存后，GC线程将处于空闲状态，直到下一次需要对象迁移和释放内存，或者直到下一次 Mark 和 Remap 阶段开始。
 
 ### 6.1 Read-Barrier Trap Handling
 
@@ -569,23 +569,23 @@ If a mutator's read-barrier GC-traps, then the mutator has loaded a stale ref. T
 
 It is also possible that the needed object has not yet been copied. In this case the mutator will do the copy on behalf of the GC thread – since the mutator is otherwise blocked from forward progress. The mutator can read the GC-protected page because the trap handler runs in the elevated GC-protection mode. If the mutator must copy a large object, it may be stalled for a long time. This normally isn't an issue: pages with a lot of live data are not relocated and a `1/2`-page sized object (512K) can be copied in about 1ms.
 
-还有可能所需的对象尚未复制完成。在这种情况下，业务线程将代表GC线程执行复制 - 反正业务线程已经被阻塞了是吧。 mutator这时候可以读取受GC保护的页面，因为陷阱处理程序被提升到GC保护模式下运行。如果mutator必须复制一个大对象，可能会长时间停滞。这通常不是什么大问题：具有大量存活数据的页面不会重定位，并且复制 `1/2` 页面大小的对象（512K）只需要不到1ms的时间。
+还有可能所需的对象尚未复制完成。在这种情况下，业务线程将代表GC线程执行复制 - 反正业务线程已经被阻塞了是吧。 mutator这时候可以读取受GC保护的页面，因为陷阱处理程序被提升到GC保护模式下运行。如果mutator必须复制一个大对象，可能会长时间停滞。这通常不是什么大问题：具有大量存活数据的页面不会迁移，并且复制 `1/2` 页面大小的对象（512K）只需要不到1ms的时间。
 
 ### 6.2 Other Relocate Phase Actions
 
-### 6.2 重定位阶段的其他操作
+### 6.2 对象迁移阶段的其他操作
 
 At the time we protected pages, running mutators might have stale refs in their root-set. These are already past their read-barrier and thus won't get directly caught. The mutators scrub any existing stale refs from their root-set with a Checkpoint. Relocation can start when the Checkpoint completes.
 
-在保护页面时，运行中的mutators在其root-set中可能有过时的引用。 因为root-set中的引用直接跳过了读屏障，所以不会被直接获取到。 mutators使用一个Checkpoint来将root-set中的陈旧引用擦除。检查点完成后，可以继续重定位。
+在保护页面时，运行中的mutators在其root-set中可能有过时的引用。 因为root-set中的引用直接跳过了读屏障，所以不会被直接获取到。 mutators使用一个Checkpoint来将root-set中的陈旧引用擦除。检查点完成后，可以继续对象迁移。
 
 The cost to modify the TLB protections (a kernel call and a system- wide TLB shoot-down) and scrubbing the mutators' stacks is the same for one page as it is for many. We batch up these operations to lower costs, and typically protect (and relocate and free) a few gigabytes at a time.
 
-修改TLB保护的成本（系统内核调用 + 系统范围的TLB击落）和擦除mutator栈是相同的，一个或多个页面的消耗也相同。因为这些操作是批量处理以降低成本，每次也就保护（+重定位+释放）几个GB的内存。
+修改TLB保护的成本（系统内核调用 + 系统范围的TLB击落）和擦除mutator栈是相同的，一个或多个页面的消耗也相同。因为这些操作是批量处理以降低成本，每次也就保护（+对象迁移+释放）几个GB的内存。
 
 Notice that there is no “rush” to finish the Relocation phase; we need only relocate and free pages at a pace to keep ahead of the mutators. Also notice it is unlikely that a mutator stalls on an unmoved stale object. Relocated pages contain only a few older objects, most likely they have moved out of the mutator's working set. Virtual memory is not freed immediately, but we have lots of that. The final step of scrubbing all stale refs and reclaiming virtual memory is the job of the Remap phase.
 
-请注意，GC并不需要“急于”完成重定位阶段; 只需要重定位和释放的速度超过mutators分配的速度就行了。还要注意，mutator不太可能在未移动的过时对象上停顿。被重定位的页面只包含极少的过时对象，大概率它们已经移出了mutator的工作集。虚拟内存不会立即释放，但64位系统的虚拟地址空间多到用不完。擦除所有陈旧引用并回收虚拟内存空间是Remap这个最终阶段的任务。
+请注意，GC并不“急于”完成迁移阶段; 只需要对象迁移和释放的速度超过mutators分配的速度就行了。还要注意，mutator不太可能在未移动的过时对象上停顿。被迁移的页面只包含极少的过时对象，大概率它们已经移出了mutator的工作集。虚拟内存不会立即释放，但64位系统的虚拟地址空间多到用不完。擦除所有陈旧引用并回收虚拟内存空间是Remap这个最终阶段的任务。
 
 ### 6.3 The Remap Phase
 
@@ -637,7 +637,7 @@ The worse pause reported was 16ms and the average was 7ms.
 
 ### 7.3 At the Relocation Phase Start
 
-### 7.3 重定位阶段开始时
+### 7.3 对象迁移阶段开始时
 
 The mutators' root-sets need scrubbing when GC-protecting a page. There are two problems here: the TLB shoot-down isn't atomic and there are stale refs in the root-set. Since the TLB shoot-down is not atomic, for a brief period some mutators can be protected and not others. Unprotected mutators would continue to read and write the object directly, so protected mutators need to as well. However, reading and writing the protected object forces a GC-protection trap. Our current implementation stops all threads and performs a bulk TLB shoot-down and mutator root-set scrubbing under STW. This can be engineered to be concurrent and incremental in a straightforward manner.
 
@@ -645,7 +645,7 @@ The mutators' root-sets need scrubbing when GC-protecting a page. There are two 
 
 We could use a Checkpoint to update the TLBs and scrub the root-sets. To maintain concurrency until all threads have passed the relocation Checkpoint, the read barrier's TLB trap handler is modified to wait for the Checkpoint to complete before proceeding with relocation or remapping and propagating a corrected ref in the mutator. Mutator threads that actually access refs in protected pages will then “bunch up” at the Checkpoint with other threads continuing concurrent execution past the Checkpoint. This effect is mitigated by the fact that we preferentially relocate sparse pages.
 
-我们可以使用Checkpoint来更新TLB并擦除root-sets。 为了保持并发, 在所有线程都通过重定位检查点之前，读屏障的TLB陷阱处理程序需要等待检查点完成，然后继续重定位或重映射，并在mutator中传播更正后的引用。 实际访问受保护页面中的引用的Mutator线程将在检查点“聚集”，其他线程则通过检查点继续并发执行。 我们优先重定位稀疏页面，也就减轻了这种影响。
+我们可以使用Checkpoint来更新TLB并擦除root-sets。 为了保持并发, 在所有线程都通过迁移检查点之前，读屏障的TLB陷阱处理程序需要等待检查点完成，然后继续迁移或重映射，并在mutator中传播更正后的引用。 实际访问受保护页面中的引用的Mutator线程将在检查点“聚集”，其他线程则通过检查点继续并发执行。 我们优先迁移稀疏页面，也就减轻了这种影响。
 
 The worse pause reported was 19ms and the average was 5ms.
 
@@ -653,11 +653,11 @@ The worse pause reported was 19ms and the average was 5ms.
 
 ### 7.4 Relocate doesn't run during Mark/Remap
 
-### 7.4 在 Mark/Remap 期间还不能执行重定位
+### 7.4 在 Mark/Remap 期间还不能执行对象迁移
 
 Right now we have not implemented a second set of mark bits to allow the Relocate phase to run concurrently with the next Mark/Remap phase [14]. This means we cannot free memory during the Mark/Remap phase. We have heuristics which predict how many pages the mutator will need during marking and we free that many (plus some pad) before marking begins. If we predict low, as can happen if the mutators suddenly “accelerate”, the mutators will block until marking is complete. Engineering the overlapped Relocate/Mark phases will be straightforward. Additionally, we currently do not add threads dynamically in response to mutator acceleration. Each phase completes with a number of threads decided on at the phase start.
 
-截止论文发表时，还未使用第二组标记位来实现，以允许重定位阶段与下一次GC周期的Mark/Remap阶段(见[14])并发执行。 也就是说在具体实现中暂时还不能在Mark/Remap阶段释放内存。 我们使用启发式算法，来预测业务线程在标记期间需要多少页面，并在标记开始前释放足够的页面（加上一些填充）。 如果预测低了，碰到业务线程突然“加速”，则业务线程会阻塞、直到标记完成。 将 重定位/Mark 阶段设计为并发执行非常简单。 此外，目前也不能在业务突然增加时动态添加GC线程。 每个阶段的线程数在该阶段开始时就确定了。
+截止论文发表时，还未使用第二组标记位来实现，以允许迁移阶段与下一次GC周期的Mark/Remap阶段(见[14])并发执行。 也就是说在具体实现中暂时还不能在Mark/Remap阶段释放内存。 我们使用启发式算法，来预测业务线程在标记期间需要多少页面，并在标记开始前释放足够的页面（加上一些填充）。 如果预测低了，碰到业务线程突然“加速”，则业务线程会阻塞、直到标记完成。 将 迁移/Mark 阶段设计为并发执行非常简单。 此外，目前也不能在业务突然增加时动态添加GC线程。 每个阶段的线程数在该阶段开始时就确定了。
 
 ## 8. EXPERIMENTS
 
@@ -815,7 +815,7 @@ Azul的Pauseless GC算法，是为大型多处理器系统设计的，支持并�
 
 Azul's custom hardware includes a read-barrier, an instruction executed against every ref loaded from the heap. The read-barrier allows global GC invariants to be cheaply maintained. It checks for loading of potentially unmarked objects, preventing the spread of unmarked objects into previously marked regions of the heap. This allows the concurrent incremental update Mark phase to terminate cleanly without needing a final STW pause. The read-barrier also checks for loading stale refs to relocated objects and it does it cheaper than a Brooks' style indirection barrier.
 
-Azul 定制的硬件包括一个读屏障，一个针对从堆内存加载引用时执行的指令。读屏障允许轻松维护全局的GC不变量。它检测可能是未标记对象的加载，防止未标记对象扩散到先前标记的区域中。这允许并发增量更新标记阶段干脆地停止，而不需要在最后来一下STW停顿。读屏障还会检查陈旧的指针，到重定位的对象，比起 Brooks 风格的间接屏障代价更低。
+Azul 定制的硬件包括一个读屏障，一个针对从堆内存加载引用时执行的指令。读屏障允许轻松维护全局的GC不变量。它检测可能是未标记对象的加载，防止未标记对象扩散到先前标记的区域中。这允许并发增量更新标记阶段干脆地停止，而不需要在最后来一下STW停顿。读屏障还会检查陈旧的指针，到迁移的对象，比起 Brooks 风格的间接屏障代价更低。
 
 Section 7, Reality Check, includes ongoing and future work. Another obvious and desirable feature is a generational variation of Pauseless. As presented, Pauseless is a single-generation algorithm. The entire heap is scanned in each Mark/Remap cycle. Because the algorithm is parallel and concurrent, and we have plentiful CPUs the cost is fairly well hidden. On a fully loaded system the GC threads will steal cycles from mutator threads, so we'd like the GC to be as efficient as possible. A generational version will only need to scan the young generation most of the time. The necessary hardware barriers already exists.
 

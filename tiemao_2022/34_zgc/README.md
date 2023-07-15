@@ -361,11 +361,11 @@ Pause Mark End 示意图
 
 
 
-#### 3.1.2 重分配阶段(Relocation, 对象迁移)
+#### 3.1.2 对象迁移阶段(Relocation)
 
 * 并发+并行方式执行(Concurrent & Parallel)
 * 使用读屏障(Load barrier): 
-  - 通过读屏障检测出指向重分配集(relocation set)中的对象指针的加载
+  - 通过读屏障检测出指向对象迁移集(relocation set)中的对象指针的加载
   – 如果碰到了, Java应用线程可以辅助进行对象迁移。
 
 * 不使用堆内存转发表(Off-heap forwarding tables)
@@ -378,32 +378,32 @@ Pause Mark End 示意图
 ![]()
 
 
-#### 3.1.3 标记(Marking)和对象重分配(Relocating objects)
+#### 3.1.3 标记(Marking)和对象迁移(Relocating objects)
 
-每次垃圾收集都有两个主要阶段: 标记和对象重分配。 (实际上不止这两个阶段, 更详细的信息请参阅源码)。
+每次垃圾收集都有两个主要阶段: 标记和对象迁移。 (实际上不止这两个阶段, 更详细的信息请参阅源码)。
 
 每个 GC 周期从标记阶段开始, 该阶段负责标记所有可达对象(reachable objects)。 在这个阶段结束时, 我们知道哪些对象还活着, 哪些是垃圾。 ZGC 将此信息存储在每个页面的存活映射图中(live map)。 存活Map是一个位图(bitmap), 用于存储给定索引处的对象是否是强可达对象(strongly-reachable), 或者是最终可达对象(final-reachable, 具有finalize方法的对象)。
 
 在标记阶段执行过程中, 应用程序线程中的读屏障, 负责将未标记的引用, 推到线程本地标记缓冲区中(thread-local marking buffer)。 一旦缓冲区存满了, GC 线程就接管此缓冲区, 并递归遍历此缓冲区中的所有可达对象。 在应用程序线程中所做的标记, 仅仅是将引用推入缓冲区, 由GC线程负责遍历对象图, 并更新存活映射图。
 
-标记完成后, ZGC需要给待迁移集合(relocation set)中的所有存活对象, 重新分配存储空间。 待迁移集合(relocation set)是一组页面, 根据标记后的某些标准(例如垃圾数量最多的页面), 选择要迁移的页面。 一个对象的重分配, 要么由 GC 线程直接执行, 要么由应用程序线程来执行(还是通过读屏障触发)。 ZGC为待迁移集合中的每个页面分配一个转发表(forwarding table)。 转发表一般是 hash map, 用于存储给对象重新分配到的地址(如果对象已被重分配)。
+标记完成后, ZGC需要给待迁移集合(relocation set)中的所有存活对象, 重新分配存储空间。 待迁移集合(relocation set)是一组页面, 根据标记后的某些标准(例如垃圾数量最多的页面), 选择要迁移的页面。 一个对象的迁移, 要么由 GC 线程直接执行, 要么由应用程序线程来执行(还是通过读屏障触发)。 ZGC为待迁移集合中的每个页面分配一个转发表(forwarding table)。 转发表一般是 hash map, 用于存储给对象重新分配到的地址(如果对象已被迁移)。
 
 ZGC这种实现方式的优点, 是我们只需要为待迁移集合页面中的的转发指针分配空间。 相比之下, Shenandoah(雪兰多) GC算法的实现, 是在每个对象自身内部存储转发指针, 这样会存在一些内存开销(空间换时间, 理论上吞吐量会更高)。
 
 GC 线程会遍历待迁移集合中的存活对象, 并为所有尚未迁移的对象重新分配存储位置。 这个迁移过程甚至可能会有并发争抢: 应用程序线程和GC线程同时尝试迁移同一个对象; 在这种情况下, 先迁移的线程会获得执行权。 ZGC使用代价很低的CAS原子操作,来确定线程是否获取到执行权。
 
-虽然从堆内存中读取对象数据时, 读屏障在重分配对象, 或者重映射所有引用, 不会单独标记。 但这确保了业务线程(mutator)看到的每个新引用, 都已经指向了对象的最新副本。 重映射一个对象, 意味着在转发表中找到对象的新地址。
+虽然从堆内存中读取对象数据时, 读屏障在迁移对象, 或者重映射所有引用, 不会单独标记。 但这确保了业务线程(mutator)看到的每个新引用, 都已经指向了对象的最新副本。 重映射一个对象, 意味着在转发表中找到对象的新地址。
 
-只要GC线程遍历完成了待迁移集合的处理, 重分配阶段就结束了。 这时候, 尽管这些对象都已经重新分配了位置, 但可能还有引用指向待迁移集合的页面, 这就需要重映射(remapped)到它们的新地址。 
+只要GC线程遍历完成了待迁移集合的处理, 对象迁移阶段就结束了。 这时候, 尽管这些对象都已经重新分配了位置, 但可能还有引用指向待迁移集合的页面, 这就需要重映射(remapped)到它们的新地址。 
 这类引用的后续修复, 可能会被: 
 
 - 1. 通过读屏障捕获处理
 - 2. 或者在下一个标记周期修复。
 
-这意味着, 标记阶段还需要检查转发表, 将引用重映射到对象的新地址(不会重新分配存储空间 - 所有对象都被重分配过了)。
+这意味着, 标记阶段还需要检查转发表, 将引用重映射到对象的新地址(不会重新分配存储空间 - 所有对象都被迁移过了)。
 
 
-这也解释了为什么一个对象引用中要用两个标记位(`marked0` 和 `marked1`)。 标记阶段在 `marked0` 和 `marked1` 标记位之间交替。 在重分配阶段之后, 可能还有尚未重映射的引用, 这些引用的标记位的值, 还是上次标记周期设置的。 如果是新的标记阶段, 则会使用相同的标记位, 读屏障将会检测到该引用已经被标记过。
+这也解释了为什么一个对象引用中要用两个标记位(`marked0` 和 `marked1`)。 标记阶段在 `marked0` 和 `marked1` 标记位之间交替。 在迁移阶段之后, 可能还有尚未重映射的引用, 这些引用的标记位的值, 还是上次标记周期设置的。 如果是新的标记阶段, 则会使用相同的标记位, 读屏障将会检测到该引用已经被标记过。
 
 
 
@@ -589,8 +589,8 @@ Depending on the stage the GC is currently in (stored in the global variable ZGl
 
 The global variables ZAddressGoodMask and ZAddressBadMask store the mask that determines if a reference is already considered good (that means already marked or remapped/relocated) or if there is still some action necessary. These variables are only changed at the start of marking- and relocation-phase and both at the same time. This table from ZGC’s source gives a nice overview in which state these masks can be:
 
-全局变量 `ZAddressGoodMask` 和 `ZAddressBadMask` 保存着位码(mask), 用于确定引用是否已经被认为是健康状态(已经被标记, 或者重映射/重分配); 或者仍然需要一些操作。
-这些变量仅在标记(marking-)开始时, 以及重分配(relocation-)阶段开始时发生变更, 并且两者会同时更改。
+全局变量 `ZAddressGoodMask` 和 `ZAddressBadMask` 保存着位码(mask), 用于确定引用是否已经被认为是健康状态(已经被标记, 或者重映射/对象迁移); 或者仍然需要一些操作。
+这些变量仅在标记(marking-)开始时, 以及对象迁移(relocation-)阶段开始时发生变更, 并且两者会同时更改。
 这张来自 ZGC 源码中的注释表格, 很好地概述了这些掩码的状态: 
 
 ```c
@@ -615,7 +615,7 @@ jnz load_barrier_mark_or_relocate
 
 第一条汇编指令从堆中读取一个引用: `r10` 保存的是对象的引用, 而 `some_field_offset` 则是某个字段固定的偏移量。 加载的引用存储在 `rax` 寄存器中。
 然后针对当前的错误掩码(ZAddressBadMask)测试该引用(使用按位与操作)。 这里不需要同步操作, 因为 `ZAddressBadMask` 只有在STW时才会更新。 
-如果结果非零, 则需要执行屏障。 屏障会根据当前所处的 GC 阶段执行标记或重分配操作。
+如果结果非零, 则需要执行屏障。 屏障会根据当前所处的 GC 阶段执行标记或对象迁移操作。
 在此操作之后, 它需要将健康的引用地址,更新到 `r10 + some_field_offset` 存储位置。 更新操作完成, 后续通过此字段加载到的就是一个健康的指针。 
 因为可能需要更新引用地址, 所以使用到了两个寄存器 `r10` 和 `rax`, 分别存储对象地址, 和加载的引用。
 健康的引用也需要存储到寄存器 `rax` 中, 这样就和我们加载到了健康的引用等效, 程序可以继续执行。
@@ -623,20 +623,20 @@ jnz load_barrier_mark_or_relocate
 
 Since every single reference needs to be marked or relocated, throughput is likely to decrease right after starting a marking- or relocation-phase. This should get better quite fast when most references are healed.
 
-由于每个引用都需要被标记或重分配, 因此在开始标记或重分配阶段后, 吞吐量可能会立即降低。 当大多数指针都被修正时, 吞吐量也应该会迅速好转。
+由于每个引用都需要被标记或迁移, 因此在开始标记或对象迁移阶段后, 吞吐量可能会立即降低。 当大多数指针都被修正时, 吞吐量也应该会迅速好转。
 
 
 ### 3.2.6 ZGC与STW暂停
 
 
-ZGC并没有完全摆脱 stop-the-world 暂停。 垃圾收集器在开始标记、结束标记和开始重分配时, 都需要STW暂停(Stop-the-World Pauses)。 但这种停顿通常很短: 只需要几毫秒。
+ZGC并没有完全摆脱 stop-the-world 暂停。 垃圾收集器在开始标记、结束标记和开始对象迁移时, 都需要STW暂停(Stop-the-World Pauses)。 但这种停顿通常很短: 只需要几毫秒。
 
 在开始标记时, ZGC会遍历所有线程栈, 来标记GC根。 GC根集合(root set), 是开始遍历对象图的对象引用集。 它通常由线程调用链中的方法局部变量, 以及全局变量组成, 当然也包括其他内部 VM 结构题(例如 JNI 句柄)。
 
 标记阶段结束时, 也需要一次STW暂停。 在此暂停中, GC 需要遍历所有线程本地标记缓冲区(thread-local marking buffers), 并负责清空。 由于 GC 可能会看到很大的未标记子图, 所以这个操作可能会耗时较长。 
 ZGC会尝试在 1 毫秒后就停止标记阶段, 以避免这种情况。 它再次进入并发标记阶段, 直到遍历整个图, 然后再次结束标记阶段。
 
-重分配阶段开始时, 会再次暂停应用程序。 这与开始标记非常相似, 不同之处在于这时候是重分配根集(root set)中的对象。
+对象迁移阶段开始时, 会再次暂停应用程序。 这与开始标记非常相似, 不同之处在于这时候是迁移根集(root set)中的对象。
 
 
 

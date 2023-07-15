@@ -751,7 +751,7 @@ Prior to JDK 16, ZGC solved this by having a heap reserve. This heap reserve was
 Still, the heap reserve approach had a few problems. For example, since the heap reserve was not available to Java threads doing relocation, there was no hard guarantee that the relocation process could complete and hence the GC couldn’t reclaim (enough) memory. This was a non-issue for basically all normal workloads, but our testing revealed that it was possible to construct a program that provoked this problem, which in turn resulted in premature `OutOfMemoryError`. Also, setting aside some (though small) portion of the heap, just in case it was needed during relocation, was a waste of memory for most workloads.
 
 但这种保留一部分堆内存的解决办法, 存在一些问题。 
-比如, 进行对象迁移的 Java 线程, 由于不能使用保留堆内存块, 无法保证对象迁移过程一定能够完成, 因此 GC 无法回收足够的内存。 
+比如, 进行对象迁移的 Java 线程, 由于不能使用保留堆内存块, 无法保证迁移过程一定能够完成, 因此 GC 无法回收足够的内存。 
 基本上对于所有正常的工作负载来说, 这都不是问题。
 但我们的测试表明, 开发出一个蕴含这类问题的系统是可能的, 从而导致过早出现 `OutOfMemoryError`。 
 此外, 留出一小块堆内存, 尽管很小, 对于大多数业务场景来说, 也是一种浪费。
@@ -778,7 +778,7 @@ In summary, both approaches have advantages. Not relocating in-place typically p
 
 综上所述, 两种方法各有优点。 
 当有空闲的堆内存块可用时, 非就地对象迁移的性能, 通常会表现得更好, 
-而就地对象迁移方式, 则可以保证, 即使没有可用的空闲堆内存块, 也能成功完成对象迁移过程。
+而就地对象迁移方式, 则可以保证, 即使没有可用的空闲堆内存块, 也能成功完成迁移过程。
 
 
 Starting with JDK 16, ZGC now uses both approaches to get the best of both worlds. This allows us to get rid of the need for a heap reserve, while maintaining good relocation performance in the common case, and guaranteeing that relocation always successfully completes in the edge case. By default, ZGC will not relocate in-place as long as there is an empty heap region available to move objects to. Should that not be the case, ZGC will switch to relocate in-place. As soon as an empty heap region becomes available, ZGC will again switch back to not relocating in-place.
@@ -788,7 +788,7 @@ Starting with JDK 16, ZGC now uses both approaches to get the best of both world
 同时在一般情况下, 让对象迁移保持良好的性能, 
 在极端情况下, 始终保证对象迁移能够成功完成。 
 
-默认情况下, 只要存在可用的空闲堆内存块, 允许将对象移动过去, ZGC 就不会使用就地对象迁移。 
+默认情况下, 只要存在可用的空闲堆内存块, 允许将对象移动过去, ZGC 就不会使用就地迁移。 
 如果情况恶劣, 那么 ZGC 使用 `就地对象迁移`。 
 之后如果有堆内存块空闲, ZGC 将再次切换成 `非就地对象迁移`。
 

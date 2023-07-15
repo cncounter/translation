@@ -90,7 +90,7 @@ Also known as 'CHA'. Analysis of the class tree used by a compiler to determine 
 
 A special heap that holds compiled code. These objects are not relocated by the GC, but may contain oops, which serve as GC roots.
 
-一块特殊的堆内存空间,用于存放被编译器编译后的代码。 这些对象不会被GC重定位, 但有可能包含oops,也就会成为GC根。
+一块特殊的堆内存空间,用于存放被编译器编译后的代码。 这些对象不会被GC迁移, 但有可能包含oops,也就会成为GC根。
 
 - 12、`compaction`,整理,压实(压缩)
 

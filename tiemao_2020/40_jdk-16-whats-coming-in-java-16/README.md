@@ -48,7 +48,7 @@ Goals of this plan include removing thread-stack processing from ZGC safepoints;
 
 ZGC旨在使HotSpot中的GC暂停和可伸缩性问题成为过去式。
 到目前为止，随着堆大小和元空间大小而扩展的GC操作已经从安全点操作中移出，并进入并发阶段。
-包括标记（marking），重定位（relocation），引用处理，类卸载和大多数根对象的处理。
+包括标记（marking），对象迁移（relocation），引用处理，类卸载和大多数根对象的处理。
 
 在GC安全点中，还需要执行的的活动包括: 根处理的子集, 以及有时间限制的标记终止操作。
 这些GC根,包括Java线程栈, 以及其他线程根，这些根存在问题，因为它们会随线程数的增加而增加。

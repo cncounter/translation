@@ -10,13 +10,13 @@ In previous versions of the Java virtual machine, such as the Classic VM, indire
 
 
 在早期的JVM版本，例如 Classic VM 实现中，使用了 `间接句柄(indirect handle)` 来表示对象引用。
-虽然使用这种方式使得垃圾收集器在重定位对象（relocating）时非常方便，但却导致了严重的性能瓶颈，因为每次访问Java对象的实例变量都需要两步操作。
+虽然使用这种方式使得垃圾收集器在迁移对象（relocating）时非常方便，但却导致了严重的性能瓶颈，因为每次访问Java对象的实例变量都需要两步操作。
 
 In the Java HotSpot VM, no handles are used by Java code. Object references are implemented as direct pointers. This provides C-speed access to instance variables. When an object is relocated during memory reclamation, the garbage collector is responsible for finding and updating all references to the object in place.
 
 HotSpot 推出以后，Java 代码就不再使用任何句柄。
 对象引用使用 `直接指针(direct pointer)` 方式来实现。 在访问实例变量时, 其性能和C语言一样高效。
-当然，在内存回收期间，GC重定位(relocated)对象时，则需要查找并更新这个对象的所有引用。
+当然，在内存回收期间，GC迁移(relocated)对象时，则需要查找并更新这个对象的所有引用。
 
 
 ### Two-Word Object Headers
