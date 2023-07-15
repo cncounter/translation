@@ -821,15 +821,41 @@ ZGC的日志也进行了扩展, 以显示各种尺寸(Small/Medium/Large)的堆�
 
 ### 7.3 Allocation & Initialization of Forwarding Tables
 
+### 7.3 转发表的分配和初始化
+
 When ZGC relocates an object, the new address of that object is recorded in a forwarding table, a data structure allocated outside of the Java heap. Each heap region selected to be part of the relocation set (the set of heap regions to compact to free up memory) gets a forwarding table associated with it.
+
+当 ZGC 迁移对象时, 会在某个转发表中记录该对象的新地址。
+转发表(Forwarding Table)是在 Java 堆内存之外分配的外部数据结构。 
+被选到迁移集合中的每个堆内存块, 都有一个与其关联的转发表。
+迁移集合(relocation set)是指需要进行内存整理, 以释放内存的堆内存块集合。
 
 Prior to JDK 16, the allocation and initialization of forwarding tables could take a significant part of the overall GC cycle time when the relocation set was very large. The size of the relocation set correlates with the number of objects moved during relocation. If you have, for example, a >100GB heap and the workload causes lots of fragmentation, with small holes evenly distributed across the heap, then the relocation set will be large and allocating/initializing it can take a while. Of course, this work has always been done in a concurrent phase, so it has never affected GC pause times. Still, there was room for improvements here.
 
+在 JDK 16 之前, 如果迁移集合非常大, 那么转发表的分配和初始化过程, 可能会占整个 GC 周期的很大一部分时间。 
+迁移集合的大小, 与迁移期间移动的对象数量相关。 
+例如, Java堆内存超过 `100GB`, 并且执行过程中会产生大量的内存碎片, 并且这些碎片均匀分布到整个堆内存, 那么迁移集合将会很大。
+这种情况下, 分配/初始化迁移集合, 可能需要一段时间。 
+当然, 这项工作一直是在并发阶段完成的, 所以并没有影响到 GC 暂停时间。 
+尽管如此, 这里仍有改进的空间。
+
+
 In JDK 16, ZGC now allocates forwarding tables in bulk. Instead of making numerous calls (potentially many thousands) to malloc/new to allocate memory for each table, we now do a single call to allocate all memory needed by all tables in one go. This helps avoid typically allocation overheads and potential lock contention, and significantly reduces the time it takes to allocate these tables.
+
+在 JDK 16 中, ZGC 批量进行转发表的分配。 
+不再为每个转发表数据结构调用 `malloc/new` 来分配内存(之前可能需要数千次), 
+而是调用一次, 为所有转发表分配需要的内存。 
+这有助于减少分配开销和改善可能存在的锁争用, 显著减少这些表所需的分配时间。
 
 The initialization of these tables was another bottleneck. The forwarding table is a hash table, so initializing it means setting up a small header and zeroing out a (potentially large) array of forwarding table entries. Starting with JDK 16, ZGC now does this initialization in parallel using multiple threads, instead of with a single thread.
 
+转发表的初始化是另一个瓶颈。 
+转发表是一个哈希表, 因此对它的初始化, 意味着设置一个小小的header, 并将转发表的条目数组清零(可能很大)。 
+从 JDK 16 开始, ZGC 使用多个线程来并行执行初始化(以前是单个线程)。
+
 In summary, these changes significantly reduce the time is takes to allocate and initialize forwarding tables, especially when collecting very large heaps that are sparsely populated, where the reduction can be on the order of one or two magnitudes.
+
+总之, 这些更改, 显著减少了转发表分配和初始化所需的时间, 特别是在回收非常大的Java堆时, 对象分布比较分散的话, 其中减少的时间可能是好几个数量级。
 
 ![](./phases.svg)
 
