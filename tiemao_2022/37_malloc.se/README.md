@@ -1,5 +1,9 @@
 # perliden的博客
 
+> 主要介绍JDK中ZGC相关的部分
+
+[TOC]
+
 > 网址为: https://www.malloc.se
 
 其中的文章内容如下:
@@ -781,7 +785,7 @@ In summary, these changes significantly reduce the time is takes to allocate and
 
 ### 7.4 Summary
 
-- With concurrent thread-stack scanning, ZGC now has pause times in the microsecond domain, with average pause times of ~50µs and max pause times of ~500µs. Pause times are unaffected by the heap, live-set and root-set size.
+- With concurrent thread-stack scanning, ZGC now has pause times in the microsecond domain, with average pause times of `~50µs` and max pause times of `~500µs`. Pause times are unaffected by the heap, live-set and root-set size.
 
 - The heap reserve is now gone, and ZGC will instead do in-place relocation when needed. This saves memory, but also guarantees that the heap can be successfully compacted in all situations.
 
@@ -790,4 +794,25 @@ In summary, these changes significantly reduce the time is takes to allocate and
 For more information on ZGC, please see the [OpenJDK Wiki](https://wiki.openjdk.java.net/display/zgc/Main), the [GC section on Inside Java](https://inside.java/tag/gc), or [this blog](https://malloc.se/).
 
 
+### 7.4 小结
 
+- 通过线程栈的并发扫描(concurrent thread-stack scanning), ZGC 的暂停时间处于微秒级, 平均暂停时间为 `~50µs` 左右, 最大暂停时间为 `~500µs`左右。 而且暂停时间不再受这些因素的影响: `堆内存大小`、 `存活对象(live-set)`、 `GC根集(root-set)的大小`。
+
+- 不再需要预留(reserve)堆内存中的一部分空间， 在需要时, ZGC 将进行就地重定位。 这节省了内存， 也保证了在所有情况下都可以成功整理堆内存。
+
+- 转发表(Forwarding tables)的分配和初始化更加高效，这缩短了完成 GC 周期所需的时间, 特别是在进行分布比较稀疏的大型堆内存垃圾收集时。
+
+更多有关 ZGC 的信息, 请参考:
+
+- [OpenJDK Wiki](https://wiki.openjdk.java.net/display/zgc/Main)
+- [GC section on Inside Java](https://inside.java/tag/gc)
+- [this blog](https://malloc.se/).
+
+
+
+
+
+## 相关链接
+
+- perliden的博客: <https://www.malloc.se>
+- GitHub版本: [perliden的博客-中文翻译](https://github.com/cncounter/translation/tree/master/tiemao_2022/37_malloc.se#readme)
