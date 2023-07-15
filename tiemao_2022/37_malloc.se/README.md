@@ -859,6 +859,13 @@ For more information on ZGC, please see the [OpenJDK Wiki](https://wiki.openjdk.
 - [this blog](https://malloc.se/).
 
 
+## 8. ZGC | What's new in JDK 17
+
+发表日期: 2021年10月05日
+
+> 原文链接: https://www.malloc.se/blog/zgc-jdk17
+
+
 
 
 

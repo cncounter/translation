@@ -322,7 +322,7 @@
   <g class="com.sun.star.drawing.TextShape">
    <g id="id34">
     <rect class="BoundingBox" stroke="none" fill="none" x="4810" y="2492" width="3303" height="726"/>
-    <text class="TextShape"><tspan class="TextParagraph" font-family="Liberation Sans, sans-serif" font-size="423px" font-weight="400"><tspan class="TextPosition" x="5060" y="3002"><tspan fill="rgb(102,102,102)" stroke="none">Heap Regions</tspan></tspan></tspan></text>
+    <text class="TextShape"><tspan class="TextParagraph" font-family="Liberation Sans, sans-serif" font-size="423px" font-weight="400"><tspan class="TextPosition" x="5060" y="3002"><tspan fill="rgb(102,102,102)" stroke="none">堆内存块</tspan></tspan></tspan></text>
    </g>
   </g>
   <g class="com.sun.star.drawing.TextShape">
