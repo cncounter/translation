@@ -744,7 +744,7 @@ Prior to JDK 16, ZGC solved this by having a heap reserve. This heap reserve was
 与此对应, 在迁移对象时, 只允许 GC 使用保留的堆内存。 
 这种方式确保了空闲堆块的可用, 即使在 Java 线程的角度来看堆内存已经用满了, GC也可以启动迁移过程。 
 保留堆通常只是堆内存的一小部分。 
-前面 JDK 14 的博客文章中, 介绍过如何改进它以更好地支持小型堆。
+前面的博客文章中, 我们介绍了在 JDK 14 中是如何优化保留堆内存, 以更好地支持小型堆(比如128MB)。
 
 ![](./relocation_with_heap_reserve.svg)
 

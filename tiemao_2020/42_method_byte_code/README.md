@@ -233,7 +233,7 @@ Constant pool:
 
 简单解读一下:
 
-- `descriptor: ([Ljava/lang/String;)V` : 方法描述符信息, 括号里面是参数类型, L打头代表数组; 括号后面的`V`表示没有返回值(类似于void)。
+- `descriptor: ([Ljava/lang/String;)V` : 方法描述符信息, 括号里面是参数类型, `[`打头代表数组, `[L`表示对象类型数组; 括号后面的`V`表示没有返回值(类似于void)。
 - `flags: ACC_PUBLIC, ACC_STATIC` 访问标志, 表示这是一个 public 的 static 方法。
 - `stack=0, locals=1, args_size=1` : 表示操作数栈的最大深度=0, 因为是空方法, 里面没有什么压栈操作; 局部变量表槽位数=1, 一个引用变量只占用1个槽位, 特殊的是long和double占2个操作,这个后面会介绍; 接收的参数个数=1, 和前面的构造函数对比来看, static 方法不能使用this, 所以定义了几个入参就是几个;
 - `0: return` 前面的0表示字节码的位置索引, return表示方法结束并返回; 因为这是一个空方法, 什么也没有。
