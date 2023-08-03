@@ -5,7 +5,7 @@
 
 When Redis is used as a cache, sometimes it is handy to let it automatically evict old data as you add new one. This behavior is very well known in the community of developers, since it is the default behavior of the popular*memcached* system.
 
-用 Redis 作为缓存时, 如果用满内存空间, 就会自动驱逐老的数据。 默认情况下 *memcached* 就是这种方式, 大部分开发者都比较熟悉。
+用 Redis 作为缓存时, 如果用满内存空间, 就会自动淘汰老的数据。 默认情况下 *memcached* 就是这种方式, 大部分开发者都比较熟悉。
 
 
 LRU is actually only one of the supported eviction methods. This page covers the more general topic of the Redis `maxmemory` directive that is used in order to limit the memory usage to a fixed amount, and it also covers in depth the LRU algorithm used by Redis, that is actually an approximation of the exact LRU.
@@ -45,7 +45,18 @@ When the specified amount of memory is reached, it is possible to select among d
 
 ## Eviction policies
 
-## 驱逐策略
+## 淘汰策略
+
+
+Redis清理Key的办法包括:
+
+- 定时删除
+- 过期删除
+- 淘汰策略
+
+
+详情可参考: 视频: [我是Redis，MySQL大哥被我坑惨了！](https://www.youtube.com/watch?v=D16efi0TDIs&list=WL&index=2)
+
 
 
 The exact behavior Redis follows when the `maxmemory` limit is reached is configured using the `maxmemory-policy`configuration directive.
@@ -83,7 +94,7 @@ The policies **volatile-lru**, **volatile-random** and **volatile-ttl** behave l
 
 To pick the right eviction policy is important depending on the access pattern of your application, however you can reconfigure the policy at runtime while the application is running, and monitor the number of cache misses and hits using the Redis [INFO](https://redis.io/commands/info) output in order to tune your setup.
 
-您需要根据系统的特征, 来选择合适的驱逐策略。 当然, 在运行过程中也可以通过命令动态设置驱逐策略, 并通过 [INFO](https://redis.io/commands/info) 命令监控缓存的 miss 和 hit, 来进行调优。
+您需要根据系统的特征, 来选择合适的淘汰策略。 当然, 在运行过程中也可以通过命令动态设置淘汰策略, 并通过 [INFO](https://redis.io/commands/info) 命令监控缓存的 miss 和 hit, 来进行调优。
 
 
 In general as a rule of thumb:
@@ -115,12 +126,12 @@ It is also worth to note that setting an expire to a key costs memory, so using 
 
 ## How the eviction process works
 
-## 驱逐的内部处理过程
+## 淘汰的内部处理过程
 
 
 It is important to understand that the eviction process works like this:
 
-驱逐过程可以这样理解:
+淘汰过程可以这样理解:
 
 
 - A client runs a new command, resulting in more data added.
@@ -152,12 +163,12 @@ If a command results in a lot of memory being used (like a big set intersection 
 
 Redis LRU algorithm is not an exact implementation. This means that Redis is not able to pick the *best candidate* for eviction, that is, the access that was accessed the most in the past. Instead it will try to run an approximation of the LRU algorithm, by sampling a small number of keys, and evicting the one that is the best (with the oldest access time) among the sampled keys.
 
-Redis 使用的并不是完全LRU算法。自动驱逐的 key , 并不一定是最满足LRU特征的那个. 而是通过近似LRU算法, 抽取少量的 key 样本, 然后删除其中访问时间最古老的那个key。
+Redis 使用的并不是完全LRU算法。自动淘汰的 key , 并不一定是最满足LRU特征的那个. 而是通过近似LRU算法, 抽取少量的 key 样本, 然后删除其中访问时间最古老的那个key。
 
 
 However since Redis 3.0 the algorithm was improved to also take a pool of good candidates for eviction. This improved the performance of the algorithm, making it able to approximate more closely the behavior of a real LRU algorithm.
 
-驱逐算法, 从 Redis 3.0 开始得到了巨大的优化, 使用 pool(池子) 来作为候选. 这大大提升了算法效率, 也更接近于真实的LRU算法。
+淘汰算法, 从 Redis 3.0 开始得到了巨大的优化, 使用 pool(池子) 来作为候选. 这大大提升了算法效率, 也更接近于真实的LRU算法。
 
 
 What is important about the Redis LRU algorithm is that you **are able to tune** the precision of the algorithm by changing the number of samples to check for every eviction. This parameter is controlled by the following configuration directive:
@@ -180,7 +191,7 @@ The reason why Redis does not use a true LRU implementation is because it costs 
 
 The test to generate the above graphs filled a Redis server with a given number of keys. The keys were accessed from the first to the last, so that the first keys are the best candidates for eviction using an LRU algorithm. Later more 50% of keys are added, in order to force half of the old keys to be evicted.
 
-测试过程中, 依次从第一个 key 开始访问, 所以最前面的 key 才是最佳的驱逐对象。
+测试过程中, 依次从第一个 key 开始访问, 所以最前面的 key 才是最佳的淘汰对象。
 
 
 You can see three kind of dots in the graphs, forming three distinct bands.
@@ -194,8 +205,8 @@ You can see three kind of dots in the graphs, forming three distinct bands.
 
 <br/>
 
-- 浅灰色部分表示被驱逐的对象。
-- 灰色部分表示 "未被驱逐" 的对象。
+- 浅灰色部分表示被淘汰的对象。
+- 灰色部分表示 "未被淘汰" 的对象。
 - 绿色部分表示后面加入的对象。
 
 
