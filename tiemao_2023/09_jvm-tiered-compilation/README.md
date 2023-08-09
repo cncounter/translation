@@ -396,7 +396,7 @@ intx Tier4CompileThreshold = 15000
 
 方法编译(method compilation)的生命周期如下图所示:
 
-![](./03_compilation_cycle.png)
+![](./03_compilation_cycle.jpg)
 
 总体来说, 一个方法最初由 JVM 解释执行。 直到调用次数达到 `Tier3CompileThreshold` 指定的阈值。  
 达到阈值后, JVM就会使用C1编译器来编译该方法, 同时继续采集分析信息。
