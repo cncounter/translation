@@ -455,11 +455,15 @@ GitHub地址: <https://github.com/cncounter/translation>
 3. 《白鱼解字》: 非常棒的说文解字, 很多字形是手绘的, 十分便于理解, 因为计算机印刷字体不好搞。
 4. 《君主论》: 随便看看，就能够重塑你的想象力。
 5. 《统计数据会说谎》: 关于图表和统计数据的科普读物, 教你如何避免被误导。
+6. 《血酬定律》: 旧社会运行的底层规则, 以及拼命得来的丰厚报酬。
+7. 《无穷的开始-世界进步的本源》: 他们想要创造知识, 从而取得进步, 但是, 他们不知道应该怎样去做。
 
 </details>
 
 
 GITHUB官方帮助文档(中文版): <https://docs.github.com/cn/free-pro-team@latest/github>
+
+各知名科技公司技术博客合集: <https://www.luxiangdong.com/2023/07/20/techblog/>
 
 
 Star 增长曲线（URL换成你的账号和项目, 即可看项目的曲线）: <https://starchart.cc/cncounter/translation>
