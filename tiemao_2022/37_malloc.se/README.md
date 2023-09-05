@@ -690,7 +690,7 @@ So, what did we do to get here? Well, prior to JDK 16, ZGC pause times still sca
 
 那这又是如何实现的呢?
 
-在 JDK 16 之前, ZGC 的暂停时间仍然与根集（root-set）的大小成比例。更准确地说, ZGC 仍然在 Stop-The-World 阶段扫描线程栈。 
+在 JDK 16 之前, ZGC 的暂停时间仍然与根集(root-set)的大小成比例。更准确地说, ZGC 仍然在 Stop-The-World 阶段扫描线程栈。 
 
 这就意味着, 如果 Java 应用程序中有大量线程在执行, 则暂停时间就会增加。 如果这些线程还有很深的调用栈, 暂停时间会增加更多。 
 
@@ -734,7 +734,7 @@ In JDK 16, ZGC got support for in-place relocation. This feature helps avoid `Ou
 在 JDK 16 中, ZGC 开始支持就地执行对象迁移。 
 在堆内存基本上用满的情况下, 需要GC收集垃圾时, 这个特性可以有效避免 `OutOfMemoryError`。 
 正常情况下, ZGC整理堆内存(并释放内存)的执行逻辑是: 将对象从多个稀疏区, 整理压实, 移动到一个或者多个空闲区。
-这种方式简单直接, 很适合并行处理。 但也有缺点, 就是额外需要一定数量的空闲内存（每种尺寸的region都至少需要一个）才能启动迁移过程。 
+这种方式简单直接, 很适合并行处理。 但也有缺点, 就是额外需要一定数量的空闲内存(每种尺寸的region都至少需要一个)才能启动迁移过程。 
 如果堆内存已经用满, 那就没有地方用来腾挪和移动对象。
 
 Prior to JDK 16, ZGC solved this by having a heap reserve. This heap reserve was a set of heap regions that was set aside and made unavailable for normal allocations from Java threads. Instead only the GC itself was allowed to use the heap reserve when relocating objects. This ensured that empty heap regions were available, even if the heap was full from a Java thread’s perspective, to get the relocation process started. The heap reserve was typically a small fraction of the heap. In a previous blog post, I wrote about how we improved it in JDK 14 to better support tiny heaps.
@@ -894,34 +894,81 @@ For more information on ZGC, please see the [OpenJDK Wiki](https://wiki.openjdk.
 
 [JDK 17](http://jdk.java.net/17) was released on September 14. This is a Long-Term Support (LTS) release, meaning it will be supported and receive updates for many years. This is also the first LTS release where a production ready version of ZGC is included. To refresh your memory, an experimental version of ZGC was included in JDK 11 (the previous LTS release) and the first production ready version of ZGC appeared in JDK 15 (a non-LTS release).
 
+[JDK 17](http://jdk.java.net/17) 于 2021年09月14日发布。 这是一个官方长期提供技术支持的LTS版本, 将获得多年的支持和更新。  也是包含产品级 ZGC 的第一个 LTS 版本。 
+
+简单回顾一下:
+
+> 前一个 LTS 版本是 JDK 11, 其中包含了 ZGC 的实验版(experimental version)。
+> ZGC 的第一个产品版是 JDK 15中(JDK15并不是LTS版本)。
+
+如果对之前的 JDK 版本以及 ZGC的更新历史有兴趣, 请阅读前面的内容。
+
 ZGC received [41 bugfixes and enhancements](https://bugs.openjdk.org/browse/JDK-8271064?jql=labels%20%3D%20zgc%20AND%20status%20in%20(Resolved%2C%20Closed)%20AND%20fixVersion%20%3D%2017) in JDK 17, and I’ll highlight a few of them here. But before diving into that, if you’re interested in knowing more about ZGC features/enhancements in previous JDK releases, then please read my previous posts.
 
-- What’s new in JDK 16
-- What’s new in JDK 15
-- What’s new in JDK 14
+JDK 17中, ZGC相关的升级包括:
+
+- [41项BUG修复和功能升级](https://bugs.openjdk.org/browse/JDK-8271064?jql=labels%20%3D%20zgc%20AND%20status%20in%20(Resolved%2C%20Closed)%20AND%20fixVersion%20%3D%2017)
+
 
 Now let’s dive into what’s new in JDK 17 from a ZGC perspective.
 
+下面让我们看看JDK 17 中, 有哪些 ZGC 相关的, 重要的新特性。
+
+
 ### 8.1 Dynamic Number of GC Threads
+
+### 8.1 动态调整GC线程数
 
 The JVM has for a long time had an option called `-XX:+UseDynamicNumberOfGCThreads`. It’s enabled by default and tells the GC to be smart about how many GC threads it’s using for various operations. The number of threads used will be constantly re-evaluated and can thus vary over time. This option is useful for several reasons. For example, it can be hard to figure out what the optimal number of GC threads is for a given workload. What usually happens is that you try various settings of `-XX:ParallelGCThreads` and/or `-XX:ConcGCThreads` (depending on which GC you are using) to see which seems to give the best result. To complicate things, the optimal number of GC threads might vary over time as the application goes through different phases, so setting a fixed number of GC threads can be inherently sub-optimal.
 
+`-XX:+UseDynamicNumberOfGCThreads` 启动选项已经受JVM支持很长时间了。 
+该选项默认开启, 让 GC 自动调整各种相关操作的 GC 线程数。 
+具体使用的线程数, 将根据运行时的情况, 持续地进行重新计算, 所以随着时间的推移, 可能会发生变化。 
+这个选项非常有用, 原因有多个方面。 
+
+- 对于特定的工作负载, 很难确定最佳 GC 线程数是多少。 
+- 通常的配置, 是指定 `-XX:ParallelGCThreads` 和 `-XX:ConcGCThreads` 启动选项, 取决于使用的 GC, 然后测试和分析最佳配置。 
+- 更复杂的情况是, 随着应用程序的生命周期拉长, 系统会经历不同的阶段, GC 线程的最佳数量也会随时间的推移而变化, 因此设置固定的 GC 线程数量可能并不是最理想的。
+
+
 Until JDK 17, ZGC ignored `-XX:+UseDynamicNumberOfGCThreads` and always used a fixed number of threads. During JVM startup, ZGC used heuristics to decide what that fixed number (`-XX:ConcGCThreads`) should be. Once that number was set it never changed again. Starting with JDK 17, ZGC now honors `-XX:+UseDynamicNumberOfGCThreads` and tries to use as few threads as possible, but enough threads to keep up collecting garbage at the rate it’s created. This helps to avoid using more CPU time than needed, which in turn will make more CPU time available to Java threads.
 
-Also note that when this feature is enabled, the meaning of `-XX:ConcGCThreads` changes from “Use this many threads” to “Use at most this many threads”. But unless you have an unconventional workload you typically don’t need to fiddle with `-XX:ConcGCThreads`. ZGC’s heuristics will pick a good max number of threads for you, based on the size of the system you are running on.
+在 JDK 17 之前, ZGC会直接忽略 `-XX:+UseDynamicNumberOfGCThreads` 配置, 并使用固定数量的GC线程。 
+如果没有明确指定 `-XX:ConcGCThreads` 的话, 在 JVM 启动期间, ZGC 会使用启发式方法, 自动计算出 (`-XX:ConcGCThreads`) 的值。 这个数值一旦确定, 启动之后就不会再改变。 
+ZGC 从 JDK 17 版本开始支持 `-XX:+UseDynamicNumberOfGCThreads` 选项, 并尽可能少地设置GC线程数。
+如果应用程序创建对象的速率加快, ZGC也会保证有足够的GC线程来执行垃圾收集。 
+这种方式可以避免浪费不必要的 CPU 时间, 从而为 Java 业务线程提供更多的 CPU 时间, 增加系统吞吐量。
+
+
+Also note that when this feature is enabled, the meaning of `-XX:ConcGCThreads=<n>` changes from “Use this many threads” to “Use at most this many threads”. But unless you have an unconventional workload you typically don’t need to fiddle with `-XX:ConcGCThreads`. ZGC’s heuristics will pick a good max number of threads for you, based on the size of the system you are running on.
+
+另请注意, 启用此功能后, `-XX:ConcGCThreads=<n>` 参数的含义发生了变化, 之前是 “使用这么多线程”, 变成 “最多使用这么多个线程”。 
+当然, 除非系统情况非常特殊, 否则我们都不需要单独设置 `-XX:ConcGCThreads`。 
+ZGC 将根据系统的CPU和内存配置, 使用启发式方法, 自动选择一个合适的最大线程数。
+
 
 To illustrate this feature in action let’s take a look at some graphs when running SPECjbb2015.
 
+为了说明此功能的实际效果, 让我们看一下运行 SPECjbb2015 时的一些图表。
+
 The first graph shows the number of GC threads used throughout the run. SPECjbb2015 has an initial ramp-up phase, followed by a longer phase where the load (injection rate) is gradually increased. We can see that the number of threads used by ZGC reflects the amount of work it needs to do to keep up. Only in a few cases does it require all (in this case 5) threads.
+
+第一张图显示了整个运行过程中使用的 GC 线程数。 SPECjbb2015 有一个初始加速阶段, 随后是一个较长的执行阶段, 负载逐渐增加。 
+我们可以看到, ZGC 使用的线程数反映了它需要完成的工作量。 仅在少数情况下才需要所有GC线程(在本例中为 5 个)。
+
 
 ![](./specjbb2015_number_of_threads.svg)
 
 
 In the second graph we see the benchmark scores. Because ZGC is no longer using all GC threads all the time, we’re giving more CPU time to the Java threads, which results in better throughput (max-jOPS) and better latency (critical-jOPS).
 
+在第二张图中, 我们可以看到基准分数。 由于 ZGC 不再一直使用最大的 GC 线程数, 因此为 Java 线程提供了更多的 CPU 时间, 从而实现了更好的吞吐量 (max-jOPS) 和更好的延迟表现 (ritic-jOPS)。
+
 ![](./specjbb2015_score.svg)
 
-If you for some reason want to always use a fixed number of GC threads (like in JDK 16 and earlier) then you can disable this feature by using `-XX:-UseDynamicNumberOfGCThreads`.
+If you for some reason want to always use a fixed number of GC threads (like in JDK 16 and earlier) then you can disable this feature by using .
+
+如果有特殊原因, 想要使用固定数量的 GC 线程, 那么可以使用减号参数 `-XX:-UseDynamicNumberOfGCThreads` 禁用此功能。(就像在 JDK 16 及更早版本中那样)
 
 
 ### 8.2 Fast JVM Termination
