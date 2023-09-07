@@ -973,11 +973,23 @@ If you for some reason want to always use a fixed number of GC threads (like in 
 
 ### 8.2 Fast JVM Termination
 
+### 8.2 JVM 快速终止
+
 When using ZGC, you might have noticed that terminating a running Java process (e.g. by hitting Ctrl+C or by having the application call `System.exit()` ) hasn’t always had an immediate effect. It can sometimes can take a while (in the worst case many seconds) for the JVM to actually terminate. This can be pretty annoying and cause problems in environments where being able to promptly terminate is important.
+
+可能你已经注意到，使用ZGC垃圾收集器，有时想要终止 Java 进程, 却没有立即响应, (例如，通过按 `Ctrl+C` 或者通过代码调用 `System.exit()` 方法)。 有时 JVM 可能需要一段时间, 甚至好几秒才能真正终止。 这可能造成一些烦恼，并且在某些需要立即响应的环境中会导致问题。
+
 
 So, why does it sometimes take time for the JVM to terminate when using ZGC? The reason is that the JVM shutdown sequence needs to coordinate with the GC, so that the GC stops doing what it’s doing and enters a “safe” state. ZGC was only in a “safe” state when it was idle, i.e. not currently collecting garbage. If a very long GC cycle was in progress when the termination signal arrived, then the JVM shutdown sequence simply had to wait for that GC cycle to completed before ZGC became idle and entered a “safe” state again.
 
+那么，为什么ZGC需要一段时间才能终止呢？ 原因是 JVM 关闭序列需要与 GC 协调，以便 GC 停止执行其正在执行的操作并进入“安全”状态。 
+ZGC仅在空闲时才处于“安全”状态，即不再执行收集垃圾。 
+如果收到终止信号时, 正在处于很长的 GC 周期中，那么 JVM 关闭序列必须等待该 GC 周期完成，然后 ZGC 空闲, 并进入“安全”状态。
+
 This was addressed in JDK 17. ZGC is now able to abort an ongoing GC cycle to quickly reach the “safe” state on demand. Terminating a JVM running ZGC is now more or less instant.
+
+这个问题在 JDK 17 中得到解决。 ZGC直接中止正在进行的 GC 周期，快速达到“安全”状态。 现在，运行 ZGC 的 JVM 终止过程基本上是即时完成的。
+
 
 ### 8.3 Reduced Mark Stack Memory Usage
 
