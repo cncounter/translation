@@ -188,6 +188,10 @@ twins: 双胞胎
 | 代数 | Algebra  |
 | 三角函数 | Trigonometry  |
 | 微积分学 | calculus  |
+| 平均 | average  |
+| 平均数 | mean  |
+| 中位数 | median  |
+| 众数 | mode  |
 
 
 
