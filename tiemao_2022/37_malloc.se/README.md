@@ -1090,23 +1090,47 @@ Most of the ZGC code base continues to be platform independent. The current code
 
 ### 8.5 GarbageCollectorMXBeans for Cycles and Pauses
 
-A GarbageCollectorMXBean provides information about the GC. Through this bean, an application can extract summary information (number of GCs done so far, accumulated time spent doing GC, etc) and listen to GarbageCollectionNotificationInfo notifications to get more fine-grained information on individual GCs (GC cause, start time, end time, etc).
+### 8.5 展示GC周期与暂停时间的GarbageCollectorMXBean
+
+
+A `GarbageCollectorMXBean` provides information about the GC. Through this bean, an application can extract summary information (number of GCs done so far, accumulated time spent doing GC, etc) and listen to `GarbageCollectionNotificationInfo` notifications to get more fine-grained information on individual GCs (GC cause, start time, end time, etc).
+
+`GarbageCollectorMXBean` 提供了 GC 相关的信息。 
+通过这个 MXBean, 应用程序可以通过编码的方式, 获取摘要信息（到目前为止完成的 GC 次数、执行 GC 所花费的累计时间等）,  也可以订阅 `GarbageCollectionNotificationInfo` 事件通知, 以获取有关单次 GC 的细粒度信息（GC 原因、开始时间、结束时间 等等）。
+
 
 Prior to JDK 17, ZGC published a single bean called `ZGC`. This bean provided information about `ZGC cycles`. A cycle includes all the GC phases from start to finish. Most of the phases are concurrent, but some are Stop-The-World pauses. While information about the cycles is useful, you might also be interested in knowing how much of the time spent doing GC was spent in Stop-The-World pauses. This information wasn’t available with a single ZGC bean. To address this, ZGC now publishes two beans, one called `ZGC Cycles` and one called `ZGC Pauses`. As the names suggest, the information provided by each bean maps to cycles and pauses, respectively.
 
+
+在 JDK 17 之前，ZGC 发布了一个名为 `ZGC` 的 bean。 这个 bean 提供了有关 `ZGC cycles` 的信息。 
+一个GC周期包括从开始到结束的所有 GC 阶段。 大多数阶段是并发执行的，但有些阶段则有 "Stop-The-World" 暂停。 
+虽然GC周期相关的信息很有用，但我们更想知道在 GC 上花费了多少时间用于 Stop-The-World 暂停。 
+只通过 ZGC bean 无法获得此信息。 
+
+为了解决这个问题，ZGC 又暴露了两种 Bean:
+
+- 一种称为 `ZGC Cycles` 
+- 一种称为 `ZGC Pauses`
+
+顾名思义，两者提供的信息分别对应到GC周期和GC暂停。
+
 Here’s a small example to illustrate the difference between JDK 16 and 17. The example first makes a 100 calls to `System.gc()` and then extracts summary information from the available `GarbageCollectorMXBean`(s).
+
+下面是一段示例代码，用于展示 JDK 16 和 17 之间的差异。
+
+代码首先调用100次 `System.gc()`， 然后从可用的 `GarbageCollectorMXBean` 中提取摘要信息。
 
 ```java
 import java.lang.management.ManagementFactory;
 
 public class ExampleGarbageCollectorMXBean {
     public static void main(String[] args) {
-        // Run 100 GCs
+        // 执行 100 次GC
         for (int i = 0; i < 100; i++) {
             System.gc();
         }
 
-        // Print basic information from available beans
+        // 从可用的Bean中提取并打印基本信息
         for (final var bean : ManagementFactory.getGarbageCollectorMXBeans()) {
             System.out.println(bean.getName());
             System.out.println("   Count: " + bean.getCollectionCount());
@@ -1119,6 +1143,8 @@ public class ExampleGarbageCollectorMXBean {
 
 Running this with JDK 16 produces the following output:
 
+使用 JDK 16 执行, 产生以下输出：
+
 ```sh
 $ java -XX:+UseZGC ExampleGarbageCollectorMXBean
 ZGC
@@ -1129,6 +1155,7 @@ ZGC
 
 And running this with JDK 17 produces the following output:
 
+使用 JDK 17 执行, 产生以下输出：
 
 ```sh
 $ java -XX:+UseZGC ExampleGarbageCollectorMXBean
@@ -1144,6 +1171,9 @@ ZGC Pauses
 ```
 
 In both cases we see that the GC ran 100 cycles and each cycle took on average ~4ms to run. With JDK 17, we can now also see that we had 3 Stop-the-World pauses for each cycle, and each pause was on average ~0.007ms (~7µs) long.
+
+在这两种情况下，我们都看到 GC 运行了 100 个周期，每个周期平均运行时间约 4 毫秒。 
+在 JDK 17 中，还可以看到300次GC暂停, 也就是每个GC周期有 3 次 Stop-the-World 暂停，每次暂停的平均时间约为 0.007 毫秒（约 7 微秒）。
 
 ### 8.6 Summary
 
