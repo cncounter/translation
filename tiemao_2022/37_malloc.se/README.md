@@ -1048,7 +1048,16 @@ Java 线程还执行原子加载(atomic loads)来查看对象是否被标记，�
 
 ### 8.4 macOS on ARM Supported
 
-Some time ago, Apple announced a long-term plan to transition their line of Mac computers from x86 to ARM. Not long after, JEP 391: macOS/AArch64 Port proposed a port of the JDK to this new platform. The JVM code base is fairly modular, with OS- and CPU-specific code isolated from the shared platform independent code. The JDK already supported macOS/x86 and Linux/Aarch64, so the main pieces needed to support macOS/Aarch64 were already there. Of course, work is still needed by anyone who plans to ship and support a macOS/Aarch64 build of the JDK, like invest in new hardware, integrate this new platform in CI-pipelines, etc.
+### 8.4 支持ARM架构的macOS系统
+
+Some time ago, Apple announced a long-term plan to transition their line of Mac computers from x86 to ARM. Not long after, [JEP 391: macOS/AArch64 Port](https://openjdk.java.net/jeps/391) proposed a port of the JDK to this new platform. The JVM code base is fairly modular, with OS- and CPU-specific code isolated from the shared platform independent code. The JDK already supported macOS/x86 and Linux/Aarch64, so the main pieces needed to support macOS/Aarch64 were already there. Of course, work is still needed by anyone who plans to ship and support a macOS/Aarch64 build of the JDK, like invest in new hardware, integrate this new platform in CI-pipelines, etc.
+
+
+不久前，苹果公司宣布了一项长期计划，将其 Mac 电脑系列从 x86架构 过渡到 ARM架构。 
+然后，[JEP 391: macOS/AArch64 Port](https://openjdk.java.net/jeps/391) 提议将 JDK 移植到这个新平台。 
+JVM 代码库相当模块化，特定于操作系统和CPU 的代码, 与共享平台无关的代码是互相隔离的。 
+JDK 已经支持 macOS/x86 和 Linux/Aarch64，因此支持 macOS/Aarch64 所需的主要部分是现成的。 
+当然，任何计划发布和支持 JDK 的 macOS/Aarch64 版本的人仍然需要做一些工作，例如投资新硬件、将这个新平台集成到 CI 管道中等等。
 
 The story is pretty much the same when it comes to ZGC. Both macOS/x86 and Linux/Aarch64 were already supported, so it was mostly a matter of enabling build and test of this new OS/CPU combination. As of JDK 17, ZGC runs on the following platforms (see [this table](https://wiki.openjdk.org/display/zgc#Main-SupportedPlatforms) for more details):
 
@@ -1059,7 +1068,22 @@ The story is pretty much the same when it comes to ZGC. Both macOS/x86 and Linux
 - Windows/x64
 - Windows/AArch64
 
+ZGC 的事情也差不多。 macOS/x86 和 Linux/Aarch64 都已得到支持，因此主要是对操作系统/CPU组合, 启用新的构建和测试。 
+从 JDK 17 开始，ZGC 支持以下平台上：
+
+- Linux/x64
+- Linux/AArch64
+- macOS/x64
+- macOS/AArch64
+- Windows/x64
+- Windows/AArch64
+
+
+有关更多详细信息，请参阅 [此表](https://wiki.openjdk.org/display/zgc#Main-SupportedPlatforms)
+
 Most of the ZGC code base continues to be platform independent. The current code distribution looks like this:
+
+大部分 ZGC 代码仍然是平台无关的。 JDK17的代码分布如下所示:
 
 ![](./zgc_jdk17_code_distribution.svg)
 
