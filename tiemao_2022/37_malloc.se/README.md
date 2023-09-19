@@ -995,20 +995,56 @@ This was addressed in JDK 17. ZGC is now able to abort an ongoing GC cycle to qu
 
 ZGC does striped marking. This refers to the heap being divided into stripes and each GC thread gets assigned to mark objects in one of those stripes. This helps minimize shared state among the GC threads and make the marking process more cache friendly, since two GC threads will not be marking objects in the same part of the heap. This approach also results in a natural work balancing between GC threads, as stripes tend to have roughly the same amount of work in them.
 
+### 8.3 减少标记栈使用的内存量
+
+ZGC 的标记使用条带方式(striped marking)。 
+堆内存被划分为多个条带(stripes)，每个 GC 线程都会被指配来标记某一个条带中的对象。 
+这种方式, 可以最大限度地减少 GC 线程之间的共享状态，并且使得标记过程对CPU高速缓存更加友好，因为两个 GC 线程不会去标记堆中同一块内存里的对象。 
+这种方法还可以在 GC 线程之间实现自然的平衡工作负载，因为每个条带中的工作量往往大致相同。
+
 ![](./striped_marking.svg)
 
 Prior to JDK 17, ZGC’s marking strictly adhered to the striping. If a GC thread, while tracing through the object graph, came across a object reference pointing to a part of the heap that didn’t belong to its assigned stripe, then that object reference was placed on a thread local mark stack associated with that other stripe. Once that stack got full (254 entries) it was handed over to the GC thread that was assigned to handle marking for that stripe. A Java thread loading a object reference to a not-yet-marked object would do the same thing, except that it would always place the object reference on the associated thread local mark stack and never do any actual mark work itself.
 
+在 JDK 17 之前，ZGC 的标记严格遵循条带化。 如果某个 GC 线程在跟踪对象图时, 遇到的对象引用，指向的内存地址不属于分配当前条带，则该对象引用将被放置在与另一个条带关联的线程的本地标记栈上(thread local mark stack)。 
+如果这个栈满了（达到254 个条目），就会被移交给负责处理该条带的 GC 线程来标记。 
+Java业务线程加载尚未标记的对象引用, 也会执行相同的操作，只不过只会将对象引用放到对应的线程本地标记栈，业务线程本身从不执行任何实际的标记工作。
+
 This approach works well for most workloads, but there’s also a pathological problem. If you have an object graph with one or more N:1 relationships, where N is a very large number, then you risk using a lot of memory (like many gigabytes) for the mark stacks. We’ve always known about this potentially being an issue, and you can write a small synthetic test to provoke it, but we never really came across a real world workload that exposed it. That is, until OpenJDK contributors from Tencent reported that they had come across this problem in the wild. So, it was time to do something about this.
+
+这种方法适用于大部分常规的工作负载，但在极端情况下可能存在一些问题。 
+如果有一个或多个 `N:1` 关系的对象图，其中 N 是一个非常大的数字，那么标记栈可能会使用大量内存（如许多 GB）。 
+官方一直都知道有这个隐患，我们也可以编写一个小型的测试程序来引发， 但在现实世界中却一直没有遇到过这种业务负载情况。
+直到腾讯公司的 OpenJDK 贡献者报告说他们遇到了这个问题。 
+所以，需要对此进行改进。
+
 
 The fix for this in JDK 17 involves relaxing the strict striping in the following way:
 
 - For GC threads, regardless of which stripe the object reference points to, first try to mark the object (i.e. potentially step out of the GC thread’s assigned stripe), and if it wasn’t already marked, push the object reference to the associated mark stack.
 - For Java threads, first check if the object is already marked, and if it wasn’t already marked, push the object reference to the associated mark stack.
 
+JDK 17 中的修复, 通过以下方式来放宽严格的条带限制：
+
+- 对于GC线程，无论对象引用指向哪个条带，首先尝试标记该对象（即可能跳出GC线程分配的条带），如果尚未标记，则将对象引用放置到对应条带关联的标记栈。
+- 对于Java线程，首先检查对象是否已被标记，如果尚未标记，则将对象引用推到关联的标记栈。
+
+
 These tweaks help stop excessive mark stack memory usage in the pathological N:1 case, where GC threads come across the same object reference over and over again, pushing lots of duplicate object references onto mark stacks. Duplicates are useless because an object only needs to be marked once. By marking before pushing, and only pushing previously unmarked objects, the production of duplicates stops.
 
+这些调整有助于在极端 N:1 的情况下, 防止标记栈内存的过度使用，在这种情况下，GC 线程一遍又一遍地遇到相同的对象引用，将大量重复的对象引用推送到标记栈里面。 重复添加这么多个引用并没有什么用，因为一个对象只需要标记一次。 通过在推送之前进行标记，并且仅推送之前未标记的对象，可以阻止产生重复项。
+
 We were initially a bit reluctant to do this, since GC threads are now doing atomic compare-and-swap operations to mark objects in memory that belongs to stripes that other GC threads are assigned to work on. This breaks the strict striping, making it less cache-friendly. Java threads are now also doing atomic loads to see if objects are marked, something they didn’t do before. At the same time, other work done by GC threads (scanning/following object fields and tracking number of live objects/bytes per heap region) still adheres to strict striping. In the end, benchmarking showed that our initial concerns were unfounded. GC marking times were unaffected and the impact on Java threads wasn’t noticeable either. On the flip side, we now have a more robust marking scheme that isn’t prone to excessive memory usage.
+
+
+我们最初有点不愿意这样做，因为 GC 线程需要执行原子比较和交换操作(atomic compare-and-swap operations)，来标记内存中分配给其他 GC 线程处理的的对象。 
+这打破了严格的条带化，使其对CPU高速缓存不太友好。 
+Java 线程还执行原子加载(atomic loads)来查看对象是否被标记，这是以前没有做过的。 
+与此同时，GC 线程完成的其他工作（扫描/跟踪对象字段,以及跟踪每个堆区域的活动对象数/字节数）仍然遵循严格的条带化。 
+
+最终，基准测试表明我们最初的担忧是没有根据的。 GC 标记时间不受影响，对 Java 线程的影响也不明显。 
+另一方面，我们现在的标记方案更加强大，不容易出现内存使用过多的情况。
+
 
 ### 8.4 macOS on ARM Supported
 
