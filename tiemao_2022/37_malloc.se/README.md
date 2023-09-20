@@ -1212,6 +1212,21 @@ For more information on ZGC, please see the [OpenJDK Wiki](https://wiki.openjdk.
 - [this blog](https://malloc.se/).
 
 
+## 9. ZGC | Oracle开发者线上大会2022
+
+> 发表日期: 2022年03月25日
+
+Oracle举办了另外一场 [Oracle开发者线上大会 - Java创新](https://developer.oracle.com/developer-live/java-innovations-mar-2022/), 来发布 JDK 18. 
+
+这是一场在线直播, 所有会议都被记录。 ZGC作者的主题是
+
+- [ZGC - The Future of Low-Latency Garbage Collection Is Here](https://www.youtube.com/watch?v=OcfvBoyTvA8)
+
+其中介绍了  [ZGC](https://wiki.openjdk.java.net/display/zgc), 并展示了最新的性能数据，并更新让 ZGC 成为分代垃圾收集器的计划。
+
+视频链接:
+
+- <https://www.youtube.com/watch?v=OcfvBoyTvA8>
 
 
 
