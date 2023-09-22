@@ -1229,6 +1229,110 @@ Oracle举办了另外一场 [Oracle开发者线上大会 - Java创新](https://d
 - <https://www.youtube.com/watch?v=OcfvBoyTvA8>
 
 
+## 10.  ZGC | What's new in JDK 18
+
+> 发表日期: 2022年04月29日
+
+On March 22, [JDK 18](http://jdk.java.net/18) was released. This was a fairly quiet release for ZGC, since most of our efforts in the last year or so has gone into making ZGC a generational GC. Still, there were [37 bugfixes and enhancements](https://bugs.openjdk.java.net/issues/?jql=labels%20%3D%20zgc%20AND%20type%20in%20(Bug%2C%20Enhancement)%20AND%20status%20in%20(Resolved%2C%20Closed)%20AND%20resolution%20in%20(Fixed)%20AND%20fixVersion%20%3D%2018%20) related to ZGC in this release. I’ll discuss some of the more interesting ones in this post. If you’re interested in knowing more about ZGC features/enhancements in previous JDK releases, then check out some of my previous posts.
+
+2022年03月22日, [JDK 18](http://jdk.java.net/18) 正式发布.
+该版本属于快速发布版, 不是长期支持板.
+ZGC在该版本中变更不太明显, 因为官方团队正致力于将ZGC改造成一款分代垃圾收集器(generational GC)。
+ZGC在JDK18版本中, 包含:
+
+- [37个BUG修复和改进](https://bugs.openjdk.java.net/issues/?jql=labels%20%3D%20zgc%20AND%20type%20in%20(Bug%2C%20Enhancement)%20AND%20status%20in%20(Resolved%2C%20Closed)%20AND%20resolution%20in%20(Fixed)%20AND%20fixVersion%20%3D%2018%20)
+
+本文只是简单介绍其中有趣的内容, 更多信息请参考前面的文章.
+
+
+Now let’s talk about what’s new in JDK 18 (from a ZGC perspective).
+
+下面一起来看看有哪些ZGC相关的新特性。
+
+
+### 10.1 String Deduplication
+
+### 10.1 String对象自动去重
+
+![img](./10-1-stringdedup.svg)
+
+*String deduplication* is a JVM feature (`-XX:+UseStringDeduplication`) that has been around for quite a while now. It helps reduce Java heap memory usage by automatically deduplicating identical character arrays that are backing String objects. For example, if two String objects exist on the heap and they both point to a backing array containing the characters *“Java”*, then one of the String objects will be modified so that both String objects point the same array, and the other array will be made unreachable and subject to garbage collection. This can help reduce the heap memory usage by quite a bit for some applications, since String objects can to occupy a non-trivial part of the Java heap, and finding duplicates among those can be fairly common.
+
+*String对象自动去重* 是JVM提供的一个特性(`-XX:+UseStringDeduplication`)。
+通过自动去除String对象底层使用的, 重复的等价字符数组(identical character arrays), 有助于降低Java堆内存的使用量。
+比如, 在堆内存中有两个String对象, 底层所使用的字符数组, 内容都是 `"Java"`, 那么,JVM会将其中一个String对象的字符数组指针修改, 让两个String对象都指向同一个字符数组. 另一个没有引用指向的数组, 则会因为不可达而被GC回收。
+对于具有大量重复字符串的应用, 可以减少内存占用。
+
+参考JDK的源代码: [java/lang/String.java](https://github.com/openjdk/jdk17/blob/master/src/java.base/share/classes/java/lang/String.java)
+
+```java
+public final class String
+    implements java.io.Serializable, Comparable<String>, CharSequence,
+               Constable, ConstantDesc {
+    // ... 
+    @Stable
+    private final byte[] value;
+    // ...
+}
+```
+
+
+I wrote the [JEP](https://openjdk.java.net/jeps/192) and the initial [implementation](https://github.com/openjdk/jdk/commit/4a4c0fce93fb919383c793983bcf1cc4bfb7b7bc) for this feature back in 2014, and it shipped as part of JDK 8u20. This was before ZGC was born, and the initial implementation only added support for String deduplication in the G1 garbage collector.
+
+作者在2013年编写了 [JEP](https://openjdk.java.net/jeps/192) 提案, 并在 2014年提交了相关的 [代码实现](https://github.com/openjdk/jdk/commit/4a4c0fce93fb919383c793983bcf1cc4bfb7b7bc), 伴随着 JDK 8u20 发布。 字符串去重的特性早于ZGC的发布, 最初只有G1垃圾收集器提供支持。
+
+Fast forward to 2021. Kim Barrett [overhauled](https://github.com/openjdk/jdk/commit/be0a655208f64e076e9e0141fe5dadc862cba981) a significant part of the String deduplication infrastructure. The overall concept remained the same, but the way in which the String deduplication mechanism interfaces with the garbage collector became more general. This enabled easier integration of this feature into garbage collectors other than G1. As a result, String deduplication support was later added to [SerialGC](https://github.com/openjdk/jdk/commit/e8a289e77d70d31f2f7d1a8dea620062dbdb3e2a), [ParallalGC](https://github.com/openjdk/jdk/commit/fb1dfc6f49f62990aa9988e9d6f7ffd1adf45d8e), and [ZGC](https://github.com/openjdk/jdk/commit/abebbe2335a6dc9b12e5f271bf32cdc54f80b660).
+
+时间来到2021年, Kim Barrett 对字符串去重功能进行了 [重构改造](https://github.com/openjdk/jdk/commit/be0a655208f64e076e9e0141fe5dadc862cba981)。 总体的概念依然保持不变, 但是字符串重复数据删除机制与垃圾收集器的接口方式变得更加通用。 使得该特性更容易集成到除 G1 以外的垃圾收集器中。
+因此，后来在 [SerialGC](https://github.com/openjdk/jdk/commit/e8a289e77d70d31f2f7d1a8dea620062dbdb3e2a), [ParallalGC](https://github.com/openjdk/jdk/commit/fb1dfc6f49f62990aa9988e9d6f7ffd1adf45d8e), 以及 [ZGC](https://github.com/openjdk/jdk/commit/abebbe2335a6dc9b12e5f271bf32cdc54f80b660) 中都增加了对字符串重复数据删除的支持。
+
+
+If you’re unfamiliar with String dediuplication, what it actually does, and when you might want to enable it, then check out the [JEP](https://openjdk.java.net/jeps/192). Even if that document is a bit out of date by now (e.g. it only talks about G1), the gist of the feature is still the same.
+
+如果你对字符串去重的细节感兴趣, 可以参考:
+
+- [JEP 192: String Deduplication in G1](https://openjdk.java.net/jeps/192)
+
+其中介绍了运行原理和启用开关。 虽然该文档时间发布比较久了, 但后续的相关实现都是同样的原理。
+
+
+### 10.2 Class Unloading Issue Fixed
+
+We received a [report](https://mail.openjdk.java.net/pipermail/zgc-dev/2021-November/001086.html) about a performance issue on the ZGC mailinglist. This turned out to be a 10-year-old bug that dates back to the [removal of *PermGen*](http://openjdk.java.net/jeps/122).
+
+So, about 10 years ago, the [patch](https://github.com/openjdk/jdk/commit/5c58d27aac7b291b879a7a3ff6f39fca25619103) to remove *PermGen* made some changes to a function that deals with Inline Cache cleaning. An Inline Cache is a speculative optimization technique used by the JVM to speed up method calls in Java. When the GC unloads unused classes and compiled methods, some of the Inline Caches need to be cleaned so that they no longer refer to any unloaded entities.
+
+As it turns out, this patch contained a small but important editing mistake, where indentation and scopes were mixed up. It was hard to spot that mistake by just looking at the patch, because the code in question was also moved. This mistake resulted in some Inline Caches being incorrectly cleaned. However, the incorrect cleaning didn’t cause any obvious problems, like a JVM crash. Instead it induced a vicious cycle where the GC and Java threads disagreed about, and fought over, how to clean these caches. The end result was that class unloading, under certain conditions, could take a very long time to complete. Since the root cause of the issue was bad interaction between the GC and concurrently running Java threads, it only affected GCs doing concurrent class unloading (such as ZGC). GCs doing Stop-the-World class unloading (such as SerialGC, ParallelGC and G1GC), were unaffected simply because this bad interaction could never arise, since Java threads never run concurrently with the GC.
+
+Luckly, once this problem was spotted the [fix](https://github.com/openjdk/jdk/commit/976c2bb05611cdc7b11b0918aaf50ff693507aae) was straight forward. If you’re interested in more details you can read all about it in the corresponding [pull request](https://github.com/openjdk/jdk/pull/6450).
+
+This fix was also backported to JDK 17.0.2.
+
+### 10.3 Linux/PowerPC Support
+
+![img](https://www.malloc.se/img/zgc-jdk18/powerpc.svg)Back in 2013, i.e. before ZGC had come into existence, [JEP 175](https://openjdk.java.net/jeps/175) was created to bring Linux/PowerPC (as well as AIX/PowerPC) support to OpenJDK. The initial port shipped as part of JDK 8u20 and has been maintained ever since. The effort to support this platform has from the start been funded by our friends over at [SAP](https://sap.com/).
+
+So, it might not be a surprise to hear that it was also SAP that contributed the patch to make ZGC available on Linux/PowerPC. Adding support for a new CPU architecture is mostly a matter of implementing ZGC’s various barriers (load barrier, nmethod entry barrier, and stack watermark barrier) in the interpreter and the two JIT compilers. The [patch](https://github.com/openjdk/jdk/commit/337b73a459ba24aa529b7b097617434be1d0030e) weights in at around 1200 lines of code.
+
+As of JDK 18, ZGC now runs on the following platforms (see [this table](https://wiki.openjdk.java.net/display/zgc#Main-SupportedPlatforms) for more details):
+
+- Linux/x64
+- Linux/AArch64
+- Linux/PowerPC
+- macOS/x64
+- macOS/AArch64
+- Windows/x64
+- Windows/AArch64
+
+### 10.4 Summary
+
+- The JVM option `-XX:+UseStringDeduplication` is now supported. This feature (disabled by default) tells ZGC to find and deduplicate identical character arrays backing String objects to reduce overall heap memory usage.
+- A 10 years old bug that sometimes causes class unloading to take extremely long time was fixed.
+- ZGC now runs on Linux/PowerPC, thanks to the guys at SAP.
+
+For more information on ZGC, please see the [OpenJDK Wiki](https://wiki.openjdk.java.net/display/zgc/Main), the GC section on [Inside Java](https://inside.java/tag/gc), or [this blog](https://malloc.se/).
+
+
 
 ## 相关链接
 
