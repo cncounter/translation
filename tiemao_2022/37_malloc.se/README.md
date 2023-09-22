@@ -1312,13 +1312,23 @@ This fix was also backported to JDK 17.0.2.
 
 ### 10.3 Linux/PowerPC Support
 
-### 10.3 支持Linux/PowerPC平台
+### 10.3 支持Linux/PowerPC平台架构
 
-![img](https://www.malloc.se/img/zgc-jdk18/powerpc.svg)Back in 2013, i.e. before ZGC had come into existence, [JEP 175](https://openjdk.java.net/jeps/175) was created to bring Linux/PowerPC (as well as AIX/PowerPC) support to OpenJDK. The initial port shipped as part of JDK 8u20 and has been maintained ever since. The effort to support this platform has from the start been funded by our friends over at [SAP](https://sap.com/).
+Back in 2013, i.e. before ZGC had come into existence, [JEP 175](https://openjdk.java.net/jeps/175) was created to bring Linux/PowerPC (as well as AIX/PowerPC) support to OpenJDK. The initial port shipped as part of JDK 8u20 and has been maintained ever since. The effort to support this platform has from the start been funded by our friends over at [SAP](https://sap.com/).
+
+早在2013年, 就有 [JEP 175](https://openjdk.java.net/jeps/175) 提案, 将 OpenJDK 支持 Linux/PowerPC 平台, 包括 AIX/PowerPC 平台. 这时候ZGC还没有出现呢。
 
 So, it might not be a surprise to hear that it was also SAP that contributed the patch to make ZGC available on Linux/PowerPC. Adding support for a new CPU architecture is mostly a matter of implementing ZGC’s various barriers (load barrier, nmethod entry barrier, and stack watermark barrier) in the interpreter and the two JIT compilers. The [patch](https://github.com/openjdk/jdk/commit/337b73a459ba24aa529b7b097617434be1d0030e) weights in at around 1200 lines of code.
 
+所以SAP提交了相关的代码, 在 Linux/PowerPC 平台上支持 ZGC。
+
+增加新的CPU架构, 最关键的就是实现ZGC需要的各种内存屏障(load barrier, nmethod entry barrier, and stack watermark barrier), 包括: 解释执行器( interpreter), 以及两款 JIT 编译器。
+
+相关的代码提交只有大约1200行代码: [patch](https://github.com/openjdk/jdk/commit/337b73a459ba24aa529b7b097617434be1d0030e)
+
 As of JDK 18, ZGC now runs on the following platforms (see [this table](https://wiki.openjdk.java.net/display/zgc#Main-SupportedPlatforms) for more details):
+
+所以从 JDK 18 版本开始, ZGC支持在以下的平台上运行.
 
 - Linux/x64
 - Linux/AArch64
@@ -1327,6 +1337,9 @@ As of JDK 18, ZGC now runs on the following platforms (see [this table](https://
 - macOS/AArch64
 - Windows/x64
 - Windows/AArch64
+
+更多信息请参考: [Main-SupportedPlatforms](https://wiki.openjdk.java.net/display/zgc#Main-SupportedPlatforms)
+
 
 ### 10.4 Summary
 
