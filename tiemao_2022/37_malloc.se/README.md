@@ -1,4 +1,4 @@
-# perliden的博客
+# perliden的ZGC博客内容翻译
 
 > 主要介绍JDK中ZGC相关的部分
 

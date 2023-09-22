@@ -64,6 +64,10 @@ GitHub地址: <https://github.com/cncounter/translation>
 * [16.Java虚拟机规范文档: 第5章. 加载、链接和初始化](./tiemao_2022/16_jvm_s_Chapter_5_Loading_Linking_Initializing/README.md)【粗翻】
 * [17.深入JVM - 一个class文件中最多包含多少个常量?](./tiemao_2022/17_java_class_constants_opcode_num_limit/README.md)【已校对】
 * [18.Synchronization in Java](./tiemao_2022/18_java-thread-synchronization/README.md)
+* [19.老版本POSTMAN安装日记](./tiemao_2022/19_postman_old_edtion/README.md)
+* [20.业务指标采集影响系统性能问题排查](./tiemao_2022/20_metrics_and_queue_performance/README.md)【已完成】
+* [37.perliden的ZGC博客内容翻译](./tiemao_2022/37_malloc.se/README.md)【粗翻】
+* [39.合理使用DTO(Data Transfer Object)](./tiemao_2022/39_the-dto-data-transfer-object/README.md)【已完成】
 
 
 
