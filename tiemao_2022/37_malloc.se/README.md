@@ -1298,17 +1298,39 @@ If you’re unfamiliar with String dediuplication, what it actually does, and wh
 
 ### 10.2 Class Unloading Issue Fixed
 
-### 10.2 Class卸载问题修复
+### 10.2  BUG修复: Class卸载问题
 
 We received a [report](https://mail.openjdk.java.net/pipermail/zgc-dev/2021-November/001086.html) about a performance issue on the ZGC mailinglist. This turned out to be a 10-year-old bug that dates back to the [removal of *PermGen*](http://openjdk.java.net/jeps/122).
 
+我们在ZGC邮件列表中, 收到了一个 [性能问题报告](https://mail.openjdk.java.net/pipermail/zgc-dev/2021-November/001086.html)。
+这原来是一个持续10年的bug, 可追溯到 [JEP 122: 移除永久代(Permanent Generation)](http://openjdk.java.net/jeps/122).。
+
+
 So, about 10 years ago, the [patch](https://github.com/openjdk/jdk/commit/5c58d27aac7b291b879a7a3ff6f39fca25619103) to remove *PermGen* made some changes to a function that deals with Inline Cache cleaning. An Inline Cache is a speculative optimization technique used by the JVM to speed up method calls in Java. When the GC unloads unused classes and compiled methods, some of the Inline Caches need to be cleaned so that they no longer refer to any unloaded entities.
 
+大约是在10年前，移除永久代的 [补丁包](https://github.com/openjdk/jdk/commit/5c58d27aac7b291b879a7a3ff6f39fca25619103), 对清理内联缓存的处理函数进行了一些更改。 内联缓存是一种推测性优化技术, JVM用来加速Java方法调用。 当GC卸载不使用的类和编译好的方法时，需要清理一些内联缓存，以便它们不再引用任何已卸载的实体。
+
 As it turns out, this patch contained a small but important editing mistake, where indentation and scopes were mixed up. It was hard to spot that mistake by just looking at the patch, because the code in question was also moved. This mistake resulted in some Inline Caches being incorrectly cleaned. However, the incorrect cleaning didn’t cause any obvious problems, like a JVM crash. Instead it induced a vicious cycle where the GC and Java threads disagreed about, and fought over, how to clean these caches. The end result was that class unloading, under certain conditions, could take a very long time to complete. Since the root cause of the issue was bad interaction between the GC and concurrently running Java threads, it only affected GCs doing concurrent class unloading (such as ZGC). GCs doing Stop-the-World class unloading (such as SerialGC, ParallelGC and G1GC), were unaffected simply because this bad interaction could never arise, since Java threads never run concurrently with the GC.
+
+
+事实证明，这个补丁包有一个很小的编辑错误(editing mistake), 但是却很致命, 其中将缩进(indentation)和作用域(scopes)混淆了。
+只看补丁的代码, 很难发现这个错误，因为有问题的代码也被移动了。
+这个错误导致一些内联缓存被错误地清理。
+但是呢，即使错误清理了一些缓存, 并没有导致任何明显的问题， 不会导致JVM崩溃。
+当然，它引发了一个恶性循环，GC和Java线程在是否清理这些缓存的问题上产生了分歧和争执。
+最终的结果是，在某些场景下，类卸载可能需要耗费很长时间才能完成。
+由于问题的根源在于 GC和并发运行的Java线程之间的不良交互，因此只影响到执行并发类卸载的GC(concurrent class unloading, 例如ZGC)。
+执行 Stop-the-World 类卸载的GC(例如 SerialGC, ParallelGC 和 G1GC) 不受影响，对于这类GC来说, 在类卸载阶段, 这种糟糕的交互永远不会出现， Java线程不会和GC线程并发运行。
+
 
 Luckly, once this problem was spotted the [fix](https://github.com/openjdk/jdk/commit/976c2bb05611cdc7b11b0918aaf50ff693507aae) was straight forward. If you’re interested in more details you can read all about it in the corresponding [pull request](https://github.com/openjdk/jdk/pull/6450).
 
 This fix was also backported to JDK 17.0.2.
+
+幸运的是，这个问题一被发现，很直接就 [修复了](https://github.com/openjdk/jdk/commit/976c2bb05611cdc7b11b0918aaf50ff693507aae)。
+如果您对更多细节感兴趣，可以参考相应的 [pull request](https://github.com/openjdk/jdk/pull/6450)。
+
+此修复也被向后移植到 JDK 17.0.2。
 
 ### 10.3 Linux/PowerPC Support
 
@@ -1320,11 +1342,11 @@ Back in 2013, i.e. before ZGC had come into existence, [JEP 175](https://openjdk
 
 So, it might not be a surprise to hear that it was also SAP that contributed the patch to make ZGC available on Linux/PowerPC. Adding support for a new CPU architecture is mostly a matter of implementing ZGC’s various barriers (load barrier, nmethod entry barrier, and stack watermark barrier) in the interpreter and the two JIT compilers. The [patch](https://github.com/openjdk/jdk/commit/337b73a459ba24aa529b7b097617434be1d0030e) weights in at around 1200 lines of code.
 
-所以SAP提交了相关的代码, 在 Linux/PowerPC 平台上支持 ZGC。
+所以SAP提交了相关的补丁包, 在 Linux/PowerPC 平台上支持 ZGC。
 
 增加新的CPU架构, 最关键的就是实现ZGC需要的各种内存屏障(load barrier, nmethod entry barrier, and stack watermark barrier), 包括: 解释执行器( interpreter), 以及两款 JIT 编译器。
 
-相关的代码提交只有大约1200行代码: [patch](https://github.com/openjdk/jdk/commit/337b73a459ba24aa529b7b097617434be1d0030e)
+相关的代码提交只有大约1200行代码: [补丁包链接](https://github.com/openjdk/jdk/commit/337b73a459ba24aa529b7b097617434be1d0030e)
 
 As of JDK 18, ZGC now runs on the following platforms (see [this table](https://wiki.openjdk.java.net/display/zgc#Main-SupportedPlatforms) for more details):
 
