@@ -1298,6 +1298,8 @@ If you’re unfamiliar with String dediuplication, what it actually does, and wh
 
 ### 10.2 Class Unloading Issue Fixed
 
+### 10.2 Class卸载问题修复
+
 We received a [report](https://mail.openjdk.java.net/pipermail/zgc-dev/2021-November/001086.html) about a performance issue on the ZGC mailinglist. This turned out to be a 10-year-old bug that dates back to the [removal of *PermGen*](http://openjdk.java.net/jeps/122).
 
 So, about 10 years ago, the [patch](https://github.com/openjdk/jdk/commit/5c58d27aac7b291b879a7a3ff6f39fca25619103) to remove *PermGen* made some changes to a function that deals with Inline Cache cleaning. An Inline Cache is a speculative optimization technique used by the JVM to speed up method calls in Java. When the GC unloads unused classes and compiled methods, some of the Inline Caches need to be cleaned so that they no longer refer to any unloaded entities.
@@ -1309,6 +1311,8 @@ Luckly, once this problem was spotted the [fix](https://github.com/openjdk/jdk/c
 This fix was also backported to JDK 17.0.2.
 
 ### 10.3 Linux/PowerPC Support
+
+### 10.3 支持Linux/PowerPC平台
 
 ![img](https://www.malloc.se/img/zgc-jdk18/powerpc.svg)Back in 2013, i.e. before ZGC had come into existence, [JEP 175](https://openjdk.java.net/jeps/175) was created to bring Linux/PowerPC (as well as AIX/PowerPC) support to OpenJDK. The initial port shipped as part of JDK 8u20 and has been maintained ever since. The effort to support this platform has from the start been funded by our friends over at [SAP](https://sap.com/).
 
@@ -1332,6 +1336,18 @@ As of JDK 18, ZGC now runs on the following platforms (see [this table](https://
 
 For more information on ZGC, please see the [OpenJDK Wiki](https://wiki.openjdk.java.net/display/zgc/Main), the GC section on [Inside Java](https://inside.java/tag/gc), or [this blog](https://malloc.se/).
 
+### 10.4 小结
+
+- JVM中的各种GC算法现在都支持 `-XX:+UseStringDeduplication` 选项了.  这个功能默认是禁用的, 启用之后则告诉ZGC, 需要去查找并去除String对象底层, 重复的字符数组, 以减少堆内存的占用.
+- 修复了一个持续10年以上的BUG: 某些情况下类卸载(class unloading)会消耗大量时间。
+- ZGC正式支持 Linux/PowerPC 平台架构, 感谢SAP的小伙伴.
+
+
+更多有关 ZGC 的信息, 请参考:
+
+- [OpenJDK Wiki](https://wiki.openjdk.java.net/display/zgc/Main)
+- [GC section on Inside Java](https://inside.java/tag/gc)
+- [this blog](https://malloc.se/).
 
 
 ## 相关链接
