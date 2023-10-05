@@ -414,6 +414,14 @@ twins: 双胞胎
 | 低估  | underestimate |
 
 
+## 8. 其他
+
+| :--  | :--           |
+| 小学 | elementary school |
+| 中学 | middle school, high school |
+| 初中 | junior high school |
+| 高中 | high school |
+| 高中 | senior middle school |
 
 ## 相关链接
 
