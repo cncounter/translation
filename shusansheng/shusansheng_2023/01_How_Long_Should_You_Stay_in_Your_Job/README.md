@@ -1,4 +1,4 @@
-# 在一家公司应该呆多长时间？
+# 职业生涯规划: 在一家公司呆多久比较好？
 
 
 Depending on your chosen profession, changing jobs from time to time may be necessary for career progression. Whether it’s because you want to learn new skills or because you have achieved all you could in your current workplace, there are many reasons to leave a job.
@@ -6,6 +6,19 @@ Depending on your chosen profession, changing jobs from time to time may be nece
 But how long should you stay in your position before seeking out new opportunities?
 
 This article will help you understand how long you should stay in a job, why your length of stay matters and how to determine when it's time for a change.
+
+根据所在的行业和自身的职业类别，想要有所发展, 偶尔换换工作可能是必不可少的。 
+
+无论是想要学习新技能，还是当前的工作已经达成了预期，离职的理由总是数不胜数。
+
+但在寻找新的机会之前，我们应该在自己的岗位上呆多长时间比较好呢？
+
+本文助您了解:
+
+- 应该在一份工作上干多久
+- 为什么工作经历的时间跨度很重要
+- 怎么确定是不是需要换工作了。
+
 
 ## 1. Why Does Length of Service Matter?
 
