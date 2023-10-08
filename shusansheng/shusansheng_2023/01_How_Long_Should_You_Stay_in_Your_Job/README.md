@@ -268,6 +268,16 @@ Do this too many times, and it becomes a habit you will find hard to break.
 
 The ideal tenure depends on many factors, such as occupation, age, level of experience, prospects and a particular industry’s expectations.
 
+## 4. 不同行业的跳槽年限
+
+一份具体应该干多长时间, 取决于多种因素，例如:
+
+- 职业类型
+- 年龄
+- 职级
+- 行业前景
+
+
 ### 4.1 Short-Term and Casual Jobs
 
 Short-term and casual jobs prioritize career progression over building up a long tenure.
@@ -281,6 +291,23 @@ When it comes to the minimum length of tenure, generally speaking, moving before
 That said, leaving one position within this period doesn't look bad on its own. However, doing it multiple times in a row will raise red flags in a job interview.
 
 Naturally, when it comes to seasonal work, these unwritten rules don't apply since these positions are rarely available for more than six months. In such roles, focus on acquiring one or two new skills or honing old ones to increase the chance of landing a longer-term position.
+
+### 4.1 短期工种和临时工
+
+短期兼职和临时工, 应该优先考虑职业发展, 而不是长期任职。
+
+例如， 酒店行业的普通岗位, 这类员工通常在工作两年之后, 会被鼓励继续工作。 
+通常是因为这类岗位，需要这么长的时间来熟悉相关的技能，特别是对于年轻工人来说。 
+对于25-34岁的人，建议一到两年后跳槽，而对于50岁以上的人，四到五年后再跳槽也是可以接受的。
+
+对于管理岗位而言，在同一个部门，通常应该在工作岗位上工作五年左右。 如果没有晋升，则应该到其他场所寻找职位。
+
+当谈到最短任期时，一般来说，在六个月之内跳槽离职, 一般都是表现不佳，即使在酒店旅游等行业也是如此。
+
+也就是说，偶尔在此期间离职一两次看起来也没什么问题。 但是，连续多次这样的行为, 会在面试和简历筛选过程中引发危险信号。
+
+当然，当涉及到季节性工作时，这些不成文的规则并不适用，因为这些职位的空缺时间很少超过六个月。 
+在此类职位中，重点关注获得一两项新技能或磨练旧技能，以增加获得长期职位的机会。
 
 
 ### 4.2 Traditional Office Jobs
