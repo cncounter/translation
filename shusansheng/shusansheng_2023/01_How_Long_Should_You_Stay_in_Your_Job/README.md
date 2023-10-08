@@ -82,7 +82,7 @@ These and [similar soft skills](https://www.wikijob.co.uk/interview-advice/compe
 
 They will still look at your hard skills and relevant expertise in the field. Still, having soft skills is often fundamental for landing a position in marketing or the [financial sector](https://www.wikijob.co.uk/interview-advice/interview-questions/interview-question-why-finance).
 
-### 2.1 磨炼软技能
+### 2.1 人脉: 磨炼软技能
 
 简历中具有多种工作经历, 会向潜在的雇主发出一种信号: 你能够适应新环境。
 
@@ -104,13 +104,13 @@ While promotion within the company can also contribute to a higher wage, job-hop
 
 Companies often take advantage of employees’ loyalty and desire for job security by not offering existing employees the same wage as new recruits.
 
-### 2.2 薪水和待遇提升
+### 2.2 涨薪: 工资和待遇提升
 
-虽然公司内部的晋升也可以带来更高的工资，但跳槽往往是获得加薪的最佳方式。
+虽然内部晋升也可以获得更高的工资，但跳槽往往是大多数人获得加薪的最佳方式。
 
 [统计报告](https://www.forbes.com/sites/cameronkeng/2014/06/22/employees-that-stay-in-companies-longer-than-2-years-get-paid-50-less/?sh=66dd8a37e07f) 显示, 通过晋升获得职位的人, 收入低于从外部雇用的同样职位的人。 
 
-也就是常说的 “薪资倒挂” 现象: 公司经常利用员工的忠诚度, 以及对工作稳定性的渴望，不向现有员工提供与新员工相同的工资。
+这就是常说的 “薪资倒挂” 现象: 公司经常利用员工的忠诚度, 以及对工作稳定性的渴望，不向现有员工提供与新员工相同的工资。
 
 
 ### 2.3 Gaining Diverse Skills
@@ -126,6 +126,25 @@ It's also like gaining multiple employees for one salary. Even though this amoun
 Provided you still cost them less than hiring two or more people to individually cover your skills, you may be able to use this to your advantage to [negotiate an even better salary](https://www.wikijob.co.uk/application-advice/job-offers/salary-negotiation).
 
 Positions in media and similar fields are particularly known for demanding diverse skill sets.
+
+
+### 2.3 见多识广: 扩充技能栈
+
+有一个心照不宣的事实是: 在很多行业, 跳槽越多的人，往往能力越强。
+
+换多份工作, 通常需要你掌握多种技能。
+
+可以从之前的工作岗位中获得他人没有的技能和经验。组合自己的技能，提升竞争力，最终获得报酬丰富的岗位。 
+
+
+很多雇主喜欢看到 [简历多样性](https://www.wikijob.co.uk/application-advice/cvs/the-10-most-important-skills-to-show-on-your-cv)， 因为多份工作经历, 标志着灵活性, 以及跟上市场需求不断变化的能力。
+
+这也就像用同一份薪水, 获得多名员工的能力一样。 尽管支付的费用可能高于雇佣单项技能的人，但公司愿意支付它， 因为这有利于公司利润。
+
+如果雇佣你的成本, 仍然低于雇用两个或更多人来覆盖你的技能， 你也许可以利用这一点来 [获得更好的薪资待遇](https://www.wikijob.co.uk/application-advice/job-offers/salary-negotiation).
+
+传媒行业, 以及类似领域的职位, 尤其以多样化的技能要求而闻名。
+
 
 ### 2.4 Finding Self-Development and Control
 
