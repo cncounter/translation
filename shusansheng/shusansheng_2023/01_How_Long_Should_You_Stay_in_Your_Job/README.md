@@ -15,7 +15,7 @@ This article will help you understand how long you should stay in a job, why you
 
 但在寻找新的机会之前，我们应该在自己的岗位上呆多长时间比较好呢？
 
-本文助您了解:
+本文助你了解:
 
 - 应该在一份工作上干多久
 - 为什么工作经历的时间跨度很重要
@@ -153,6 +153,14 @@ Changing your jobs can allow you to try different roles; learning which one is t
 True, you may come across some that aren't the best fit but eliminating these will only get you closer to knowing and achieving your overall career goals.
 
 You can try out different things and learn new, beneficial skills along the way. It will also make you feel more in control of your professional career.
+
+### 2.4 寻求自我发展与突破
+
+换工作可以让你尝试不同的角色，实际上这是一种宝贵的试错过程； 了解哪一种角色最适合你。
+
+确实，可能会遇到一些不是很匹配的岗位，但消除这些障碍，只会让你更了解自己，实现你的总体职业目标。
+
+你可以尝试不同的事情，并在此过程中学习新的、有益的技能。  让你更好掌控自己的职业生涯。
 
 
 ## 3. What Are the Cons of Changing Your Job?
