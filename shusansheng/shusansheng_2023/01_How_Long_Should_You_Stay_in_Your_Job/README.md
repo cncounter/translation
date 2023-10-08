@@ -384,6 +384,31 @@ If you have any doubt about your current occupation within 6 to 12 months, discu
 Make sure your move makes sense for your [long-term career goals](https://www.wikijob.co.uk/jobs-and-careers/career-planning/long-term-career-goals) so you don't end up regretting it after a few months and looking for a position all over again.
 
 
+### 4.3 通用建议
+
+虽然前面给出的时间范围, 可以作为很多岗位的任期参考，但并不适用于所有职业。
+
+例如，在广告和[技术领域](https://www.wikijob.co.uk/industry/education/how-to-become-a-teacher) 等快节奏行业，员工预计每隔一到两年就会跳槽一次, 以发展自己的职业生涯。
+
+然而，在传统行业，包括教学工作和医疗保健行业，员工并不能从频繁的跳槽中受益。
+
+事实上，我们鼓励这些工人尽可能延长任期，因为这会给他们在各自领域更多的权威和信誉。
+
+如果你在这些行业工作，无需跳动即可提升职业生涯的一个很大的可能性, 就是学习新技能和[获取晋升](https://www.wikijob.co.uk/jobs-and-careers/employment/get-promoted-fast)，以承担更多职责。
+
+总体而言，在任何工作岗位上都应该工作至少 18~24 个月，除非是季节性工人。
+
+对于寻找新候选人的雇主来说，面试和培训需要花费大量的时间和精力，更不用说金钱了。 从职业道德而言, 你在公司投入的生产时间, 至少应该比公司培训你的时间多一些, 来为公司的业务发展做出贡献。
+
+如果你每一份工作的任职时间都比较长, 在面试时就可以不用过多解释[上家公司的离职原因](https://www.wikijob.co.uk/interview-advice/interview-questions/interview-question-previous-employment)。
+
+请记住你所在行业的建议跳槽时间间隔，时间周期到了,你可以在短时间内制定离职策略。
+
+如果你在入职之后的 6~12 个月内, 对当前职业有任何疑问，请先与你的雇主讨论。 如果找不到问题的解决方案, 并且对你的工作场所非常不满意，你可以寻找其他的办法。
+
+确保你的举动对你的 [长期职业目标](https://www.wikijob.co.uk/jobs-and-careers/career-planning/long-term-career-goals) 有帮助，这样就不会在入职几个月后，就后悔并重新寻找工作。
+
+
 ## 5. Final Thoughts
 
 So how long should you stay in a job? It depends on several factors but, hopefully, this article has provided some clarity.
