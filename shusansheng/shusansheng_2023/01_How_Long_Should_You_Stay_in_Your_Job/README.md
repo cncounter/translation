@@ -82,7 +82,7 @@ These and [similar soft skills](https://www.wikijob.co.uk/interview-advice/compe
 
 They will still look at your hard skills and relevant expertise in the field. Still, having soft skills is often fundamental for landing a position in marketing or the [financial sector](https://www.wikijob.co.uk/interview-advice/interview-questions/interview-question-why-finance).
 
-### 2.1 提升软技能
+### 2.1 磨炼软技能
 
 简历中具有多种工作经历, 会向潜在的雇主发出一种信号: 你能够适应新环境。
 
@@ -103,6 +103,15 @@ While promotion within the company can also contribute to a higher wage, job-hop
 [Statistics show](https://www.forbes.com/sites/cameronkeng/2014/06/22/employees-that-stay-in-companies-longer-than-2-years-get-paid-50-less/?sh=66dd8a37e07f) that people who earn a position by promotion earn less than those hired outside the company for the same job title.
 
 Companies often take advantage of employees’ loyalty and desire for job security by not offering existing employees the same wage as new recruits.
+
+### 2.2 薪水和待遇提升
+
+虽然公司内部的晋升也可以带来更高的工资，但跳槽往往是获得加薪的最佳方式。
+
+[统计报告](https://www.forbes.com/sites/cameronkeng/2014/06/22/employees-that-stay-in-companies-longer-than-2-years-get-paid-50-less/?sh=66dd8a37e07f) 显示, 通过晋升获得职位的人, 收入低于从外部雇用的同样职位的人。 
+
+也就是常说的 “薪资倒挂” 现象: 公司经常利用员工的忠诚度, 以及对工作稳定性的渴望，不向现有员工提供与新员工相同的工资。
+
 
 ### 2.3 Gaining Diverse Skills
 
