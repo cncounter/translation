@@ -334,6 +334,30 @@ However, be aware that, despite all the benefits, uprooting your career in the t
 - If you are older and have worked in the same position for 10 years or more, you may find it difficult to adjust to a new environment. Even companies in the same niche may have different rules and regulations, which may take some time to learn.
 - Employers often want to avoid this by hiring only younger workers, so finding a position in the same niche can be challenging to begin with. That's not to say that you should stay in a stagnating workplace. However, it's wise to find potential prospects before deciding to leave your current position.
 
+### 4.2 传统的办公室岗位
+
+传统的办公室岗位, 侧重于建立忠诚度和发展多样化的综合技能，这通常需要长期服务，无论是否有重大晋升。
+
+金融或法律部门的员工, 很少在五到七年内流动。 与私营部门的员工相比，他们需要学习和使用更广泛的技能，这意味着他们留下来的好处往往比跳槽得到的好处更多。
+
+不过，一般两三年后，金融、法律工作者就可以升职，甚至加薪。
+
+对于其他公共部门员工来说，这可能需要更长的时间，但即使是普通部门，也应该在 7~10 年内展现出职业发展。
+
+通常建议这些行业的年轻人, 最多等三年, 不升职就应该转向不同的方向； 否则就可能会停滞不前，无法进步。
+
+在传统职业中, 普遍接受的是两到三年后跳槽, 可以带来几个好处：
+
+- 如果在当前职位上设定新目标时遇到困难，一个更具吸引力的新工作环境可以帮助你恢复热情。
+- 新工作可以增长见识, 开辟获得新技能的可能性，这将有利于你的职业发展。
+- 如果 [看不到关于工作或雇主的任何希望](https://www.wikijob.co.uk/features/useful-resources/hostile-work-environments)，那么想办法跳槽绝对是个好主意。 研究表明，[积极正向的工作环境](https://www.wikijob.co.uk/jobs-and-careers/employment/positive-work-environment) 有助于改善心理健康，进而提高信心和前进的动力。
+- 如果对目前的薪水不满意, 或者收入停滞不前，并且你觉得可以找到一份薪水更高的工作，那么继续找工作是个好主意。
+
+然而，请注意，尽管有这么多好处，但将你的职业生涯限定在传统行业可能会带来一些坏处：
+
+- 如果你年龄较大，且在同一职位上工作了10年或更长时间，可能会发现自己很难适应新环境。 即使是同一领域的公司, 也可能有不同的业务规则和规定，这需要一些时间来学习和适应。
+- 雇主一般都会招聘年轻员工来避免这种情况，因此在同一领域找到职位, 可能一开始就不容易。 这并不是说你应该留在停滞不前的工作场所。 所以，尽量不要裸辞, 在辞职之前，明智的做法是找到潜在的岗位Offer。
+
 
 ### 4.3 General Advice
 
