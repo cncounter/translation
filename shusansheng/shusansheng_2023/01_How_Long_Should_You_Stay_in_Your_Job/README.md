@@ -250,6 +250,19 @@ You just apply for it, and when you get it, you realize it was a mistake and rep
 
 Do this too many times, and it becomes a habit you will find hard to break.
 
+### 3.4 跳槽综合症
+
+
+连续多次换工作, 可能导致你无法找到自己真正喜欢的职位。 
+
+这就是所谓的跳槽综合症(Job-Hopping Syndrome)，是由于换了太多工作, 而职业发展却没有对应的起色而导致的。
+
+即使你看到了新职位可以带来的技能提升、头衔或薪水，也不会认为这是适合你需求的工作。
+
+你只是发简历，面试，收Offer，入职，等入职之后，意识到这不是你想要的，然后再次跳槽找工作。
+
+这样做太多次，它就会成为你很难改掉的习惯。
+
 
 ## 4. Length of Service for Different Kinds of Jobs
 
