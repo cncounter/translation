@@ -65,6 +65,11 @@ In fact, it can be seen as a sign of loyalty and devotion to your profession. Su
 
 When done the right way, changing your job can bring you multiple benefits:
 
+## 2. 换工作有什么好处？
+
+如果方法正确，换工作可以带来多种好处：
+
+
 ### 2.1 Honing Your Soft Skills
 
 One of the first things that a CV showing multiple jobs may signal to a potential employer is that you are adaptable to new environments.
@@ -76,6 +81,19 @@ Therefore, unless your tenure at any one place was unusually short, having held 
 These and [similar soft skills](https://www.wikijob.co.uk/interview-advice/competencies/soft-skills) are valued by employers because you will be seen as someone who can quickly become a productive member of their team.
 
 They will still look at your hard skills and relevant expertise in the field. Still, having soft skills is often fundamental for landing a position in marketing or the [financial sector](https://www.wikijob.co.uk/interview-advice/interview-questions/interview-question-why-finance).
+
+### 2.1 提升软技能
+
+简历中具有多种工作经历, 会向潜在的雇主发出一种信号: 你能够适应新环境。
+
+因为每进入一家新公司，都必须建立新的人际关系, 并学习新技能。
+
+因此，除非你在任何一家公司的任期都非常短，否则担任过多种职位, 就证明你具有出色的人际交往能力，并且认识很多 [人脉](https://remotive.com/).
+
+这些经历, 和[类似的软技能](https://www.wikijob.co.uk/interview-advice/competencies/soft-skills), 会得到加分，因为这表明, 你能够快速融入他们团队。
+
+当然, 对于大部分工作来说, 雇主最关注的还是你的硬实力, 也就是专业技能和领域相关的专业知识。 
+尽管如此，拥有卓越的软实力和软技能, 通常是运营岗位, 以及 [金融领域](https://www.wikijob.co.uk/interview-advice/interview-questions/interview-question-why-finance) 相关岗位的基础要求。
 
 
 ### 2.2 Potential Salary Increase
