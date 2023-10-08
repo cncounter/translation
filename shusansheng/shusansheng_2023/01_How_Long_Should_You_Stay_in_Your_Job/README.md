@@ -1,4 +1,4 @@
-# 职业发展: 在一家公司干多久才应该跳槽？
+# 职业发展: 你所在的行业应该多久跳槽一次?
 
 
 Depending on your chosen profession, changing jobs from time to time may be necessary for career progression. Whether it’s because you want to learn new skills or because you have achieved all you could in your current workplace, there are many [reasons to leave a job](https://www.wikijob.co.uk/application-advice/job-offers/top-10-reasons-to-leave-job).
@@ -6,6 +6,10 @@ Depending on your chosen profession, changing jobs from time to time may be nece
 But how long should you stay in your position before seeking out new opportunities?
 
 This article will help you understand how long you should stay in a job, why your length of stay matters and how to determine when it's time for a change.
+
+有研究报告显示: 在同一家公司工作时间较长的员工, 平均工资要少50%左右。
+
+> [在同一家公司工作时间较长的员工, 平均工资比跳槽人员要少50%左右。](https://www.forbes.com/sites/cameronkeng/2014/06/22/employees-that-stay-in-companies-longer-than-2-years-get-paid-50-less/?sh=66dd8a37e07f)
 
 根据所在的行业和自身的职业类别，想要有所发展, 偶尔换换工作可能是必不可少的。 
 
@@ -418,12 +422,21 @@ If you have found a better opportunity, you shouldn't have trouble making the tr
 When it comes to non-traditional jobs and apprenticeships, the process will be simpler, as these positions are usually designed to help you learn a skill set. While you should always consider the points discussed here, feel free to change jobs as frequently as your career progression requires you to do so.
 
 
+## 5. 小结与思考
 
+那么你应该在这家公司呆多久呢？ 这取决于多个因素，希望本文能够对你有明确的帮助。
+
+如果找到了更好的机会，那么通过一些计划和谈判方法来实现过渡应该不会有困难。
+
+当涉及非传统工作和学徒时，过程会更简单，因为这些职位通常旨在帮助你学习技能。 
+
+虽然你应该参考本文给出的时间范围，但也可以根据自己的职业发展需要，随时更换工作。
 
 
 
 ## 相关链接
 
+- [GitHub中英对照版: 你所在的行业应该多久跳槽一次?](https://github.com/cncounter/translation/blob/master/shusansheng/shusansheng_2023/01_How_Long_Should_You_Stay_in_Your_Job/README.md)
 - [电子书(英文版): How Long Should You Stay in Your Job?](https://sf.tradepub.com/free/w_wiki235/prgm.cgi?a=1)
 
 
