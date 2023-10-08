@@ -1,4 +1,4 @@
-# 职业生涯规划: 在一家公司呆多久比较好？
+# 职业发展: 在一家公司干多久才应该跳槽？
 
 
 Depending on your chosen profession, changing jobs from time to time may be necessary for career progression. Whether it’s because you want to learn new skills or because you have achieved all you could in your current workplace, there are many [reasons to leave a job](https://www.wikijob.co.uk/application-advice/job-offers/top-10-reasons-to-leave-job).
@@ -65,7 +65,7 @@ In fact, it can be seen as a sign of loyalty and devotion to your profession. Su
 
 When done the right way, changing your job can bring you multiple benefits:
 
-## 2. 换工作有什么好处？
+## 2. 跳槽有哪些好处？
 
 如果方法正确，换工作可以带来多种好处：
 
@@ -167,6 +167,10 @@ You can try out different things and learn new, beneficial skills along the way.
 
 Changing your workplace can have its disadvantages. Here is a quick look at the main ones:
 
+## 3. 跳槽有哪些缺点？
+
+改变工作, 也有一些缺点。 比如：
+
 
 ### 3.1 Lost Benefits
 
@@ -180,6 +184,16 @@ Losing out on your retirement savings may have more unfavorable consequences in 
 
 Before changing jobs, you should look into how much this will affect you.
 
+### 3.1 福利方面的损失
+
+在跳槽之前，你需要考虑一下会产生多大的影响。
+
+每次换工作, 都会损失对应岗位的所有 [员工福利](https://www.wikijob.co.uk/features/useful-resources/most-beneficial-employee-benefits)，例如假期(vacation time)、养老金(retirement income)和社保(insurance)。
+
+如果你的情况特殊, 需要休假或者医疗护理，跳槽可能会导致某些问题。
+
+从长远来看，没有职工社保可能会产生很多不利的后果。
+
 
 ### 3.2 Potential Stigmatization
 
@@ -190,6 +204,20 @@ There is a stigma around frequent job changes; it can raise a red flag that you 
 If your potential employer worries about your ability to develop loyalty, they may not hire you. After all, training someone who only sticks around until they learn a few new skills can be expensive.
 
 This is something that can often be overcome with a great job interview. If you can convince a potential employer of the [benefits you’ll bring to a company](https://www.wikijob.co.uk/interview-advice/interview-questions/what-can-you-bring-to-this-company), they’ll often drop any concerns about loyalty.
+
+
+### 3.2 对名声不好
+
+如果简历上有很多短时间内频繁更换的工作经历，可能会被视为跳槽者(job-hopper)。
+
+频繁更换工作是一种耻辱, 会释放一种危险信号: 你这个人难以共事。 HR可能会质疑你的 [职业承诺](https://www.wikijob.co.uk/interview-advice/competcies/commitment-career)。
+
+如果潜在雇主觉得很难培养忠诚度，可能就不会雇用你。 
+毕竟对于公司来说，培训那些只学习不干活的人，代价可能会得不偿失。
+
+这种情况, 只能通过出色的工作面试来解决。 
+如果你能够让潜在雇主相信你能 [为公司带来的好处](https://www.wikijob.co.uk/interview-advice/interview-questions/what-can-you-bring-to-this-company)，他们通常会放弃对忠诚度的任何担忧。
+
 
 
 ### 3.3 Frequent Probation Periods
