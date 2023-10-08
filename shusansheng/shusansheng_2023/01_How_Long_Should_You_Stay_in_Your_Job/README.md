@@ -208,7 +208,7 @@ This is something that can often be overcome with a great job interview. If you 
 
 ### 3.2 对名声不好
 
-如果简历上有很多短时间内频繁更换的工作经历，可能会被视为跳槽者(job-hopper)。
+如果简历上有很多短时间内频繁更换的工作经历，可能会被视为 “面霸” 之类的职业跳槽人士(job-hopper)。
 
 频繁更换工作是一种耻辱, 会释放一种危险信号: 你这个人难以共事。 HR可能会质疑你的 [职业承诺](https://www.wikijob.co.uk/interview-advice/competcies/commitment-career)。
 
@@ -227,6 +227,17 @@ You will have to go through a probation period every time you enter a new place,
 This can be incredibly exhausting as your skills will be tested with an often higher-thanusual workload (one of the reasons why many workers quit after a few months of service).
 
 In many companies, the probation period isn't too bad but you should check over your [new employment contract](https://www.wikijob.co.uk/jobs-and-careers/us-employment-law/employment-contract) carefully if you are interested in changing jobs.
+
+
+### 3.3 试用期和新工作的压力
+
+每进入一个新地方，一般都需要经历试用期，不管你是哪个职级。
+
+实际上这可能会让人非常疲惫，因为你的技能将受到比平时更高的工作量的考验。
+而且总会涉及新的业务知识，以及新的技术领域，需要比平时花费更多的精力来学习和处理新业务。
+这也是许多人在工作几个月后就辞职的原因。
+
+在很多公司，试用期并不算太糟糕，但应该仔细检查一下 [新的劳动合同](https://www.wikijob.co.uk/jobs-and-careers/us-employment-law/employment-contract) - 比如竞业协议之类的东西。
 
 
 ### 3.4 Job-Hopping Syndrome
