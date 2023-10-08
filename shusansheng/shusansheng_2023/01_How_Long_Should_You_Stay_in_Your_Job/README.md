@@ -1,7 +1,7 @@
 # 职业生涯规划: 在一家公司呆多久比较好？
 
 
-Depending on your chosen profession, changing jobs from time to time may be necessary for career progression. Whether it’s because you want to learn new skills or because you have achieved all you could in your current workplace, there are many reasons to leave a job.
+Depending on your chosen profession, changing jobs from time to time may be necessary for career progression. Whether it’s because you want to learn new skills or because you have achieved all you could in your current workplace, there are many [reasons to leave a job](https://www.wikijob.co.uk/application-advice/job-offers/top-10-reasons-to-leave-job).
 
 But how long should you stay in your position before seeking out new opportunities?
 
@@ -10,6 +10,8 @@ This article will help you understand how long you should stay in a job, why you
 根据所在的行业和自身的职业类别，想要有所发展, 偶尔换换工作可能是必不可少的。 
 
 无论是想要学习新技能，还是当前的工作已经达成了预期，离职的理由总是数不胜数。
+
+> [离职的10大原因](https://www.wikijob.co.uk/application-advice/job-offers/top-10-reasons-to-leave-job)
 
 但在寻找新的机会之前，我们应该在自己的岗位上呆多长时间比较好呢？
 
@@ -35,6 +37,28 @@ This is particularly problematic for the older generation who entered the workfo
 However, for some traditional occupations, holding the same role for 10 or more years is still not viewed as a disadvantage.
 
 In fact, it can be seen as a sign of loyalty and devotion to your profession. Such roles include craftspeople, where precise, specific skills are key and developed over time, or a teacher, who benefits from building a relationship over years with their students and coworkers. But these are less common now than jobs that [value flexibility](https://www.wikijob.co.uk/jobs-and-careers/career-planning/gain-new-skills).
+
+## 1. 在一个岗位工作的年限有什么意义？
+
+多年以前，长期在一家公司工作， 是一种值得信赖和具有奉献精神的表现，具有这类特点的打工人, 特别受到尊重。
+
+如今的情况恰恰相反。 在一份工作上呆太久, 可能会影响潜在雇主对你的看法。
+
+在同一家公司，担任同一个职位，如果超过五年而没有晋升的话，可能表明你没有 [职业发展规划](https://www.wikijob.co.uk/jobs-and-careers/career-planning/what-is-career-development).
+
+
+可能还给人留下这样的印象: 脑子不够灵活，或者是混日子，无法获得有助于获得新职位的新技能。
+
+这对于社会长期就业态度改变之前, 就进入劳动力市场的老一代人来说，是个大问题。
+
+当然，对于某些传统职业来说，担任同一职位10年或更长时间, 仍然不会被看做劣势。
+
+事实上，它可以被视为对职业忠诚和奉献的标志。 这些角色包括:
+
+- 工匠（精确、专业技能是核心竞争力, 并随着时间的推移而发展），
+- 教师（通过多年来与学生和同事建立的关系而受益）。 
+
+但这些工种, 比起 [重视灵活性](https://www.wikijob.co.uk/jobs-and-careers/career-planning/gain-new-skills) 的工作要少很多了。
 
 
 ## 2. What Are the Pros of Changing Your Job?
@@ -222,6 +246,7 @@ When it comes to non-traditional jobs and apprenticeships, the process will be s
 
 
 - [Employees Who Stay In Companies Longer Than Two Years Get Paid 50% Less](https://www.forbes.com/sites/cameronkeng/2014/06/22/employees-that-stay-in-companies-longer-than-2-years-get-paid-50-less/?sh=66dd8a37e07f)
+- [Top 10 Reasons for Leaving a Job](https://www.wikijob.co.uk/application-advice/job-offers/top-10-reasons-to-leave-job)
 - [What Is Career Development? (2023 Review)](https://www.wikijob.co.uk/jobs-and-careers/career-planning/what-is-career-development)
 - [10 Ways to Gain New Skills](https://www.wikijob.co.uk/jobs-and-careers/career-planning/gain-new-skills)
 - [20 Soft Skills Employers Look For in 2023 (With Examples)](https://www.wikijob.co.uk/interview-advice/competencies/soft-skills)
