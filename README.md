@@ -471,6 +471,8 @@ GITHUB官方帮助文档(中文版): <https://docs.github.com/cn/free-pro-team@l
 
 各知名科技公司技术博客合集: <https://www.luxiangdong.com/2023/07/20/techblog/>
 
+开源指北(一份给开源新手的保姆级开源百科): <https://oschina.gitee.io/opensource-guide/>
+
 
 Star 增长曲线（URL换成你的账号和项目, 即可看项目的曲线）: <https://starchart.cc/cncounter/translation>
 

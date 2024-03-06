@@ -1,40 +1,35 @@
-# git-checkout doc
-
 # git-checkout官方文档
 
-## NAME
 
-## 名称
+## 命令名称
 
-git-checkout - Switch branches or restore working tree files
+`git-checkout` - 切换分支(Switch branches), 或者还原工作目录(restore working tree files)
 
-git-checkout - 切换分支(Switch branche), 或者恢复工作树(working tree)文件
+## 命令语法格式(SYNOPSIS)
 
-## SYNOPSIS
-
-## 语法
-
-```
+```sh
 git checkout [-q] [-f] [-m] [<branch>]
 git checkout [-q] [-f] [-m] --detach [<branch>]
 git checkout [-q] [-f] [-m] [--detach] <commit>
-git checkout [-q] [-f] [-m] [[-b|-B|--orphan] <new_branch>] [<start_point>]
-git checkout [-f|--ours|--theirs|-m|--conflict=<style>] [<tree-ish>] [--] <paths>…
-git checkout [<tree-ish>] [--] <pathspec>…
-git checkout (-p|--patch) [<tree-ish>] [--] [<paths>…]
+git checkout [-q] [-f] [-m] [[-b|-B|--orphan] <new-branch>] [<start-point>]
+git checkout [-f] <tree-ish> [--] <pathspec>…​
+git checkout [-f] <tree-ish> --pathspec-from-file=<file> [--pathspec-file-nul]
+git checkout [-f|--ours|--theirs|-m|--conflict=<style>] [--] <pathspec>…​
+git checkout [-f|--ours|--theirs|-m|--conflict=<style>] --pathspec-from-file=<file> [--pathspec-file-nul]
+git checkout (-p|--patch) [<tree-ish>] [--] [<pathspec>…​]
 ```
 
 
+## checkout简介
 
-## DESCRIPTION
 
-## 简介
+Updates files in the working tree to match the version in the index or the specified tree. If no pathspec was given, `git checkout` will also update `HEAD` to set the specified branch as the current branch.
 
-Updates files in the working tree to match the version in the index or the specified tree. If no paths are given, *git checkout* will also update `HEAD` to set the specified branch as the current branch.
 
-更新文件在工作树匹配该指数的版本或指定的树。如果没有给出路径,* git checkout *也会更新`HEAD`设置指定的分支与当前分支。
+更新工作目录中的文件, 以匹配树形结构或索引中对应的git版本。
+如果没有指定 `<pathspec>` 路径, `git checkout` 同时会将当前分支设置为 `HEAD` 的指定分支。
 
-- *git checkout* <branch>
+- `git checkout [<branch>]`
 
   To prepare for working on <branch>, switch to it by updating the index and the files in the working tree, and by pointing HEAD at the branch. Local modifications to the files in the working tree are kept, so that they can be committed to the <branch>.If <branch> is not found but there does exist a tracking branch in exactly one remote (call it <remote>) with a matching name, treat as equivalent to`$ git checkout -b <branch> --track <remote>/<branch>`You could omit <branch>, in which case the command degenerates to "check out the current branch", which is a glorified no-op with rather expensive side-effects to show only the tracking information, if exists, for the current branch.
 
@@ -469,6 +464,16 @@ When there is only one argument given and it is not `--` (e.g. "git checkout abc
    $ git add frotz
    ```
 
+
+示例:
+
+```sh
+# 查看远程分支
+git branch -r
+
+# 检出远程分支, 本地创建新分支, 并自动执行追踪
+git checkout -b test origin/test  --track
+```
 
 
 ## GIT
