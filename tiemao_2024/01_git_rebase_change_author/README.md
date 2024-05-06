@@ -101,6 +101,12 @@ find . -type d -depth 1 -exec git --git-dir={}/.git --work-tree=$PWD/{} config u
 # 设置每个项目的邮箱;
 find . -type d -depth 1 -exec git --git-dir={}/.git --work-tree=$PWD/{} config user.email tiemaocsdn@qq.com \;
 
+# 查找当前目录下, 名称带 `-` 的1级子目录, 并执行 git pull
+find . -type d -depth 1 -name "*-*" -exec git --git-dir={}/.git --work-tree=$PWD/{} pull \;
+
+# 更多帮助信息可以使用;
+man find
+
 ```
 
 

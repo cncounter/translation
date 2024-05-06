@@ -101,4 +101,4 @@ Failed to complete processing of a request
 1. 分页参数不要忘记
 2. 测试时需要模拟对应的数据量
 3. try可以捕获 Throwable, 以便出错时输出相关信息。
-
+4. 猜测: JDK11.0.6版本中的ZGC可能有Meta空间泄露, 有一个应用在批处理任务重叠时, 堆外内存爆了。

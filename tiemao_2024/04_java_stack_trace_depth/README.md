@@ -8,7 +8,8 @@
 ```java
 
 org.springframework.web.util.NestedServletException: Handler dispatch failed; 
-nested exception is java.lang.StackOverflowError
+  nested exception is java.lang.StackOverflowError
+    // ...
 
 Caused by: java.lang.StackOverflowError: null
 	at fj.SerializeConfig.getObjectWriter(SerializeConfig.java:444)
@@ -75,4 +76,30 @@ Java HotSpot(TM) 64-Bit Server VM 18.9 (build 11.0.6+8-LTS, mixed mode)
 | ThreadStackSize      | `-XXThreadStackSize=1024`| 单位k字节; 类似于 `-xss1M` 或者 `-ss1M`;  |
 
 
+
+如果增加命令行选项 `-Xss4m`:
+
+```sh
+java -Xss4m -XX:+PrintFlagsFinal -version | grep ThreadStackSize
+
+```
+
+则输出结果会有所变化:
+
+```sh
+# 默认值{default}
+  intx ThreadStackSize       = 1024    {pd product} {default}
+
+# 使用命令行选项{command line}:  -Xss4m
+  intx ThreadStackSize       = 4096    {pd product} {command line}
+```
+
+可以看到 `ThreadStackSize` 标志的值变为了 `4096`。
+
+
+## 参考链接
+
+
+- [Exploring JVM Tuning Flags](https://www.baeldung.com/jvm-tuning-flags)
+- [Configuring Stack Sizes in the JVM](https://www.baeldung.com/jvm-configure-stack-sizes)
 

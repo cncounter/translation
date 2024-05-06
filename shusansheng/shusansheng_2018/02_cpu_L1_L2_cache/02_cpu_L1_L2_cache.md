@@ -2,7 +2,7 @@
 
 # CPU缓存-L1和L2的工作原理
 
-> 说明: L1, 即 Level 1 Cache, 1级缓存; L2, 即2级缓存。
+> 说明: L1, 即 Level 1 Cache, 1级缓存; L2, 即 Level 2 Cache, 2级缓存。
 
 ![漂亮的 Pentium M 处理器晶粒](02_01_Pentium_M-die.jpg)
 
@@ -11,9 +11,11 @@
 
 The development of caches and caching is one of the most significant events in the history of computing. Virtually every modern CPU core from ultra-low power chips like the ARM Cortex-A5 to the highest-end Intel Core i7 use caches. Even higher-end microcontrollers often have small caches or offer them as options — the performance benefits are too large to ignore, even in ultra low-power designs.
 
-CPU高速缓存的出现是计算机发展史上的一件大事. 
+CPU的高速缓存是计算机发展史上一个重要的里程碑事件. 
+基本上所有的现代CPU内核, 都使用了缓存, 囊括超低功耗的 ARM 架构, 以及 Intel Core 之类的顶级处理器。 
+即使是更高端的微控制器(microcontrollers), 也会集成高速缓存, 或是可选定制项。
 
-几乎所有的现代CPU核心, 从超低功耗的 ARM Cortex-A5 架构, 到 Intel Core i7 这种顶级处理器, 都使用了缓存。 即使是更高端的微控制器中, 通常也会集成少量的缓存, 或是提供可选项 —— 因为缓存对CPU的性能提升实在是太明显了, 即便是超低功耗的芯片, 在设计时也会加入必要的缓存。
+> 实在是因为缓存对CPU的性能提升太明显了, 即便是超低功耗的处理器芯片, 在设计时也会加入必要的缓存。
 
 Caching was invented to solve a significant problem. In the early decades of computing, main memory was extremely slow and incredibly expensive — but CPUs weren’t particularly fast, either. Starting in the 1980s, the gap began to widen quickly. Microprocessor clock speeds took off, but memory access times improved far less dramatically. As this gap grew, it became increasingly clear that a new type of fast memory was needed to bridge the gap.
 

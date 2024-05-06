@@ -239,6 +239,38 @@ github.com.		47	IN	A	20.205.243.166
 
 ```
 
+# 其他shell命令
+
+
+```shell
+# 查看系统中的shell
+cat /etc/shells
+
+# 查看当前用户的HOME目录
+echo $HOME
+
+
+# 查看当前的环境变量
+echo $PATH
+
+# 查看当前的SHELL版本
+echo $SHELL
+
+# 查看当前脚本名称
+echo $0
+
+# 简单示例
+/bin/sh
+echo $0
+echo $SHELL
+exit
+
+# 查看当前目录
+pwd
+
+
+```
+
 # MAC相关
 
 解除下载软件来源限制:
