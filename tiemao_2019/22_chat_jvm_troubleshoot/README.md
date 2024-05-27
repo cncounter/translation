@@ -395,7 +395,7 @@ JVM总内存=堆+栈+非堆+堆外内存。。。
   据说不一致时，堆内存扩容会有性能抖动。
 - `-Xmn`, 等价于 `-XX:NewSize`, 使用G1垃圾收集器 **不应该** 设置该选项，在某些业务场景下可以设置。官方建议设置为 `-Xmx` 的 `1/2 ~ 1/4`.
 - `-XX:MaxPermSize=size`, 这是JDK1.7之前使用的。Java8默认允许的Meta空间无限大。
-- `-XX:MaxMetaspaceSize=size`,  Java8默认不限制Meta空间, 一般不允许设置该选项。
+- `-XX:MaxMetaspaceSize=size`,  Java8默认不限制Meta空间, 我们一般不设置该选项。
 
 示例:
 
