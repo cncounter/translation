@@ -12,7 +12,7 @@
 
 ## 2. 问题描述
 
-有一个应用, 配置的部分JVM参数如下:
+有一个服务, 配置的部分JVM参数如下:
 
 ```sh
 JAVA_OPTS="-Xmx5g -Xms5g -XX:+UseG1GC"
