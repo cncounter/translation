@@ -22,7 +22,7 @@
 `SCAN` 是 redis 支持的一个命令, 可用来:
 
 1. 分页查询当前Redis节点, 对应数据库中的所有Key。
-2. 分页查询匹配特定统配模式的Key。
+2. 分页查询匹配特定模式的Key。
 
 时间复杂度为 `O(N)`, 主要使用场景是遍历所有Key。
 
@@ -58,7 +58,7 @@ scan 0 MATCH *cnc:* COUNT 100 TYPE zset
 
 如果是很庞大的集合, 比如几十万个元素, 没有进行拆分的话, 有些时候可以使用这几个变种命令。
 
-- `Sscan` 用来分页遍历 `set` 类型集合中的子KEY;
+- `Sscan` 用来分页遍历 `set` 类型集合中的子元素;
 - `Hscan` 用来分页遍历 `hash` 类型集合中的子KEY;
 - `Zscan` 用来分页遍历 `zset` 类型集合中的子KEY;
 
@@ -403,6 +403,8 @@ public static HostAndPort hostPort(Jedis jedis) {
         // 获取字段
         Field clientField = clazzJedis.getDeclaredField("client");
         Field jedisSocketFactoryField = clazzClient.getDeclaredField("jedisSocketFactory");
+        // 不同版本Jedis字段名称有所变化; 如果反射报错, 可以查看 Connection 类里面的字段是什么; 
+        //Field jedisSocketFactoryField = clazzClient.getDeclaredField("socketFactory");
         // 临时设置这个字段包装允许访问/读取
         clientField.setAccessible(true);
         jedisSocketFactoryField.setAccessible(true);
