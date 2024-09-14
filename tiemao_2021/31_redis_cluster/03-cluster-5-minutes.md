@@ -1,12 +1,15 @@
 # 5分钟快速创建Redis集群
 
 
-系列文章:
+## 0. 系列文章
 
 - 1. Redis集群入门教程: [01-cluster-tutorial.md](./01-cluster-tutorial.md)
 - 2. Redis集群规范文档: [02-cluster-spec.md](./02-cluster-spec.md)
 - 3. 5分钟快速创建Redis集群: [03-cluster-5-minutes](./03-cluster-5-minutes.md)
 
+
+
+## 1. 简介
 
 本文介绍如何快速搭建一个简单的集群。
 
@@ -27,7 +30,7 @@
 
 
 
-## 下载源代码并编译
+## 2. 下载源代码并编译
 
 ```sh
 
@@ -50,11 +53,11 @@ make
 可以进行简单的验证。
 
 
-## 使用 create-cluster 脚本创建集群
+## 3. 使用 create-cluster 脚本创建集群
 
 创建集群:
 
-```
+```sh
 cd utils/create-cluster
 
 
@@ -82,7 +85,7 @@ lsof -iTCP -sTCP:LISTEN -n -P | grep TCP
 
 如果需要修改端口号, 可以修改 `utils/create-cluster/create-cluster` 脚本文件中的 `PORT` 信息;
 
-```
+```js
 CLUSTER_HOST=127.0.0.1
 PORT=30000
 TIMEOUT=2000
@@ -95,7 +98,7 @@ ADDITIONAL_OPTIONS=""
 将其中的 `PROTECTED_MODE` 修改为 `no`,
 将其中的 `CLUSTER_HOST`   修改为 当前机器的IP,
 
-```
+```js
 CLUSTER_HOST=192.168.1.100
 PORT=30000
 TIMEOUT=2000
@@ -110,13 +113,13 @@ ADDITIONAL_OPTIONS=""
 
 查看客户端帮助信息:
 
-```
+```sh
 redis-cli --help
 ```
 
 查看客户端集群命令帮助信息:
 
-```
+```sh
 redis-cli --cluster help
 ```
 
@@ -124,4 +127,16 @@ redis-cli --cluster help
 本文档对应的可执行脚本文件为: [./install-redis-cluster.sh](./install-redis-cluster.sh)
 
 
--
+## 4. docker创建Redis集群
+
+如果想要在Docker容器中使用Redis集群, 可以使用 VMware 公司出品的: [bitnami/redis-cluster](https://hub.docker.com/r/bitnami/redis-cluster)
+
+
+
+
+## 5. 相关信息
+
+- 原文作者: 铁锚
+- 原文链接: [5分钟快速创建Redis集群](https://github.com/cncounter/translation/blob/master/tiemao_2021/31_redis_cluster/03-cluster-5-minutes.md)
+- 原文日期: 2022年07月06日
+- 本文日期: 2024年09月14日
