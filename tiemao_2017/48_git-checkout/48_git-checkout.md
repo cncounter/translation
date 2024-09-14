@@ -1,6 +1,14 @@
 # git-checkout官方文档
 
 
+一般来说, git工作流中, 可以将git仓库划分为3部分:
+
+- remote, 远端仓库; 比如 github, gitlab 等等.
+- local, 就是一个本地仓库, 可以想象这是驻扎在内存和磁盘中的一个虚拟仓库。
+- disk, 磁盘文件系统, 也就是我们使用IDE或者编辑器正常读写的文件。
+
+
+
 ## 命令名称
 
 `git-checkout` - 切换分支(Switch branches), 或者还原工作目录(restore working tree files)
