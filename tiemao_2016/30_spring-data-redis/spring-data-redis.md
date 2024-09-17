@@ -10,7 +10,7 @@
 
 ## 6 uses cases for Redis in server-side Java applications
 
-## 6Redis,在服务器端Java应用程序的用例
+## 在服务器端Java应用程序中使用Redis的6种场景
 
 
 A multi-tiered architecture built on top of Java EE presents a powerful server-side programming solution. As a Java EE developer for many years, I've been mostly satisfied with a three-tiered approach for enterprise development: a JPA/Hibernate persistence layer at the bottom, a Spring or EJB application layer in the middle, and a web tier on top. For more complex use cases I've integrated a workflow-driven solution with BPM (business process management), a rules engine like [Drools](http://www.ibm.com/developerworks/library/j-drools5/), and an integration framework such as [Camel](http://www.javaworld.com/article/2078883/open-source-tools/java-tip-write-an-soa-integration-layer-with-apache-camel.html).
