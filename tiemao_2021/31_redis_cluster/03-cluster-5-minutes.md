@@ -131,6 +131,13 @@ redis-cli --cluster help
 
 如果想要在Docker容器中使用Redis集群, 可以使用 VMware 公司出品的: [bitnami/redis-cluster](https://hub.docker.com/r/bitnami/redis-cluster)
 
+官方提供了一个参考的文件: [docker-compose.yml](https://github.com/bitnami/containers/blob/main/bitnami/redis-cluster/docker-compose.yml)
+
+当然, 这创建的是一个 docker 网络内的Redis集群, 只能通过创建 `docker network` 方式, 让其他Docker容器访问。 相关命令可在: [bitnami/redis-cluster](https://hub.docker.com/r/bitnami/redis-cluster) 页面中搜索  `docker network` 查找到。
+
+有没有现成的案例可参考呢?
+
+
 
 
 
