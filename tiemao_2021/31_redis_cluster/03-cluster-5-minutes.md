@@ -71,8 +71,8 @@ cd utils/create-cluster
 # 启动实例
 ./create-cluster start
 
-# 创建集群
-./create-cluster create
+# 创建集群; -f表示不要弹提示
+./create-cluster create -f
 
 # Linux 下查看端口号监听
 lsof -iTCP -sTCP:LISTEN -n -P | grep TCP
