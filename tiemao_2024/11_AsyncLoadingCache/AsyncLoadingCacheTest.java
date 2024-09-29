@@ -169,22 +169,23 @@ java.lang.RuntimeException: 打印调用栈:
 [2024-09-29 12:54:50.820][main]testGetCacheValue: the 1 times:
 [2024-09-29 12:54:50.820][main]------------------------------
 [2024-09-29 12:54:50.820][main]sleepSeconds start: 6 seconds...
+
 [2024-09-29 12:54:56.826][main]sleepSeconds complete: 6 seconds...
 [2024-09-29 12:54:56.906][main]testGetCacheValue: key=1; value=1-value; 耗时=78ms
-
 [2024-09-29 12:54:56.906][main]testGetCacheValue: the 2 times:
 [2024-09-29 12:54:56.907][main]------------------------------
 [2024-09-29 12:54:56.907][main]sleepSeconds start: 6 seconds...
 [2024-09-29 12:54:56.947][loader-pool]准备执行 reload: key=1; 准备sleep之后返回新值: 1-reload-1
 [2024-09-29 12:54:57.965][loader-pool]执行 reload sleep 1s 结束: key=1; 已刷新到新值: 1-reload-1
+
 [2024-09-29 12:55:02.915][main]sleepSeconds complete: 6 seconds...
 [2024-09-29 12:55:02.916][main]testGetCacheValue: key=1; value=1-reload-1; 耗时=1ms
-
 [2024-09-29 12:55:02.918][main]testGetCacheValue: the 3 times:
 [2024-09-29 12:55:02.918][loader-pool]准备执行 reload: key=1; 准备sleep之后返回新值: 1-reload-2
 [2024-09-29 12:55:02.918][main]------------------------------
 [2024-09-29 12:55:02.918][main]sleepSeconds start: 6 seconds...
 [2024-09-29 12:55:03.924][loader-pool]执行 reload sleep 1s 结束: key=1; 已刷新到新值: 1-reload-2
+
 [2024-09-29 12:55:08.924][main]sleepSeconds complete: 6 seconds...
 [2024-09-29 12:55:08.924][main]testGetCacheValue: key=1; value=1-reload-2; 耗时=0ms
 [2024-09-29 12:55:08.924][loader-pool]准备执行 reload: key=1; 准备sleep之后返回新值: 1-reload-3
