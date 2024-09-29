@@ -6,6 +6,11 @@
 
 这时候可以hack一下, 创建一个调用者直接执行的线程池，避免干扰;
 
+Spring-core之中也有一个对应的同步线程池, 简单任务也可以使用，根据需要确定使用哪个即可:
+
+> `org.springframework.core.task.SyncTaskExecutor implements TaskExecutor { }`
+
+下面我们继承 `ThreadPoolExecutor`, 并创建一个让调用者自己干活的特殊线程池;
 
 ## 2. 实现代码
 
@@ -69,6 +74,11 @@ public class CallerRunsExecutor extends ThreadPoolExecutor {
 
     }
 ```
+
+如果需要的话，也可以配合 `@ConditionalOnMissingBean(name = "xxxBeanName")` 来定制 Bean 。
+
+- 需要先在Test配置之中创建Bean， 并指定Bean的名字。
+- 主配置之中则使用 `@ConditionalOnMissingBean` 注解来指定创建条件，避免冲突。
 
 
 
