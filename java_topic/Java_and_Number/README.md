@@ -95,6 +95,65 @@ Long.valueOf(1).equals(1);
 
 精度与四舍五入;
 
+示例代码:
+
+```java
+
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
+public class TestBigDecimalScale {
+
+    public static void main(String[] args) {
+        // num1: 带后导0的数字
+        BigDecimal num1 = new BigDecimal("1.0200000");
+        // num2: 普通的2位小数
+        BigDecimal num2 = new BigDecimal("1.02");
+        // num3: 很小的小数
+        BigDecimal num3 = new BigDecimal("0.0000000000000102");
+
+        // num1.scale=7
+        System.out.println("num1.scale=" + num1.scale());
+        // num1.toPlainString=1.0200000
+        System.out.println("num1.toPlainString=" + num1.toPlainString());
+        // num1.equals(num2)=false
+        System.out.println("num1.equals(num2)=" + num1.equals(num2));
+
+        // 1. scale精度 与 数值相等, 才算equals
+        // num1.setScale(2).equals(num2)=true
+        System.out.println("num1.setScale(2).equals(num2)=" + num1.setScale(2).equals(num2));
+        // num2.scale=2
+        System.out.println("num2.scale=" + num2.scale());
+        // num2.toPlainString=1.02
+        System.out.println("num2.toPlainString=" + num2.toPlainString());
+        // num3.scale=16
+        System.out.println("num3.scale=" + num3.scale());
+        // 2. 这里输出了科学计数法方式表示的字符串
+        // num3.toString=1.02E-14
+        System.out.println("num3.toString=" + num3.toString());
+        // 3. 可以看到: toPlainString 方法用于防止输出科学计数法
+        // num3.toPlainString=0.0000000000000102
+        System.out.println("num3.toPlainString=" + num3.toPlainString());
+
+        System.out.println("=========");
+        // 4. 设置1位小数; 指定四舍五入模式;
+        // num1.scale_1_up.toPlainString=1.0
+        System.out.println("num1.scale_1_up.toPlainString=" + num1.setScale(1, RoundingMode.HALF_UP).toPlainString());
+
+        // 5. 不指定 RoundingMode 会报错: java.lang.ArithmeticException: Rounding necessary
+        // System.out.println("num1.scale_1.toPlainString=" + num1.setScale(1).toPlainString());
+        // 6. 设置5位小数; 不足的补后导0;
+        // num2.scale_5_up.toPlainString=1.02000
+        System.out.println("num2.scale_5_up.toPlainString=" + num1.setScale(5, RoundingMode.HALF_UP).toPlainString());
+        // 7. 这种方式隐含了报错风险:
+        // num2.scale_5.toPlainString=1.02000
+        System.out.println("num2.scale_5.toPlainString=" + num1.setScale(5).toPlainString());
+
+    }
+}
+
+```
+
 ## BigInteger
 
 
