@@ -1,24 +1,24 @@
 Hadoop的发展开辟了对数据迁移工具的需求
 ==
 
-### Hadoop的成功创造了开箱即用的数据迁移解决方案的不断增长的需求
+### Hadoop 的成功,催生了对开箱即用的数据迁移解决方案不断增长的需求
 
 
-Hadoop的爆炸在过去的几年里已经成为了一种现象。 [一个估计](http://www.alliedmarketresearch.com/hadoop-market) 将较上年同期增长近60%,与500亿年500亿美元的市场。 随着激烈的吸收了Hadoop供应商需求,一篇需要供应商出售Hadoop数据迁移工具和服务也是形成。
+过去几年里,Hadoop 的火爆已经成为一种现象。[一项估计](http://www.alliedmarketresearch.com/hadoop-market) 认为,其市场规模将同比增长近 60%,达到 500 亿美元。随着供应商对 Hadoop 需求的热切吸纳,一种新的需求也由此形成:需要供应商出售 Hadoop 数据迁移工具和服务。
 
-在理论上,获取数据的Hadoop是在软件和用户的能力。 Apache的 [Sqoop](http://sqoop.apache.org/) 项目创建处理Hadoop进出口,与原生支持通常的嫌疑人:MySQL,甲骨文,PostgreSQL,HSQLDB。 但是并不是每个人都舒服的工作,所以供应商提供的导入/导出解决方案,需要较少的体力劳动。
+理论上,把数据导入 Hadoop 是软件和用户能力范围内的事。Apache 的 [Sqoop](http://sqoop.apache.org/) 项目就是为处理 Hadoop 的导入导出而创建的,原生支持那些常见的“嫌疑犯”:MySQL、Oracle、PostgreSQL、HSQLDB。但并不是每个人都愿意干这种活,所以供应商们提供了需要更少人工的导入/导出解决方案。
 
-公司与其他数据迁移解决方案,预先存在的平台是一个自然的空间。 例如,Attunity,各种数据移动解决方案的制造商 [Attunity复制](http://www.attunity.com/products/attunity-replicate) ,它还处理许多数据源和目标除了Hadoop,如甲骨文、SQL Server,DB2和Teradata。 Attunity提供专为转移在广域网络优化,显然旨在吸引那些试图迁移mult-terabyte外部工作。
+对于那些已经拥有其他数据迁移解决方案的公司来说,这些既有平台是一个自然的机会。例如,Attunity 是各种数据移动解决方案的制造商,[Attunity Replicate](http://www.attunity.com/products/attunity-replicate) 除了 Hadoop,还能处理许多数据源和目标,如 Oracle、SQL Server、DB2 和 Teradata。Attunity 提供了专为广域网传输优化的方案,显然是想吸引那些试图迁移数 TB 数据的用户。
 
-同样, [Diyotta DataMover](http://diyotta.com/wp-content/uploads/2013/04/Diyotta-DataMover-Data-Sheet.pdf) 还支持Hadoop作为源或目标,一个同样大的数据格式和存储库。
+同样,[Diyotta DataMover](http://diyotta.com/wp-content/uploads/2013/04/Diyotta-DataMover-Data-Sheet.pdf) 也支持把 Hadoop 作为源或目标,同时还支持数量同样庞大的一批数据格式和存储库。
 
-[Syncsort](http://www.cloudera.com/content/cloudera/en/solutions/partner/Syncsort.html) 专门针对大型机、工作结合Cloudera创建一个系统,收成数据直接从现有的主机和加载到Hadoop。 Syncsort首席执行官Lonna Jaffe [描述它](http://searchdatamanagement.techtarget.com/opinion/Hadoop-role-eyed-in-mainframe-modernization-and-migration) 为“一个按钮你可以推动吸在昂贵的工作量。”
+[Syncsort](http://www.cloudera.com/content/cloudera/en/solutions/partner/Syncsort.html) 专门针对大型机领域,它与 Cloudera 合作创建了一个系统,可以直接从现有主机采集数据并加载到 Hadoop。Syncsort 首席执行官 Lonna Jaffe [形容它](http://searchdatamanagement.techtarget.com/opinion/Hadoop-role-eyed-in-mainframe-modernization-and-migration) 是“一个你可以按下的按钮,把昂贵的工作负载吸走”。
 
-这些产品的主要景点不受支持的数据源的数量,而是方便和expertise-in-a-box方法。 Hadoop供应商等 [Hortonworks](http://hortonworks.com/support/) 通过提供自己的支持和迁移服务竞争,所以他们可能会有更少的激励让Sqoop变成一个成熟的替代第三方产品。
+这些产品的主要卖点并不是支持的数据源数量,而是它的便利性和“expertise-in-a-box”(把专业知识装进盒子)的做法。像 [Hortonworks](http://hortonworks.com/support/) 这样的 Hadoop 供应商,通过提供自己的支持和迁移服务来竞争,所以它们可能没有多少动力把 Sqoop 打造成一个成熟的第三方替代产品。
 
-一个至关重要的任何详细Hadoop数据迁移产品能否经得住时间的考验——具体来说,能够做好对Hadoop下来派克所作的更改。 这是比放弃MapReduce纱,但需要包含支持的 [Apache Argus](http://argus.incubator.apache.org/) 即将到来的,Hadoop数据安全框架。
+对于任何一款详细的 Hadoop 数据迁移产品来说,至关重要的一点是它能否经得住时间的考验——具体来说,就是能否应对 Hadoop 后续所做的更改。这不只是把 MapReduce 换成 YARN 那么简单,还需要包含对即将推出的 Hadoop 数据安全框架 [Apache Argus](http://argus.incubator.apache.org/) 的支持。
 
-最好的长期投资处理Hadoop数据迁移可能在理解现有的工具集和充分利用它们。 您可能不希望将自己的Sqoop进口连接器的关键任务工作,但工作可以支付从长远来看未来向内迁移,或者如果一个选项更大、更雄心勃勃的Hadoop。
+在处理 Hadoop 数据迁移方面,最好的长期投资也许就是理解现有的工具集并充分利用它们。你可能不会愿意让自己写的 Sqoop 导入连接器去承担关键任务,但从长远来看,这些工作可能会带来回报——无论是为了将来向内迁移,还是在有更大、更有雄心的 Hadoop 方案可选时。
 
 
 
