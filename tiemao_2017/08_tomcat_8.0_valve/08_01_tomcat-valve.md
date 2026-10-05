@@ -31,7 +31,7 @@ This configuration allows the named class to act as a preprocessor of each reque
 
 
 - Access Log(访问日志)
-- Remote Address Filter(远端地址过)
+- Remote Address Filter(远端地址过滤)
 - Remote Host Filter(远程主机过滤)
 - Request Dumper(请求转储)
 
@@ -88,7 +88,7 @@ We have many java packages with ready-made tomcats that would make your life muc
 
 The Remote Address filter, org.apache.catalina.valves.RemoteAddrValve, allows you to compare the IP address of the requesting client against one or more regular expressions to either allow or prevent the request from continuing based on the results of this comparison. A Remote Address filter can be associated with a Tomcat Engine, Host, or Context container.
 
-远程地址过滤, `org.apache.catalina.valves.RemoteAddrValve`, 允许您将客户端的IP地址与一/多个正则表达式来匹配,已决定是允许还是拒绝该请求. Remote Address filter 可以关联到 engine, host, 或者 context 容器。
+远程地址过滤, `org.apache.catalina.valves.RemoteAddrValve`, 允许您将客户端的IP地址与一/多个正则表达式来匹配,以决定是允许还是拒绝该请求. Remote Address filter 可以关联到 engine, host, 或者 context 容器。
 
 
 示例:
@@ -100,7 +100,7 @@ The Remote Address filter, org.apache.catalina.valves.RemoteAddrValve, allows yo
 
 This valve entry denies access to the assigned container for all client IP addresses that begin with 127. If I assign this valve entry to the host container localhost, then all clients with an IP address beginning with 127 will see a http status 403 - Frobidden page.
 
-此配置, 将拒绝客户端地址为 127 打头的请求: `127.` 是回环地址,也就是本机. 返回的 http 状态码是 403 - 对应于 Frobidden 页面。
+此配置, 将拒绝客户端地址为 127 打头的请求: `127.` 是回环地址,也就是本机. 返回的 http 状态码是 403 - 对应于 Forbidden 页面。
 
 
 ### THE REMOTE HOST FILTER
@@ -120,7 +120,7 @@ The Remote Host filter—org.apache.catalina.valves.RemoteHostValve is much like
 
 This valve entry denies access to the assigned container for all client hostnames including virtuas. If I assign this valve entry to the host container localhost, then all clients beginning with virtuas will see a 403 - Forbidden page.
 
-此配置, 拒绝所有 hostname 包括 `virtuas` 的客户端请求. 如果被拦截, 那么返回的 http 状态码是 403 - 对应于 Frobidden 页面。
+此配置, 拒绝所有 hostname 包括 `virtuas` 的客户端请求. 如果被拦截, 那么返回的 http 状态码是 403 - 对应于 Forbidden 页面。
 
 
 ### THE REQUEST DUMPER VALVE
