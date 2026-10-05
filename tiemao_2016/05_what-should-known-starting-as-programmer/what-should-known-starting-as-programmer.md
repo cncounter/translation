@@ -14,7 +14,7 @@
 我刚毕业时一门心思都扑在计算机上,如果谁将我和心爱的电脑隔离我甚至会很反感。好吧,这样说可能夸张了一点. 尽管那时候就认识很多行内知名的专家,也参加各种交流会议认识很多值得做朋友的人, 但很可惜,并没有留下他们的名片,也没有花什么心思去结交。只有在找工作时会加一些邮箱联系人(那时候还没有 meetup.com, 也没有微信)。
 
 
-对于 [现在的程序员](http://www.infoworld.com/d/application-development/r-u-mdrn-how-lure-hipster-hackers-240650) 来说, “需要工作” 看起来有点难以理解. 但说真的, 那时候如果你只会基本的语法和使用搜索引擎(还没有谷歌), [短时间内很难找到个好工作]((http://www.infoworld.com/d/application-development/tech-boom-the-war-top-developer-talent-231709))。曾有段时间, 程序员们把找猎头称为是 [无尽的骚扰]((http://www.infoworld.com/d/application-development/stop-headhunters-ruining-meetups-234791))。在多年以后很可能会再次上演这样的一幕。
+对于 [现在的程序员](http://www.infoworld.com/d/application-development/r-u-mdrn-how-lure-hipster-hackers-240650) 来说, “需要工作” 看起来有点难以理解. 但说真的, 那时候如果你只会基本的语法和使用搜索引擎(还没有谷歌), [短时间内很难找到个好工作](http://www.infoworld.com/d/application-development/tech-boom-the-war-top-developer-talent-231709)。曾有段时间, 程序员们把找猎头称为是 [无尽的骚扰](http://www.infoworld.com/d/application-development/stop-headhunters-ruining-meetups-234791)。在多年以后很可能会再次上演这样的一幕。
 
 
 更重要的是, 很多比我经验丰富的程序员也工作得不开心,甚至不算成功。有的是没有机会,有的是没能在合适的时间遇到正确的人。确实, 时机和运气都很重要, 但你也可以给自己创造机会. 也许你前9次去参加交流活动, 都没找到和你聊得来的人,你只是去做鲜花和背景, 但很可能第十次就遇到真正赏识你的人。
