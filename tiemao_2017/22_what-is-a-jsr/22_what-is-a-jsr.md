@@ -25,7 +25,7 @@ A number of very important points could be gleaned from the above definition. Fi
 
 Secondly is that a JSR is an open standard document. What this means again, is that a JSR is a document that conforms to certain laid down rules and regulations regarding its distribution and contribution to it. It also means that whatever is contained in the JSR is easily accessible to anyone interested in assessing it.
 
-2、JSR是开放的标准文档. JSR文档的分发和贡献符合某些法律条款. 任何人都可以很容易地获取这份文档。
+2、JSR是开放的标准文档. JSR文档的分发和贡献符合相关的规则和规定. 任何人都可以很容易地获取这份文档。
 
 
 Flowing thirdly from our definition of a Java Specification Request is that a JSR can be made by either an individual or organization. Essentially any member of the JCP can make a JSR. JCP membership is opened to the general public; free for individuals as well. So what this also means is that one cannot make a request to the JCP without being a member of the organization.
