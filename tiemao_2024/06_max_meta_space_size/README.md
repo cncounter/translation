@@ -69,7 +69,7 @@ JAVA_OPTS="-Xmx5g -Xms5g -XX:+UseG1GC"
 
 Java8默认不限制Meta空间, 我们一般不设置该选项。
 
-既然出了问题, 那么久需要限制Meta区的最大空间了, 加上参数 `-XX:MaxMetaspaceSize=1G`:
+既然出了问题, 那么就需要限制Meta区的最大空间了, 加上参数 `-XX:MaxMetaspaceSize=1G`:
 
 
 ```sh
