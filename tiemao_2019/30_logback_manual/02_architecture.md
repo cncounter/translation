@@ -84,7 +84,7 @@ The first and foremost advantage of any logging API over plain `System.out.print
 
 > 分层命名
 
-> 如果 `loggerS` 实例对应的name加上一个点（`.`），是另一个`loggerS`实例对应name的前缀, 则称 `loggerP` 是`loggerS`的祖先/上级(ancestor)。
+> 如果 `loggerP` 实例对应的name加上一个点（`.`），是另一个`loggerS`实例对应name的前缀, 则称 `loggerP` 是`loggerS`的祖先/上级(ancestor)。
 > 如果 `loggerP` 与 `loggerS` 之间没有其他层级，则称`loggerP`是`loggerS`的父级/上级(parent)。
 
 
@@ -96,8 +96,8 @@ For example, the `logger` named `"com.foo"` is a parent of the logger named `"co
 
 The `root logger` resides at the top of the logger hierarchy. It is exceptional in that it is part of every hierarchy at its inception. Like every logger, it can be retrieved by its name, as follows:
 
-根记录器（`root logger`）位于记录器层次结构的顶部。 这是一项特殊设定，从一开始就是这样定义的。
-在代码中, 可以像获取普通Logger一样，按名称获取跟记录器，如下所示：
+根记录器（`root logger`）位于记录器层次结构的顶部。 它的特殊之处在于，从层次结构创建之初开始，它就是其中的一部分。
+在代码中, 可以像获取普通Logger一样，按名称获取根记录器，如下所示：
 
 ```
 Logger rootLogger = LoggerFactory.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME);
@@ -122,12 +122,12 @@ public interface Logger {
 
 ### Effective Level aka Level Inheritance
 
-### 怎样确定生效的Level(日志级别继承关系）
+### 怎样确定生效的Level（日志级别继承关系）
 
 Loggers may be assigned levels. The set of possible levels (TRACE, DEBUG, INFO, WARN and ERROR) are defined in the `ch.qos.logback.classic.Level` class. Note that in logback, the `Level` class is final and cannot be sub-classed, as a much more flexible approach exists in the form of `Marker` objects.
 
 
-可以在配置中为Logger指定级别。 可选的日志级别包括(TRACE, DEBUG, INFO, WARN and ERROR), 在 `ch.qos.logback.classic.Level` 类中定义。 请注意，在logback中，`Level`是final类，不能被继承，所以可以通过标记(`Marker`)对象的方式来配置。
+可以在配置中为Logger指定级别。 可选的日志级别包括(TRACE, DEBUG, INFO, WARN and ERROR), 在 `ch.qos.logback.classic.Level` 类中定义。 请注意，在logback中，`Level`是final类，不能被继承，因为有更灵活的方式，即标记(`Marker`)对象。
 
 If a given logger is not assigned a level, then it inherits one from its closest ancestor with an assigned level. More formally:
 
@@ -220,7 +220,7 @@ A logging request is said to be *enabled* if its level is higher than or equal t
 
 > 基本选择规则
 
->如果 `p>=q` ，则有效级别为 *q* 的记录器的级别 *p* 的日志请求。
+> 当 `p>=q` 时，发给有效级别为 *q* 的记录器的级别为 *p* 的日志请求是启用(*enabled*)的。
 
 This rule is at the heart of logback. It assumes that levels are ordered as follows: `TRACE < DEBUG < INFO <  WARN < ERROR`.
 
@@ -299,7 +299,7 @@ Logger y = LoggerFactory.getLogger("wombat");
 Thus, it is possible to configure a logger and then to retrieve the same instance somewhere else in the code without passing around references. In fundamental contradiction to biological parenthood, where parents always precede their children, logback loggers can be created and configured in any order. In particular, a "parent" logger will find and link to its descendants even if it is instantiated after them.
 
 因此，可以配置logger，然后在其他代码中获取相同的实例，而无需传递logger引用。
-现实世界中总是现有父母再有孩子，但logback支持任意顺序创建和配置logger。 特别是，"parent" logger将查找并链接到其后代，即使在后面实例化。
+现实世界中总是先有父母再有孩子，但logback支持任意顺序创建和配置logger。 特别是，"parent" logger将查找并链接到其后代，即使在后面实例化。
 
 Configuration of the logback environment is typically done at application initialization. The preferred way is by reading a configuration file. This approach will be discussed shortly.
 
@@ -312,7 +312,7 @@ Logback makes it easy to name loggers by *software component*. This can be accom
 
 Nevertheless, naming loggers after the class where they are located seems to be the best general strategy known so far.
 
-尽管有种种因素， 但根据所在的class来命名logger一直是最佳实践。
+尽管如此， 但根据所在的class来命名logger一直是最佳实践。
 
 ### Appenders and Layouts
 
@@ -353,7 +353,7 @@ The rules governing appender additivity are summarized below.
 
 > 记录器`L`的日志语句, 会输出到`L`及其祖先挂载的所有 Appender。 这就是术语 "appender additivity" 的含义。
 
-> 但是，如果记录器`L`的祖先（例如`P`）的 `additivity` 标志设置为 `false` ，则`L`的输出只会传递给 `L` 直接绑定的追加器, 一直上溯至`P`[包含]，但不会继续上溯至`P`的祖先绑定的追加器。
+> 但是，如果记录器`L`的祖先（例如`P`）的 `additivity` 标志设置为 `false` ，则`L`的输出只会传递给 `L` 及其祖先挂载的追加器, 上溯至并包含`P`，但不会传递给`P`的祖先挂载的追加器。
 
 > `Logger` 的 `additivity` 标志默认为 `true` 。
 
@@ -478,7 +478,7 @@ After we have introduced the essential logback components, we are now ready to d
 
 介绍了基本的logback组件之后， 调用logger的打印方法时, logback框架所执行的步骤可以试着理解了。
 
-下面我们一起来分析当用户调用 (名为 *com.wombat*) logger 的 `info（）`方法时，logback 的执行步骤。
+下面我们一起来分析当用户调用 (名为 *com.wombat*) logger 的 `info()` 方法时，logback 的执行步骤。
 
 #### 1. Get the filter chain decision
 
@@ -520,7 +520,7 @@ All appenders shipped with the logback distribution extend the `AppenderBase` ab
 
 logback自带的所有附加器都继承自 `AppenderBase` 抽象类， 为了确保线程安全，其中的`doAppend`方法使用了同步块(synchronized)。
 `AppenderBase`的 `doAppend()`方法也会调用挂载到appender上的自定义过滤器。
-动态挂载到appender上的自定义过滤器请参考: [filters](https://logback.qos.ch/manual/filters.html).。
+动态挂载到appender上的自定义过滤器请参考: [filters](https://logback.qos.ch/manual/filters.html)。
 
 #### 5. Formatting the output
 
@@ -599,11 +599,11 @@ Notwithstanding the above placing log statements in tight loops, i.e. very frequ
 
 In logback, there is no need to walk the logger hierarchy. A logger knows its effective level (that is, its level, once level inheritance has been taken into consideration) when it is created. Should the level of a parent logger be changed, then all child loggers are contacted to take notice of the change. Thus, before accepting or denying a request based on the effective level, the logger can make a quasi-instantaneous decision, without needing to consult its ancestors.
 
-在logback中，无需遍历logger层次结构。 在创建logger时便明确知道其有效级别（即只会计算一次继承级别）。 如果更改了 parent logger 的级别， 则会通知所有子记录器进行更改。 因此，在基于有效级别判断接受或拒绝请求时， logger 可以即时做出决定，而无需遍历咨询其祖先。
+在logback中，无需遍历logger层次结构。 在创建logger时便明确知道其有效级别（即只会计算一次继承级别）。 如果更改了 parent logger 的级别， 则会通知所有子记录器进行更改。 因此，在基于有效级别判断接受或拒绝请求时， logger 可以即时做出决定，而无需咨询其祖先。
 
 #### 3. Actual logging (formatting and writing to the output device)
 
-#### 3. 实际记录日志是的性能（格式化并写入输出设备）
+#### 3. 实际记录日志时的性能（格式化并写入输出设备）
 
 This is the cost of formatting the log output and sending it to its target destination. Here again, a serious effort was made to make layouts (formatters) perform as quickly as possible. The same is true for appenders. The typical cost of actually logging is about 9 to 12 microseconds when logging to a file on the local machine. It goes up to several milliseconds when logging to a database on a remote server.
 
