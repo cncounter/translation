@@ -72,11 +72,11 @@ So if your JVM is running on server with 32 processors, then
 
 ### G1 GC
 
-If you are using G1 GC algorithm, then number of GC threads is controlled by `-XX:ParallelGCThreads,` `-XX:ConcGCThreads`, `-XX:G1ConcRefinementThreads` properties. Default value of `-XX:G1ConcRefinementThreads` is derived based on the formula:
+If you are using G1 GC algorithm, then number of GC threads is controlled by `-XX:ParallelGCThreads`, `-XX:ConcGCThreads`, `-XX:G1ConcRefinementThreads` properties. Default value of `-XX:G1ConcRefinementThreads` is derived based on the formula:
 
 ### G1 垃圾收集器
 
-如果使用 G1 GC 算法, 则 GC 线程数由 `-XX:ParallelGCThreads,` `-XX:ConcGCThreads`, `-XX:G1ConcRefinementThreads` 属性控制。
+如果使用 G1 GC 算法, 则 GC 线程数由 `-XX:ParallelGCThreads`, `-XX:ConcGCThreads`, `-XX:G1ConcRefinementThreads` 属性控制。
 `-XX:G1ConcRefinementThreads` 的默认值根据以下公式计算得出:
 
 > `ParallelGCThreads+1`
