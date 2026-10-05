@@ -6,14 +6,14 @@
 
 Headless Chrome is shipping in Chrome 59. It's a way to run the Chrome browser in a headless environment. Essentially, running Chrome without chrome! It brings all modern web platform features provided by Chromium and the Blink rendering engine to the command line.
 
-Chrome Headless 模式从 Chrome 59 版本开始提供! 它使所有现代web平台特性提供的铬和眨眼的渲染引擎命令行。
+Chrome Headless 模式从 Chrome 59 版本开始提供! 它让你可以在无头(headless)环境中运行 Chrome 浏览器。本质上,就是不带浏览器界面地运行 Chrome! 它把 Chromium 和 Blink 渲染引擎提供的所有现代 Web 平台特性带到了命令行。
 
 
 ### Headless模式用来做什么?
 
 A headless browser is a great tool for automated testing and server environments where you don't need a visible UI shell. For example, you may want to run some tests against a real web page, create a PDF of it, or just inspect how the browser renders an URL.
 
-无头浏览器自动化测试是一个伟大的工具和服务器环境中你不需要一个可见的UI层.例如,您可能想要运行一些测试对一个真正的web页面,创建一个PDF,或只是检查浏览器如何呈现一个URL。
+无头浏览器是自动化测试,以及无需可见 UI 外壳的服务器环境中的绝佳工具。例如,你可能想针对一个真实的网页运行一些测试、为它创建一个 PDF,或者只是查看浏览器如何渲染一个 URL。
 
 
 
@@ -37,7 +37,7 @@ chrome --headless --print-to-pdf=C:/cncounter.output.pdf  http://www.cncounter.c
 chrome --headless --user-agent="Renfufei.Test 02" --print-to-pdf=C:/snoop.pdf  http://renfufei.com/snoop.jsp
 
 
-指定超时时间, 超过此时间测会强制触发 DOMContentLoaded 事件。 
+指定超时时间, 超过此时间则会强制触发 DOMContentLoaded 事件。 
 
 --timeout
 
