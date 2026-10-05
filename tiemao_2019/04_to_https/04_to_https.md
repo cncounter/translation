@@ -54,7 +54,7 @@ HTTPS比起HTTP有很多好处, 当然, 成本会高一些, 比如证书的价�
 
 ### 申请免费证书
 
-比如 阿里云免费提供的 "SSL证书", 由 Symantec. 签发, 每个订单只支持单个明细子域名, 每人最多同时持有20个免费证书。
+比如 阿里云免费提供的 "SSL证书", 由 Symantec 签发, 每个订单只支持单个明细子域名, 每人最多同时持有20个免费证书。
 
 访问: <https://www.aliyun.com/product/cas>
 
@@ -66,7 +66,7 @@ HTTPS比起HTTP有很多好处, 当然, 成本会高一些, 比如证书的价�
 
 订单确认之后, 填写具体的域名信息, 如根域名 `cncounter.com`, 
 
-> www与根域名可使用同一张明细子域名证书。如 <https://cncounter.com> 与<https://www.cncounter.com>;
+> www与根域名可使用同一张明细子域名证书。如 <https://cncounter.com> 与 <https://www.cncounter.com>;
 
 关于 DV, OV, EV 的区别, 请参考: <https://blog.csdn.net/diandianxiyu_geek/article/details/53175214>
 
