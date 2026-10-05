@@ -28,7 +28,7 @@ In this case, the web application mediates access between Redis and untrusted cl
 
 This is a specific example, but, in general, untrusted access to Redis should always be mediated by a layer implementing ACLs, validating user input, and deciding what operations to perform against the Redis instance.
 
-这只是一中特定场景, 但总体说来, 不受信任的客户端与 Redis 之间, 必须有一层 ACL(访问控制层)实现, 用于鉴权和校验用户输入, 并决定是否对 Redis 实例执行操作。
+这只是一种特定场景, 但总体说来, 不受信任的客户端与 Redis 之间, 必须有一层 ACL(访问控制层)实现, 用于鉴权和校验用户输入, 并决定是否对 Redis 实例执行操作。
 
 In general, Redis is not optimized for maximum security but for maximum performance and simplicity.
 
@@ -78,7 +78,7 @@ We expect protected mode to seriously decrease the security issues caused by unp
 
 While Redis does not try to implement Access Control, it provides a tiny layer of authentication that is optionally turned on editing the **redis.conf** file.
 
-虽然 Redis 没有实现访问控制, 但也提供了一个小小的 身份验证层(authorization layer), 通过 **redis.conf** 文件来开启。
+虽然 Redis 没有实现访问控制, 但也提供了一个很小的身份验证层(authentication layer), 通过 **redis.conf** 文件来开启。
 
 When the authorization layer is enabled, Redis will refuse any query by unauthenticated clients. A client can authenticate itself by sending the **AUTH** command followed by the password.
 
@@ -153,7 +153,7 @@ There is a class of attacks that an attacker can trigger from the outside even w
 
 For instance an attacker could supply, via a web form, a set of strings that is known to hash to the same bucket into a hash table in order to turn the O(1) expected time (the average time) to the O(N) worst case, consuming more CPU than expected, and ultimately causing a Denial of Service.
 
-例如, 可以通过web表单, 将 hash 值取模之后相同的一大批字符串提交到 hash table 中, 这样就可能将时间复杂度为 O(1) 的散列操作, 降级为 O(N) 的最坏情况, 导致 CPU 资源耗尽, 形成拒绝服务攻击(Denial of Service, Dos)。
+例如, 可以通过web表单, 将 hash 值取模之后相同的一大批字符串提交到 hash table 中, 这样就可能将时间复杂度为 O(1) 的散列操作, 降级为 O(N) 的最坏情况, 导致 CPU 资源耗尽, 形成拒绝服务攻击(Denial of Service, DoS)。
 
 To prevent this specific attack, Redis uses a per-execution pseudo-random seed to the hash function.
 
@@ -185,7 +185,7 @@ While it would be a very strange use case, the application should avoid composin
 
 In a classical Redis setup, clients are allowed full access to the command set, but accessing the instance should never result in the ability to control the system where Redis is running.
 
-在一般的 Redis 配置中, 客户端可以执行 command set 中的所有命令, 对实例的访问不太可对 Redis 宿主机的行为造成影响。
+在一般的 Redis 配置中, 客户端可以执行命令集中的所有命令, 但对实例的访问绝不应该导致能够控制运行 Redis 的系统。
 
 Internally, Redis uses all the well known practices for writing secure code, to prevent buffer overflows, format bugs and other memory corruption issues. However, the ability to control the server configuration using the **CONFIG**command makes the client able to change the working dir of the program and the name of the dump file. This allows clients to write RDB Redis files at random paths, that is [a security issue](http://antirez.com/news/96) that may easily lead to the ability to compromise the system and/or run untrusted code as the same user as Redis is running.
 
@@ -193,7 +193,7 @@ Redis内部使用了各种著名的代码安全最佳实践, 以阻止缓冲区�
 
 Redis does not requires root privileges to run. It is recommended to run it as an unprivileged *redis* user that is only used for this purpose. The Redis authors are currently investigating the possibility of adding a new configuration parameter to prevent **CONFIG SET/GET dir** and other similar run-time configuration directives. This would prevent clients from forcing the server to write Redis dump files at arbitrary locations.
 
-Redis 不应该使用 root 权限来启动。建议使用非特权的专有账户 *`redis`*. Redis 作者目前正在尝试, 已决定是否有必要增加新的配置参数, 来阻止 **CONFIG SET/GET dir** 和类似的运行时配置命令. 这能有效阻止客户端将服务器的 dump 文件写到其他目录。
+Redis 不应该使用 root 权限来启动。建议使用非特权的专有账户 *`redis`*. Redis 作者目前正在尝试, 以决定是否有必要增加新的配置参数, 来阻止 **CONFIG SET/GET dir** 和类似的运行时配置命令. 这能有效阻止客户端将服务器的 dump 文件写到其他目录。
 
 ## GPG key
 
