@@ -24,7 +24,7 @@ In this tutorial, we'll learn how to do an [Apache Kafka](https://kafka.apache.o
 
 Docker 是当今软件行业最流行的一种容器引擎, 可用于创建、打包和部署应用程序。
 
-本文主要介绍如果通过Docker来运行 [Apache Kafka](https://kafka.apache.org/), 并通过示例提供一些常用配置。
+本文主要介绍如何通过Docker来运行 [Apache Kafka](https://kafka.apache.org/), 并通过示例提供一些常用配置。
 
 
 ## 2. Single Node Setup
@@ -54,7 +54,7 @@ Let's create a simple `docker-compose.yml` file with two services, namely `zooke
 
 我们可以通过  [docker-compose.yml](https://www.baeldung.com/docker-compose) 配置文件, 来解决这种依赖问题, 确保 Zookeeper 服务总是在 Kafka 之前启动, 并在Kafka关闭后才关闭。
 
-Let's create a simple `docker-compose.yml` file with two services, namely `zookeeper` and `kafka`:
+我们来创建一个简单的 `docker-compose.yml` 文件, 其中包含 `zookeeper` 和 `kafka` 两个服务:
 
 > `docker-compose.yml` 文件示例如下:
 
@@ -92,7 +92,9 @@ In this setup, our Zookeeper server is listening on `port=2181` for the kafka se
 
 Similarly, the kafka service is exposed to the host applications through port `29092`, but it is actually advertised on port `9092` within the container environment configured by the `KAFKA_ADVERTISED_LISTENERS` property.
 
-可以看到， 配置文件中的 Zookeeper 服务, 监听的端口是  `port=2181`, 但是对外暴露的端口是 22181;
+可以看到, 配置文件中的 Zookeeper 服务, 监听的端口是  `port=2181`, 但是对外暴露的端口是 22181;
+
+同样地, kafka 服务通过端口 `29092` 暴露给宿主机上的应用程序, 但在 `KAFKA_ADVERTISED_LISTENERS` 属性所配置的容器环境中, 实际宣告(advertised)的端口是 `9092`。
 
 
 ### 2.2. Start Kafka Server
@@ -149,19 +151,19 @@ With that, our Kafka setup is ready for use.
 
 Finally, let's use the [Kafka Tool GUI utility](https://kafkatool.com/download.html) to establish a connection with our newly created Kafka server, and later, we'll visualize this setup:
 
-[Kafka Tool](https://kafkatool.com/download.html) ,  是一款图形界面的 Kafka 客户端, 可以用来连接我们创建的 Kafka 服务; 
+[Kafka Tool](https://kafkatool.com/download.html), 是一款图形界面的 Kafka 客户端, 可以用来连接我们创建的 Kafka 服务; 
 
 > 这款工具个人使用是免费的, 现在改名叫做 Offset Explorer。
 
 下载、安装、并启动。
 
-首次启动, 会提示我们需要创建链接。 
+首次启动, 会提示我们需要创建连接。 
 点击OK之后,  自动弹出创建连接界面。 
 默认标签页是 【Properties】, 连接名字可以随便取, 根据我们的配置信息, 输入Zookeeper的信息, 注意端口号是 `22181`。
 
 ![](./02-kafka-util-create-1.jpg)
 
-因为我们的Kafka端口号不是默认的9092, 所以还需要进入 【Advanced】进行配置 :
+因为我们的Kafka端口号不是默认的9092, 所以还需要进入 【Advanced】进行配置:
 
 
 We must note that we need to use the `Bootstrap servers propert`y to connect to the Kafka server listening at port `29092` for the host machine.
@@ -169,6 +171,8 @@ We must note that we need to use the `Bootstrap servers propert`y to connect to 
 Finally, we should be able to visualize the connection on the left sidebar:
 
 主要配置的信息是 Bootstrap servers:  `localhost:29092`, 
+
+连接成功之后, 就可以在左侧边栏中看到这个连接了:
 
 ![](./03-kafka-util-advanced-2.jpg)
 
@@ -208,6 +212,11 @@ A cluster setup for Apache Kafka needs to have redundancy for both Zookeeper ser
 
 So, let's add configuration for one more node each for Zookeeper and Kafka services:
 
+### 3.1. `docker-compose.yml` 文件配置
+
+Apache Kafka 的集群配置, 需要为 Zookeeper 服务和 Kafka 服务都提供冗余。
+
+所以, 我们为 Zookeeper 和 Kafka 各增加一个服务节点, 对应的配置如下:
 
 ```yml
 
@@ -265,9 +274,17 @@ We must ensure that the service names and `KAFKA_BROKER_ID` are unique across th
 
 Moreover, each service must expose a unique port to the host machine. Although `zookeeper-1` and `zookeeper-2` are listening on port `2181`, they're exposing it to the host via ports `22181` and `32181`, respectively. The same logic applies for the `kafka-1` and `kafka-2` services, where they'll be listening on ports `29092` and `39092`, respectively.
 
+必须确保各个服务的服务名和 `KAFKA_BROKER_ID` 都不重复。
+
+此外, 每个服务对外暴露给宿主机的端口也必须唯一。 `zookeeper-1` 和 `zookeeper-2` 虽然都监听 `2181` 端口, 但分别通过 `22181` 和 `32181` 端口暴露给宿主机; `kafka-1` 和 `kafka-2` 服务也是同样的道理, 它们分别监听 `29092` 和 `39092` 端口。
+
 ### 3.2. Start the Kafka Cluster
 
 Let's spin up the cluster by using the `docker-compose` command:
+
+### 3.2. 启动 Kafka 集群
+
+使用 `docker-compose` 命令来启动这个集群:
 
 ```sh
 $ docker-compose up -d
@@ -280,10 +297,14 @@ Creating kafka_kafka-1_1     ... done
 
 Once the cluster is up, let's use the Kafka Tool to connect to the cluster by specifying comma-separated values for the Kafka servers and respective ports:
 
+集群启动之后, 使用 Kafka Tool 来连接集群, 填写多个 Kafka 服务端地址及其端口, 中间用逗号分隔:
+
 ![](https://www.baeldung.com/wp-content/uploads/2021/04/Screenshot-2021-04-11-at-5.29.01-AM.png)
 
 
 Finally, let's take a look at the multiple broker nodes available in the cluster:
+
+最后, 看一下集群中可用的多个 broker 节点:
 
 
 ![](https://www.baeldung.com/wp-content/uploads/2021/04/Screenshot-2021-04-11-at-5.30.10-AM.png)
@@ -293,6 +314,12 @@ Finally, let's take a look at the multiple broker nodes available in the cluster
 In this article, we used the Docker technology to create single node and multi-node setups of Apache Kafka.
 
 We also used the Kafka Tool to connect and visualize the configured broker server details.
+
+## 4. 小结
+
+在本文中, 我们使用 Docker 技术搭建了 Apache Kafka 的单节点环境和多节点集群环境。
+
+我们还使用 Kafka Tool 来连接并查看配置好的 broker 服务端信息。
 
 
 
