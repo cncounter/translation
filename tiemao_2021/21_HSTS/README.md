@@ -2,6 +2,8 @@
 
 HSTS is HTTP Strict Transport Security: a way for sites to elect to always use HTTPS. See https://www.chromium.org/hsts. PKP is Public Key Pinning: Chrome "pins" certain public keys for certain sites in official builds.
 
+HSTS 即 HTTP Strict Transport Security(HTTP 严格传输安全): 它是站点选择始终使用 HTTPS 的一种方式。参见 https://www.chromium.org/hsts。PKP 即 Public Key Pinning(公钥固定): 在官方构建版的 Chrome 中，会为某些站点“固定(pin)”特定的公钥。
+
 
 ## 背景
 
@@ -16,7 +18,7 @@ Strict-Transport-Security: max-age=15724800
 ......
 ```
 
-多了一个 header, chrome 收到这个header之后，下次访问该域名的请求会在内部自动强制跳转到 https。
+多了一个 header, Chrome 收到这个header之后，下次访问该域名的请求会在内部自动强制跳转到 https。
 
 看 Chrome network 控制台的响应 status 是 `307 Internal Redirect`。
 
@@ -26,7 +28,7 @@ Strict-Transport-Security: max-age=15724800
 1. 关闭所有 https://myappname.test-13.cncounter.com/ 的标签页。
 2. 访问 chrome://net-internals/#hsts
 3. 清理掉 myappname.test-13.cncounter.com 域名的安全策略。
-3.1 可以查询域名的安全策略.
+3.1 可以查询域名的安全策略。
 3.2 之后不要访问这个域名的 https
 3.3 【实际上清理Chrome全部缓存也可以】
 4. 访问 http://myappname.test-13.cncounter.com/
