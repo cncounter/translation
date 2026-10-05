@@ -15,7 +15,7 @@ What is Java EE? Like really what is?
 
 It’s important to note the words abstract in the above definition. This means that Java EE is just a set interfaces and contracts that provides a public facing API for developers.
 
-注意以上定义中的"抽象"(abstract)这个词。 Java EE 只是一组接口和规范, 提供了面向开发者的 public API。
+注意以上定义中的“抽象”(abstract)这个词。 Java EE 只是一组接口和规范, 提供了面向开发者的 public API。
 
 
 These abstract specifications are also said to be standardized. What does this also mean? It essentially means that the entire collection of Java EE APIs are published in accordance with well defined criteria set by experts in the subject field of the API.
@@ -48,7 +48,7 @@ There are a number of application servers out there including [Payara Server](ht
 
 应用服务器分为很多种, 如 Apache TomEE, IBM WebSphere, Oracle WebLogic, JBoss Wildfly, Payara Server 等等。
 
-> 注意: 最流行的 Tomcat 只属于 Web Container、并不是 Application Server。其兄弟 TomEE 才是标准的应用服务器。
+> 注意: 最流行的 Tomcat 只属于 Web Container，并不是 Application Server。其兄弟 TomEE 才是标准的应用服务器。
 
 In the next installment of this post, we will take a deeper look at Application Servers and Java Specification Requests. Stay tuned.
 
