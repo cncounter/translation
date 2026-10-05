@@ -24,7 +24,7 @@
 1. **[PL/SQL一天入门基础教程](./PLSQL/plsql_1day.md)**【废弃】
 1. **[生产环境线上测试的惨淡人生](./ProductionTesting/ProductionTesting.md)**【完成】
 1. **[Promise详解](./Promise/Promise.md)**【完成】
-1. **[Redis为何Bigger比Memcached高](./Redis_beats_Memcached/Redis_beats_Memcached.md)**【完成】
+1. **[为何Redis要比Memcached好用](./Redis_beats_Memcached/Redis_beats_Memcached.md)**【完成】
 1. **[可靠的Windows版Redis-教你怎么解决64位Windows版Redis狂占C盘的问题](./RedisQFork_heapdir/RedisQFork_heapdir.md)**【完成】
 1. **[Oracle中 SQL 执行太慢的元凶: OR](./SQL_OR/sql_slow_by_or.md)**【完成】
 1. **[Windows下载安装JDK](./Win_JDK7/Win_JDK7.md)**【废弃】
