@@ -35,7 +35,7 @@ Inserting log requests into the application code requires a fair amount of plann
 
 Logback can be configured either programmatically or with a configuration script expressed in XML or Groovy format. By the way, existing log4j users can convert their `log4j.properties` files to `logback.xml` using our [PropertiesTranslator](http://logback.qos.ch/translator/) web-application.
 
-可以通过编程、或者XML格式、Groovy格式的脚本来配置Logback。 顺便说一下，现有的log4j用户可以使用 [`PropertiesTranslator`]（http://logback.qos.ch/translator/）将 `log4j.properties` 文件转换为 `logback.xml`。
+可以通过编程、或者XML格式、Groovy格式的脚本来配置Logback。 顺便说一下，现有的log4j用户可以使用 [`PropertiesTranslator`](http://logback.qos.ch/translator/) 将 `log4j.properties` 文件转换为 `logback.xml`。
 
 Let us begin by discussing the initialization steps that logback follows to try to configure itself:
 
@@ -60,7 +60,7 @@ The last step is meant as last-ditch effort to provide a default (but very basic
 If you are using Maven and if you place the `logback-test.xml` under the `src/test/resources` folder, Maven will ensure that it won't be included in the artifact produced. Thus, you can use a different configuration file, namely `logback-test.xml` during testing, and another file, namely, `logback.xml`, in production.
 
 如果使用 Maven， 并且在 `src/test/resources` 目录下放置了文件 `logback-test.xml`， 则 Maven 不会将测试资源包含到打包生成的文件中。
-因此，可以放心地在单元测试中使用 `logback-test.xml`配置文件， 而在生产环境中使用 `logback.xml` 文件。
+因此，可以放心地在单元测试中使用 `logback-test.xml` 配置文件， 而在生产环境中使用 `logback.xml` 文件。
 
 `FAST START-UP` It takes about 100 miliseconds for Joran to parse a given logback configuration file. To shave off those miliseconds at aplication start up, you can use the service-provider loading facility (item 4 above) to load your own custom `Configurator` class with [BasicConfigrator](http://logback.qos.ch/xref/ch/qos/logback/classic/BasicConfigurator.html) serving as a good starting point.
 
@@ -130,7 +130,7 @@ public class Foo {
 
 In order to run the examples in this chapter, you need to make sure that certain jar files are present on the class path. Please refer to the [setup page](http://logback.qos.ch/setup.html) for further details.
 
-如果程序跑不起来，你需要确保在 class path 中存在必须的jar文件。 详情请参考 [setup page](http://logback.qos.ch/setup.html)。
+如果程序跑不起来，你需要确保在 class path 中存在必需的 jar 文件。 详情请参考 [setup page](http://logback.qos.ch/setup.html)。
 
 
 Assuming the configuration files `logback-test.xml` or `logback.xml` are not present, logback will default to invoking [`BasicConfigurator`](http://logback.qos.ch/xref/ch/qos/logback/classic/BasicConfigurator.html) which will set up a minimal configuration. This minimal configuration consists of a `ConsoleAppender` attached to the root logger. The output is formatted using a `PatternLayoutEncoder` set to the pattern `%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n`. Moreover, by default the root logger is assigned the `DEBUG` level.
@@ -343,9 +343,9 @@ If any of these two conditions is not fulfilled, Joran cannot interpret the `deb
 
 `FORCING STATUS OUTPUT` In the absence of status messages, tracking down a rogue `logback.xml` configuration file can be difficult, especially in production where the application source cannot be easily modified. To help identify the location of a rogue configuration file, you can set a `StatusListener` via the "logback.statusListenerClass" system property ([defined below](http://logback.qos.ch/manual/configuration.html#logback.statusLC)) to force output of status messages. The "logback.statusListenerClass" system property can also be used to silence output automatically generated in case of errors.
 
-在没有状态信息的情况下“强制状态输出”，跟踪恶意的 `logback.xml` 配置文件可能很困难，特别是在生产环境中，因为来回修改系统代码并不容易。
-为了帮助识别恶意配置文件的位置，我们可以通过系统属性 "`logback.statusListenerClass`" 设置 “`StatusListener`”, 强制输出状态消息。
-"`logback.statusListenerClass`" 系统属性还可以用来在出现错误时自动生成静默输出。
+在没有状态信息的情况下“强制状态输出”，跟踪来路不明的 `logback.xml` 配置文件可能很困难，特别是在生产环境中，因为来回修改系统代码并不容易。
+为了帮助识别来路不明的配置文件的位置，我们可以通过系统属性 "`logback.statusListenerClass`" 设置 “`StatusListener`”, 强制输出状态消息。
+"`logback.statusListenerClass`" 系统属性还可以用来屏蔽出错时自动生成的状态输出。
 
 
 By the way, setting `debug="true"` is strictly equivalent to installing an `OnConsoleStatusListener`. Status listeners are disccussed further below. The installation of `OnConsoleStatusListener` is shown next.
@@ -455,7 +455,7 @@ Example: Specifying a different scanning period (logback-examples/src/main/resou
 
 Behind the scenes, when you set the scan attribute to `true`, a [`ReconfigureOnChangeTask`](http://logback.qos.ch/xref/ch/qos/logback/classic/joran/ReconfigureOnChangeTask.html) will be installed. This task run in a separate thread and will check whether your configuration file has changed. `ReconfigureOnChangeTask` will automatically watch for any [included](http://logback.qos.ch/manual/configuration.html#fileInclusion) files as well.
 
-如果我们将`scan`属性设置为`true`，则会启动一个 [`ReconfigureOnChangeTask`](http://logback.qos.ch/xref/ch/qos/logback/classic/joran/ReconfigureOnChangeTask.html)。 此任务在单独的线程中运行，并检查配置文件是否更改。 `ReconfigureOnChangeTask` 也会自动监测所有的配置文件，请参考下文。
+如果我们将`scan`属性设置为`true`，则会启动一个 [`ReconfigureOnChangeTask`](http://logback.qos.ch/xref/ch/qos/logback/classic/joran/ReconfigureOnChangeTask.html)。 此任务在单独的线程中运行，并检查配置文件是否更改。 `ReconfigureOnChangeTask` 也会自动监测所有被 include 引入的文件，请参考下文。
 
 As it is easy to make errors while editing a configuration file, in case the latest version of the configuration file has XML syntax errors, it will fall back to a previous configuration file free of XML syntax errors.
 
@@ -580,7 +580,7 @@ This application fetches the `LoggerContext` currently in effect, creates a new 
 并重置logger context，
 最终让配置器使用main参数传递的配置文件名称来配置上下文。
 如果出现警告或错误，则打印内部状态数据。
-注意，对于多步配置，则应该省略 `context.reset（）`调用。
+注意，对于多步配置，则应该省略 `context.reset()` 调用。
 
 
 ### Viewing status messages
@@ -710,7 +710,7 @@ In order to release the resources used by logback-classic, it is always a good i
 ## 停止logback-classic
 
 为了释放 logback-classic 使用的资源，关闭 logback 上下文是一个好办法。
-停止上下文将关闭该上下文上的 appenders 和 loggers，并以有序的方式停止所有活动线程。
+停止上下文将关闭该上下文中各 logger 上挂载的所有 appender，并以有序的方式停止所有活动线程。
 详情请参考下面的 “关闭钩子” 小节。
 
 ```java
@@ -725,7 +725,7 @@ loggerContext.stop();
 
 In web-applications the above code could be invoked from within the [contextDestroyed](http://docs.oracle.com/javaee/6/api/javax/servlet/ServletContextListener.html#contextDestroyed(javax.servlet.ServletContextEvent)) method of `ServletContextListener` in order to stop logback-classic and release resources. Starting with version 1.1.10, the appropriate `ServletContextListener` is installed automatically for you ([see just below](http://logback.qos.ch/manual/configuration.html#webShutdownHook)).
 
-在Web应用程序中，可以在 `ServletContextListener` 的 [contextDestroyed](http://docs.oracle.com/javaee/6/api/javax/servlet/ServletContextListener.html#contextDestroyed(javax.servlet.ServletContextEvent)) 方法中内调用上面的代码，以停止 logback-classic 并释放资源。
+在Web应用程序中，可以在 `ServletContextListener` 的 [contextDestroyed](http://docs.oracle.com/javaee/6/api/javax/servlet/ServletContextListener.html#contextDestroyed(javax.servlet.ServletContextEvent)) 方法中调用上面的代码，以停止 logback-classic 并释放资源。
 从1.1.10版本开始，则会自动注册 `ServletContextListener`, 请参考下文。
 
 
@@ -753,7 +753,10 @@ The default shutdown hook, namely [DefaultShutdownHook](http://logback.qos.ch/ap
 
 请注意， 我们也可以将 `class` 属性设置为自定义的类，来自己实现相关的关机钩子。
 
-默认的关闭挂钩，即[DefaultShutdownHook]（http://logback.qos.ch/apidocs/ch/qos/logback/core/hook/DefaultShutdownHook.html），将在指定的延迟（0之后 默认情况下）。 停止上下文将使在后台运行的任何日志文件压缩任务最多需要30秒才能完成。 在独立的Java应用程序中，向配置文件中添加`指令是确保JVM退出之前允许任何正在进行的压缩任务完成的简便方法。 在Web服务器中的应用程序中，将自动安装[webShutdownHook]（http://logback.qos.ch/manual/configuration.html#webShutdownHook），从而使``指令变得非常多余和不必要。
+默认的关闭挂钩即 [DefaultShutdownHook](http://logback.qos.ch/apidocs/ch/qos/logback/core/hook/DefaultShutdownHook.html)，它会在指定的延迟之后（默认为 0）`stop` logback 上下文。
+停止上下文会给后台正在运行的日志文件压缩任务最多 30 秒的时间来完成。
+在独立的 Java 应用程序中，在配置文件中添加 `<shutdownHook>` 指令，是确保 JVM 退出之前让正在进行的压缩任务完成的简便方法。
+在 Web 服务器中的应用程序中，会自动安装 [webShutdownHook](http://logback.qos.ch/manual/configuration.html#webShutdownHook)，此时 `<shutdownHook>` 指令就变得多余而没有必要了。
 
 
 #### WebShutdownHook or stopping logback-classic in web-applications
@@ -781,7 +784,7 @@ Logback-classic从`1.1.10`版本开始，实现了 `ServletContainerInitializer`
 
 Note that `logbackDisableServletContainerInitializer` variable can also be set as a Java system property an OS environment variable. The most local setting has priority, i.e. web-app first, system property second and OS environment last.
 
-请注意，`logbackDisableServletContainerInitializer` 变量也可以通过喜欢环境变量、或者Java系统属性来设置。
+请注意，`logbackDisableServletContainerInitializer` 变量也可以通过操作系统环境变量、或者 Java 系统属性来设置。
 范围最小的变量优先级最高，也就是说，最优先的是Web应用，其次是系统属性，最后是操作系统的环境变量。
 
 
@@ -817,7 +820,7 @@ If you are unsure which case to use for a given tag name, just follow the [camel
 ![基本语法](http://logback.qos.ch/manual/images/chapters/configuration/basicSyntax.png)
 
 
-如果不确定某个标签的大小写格式，只需遵循 [驼峰标识（camelCase）]（https://zh.wikipedia.org/zh-cn/%E9%A9%BC%E5%B3%B0%E5%BC%8F%E5%A4%A7%E5%B0%8F%E5%86%99）即可， 一般来说都是正确的。
+如果不确定某个标签的大小写格式，只需遵循 [驼峰标识（camelCase）](https://zh.wikipedia.org/zh-cn/%E9%A9%BC%E5%B3%B0%E5%BC%8F%E5%A4%A7%E5%B0%8F%E5%86%99) 即可， 一般来说都是正确的。
 
 
 #### Case sensitivity of tag names
@@ -833,7 +836,7 @@ Logback从0.9.17 版本开始，与显式规则相关的标签名就不区分大
 
 至于[隐式规则](http://logback.qos.ch/manual/onJoran.html#implicit)，标签名除首字母外均区分大小写。
 因此，`<xyz>` 和 `<Xyz>` 是等效的，但 `<xYz>` 则不是。
-隐式规则通常遵循Java中常见的 [驼峰标识（camelCase）]（https://zh.wikipedia.org/zh-cn/%E9%A9%BC%E5%B3%B0%E5%BC%8F%E5%A4%A7%E5%B0%8F%E5%86%99）。
+隐式规则通常遵循Java中常见的 [驼峰标识（camelCase）](https://zh.wikipedia.org/zh-cn/%E9%A9%BC%E5%B3%B0%E5%BC%8F%E5%A4%A7%E5%B0%8F%E5%86%99)。
 由于很难区分某个标签何时与显式动作关联，何时与隐式动作关联，因此很难说XML标签是区分大小写呢，还是说首字母不区分大小写。
 如果不确定给定标签适用哪种情况，只需遵循camelCase约定即可。
 
@@ -842,27 +845,51 @@ Logback从0.9.17 版本开始，与显式规则相关的标签名就不区分大
 
 #### Configuring loggers, or the `<logger>` element
 
+#### 配置 logger，即 `<logger>` 元素
+
 At this point you should have at least some understanding of [level inheritance](http://logback.qos.ch/manual/architecture.html#effectiveLevel) and the [basic selection rule](http://logback.qos.ch/manual/architecture.html#basic_selection). Otherwise, and unless you are an Egyptologist, logback configuration will be no more meaningful to you than are hieroglyphics.
+
+读到这里，你应该至少对[级别继承](http://logback.qos.ch/manual/architecture.html#effectiveLevel)和[基本选择规则](http://logback.qos.ch/manual/architecture.html#basic_selection)有了初步了解。 否则的话，除非你是研究象形文字的埃及学家，logback 的配置对你来说就跟天书一样难懂了。
 
 A logger is configured using the ` ` element. A ` ` element takes exactly one mandatory `name` attribute, an optional `level` attribute, and an optional `additivity` attribute, admitting the values `true` or `false`. The value of the `level` attribute admitting one of the case-insensitive string values TRACE, DEBUG, INFO, WARN, ERROR, ALL or OFF. The special case-insensitive value `INHERITED`, or its synonym `NULL`, will force the level of the logger to be inherited from higher up in the hierarchy. This comes in handy if you set the level of a logger and later decide that it should inherit its level.
 
+logger 通过 `<logger>` 元素来配置。 `<logger>` 元素必须包含一个 `name` 属性，还可以包含可选的 `level` 属性和 `additivity` 属性，`additivity` 的取值为 `true` 或 `false`。 `level` 属性的值可以是大小写不敏感的字符串：TRACE、DEBUG、INFO、WARN、ERROR、ALL 或 OFF。 特殊的大小写不敏感值 `INHERITED`，或者它的同义词 `NULL`，将强制该 logger 的级别从层级结构的上层继承而来。 当你设置了某个 logger 的级别，之后又想让它改为继承上级级别时，这个特性就派上用场了。
+
 Note that unlike log4j, logback-classic does `not` close nor remove any previously referenced appenders when configuring a given logger.
+
+请注意，与 log4j 不同的是，logback-classic 在配置某个 logger 时，`不会` 关闭、也不会移除之前已引用的 appender。
 
 The ` ` element may contain zero or more ` ` elements; each appender thus referenced is added to the named logger. Note that unlike log4j, logback-classic does `not` close nor remove any previously referenced appenders when configuring a given logger.
 
+`<logger>` 元素可以包含零到多个 `<appender-ref>` 元素；这样引用的每个 appender 都会被添加到指定的 logger 上。 请注意，与 log4j 不同的是，logback-classic 在配置某个 logger 时，`不会` 关闭、也不会移除之前已引用的 appender。
+
 #### Configuring the root logger, or the ` ` element
+
+#### 配置 root logger，即 `<root>` 元素
 
 The ` ` element configures the root logger. It supports a single attribute, namely the `level` attribute. It does not allow any other attributes because the additivity flag does not apply to the root logger. Moreover, since the root logger is already named as "ROOT", it does not allow a name attribute either. The value of the level attribute can be one of the case-insensitive strings TRACE, DEBUG, INFO, WARN, ERROR, ALL or OFF. Note that the level of the root logger cannot be set to INHERITED or NULL.
 
+`<root>` 元素用来配置 root logger。 它只支持一个属性，即 `level` 属性。 因为 additivity 标志对 root logger 不适用，所以它不允许任何其他属性。 另外，由于 root logger 已经被命名为 "ROOT"，所以它也不允许 `name` 属性。 `level` 属性的值可以是大小写不敏感的字符串：TRACE、DEBUG、INFO、WARN、ERROR、ALL 或 OFF。 注意，root logger 的级别不能设置为 INHERITED 或 NULL。
+
 Note that unlike log4j, logback-classic does `not` close nor remove any previously referenced appenders when configuring the root logger.
+
+请注意，与 log4j 不同的是，logback-classic 在配置 root logger 时，`不会` 关闭、也不会移除之前已引用的 appender。
 
 Similarly to the ` ` element, the ` ` element may contain zero or more ` ` elements; each appender thus referenced is added to the root logger. Note that unlike log4j, logback-classic does `not` close nor remove any previously referenced appenders when configuring the root logger.
 
+与 `<logger>` 元素类似，`<root>` 元素也可以包含零到多个 `<appender-ref>` 元素；这样引用的每个 appender 都会被添加到 root logger 上。 请注意，与 log4j 不同的是，logback-classic 在配置 root logger 时，`不会` 关闭、也不会移除之前已引用的 appender。
+
 #### Example
+
+#### 示例
 
 Setting the level of a logger or root logger is as simple as declaring it and setting its level, as the next example illustrates. Suppose we are no longer interested in seeing any DEBUG messages from any component belonging to the "chapters.configuration" package. The following configuration file shows how to achieve that.
 
+设置 logger 或 root logger 的级别很简单，只需声明它并设置其级别即可，如下例所示。 假设我们不再想看到来自 "chapters.configuration" 包中任何组件的 DEBUG 消息。 下面的配置文件演示了如何实现。
+
 Example: Setting the level of a logger (logback-examples/src/main/resources/chapters/configuration/sample2.xml)
+
+示例：设置 logger 的级别（sample2.xml）
 
 ```
 <configuration>
@@ -888,6 +915,8 @@ Example: Setting the level of a logger (logback-examples/src/main/resources/chap
 
 When the above configuration file is given as argument to the `MyApp3` application, it will yield the following output:
 
+将上面的配置文件作为参数传给 `MyApp3` 应用程序，会得到如下输出：
+
 ```
 17:34:07.578 [main] INFO  chapters.configuration.MyApp3 - Entering application.
 17:34:07.578 [main] INFO  chapters.configuration.MyApp3 - Exiting application.
@@ -895,9 +924,15 @@ When the above configuration file is given as argument to the `MyApp3` applicati
 
 Note that the message of level DEBUG generated by the ["chapters.configuration.Foo"](http://logback.qos.ch/xref/chapters/configuration/Foo.html) logger has been suppressed. See also the Foo class.
 
+可以看到，["chapters.configuration.Foo"](http://logback.qos.ch/xref/chapters/configuration/Foo.html) logger 产生的 DEBUG 级别消息被抑制了。 也可以参见 Foo 类。
+
 You can configure the levels of as many loggers as you wish. In the next configuration file, we set the level of the `chapters.configuration` logger to INFO but at the same time set the level of the `chapters.configuration.Foo` logger to `DEBUG`.
 
+你可以根据需要配置任意多个 logger 的级别。 在下一个配置文件中，我们把 `chapters.configuration` logger 的级别设置为 INFO，同时又把 `chapters.configuration.Foo` logger 的级别设置为 `DEBUG`。
+
 Example: Setting the level of multiple loggers (logback-examples/src/main/resources/chapters/configuration/sample3.xml)
+
+示例：设置多个 logger 的级别（sample3.xml）
 
 ```
 <configuration>
@@ -923,9 +958,13 @@ Example: Setting the level of multiple loggers (logback-examples/src/main/resour
 
 Running `MyApp3` with this configuration file will result in the following output on the console:
 
+使用此配置文件运行 `MyApp3`，控制台将输出如下内容：
+
 17:39:27.593 [main] INFO  chapters.configuration.MyApp3 - Entering application. 17:39:27.593 [main] DEBUG chapters.configuration.Foo - Did it again! 17:39:27.593 [main] INFO  chapters.configuration.MyApp3 - Exiting application.
 
 The table below list the loggers and their levels, after `JoranConfigurator` has configured logback with the `sample3.xml` configuration file.
+
+下表列出了 `JoranConfigurator` 使用 `sample3.xml` 配置文件配置 logback 之后，各 logger 及其级别。
 
 | Logger name                   | Assigned Level | Effective Level |
 | ----------------------------- | -------------- | --------------- |
@@ -936,9 +975,15 @@ The table below list the loggers and their levels, after `JoranConfigurator` has
 
 It follows that the two logging statements of level `INFO` in the `MyApp3` class as well as the DEBUG messages in `Foo.doIt()` are all enabled. Note that the level of the root logger is always set to a non-null value, DEBUG by default.
 
+由此可知，`MyApp3` 类中两条 `INFO` 级别的日志语句，以及 `Foo.doIt()` 中的 DEBUG 消息都是启用的。 注意，root logger 的级别总是被设置为非空值，默认为 DEBUG。
+
 Let us note that the [basic-selection rule](http://logback.qos.ch/manual/architecture.html#basic_selection) depends on the effective level of the logger being invoked, not the level of the logger where appenders are attached. Logback will first determine whether a logging statement is enabled or not, and if enabled, it will invoke the appenders found in the logger hierarchy, regardless of their level. The configuration file `sample4.xml` is a case in point:
 
+也就是说，[基本选择规则](http://logback.qos.ch/manual/architecture.html#basic_selection)取决于被调用 logger 的有效级别，而不是 appender 所挂载的 logger 的级别。 logback 会先判断日志语句是否启用，如果启用，就会调用在 logger 层级中找到的 appender，而不管它们的级别如何。 配置文件 `sample4.xml` 就是一个例子：
+
 Example: Logger level sample (logback-examples/src/main/resources/chapters/configuration/sample4.xml)
+
+示例：logger 级别（sample4.xml）
 
 ```
 <configuration>
@@ -964,6 +1009,8 @@ Example: Logger level sample (logback-examples/src/main/resources/chapters/confi
 
 The following table lists the loggers and their levels after applying the `sample4.xml` configuration file.
 
+下表列出了应用 `sample4.xml` 配置文件之后，各 logger 及其级别。
+
 | Logger name                   | Assigned Level | Effective Level |
 | ----------------------------- | -------------- | --------------- |
 | root                          | `OFF`          | `OFF`           |
@@ -973,6 +1020,8 @@ The following table lists the loggers and their levels after applying the `sampl
 
 The ConsoleAppender named `STDOUT`, the only configured appender in `sample4.xml`, is attached to the root logger whose level is set to `OFF`. However, running `MyApp3` with configuration script `sample4.xml` will yield:
 
+名为 `STDOUT` 的 `ConsoleAppender` 是 `sample4.xml` 中唯一配置的 appender，它挂载在级别被设为 `OFF` 的 root logger 上。 但是，使用配置脚本 `sample4.xml` 运行 `MyApp3` 会输出：
+
 ```
 17:52:23.609 [main] INFO chapters.configuration.MyApp3 - Entering application.
 17:52:23.609 [main] INFO chapters.configuration.MyApp3 - Exiting application.
@@ -980,19 +1029,33 @@ The ConsoleAppender named `STDOUT`, the only configured appender in `sample4.xml
 
 Thus, the level of the root logger has no apparent effect because the loggers in `chapters.configuration.MyApp3` and `chapters.configuration.Foo` classes are all enabled for the `INFO` level. As a side note, the `chapters.configuration` logger exists by virtue of its declaration in the configuration file - even if the Java source code does not directly refer to it.
 
+因此，root logger 的级别没有产生明显影响，因为 `chapters.configuration.MyApp3` 和 `chapters.configuration.Foo` 这两个类的 logger 在 `INFO` 级别都是启用的。 顺便说一下，`chapters.configuration` logger 之所以存在，是因为它在配置文件中被声明了——即使 Java 源代码并没有直接引用它。
+
 #### Configuring Appenders
 
+#### 配置 Appender
+
 An appender is configured with the ` ` element, which takes two mandatory attributes `name` and `class`. The `name` attribute specifies the name of the appender whereas the `class` attribute specifies the fully qualified name of the appender class to instantiate. The ` ` element may contain zero or one ` ` elements, zero or more ` ` elements and zero or more ` ` elements. Apart from these three common elements, ` ` elements may contain any number of elements corresponding to JavaBean properties of the appender class. Seamlessly supporting any property of a given logback component is one of the major strengths of [Joran](http://logback.qos.ch/manual/onJoran.html) as discussed in a later chapter. The following diagram illustrates the common structure. Note that support for properties is not visible.
+
+appender 通过 `<appender>` 元素来配置，该元素需要两个必须的属性：`name` 和 `class`。 `name` 属性指定 appender 的名称，而 `class` 属性指定要实例化的 appender 类的完全限定名。 `<appender>` 元素可以包含零或一个 `<layout>` 元素、零到多个 `<encoder>` 元素以及零到多个 `<appender-ref>` 元素。 除了这三个常见元素之外，`<appender>` 元素还可以包含任意数量的、与 appender 类的 JavaBean 属性对应的元素。 无缝支持 logback 组件的任意属性是 [Joran](http://logback.qos.ch/manual/onJoran.html) 的主要优势之一，后续章节会对此进行讨论。 下图说明了这种通用结构。 注意，图中并未体现对属性的支持。
 
 ![Appender Syntax](http://logback.qos.ch/manual/images/chapters/configuration/appenderSyntax.png)
 
 The ` ` element takes a mandatory class attribute specifying the fully qualified name of the layout class to instantiate. As with the ` ` element, ` ` may contain other elements corresponding to properties of the layout instance. Since it's such a common case, if the layout class is `PatternLayout`, then the class attribute can be omitted as specified by [default class mapping](http://logback.qos.ch/manual/onJoran.html#defaultClassMapping) rules.
 
+`<layout>` 元素需要一个必须的 `class` 属性，用来指定要实例化的 layout 类的完全限定名。 与 `<appender>` 元素一样，`<layout>` 也可以包含与 layout 实例属性对应的其他元素。 由于这是一种很常见的情况，如果 layout 类是 `PatternLayout`，那么按照[默认类映射](http://logback.qos.ch/manual/onJoran.html#defaultClassMapping)规则，`class` 属性可以省略。
+
 The ` ` element takes a mandatory class attribute specifying the fully qualified name of the encoder class to instantiate. Since it's such a common case, if the encoder class is `PatternLayoutEncoder`, then the class attribute can be omitted as specified by [default class mapping](http://logback.qos.ch/manual/onJoran.html#defaultClassMapping) rules.
+
+`<encoder>` 元素需要一个必须的 `class` 属性，用来指定要实例化的 encoder 类的完全限定名。 由于这是一种很常见的情况，如果 encoder 类是 `PatternLayoutEncoder`，那么按照[默认类映射](http://logback.qos.ch/manual/onJoran.html#defaultClassMapping)规则，`class` 属性可以省略。
 
 Logging to multiple appenders is as easy as defining the various appenders and referencing them in a logger, as the next configuration file illustrates:
 
+将日志输出到多个 appender 很简单，只需定义多个 appender，然后在 logger 中引用它们即可，如下面的配置文件所示：
+
 Example: Multiple loggers (logback-examples/src/main/resources/chapters/configuration/multiple.xml)
+
+示例：多个 appender（multiple.xml）
 
 ```
 <configuration>
@@ -1020,13 +1083,23 @@ Example: Multiple loggers (logback-examples/src/main/resources/chapters/configur
 
 These configuration scripts define two appenders called `FILE` and `STDOUT`. The `FILE` appender logs to a file called `myApp.log`. The encoder for this appender is a `PatternLayoutEncoder` that outputs the date, level, thread name, logger name, file name and line number where the log request is located, the message and line separator character(s). The second appender called `STDOUT` outputs to the console. The encoder for this appender outputs only the message string followed by a line separator.
 
+这两个配置脚本定义了两个名为 `FILE` 和 `STDOUT` 的 appender。 `FILE` appender 将日志输出到名为 `myApp.log` 的文件。 该 appender 的 encoder 是一个 `PatternLayoutEncoder`，输出日志请求所在的日期、级别、线程名、logger 名、文件名与行号、消息以及换行符。 第二个名为 `STDOUT` 的 appender 输出到控制台。 它的 encoder 只输出消息字符串和换行符。
+
 The appenders are attached to the root logger by referencing them by name within an `appender-ref` element. Note that each appender has its own encoder. Encoders are usually not designed to be shared by multiple appenders. The same is true for layouts. As such, logback configuration files do not provide any syntactical means for sharing encoders or layouts.
+
+这些 appender 通过在 `appender-ref` 元素中按名称引用的方式挂载到 root logger 上。 注意，每个 appender 都有自己的 encoder。 encoder 通常并不设计为被多个 appender 共享，layout 也是如此。 因此，logback 配置文件没有提供任何共享 encoder 或 layout 的语法手段。
 
 #### Appenders accumulate
 
+#### Appender 的叠加性
+
 By default, `appenders are cumulative`: a logger will log to the appenders attached to itself (if any) as well as all the appenders attached to its ancestors. Thus, attaching the same appender to multiple loggers will cause logging output to be duplicated.
 
+默认情况下，`appender 具有叠加性（cumulative）`：logger 不仅会输出到挂载在自己身上的 appender（如果有的话），还会输出到挂载在其所有祖先 logger 上的 appender。 因此，把同一个 appender 挂载到多个 logger 上，会导致日志输出重复。
+
 Example: Duplicate appender (logback-examples/src/main/resources/chapters/configuration/duplicate.xml)
+
+示例：重复的 appender（duplicate.xml）
 
 ```
 <configuration>
@@ -1049,13 +1122,21 @@ Example: Duplicate appender (logback-examples/src/main/resources/chapters/config
 
 Running `MyApp3` with `duplicate.xml` will yield the following output:
 
+使用 `duplicate.xml` 运行 `MyApp3`，会得到如下输出：
+
 14:25:36.343 [main] INFO  chapters.configuration.MyApp3 - Entering application. 14:25:36.343 [main] INFO  chapters.configuration.MyApp3 - Entering application. 14:25:36.359 [main] DEBUG chapters.configuration.Foo - Did it again! 14:25:36.359 [main] DEBUG chapters.configuration.Foo - Did it again! 14:25:36.359 [main] INFO  chapters.configuration.MyApp3 - Exiting application. 14:25:36.359 [main] INFO  chapters.configuration.MyApp3 - Exiting application.
 
 Notice the duplicated output. The appender named `STDOUT` is attached to two loggers, to root and to `chapters.configuration`. Since the root logger is the ancestor of all loggers and `chapters.configuration` is the parent of both `chapters.configuration.MyApp3` and `chapters.configuration.Foo`, each logging request made with these two loggers will be output twice, once because `STDOUT` is attached to `chapters.configuration` and once because it is attached to `root`.
 
+注意输出内容重复了。 名为 `STDOUT` 的 appender 被挂载到了两个 logger 上：root 和 `chapters.configuration`。 由于 root logger 是所有 logger 的祖先，而 `chapters.configuration` 又是 `chapters.configuration.MyApp3` 和 `chapters.configuration.Foo` 的父 logger，所以通过这两个 logger 进行的每次日志请求都会输出两次：一次因为 `STDOUT` 挂载在 `chapters.configuration` 上，一次因为它挂载在 `root` 上。
+
 Appender additivity is not intended as a trap for new users. It is quite a convenient logback feature. For instance, you can configure logging such that log messages appear on the console (for all loggers in the system) while messages only from some specific set of loggers flow into a specific appender.
 
+appender 的叠加性并不是给新用户设下的陷阱，而是 logback 相当方便的一个特性。 例如，你可以这样配置：系统中所有 logger 的日志消息都输出到控制台，同时只有来自某些特定 logger 的消息流入特定的 appender。
+
 Example: Multiple appender (logback-examples/src/main/resources/chapters/configuration/restricted.xml)
+
+示例：多个 appender（restricted.xml）
 
 ```
 <configuration>
@@ -1085,11 +1166,19 @@ Example: Multiple appender (logback-examples/src/main/resources/chapters/configu
 
 In this example, the console appender will log all the messages (for all loggers in the system) whereas only logging requests originating from the `chapters.configuration` logger and its children will go into the `myApp.log` file.
 
+在这个例子中，控制台 appender 会记录所有消息（针对系统中的所有 logger），而只有来自 `chapters.configuration` logger 及其子 logger 的日志请求才会写入 `myApp.log` 文件。
+
 #### Overriding the default cumulative behaviour
+
+#### 覆盖默认的叠加行为
 
 In case the default cumulative behavior turns out to be unsuitable for your needs, you can override it by setting the additivity flag to false. Thus, a branch in your logger tree may direct output to a set of appenders different from those of the rest of the tree.
 
+如果默认的叠加行为不符合你的需求，可以通过把 additivity 标志设置为 false 来覆盖它。 这样，logger 树中的某个分支就可以把输出定向到一组与树中其他部分不同的 appender。
+
 Example: Additivity flag (logback-examples/src/main/resources/chapters/configuration/additivityFlag.xml)
+
+示例：additivity 标志（additivityFlag.xml）
 
 ```
 <configuration>
@@ -1119,11 +1208,19 @@ Example: Additivity flag (logback-examples/src/main/resources/chapters/configura
 
 This example, the appender named `FILE` is attached to the `chapters.configuration.Foo` logger. Moreover, the `chapters.configuration.Foo` logger has its additivity flag set to false such that its logging output will be sent to the appender named `FILE` but not to any appender attached higher in the hierarchy. Other loggers remain oblivious to the additivity setting of the `chapters.configuration.Foo` logger. Running the `MyApp3` application with the `additivityFlag.xml` configuration file will output results on the console from the `chapters.configuration.MyApp3` logger. However, output from the `chapters.configuration.Foo` logger will appear in the `foo.log` file and only in that file.
 
+这个例子中，名为 `FILE` 的 appender 被挂载到 `chapters.configuration.Foo` logger 上。 同时，`chapters.configuration.Foo` logger 的 additivity 标志被设置为 false，因此它的日志输出只会发送给名为 `FILE` 的 appender，而不会发送给层级结构中更上层的任何 appender。 其他 logger 不受 `chapters.configuration.Foo` logger 的 additivity 设置影响。 使用 `additivityFlag.xml` 配置文件运行 `MyApp3` 应用程序，`chapters.configuration.MyApp3` logger 的输出结果会显示在控制台上，而 `chapters.configuration.Foo` logger 的输出只会出现在 `foo.log` 文件中。
+
 ### Setting the context name
+
+### 设置上下文名称
 
 As mentioned [in an earlier chapter](http://logback.qos.ch/manual/architecture.html#LoggerContext), every logger is attached to a logger context. By default, the logger context is called "default". However, you can set a different name with the help of the ` ` configuration directive. Note that once set, the logger context name [cannot be changed](http://logback.qos.ch/apidocs/ch/qos/logback/core/ContextBase.html#setName(java.lang.String)). Setting the context name is a simple and straightforward method in order to distinguish between multiple applications logging to the same target.
 
+如[前一章](http://logback.qos.ch/manual/architecture.html#LoggerContext)所述，每个 logger 都关联到一个 logger 上下文（logger context）。 默认情况下，这个上下文叫 "default"，不过你可以通过 ` ` 配置指令设置不同的名称。 注意，上下文名称一旦设置就[无法更改](http://logback.qos.ch/apidocs/ch/qos/logback/core/ContextBase.html#setName(java.lang.String))。 设置上下文名称是一种简单直接的方法，可用于区分多个向同一目标输出日志的应用程序。
+
 Example: Set the context name and display it (logback-examples/src/main/resources/chapters/configuration/contextName.xml)
+
+示例：设置并显示上下文名称（contextName.xml）
 
 ```
 <configuration>
@@ -1142,25 +1239,47 @@ Example: Set the context name and display it (logback-examples/src/main/resource
 
 This last example illustrates naming of the logger context. Adding the [contextName conversion word](http://logback.qos.ch/manual/layouts.html#conversionWord) in layout's pattern will output the said name.
 
+最后一个示例演示了如何为 logger 上下文命名。 在 layout 的 pattern 中加入 [contextName 转换词](http://logback.qos.ch/manual/layouts.html#conversionWord)，就会输出该名称。
+
 ### Variable substitution
+
+### 变量替换
 
 `NOTE` Earlier versions of this document used the term "property substitution" instead of the term "variable". Please consider both terms interchangeable although the latter term conveys a clearer meaning.
 
+`注意` 本文档的早期版本使用的是 "property substitution"（属性替换）这个术语，而不是 "variable"（变量）。 两个术语可以视为同义，不过后者的含义更清晰。
+
 As in many scripting languages, logback configuration files support definition and substitution of variables. Variables have a [scope](http://logback.qos.ch/manual/configuration.html#scopes) (see below). Moreover, variables can be defined within the configuration file itself, in an external file, in an external resource or even computed and [defined on the fly](http://logback.qos.ch/manual/configuration.html#definingPropsOnTheFly).
+
+与许多脚本语言一样，logback 配置文件支持变量的定义与替换。 变量有[作用域](http://logback.qos.ch/manual/configuration.html#scopes)（见下文）。 此外，变量可以在配置文件本身中定义，也可以在外部文件或外部资源中定义，甚至可以动态计算并[即时定义](http://logback.qos.ch/manual/configuration.html#definingPropsOnTheFly)。
 
 Variable substitution can occur at any point in a configuration file where a value can be specified.
 
+在配置文件中任何可以指定值的地方，都可以进行变量替换。
+
 Variable substitution can occur at any point in a configuration file where a value can be specified. The syntax of variable substitution is similar to that of Unix shells. The string between an opening `${` and closing `}` is interpreted as a reference to the `value` of the property. For property `aName`, the string "${aName}" will be replaced with the value held by the `aName` property.
+
+变量替换的语法与 Unix shell 类似。 开始的 `${` 与结束的 `}` 之间的字符串，会被解释为对属性 `value` 的引用。 对于属性 `aName`，字符串 "${aName}" 会被替换为 `aName` 属性所持有的值。
 
 As they often come in handy, the HOSTNAME and CONTEXT_NAME variables are automatically defined and have context scope. Given that in some environments it may take some time to compute the hostname, its value is computed lazily (only when needed). Moreover, HOSTNAME can be set from within the [configuration directly.](http://logback.qos.ch/manual/configuration.html#definingProps)
 
+由于经常能用得上，`HOSTNAME` 和 `CONTEXT_NAME` 变量会被自动定义，并具有 context 作用域。 鉴于在某些环境中计算主机名可能比较耗时，它的值是惰性计算的（只在需要时才计算）。 此外，也可以[在配置文件中直接设置](http://logback.qos.ch/manual/configuration.html#definingProps) `HOSTNAME`。
+
 #### Defining variables
+
+#### 定义变量
 
 Variables can be defined one at a time in the configuration file itself or loaded wholesale from an external properties file or an external resource. For historical reasons, the XML element for defining variables is ` ` although in logback 1.0.7 and later the element ` ` can be used interchangeably.
 
+变量可以在配置文件中逐个定义，也可以从外部属性文件或外部资源中整体加载。 由于历史原因，定义变量的 XML 元素是 `<property>`，不过在 logback 1.0.7 及之后的版本中，`<variable>` 元素也可以互换使用。
+
 The next example shows a variable declared at the beginning of the configuration file. It is then used further down the file to specify the location of the output file.
 
+下一个示例演示了在配置文件开头声明一个变量，然后在文件后面的部分用它来指定输出文件的位置。
+
 Example: Simple Variable substitution (logback-examples/src/main/resources/chapters/configuration/variableSubstitution1.xml)
+
+示例：简单的变量替换（variableSubstitution1.xml）
 
 ```
 <configuration>
@@ -1182,9 +1301,13 @@ Example: Simple Variable substitution (logback-examples/src/main/resources/chapt
 
 The next example shows the use of a System property to achieve the same result. The property is not declared in the configuration file, thus logback will look for it in the System properties. Java system properties can be set on the command line as shown next:
 
+下一个示例展示了如何使用系统属性来达到同样的效果。 该属性没有在配置文件中声明，因此 logback 会到系统属性（System properties）中查找。 Java 系统属性可以在命令行中设置，如下所示：
+
 java -DUSER_HOME="/home/sebastien" MyApp2
 
 Example: System Variable substitution (logback-examples/src/main/resources/chapters/configuration/variableSubstitution2.xml)
+
+示例：系统变量的替换（variableSubstitution2.xml）
 
 ```
 <configuration>
@@ -1204,7 +1327,11 @@ Example: System Variable substitution (logback-examples/src/main/resources/chapt
 
 When multiple variables are needed, it may be more convenient to create a separate file that will contain all the variables. Here is how one can do such a setup.
 
+当需要多个变量时，创建一个单独的文件来存放所有变量可能更方便。 下面是这种配置的做法。
+
 Example: Variable substitution using a separate file (logback-examples/src/main/resources/chapters/configuration/variableSubstitution3.xml)
+
+示例：使用单独文件进行变量替换（variableSubstitution3.xml）
 
 ```
 <configuration>
@@ -1226,9 +1353,15 @@ Example: Variable substitution using a separate file (logback-examples/src/main/
 
 This configuration file contains a reference to a file named `variables1.properties`. The variables contained in that file will be read and then defined within local scope. Here is what the `variable.properties` file might look like.
 
+这个配置文件包含对名为 `variables1.properties` 文件的引用。 该文件中的变量将被读取，然后定义在 local 作用域中。 `variable.properties` 文件的内容大致如下。
+
 `Example: Variable file (logback-examples/src/main/resources/chapters/configuration/variables1.properties)`
 
+`示例：变量文件（variables1.properties）`
+
 You may also reference a resource on the class path instead of a file.
+
+你也可以引用 class path 上的资源，而不是文件。
 
 ```
 <configuration>
@@ -1250,21 +1383,39 @@ You may also reference a resource on the class path instead of a file.
 
 #### Scopes
 
+#### 作用域
+
 A property can be defined for insertion in `local scope`, in `context scope`, or in `system scope`. Local scope is the default. Although it is possible to read variables from the OS environment, it is not possible to write into the OS environment.
+
+属性可以定义在 `local` 作用域、`context` 作用域或 `system` 作用域中。 默认是 local 作用域。 虽然可以从操作系统环境变量中读取变量，但无法写入操作系统的环境变量。
 
 `LOCAL SCOPE` A property with local scope exists from the point of its definition in a configuration file until the end of interpretation/execution of said configuration file. As a corollary, each time a configuration file is parsed and executed, variables in local scope are defined anew.
 
+`LOCAL 作用域` 具有 local 作用域的属性，从它在配置文件中被定义的位置开始，到该配置文件解释/执行结束为止都有效。 由此可以推知，每次解析并执行配置文件时，local 作用域中的变量都会重新定义。
+
 `CONTEXT SCOPE` A property with context scope is inserted into the context and lasts as long as the context or until it is cleared. Once defined, a property in context scope is part of the context. As such, it is available in all logging events, including those sent to remote hosts via serialization.
+
+`CONTEXT 作用域` 具有 context 作用域的属性会被插入到上下文中，与上下文同生共灭，直到被清除为止。 一旦定义，context 作用域的属性就成为上下文的一部分。 因此，它在所有日志事件中都可用，包括通过序列化发送到远程主机的日志事件。
 
 `SYSTEM SCOPE` A property with system scope is inserted into the JVM's system properties and lasts as long as the JVM or until it is cleared.
 
+`SYSTEM 作用域` 具有 system 作用域的属性会被插入到 JVM 的系统属性中，与 JVM 同生共灭，直到被清除为止。
+
 Properties are looked up in the the local scope first, in the context scope second, in the system properties scope third, and in the OS environment last.
+
+属性的查找顺序为：先在 local 作用域中查找，然后在 context 作用域中查找，接着在系统属性（system properties）作用域中查找，最后在操作系统环境变量中查找。
 
 During substitution, properties are looked up in the local scope first, in the context scope second, in the system properties scope third, and in the [OS environment](http://docs.oracle.com/javase/tutorial/essential/environment/env.html) fourth and last.
 
+在替换过程中，属性的查找顺序为：先是 local 作用域，其次是 context 作用域，然后是系统属性作用域，第四个也是最后一个是[操作系统环境变量](http://docs.oracle.com/javase/tutorial/essential/environment/env.html)。
+
 The `scope` attribute of the ` ` element, ` ` element or the ` ` element can be used to set the scope of a property. The `scope` attribute admits "local", "context" and "system" strings as possible values. If not specified, the scope is always assumed to be "local".
 
+`<property>` 元素、`<define>` 元素或 `<insertFromJNDI>` 元素的 `scope` 属性可用于设置属性的作用域。 `scope` 属性的取值为 "local"、"context" 和 "system"。 如果没有指定，则总是假定为 "local"。
+
 Example: A variable defined in "context" scope (logback-examples/src/main/resources/chapters/configuration/contextScopedVariable.xml)
+
+示例：定义在 "context" 作用域中的变量（contextScopedVariable.xml）
 
 ```
 <configuration>
@@ -1286,19 +1437,35 @@ Example: A variable defined in "context" scope (logback-examples/src/main/resour
 
 In the above example, given that the `nodeId` property is defined in the context scope, it will be available in every logging event, even those sent to remote hosts via serialization.
 
+在上面的示例中，由于 `nodeId` 属性定义在 context 作用域中，因此它在每个日志事件中都可用，包括通过序列化发送到远程主机的日志事件。
+
 ### Default values for variables
+
+### 变量的默认值
 
 Under certain circumstances, it may be desirable for a variable to have a default value if it is not declared or its value is null. As in the [Bash shell](http://tldp.org/LDP/abs/html/parameter-substitution.html), default values can be specified using the `":-"` operator. For example, assuming the variable named `aName` is not defined, `"${aName`:-golden`}"` will be interpreted as "golden".
 
+在某些情况下，如果一个变量未被声明或其值为 null，可能希望它有一个默认值。 与 [Bash shell](http://tldp.org/LDP/abs/html/parameter-substitution.html) 类似，可以使用 `":-"` 操作符来指定默认值。 例如，假设名为 `aName` 的变量未定义，`"${aName:-golden}"` 将被解释为 "golden"。
+
 ### Nested variables
+
+### 嵌套变量
 
 Variable nesting is fully supported. Both the name, default-value and value definition of a variable can reference other variables.
 
+变量嵌套是完全支持的。 变量的名称、默认值和值的定义都可以引用其他变量。
+
 #### value nesting
+
+#### 值的嵌套
 
 The value definition of a variable can contain references to other variables. Suppose you wish to use variables to specify not only the destination directory but also the file name, and combine those two variables in a third variable called "destination". The properties file shown below gives an example.
 
+变量的值定义中可以包含对其他变量的引用。 假设你希望用变量不仅指定目标目录，还指定文件名，然后把这两个变量组合成第三个变量 "destination"。 下面所示的属性文件就是一个例子。
+
 Example: Nested variable references (logback-examples/src/main/resources/chapters/configuration/variables2.properties)
+
+示例：嵌套的变量引用（variables2.properties）
 
 ```
 USER_HOME=/home/sebastien
@@ -1308,33 +1475,63 @@ destination=${USER_HOME}/${fileName}
 
 Note that in the properties file above, "destination" is composed from two other variables, namely "USER_HOME" and "fileName".
 
+注意，在上面的属性文件中，"destination" 是由另外两个变量组合而成的，即 "USER_HOME" 和 "fileName"。
+
 `Example: Variable substitution using a separate file (logback-examples/src/main/resources/chapters/configuration/variableSubstitution4.xml)`
+
+`示例：使用单独文件进行变量替换（variableSubstitution4.xml）`
 
 #### name nesting
 
+#### 名称的嵌套
+
 When referencing a variable, the variable name may contain a reference to another variable. For example, if the variable named "userid" is assigned the value "alice", then "${${userid}.password}" references the variable with the name "alice.password".
+
+引用变量时，变量名本身可以包含对另一个变量的引用。 例如，如果名为 "userid" 的变量被赋值为 "alice"，那么 "${${userid}.password}" 引用的就是名为 "alice.password" 的变量。
 
 #### default value nesting
 
+#### 默认值的嵌套
+
 The default value of a variable can reference a another variable. For example, assuming the variable 'id' is unassigned and the variable 'userid' is assigned the value "alice", then the expression "`${id`:-`${userid}}`" will return "alice".
+
+变量的默认值也可以引用另一个变量。 例如，假设变量 'id' 未赋值，而变量 'userid' 被赋值为 "alice"，那么表达式 "`${id:-${userid}}`" 将返回 "alice"。
 
 ### HOSTNAME property
 
+### HOSTNAME 属性
+
 As it often comes in handy, the `HOSTNAME` property is defined automatically during configuration with context scope.
+
+由于经常能用得上，`HOSTNAME` 属性会在配置过程中被自动定义，并具有 context 作用域。
 
 ### CONTEXT_NAME property
 
+### CONTEXT_NAME 属性
+
 As its name indicates, the `CONTEXT_NAME` property corresponds to the name of the current logging context.
+
+顾名思义，`CONTEXT_NAME` 属性对应于当前日志上下文的名称。
 
 ### Setting a timestamp
 
+### 设置时间戳
+
 The `timestamp` element can define a property according to current date and time. The `timestamp` element is [explained in a subsequent chapter](http://logback.qos.ch/manual/appenders.html#uniquelyNamed).
+
+`timestamp` 元素可以根据当前日期和时间来定义属性。 `timestamp` 元素将在[后续章节](http://logback.qos.ch/manual/appenders.html#uniquelyNamed)中解释。
 
 ### Defining properties on the fly
 
+### 动态定义属性
+
 You may define properties dynamically using the ` ` element. The define element takes two mandatory attributes: `name` and `class`. The `name` attribute designates the name of the property to set whereas the `class` attribute designates any class implementing the [PropertyDefiner](http://logback.qos.ch/xref/ch/qos/logback/core/spi/PropertyDefiner.html) interface. The value returned by the `getPropertyValue`() method of the `PropertyDefiner` instance will be the value of the named property. You may also specify a [scope](http://logback.qos.ch/manual/configuration.html#scopes) for the named property by specifying a `scope` attribute.
 
+你可以使用 `<define>` 元素动态定义属性。 define 元素需要两个必须的属性：`name` 和 `class`。 `name` 属性指定要设置的属性的名称，而 `class` 属性指定任何实现了 [PropertyDefiner](http://logback.qos.ch/xref/ch/qos/logback/core/spi/PropertyDefiner.html) 接口的类。 `PropertyDefiner` 实例的 `getPropertyValue()` 方法返回的值，就是该属性的值。 你还可以通过指定 `scope` 属性，为该属性指定[作用域](http://logback.qos.ch/manual/configuration.html#scopes)。
+
 Here is an example.
+
+下面是一个示例。
 
 ```
 <configuration>
@@ -1351,7 +1548,11 @@ Here is an example.
 
 In the above example, shape, color and size are properties of "a.class.implementing.PropertyDefiner". As long as there is a setter for a given property in your implementation of the `PropertyDefiner` instance, logback will inject the appropriate values as specified in the configuration file.
 
+在上面的示例中，shape、color 和 size 是 "a.class.implementing.PropertyDefiner" 的属性。 只要你的 `PropertyDefiner` 实现中为某个属性提供了 setter，logback 就会按照配置文件中的指定注入相应的值。
+
 At the present time, logback does ships with two fairly simple implementations of `PropertyDefiner`.
+
+目前，logback 自带了两个相当简单的 `PropertyDefiner` 实现。
 
 | Implementation name                                          | Description                                                  |
 | ------------------------------------------------------------ | ------------------------------------------------------------ |
@@ -1360,11 +1561,19 @@ At the present time, logback does ships with two fairly simple implementations o
 | [`FileExistsPropertyDefiner`](http://logback.qos.ch/apidocs/ch/qos/logback/core/property/FileExistsPropertyDefiner.html) | Set the named variable to "true" if the file specified by path property exists, to "false" otherwise. |
 | [`ResourceExistsPropertyDefiner`](http://logback.qos.ch/apidocs/ch/qos/logback/core/property/FileExistsPropertyDefiner.html) | Set the named variable to "true" if the resource specified by the user is available on the class path, to "false" otherwise. |
 
+表中各实现的含义如下：[`CanonicalHostNamePropertyDefiner`](http://logback.qos.ch/apidocs/ch/qos/logback/core/property/CanonicalHostNamePropertyDefiner.html) 将指定的变量设置为本地主机的规范主机名（canonical host name），注意获取规范主机名可能需要几秒钟时间；[`FileExistsPropertyDefiner`](http://logback.qos.ch/apidocs/ch/qos/logback/core/property/FileExistsPropertyDefiner.html) 如果 `path` 属性指定的文件存在，则将指定的变量设置为 "true"，否则设置为 "false"；[`ResourceExistsPropertyDefiner`](http://logback.qos.ch/apidocs/ch/qos/logback/core/property/FileExistsPropertyDefiner.html) 如果用户指定的资源在 class path 上可用，则将指定的变量设置为 "true"，否则设置为 "false"。
+
 ### Conditional processing of configuration files
+
+### 配置文件的条件处理
 
 Developers often need to juggle between several logback configuration files targeting different environments such as development, testing and production. These configuration files have substantial parts in common differing only in a few places. To avoid duplication, logback supports conditional processing of configuration files with the help of `-`, `-` and `-` elements so that a single configuration file can adequately target several environments. Note that conditional processing requires the [Janino library](http://logback.qos.ch/setup.html#janino).
 
+开发人员经常需要在面向不同环境（如开发、测试和生产）的多个 logback 配置文件之间来回折腾。 这些配置文件有很大一部分是相同的，只有少数地方不同。 为了避免重复，logback 借助 `-`、`-` 和 `-` 元素支持配置文件的条件处理，这样一个配置文件就可以适用于多个环境。 注意，条件处理需要 [Janino 库](http://logback.qos.ch/setup.html#janino)。
+
 The general format for conditional statements is shown below.
+
+条件语句的通用格式如下所示。
 
 ```
    <!-- if-then form -->
@@ -1387,7 +1596,11 @@ The general format for conditional statements is shown below.
 
 The condition is a Java expression in which only context properties or system properties are accessible. For a key passed as argument, the `property`() or its shorter equivalent `p`() methods return the String value of the property. For example, to access the value of a property with key "k", you would write `property("k")` or equivalently `p("k")`. If the property with key "k" is undefined, the property method will return the empty string and not null. This avoids the need to check for null values.
 
+条件表达式是一个 Java 表达式，其中只能访问上下文属性或系统属性。 对于传入的 key，`property()` 方法或其简写 `p()` 方法会返回该属性的字符串值。 例如，要访问 key 为 "k" 的属性的值，可以写 `property("k")` 或等价的 `p("k")`。 如果 key 为 "k" 的属性未定义，property 方法将返回空字符串而不是 null，这就免去了对 null 值的检查。
+
 The `isDefined()` method can be used to check whether a property is defined. For example, to check whether the property "k" is defined you would write `isDefined("k")` Similarly, if you need to check whether a property is null, the `isNull()` method is provided. Example: `isNull("k")`.
+
+`isDefined()` 方法可以用来检查某个属性是否已定义。 例如，要检查属性 "k" 是否已定义，可以写 `isDefined("k")`。 类似地，如果需要检查某个属性是否为 null，可以使用 `isNull()` 方法。 示例：`isNull("k")`。
 
 ```
 <configuration debug="true">
@@ -1420,11 +1633,19 @@ The `isDefined()` method can be used to check whether a property is defined. For
 
 Conditional processing is supported `anywhere` within the ` ` element. Nested if-then-else statements are also supported. However, XML syntax is awfully cumbersome and is ill suited as the foundation of a general purpose programming language. Consequently, too many conditionals will quickly render your configuration files incomprehensible to subsequent readers, including yourself.
 
+`<configuration>` 元素内的`任何位置`都支持条件处理。 嵌套的 if-then-else 语句也是支持的。 然而，XML 语法非常繁琐，并不适合作为通用编程语言的基础。 因此，条件判断太多会让你的配置文件很快变得难以理解，对后续的阅读者（包括你自己）来说都是如此。
+
 ### Obtaining variables from JNDI
+
+### 从 JNDI 获取变量
 
 Under certain circumstances, you may want to make use of env-entries stored in JNDI. The ` ` configuration directive extracts an env-entry stored in JNDI and inserts the property in local scope with key specified by the `as` attribute. As all properties, it is possible to insert the new property into a [different scope](http://logback.qos.ch/manual/configuration.html#scopes) with the help of the `scope` attribute.
 
+在某些情况下，你可能希望使用存储在 JNDI 中的 env-entry。 ` ` 配置指令会提取存储在 JNDI 中的 env-entry，并以 `as` 属性指定的 key 将该属性插入到 local 作用域中。 与所有属性一样，也可以借助 `scope` 属性把新属性插入到[其他作用域](http://logback.qos.ch/manual/configuration.html#scopes)中。
+
 Example: Insert as properties env-entries obtained via JNDI (logback-examples/src/main/resources/chapters/configuration/insertFromJNDI.xml)
+
+示例：把通过 JNDI 获取的 env-entry 作为属性插入（insertFromJNDI.xml）
 
 ```
 <configuration>
@@ -1445,11 +1666,19 @@ Example: Insert as properties env-entries obtained via JNDI (logback-examples/sr
 
 In this last example, the "java:comp/env/appName" env-entry is inserted as the `appName` property. Note that the ` ` directive sets the context name based on the value of the `appName` property inserted by the previous ` ` directive.
 
+在最后一个示例中，"java:comp/env/appName" 这个 env-entry 被插入为 `appName` 属性。 注意，` ` 指令会根据前一个 ` ` 指令插入的 `appName` 属性的值来设置上下文名称。
+
 ### File inclusion
+
+### 文件包含
 
 Joran supports including parts of a configuration file from another file. This is done by declaring a ` ` element, as shown below:
 
+Joran 支持从另一个文件中包含配置文件的一部分。 这是通过声明一个 ` ` 元素来实现的，如下所示：
+
 Example: File include (logback-examples/src/main/resources/chapters/configuration/containingConfig.xml)
+
+示例：文件包含（containingConfig.xml）
 
 ```
 <configuration>
@@ -1464,7 +1693,11 @@ Example: File include (logback-examples/src/main/resources/chapters/configuratio
 
 The target file MUST have its elements nested inside an ` ` element. For example, a `ConsoleAppender` could be declared as:
 
+被包含的目标文件必须把它的元素嵌套在 ` ` 元素内。 例如，可以这样声明一个 `ConsoleAppender`：
+
 Example: File include (logback-examples/src/main/resources/chapters/configuration/includedConfig.xml)
+
+示例：文件包含（includedConfig.xml）
 
 ```
 <included>
@@ -1478,13 +1711,23 @@ Example: File include (logback-examples/src/main/resources/chapters/configuratio
 
 Again, please note the mandatory ` ` element.
 
+再次提醒，请注意这个必须的 ` ` 元素。
+
 The contents to include can be referenced as a file, as a resource, or as a URL.
+
+被包含的内容可以作为文件、资源或 URL 来引用。
 
 - `As a file:`
   To include a file use the `file` attribute. You can use relative paths but note that the current directory is defined by the application and is not necessarily related to the path of the configuration file.
 
+- `以文件方式包含：`
+  使用 `file` 属性。 可以使用相对路径，但请注意，当前目录由应用程序定义，不一定与配置文件的路径相关。
+
 - `As a resource:`
   To include a resource, i.e a file found on the class path, use the `resource` attribute.
+
+- `以资源方式包含：`
+  要包含一个资源（即 class path 上找到的文件），使用 `resource` 属性。
 
   ```
   <include resource="includedConfig.xml"/>
@@ -1493,11 +1736,16 @@ The contents to include can be referenced as a file, as a resource, or as a URL.
 - `As a URL:`
   To include the contents of a URL use the `url` attribute.
 
+- `以 URL 方式包含：`
+  要包含某个 URL 的内容，使用 `url` 属性。
+
   ```
   <include url="http://some.host.com/includedConfig.xml"/>
   ```
 
 If it cannot find the file to be included, logback will complain by printing a status message. In case the included file is optional, you can suppress the warning message by setting `optional` attribute to `true` in the ` ` element.
+
+如果找不到要包含的文件，logback 会打印一条状态消息来提示。 如果被包含的文件是可选的，可以在 ` ` 元素中把 `optional` 属性设置为 `true` 来抑制这条警告消息。
 
 ```
 <include optional="true" ..../>
@@ -1505,15 +1753,27 @@ If it cannot find the file to be included, logback will complain by printing a s
 
 ## Adding a context listener
 
+## 添加上下文监听器
+
 Instances of the [LoggerContextListener](http://logback.qos.ch/xref/ch/qos/logback/classic/spi/LoggerContextListener.html) interface listen to events pertaining to the lifecycle of a logger context.
+
+[LoggerContextListener](http://logback.qos.ch/xref/ch/qos/logback/classic/spi/LoggerContextListener.html) 接口的实例用于监听与 logger 上下文生命周期相关的事件。
 
 `JMXConfigurator` is one implementation of the `LoggerContextListener` interface. It is described in a [subsequent chapter](http://logback.qos.ch/manual/jmxConfig.html).
 
+`JMXConfigurator` 是 `LoggerContextListener` 接口的一个实现，将在[后续章节](http://logback.qos.ch/manual/jmxConfig.html)中介绍。
+
 ### LevelChangePropagator
+
+### LevelChangePropagator（级别变更传播器）
 
 As of version 0.9.25, logback-classic ships with [LevelChangePropagator](http://logback.qos.ch/xref/ch/qos/logback/classic/jul/LevelChangePropagator.html), an implementation of `LoggerContextListener` which propagates changes made to the level of any logback-classic logger onto the java.util.logging framework. Such propagation eliminates the performance impact of disabled log statements. Instances of [LogRecord](http://download.oracle.com/javase/1.5.0/docs/api/java/util/logging/LogRecord.html?is-external=true) will be sent to logback (via SLF4J) only for enabled log statements. This makes it reasonable for real-world applications to use the [jul-to-slf4j](http://www.slf4j.org/legacy.html#jul-to-slf4j) bridge.
 
+从 0.9.25 版本开始，logback-classic 自带了 [LevelChangePropagator](http://logback.qos.ch/xref/ch/qos/logback/classic/jul/LevelChangePropagator.html)，它是 `LoggerContextListener` 的一个实现，可以把对任何 logback-classic logger 级别的更改传播到 java.util.logging 框架。 这种传播消除了被禁用的日志语句带来的性能影响。 [LogRecord](http://download.oracle.com/javase/1.5.0/docs/api/java/util/logging/LogRecord.html?is-external=true) 实例只有在对应的日志语句被启用时才会（通过 SLF4J）发送给 logback。 这使得真实世界的应用程序可以放心地使用 [jul-to-slf4j](http://www.slf4j.org/legacy.html#jul-to-slf4j) 桥接器。
+
 The contextListener element can be used to install `LevelChangePropagator` as shown next.
+
+可以使用 contextListener 元素来安装 `LevelChangePropagator`，如下所示。
 
 ```
 <configuration debug="true">
@@ -1523,6 +1783,8 @@ The contextListener element can be used to install `LevelChangePropagator` as sh
 ```
 
 Setting the resetJUL property of LevelChangePropagator will reset all previous level configurations of all j.u.l. loggers. However, previously installed handlers will be left untouched.
+
+设置 LevelChangePropagator 的 resetJUL 属性，将重置所有 j.u.l. logger 之前的级别配置。 不过，之前安装的 handler 不会被改动。
 
 ```
 <configuration debug="true">
