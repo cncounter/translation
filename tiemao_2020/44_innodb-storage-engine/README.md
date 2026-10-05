@@ -14,7 +14,7 @@
 - [14.6 InnoDB在磁盘上的存储结构](14.6_innodb-on-disk-structures.md)【粗翻】
 - [14.7 InnoDB的锁和事务模型](14.7_innodb-locking-transaction-model.md)【校对完成】
 - [14.8 InnoDB Configuration](14.8_innodb-configuration.md)
-- [14.9 InnoDB Table and Page Compression](14.9_innodb-compression.md)
+- [14.9 InnoDB表压缩与页压缩](14.9_innodb-compression.md)【粗翻】
 - [14.10 InnoDB File-Format Management]()
 - [14.11 InnoDB Row Formats]()
 - [14.12 InnoDB Disk I/O and File Space Management]()
