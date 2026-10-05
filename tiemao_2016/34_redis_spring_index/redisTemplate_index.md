@@ -4,7 +4,7 @@
 
 我们知道，Redis默认有16个库,默认连接的是 `index=0` 的那一个。这16个库互相之间是独立的。类似于同一个MySQL服务器下面的多个数据库一样。
 
-在命令行中可以很方便的切换. 具体消息请参考: [http://www.ttlsa.com/redis/redis-database/](http://www.ttlsa.com/redis/redis-database/)
+在命令行中可以很方便的切换。具体信息请参考: [http://www.ttlsa.com/redis/redis-database/](http://www.ttlsa.com/redis/redis-database/)
 
 ```
 select 2
