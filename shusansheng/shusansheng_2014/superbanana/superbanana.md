@@ -2,7 +2,7 @@
 
 ![香蕉](01_GM-Banana.jpg)
 
-营养不良在全球范围内一直是个大麻烦,但很难得到解决。 人们不仅需要获得足够的食物,食物之间还需要有合理的搭配。 发展中国家的人民能有吃的就不错了,而只维持温饱很可能会导致维生素的缺乏从而危及生命。 令人惊讶的是,由比尔-梅林达·盖茨基金会支持的超级转基因(GM)香蕉(super-banana) 可能是对抗营养不良的关键武器。 是的,那并不是性感的 [盖茨牌安全套。](http://www.extremetech.com/extreme/171417-bill-gates-funds-creation-of-thin-light-impenetrable-graphene-condoms)
+营养不良在全球范围内一直是个大麻烦,但很难得到解决。 人们不仅需要获得足够的食物,食物之间还需要有合理的搭配。 发展中国家的人民能有吃的就不错了,而只维持温饱很可能会导致维生素的缺乏从而危及生命。 令人惊讶的是,由比尔及梅琳达·盖茨基金会支持的超级转基因(GM)香蕉(super-banana) 可能是对抗营养不良的关键武器。 是的,那并不是什么性感的 [盖茨牌安全套](http://www.extremetech.com/extreme/171417-bill-gates-funds-creation-of-thin-light-impenetrable-graphene-condoms)。
 
 那是什么让它变成“超级香蕉“的呢? 这主要是因为这种香蕉富含β-胡萝卜素,人体可以用它来合成维生素A。这听起来也许不像是对抗营养不良的食品,但发展中国家对维生素A的缺乏是一个很大的问题。 世界卫生专家估计每年有 650000 - 700000名儿童死于维生素A缺乏。 另外有300000名儿童虽幸免于难,但代价却是失去了视力。 通过调整了几个基因,科学家们创造了一种可以预防这种恶果的香蕉。
 
@@ -20,7 +20,7 @@ super-banana未来一段时期内将在美国进行人体试验,成本大约为1
 
 ![](03_banana-hero.jpg)
 
-图2 在英国,有一个著名的漫画英雄叫Bananaman,他获得吃香蕉超级冠军。 (那些疯狂的英国人)
+图2 在英国,有一个著名的漫画英雄叫Bananaman,他吃香蕉就能获得超能力。 (那些疯狂的英国人)
 
 原文链接: [Genetically engineered super-banana could save millions of lives](http://www.extremetech.com/extreme/184435-genetically-engineered-super-banana-could-save-millions-of-lives)
 
