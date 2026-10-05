@@ -4,8 +4,8 @@
 
 ## 1. 背景
 
-LTC， 输入的可能是以 `3` 开头的 P2PKH 地址, 也可能是以 `M`  开头的 p2sh 地址。
-上连前，需要统一转换为 M 开头的地址。
+LTC， 输入的可能是以 `3` 开头的 P2PKH 地址, 也可能是以 `M` 开头的 p2sh 地址。
+上链前，需要统一转换为 M 开头的地址。
 
 这样就有一个问题，比对的时候，两者可能需要相互转换，以确定是否等价。
 
@@ -21,14 +21,14 @@ LTC， 输入的可能是以 `3` 开头的 P2PKH 地址, 也可能是以 `M`  �
 
 > `https://litecoin-project.github.io/p2sh-convert/`
 
-扒开页面一看，里面是使用 JS 实现的， 看到里面的 `fromBase58Check`  函数。
+扒开页面一看，里面是使用 JS 实现的， 看到里面的 `fromBase58Check` 函数。
 
 ## 4. 实现原理
 
 LTC地址, 实际上就是一串 21 byte 的数据, 然后序列化为Base58格式的字符串。
 第一个 byte 是版本号。
 
-了解嘞实现原理，其实转换步骤很简单:
+了解了实现原理，其实转换步骤很简单:
 
 - 将Base58格式转换为byte数组
 - 转换版本号
@@ -153,7 +153,7 @@ public class LTCAddressUtil {
 以及多增加一批地址进行比对测试。
 
 
-## 7.类库依赖
+## 7. 类库依赖
 
 > https://mvnrepository.com/artifact/org.bitcoinj/bitcoinj-core
 
@@ -170,7 +170,7 @@ public class LTCAddressUtil {
 
 ## 8. 类似的BCH地址转换
 
-类似的有地址转换的连, 还有 `BCH` 。
+类似的有地址转换的链, 还有 `BCH`。
 
 参考地址为:
 
