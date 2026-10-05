@@ -31,7 +31,7 @@ Each of these causes has its own specification indicating whether the GC is a **
 
 Your typical GC is triggered by a soft allocation limit, only freeing on the active heap, concurrent, and preserving. On the other extreme the GC triggered before an OutOfMemoryException is full, synchronous, and non-preserving.
 
-典型的GC是由于内存限制所引起的, 只清理活跃堆,并发型和保留型的GC. 另一种触发GC的原因是 `OutOfMemoryException`, 是同步的,非保留式的(non-preserving)。
+典型的GC是由于内存限制所引起的, 只清理活跃堆,并发型和保留型的GC. 另一种极端情况是在 `OutOfMemoryException` 触发前的GC, 它是完整(full)、同步、非保留式的(non-preserving)。
 
 
 The actual GC is done using a **Mark-Sweep algorithm.**
@@ -56,7 +56,7 @@ When using mark-and-sweep, unreferenced objects are not reclaimed immediately. I
 
 The mark-and-sweep algorithm is **called a _tracing_ garbage collector** because is _traces out_ the entire collection of objects that are directly or indirectly accessible by the program. The objects that a program can access directly are those objects which are referenced by local variables on the processor stack as well as by any static variables that refer to objects. In the context of garbage collection, these variables are called the _roots_ . An object is indirectly accessible if it is referenced by a field in some other (directly or indirectly) accessible object. An accessible object is said to be _live_ . Conversely, an object which is not _live_ is garbage.
 
-标记-清除算法被称为 ** tracing 垃圾收集器**,  因为其追朔( traces out)** 所有直接或间接被程序访问的对象。 程序可以直接访问的对象包括： 处理器栈上的局部变量引用的对象, 以及静态变量所引用的对象。 在GC的上下文中, 这些变量被称为 GC根(root)。 间接可访问是指由(直接/间接)对象所引用的对象。可访问对象也被称为 存活对象. 相反, 不再存活的对象就是垃圾。
+标记-清除算法被称为 ** tracing 垃圾收集器**,  因为其追溯(traces out) 所有直接或间接被程序访问的对象。 程序可以直接访问的对象包括： 处理器栈上的局部变量引用的对象, 以及静态变量所引用的对象。 在GC的上下文中, 这些变量被称为 GC根(root)。 间接可访问是指由(直接/间接)对象所引用的对象。可访问对象也被称为 存活对象. 相反, 不再存活的对象就是垃圾。
 
 
 The mark-and-sweep algorithm **consists of two phases**: In the first phase, it finds and marks all accessible objects. The first phase is called the _mark_ phase. In the second phase, the garbage collection algorithm scans through the heap and reclaims all the unmarked objects. The second phase is called the _sweep_ phase.
