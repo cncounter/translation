@@ -24,7 +24,7 @@ UPDATE 后面可以指定多个列。
 UPDATE t_code_count SET r_count=r_count+1 WHERE r_id=1 OR r_code='code1' LIMIT 1;
 ```
 
-为什么会有个 `LIMIT 1` 的效果呢? 原因在于 `INSERT ... ON DUPLICATE KEY UPDATE` 只会插入或更新一行。
+为什么会有个 `LIMIT 1` 的效果呢？原因在于 `INSERT ... ON DUPLICATE KEY UPDATE` 只会插入或更新一行。
 但极端情况是 `r_id=1 OR r_code='code1'` 匹配了2行记录，也就是 r_id 和 r_code 没有对应好的时候。
 
 
@@ -62,11 +62,11 @@ select LAST_INSERT_ID();
 
 ```
 
-每执行一次, r_count的值加1，r_update_time 的值也会更新, 这应该没什么疑问。
+每执行一次，r_count的值加1，r_update_time 的值也会更新，这应该没什么疑问。
 
-这种语句的好处是什么呢? 避免了一次 select 判断是否存在的操作，或者是在程序中根据抛出重复键冲突的异常的处理代码。
+这种语句的好处是什么呢？避免了一次 select 判断是否存在的操作，或者是在程序中根据抛出重复键冲突的异常的处理代码。
 
-特别是在批处理，流处理系统中会比较有用， 在shell中也会很方便， 直接拼SQL就行了。
+特别是在批处理、流处理系统中会比较有用， 在shell中也会很方便， 直接拼SQL就行了。
 
 
 
@@ -102,7 +102,7 @@ ON DUPLICATE KEY UPDATE  r_count=r_count+1, r_update_time=now();
 select LAST_INSERT_ID();
 ```
 
-LAST_INSERT_ID() 返回的结果是 `2`, 为什么呢？ 因为用到了主键自增，而且因为1已经存在，所以本次会话最近自增的ID值是2。
+LAST_INSERT_ID() 返回的结果是 `2`，为什么呢？ 因为用到了主键自增，而且因为1已经存在，所以本次会话最近自增的ID值是2。
 
 多次执行，返回结果也不变，就是本次会话中最初生成的那个 自增ID， 后面的多次语句并没有使用到主键自增【相当于 UPDATE 了】。
 
