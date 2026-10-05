@@ -382,9 +382,9 @@ The method `thread.join()` introduced earlier allows one thread to continue exec
 
 The goal we want to achieve is: The three threads A, B, and C can start to run at the same time, and each will notify D after finishing running independently; D won't start to run until A, B, and C all finish running. So we use `CountdownLatch` to implement this type of communication. Its basic usage is:
 
-想要达成的目标是: A,B,C 三个线程同时运行, 每个线程完成后, 通知D一声; 等A,B,C都运行完成, D才开始运行. 我们可以使用`CountdownLatch` 来实现这种类型的通信. 其基本用法为:
+想要达成的目标是: A,B,C 三个线程同时运行, 每个线程完成后, 通知D一声; 等A,B,C都运行完成, D才开始运行. 我们可以使用 `CountdownLatch` 来实现这种类型的通信. 其基本用法为:
 
-1. Create a counter, and set an initial value, `CountdownLatch countDownLatch = new CountDownLatch(3;`
+1. Create a counter, and set an initial value, `CountdownLatch countDownLatch = new CountDownLatch(3);`
 2. Call the `countDownLatch.await()` method in the waiting thread and go into the wait state until the count value becomes 0;
 3. Call the `countDownLatch.countDown()` method in other threads, and the method will reduce the count value by one;
 4. When the `countDown()` method in other threads turns the count value to 0, the `countDownLatch.await()` method in the waiting thread will exit immediately and continue to execute the following code.
@@ -456,7 +456,7 @@ A 线程执行完毕, 调用 countDownLatch.countDown()
 
 In fact, `CountDownLatch` itself is a countdown counter, and we set the initial count value to 3. When D runs, it first call the `countDownLatch.await()` method to check whether the counter value is 0, and it will stay in wait state if the value is not 0. A, B, and C each will use the `countDownLatch.countDown()`method to decrement the countdown counter by 1 after they finish running separately. And when all of them three finish running, the counter will be reduced to 0; then, the `await()` method of D will be triggered to end A, B, and C, and D will start to go on executing.
 
-事实上, `CountDownLatch` 本身是一个倒数计数器, 我们将初始值设置为3. 当D运行时, 首先调用 `countDownLatch.await()` 方法检查 counter 值是否为0, 如果counter值不是则会等待. A、B和C线程在自身运行完成后, 通过 `countDownLatch.countDown()` 方法将 counter 值减1. 当3个线程都执行完, A, B, C将 counter 值将会减小到0; 然后,D线程中的 `await()` 方法就会返回, D线程将继续执行. 
+事实上, `CountDownLatch` 本身是一个倒数计数器, 我们将初始值设置为3. 当D运行时, 首先调用 `countDownLatch.await()` 方法检查 counter 值是否为0, 如果counter值不是则会等待. A、B和C线程在自身运行完成后, 通过 `countDownLatch.countDown()` 方法将 counter 值减1. 当3个线程都执行完, counter 值将会减小到0; 然后, D线程中的 `await()` 方法就会返回, D线程将继续执行.
 
 Therefore, `CountDownLatch` is suitable for the situation where one thread needs to wait for multiple threads.
 
@@ -468,7 +468,7 @@ Therefore, `CountDownLatch` is suitable for the situation where one thread needs
 
 Three runners prepare themselves apart, and then they start to run at the same time after each of them is ready.
 
-假设3个运动员都确定做好预备, 然后同时起跑. 
+假设3个运动员各自做好预备, 然后同时起跑.
 
 This time, each of the three threads A, B, and C need to prepare separately, and then they start to run simultaneously after all of them three are ready. How should we achieve that?
 
@@ -476,7 +476,7 @@ This time, each of the three threads A, B, and C need to prepare separately, and
 
 The `CountDownLatch` above can be used to count down, but when the count is completed, only one of the threads' `await()` method will get a response, so multiple threads cannot be triggered at the same time.
 
-前面介绍的`CountDownLatch`可以用来计数, 但计数完成后, 只会有一个线程的 `await()` 方法得到响应, 所以不太适合多个线程同时等待的情况. 
+前面介绍的 `CountDownLatch` 可以用来计数, 但计数完成后, 只会有一个线程的 `await()` 方法得到响应, 所以不太适合多个线程同时等待的情况.
 
 In order to achieve the effect of threads' waiting for each other, we can use the `CyclicBarrier` data structure, and its basic usage is:
 
@@ -574,7 +574,7 @@ public interface Runnable {
 
 You can see that `run()` method does not return any results after execution. Then what if you want to return the results? Here you can use another similar interface class `Callable`:
 
-`run()` 方法不返回任何结果. 那么如果想要获取返回结果时怎么办呢?  我们可以使用一个类似的接口: `Callable`:
+`run()` 方法不返回任何结果. 那么如果想要获取返回结果时怎么办呢?  我们可以使用一个类似的接口 `Callable`:
 
 ```java
 @FunctionalInterface
@@ -601,7 +601,7 @@ So the next question is, how to pass the results of the child thread back? Java 
 
 For example, we want the child thread to calculate the sum from 1 to 100 and return the result to the main thread.
 
-例如, 开新线程来计算金额(从1到100), 并将结果返回给主线程. 
+例如, 开新线程来计算总和(从1到100), 并将结果返回给主线程.
 
 ```java
 private static void doTaskWithResultInWorker() {
