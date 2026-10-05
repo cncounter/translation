@@ -1,35 +1,35 @@
-# When Runtime.exec() won't
+# 当 Runtime.exec() 失灵时
 
-### Navigate yourself around pitfalls related to the Runtime.exec() method
+### 引导自己避开与 Runtime.exec() 方法相关的陷阱
 
-As part of the Java language, the `java.lang` package is implicitly imported into every Java program. This package's pitfalls surface often, affecting most programmers. This month, I'll discuss the traps lurking in the `Runtime.exec()`method.
+作为 Java 语言的一部分，`java.lang` 包被隐式导入到每个 Java 程序中。这个包中的陷阱经常出现，影响着大多数程序员。本月，我将讨论潜伏在 `Runtime.exec()` 方法中的陷阱。
 
-## Pitfall 4: When Runtime.exec() won't
+## 陷阱 4：当 Runtime.exec() 失灵时
 
-The class `java.lang.Runtime` features a static method called `getRuntime()`, which retrieves the current Java Runtime Environment. That is the only way to obtain a reference to the `Runtime` object. With that reference, you can run external programs by invoking the `Runtime` class's `exec()` method. Developers often call this method to launch a browser for displaying a help page in HTML.
+`java.lang.Runtime` 类提供了一个名为 `getRuntime()` 的静态方法，用于获取当前的 Java 运行时环境。这是获得 `Runtime` 对象引用的唯一途径。借助该引用，你可以调用 `Runtime` 类的 `exec()` 方法来运行外部程序。开发者经常调用这个方法来启动浏览器，以显示 HTML 格式的帮助页面。
 
-There are four overloaded versions of the `exec()` command:
+`exec()` 命令有四个重载版本：
 
 - `public Process exec(String command);`
 - `public Process exec(String [] cmdArray);`
 - `public Process exec(String command, String [] envp);`
 - `public Process exec(String [] cmdArray, String [] envp);`
 
-For each of these methods, a command -- and possibly a set of arguments -- is passed to an operating-system-specific function call. This subsequently creates an operating-system-specific process (a running program) with a reference to a `Process` class returned to the Java VM. The `Process` class is an abstract class, because a specific subclass of `Process` exists for each operating system.
+对于这些方法中的每一个，命令（以及可能的参数集）都会被传递给一个特定于操作系统的函数调用。随后这会创建一个特定于操作系统的进程（一个正在运行的程序），并向 Java 虚拟机返回一个 `Process` 类的引用。`Process` 类是一个抽象类，因为针对每种操作系统都存在一个特定的 `Process` 子类。
 
-You can pass three possible input parameters into these methods:
+你可以向这些方法传入三种可能的输入参数：
 
-1. A single string that represents both the program to execute and any arguments to that program
-2. An array of strings that separate the program from its arguments
-3. An array of environment variables
+1. 一个字符串，同时表示要执行的程序和该程序的所有参数
+2. 一个字符串数组，将程序与其参数分开
+3. 一个环境变量数组
 
-Pass in the environment variables in the form `name=value`. If you use the version of `exec()` with a single string for both the program and its arguments, note that the string is parsed using white space as the delimiter via the `StringTokenizer`class.
+以 `name=value` 的形式传入环境变量。如果你使用以单个字符串同时表示程序和参数的 `exec()` 版本，请注意，该字符串会由 `StringTokenizer` 类以空白字符作为分隔符进行解析。
 
-#### Stumbling into an IllegalThreadStateException
+#### 陷入 IllegalThreadStateException
 
-The first pitfall relating to `Runtime.exec()` is the `IllegalThreadStateException`. The prevalent first test of an API is to code its most obvious methods. For example, to execute a process that is external to the Java VM, we use the `exec()`method. To see the value that the external process returns, we use the `exitValue()` method on the `Process` class. In our first example, we will attempt to execute the Java compiler (`javac.exe`):
+与 `Runtime.exec()` 相关的第一个陷阱是 `IllegalThreadStateException`。对 API 最常见的首次测试，就是编写其最显而易见的方法。例如，要执行一个 Java 虚拟机外部的进程，我们使用 `exec()` 方法。要查看外部进程返回的值，我们使用 `Process` 类上的 `exitValue()` 方法。在第一个示例中，我们将尝试执行 Java 编译器（`javac.exe`）：
 
-**Listing 4.1 BadExecJavac.java**
+**清单 4.1 BadExecJavac.java**
 
 ```
 import java.util.*;
@@ -52,7 +52,7 @@ public class BadExecJavac
 }
 ```
 
-A run of `BadExecJavac` produces:
+运行 `BadExecJavac` 会产生：
 
 ```
 E:\classes\com\javaworld\jpitfalls\article2>java BadExecJavac
@@ -61,15 +61,15 @@ java.lang.IllegalThreadStateException: process has not exited
         at BadExecJavac.main(BadExecJavac.java:13)
 ```
 
-If an external process has not yet completed, the `exitValue()` method will throw an `IllegalThreadStateException`; that's why this program failed. While the documentation states this fact, why can't this method wait until it can give a valid answer?
+如果外部进程尚未完成，`exitValue()` 方法会抛出 `IllegalThreadStateException`；这就是该程序失败的原因。虽然文档说明了这一事实，但为什么这个方法不能等到它能给出有效答案时再返回呢？
 
-A more thorough look at the methods available in the `Process` class reveals a `waitFor()` method that does precisely that. In fact, `waitFor()` also returns the exit value, which means that you would not use `exitValue()` and `waitFor()` in conjunction with each other, but rather would choose one or the other. The only possible time you would use `exitValue()` instead of `waitFor()` would be when you don't want your program to block waiting on an external process that may never complete. Instead of using the `waitFor()` method, I would prefer passing a boolean parameter called `waitFor` into the `exitValue()` method to determine whether or not the current thread should wait. A boolean would be more beneficial because `exitValue()` is a more appropriate name for this method, and it isn't necessary for two methods to perform the same function under different conditions. Such simple condition discrimination is the domain of an input parameter.
+更仔细地查看 `Process` 类中可用的方法，会发现有一个 `waitFor()` 方法，它的作用正是如此。事实上，`waitFor()` 也会返回退出值，这意味着你不会把 `exitValue()` 和 `waitFor()` 结合使用，而是二选一。唯一可能用 `exitValue()` 而不是 `waitFor()` 的场景，是你不想让程序阻塞在等待一个可能永远无法完成的对外部进程上。与其使用 `waitFor()` 方法，我更倾向于向 `exitValue()` 方法传入一个名为 `waitFor` 的布尔参数，来决定当前线程是否应该等待。用布尔参数会更有益，因为 `exitValue()` 对这个方法而言是更贴切的名称，而且没必要让两个方法在不同条件下执行相同的功能。这种简单的条件区分正是输入参数该管的事。
 
-Therefore, to avoid this trap, either catch the `IllegalThreadStateException` or wait for the process to complete.
+因此，要避开这个陷阱，要么捕获 `IllegalThreadStateException`，要么等待进程完成。
 
-Now, let's fix the problem in Listing 4.1 and wait for the process to complete. In Listing 4.2, the program again attempts to execute `javac.exe` and then waits for the external process to complete:
+现在，让我们修复清单 4.1 中的问题，等待进程完成。在清单 4.2 中，程序再次尝试执行 `javac.exe`，然后等待外部进程完成：
 
-**Listing 4.2 BadExecJavac2.java**
+**清单 4.2 BadExecJavac2.java**
 
 ```
 import java.util.*;
@@ -92,21 +92,21 @@ public class BadExecJavac2
 }
 ```
 
-Unfortunately, a run of `BadExecJavac2` produces no output. The program hangs and never completes. Why does the `javac` process never complete?
+遗憾的是，运行 `BadExecJavac2` 没有任何输出。程序挂起，永远无法完成。为什么 `javac` 进程永远不结束呢？
 
-#### Why Runtime.exec() hangs
+#### 为什么 Runtime.exec() 会挂起
 
-The JDK's Javadoc documentation provides the answer to this question:
+JDK 的 Javadoc 文档给出了这个问题的答案：
 
-> Because some native platforms only provide limited buffer size for standard input and output streams, failure to promptly write the input stream or read the output stream of the subprocess may cause the subprocess to block, and even deadlock.
+> 因为某些原生平台为标准输入和输出流提供的缓冲区大小有限，如果未能及时写入子进程的输入流或读取其输出流，可能会导致子进程阻塞，甚至死锁。
 
-Is this just a case of programmers not reading the documentation, as implied in the oft-quoted advice: read the fine manual (RTFM)? The answer is partially yes. In this case, reading the Javadoc would get you halfway there; it explains that you need to handle the streams to your external process, but it does not tell you how.
+这是否只是那句常被引用的忠告——"读读那本该死的手册(RTFM)"——所暗示的程序员不读文档？答案是部分正确。在这种情况下，读 Javadoc 只能让你走到一半；它解释了需要处理与外部进程之间的流，却没有告诉你该怎么做。
 
-Another variable is at play here, as is evident by the large number of programmer questions and misconceptions concerning this API in the newsgroups: though `Runtime.exec()` and the Process APIs seem extremely simple, that simplicity is deceiving because the simple, or obvious, use of the API is prone to error. The lesson here for the API designer is to reserve simple APIs for simple operations. Operations prone to complexities and platform-specific dependencies should reflect the domain accurately. It is possible for an abstraction to be carried too far. The `JConfig` library provides an example of a more complete API to handle file and process operations (see [Resources](http://www.javaworld.com/article/2071275/core-java/when-runtime-exec---won-t.html#resources) below for more information).
+这里还有另一个因素在起作用，从新闻组中大量关于这个 API 的编程问题和误解就可以看出：尽管 `Runtime.exec()` 和 Process API 看似极其简单，但这种简单是骗人的，因为对 API 简单（或显而易见）的用法很容易出错。这里给 API 设计者的教训是：把简单的 API 留给简单的操作。容易涉及复杂性、且依赖特定平台的操作，应准确地反映其领域。抽象是有可能被推得过远的。`JConfig` 库就提供了一个更完整的 API 示例，用来处理文件和进程操作（更多信息请参阅下面的[资源](http://www.javaworld.com/article/2071275/core-java/when-runtime-exec---won-t.html#resources)）。
 
-Now, let's follow the JDK documentation and handle the output of the `javac`process. When you run `javac` without any arguments, it produces a set of usage statements that describe how to run the program and the meaning of all the available program options. Knowing that this is going to the `stderr` stream, you can easily write a program to exhaust that stream before waiting for the process to exit. Listing 4.3 completes that task. While this approach will work, it is not a good general solution. Thus, Listing 4.3's program is named `MediocreExecJavac`; it provides only a mediocre solution. A better solution would empty both the standard error stream and the standard output stream. And the best solution would empty these streams simultaneously (I'll demonstrate that later).
+现在，让我们遵循 JDK 文档，处理 `javac` 进程的输出。当你不带任何参数运行 `javac` 时，它会输出一组用法说明，描述如何运行该程序以及所有可用程序选项的含义。既然知道这些内容会输出到 `stderr` 流，你就可以轻松地编写一个程序，在等待进程退出之前先排空该流。清单 4.3 完成了这项任务。虽然这种做法可行，但它不是一个好的通用解决方案。因此，清单 4.3 的程序被命名为 `MediocreExecJavac`——它只提供了一个平庸的解决方案。更好的方案会同时排空标准错误流和标准输出流。而最佳的方案会同时排空这两个流（稍后我会演示）。
 
-**Listing 4.3 MediocreExecJavac.java**
+**清单 4.3 MediocreExecJavac.java**
 
 ```
 import java.util.*;
@@ -137,7 +137,7 @@ public class MediocreExecJavac
 }
 ```
 
-A run of `MediocreExecJavac` generates:
+运行 `MediocreExecJavac` 会生成：
 
 ```
 E:\classes\com\javaworld\jpitfalls\article2>java MediocreExecJavac
@@ -162,15 +162,15 @@ where <options> includes:
 Process exitValue: 2
 ```
 
-So, `MediocreExecJavac` works and produces an exit value of `2`. Normally, an exit value of `0` indicates success; any nonzero value indicates an error. The meaning of these exit values depends on the particular operating system. A Win32 error with a value of `2` is a "file not found" error. That makes sense, since `javac`expects us to follow the program with the source code file to compile.
+于是，`MediocreExecJavac` 能工作了，并产生退出值 `2`。通常，退出值 `0` 表示成功；任何非零值都表示出错。这些退出值的含义取决于具体的操作系统。值为 `2` 的 Win32 错误是"文件未找到(file not found)"错误。这是合理的，因为 `javac` 期望我们在程序后面跟上要编译的源代码文件。
 
-Thus, to circumvent the second pitfall -- hanging forever in `Runtime.exec()` -- if the program you launch produces output or expects input, ensure that you process the input and output streams.
+因此，要规避第二个陷阱——在 `Runtime.exec()` 中永远挂起——如果你启动的程序会产生输出或期望输入，请确保处理其输入流和输出流。
 
-#### Assuming a command is an executable program
+#### 假设命令就是一个可执行程序
 
-Under the Windows operating system, many new programmers stumble upon `Runtime.exec()` when trying to use it for nonexecutable commands like `dir` and `copy`. Subsequently, they run into `Runtime.exec()`'s third pitfall. Listing 4.4 demonstrates exactly that:
+在 Windows 操作系统下，许多新手程序员在尝试用 `Runtime.exec()` 执行 `dir`、`copy` 这类非可执行命令时会踩坑。随后，他们就会遇到 `Runtime.exec()` 的第三个陷阱。清单 4.4 恰好演示了这一点：
 
-**Listing 4.4 BadExecWinDir.java**
+**清单 4.4 BadExecWinDir.java**
 
 ```
 import java.util.*;
@@ -201,7 +201,7 @@ public class BadExecWinDir
 }
 ```
 
-A run of `BadExecWinDir` produces:
+运行 `BadExecWinDir` 会产生：
 
 ```
 E:\classes\com\javaworld\jpitfalls\article2>java BadExecWinDir
@@ -216,9 +216,9 @@ java.io.IOException: CreateProcess: dir error=2
         at BadExecWinDir.main(BadExecWinDir.java:12)
 ```
 
-As stated earlier, the error value of `2` means "file not found," which, in this case, means that the executable named `dir.exe` could not be found. That's because the directory command is part of the Windows command interpreter and not a separate executable. To run the Windows command interpreter, execute either `command.com` or `cmd.exe`, depending on the Windows operating system you use. Listing 4.5 runs a copy of the Windows command interpreter and then executes the user-supplied command (e.g., `dir`).
+如前所述，错误值 `2` 表示"文件未找到"，在这里意味着找不到名为 `dir.exe` 的可执行文件。这是因为 dir 命令是 Windows 命令解释器的一部分，而不是一个单独的可执行文件。要运行 Windows 命令解释器，可执行 `command.com` 或 `cmd.exe`，具体取决于你所使用的 Windows 操作系统。清单 4.5 运行一个 Windows 命令解释器副本，然后执行用户提供的命令（例如 `dir`）。
 
-**Listing 4.5 GoodWindowsExec.java**
+**清单 4.5 GoodWindowsExec.java**
 
 ```
 import java.util.*;
@@ -303,7 +303,7 @@ public class GoodWindowsExec
 }
 ```
 
-Running `GoodWindowsExec` with the `dir` command generates:
+用 `dir` 命令运行 `GoodWindowsExec` 会生成：
 
 ```
 E:\classes\com\javaworld\jpitfalls\article2>java GoodWindowsExec "dir *.java"
@@ -330,23 +330,23 @@ OUTPUT>                         19,678,420,992 bytes free
 ExitValue: 0
 ```
 
-Running `GoodWindowsExec` with any associated document type will launch the application associated with that document type. For example, to launch Microsoft Word to display a Word document (i.e., one with a `.doc` extension), type:
+用任何已关联的文档类型运行 `GoodWindowsExec`，都会启动与该文档类型关联的应用程序。例如，要启动 Microsoft Word 显示一个 Word 文档（即扩展名为 `.doc` 的文件），请输入：
 
 ```
 >java GoodWindowsExec "yourdoc.doc"
 ```
 
-Notice that `GoodWindowsExec` uses the `os.name` system property to determine which Windows operating system you are running -- and thus determine the appropriate command interpreter. After executing the command interpreter, handle the standard error and standard input streams with the `StreamGobbler`class. `StreamGobbler` empties any stream passed into it in a separate thread. The class uses a simple `String` type to denote the stream it empties when it prints the line just read to the console.
+请注意，`GoodWindowsExec` 使用 `os.name` 系统属性来判断你正在运行哪个 Windows 操作系统——从而确定合适的命令解释器。执行命令解释器之后，用 `StreamGobbler` 类处理标准错误流和标准输入流。`StreamGobbler` 会在一个单独的线程中排空传入它的任何流。当它把刚读到的行打印到控制台时，该类用一个简单的 `String` 类型来标注它所排空的是哪个流。
 
-Thus, to avoid the third pitfall related to `Runtime.exec()`, do not assume that a command is an executable program; know whether you are executing a standalone executable or an interpreted command. At the end of this section, I will demonstrate a simple command-line tool that will help you with that analysis.
+因此，要避开与 `Runtime.exec()` 相关的第三个陷阱，不要想当然地认为一个命令就是可执行程序；要弄清楚你执行的是独立的可执行文件，还是由解释器执行的命令。在本节末尾，我会演示一个简单的命令行工具，帮助你进行这种分析。
 
-It is important to note that the method used to obtain a process's output stream is called `getInputStream()`. The thing to remember is that the API sees things from the perspective of the Java program and not the external process. Therefore, the external program's output is the Java program's input. And that logic carries over to the external program's input stream, which is an output stream to the Java program.
+需要注意的一点是，用于获取进程输出流的方法叫做 `getInputStream()`。要记住的是，这个 API 是从 Java 程序的角度、而不是从外部进程的角度来看待事物的。因此，外部程序的输出就是 Java 程序的输入。同样的逻辑也适用于外部程序的输入流——它对 Java 程序来说是一个输出流。
 
-#### Runtime.exec() is not a command line
+#### Runtime.exec() 不是命令行
 
-One final pitfall to cover with `Runtime.exec()` is mistakenly assuming that `exec()`accepts any `String` that your command line (or shell) accepts. `Runtime.exec()` is much more limited and not cross-platform. This pitfall is caused by users attempting to use the `exec()` method to accept a single `String` as a command line would. The confusion may be due to the fact that `command` is the parameter name for the `exec()` method. Thus, the programmer incorrectly associates the parameter command with anything that he or she can type on a command line, instead of associating it with a single program and its arguments. In listing 4.6 below, a user tries to execute a command and redirect its output in one call to `exec()`:
+关于 `Runtime.exec()` 的最后一个陷阱，是错误地以为 `exec()` 能接受你的命令行（或 shell）所能接受的任何 `String`。`Runtime.exec()` 的局限要大得多，而且不跨平台。这个陷阱源于用户试图像命令行那样，用 `exec()` 方法接受单个 `String`。这种混淆可能是因为 `command` 正是 `exec()` 方法的参数名。于是，程序员错误地把 command 这个参数与自己在命令行上能输入的任何东西联系起来，而不是把它与单个程序及其参数联系起来。在下面的清单 4.6 中，用户试图在一次 `exec()` 调用中执行命令并重定向其输出：
 
-**Listing 4.6 BadWinRedirect.java**
+**清单 4.6 BadWinRedirect.java**
 
 ```
 import java.util.*;
@@ -383,7 +383,7 @@ public class BadWinRedirect
 }
 ```
 
-Running `BadWinRedirect` produces:
+运行 `BadWinRedirect` 会产生：
 
 ```
 E:\classes\com\javaworld\jpitfalls\article2>java BadWinRedirect
@@ -391,9 +391,9 @@ OUTPUT>'Hello World' > test.txt
 ExitValue: 0
 ```
 
-The program `BadWinRedirect` attempted to redirect the output of an echo program's simple Java version into the file `test.txt`. However, we find that the file `test.txt` does not exist. The `jecho` program simply takes its command-line arguments and writes them to the standard output stream. (You will find the source for `jecho` in the source code available for download in [Resources](http://www.javaworld.com/article/2071275/core-java/when-runtime-exec---won-t.html?page=2#resources).) In Listing 4.6, the user assumed that you could redirect standard output into a file just as you could on a DOS command line. Nevertheless, you do not redirect the output through this approach. The incorrect assumption here is that the `exec()`method acts like a shell interpreter; it does not. Instead, `exec()` executes a single executable (a program or script). If you want to process the stream to either redirect it or pipe it into another program, you must do so programmatically, using the `java.io` package. Listing 4.7 properly redirects the standard output stream of the `jecho` process into a file.
+`BadWinRedirect` 程序试图把 echo 程序的一个简单 Java 版本（即 `jecho`）的输出重定向到文件 `test.txt` 中。然而，我们发现文件 `test.txt` 并不存在。`jecho` 程序只是接收它的命令行参数并把它们写入标准输出流。（你可以在[资源](http://www.javaworld.com/article/2071275/core-java/when-runtime-exec---won-t.html?page=2#resources)中提供的可下载源代码里找到 `jecho` 的源码。）在清单 4.6 中，用户以为可以像在 DOS 命令行上那样把标准输出重定向到一个文件。然而，通过这种做法并不能实现重定向。这里错误的假设是：`exec()` 方法像 shell 解释器一样工作；但它并非如此。`exec()` 执行的是单个可执行文件（一个程序或脚本）。如果你想处理流，把它重定向或通过管道传给另一个程序，你必须用 `java.io` 包以编程方式来做。清单 4.7 正确地把 `jecho` 进程的标准输出流重定向到一个文件中。
 
-**Listing 4.7 GoodWinRedirect.java**
+**清单 4.7 GoodWinRedirect.java**
 
 ```
 import java.util.*;
@@ -480,7 +480,7 @@ public class GoodWinRedirect
 }
 ```
 
-Running `GoodWinRedirect` produces:
+运行 `GoodWinRedirect` 会产生：
 
 ```
 E:\classes\com\javaworld\jpitfalls\article2>java GoodWinRedirect test.txt
@@ -488,13 +488,13 @@ OUTPUT>'Hello World'
 ExitValue: 0
 ```
 
-After running `GoodWinRedirect`, `test.txt` does exist. The solution to the pitfall was to simply control the redirection by handling the external process's standard output stream separately from the `Runtime.exec()` method. We create a separate `OutputStream`, read in the filename to which we redirect the output, open the file, and write the output that we receive from the spawned process's standard output to the file. Listing 4.7 completes that task by adding a new constructor to our `StreamGobbler` class. The new constructor takes three arguments: the input stream to gobble, the type `String` that labels the stream we are gobbling, and the output stream to which we redirect the input. This new version of `StreamGobbler` does not break any of the code in which it was previously used, as we have not changed the existing public API -- we only extended it.
+运行 `GoodWinRedirect` 之后，`test.txt` 确实存在了。这个陷阱的解决办法，就是通过把外部进程的标准输出流与 `Runtime.exec()` 方法分开处理来控制重定向。我们创建一个单独的 `OutputStream`，读入要重定向到的文件名，打开该文件，然后把我从衍生的子进程标准输出接收到的输出写入文件。清单 4.7 通过给 `StreamGobbler` 类添加一个新构造函数来完成任务。新构造函数接受三个参数：要排空的输入流、标注我们正在排空的流的类型 `String`，以及我们把输入重定向到的输出流。这个新版本的 `StreamGobbler` 不会破坏任何此前使用它的代码，因为我们没有改动现有的公共 API——只是扩展了它。
 
-Since the argument to `Runtime.exec()` is dependent on the operating system, the proper commands to use will vary from one OS to another. So, before finalizing arguments to `Runtime.exec()` and writing the code, quickly test the arguments. Listing 4.8 is a simple command-line utility that allows you to do just that.
+由于 `Runtime.exec()` 的参数依操作系统而定，应使用的正确命令会因操作系统而异。因此，在最终确定 `Runtime.exec()` 的参数并编写代码之前，请先快速测试这些参数。清单 4.8 是一个简单的命令行实用工具，可以让你做到这一点。
 
-Here's a useful exercise: try to modify `TestExec` to redirect the standard input or standard output to a file. When executing the `javac` compiler on Windows 95 or Windows 98, that would solve the problem of error messages scrolling off the top of the limited command-line buffer.
+这里有一个有用的练习：试着修改 `TestExec`，把标准输入或标准输出重定向到一个文件。在 Windows 95 或 Windows 98 上执行 `javac` 编译器时，这能解决错误消息从有限的命令行缓冲区顶部滚掉的问题。
 
-**Listing 4.8 TestExec.java**
+**清单 4.8 TestExec.java**
 
 ```
 import java.util.*;
@@ -539,7 +539,7 @@ public class TestExec
 }
 ```
 
-Running `TestExec` to launch the Netscape browser and load the Java help documentation produces:
+运行 `TestExec` 启动 Netscape 浏览器并加载 Java 帮助文档，会产生：
 
 ```
 E:\classes\com\javaworld\jpitfalls\article2>java TestExec "e:\java\docs\index.html"
@@ -554,9 +554,9 @@ java.io.IOException: CreateProcess: e:\java\docs\index.html error=193
         at TestExec.main(TestExec.java:45)
 ```
 
-Our first test failed with an error of `193`. The Win32 error for value 193 is "not a valid Win32 application." This error tells us that no path to an associated application (e.g., Netscape) exists, and that the process cannot run an HTML file without an associated application.
+我们的第一次测试失败了，错误码为 `193`。值 193 对应的 Win32 错误是"不是有效的 Win32 应用程序(not a valid Win32 application)"。这个错误告诉我们，不存在指向关联应用程序（例如 Netscape）的路径，并且进程无法在没有关联应用程序的情况下运行 HTML 文件。
 
-Therefore, we try the test again, this time giving it a full path to Netscape. (Alternately, we could add Netscape to our `PATH` environment variable.) A second run of `TestExec` produces:
+因此，我们再次尝试该测试，这次给它一个指向 Netscape 的完整路径。（或者，我们也可以把 Netscape 加入 `PATH` 环境变量。）第二次运行 `TestExec` 会产生：
 
 ```
 E:\classes\com\javaworld\jpitfalls\article2>java TestExec 
@@ -564,28 +564,28 @@ E:\classes\com\javaworld\jpitfalls\article2>java TestExec
 ExitValue: 0
 ```
 
-This worked! The Netscape browser launches, and it then loads the Java help documentation.
+成功了！Netscape 浏览器启动了，随后加载了 Java 帮助文档。
 
-One additional improvement to `TestExec` would include a command-line switch to accept input from standard input. You would then use the `Process.getOutputStream()` method to pass the input to the spawned external program.
+对 `TestExec` 的另一项改进是加入一个命令行开关，用于从标准输入接收输入。然后你就可以用 `Process.getOutputStream()` 方法把输入传递给衍生的外部程序。
 
-To sum up, follow these rules of thumb to avoid the pitfalls in `Runtime.exec()`:
+总而言之，遵循以下经验法则来避开 `Runtime.exec()` 中的陷阱：
 
-1. You cannot obtain an exit status from an external process until it has exited
-2. You must immediately handle the input, output, and error streams from your spawned external process
-3. You must use `Runtime.exec()` to execute programs
-4. You cannot use `Runtime.exec()` like a command line
+1. 在外部进程退出之前，你无法获得它的退出状态
+2. 你必须立即处理衍生的外部进程的输入流、输出流和错误流
+3. 你必须用 `Runtime.exec()` 来执行程序
+4. 你不能像命令行那样使用 `Runtime.exec()`
 
-## Correction to Pitfall 3
+## 对陷阱 3 的更正
 
-In the discussion of Pitfall 3 ("Don't mix floats and doubles when generating text or XML messages") in my last column, I incorrectly stated that the different string representation of a decimal number after casting it from a float to a double was a bug. While this is a pitfall, its cause is not a bug, but the fact that the decimal numbers in question -- 100.28 and 91.09 -- do not represent precisely in binary. I'd like to thank Thomas Okken and the others who straightened me out. If you enjoy discussing the finer points of numerical methods, you can [email Thomas](mailto:TOkken@refco.com).
+在上一期专栏对陷阱 3（"生成文本或 XML 消息时不要混用 float 和 double"）的讨论中，我错误地断言：把一个十进制数从 float 转型为 double 后，其字符串表示不同，这是一个 bug。虽然这确实是一个陷阱，但它的原因并不是 bug，而是所涉及的那些十进制数——100.28 和 91.09——无法在二进制中精确表示。我要感谢 Thomas Okken 以及其他帮我纠正的人。如果你喜欢讨论数值方法的细节，可以[给 Thomas 发邮件](mailto:TOkken@refco.com)。
 
 
 
-The combination of forgetting my numerical methods class, the numerous bug reports on the bug parade, and the automatic rounding of floats and doubles when printing (but not after casting a float to a double) threw me. I apologize for confusing anyone who read the article, especially to new Java programmers. I present two better solutions to the problem:
+我把数值方法课上所学忘得一干二净，再加上 bug parade 上大量的 bug 报告，以及浮点数和双精度数在打印时的自动舍入（但在把 float 转型为 double 之后并不会舍入），这些都把我搞糊涂了。我为给读过那篇文章的人——尤其是 Java 新手——造成的困惑道歉。我给出这个问题的两个更好的解决方案：
 
-The first possible solution is to always specify the desired rounding explicitly with `NumberFormat`. In my case, I use the float and double to represent dollars and cents; therefore, I need only two significant digits. Listing C3.1 demonstrates how to use the `NumberFormat` class to specify a maximum of two fraction digits.
+第一个可能的解决方案是始终用 `NumberFormat` 显式指定所需的舍入方式。在我的场景中，我用 float 和 double 来表示美元和美分；因此我只需要两位有效数字。清单 C3.1 演示了如何用 `NumberFormat` 类指定最多两位小数。
 
-**Listing C3.1 FormatNumbers.java**
+**清单 C3.1 FormatNumbers.java**
 
 ```
 import java.text.*;
@@ -610,7 +610,7 @@ public class FormatNumbers
 }
 ```
 
-When we run the `FormatNumbers` program, it produces:
+运行 `FormatNumbers` 程序时，它会产生：
 
 ```
 E:\classes\com\javaworld\jpitfalls\article2>java FormatNumbers
@@ -619,20 +619,20 @@ Cast to a double  : 100.27999877929688
 Using NumberFormat: 100.28
 ```
 
-As you can see -- regardless of whether we cast the float to a double -- when we specify the number of digits we want, it properly rounds to that precision -- even if the number is infinitely repeating in binary. To circumvent this pitfall, control the formatting of your doubles and floats when converting to a `String`.
+如你所见——无论我们是否把 float 转型为 double——当我们指定所需的位数时，它都能正确地舍入到该精度——即使这个数在二进制中是无限循环的。要规避这个陷阱，请在把 double 和 float 转换为 `String` 时控制其格式化。
 
-A second, simpler solution would be to not use a float to represent cents. Integers (number of pennies) can represent cents, with a legal range of 0 to 99. You can check the range in the mutator method.
+第二个更简单的解决方案是不用 float 来表示美分。整数（便士的数量）可以表示美分，合法范围是 0 到 99。你可以在修改器(mutator)方法中检查范围。
 
-## Next time
+## 下一次
 
-In my next column, I'll present another pitfall from `java.lang`, as well as two traps hiding in the `java.net` and the `Swing` packages. If you know of any Java pitfalls that have wasted your time and caused you frustration, please [email them to me](http://www.javaworld.com/javaworld/feedback/jw-feedback-form.html) so we can save others the same fate.
+在下一期专栏中，我将介绍另一个来自 `java.lang` 的陷阱，以及隐藏在 `java.net` 和 `Swing` 包中的两个陷阱。如果你知道任何浪费过你的时间、让你沮丧的 Java 陷阱，请[把它们发邮件给我](http://www.javaworld.com/javaworld/feedback/jw-feedback-form.html)，这样我们就能让别人免于同样的遭遇。
 
-Michael C. Daconta is the director of Web and technology services for McDonald Bradley, where he conducts training seminars and develops advanced systems with Java, JavaScript, and XML. Over the past 15 years, Daconta has held every major development position, including chief scientist, technical director, chief developer, team leader, systems analyst, and programmer. He is a Sun-certified Java programmer and coauthor of Java Pitfalls (John Wiley & Sons, 2000), Java 2 and JavaScript for C and C++ Programmers (John Wiley & Sons, 1999), and XML Development with Java 2 (Sams Publishing, 2000). In addition, he is the author of C++ Pointers and Dynamic Memory Management (John Wiley & Sons, 1995).
+Michael C. Daconta 是 McDonald Bradley 公司的 Web 与技术服务总监，在那里他主持培训研讨会，并用 Java、JavaScript 和 XML 开发高级系统。在过去 15 年里，Daconta 担任过几乎所有主要的开发职位，包括首席科学家、技术总监、首席开发、团队负责人、系统分析师和程序员。他是 Sun 认证的 Java 程序员，也是《Java Pitfalls》（John Wiley & Sons，2000）、《Java 2 and JavaScript for C and C++ Programmers》（John Wiley & Sons，1999）和《XML Development with Java 2》（Sams Publishing，2000）的合著者。此外，他还是《C++ Pointers and Dynamic Memory Management》（John Wiley & Sons，1995）的作者。
 
-[Learn more about this topic]()[Download the source code for all the examples in this article]()[http://www.javaworld.com/jw-12-2000/traps/jw-1229-traps.zip](http://www.javaworld.com/jw-12-2000/traps/jw-1229-traps.zip)*Java Pitfalls, Time Saving Solutions, and Workarounds to Improve Programs*, Michael C. Daconta, Eric Monk, J. Paul Keller, Keith Bohnenberger (John Wiley & Sons, 2000)
-[http://www.amazon.com/exec/obidos/ASIN/0471361747/javaworld](http://www.amazon.com/exec/obidos/ASIN/0471361747/javaworld)Review the `JConfig` library or download it for evaluation
-[http://tolstoy.com/samizdat/jconfig.html](http://tolstoy.com/samizdat/jconfig.html)Read Michael Daconta's previous **Java Traps** column, "Steer Clear of Java Pitfalls" (*JavaWorld,*September 22, 2000)
-[http://www.javaworld.com/javaworld/jw-09-2000/jw-0922-pitfalls.html](http://www.javaworld.com/javaworld/jw-09-2000/jw-0922-pitfalls.html)Browse *JavaWorld*'s **Topical Index**
+[了解更多相关内容]()[下载本文所有示例的源代码]()[http://www.javaworld.com/jw-12-2000/traps/jw-1229-traps.zip](http://www.javaworld.com/jw-12-2000/traps/jw-1229-traps.zip)*Java Pitfalls, Time Saving Solutions, and Workarounds to Improve Programs*, Michael C. Daconta, Eric Monk, J. Paul Keller, Keith Bohnenberger (John Wiley & Sons, 2000)
+[http://www.amazon.com/exec/obidos/ASIN/0471361747/javaworld](http://www.amazon.com/exec/obidos/ASIN/0471361747/javaworld)查看 `JConfig` 库，或下载以进行评估
+[http://tolstoy.com/samizdat/jconfig.html](http://tolstoy.com/samizdat/jconfig.html)阅读 Michael Daconta 之前的 **Java Traps** 专栏"Steer Clear of Java Pitfalls"（*JavaWorld*，2000 年 9 月 22 日）
+[http://www.javaworld.com/javaworld/jw-09-2000/jw-0922-pitfalls.html](http://www.javaworld.com/javaworld/jw-09-2000/jw-0922-pitfalls.html)浏览 *JavaWorld* 的 **Topical Index**
 [http://www.javaworld.com/javaworld/topicalindex/jw-ti-index.html](http://www.javaworld.com/javaworld/topicalindex/jw-ti-index.html)
 
 
