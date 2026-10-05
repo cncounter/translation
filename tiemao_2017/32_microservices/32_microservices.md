@@ -15,7 +15,7 @@ This is the fifth post in the [Java EE](https://is.gd/theoryee) Fundamentals ser
 
 [Microservices](https://en.wikipedia.org/wiki/Microservices) is the latest software architecture that seems to be the buzzword of the day. It has been around in[ one form](https://en.wikipedia.org/wiki/Service-oriented_architecture) or the other since the early days of software engineering.
 
-[Microservices(微服务)](https://en.wikipedia.org/wiki/Microservices) 是当今世界最火爆的软件架构。相比早期的软件工程, 微服务已经变成了一种新的 [面向服务的架构(SOA)](https://en.wikipedia.org/wiki/Service-oriented_architecture) 。
+[Microservices(微服务)](https://en.wikipedia.org/wiki/Microservices) 是当今世界最火爆的软件架构。其实从软件工程的早期开始, 它就以这样或那样的形式([面向服务的架构(SOA)](https://en.wikipedia.org/wiki/Service-oriented_architecture))存在着。
 
 Essentially microservices means breaking down applications into distinct components that all coordinate to form a whole. Now there are arguments against Java EE given it’s application server centric nature. There are those that think Java EE is heavy and geared towards the monolith style of application development.
 
@@ -38,7 +38,7 @@ Java EE has tools available that make it super easy to create a microservices or
 
 [Payara Micro](https://www.payara.fish/payara_micro) is a microservices geared version of the popular, open source, Glassfish derived Payara Server. Payara Micro is designed for running Java EE applications in a modern containerized / virtualized infrastructure, using automated provisioning tools like Chef, Ansible or Puppet. Payara Micro makes it easy to java -jar your Java EE application.
 
-[Payara Micro](https://www.payara.fish/payara_micro) 基于 Glassfish 开发, 是一款开源的 microservices 创建工具, 当前是 geared 版本. Payara Micro 专为容器/虚机环境设计, 支持各种配置管理工具, 如Chef,  Ansible 和 Puppet 等. 可以非常方便地创建 `java -jar` 方式的企业级应用。
+[Payara Micro](https://www.payara.fish/payara_micro) 是流行的开源 Glassfish 衍生版 Payara Server 的微服务版本. Payara Micro 专为在现代的容器/虚机环境中运行 Java EE 应用而设计, 支持 Chef,  Ansible 和 Puppet 等自动化配置工具. 可以让你的 Java EE 应用非常方便地以 `java -jar` 方式运行。
 
 # **JBoss Wildfly Swarm**
 
@@ -52,14 +52,14 @@ Java EE has tools available that make it super easy to create a microservices or
 
 [KumuluzEE](https://ee.kumuluz.com/) is a lightweight open-source microservice framework. It’s raison d’être is to help you develop microservices with Java EE technologies and also migrate existing Java EE applications to a microservices architecture.
 
-[KumuluzEE](https://ee.kumuluz.com/) 是一款开源的轻量级微服务框架. 其目的是通过 Java EE 技术开发微服务, 并将现有的 Java EE 应用迁移到 microservices 架构中。
+[KumuluzEE](https://ee.kumuluz.com/) 是一款开源的轻量级微服务框架. 其目的是通过 Java EE 技术开发微服务, 并将现有的 Java EE 应用迁移到微服务架构中。
 
 # **Apache Meecrowave**
 
 
 [Apache Meecrowave](http://openwebbeans.apache.org/meecrowave/index.html#) is a lightweight JAX-RS, CDI and JSON server.  Meecrowave is suitable for developing microservices using the mentioned Java EE APIs. In fact, the CDI runtime that powers Meecrowave – OpenWebBeans – recently became[ CDI 2.0 (JSR 365)](https://is.gd/ee7cdi)compatible.
 
-[Apache Meecrowave](http://openwebbeans.apache.org/meecrowave/index.html) 是一款轻量级的  JAX-RS, CDI 和 JSON 服务器. 适用于 mentioned 方式的微服务开发。事实上, CDI运行时支撑了 Meecrowave - OpenWebBeans , 现在已经支持 [CDI 2.0 (JSR 365)](https://is.gd/ee7cdi)。
+[Apache Meecrowave](http://openwebbeans.apache.org/meecrowave/index.html) 是一款轻量级的  JAX-RS, CDI 和 JSON 服务器. 适用于使用上述 Java EE API 开发微服务。事实上, 为 Meecrowave 提供支持的 CDI 运行时 OpenWebBeans, 现在已经兼容 [CDI 2.0 (JSR 365)](https://is.gd/ee7cdi)。
 
 In subsequent posts, we will be taking all these tools one after the other and examine them in detail complete with code samples.
 
