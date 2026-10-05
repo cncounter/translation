@@ -11,10 +11,10 @@ public class XRouterLocalSiteFilter implements Filter {
 }
 ```
 
-但是, `@WebFilter` 和 `@Order` 并不兼容, 在SpringBoot中,:
+但是, `@WebFilter` 和 `@Order` 并不兼容, 在SpringBoot中:
 
 - 要么使用 `@Component` 注解并进行组装。
-- 或者通过 class name 的字母顺序来确定执行顺序.
+- 或者通过 class name 的字母顺序来确定执行顺序。
 
 这也是为什么这个Filter类的名字以 `X` 打头的原因。 当然也可以使用其他字母打头。
 
