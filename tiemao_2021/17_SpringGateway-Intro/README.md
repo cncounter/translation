@@ -52,9 +52,9 @@ Spring网关, 全称叫做 Spring Cloud Gateway; 官方项目地址为: <https:/
 
 - 点击 ["GENERATE"](https://start.spring.io/#!type=maven-project&language=java&platformVersion=2.5.3.RELEASE&packaging=jar&jvmVersion=1.8&groupId=com.cncounter&artifactId=cnc-gateway&name=cnc-gateway&description=Demo%20project%20for%20Spring%20Cloud%20Gateway&packageName=com.cncounter.cnc-gateway&dependencies=cloud-gateway) 按钮, 生成项目ZIP, 并自动弹出下载框。
 - 点击 ["EXPLORE"](https://start.spring.io/#!type=maven-project&language=java&platformVersion=2.5.3.RELEASE&packaging=jar&jvmVersion=1.8&groupId=com.cncounter&artifactId=cnc-gateway&name=cnc-gateway&description=Demo%20project%20for%20Spring%20Cloud%20Gateway&packageName=com.cncounter.cnc-gateway&dependencies=cloud-gateway) 按钮, 预览项目结构, 预览符合需求之后, 也可以点击 DOWNLOAD 按钮下载。
-- 点击 ["SHARE...""](https://start.spring.io/#!type=maven-project&language=java&platformVersion=2.5.3.RELEASE&packaging=jar&jvmVersion=1.8&groupId=com.cncounter&artifactId=cnc-gateway&name=cnc-gateway&description=Demo%20project%20for%20Spring%20Cloud%20Gateway&packageName=com.cncounter.cnc-gateway&dependencies=cloud-gateway) 按钮, 把我们刚刚生成的配置信息作为链接分享给其他人。
+- 点击 ["SHARE..."](https://start.spring.io/#!type=maven-project&language=java&platformVersion=2.5.3.RELEASE&packaging=jar&jvmVersion=1.8&groupId=com.cncounter&artifactId=cnc-gateway&name=cnc-gateway&description=Demo%20project%20for%20Spring%20Cloud%20Gateway&packageName=com.cncounter.cnc-gateway&dependencies=cloud-gateway) 按钮, 把我们刚刚生成的配置信息作为链接分享给其他人。
 
-我们点击 ["GENERATE"](https://start.spring.io/#!type=maven-project&language=java&platformVersion=2.5.3.RELEASE&packaging=jar&jvmVersion=1.8&groupId=com.cncounter&artifactId=cnc-gateway&name=cnc-gateway&description=Demo%20project%20for%20Spring%20Cloud%20Gateway&packageName=com.cncounter.cnc-gateway&dependencies=cloud-gateway) 按钮, 生成项目ZIP, 并保存报本地即可。
+我们点击 ["GENERATE"](https://start.spring.io/#!type=maven-project&language=java&platformVersion=2.5.3.RELEASE&packaging=jar&jvmVersion=1.8&groupId=com.cncounter&artifactId=cnc-gateway&name=cnc-gateway&description=Demo%20project%20for%20Spring%20Cloud%20Gateway&packageName=com.cncounter.cnc-gateway&dependencies=cloud-gateway) 按钮, 生成项目ZIP, 并保存到本地即可。
 
 
 ## 2. 导入并启动项目
