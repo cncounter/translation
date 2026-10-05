@@ -36,7 +36,7 @@ public class StringHashCodeTest {
 
 执行代码, 通过断言和注释, 我们可以发现, String 类的hash冲突比较严重。 
 
-当然, 这个允许的, 一个类的 hashCode 方法, 不管哪个对象, 全部返回 `1` 都是允许的, 只是这样不太好而已。 相关信息可以参考:
+当然, 这个是允许的, 一个类的 hashCode 方法, 不管哪个对象, 全部返回 `1` 都是允许的, 只是这样不太好而已。 相关信息可以参考:
 
 > [Java中hashCode与equals方法的约定及重写原则](https://renfufei.blog.csdn.net/article/details/14163329)
 
