@@ -18,7 +18,7 @@ Gustavo Duarte 写的 [一篇详细文章](http://duartes.org/gustavo/blog/post/
 
 ### 什么是空闲任务(idle task)? ###
 
-空闲任务可能听起来有点自相矛盾。 关键是你要理解CPU既然通电,那么就必须时刻不停地在运转, 即使他什么正事也不干。 在哲学上对应的词汇就是所谓的“**忙等待**”(busy waiting),本质是让 CPU 不停地去计算某个条件,看看是否为 true.
+空闲任务可能听起来有点自相矛盾。 关键是你要理解CPU既然通电,那么就必须时刻不停地在运转, 即使它什么正事也不干。 在哲学上对应的词汇就是所谓的“**忙等待**”(busy waiting),本质是让 CPU 不停地去计算某个条件,看看是否为 true.
 
 ![](03_CPU-Idle.png)
 
@@ -33,9 +33,9 @@ HLT(暂停)指令其实有很长的历史 —— 在 [第一颗8086处理器](ht
 
 ![](04_intel-8086-cpu.jpg)
 
-一颗 Intel 8086 CPU, 1978年。确实, 当时CPU是很简单的玩意儿 —— 大约只有2万个晶体管.
+一颗 Intel 8086 CPU, 1978年。确实, 当时CPU是很简单的玩意儿 —— 大约只有2万个晶体管。
 
-这确实是一个可以调节时钟周期的地方, 加上要支持没有基于晶体定时器的系统,使微软措手不及。 在Windows8中,软件通过混合操作系统时间记录的方式来调整前端总线速度,就会导致[错误的基准测试结果](http://www.extremetech.com/computing/164209-windows-8-banned-by-worlds-top-benchmarking-and-overclocking-site) 。 这种行为在[[Windows 10](http://www.extremetech.com/computing/193469-windows-10-is-great-but-it-wont-stop-the-pc-from-dying-and-taking-microsoft-with-it)]中一直保持, 尽管它只是一个小众的问题 —— 在操作系统产生错误的结果你必须调整系统前端总线的时钟.
+这确实是一个可以调节时钟周期的地方, 加上要支持没有基于晶体定时器的系统,使微软措手不及。 在Windows8中,软件通过混合操作系统时间记录的方式来调整前端总线速度,就会导致[错误的基准测试结果](http://www.extremetech.com/computing/164209-windows-8-banned-by-worlds-top-benchmarking-and-overclocking-site) 。 这种行为在[Windows 10](http://www.extremetech.com/computing/193469-windows-10-is-great-but-it-wont-stop-the-pc-from-dying-and-taking-microsoft-with-it)中一直保持, 尽管它只是一个小众的问题 —— 在操作系统产生错误的结果你必须调整系统前端总线的时钟.
 
 原来的[那篇博客](http://duartes.org/gustavo/blog/post/what-does-an-idle-cpu-do/)主要讨论的是桌面操作系统,race-to-idle是现代CPU架构的关键组件。 AMD和英特尔每年都会发布新一代产品,还会经常推出更新,可能最高性能只提升那么一点点, 但通过更好的时钟门控(clock gating)却能显著提高能量使用率并更快地进行节能模式切换.
 
