@@ -5,7 +5,7 @@ FFMpeg是目前最友好的开源媒体处理工具。
 Java 可以通过命令行来调用。
 
 
-##  1.下载与安装
+## 1. 下载与安装
 
 官网地址: <https://www.ffmpeg.org/>
 
@@ -62,7 +62,7 @@ man ffmpeg
 ```
 
 
-##  2. 截取
+## 2. 截取
 
 ffmpeg 命令的用法为:
 
@@ -88,7 +88,7 @@ ffmpeg -ss 39 -t 60  -i zhaohua.mp3  -acodec copy zhaohua30.mp3
 
 ```
 
-其中, `-ss 30` 指定跳过起始时间30秒。 `-t 60` 则指定长度为60秒。
+其中, `-ss 39` 指定跳过起始时间39秒。 `-t 60` 则指定长度为60秒。
 
 `-i zhaohua.mp3` 指定输入文件,  `-acodec copy` 指定输出的转码器为拷贝。 最后的 `zhaohua30.mp3` 则是输出文件。
 
