@@ -36,7 +36,7 @@ DOM中的 `NodeList` 和 `NamedNodeMap` 对象是动态的(live);
 
 ## 静态 NodeList ##
 
-`querySelectorAll()` 方法的不同是它返回一个静态的 `NodeList`. 这是表示的 选择器API规范 :
+`querySelectorAll()` 方法的不同之处在于它返回一个静态的 `NodeList`. 这是选择器API规范中的描述:
 
 `querySelectorAll()` 方法返回的 `NodeList` 对象**必须是静态的**, 而不能是动态的([DOM-LEVEL-3-CORE], section 1.1.1). 后续对底层document的更改不能影响到返回的这个 `NodeList` 对象. 这意味着返回的对象将包含在创建列表那一刻匹配的所有元素节点。
 
@@ -59,11 +59,11 @@ DOM中的 `NodeList` 和 `NamedNodeMap` 对象是动态的(live);
 
 动态 `NodeList` 对象在浏览器中可以更快地被创建并返回,因为他们不需要预先获取所有的信息, 而静态 `NodeList` 从一开始就需要取得并封装所有相关数据. 再三强调要彻底了解这一点, WebKit 的源码中对每种 `NodeList` 类型都有一个单独的源文件: [DynamicNodeList.cpp](http://trac.webkit.org/browser/trunk/WebCore/dom/DynamicNodeList.cpp) 和 [StaticNodeList.cpp](http://trac.webkit.org/browser/trunk/WebCore/dom/StaticNodeList.cpp). 两种对象类型的创建方式是完全不同的。
 
-`DynamicNodeList` 对象通过在cache缓存中 [注册它的存在](http://trac.webkit.org/browser/trunk/WebCore/dom/DynamicNodeList.cpp?rev=41093#L48) 并创建。 从本质上讲, 创建一个新的 `DynamicNodeList` 是非常轻量级的, 因为不需要做任何前期工作。 每次访问 `DynamicNodeList` 时, 必须查询 document 的变化, length 属性 以及 item() 方法证明了这一点(使用中括号的方式访问也是一样的).
+`DynamicNodeList` 对象是通过在缓存(cache)中 [注册自身](http://trac.webkit.org/browser/trunk/WebCore/dom/DynamicNodeList.cpp?rev=41093#L48) 来创建的。 从本质上讲, 创建一个新的 `DynamicNodeList` 是非常轻量级的, 因为不需要做任何前期工作。 每次访问 `DynamicNodeList` 时, 必须查询 document 的变化, length 属性 以及 item() 方法证明了这一点(使用中括号的方式访问也是一样的).
 
 相比之下, `StaticNodeList` 对象实例由另一个文件创建,然后[循环填充](http://trac.webkit.org/browser/trunk/WebCore/dom/SelectorNodeList.cpp?rev=41093#L61)所有的数据 。 在 document 中执行静态查询的前期成本上比起 `DynamicNodeList` 要显著提高很多倍。
 
-如果真正的查看WebKit的源码,你会发现他为 `querySelectorAll()` 明确地 [创建一个返回对象](http://trac.webkit.org/browser/trunk/WebCore/dom/SelectorNodeList.cpp?rev=41093#L61) ,在其中又使用一个循环来获取每一个结果,并创建最终返回的一个 `NodeList`.
+如果你真正查看WebKit的源码,你会发现它为 `querySelectorAll()` 明确地 [创建一个返回对象](http://trac.webkit.org/browser/trunk/WebCore/dom/SelectorNodeList.cpp?rev=41093#L61) ,在其中又使用一个循环来获取每一个结果,并创建最终返回的一个 `NodeList`.
 
 ## 结论 ##
 
