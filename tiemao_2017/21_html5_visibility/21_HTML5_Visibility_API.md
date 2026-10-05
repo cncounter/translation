@@ -2,15 +2,15 @@
 
 
 
-Hello ..
+大家好 ..
 
  
 
-To anyone that needs to [pause()](http://api.greensock.com/js/com/greensock/core/Animation.html#pause()) and [resume() ](http://api.greensock.com/js/com/greensock/core/Animation.html#resume())your GSAP animations when switching browser tabs or windows and have them stay in sync. I did more tests and found that Firefox and Chrome where sometimes not firing the event focus and blur, when you left the active tab.
+如果你需要在切换浏览器标签页或窗口时 [pause()](http://api.greensock.com/js/com/greensock/core/Animation.html#pause()) 和 [resume() ](http://api.greensock.com/js/com/greensock/core/Animation.html#resume())你的 GSAP 动画, 并让它们保持同步, 那么本文正是为你准备的。我做了更多测试, 发现当离开当前激活的标签页时, Firefox 和 Chrome 有时并不会触发 focus 和 blur 事件。
 
  
 
-So i found a better way that is consistent,  to check if the current active tab has focus or not, using the [HTML5 Visibility API](https://developer.mozilla.org/en-US/docs/Web/Guide/User_experience/Using_the_Page_Visibility_API).
+所以我找到了一种更一致的方法, 使用 [HTML5 Visibility API](https://developer.mozilla.org/en-US/docs/Web/Guide/User_experience/Using_the_Page_Visibility_API) 来检测当前激活的标签页是否获得焦点。
 
 
 
@@ -41,7 +41,7 @@ var vis = (function(){
 
 
 
-Use the **HTML5 Visibility API** like this:
+**HTML5 Visibility API** 的用法如下:
 
 ```
 // check if current tab is active or not
@@ -62,7 +62,7 @@ vis(function(){
 });
 ```
 
-You will still need the following to check if other windows have focus or not (blur). Chromium type browser like Google Chrome or Latest Opera do not fire all the time when binding the event with jQuery window, so you need to check for window.addEventListener.
+要检测其他窗口是否有焦点(blur), 你仍然需要下面的代码。Google Chrome 或最新 Opera 这类 Chromium 内核的浏览器, 在使用 jQuery 绑定 window 事件时并不会始终触发, 所以需要改用 window.addEventListener 来检测。
 
 ```
 // check if browser window has focus		
@@ -132,43 +132,43 @@ if (notIE && !isChromium) {
 }
 ```
 
-You will also notice that i have a **setTimeout() **in the focus event handler so the tab/window has enough time to gain focus, and so the focus event handler fire consistently. I noticed Firefox and Google Chrome were not resuming correctly unless i added the setTimeout().
+你还会注意到, 我在 focus 事件处理器中使用了 **setTimeout()**, 让标签页/窗口有足够时间获得焦点, 从而让 focus 事件处理器能稳定触发。我发现如果不加 setTimeout(), Firefox 和 Google Chrome 就无法正确恢复动画。
 
  
 
-The reason i use the HTML5 Visibility API is because some browsers like Chrome wont trigger the tab blur unless you actually click inside the other  new tab, simply scrolling with the mouse wont trigger the event,
+我使用 HTML5 Visibility API 的原因是, 像 Chrome 这类浏览器, 除非你真的在另一个新标签页里点击一下, 否则不会触发标签页的 blur 事件; 仅仅用鼠标滚动并不会触发该事件。
 
  
 
-I hope this helps anyone who needs to pause() and resume() their animation so they don't get out of sync.
+希望这能帮到那些需要 pause() 和 resume() 动画、避免动画失去同步的人。
 
 
 
  
 
-***\*UPDATE****
+**更新(UPDATE)**
 
  
 
-FULL PAGE mode: [http://codepen.io/jonathan/full/sxgJl](http://codepen.io/jonathan/full/sxgJl)
+全屏模式(FULL PAGE): [http://codepen.io/jonathan/full/sxgJl](http://codepen.io/jonathan/full/sxgJl)
 
  
 
-EDIT mode: [http://codepen.io/jonathan/pen/sxgJl](http://codepen.io/jonathan/pen/sxgJl)
+编辑模式(EDIT): [http://codepen.io/jonathan/pen/sxgJl](http://codepen.io/jonathan/pen/sxgJl)
 
  
 
-**To Test**, try:
+**测试方法**, 请尝试:
 
-- First clicking inside the Preview panel so the page gains focus (important)
-- Switching between tabs
-- Giving another program focus and come back to the browser
+- 先在预览面板(Preview)内部点击一下, 让页面获得焦点(重要)
+- 在标签页之间切换
+- 让另一个程序获得焦点, 然后再回到浏览器
 
-See [below post](http://forums.greensock.com/topic/9059-cross-browser-to-detect-tab-or-window-is-active-so-animations-stay-in-sync-using-html5-visibility-api/?view=findpost&p=36317) for more info
+更多信息请参考[下面的帖子](http://forums.greensock.com/topic/9059-cross-browser-to-detect-tab-or-window-is-active-so-animations-stay-in-sync-using-html5-visibility-api/?view=findpost&p=36317)
 
  
 
-Also.. I made it into a jQuery plugin called **TabWindowVisibilityManager** so you only have to define your pause() and resume() code once inside the FOCUS and BLUR callbacks. See the [bottom post](http://forums.greensock.com/topic/9059-cross-browser-to-detect-tab-or-window-is-active-so-animations-stay-in-sync-using-html5-visibility-api/?view=findpost&p=36347).
+另外, 我把它做成了一个名为 **TabWindowVisibilityManager** 的 jQuery 插件, 这样你只需要在 FOCUS 和 BLUR 回调里各定义一次 pause() 和 resume() 代码即可。请参考[最下面的帖子](http://forums.greensock.com/topic/9059-cross-browser-to-detect-tab-or-window-is-active-so-animations-stay-in-sync-using-html5-visibility-api/?view=findpost&p=36347)。
 
 [TabWindowVisibilityManager.zip](https://greensock.com/forums/applications/core/interface/file/attachment.php?id=2146)
 
@@ -178,16 +178,16 @@ Also.. I made it into a jQuery plugin called **TabWindowVisibilityManager** so y
 
 
 
-Since originally writing this answer, a new specification has reached *recommendation* status thanks to the W3C. The [Page Visibility API](http://www.w3.org/TR/page-visibility/) now allows us to more accurately detect when a page is hidden to the user.
+自最初写下这个答案以来, 得益于 W3C, 一项新规范已经达到 *推荐(recommendation)* 状态。[Page Visibility API](http://www.w3.org/TR/page-visibility/) 现在可以让我们更精确地检测页面何时对用户隐藏。
 
-Current browser support:
+当前浏览器支持情况:
 
 - Chrome 13+
 - Internet Explorer 10+
 - Firefox 10+
-- Opera 12.10+ [[read notes](https://dev.opera.com/blog/page-visibility-api-support-in-opera-12-10/)]
+- Opera 12.10+ [[阅读说明](https://dev.opera.com/blog/page-visibility-api-support-in-opera-12-10/)]
 
-The following code makes use of the API, falling back to the less reliable blur/focus method in incompatible browsers.
+下面的代码使用了该 API, 并在不兼容的浏览器中回退到可靠性较差的 blur/focus 方式。
 
 ```
 (function() {
@@ -229,7 +229,7 @@ The following code makes use of the API, falling back to the less reliable blur/
 })();
 ```
 
-`onfocusin` and `onfocusout` are [required for IE 9 and lower](http://www.thefutureoftheweb.com/blog/detect-browser-window-focus), while all others make use of `onfocus`and `onblur`, except for iOS, which uses `onpageshow` and `onpagehide`.
+IE 9 及更低版本[需要使用](http://www.thefutureoftheweb.com/blog/detect-browser-window-focus) `onfocusin` 和 `onfocusout`, 而其他所有浏览器都使用 `onfocus` 和 `onblur`, 唯独 iOS 使用 `onpageshow` 和 `onpagehide`。
 
 
 
