@@ -38,7 +38,7 @@ In Spring MVC development, developer try to set a value into a model, and displa
 
 **JSP page**
 
-> **JSP 页面的内容如下:
+> **JSP 页面的内容如下:**
 
 
 	<%@ taglib prefix="c"
@@ -137,7 +137,7 @@ The EL is enabled by default, and you should see the value stored in the “msg�
 
 ## 参考
 
-1. (使用指令编写JSP页面)(http://java.boot.by/wcd-guide/ch06s02.html)
+1. [使用指令编写JSP页面](http://java.boot.by/wcd-guide/ch06s02.html)
 
 
 
