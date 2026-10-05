@@ -60,7 +60,7 @@ if (os.platform() == 'win32') {
 } else if (os.platform() == 'linux') {
     if (os.arch() == 'arm') {
         var chilkat = require('chilkat_node8_arm');
-    } else os.arch() == 'x86') {
+    } else if(os.arch() == 'x86') {
         var chilkat = require('chilkat_node8_linux32');
     } else {
         var chilkat = require('chilkat_node8_linux64');
