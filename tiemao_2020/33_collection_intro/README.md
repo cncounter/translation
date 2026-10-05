@@ -50,7 +50,7 @@ public static int[] demoArray(int len) {
 }
 ```
 
-从中可以发现, 数组是一种特殊的对象类型。 `[I` 就是 `int[]` 对应的类名称。
+从中可以发现，数组是一种特殊的对象类型。 `[I` 就是 `int[]` 对应的类名称。
 
 如果元素类型换一个呢?
 
@@ -68,7 +68,7 @@ public static Integer[] demoIntegerArray(int len) {
 }
 ```
 
-虽然 `Object` 是所有对象类型的超类, 但数组类型并不能强转?
+虽然 `Object` 是所有对象类型的超类，但数组类型并不能强转？
 
 ```java
 private void testCast(Integer[] demoIntegerArray) {
@@ -86,15 +86,10 @@ private void testCast(Integer[] demoIntegerArray) {
 List就是列表，和Array很相似，但封装了一些更容易使用的操作。
 
 ```java
-
-```
-
-
-
-
 new ArrayList();
 Arrays.asList();
 Collections.emptyList();
+```
 
 
 ## Map
