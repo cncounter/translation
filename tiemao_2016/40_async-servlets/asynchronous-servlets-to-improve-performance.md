@@ -1,4 +1,4 @@
-#How to use Asynchronous Servlets to improve performance
+# How to use Asynchronous Servlets to improve performance
 
 # 使用异步servlet提升性能
 
@@ -14,7 +14,7 @@ This post is going to describe a performance optimization technique applicable t
 
 This type of applications has developed a problem class of their own, especially when facing heavy load. The symptoms include starving threads, suffering user interaction, staleness issues etc.
 
-这些应用引发了一类新的问题,特别是在负载较高的情况下。引发的状况包括线程饥饿, 影响用户体验、请求超时等问题。
+这些应用引发了一类新的问题,特别是在负载较高的情况下。引发的状况包括线程饥饿, 影响用户体验、数据陈旧等问题。
 
 
 Based on recent experience with this type of apps under load, I thought it would be a good time to demonstrate a simple solution. After Servlet API 3.0 implementations became mainstream, the solution has become truly simple, standardized and elegant.
@@ -163,7 +163,7 @@ The second important aspect is hidden in the following method
 
 in which the whole request processing consists only of storing an instance AsyncContext into some queue. This AsyncContext holds the request and response that were provided by the container and we can use later to answer the user request. Thus incoming requests are waiting for the notification – this could be an updated bid on the monitored auction or the next message in the group chat. The important aspect here is that servlet container’s threads have finished with doGet for the time being and are free to accept another requests.
 
-在其中, 整个请求的处理只有一行代码,将 AsyncContext 实例加入队列中。 AsyncContext 里含有容器提供的 request 和 response 对象, 我们可以通过他们来响应用户请求. 因此传入的请求在等待通知 —— 可能是监视的拍卖组中的报价更新事件, 或者是下一条群聊消息。这里需要注意的是, 将 AsyncContext 加入队列以后, servlet 容器的线程就完成了 ·doGet· 操作, 然后释放出来, 可以去接受另一个新请求了。
+在其中, 整个请求的处理只有一行代码,将 AsyncContext 实例加入队列中。 AsyncContext 里含有容器提供的 request 和 response 对象, 我们可以通过它们来响应用户请求. 因此传入的请求在等待通知 —— 可能是监视的拍卖组中的报价更新事件, 或者是下一条群聊消息。这里需要注意的是, 将 AsyncContext 加入队列以后, servlet 容器的线程就完成了 `doGet` 操作, 然后释放出来, 可以去接受另一个新请求了。
 
 Now, the notification arrives every 2 seconds and we have implemented this as a scheduled event, that calls the newEvent method every 2 seconds. When it arrives all the waiting tasks in the queue are processed by a single worker thread responsible for compiling and sending the responses. Instead of blocking hundreds of threads to wait behind the external notification, we achieved this in a lot simpler and cleaner way – batching the interest groups together and processing the requests in a single thread.
 
@@ -194,7 +194,7 @@ The specific case here is small and synthetic, but similar improvements are achi
 
 Now, before you run to rewrite all your servlets to the asynchronous servlets – hold your horses for a minute. The solution works perfectly on a subset of usage cases, such as group chat notifications and auction house price alerts. You will most likely not benefit in the cases where the requests are waiting behind unique database queries being completed. So, as always, I must reiterate my favorite performance-related recommendation – measure everything. Do not guess anything.
 
-现在, 请不要急着去将所有的 servlet 重构为异步servlet。 因为这种方案, 只在满足某些特征的任务才会得到大量性能提升, 比如聊天室, 或者拍卖价格提醒之类的。 而对于需要请求底层数据库之类的操作, 很可能没有性能提升。 所以,就像以前一样, 我必须重申, 我最喜欢的性能优化忠告 —— 请权衡考虑整件事情，不要想当然。
+现在, 请不要急着去将所有的 servlet 重构为异步servlet。 因为这种方案, 只在满足某些特征的任务才会得到大量性能提升, 比如聊天室, 或者拍卖价格提醒之类的。 而对于需要请求底层数据库之类的操作, 很可能没有性能提升。 所以,就像以前一样, 我必须重申, 我最喜欢的性能优化忠告 —— 请度量一切, 不要凭空猜测。
 
 But on the occasions when the problem does fit the solution shape, I can only praise it. Besides the now-obvious improvements on throughput and latency, we have elegantly avoided possible thread starvation issues under heavy load.
 
@@ -204,7 +204,7 @@ But on the occasions when the problem does fit the solution shape, I can only pr
 Another important aspect – the approach to asynchronous request processing is finally standardized. Independent of your favorite Servlet API 3.0 – compliant application server such as Tomcat 7+, JBoss 6 or Jetty 8+ – you can be sure the approach works. No more wrestling with different Comet implementations or platform-dependent solutions, such as the Weblogic FutureResponseServlet.
 
 
-另一个重要信息是 —— 异步请求的处理终于标准化了。兼容 Servlet 3.0 的应用服务器 —— 比如 Tomcat 7+, JBoss 6 或者 Jetty 8+ —— 都支持这种方案. 再也不用陷进那些耦合具体平台的解决方案里, 例如 Weblogic `FutureResponseServlet`。
+另一个重要信息是 —— 异步请求的处理终于标准化了。兼容 Servlet 3.0 的应用服务器 —— 比如 Tomcat 7+, JBoss 6 或者 Jetty 8+ —— 都支持这种方案. 再也不用纠结于各种不同的 Comet 实现或依赖具体平台的解决方案, 例如 Weblogic `FutureResponseServlet`。
 
 
 
