@@ -1,7 +1,7 @@
 # 7 JVM arguments of Highly Effective Applications
 
 
-＃ JVM最重要的性能调优参数
+# JVM最重要的性能调优参数
 
 At the time (March 2020) of writing this article there are 600+ arguments that you can pass to JVM just around Garbage collection and memory. If you include other aspects, total JVM arguments count will easily cross 1000+. It’s way too many arguments for anyone to digest and comprehend. In this article, we are highlighting seven important JVM arguments that you may find it useful.
 
@@ -82,9 +82,9 @@ As on date (March 2020), there are 7 different GC algorithms in OpenJDK:
 截至目前， OpenJDK 支持7种不同的 GC 算法：
 
 - 1. 串行 GC（Serial GC）：单线程执行，应用需要暂停；
-- 1. 并行 GC（ParNew、Parallel Scavenge、Parallel Old）：多线程并行地执行垃圾回收，关注与高吞吐；
-- 1. CMS（Concurrent Mark-Sweep）：多线程并发标记和清除，关注与降低延迟；
-- 1. G1（G First）：通过划分多个内存区域做增量整理和回收，进一步降低延迟；
+- 1. 并行 GC（ParNew、Parallel Scavenge、Parallel Old）：多线程并行地执行垃圾回收，关注于高吞吐；
+- 1. CMS（Concurrent Mark-Sweep）：多线程并发标记和清除，关注于降低延迟；
+- 1. G1（Garbage First）：通过划分多个内存区域做增量整理和回收，进一步降低延迟；
 - 1. ZGC（Z Garbage Collector）：通过着色指针和读屏障，实现几乎全部的并发执行，几毫秒级别的延迟，线性可扩展；
 - 1. Epsilon：实验性的 GC，供性能分析使用；
 - 1. Shenandoah：G1 的改进版本，跟 ZGC 类似。
@@ -246,7 +246,7 @@ OutOfMemoryError 是一个很严重的问题， 直接影响系统的可用性�
 In `-XX:HeapDumpPath`, you need to specify the file path where heap dump should be stored. When you pass these two JVM arguments, heap dumps will be automatically captured and written to a defined file path, when OutOfMemoryError is thrown. Example:
 
 
-指定 `-XX:HeapDumpPath` 参数时需要带上保存堆转储的具体文件名或者目录，JVM会自动判断是文件还是目录. 例如:
+指定 `-XX:HeapDumpPath` 参数时需要带上保存堆转储的具体文件名或者目录，JVM会自动判断是文件还是目录。 例如:
 
 ```
 -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/crashes/my-heap-dump.hprof
@@ -316,11 +316,11 @@ Our recommendation is to start from a low value (say `256kb`). Run thorough regr
 这样的话每个JVM实例就能节省 `875mb`的内存 (`1000mb – 125mb = 875mb`)。
 差别还是很明显的。
 
-注意： 线程栈所占的内存和堆内存的大小 (`-Xmx`)没关系.   
+注意： 线程栈所占的内存和堆内存的大小 (`-Xmx`)没关系。   
 如果已经指定了 `-Xmx`，这时候JVM占用的内存还要加上栈内存的这 `1000mb`。
 要了解为什么在堆外创建线程，可以观看 [这个短片](https://www.youtube.com/watch?v=uJLOlCuOR4k&t=9s)。
 
-我们的建议是, 先指定一个较小的值, 例如 `-Xss256k`。 然后进行完整的回归测试，性能性能和AB测试。
+我们的建议是, 先指定一个较小的值, 例如 `-Xss256k`。 然后进行完整的回归测试、性能测试和AB测试。
 只有在发生 StackOverflowError 时才增加这个配置， 否则都坚持使用较小值。
 
 > 有些操作系统会有优化, 先分配地址空间，实际使用时才分配需要的物理内存，当然，和操作系统的内存页大小也有关系，要看具体情况。
@@ -387,9 +387,9 @@ To avoid these commotions, it’s highly recommended to set the time zone at the
 
 - 1. 如果在多个数据中心部署运行（例如，旧金山，芝加哥，新加坡等等）, 因为这些数据中心横跨多个时区, 可能由于默认时区不同, 导致JVM的不一致行为造成系统和业务问题。
 - 2. 如果在云环境中部署应用系统，则可能在用户无感知的情况下将容器迁移到其他数据中心。在这种情况下，也可能会产生不同的结果。
-- 3. 运维团队可以会更改默认时区，如果没有及时与开发团队沟通。也会造成某些不可预料的结果。
+- 3. 运维团队可能会更改默认时区，如果没有及时与开发团队沟通。也会造成某些不可预料的结果。
 
-所以、为了减少麻烦，建议使用系统属性 `-Duser.timezone` 来明确指定JVM的时区。
+所以，为了减少麻烦，建议使用系统属性 `-Duser.timezone` 来明确指定JVM的时区。
 
 设置时区的示例如下：
 
