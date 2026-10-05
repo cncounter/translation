@@ -16,7 +16,7 @@ Redis网络告警:
 排查定时调度， 10分钟一次。
 
 
-排查发现, 有一个web应用 的网络流量与Redis监控匹配。
+排查发现, 有一个web应用的网络流量与Redis监控匹配。
 
 ![](05_02_webapp_network.jpg)
 
@@ -108,7 +108,7 @@ public List<ExchangeDTO> getAllExchanges() {
 }
 ```
 
-批量查询，每天数据执行了一次Redis操作，而且是大数据量查询。
+批量查询，每条数据执行了一次Redis操作，而且是大数据量查询。
 
 ## 紧急修复
 
