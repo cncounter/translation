@@ -1,6 +1,6 @@
-#2.28. TortoiseGit - Merging
+# 2.28. TortoiseGit - Merging
 
-#2.28 TortoiseGit - 分支合并(Merging)
+# 2.28 TortoiseGit - 分支合并(Merging)
 
 Where branches are used to maintain separate lines of development, at some stage you will want to merge the changes made on one branch back into the other branch, or vice versa.
 
@@ -16,7 +16,7 @@ The next point to note is that merging *always* takes place within a working tre
 
 **Figure 2.43. Merge dialog**
 
-**图2.43. Merge dialog(分支合并对话框) **
+**图2.43. Merge dialog(分支合并对话框)**
 
 ![Merge dialog](41_01_TortoiseGit _Merging_en.png)
 
@@ -76,7 +76,7 @@ You can choose one commit that you want to merge from.
 
 `Messages` Populate the log message with one-line descriptions from the actual commits that are being merged. Can specify the number of commits to be included in the merge message.
 
-勾选 `Messages` 选项, 弹出一行日志信息, 描述实际被合并的提交。 可以指定数量的承诺被包括在合并的消息。
+勾选 `Messages` 选项, 弹出一行日志信息, 描述实际被合并的提交。 可以指定要包含在合并消息中的提交数量。
 
 You can see more information at [Section G.3.79, “git-merge(1)”](git-command.html#git-merge(1))
 
