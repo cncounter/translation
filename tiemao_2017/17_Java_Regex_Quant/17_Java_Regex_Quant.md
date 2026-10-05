@@ -18,7 +18,7 @@
 Quantifiers allow you to specify the number of occurrences to match against. For convenience, the three sections of the Pattern API specification describing greedy, reluctant, and possessive quantifiers are presented below. At first glance it may appear that the quantifiers X?, X?? and X?+ do exactly the same thing, since they all promise to match "X, once or not at all". There are subtle implementation differences which will be explained near the end of this section.
 
 
-量词(Quantifier)用来指定某部分正则所重复的次数。为了方便，本文分别介绍 Pattern API 规范中的3种类型, 分别是 greedy(贪婪), reluctant(懒惰), 和 possessive(独占) 量词。表面上看, `X?`, `X??` 和 `X?+` 这几种量词都差不多, 都是匹配 "出现0到1次大写的X"。 下文将会讲解他们在实现上的细微差别。
+量词(Quantifier)用来指定某部分正则所重复的次数。为了方便，本文分别介绍 Pattern API 规范中的3种类型, 分别是 greedy(贪婪), reluctant(懒惰), 和 possessive(独占) 量词。表面上看, `X?`, `X??` 和 `X?+` 这几种量词都差不多, 都是匹配 "出现0到1次的 X"。 下文将会讲解他们在实现上的细微差别。
 
 
 
@@ -93,14 +93,14 @@ No match found.
 
 In the above example, the match is successful in the first two cases because the expressions a? and a* both allow for zero occurrences of the letter a. You'll also notice that the start and end indices are both zero, which is unlike any of the examples we've seen so far. The empty input string "" has no length, so the test simply matches nothing at index 0. Matches of this sort are known as a zero-length matches. A zero-length match can occur in several cases: in an empty input string, at the beginning of an input string, after the last character of an input string, or in between any two characters of an input string. Zero-length matches are easily identifiable because they always start and end at the same index position.
 
-上面的示例中, 前两个正则成功匹配, 因为 `a?` 和 `a*` 都允许出现 0 次 `a`.  且开始索引和结束索引 都是 0, 这和之前所见的情形略有不同。空字符串` ""` 的长度为0, 所以只能在索引0处匹配。这种情况称为零长匹配(Zero-Length Match).
+上面的示例中, 前两个正则成功匹配, 因为 `a?` 和 `a*` 都允许出现 0 次 `a`.  且开始索引和结束索引 都是 0, 这和之前所见的情形略有不同。空字符串 `""` 的长度为0, 所以只能在索引0处匹配。这种情况称为零长匹配(Zero-Length Match).
 
 零长匹配可能出现的情况包括:  空文本, 字符串起始处, 字符串结尾处, 以及任意两个字符之间.  零长匹配很容易辨认, 因为开始索引和结束索引的位置相等。
 
 
 Let's explore zero-length matches with a few more examples. Change the input string to a single letter "a" and you'll notice something interesting:
 
-下面来看几个零长匹配的示例。输入文本为单个字母 "`a`" , 你会看到一些有趣的地方:
+下面来看几个零长匹配的示例。输入文本为单个字母 "`a`", 你会看到一些有趣的地方:
 
 
 ```
@@ -221,7 +221,7 @@ I found the text "aaa" starting at index 0 and ending at index 3.
 
 Here, the regular expression a{3} is searching for three occurrences of the letter "a" in a row. The first test fails because the input string does not have enough a's to match against. The second test contains exactly 3 a's in the input string, which triggers a match. The third test also triggers a match because there are exactly 3 a's at the beginning of the input string. Anything following that is irrelevant to the first match. If the pattern should appear again after that point, it would trigger subsequent matches:
 
-正则 `a{3}` 匹配连续出现的三个“`a`”字母。第一次测试匹配失败, 是因为字母`a`的数量不足. 第二次测试时, 字符串中刚好包含3个 `a` 字母, 所以匹配了一次。第三次测试也触发了一次匹配, 因为输入文本的签名有3个 `a` 字母. 后面再出现的字母, 与第一次匹配无关。如果后面还有这种格式的字符串, 则使用后面的子串触发后续匹配:
+正则 `a{3}` 匹配连续出现的三个“`a`”字母。第一次测试匹配失败, 是因为字母`a`的数量不足. 第二次测试时, 字符串中刚好包含3个 `a` 字母, 所以匹配了一次。第三次测试也触发了一次匹配, 因为输入文本的开头有3个 `a` 字母. 后面再出现的字母, 与第一次匹配无关。如果后面还有这种格式的字符串, 则使用后面的子串触发后续匹配:
 
 
 ```
@@ -269,7 +269,7 @@ Here the first match is forced to stop at the upper limit of 6 characters. The s
 
 Until now, we've only tested quantifiers on input strings containing one character. In fact, quantifiers can only attach to one character at a time, so the regular expression "abc+" would mean "a, followed by b, followed by c one or more times". It would not mean "abc" one or more times. However, quantifiers can also attach to Character Classes and Capturing Groups, such as [abc]+ (a or b or c, one or more times) or (abc)+ (the group "abc", one or more times).
 
-到目前为止, 我们只是用量词来测试了单个字符的情况. 但实际上, 量词只关联到一个字符上, 所以正则 “`abc+`” 的含义是:  “字母`a`, 后面跟着字母`b`, 然后再跟着1到多个字母`c`”. 而不表示1到多次的 “abc”. 当然, 量词可以关联到字符组(Character Class)和捕获组(Capturing Group), 例如 `[abc]+`, 表示 "出现1到多次的a或b或c, 也就是abc三个字母组成的任意组合"), 而正则 `(abc)+` 表示 “`abc`” 这个 group 整体出现 1次到多次, 例如 `abcabcabc`。
+到目前为止, 我们只是用量词来测试了单个字符的情况. 但实际上, 量词只关联到一个字符上, 所以正则 “`abc+`” 的含义是:  “字母`a`, 后面跟着字母`b`, 然后再跟着1到多个字母`c`”. 而不表示1到多次的 “abc”. 当然, 量词可以关联到字符组(Character Class)和捕获组(Capturing Group), 例如 `[abc]+`, 表示 "出现1到多次的a或b或c, 也就是abc三个字母组成的任意组合", 而正则 `(abc)+` 表示 “`abc`” 这个 group 整体出现 1次到多次, 例如 `abcabcabc`。
 
 Let's illustrate by specifying the group (dog), three times in a row.
 
@@ -314,11 +314,11 @@ Here the quantifier {3} applies to the entire character class in the first examp
 
 ### Differences Among Greedy, Reluctant, and Possessive Quantifiers
 
-### 贪婪,懒惰和全量量词之间的区别
+### 贪婪,懒惰和独占量词之间的区别
 
 There are subtle differences among greedy, reluctant, and possessive quantifiers.
 
-贪婪(Greedy),懒惰(Reluctant)和全量(Possessive)这三种量词模式之间有一些细微的差别。
+贪婪(Greedy),懒惰(Reluctant)和独占(Possessive)这三种量词模式之间有一些细微的差别。
 
 
 Greedy quantifiers are considered "greedy" because they force the matcher to read in, or eat, the entire input string prior to attempting the first match. If the first match attempt (the entire input string) fails, the matcher backs off the input string by one character and tries again, repeating the process until a match is found or there are no more characters left to back off from. Depending on the quantifier used in the expression, the last thing it will try matching against is 1 or 0 characters.
@@ -363,7 +363,7 @@ The second example, however, is reluctant, so it starts by first consuming "noth
 
 The third example fails to find a match because the quantifier is possessive. In this case, the entire input string is consumed by .*+, leaving nothing left over to satisfy the "foo" at the end of the expression. Use a possessive quantifier for situations where you want to seize all of something without ever backing off; it will outperform the equivalent greedy quantifier in cases where the match is not immediately found.
 
-第三个例子, 使用的是独占量词, 所以没有匹配成功。在这个示例中, 因为整个输入字符串都被 `.*+` 吃掉了, 剩下的空白自然不能对应 "foo". 由此可知, 独占量词只能用于匹配所有字符的情况, 它从不后退; 如果都不能匹配到, 独占量词的性能会比贪婪型好一些。
+第三个例子, 使用的是独占量词, 所以没有匹配成功。在这个示例中, 因为整个输入字符串都被 `.*+` 吃掉了, 剩下的空白自然不能对应 "foo". 由此可知, 独占量词只能用于匹配所有字符的情况, 它从不后退; 在不能立即找到匹配的情况下, 独占量词的性能会比等价的贪婪量词更好。
 
 
 原文链接: <https://docs.oracle.com/javase/tutorial/essential/regex/quant.html>
