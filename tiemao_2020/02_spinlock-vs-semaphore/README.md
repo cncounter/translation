@@ -12,11 +12,11 @@ Spinlock and semaphore differ mainly in four things:
 
 A spinlock is one possible implementation of a lock, namely one that is implemented by busy waiting ("spinning"). A semaphore is a generalization of a lock (or, the other way around, a lock is a special case of a semaphore). Usually, but not necessarily, spinlocks are only valid within one process whereas semaphores can be used to synchronize between different processes, too.
 
-自旋是锁的一种实现方式，通过忙等待（“自旋，spinning”）来实现【例如通过while循环持续请求获取锁】。
+自旋锁是锁的一种实现方式，通过忙等待（“自旋，spinning”）来实现【例如通过while循环持续请求获取锁】。
 
 信号量的概念比锁的范围更大, 可以说, 锁是信号量的一种特殊情况。
 
-一般来说，自旋锁只在进程内有效，而信号量可同于控制多个进程之间的同步。
+一般来说，自旋锁只在进程内有效，而信号量也可用于控制多个进程之间的同步。
 
 A lock works for mutual exclusion, that is one thread at a time can acquire the lock and proceed with a "critical section" of code. Usually, this means code that modifies some data shared by several threads.
 
@@ -39,7 +39,7 @@ As stated above, a spinlock is a lock, and therefore a mutual exclusion (strictl
 
 如上所述，自旋锁是一种锁，也就是一种互斥机制。
 实现原理是重复尝试 "查询并修改内存位置", 一般来说这种 “查询并修改” 是原子操作。
-通过自旋来获取锁, 是一致“忙碌”的操作，可能长时间（甚至永远！）占用CPU，实际上却什么有效工作都没做。
+通过自旋来获取锁, 是一种“忙碌”的操作，可能长时间（甚至永远！）占用CPU，实际上却什么有效工作都没做。
 
 The main incentive for such an approach is the fact that a context switch has an overhead equivalent to spinning a few hundred (or maybe thousand) times, so if a lock can be acquired by burning a few cycles spinning, this may overall very well be more efficient. Also, for realtime applications it may not be acceptable to block and wait for the scheduler to come back to them at some far away time in the future.
 
@@ -50,7 +50,7 @@ The main incentive for such an approach is the fact that a context switch has an
 
 A semaphore, by contrast, either does not spin at all, or only spins for a very short time (as an optimization to avoid the syscall overhead). If a semaphore cannot be acquired, it blocks, giving up CPU time to a different thread that is ready to run. This may of course mean that a few milliseconds pass before your thread is scheduled again, but if this is no problem (usually it isn't) then it can be a very efficient, CPU-conservative approach.
 
-相比之下，信号量可以不需要进行旋转，或者仅旋转很短的时间（作为一种避免系统调用的优化）。
+相比之下，信号量可以不需要进行自旋，或者仅自旋很短的时间（作为一种避免系统调用的优化）。
 如果无法获取信号量，则线程会阻塞，从而将CPU时间让给其他准备运行的线程。
 当然，这可能意味着在重新安排线程前要经过几毫秒，如果这不是问题， 那么它的效率可能更高，这是一种节省CPU资源的实现方法。
 
@@ -89,13 +89,13 @@ On the other hand, given high congestion, or if the lock is being held for lengt
 
 A semaphore (or mutex) is a much better choice in this case, as it allows a different thread to run useful tasks during that time. Or, if no other thread has something useful to do, it allows the operating system to throttle down the CPU and reduce heat / conserve energy.
 
-这时候使用信号量（或互斥锁）是一种更好的解决办法，因为没有抢占CPU，其他线程在这段时间内就可以有效运行。
+这时候使用信号量（或互斥锁）是一种更好的解决办法，因为在这段时间内可以让其他线程去做一些有效的工作。
 如果没有需要使用CPU的线程，则操作系统会降低CPU的速度，以减少热量并节约电费。
 
 Also, on a single-core system, a spinlock will be quite inefficient in presence of lock congestion, as a spinning thread will waste its complete time waiting for a state change that cannot possibly happen (not until the releasing thread is scheduled, which isn't happening while the waiting thread is running!). Therefore, given any amount of contention, acquiring the lock takes around 1 1/2 time slices in the best case (assuming the releasing thread is the next one being scheduled), which is not very good behaviour.
 
 在单核CPU的系统上，自旋锁在锁拥塞的情况下效率会更低，因为自旋的线程会将所有时间都浪费在等待状态改变。 除非另一个线程被调度，执行完关键部分并释放锁之后，这个线程的情况才可能会改变。
-因此，在有争用的场景中，通过信号量获取锁， 最好的情况大约需要1~2个时间片（假设释放锁的线程恰好在下一个时间片被调度），但这种情况并不理想。
+因此，在有争用的场景中，通过自旋锁获取锁， 最好的情况大约需要1.5个时间片（假设释放锁的线程恰好在下一个时间片被调度），但这种情况并不理想。
 
 ## 4. How they're implemented
 
