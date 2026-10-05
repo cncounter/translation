@@ -9,4 +9,4 @@
 5. 红黑树
 6. SkipList
 7. Queue
-8. Dequeue
+8. Deque
