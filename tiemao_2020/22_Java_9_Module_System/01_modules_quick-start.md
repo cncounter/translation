@@ -73,7 +73,7 @@ module def.stu{
 The Module system introduces other various features which we will be exploring in this series of tutorials. In the following example, we will see how to create modules and use 'exports' and 'requires' clauses. We will use 'java' and 'javac' command line tools to build and run the classes to get familiar with the new module-related options introduced with these tools. We are going to use JDK 9 general availability release.
 
 模块系统也引入了其他的新特性，后续的文章会进行介绍。
-下面，我们通过具体代码来演示如何创建模块，怎样使用 `exports` and `requires` 语句。
+下面，我们通过具体代码来演示如何创建模块，怎样使用 `exports` 和 `requires` 语句。
 在这个过程中，我们会使用到的命令包括 `java` 和 `javac`.
 要求Java版本至少是 JDK9 及以上。
 
@@ -81,7 +81,7 @@ The Module system introduces other various features which we will be exploring i
 
 In this example, we will create two modules 'common.widget' and 'data.widget' and will place them under a single folder 'modules-examples/src'. The file 'module-info.java' will be placed under each of the main folder of the modules.
 
-接下来我们创建2个模块: '`common.widget`' 和 '`data.widget`'，两个模块都位于目录 '`modules-examples/src`' 中。 每个模块对应的 'module-info.java' 则位于自身的主目录中。
+接下来我们创建2个模块: `common.widget` 和 `data.widget`，两个模块都位于目录 `modules-examples/src` 中。 每个模块对应的 `module-info.java` 则位于自身的主目录中。
 
 
 ### First Module
