@@ -29,10 +29,10 @@
 | 17           | seventeen |
 | 18           | eighteen |
 | 19           | nineteen |
-| 20           | tweenty |
-| 21           | tweenty one |
-| 22           | tweenty two |
-| 2x           | tweenty ... |
+| 20           | twenty |
+| 21           | twenty one |
+| 22           | twenty two |
+| 2x           | twenty ... |
 | 30           | thirty |
 | 31           | thirty one |
 | 3x           | thirty ... |
@@ -53,7 +53,7 @@
 | 114          | one hundred and fourteen |
 | 115          | one hundred and fifteen |
 | 11x          | one hundred and x-teen |
-| 120          | one hundred and tweenty |
+| 120          | one hundred and twenty |
 | 130          | one hundred and thirty |
 | 1xx          | one hundred and xx |
 | 200          | two hundred |
@@ -65,8 +65,8 @@
 | 1010         | one thousand and ten |
 | 1100         | one thousand one hundred, eleven hundred |
 | 1110         | one thousand one hundred and ten |
-| 1120         | one thousand one hundred and tweenty |
-| 1121         | one thousand one hundred and tweenty one |
+| 1120         | one thousand one hundred and twenty |
+| 1121         | one thousand one hundred and twenty one |
 | 1200         | one thousand two hundred |
 | 1xxx         | one thousand xxx |
 | 2000         | two thousand |
@@ -216,7 +216,7 @@ twins: 双胞胎
 | 标点符号 | punctuation marks |
 | 英文句号 | period | `.` |
 | 感叹号 | exclamation point | `!` |
-| 问号 | queston mark | `?` |
+| 问号 | question mark | `?` |
 | B一撇 | B-prime | `B'` |
 | 撇 | apostrophe | `'` |
 | 逗号 | comma | `,` |
@@ -309,7 +309,7 @@ twins: 双胞胎
 | 相交  | intersect |
 | 斜边  | hypotenuse |
 | 对边  | opposite |
-| 临边  | adjacent |
+| 邻边  | adjacent |
 | 正弦  | sine |
 | 余弦  | cosine |
 | 正切  | tangent |
@@ -357,14 +357,14 @@ twins: 双胞胎
 
 | :--  | :--           |
 | 立方体 | cube | 
-| 椎体, 金字塔 | pyramid | 
+| 锥体, 金字塔 | pyramid | 
 | 金字塔图形 | pyramid-like figure | 
 | 圆环   | torus |
 | 管子 | tube | 
 | 空心锥台 | hollow cone frustum | 
 | 圆锥体 | cone | 
 | 圆锥  | circular cone | 
-| 斜圆锥 | blique circular cone | 
+| 斜圆锥 | oblique circular cone | 
 | 正锥体 | right pyramid | 
 | 斜棱锥 | oblique pyramid | 
 | 棱柱 | prism |
