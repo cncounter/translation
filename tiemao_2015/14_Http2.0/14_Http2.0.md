@@ -1,7 +1,7 @@
-# HTTP/2: A jump-start for Java developers
+# HTTP/2: Java 开发者的快速入门
 
 
-### How the next-generation web communication protocol supports highly responsive Java web applications
+### 下一代 Web 通信协议如何为高响应性的 Java Web 应用提供支持
 
 
 
