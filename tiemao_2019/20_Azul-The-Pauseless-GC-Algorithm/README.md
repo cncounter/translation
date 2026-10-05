@@ -89,7 +89,7 @@ Read barriers, memory management, garbage collection, concurrent GC, Java, custo
 
 Many of today's enterprise applications are based on garbage collected virtual machine environments such as Java and .NET.
 
-今天的世界，很多企业应用基于Java或.net平台开发, 并依赖虚拟机环境提供的自动垃圾回收机制。
+今天的世界，很多企业应用基于Java或.NET平台开发, 并依赖虚拟机环境提供的自动垃圾回收机制。
 
 Most have response time sensitive components – for example, a person may be waiting for a web page to load, or a credit-card swipe needs to complete. Stopping for an inopportune GC pause can lead to unacceptable response times. For these applications it is unacceptable for collectors to drive high average throughput numbers at the expense of occasional poor response times.
 
@@ -109,7 +109,7 @@ Many modern garbage collectors rely on write barriers imposed on mutator heap wr
 
 Azul Systems has built a custom system (CPU, chip, board, and OS) specifically to run garbage collected virtual machines. The custom CPU includes a read barrier instruction. The read barrier enables a highly concurrent, parallel and compacting GC algorithm. The Pauseless GC algorithm is simple, efficient (low mutator overhead), and has no Stop-The-World pauses.
 
-Azul Systems 公司构建了一套专门定制的系统(包括CPU、芯片组、主板以及操作系统)，用来运行支持垃圾收集的虚拟机。定制的CPU内置了[读屏障指令]。读屏障(read barrier)用于支持高并发、并行化、具有内存碎片整理功能的GC算法。无停顿的GC算法非常简洁、高效(突变开销很小), 没有STW停顿(Stop-The-World pauses)。
+Azul Systems 公司构建了一套专门定制的系统(包括CPU、芯片组、主板以及操作系统)，用来运行支持垃圾收集的虚拟机。定制的CPU内置了[读屏障指令]。读屏障(read barrier)用于支持高并发、并行化、具有内存碎片整理功能的GC算法。无停顿的GC算法非常简洁、高效(业务线程开销很小), 没有STW停顿(Stop-The-World pauses)。
 
 Azul Systems 公司为此专门定制了一整套系统(包括CPU、芯片组、主板和操作系统)，用来运行具备垃圾收集功能的虚拟机。
 定制的CPU内置了【读屏障指令】。 通过读屏障(read barrier)，来实现并行的、具有碎片整理功能的高并发垃圾收集算法。
@@ -127,14 +127,14 @@ The idea of garbage collection has been around for a long time [22][13][16][11].
 
 GC pauses and their unpredictable impact on mutators was the driving force behind the early work on concurrent collectors [26][5]. The expectation of the time was that special GC hardware would shortly be feasible and commonplace. This early work required such extensive fine-grained synchronization that it would only be feasible on dedicated hardware. GC hardware continues to be proposed to this day [23][29][24][18][20].
 
-GC停顿,以及对业务的影响具有不可预测性, 推动了早期并发垃圾收集器的发展(见[26][5]). 当时的预期, 是支持GC的硬件将会很快面世并得到普及.  这些早期作品用了很多细粒度的同步, 需要专门的硬件支持。直到今天，专用的GC硬件依然是很好的解决方案(见[23][29][24][18][20])。
+GC停顿,以及对业务的影响具有不可预测性, 推动了早期并发垃圾收集器的发展(见[26][5]). 当时的预期, 是支持GC的硬件将会很快面世并得到普及.  这些早期作品用了很多细粒度的同步, 需要专门的硬件支持。直到今天，专用的GC硬件方案仍不断有人提出(见[23][29][24][18][20])。
 
 The idea of using common page-protection hardware to support GC has also been around awhile [2]. Both Appel [2][3] and Ossia [25] protect pages that may contain objects with non-forwarded pointers (initially all pages). Accessing a protected page causes an OS trap which the GC handles by forwarding all pointers on that page, then clearing the page protection. Appel does the forwarding in kernel-mode, Ossia maps the physical memory with a second unprotected virtual address for use by GC. Our Pauseless collector protects pages that contain objects being moved, instead of protecting pages that contain pointers to moved objects. This is a much smaller page set, and the pages can be incrementally protected. Our read-barrier allows us to intercept and correct individual stale references, and avoids blocking the mutator to fix up entire pages. We also support a special GC protection mode to allow fast, non-kernel-mode trap handlers that can access protected pages.
 
 那时候还提出了一种想法, 使用通用页面保护硬件(page-protection hardware)来支持GC(见[2]).  
-Appel (见[2][3])和 Ossia 公司(见[25])用它来保护可能包含未转发指针(non-forwarded pointers)对象的页面(初始状态是保护所有页面).  
+Appel (见[2][3])和 Ossia (见[25])用它来保护可能包含未转发指针(non-forwarded pointers)对象的页面(初始状态是保护所有页面).  
 只要访问受保护的页面, 就会触发OS陷阱, GC会在陷阱处理程序中, 转发该页面上的所有指针, 然后再清除页面保护.
-Appel公司以内核模式进行转发, Ossia公司则是将物理内存映射到另一个GC专用的虚拟地址,此虚拟地址不受硬件保护.
+Appel在内核模式下进行转发, Ossia则是将物理内存映射到另一个GC专用的虚拟地址,此虚拟地址不受硬件保护.
 我们公司的Pauseless垃圾收集器会保护即将进行对象移动的页面, 而不去保护有指针指向被移动对象的其他页面.
 这样我们的 page set 比较小，而且可以增量地对各个页面进行保护.
 读屏障可以拦截并纠正极个别的过时引用, 免得阻塞 mutator 修复整个页面.
@@ -145,7 +145,7 @@ The idea of an incremental collector (via reference counting) is not new either 
 
 增量收集器(通过引用计数)的想法也不是新提出的(见[15]).
 增量收集的目的是减少停顿时间, 精细地交错GC任务与业务线程的执行.  
-但引用计数的代价太大, 事实上所有的屏障(引用计数通常涉及写障碍)都会强加业务线程的开销, 所以在降低屏障的开销方面已有大量研究(见[6][21][8][9]).
+但引用计数的代价太大, 事实上所有的屏障(引用计数通常涉及写屏障)都会强加业务线程的开销, 所以在降低屏障的开销方面已有大量研究(见[6][21][8][9]).
 硬件内置实现的读屏障指令, 可极大地降低开销。 在我们的实现中, 典型的开销只需要单个ALU指令的时钟周期。
 
 
@@ -161,7 +161,7 @@ Metronome 需要预测器(oracle)来判断未来的GC需求;
 而在服务器环境要执行的程序可就多了, 基本上什么时候发生GC是不可预测的。
 Metronome的业务线程利用率大约是50%.
 相比之下我们的业务线程利用率接近98%, 我们使用额外的CPU来执行垃圾收集工作.
-简单对比, Metronome的暂停时间提供了硬实时保证, 而Pauseless仅提供软实时保证。
+简单对比, Metronome 提供硬实时保证, 而Pauseless仅提供软实时保证。
 
 
 Our read-barrier is used for Baker-style relocation [5][23], where the loaded value is corrected before the mutator is allowed to use it. We focus collection efforts on regions which are known to be mostly dead, similar to Garbage-First [14]. Our mark phase uses an incremental update style instead of Snapshot-At-The-Beginning (SATB) style [30]. SATB requires a modestly expensive write-barrier which first does a read (and generally a series of dependent tests). The Pauseless collector does not require a write barrier.
@@ -177,7 +177,7 @@ Concurrent GCs are available in most modern production JVMs; BEA's JRockit [7], 
 
 如今大部分产品级JVM中都可以使用并发式垃圾收集器(Concurrent GC);
 例如 BEA的JRockit(见[7]), SUN公司的HotSpot(见[28])，以及IBM产品中附带的JVM([27]) 都自带了并发式垃圾收集器,
-但经我们测试，各家公司 Java 1.4 版本的JVM中. 并发收集器都不是默认配置。
+但经我们测试，各家公司 Java 1.4 版本的JVM中，并发收集器都不是默认配置。
 有可能是并发收集器没有并行收集器稳定, 并且有时还会在业务线程上引起巨大的开销.
 在最坏情况下, 某些并发收集器的性能还不如默认的收集器。
 
@@ -202,7 +202,7 @@ The basic CPU core is a 64-bit RISC optimized to run modern managed languages li
 
 CPU核心是优化后的64位RISC架构，可在上面运行Java等语言。
 编译出性能更好的JIT代码，而不是直接执行Java字节码。
-每个主板包含24个CPU，在实现缓存一致的前提下, 同一套系统最多可集成16张主板;
+每个芯片包含24个CPU，最多16颗芯片可以组成缓存一致的系统;
 所以最大容量为384个CPU内核, 256G的平铺对称内存空间。
 这套系统运行的操作系统也进行了专门定制，只要内存允许，可以同时运行很多个JVM。
 其中每个JVM都可以在必要时进行动态扩展, 以使用所有CPU和内存。
@@ -281,37 +281,37 @@ The read barrier performs a number of checks and is used in different ways durin
 在GC的各个阶段, 以不同的方式使用读屏障来执行多项检查。
 本节简要介绍读屏障的行为，下一节在GC算法的上下文中会再次进行更深入的讲解。
 在 load 指令之后触发读屏障指令，并在1个时钟周期内执行。
-编译器在尝试安排时会存在一次标准的 load-use 惩罚。
+存在一次标准的 load-use 惩罚，编译器会尝试通过调度来避开它。
 
 
 The read barrier “looks like” a standard load instruction, in that it has a base register, an offset and a value register. The base and offset are not used by the barrier checks but are presented to the trap handler and are used in “self healing”. The value in the value register is assumed to be a freshly loaded ref, a heap pointer, and is cycled through the TLB just like a base address would be. If the ref refers to a GC-protected page a fast usermode trap handler is invoked, hereafter called the GC-trap. The read barrier ignores null refs. Unlike a Brooks-style [10] indirection barrier there is no null check, no memory access, no loaduse penalty, no extra word in the object header and no cache footprint. This behavior is used during the concurrent Relocate phase.
 
 读屏障看起来有点像标准的 load 指令，因为它带着基址寄存器(base register)，偏移量(offset)和值寄存器(value register)。
 屏障检查并不使用基址寄存器和偏移量，他们是提供给陷阱处理程序用来进行“自我修复”的。
-值寄存器中的数据，预定是新加载的 ref，也就是heap指针， 并且像基本地址一样在TLB中循环。
+值寄存器中的数据，预定是新加载的 ref，也就是heap指针， 并且像基址一样通过TLB进行地址转换。
 如果 ref 指向受GC保护的页面，则会调用快速用户模式陷阱处理程序，下文称为GC陷阱。
 读屏障会忽略null引用。
-Brooks(见[10])间接屏障与读屏障不同，它没有null检查，没有内存访问，没有loaduse惩罚，对象头中也没有多余的字，也没有缓存占用。
+与 Brooks 风格的间接屏障(见[10])不同，读屏障没有null检查，没有内存访问，没有 load-use 惩罚，对象头中也没有多余的字，也没有缓存占用。
 在并发对象迁移阶段（concurrent Relocate phase）使用此行为。
 
 We also steal 1 address bit from the 64-bit address space; the hardware ignores this bit (masks it off). This bit is called the Not-Marked-Through (NMT) bit and is used during the concurrent Marking phase. The hardware maintains a desired value for this bit and will trap to the NMT-trap if the ref has the wrong flavor. Null refs are ignored here as well.
 
 我们还从64位地址空间中截取了1个bit; 硬件会忽略该bit（将其屏蔽掉）。
 该位称为未标记通过位（NMT, Not-Marked-Through）, 在并发标记阶段使用。
-硬件将为此bit保持所需的值, 如果引用可能有问题，则将捕获到NMT陷阱。 这里同样会忽略 null 引用。
+硬件将为此bit维护期望值, 如果引用的NMT位值不对，则会触发NMT陷阱。 这里同样会忽略 null 引用。
 
 
 Note that the read barrier behavior can be emulated on standard hardware at some cost. The GC protection check can be emulated with standard page protection and the read barrier emulated with a dead load instruction. The NMT check can be emulated by double-mapping memory and changing page protections to reflect the expected NMT bit value. However, using the TLB to check ref privileges means that a failure will trigger a kernellevel TLB trap instead of a fast user-mode trap. Turning this into a user-mode trap will generally have some substantial cost and may require altering the OS. Our read barrier instruction will not trap on a null ref, and null refs are quite common. Emulating this on standard hardware will require a conditional test in the barrier code or mapping page 0. This in turn precludes using normal memory operations from doubling as null-pointer checks, a common optimization in modern JVMs.
 
-请注意，可以损失一定的成本开销在标准硬件平台上模拟读屏障行为。
+请注意，可以在标准硬件平台上以一定的开销来模拟读屏障行为。
 使用标准页面保护来模拟GC保护检查，
-读屏障则使用静态加载指令(dead load instruction)来模拟。
+读屏障则可以用一条无用的加载指令(dead load instruction)来模拟。
 NMT检查的模拟，可以通过双重映射内存，加上更改页面保护来实现, 以反映预期的NMT位。
 但是，使用TLB来检查引用的权限，意味着失败则会触发内核级TLB陷阱，而不是快速用户模式陷阱。
 将其转换为用户模式陷阱通常会产生大量的开销，可能还需要修改操作系统代码。
-我们的读屏障指令不会捕获 null 引用，而且在Java中null引用太常见了；
-在标准硬件上仿真模拟, 需要在屏障代码上进行条件测试, 或者映射0号页面。
-这又将使用双倍的常规内存操作来进行空指针检查（这阻止了现代JVM中的常见优化）。
+我们的读屏障指令遇到 null 引用不会触发陷阱，而Java中null引用太常见了；
+在标准硬件上仿真模拟, 需要在屏障代码中进行条件判断, 或者映射0号页面。
+这进而导致常规内存操作无法兼任空指针检查，而这是现代JVM中的常见优化。
 
 
 ## 4. THE PAUSELESS GC ALGORITHM
@@ -323,9 +323,9 @@ The Pauseless GC Algorithm is divided into three main phases: Mark, Relocate and
 对象迁移阶段使用最近可用的标记位来查找具有少量存活对象的页面，以迁移和压缩这些页面, 释放物理内存。重映射阶段更新堆中的每个对象迁移指针。
 
 Pauseless GC 算法分为三个主要阶段：标记(`Mark`)，对象迁移(`Relocate`)和重映射(`Remap`)。 每个阶段都是完全并行和并发执行的。
-标记位(Mark bits)慢慢变得陈旧； 随着对象在一段时间后死亡，但标记位却没能反映出这种变化。
+标记位(Mark bits)会慢慢变得陈旧； 对象会随时间死亡，而标记位却没能反映出这种变化。
 `标记` 阶段, 负责定时刷新标记位。
-`对象迁移` 阶段, 使用最新的标记位数据, 来查找只有少量存活数据的页面, 以迁移和压缩这些页面，并并释放底层的物理内存。
+`对象迁移` 阶段, 使用最新的标记位数据, 来查找只有少量存活数据的页面, 以迁移和压缩这些页面，并释放底层的物理内存。
 `重映射` 阶段, 主要是更新堆内存中的每一个对象迁移指针。
 
 > 译者注: `并行`指GC线程之间并行执行, `并发`指GC线程与业务线程之间并发执行。
@@ -352,7 +352,7 @@ The algorithm we present has no Stop-The-World (STW) pauses, no places where all
 
 The Mark phase is a parallel and concurrent incremental update (not SATB) marking algorithm [17], augmented with the read barrier. The Mark phase is responsible for marking all live objects, tagging live objects in some fashion to distinguish them from dead objects. In addition, each ref has it's NMT bit set to the expected value. The Mark phase also gathers per-1M-page liveness totals. These totals give a conservative estimate of live data on a page (hence a guaranteed amount of reclaimable space) and are used in the Relocate phase.
 
-标记阶段是并行的，增加了读屏障，采样并发增量更新标记算法（而不是SATB）(见[17])。
+标记阶段是并行的，增加了读屏障，采用并发增量更新标记算法（而不是SATB）(见[17])。
 标记阶段负责标记所有的存活对象，并以某种方式打上标签，将其与死亡对象区分开。
 此外，每个引用的NMT标志位都设置为期望值。
 标记阶段还统计每个1M页的存活量。 存活量数据只是页面上存活数据的保守估计（因此保证了可回收空间的量），在“对象迁移”阶段中使用。
@@ -445,7 +445,7 @@ The Mark phase begins by initializing any internal data structures (e.g., markin
 
 The Mark phase then marks all global refs, scans each threads' root-set, and flips the per-thread expected NMT value. The root-set generally includes all refs in CPU registers and on the threads' stacks. Running threads cooperate by marking their own root-set. Blocked (or stalled) threads get marked in parallel by Mark-phase threads. This is a Checkpoint; each thread can immediately proceed after it's root set has been marked (and expected- NMT flipped) but the Mark phase cannot proceed until all threads have crossed the Checkpoint.
 
-然后, 标记阶段标记所有的全局引用，扫描每个线程的 root-set(GCroot-set合)，并翻转各个线程预期的NMT值。 root-set 通常包括: CPU寄存器和线程栈中的所有引用。运行中的线程通过标记自身的root-set合来参与协作；阻塞（或停滞）状态的线程由Mark-phase线程并行地标记。这是一个检查点; 每个业务线程在标记了root-set（以及预期NMT翻转）之后就可以立即继续，但是标记阶段的GC线程必须等所有业务线程达到检查点后，才能继续运行。
+然后, 标记阶段标记所有的全局引用，扫描每个线程的 root-set（GC根集合），并翻转各个线程预期的NMT值。 root-set 通常包括: CPU寄存器和线程栈中的所有引用。运行中的线程通过标记自身的 root-set 来参与协作；阻塞（或停滞）状态的线程由Mark-phase线程并行地标记。这是一个检查点; 每个业务线程在标记了root-set（以及预期NMT翻转）之后就可以立即继续，但是标记阶段的GC线程必须等所有业务线程达到检查点后，才能继续运行。
 
 After the root-sets are all marked we proceed with a parallel and concurrent marking phase [17]. Live refs are pulled from the worklists, their target objects marked live and their internal refs are recursively worked on. Note that the markers ignore the NMT bit, it is only used by the mutators. When an object is marked live, its size is added to the amount of live data in it's 1M page (only large objects are allowed to span a page boundary and they are handled separately, so the live data calculation is exact). This phase continues until the worklists run dry and all live objects have been marked.
 
@@ -461,15 +461,15 @@ New objects created by concurrent mutators are allocated in pages which will not
 
 One of the difficulties in making an incremental update marker is that mutators can “hide” live objects from the marking threads. A mutator can read an unmarked ref into a register, then clear it from memory. The object remains live (because its ref is in a register) but not visible to the marking threads (because they are past the mutator stack-scan step). The unmarked ref can also be stored down into an already marked region of the heap. This problem is typically solved by requiring another STW pause at the end of marking. During this second STW the marking threads revisit the root-set and modified portions of the heap and must mark any new refs discovered. Some GC algorithms have used a SATB invariant to avoid the extra STW pause. The cost of SATB is a somewhat more expensive writebarrier; the barrier needs to read and test the overwritten value.
 
-增量更新标记的一个难点是，标记线程可能看不见业务线程藏起来的存活对象。 mutator可以将未标记的引用读进寄存器，然后在内存中清除这个引用。该对象依然是存活状态（因为它还有引用在寄存器中）,但标记线程就是看不见（因为在mutator栈扫描过程中被跳过了）。 未标记的引用也可能被存放到已标记区域中。通常是在标记结束时，请求另一次STW停顿来解决该问题。 在第二次STW期间， 标记线程重新访问GCroot-set合、以及堆内存中发生修改的部分，并且必须标记所有新发现的引用。一些GC算法使用SATB不变量来避免额外的STW停顿。 SATB的开销是一个更昂贵的写屏障; 这个写屏障需要读取并检测被覆盖的值。
+增量更新标记的一个难点是，标记线程可能看不见业务线程藏起来的存活对象。 mutator可以将未标记的引用读进寄存器，然后在内存中清除这个引用。该对象依然是存活状态（因为它还有引用在寄存器中）,但标记线程就是看不见（因为在mutator栈扫描过程中被跳过了）。 未标记的引用也可能被存放到已标记区域中。通常是在标记结束时，请求另一次STW停顿来解决该问题。 在第二次STW期间， 标记线程重新访问 root-set、以及堆内存中发生修改的部分，并且必须标记所有新发现的引用。一些GC算法使用SATB不变量来避免额外的STW停顿。 SATB的开销是一个更昂贵的写屏障; 这个写屏障需要读取并检测被覆盖的值。
 
 Instead of a STW pause or write-barrier we use a read barrier and require the mutators do a little GC work when they load a potentially unmarked ref by taking an NMT-trap. We get the trapping behavior by relying on the read-barrier and the Not- Marked-Through bit: a bit we steal from each ref. Refs are 64- bit entities in our system representing a vast address space. The hardware implements a smaller virtual address space; the unused bits are ignored for addressing purposes. The read-barrier logic maintains the notion of a desired value for the NMT bit and will trap if it is set wrong. Correctly set NMT bits cost no more than the read-barrier cost itself. The invariant is that refs with a correct NMT have definitely been communicated to the Marking threads (even if they haven't yet been marked through). Refs with incorrect NMT bits may have been marked through, but the mutator has no way to tell. It informs the marking threads in any case.
 
-我们既不使用STW停顿，也不使用写屏障，而是使用读屏障，并且在加载可能未标记的引用时，要求业务线程执行一点儿GC相关的工作，通过采用NMT陷阱的方式。依靠read-barrier和Not-Marked-Through位(从每个指针地址中截取的一个bit)来触发陷阱的行为。 在我们的系统中指针引用是64位的，可以表示的地址空间多到用不完；硬件只使用了其中很少的一部分虚拟地址空间; 在寻址时会忽略未使用的bit。读屏障的逻辑是维护NMT位的期望值这个概念，如果设置错误则会触发陷阱。正确设置NMT位的开销不会超过读屏障本身。不变量引用具有正确的NMT标志位、肯定已传给标记线程（即使它们尚未被标记）。 NMT位错误的引用可能被标记过，但是mutator线程不知道。所以在任何情况下都会通知标记线程。
+我们既不使用STW停顿，也不使用写屏障，而是使用读屏障，并且在加载可能未标记的引用时，要求业务线程执行一点儿GC相关的工作，通过采用NMT陷阱的方式。依靠read-barrier和Not-Marked-Through位(从每个指针地址中截取的一个bit)来触发陷阱的行为。 在我们的系统中指针引用是64位的，可以表示的地址空间多到用不完；硬件只使用了其中很少的一部分虚拟地址空间; 在寻址时会忽略未使用的bit。读屏障的逻辑是维护NMT位的期望值这个概念，如果设置错误则会触发陷阱。正确设置NMT位的开销不会超过读屏障本身。不变量(invariant)是：具有正确NMT位的引用，肯定已经传递给了标记线程（即使它们尚未被遍历标记）。 NMT位错误的引用可能被标记过，但是mutator线程不知道。所以在任何情况下都会通知标记线程。
 
 If a mutator thread loads and read-barriers a ref with the NMT bit set wrong, it has found a potentially unvisited ref. The mutator jumps to the NMT-trap handler. In the NMT-trap handler the loaded value has it's NMT bit set correctly. The ref is recorded with the Mark phase logic. <sup>2</sup>  Then the corrected ref is stored back into memory. Since the ref is changed in memory, that particular ref will not cause a trap in the future.
 
-如果一个mutator线程加载一个NMT位错误的引用，有读屏障存在的话，就会找到一个不可访问的引用。 mutator跳转到NMT陷阱处理程序。在NMT陷阱处理程序中，加载的值正确设置了NMT位。引用是在标记阶段逻辑中记录的。 <sup>{注2}</sup> 然后将更正的引用存回内存。由于在内存中引用发生了变更， 因此之后这个引用就不会再触发陷阱。
+如果一个mutator线程加载一个NMT位错误的引用，有读屏障存在的话，就说明找到了一个可能未被访问过的引用。 mutator跳转到NMT陷阱处理程序。在NMT陷阱处理程序中，加载的值正确设置了NMT位。引用是在标记阶段逻辑中记录的。 <sup>{注2}</sup> 然后将更正的引用存回内存。由于在内存中引用发生了变更， 因此之后这个引用就不会再触发陷阱。
 
 > <sup>2</sup> Actually, they are batched for efficiency.
 
@@ -481,7 +481,7 @@ This “self-healing” idea is key: without it a phase-change would cause all t
 
 Changing the ref in memory amounts to a store, even if the stored value is Java-language-equivalent to the original value. The store is transparent to the Java semantics of the running thread, but the store is visible to other threads: without some care it might stomp over another thread's store effectively reversing it. Instead of unconditionally storing, the trap handler uses a compare-and-swap (CAS) instruction to only update the memory if it hasn't changed since the trap. If the CAS fails the handler returns the value currently in memory (not the value originally loaded) and the read barrier is repeated.
 
-更改内存中的引用相当于保存(store)操作，即使要保存的值在Java语言层面等于原始值。 在Java语义层面, 这个store操作对正在运行的线程来说是透明的，但对其他线程是可见的： 不需要关心另一个线程会不会去反转它。 陷阱处理程序使用的是CAS指令，而不是无条件直接写入，只在没有被陷阱处理程序更改的情况下才去更新内存。如果CAS失败，则处理程序返回内存中的当前值（这已经不是最初加载的那个值了），并重复读屏障。
+更改内存中的引用相当于一次存储(store)操作，即使要存储的值在Java语言层面等于原始值。 在Java语义层面, 这个store操作对正在运行的线程来说是透明的，但对其他线程是可见的： 如果不加小心，它可能会覆盖另一个线程的写入，相当于将其反转。 陷阱处理程序使用的是CAS指令，而不是无条件直接写入，只有在内存自陷阱发生以来没有变化时才去更新。如果CAS失败，则处理程序返回内存中的当前值（这已经不是最初加载的那个值了），并重复读屏障。
 
 
 ### 5.2 The NMT Bit and The Initial Stack-Scan
@@ -502,7 +502,7 @@ Note that it is not possible for a single thread to hold the same ref twice in i
 
 When the marking threads run out of work, Marking is nearly done. The marking threads need to close the narrow race where a mutator may have loaded an unmarked ref (hence has the wrong NMT bit) but not yet executed the read-barrier. Read-barriers never span a GC safepoint, so it suffices to require the mutators cross a GC safepoint without trapping. The Marking pass requests a Checkpoint, but requires no other mutator work. Any refs discovered before the Checkpoint ends will be concurrently marked as normal. When all mutators complete the Checkpoint with none of them reporting any new refs, the Mark phase is complete. If new refs are reported the Marker threads will exhaust them and the Checkpoint will repeat. Since no refs can be created with the “wrong” NMT-bit value the process will eventually complete.
 
-当标记线程停止工作时，标记阶段即将完成。 标记线程需要快速处理一些事情，比如业务线程可能加载了未标记的引用（因此NMT位是错误的）但尚未执行读屏障。 读障碍永远不会跨越GC安全点，因此只需要业务线程通过GC安全点而不需陷进陷阱就够了。 标记传递需要一个检查点，但不需要其他业务线程参与处理。 在Checkpoint结束之前发现的任何引用都被并发标记为正常。 当所有mutators都完成Checkpoint，却没有报告任何新的引用，那么标记阶段就完成了。 如果报告了新的引用，那么Marker线程将其处理掉并且重复执行Checkpoint。 因为创建的引用不再有“错误的”NMT位值，所以标记过程最终就完成了。
+当标记线程停止工作时，标记阶段即将完成。 标记线程需要关闭一个很窄的竞态窗口：业务线程可能加载了未标记的引用（因此NMT位是错误的），但尚未执行读屏障。 读屏障永远不会跨越GC安全点，因此只需要业务线程不触发陷阱地通过GC安全点就够了。 标记传递需要一个检查点，但不需要其他业务线程参与处理。 在Checkpoint结束之前发现的任何引用都被并发标记为正常。 当所有mutators都完成Checkpoint，却没有报告任何新的引用，那么标记阶段就完成了。 如果报告了新的引用，那么Marker线程将其处理掉并且重复执行Checkpoint。 因为创建的引用不再有“错误的”NMT位值，所以标记过程最终就完成了。
 
 
 ## 6. RELOCATE AND REMAP PHASES
@@ -528,17 +528,25 @@ Next the Relocate phase builds side arrays to hold forwarding pointers. The forw
 
 > Figure 2: Finding sparsely populated pages
 
+> 图2: 查找稀疏页面
+
 ![](03_Side_Arrays_and_TLB_Protection.jpg)
 
 > Figure 3: Side Arrays and TLB Protection
+
+> 图3: side array与TLB保护
 
 ![](04_Copying_live_data_out.jpg)
 
 > Figure 4: Copying live data out
 
+> 图4: 将存活数据拷贝出去
+
 ![](05_Updating_stale_refs.jpg)
 
 > Figure 5: Updating stale refs
+
+> 图5: 更新过时的引用
 
 
 The side array data isn't large because we relocate sparse pages. We implement it as a straightforward hash table. Figure 3 shows the side array.
@@ -569,7 +577,7 @@ If a mutator's read-barrier GC-traps, then the mutator has loaded a stale ref. T
 
 It is also possible that the needed object has not yet been copied. In this case the mutator will do the copy on behalf of the GC thread – since the mutator is otherwise blocked from forward progress. The mutator can read the GC-protected page because the trap handler runs in the elevated GC-protection mode. If the mutator must copy a large object, it may be stalled for a long time. This normally isn't an issue: pages with a lot of live data are not relocated and a `1/2`-page sized object (512K) can be copied in about 1ms.
 
-还有可能所需的对象尚未复制完成。在这种情况下，业务线程将代表GC线程执行复制 - 反正业务线程已经被阻塞了是吧。 mutator这时候可以读取受GC保护的页面，因为陷阱处理程序被提升到GC保护模式下运行。如果mutator必须复制一个大对象，可能会长时间停滞。这通常不是什么大问题：具有大量存活数据的页面不会迁移，并且复制 `1/2` 页面大小的对象（512K）只需要不到1ms的时间。
+还有可能所需的对象尚未复制完成。在这种情况下，业务线程将代表GC线程执行复制 - 反正业务线程已经被阻塞了是吧。 mutator这时候可以读取受GC保护的页面，因为陷阱处理程序被提升到GC保护模式下运行。如果mutator必须复制一个大对象，可能会长时间停滞。这通常不是什么大问题：具有大量存活数据的页面不会迁移，并且复制 `1/2` 页面大小的对象（512K）大约只需要1ms的时间。
 
 ### 6.2 Other Relocate Phase Actions
 
@@ -593,7 +601,7 @@ Notice that there is no “rush” to finish the Relocation phase; we need only 
 
 The Remap phase updates all stale refs with their proper forwarded pointers. It must visit every ref in the heap to find all the stale ones. As mentioned before it runs in lockstep with the next GC cycle's Mark phase; the one piece of visitor logic does both the stale ref check and NMT check.
 
-Remap阶段更新所有过时的引用，使用正确的转发指针。 必须遍历堆内存，才能找到所有过时的引用。 如前所述，它与后续GC循环的标记阶段同步运行; 遍历器的一个逻辑是执行过时引用的检查以及NMT检查。
+Remap阶段更新所有过时的引用，使用正确的转发指针。 必须遍历堆内存，才能找到所有过时的引用。 如前所述，它与后续GC循环的标记阶段同步运行; 同一份遍历逻辑既执行过时引用检查，也执行NMT检查。
 
 At the end of the Remap phase, all pages that were protected before the start of the Remap phase have now been completely scrubbed. No more stale refs to those pages remain so those virtual memory pages can now be reclaimed. We also free the side arrays at this time, and a GC cycle is complete.
 
@@ -613,7 +621,7 @@ Our implementation is a rapidly moving work-in-progress. As of this writing it s
 
 At the start of the Mark phase we stop all threads to flip the desired NMT state. We could flip the NMT bits via a Checkpoint; the cost would be some amount of NMT-bit throbbing (repeated NMT traps) on shared objects until all threads flip. Also, global shared resources (e.g., the SystemDictionary, JNI handles, locked objects) are marked in this STW. Engineering these to use a Checkpoint is straightforward.
 
-在标记阶段的开始，会停止所有线程以翻转NMT状态位。可以通过检查点来翻转NMT位; 代价是在共享对象上会有一定量的NMT位跳动(重复进入NMT陷阱)，直到所有线程都翻转为止。此外，全局共享资源(例如，SystemDictionary、JNI句柄、锁对象)走在这次STW中标记。使用检查点在工程中是直接又简单的。
+在标记阶段的开始，会停止所有线程以翻转NMT状态位。可以通过检查点来翻转NMT位; 代价是在共享对象上会有一定量的NMT位跳动(重复进入NMT陷阱)，直到所有线程都翻转为止。此外，全局共享资源(例如，SystemDictionary、JNI句柄、锁对象)是在这次STW中标记的。将它们改为使用检查点在工程上是简单直接的。
 
 The worse pause reported was 21ms and the average was 16ms.
 
@@ -625,7 +633,7 @@ The worse pause reported was 21ms and the average was 16ms.
 
 At the end of the Mark phase we stop all threads and do (in parallel but not concurrent) soft ref processing, weak ref processing, and finalization. Java's soft and weak refs present a race between the collector nullifying a ref and the mutator “strengthening” the ref. We could process the refs concurrently by having the collector CAS down a null only when the ref remains notmarked- through. The NMT-trap handler already has the proper CAS'ing behavior – both the collector and the mutator race to CAS down a new value. If the mutator wins the ref is strengthened (and the collector knows it), and if the collector wins the ref is nullified (and the mutator only sees the null).
 
-在标记阶段结束时，会停止所有线程，(并行但不并发)执行软引用处理(soft ref)、弱引用处理（weak ref）和终结(finalization)。Java中的软引用和弱引用，在GC释放引用、与业务线程将其变回强引用之间存在竞争。 我们可以并发地处理引用，通过让收集器只在引用未标记时通过CAS将其设置为null值。对应的 NMT-trap 处理程序已经具有正确的CAS行为 —— 收集器和mutator都争着让CAS变为一个新值。如果mutator成功，ref就会增强(收集器能感知到)，如果收集器成功，引用就会置空(而mutator会看到null)。
+在标记阶段结束时，会停止所有线程，(并行但不并发)执行软引用处理(soft ref)、弱引用处理(weak ref)和终结(finalization)。Java中的软引用和弱引用，在GC释放引用、与业务线程将其变回强引用之间存在竞争。 我们可以并发地处理引用，通过让收集器只在引用未标记时通过CAS将其设置为null值。对应的 NMT-trap 处理程序已经具有正确的CAS行为 —— 收集器和mutator都争着让CAS变为一个新值。如果mutator成功，ref就会增强(收集器能感知到)，如果收集器成功，引用就会置空(而mutator会看到null)。
 
 There are a number of other items handled at this STW that could be engineered to be concurrent, including class unloading and code-cache unloading. Again engineering these will be straightforward but tedious.
 
@@ -641,7 +649,7 @@ The worse pause reported was 16ms and the average was 7ms.
 
 The mutators' root-sets need scrubbing when GC-protecting a page. There are two problems here: the TLB shoot-down isn't atomic and there are stale refs in the root-set. Since the TLB shoot-down is not atomic, for a brief period some mutators can be protected and not others. Unprotected mutators would continue to read and write the object directly, so protected mutators need to as well. However, reading and writing the protected object forces a GC-protection trap. Our current implementation stops all threads and performs a bulk TLB shoot-down and mutator root-set scrubbing under STW. This can be engineered to be concurrent and incremental in a straightforward manner.
 
-当GC保护某个页面时，业务线程的root-sets需要清理。 存在两个问题: TLB卸载不是原子操作，在root-sets中还有陈旧的引用。由于TLB卸载不是原子性的，在极短的时间内，可能有一部分业务线程受到保护，而另一部分不受保护。不受保护的业务线程将继续直接读写对象，因此受保护的业务线程也需要这样做。然而，读取和写入受保护对象会强制进入GC保护陷阱。我们当前的实现是停止所有线程，并在STW下执行批量TLB删除和线程的root-set清理。也可以直接将其设计为并发的，支持增量的方式。
+当GC保护某个页面时，业务线程的root-sets需要清理。 存在两个问题: TLB击落不是原子操作，在root-sets中还有陈旧的引用。由于TLB击落不是原子性的，在极短的时间内，可能有一部分业务线程受到保护，而另一部分不受保护。不受保护的业务线程将继续直接读写对象，因此受保护的业务线程也需要这样做。然而，读取和写入受保护对象会强制进入GC保护陷阱。我们当前的实现是停止所有线程，并在STW下执行批量TLB击落和线程的root-set清理。也可以直接将其设计为并发的，支持增量的方式。
 
 We could use a Checkpoint to update the TLBs and scrub the root-sets. To maintain concurrency until all threads have passed the relocation Checkpoint, the read barrier's TLB trap handler is modified to wait for the Checkpoint to complete before proceeding with relocation or remapping and propagating a corrected ref in the mutator. Mutator threads that actually access refs in protected pages will then “bunch up” at the Checkpoint with other threads continuing concurrent execution past the Checkpoint. This effect is mitigated by the fact that we preferentially relocate sparse pages.
 
@@ -657,7 +665,7 @@ The worse pause reported was 19ms and the average was 5ms.
 
 Right now we have not implemented a second set of mark bits to allow the Relocate phase to run concurrently with the next Mark/Remap phase [14]. This means we cannot free memory during the Mark/Remap phase. We have heuristics which predict how many pages the mutator will need during marking and we free that many (plus some pad) before marking begins. If we predict low, as can happen if the mutators suddenly “accelerate”, the mutators will block until marking is complete. Engineering the overlapped Relocate/Mark phases will be straightforward. Additionally, we currently do not add threads dynamically in response to mutator acceleration. Each phase completes with a number of threads decided on at the phase start.
 
-截止论文发表时，还未使用第二组标记位来实现，以允许迁移阶段与下一次GC周期的Mark/Remap阶段(见[14])并发执行。 也就是说在具体实现中暂时还不能在Mark/Remap阶段释放内存。 我们使用启发式算法，来预测业务线程在标记期间需要多少页面，并在标记开始前释放足够的页面（加上一些填充）。 如果预测低了，碰到业务线程突然“加速”，则业务线程会阻塞、直到标记完成。 将 迁移/Mark 阶段设计为并发执行非常简单。 此外，目前也不能在业务突然增加时动态添加GC线程。 每个阶段的线程数在该阶段开始时就确定了。
+截止论文发表时，还未实现第二组标记位，以允许迁移阶段与下一次GC周期的Mark/Remap阶段(见[14])并发执行。 也就是说在具体实现中暂时还不能在Mark/Remap阶段释放内存。 我们使用启发式算法，来预测业务线程在标记期间需要多少页面，并在标记开始前释放足够的页面（加上一些填充）。 如果预测低了，碰到业务线程突然“加速”，则业务线程会阻塞、直到标记完成。 将 迁移/Mark 阶段设计为并发执行非常简单。 此外，目前也不能在业务突然增加时动态添加GC线程。 每个阶段的线程数在该阶段开始时就确定了。
 
 ## 8. EXPERIMENTS
 
@@ -673,13 +681,13 @@ Pauseless算法旨在降低面向事务的大型业务系统的停顿时间。�
 
 In an effort to have both a reliable, understandable benchmark and one that is more representative of transactional programs, we added a large object cache to the standard SpecJBB benchmark. This cache represents, e.g., a Java bean cache, or an HTML request cache. For each transaction, 400 bytes were added to the cache and the oldest cached object was freed. This level of extra objects is enough to easily defeat targeted tuning of generational collectors to JBB.
 
-为了获得可靠，可理解的基准测试，还要能代表实际的业务处理程序， 我们在标准的SpecJBB基准测试中添加了一个大对象缓存。该缓存可以表示，Java bean 缓存、或者HTML请求缓存。对于每个事务，将400字节添加到缓存中，并释放最老的缓存对象。 这种额外的对象足以轻易地阻止针对JBB的分代垃圾收集器的有针对性的调整。
+为了获得可靠，可理解的基准测试，还要能代表实际的业务处理程序， 我们在标准的SpecJBB基准测试中添加了一个大对象缓存。该缓存可以表示，Java bean 缓存、或者HTML请求缓存。对于每个事务，将400字节添加到缓存中，并释放最老的缓存对象。 这种额外对象足以轻易击溃专门针对JBB调优的分代垃圾收集器。
 
 We also removed the forced System.gc() between runs and increased the JBB run times from 2 minutes to 20 minutes. <sup>3</sup>
 In the standard benchmark it's common to never need a full collection during the timed portion of the run. In practice, these large business applications must run in a steady-state mode without an untimed window every 2 minutes for a System.gc().
 
 我们还移除了各个run之间的 `System.gc()`，并将JBB的运行时间从2分钟增加到20分钟。<sup>3</sup>
-在标准基准测试中，通常在运行的特定期间并不需要完整的垃圾收集。但在生产环境中，这些大型业务系统必须平稳运行，不可能每隔2分钟就有一次GC窗口。
+在标准基准测试中，通常在运行的计时期间并不需要完整的垃圾收集。但在生产环境中，这些大型业务系统必须平稳运行，不可能每隔2分钟就有一次GC窗口。
 
 > <sup>3</sup> Except for IBM's concurrent collector which was unable to run the full 20 minutes; we used a 10 minute run for it.
 
@@ -692,11 +700,11 @@ All runs were done with 8 warehouses, i.e. 8 concurrent threads doing benchmark 
 
 We ran the IBM and SUN JVMs on a 2-way 3.2Ghz hyperthreaded Xeon with 2G of physical memory, running a Red Hat Linux 2.6 kernel. Unfortunately, the BEA JVM didn't run on this version of Linux so it was run on a 1-way 2.4Ghz hyperthreaded P4 with 512M of physical memory running Windows 2000. The BEA JVM heap was limited to 425M to avoid paging. The simulated object cache added about 40M of long-lived live data per warehouse; 425M isn't a large enough heap to run with 8 warehouses. We limited the BEA JVM to 3 warehouses, keeping the proportion of heap devoted to long-lived data about the same. We also ran the SUN JVM in 64-bit mode on a 2-way 1.2Ghz US3 with 4G of physical memory running Solaris 9. We attempted to run on an older 24-CPU Sparc (450Mhz US2). Here we hoped the Sparc would use the spare CPUs to good effect. However, the single-threaded concurrent collector could not keep up with the mutators and the benchmark suffered numerous 12-second full-GC pauses. On the 2-CPU Sparc, a single concurrent collector thread could use up to half the total CPU resources in order to keep up. We report the superior 2-CPU Sparc scores, although we would like to have reported scores from another high-CPU count machine. The Azul JVM is a 64- bit JVM running on a 16-chip (384-CPU) Azul appliance with 128G of physical memory. As before, we limited heap size to 1.5G. Only 8 CPUs are used to run the actual benchmark, with a handful more running the Pauseless collection and doing background JIT compiles.
 
-我们在2路3.2Ghz超线程Xeon处理器上运行IBM和SUN的JVM，内存为2GB, 操作系统是Red Hat Linux 2.6内核。杯具的是，BEA JVM 不支持这个版本的Linux，因此它只能运行在单路2.4Ghz超线程P4处理器上，物理内存512M，系统为Windows 2000. BEA JVM的堆内存限制为425M以避免使用交换内存。 为每个仓库模拟的对象缓存大约是40M的长寿存活数据; 425M的堆内存并不足以运行8个仓库。我们将BEA JVM限制为3个仓库，保持用于长期数据的堆的比例大致相同。我们还在2路1.2Ghz US3的机器上运行64位模式的SUN JVM，其中物理内存为4G，系统是Solaris 9. 我们尝试在较旧的24-CPU Sparc（450Mhz US2）平台上运行。在这里，我们希望Sparc能够使用备用CPU来达到良好的效果。但是，单线程并发收集器无法跟上mutator的需求，并且基准测试时碰到了大量的12秒 FullGC 停顿。在2-CPU Sparc上，单个并发GC线程需要消耗总CPU资源的一半才能跟上业务线程的需要。我们报告了优秀的2-CPU Sparc分数，尽管我们希望报告另一台高CPU数量机器的分数。 Azul JVM是一款64位JVM, 运行在16主板（384-CPU）的Azul设备上的，具有128G的物理内存。和以前一样，我们将堆大小限制为1.5G。只有8个CPU用于运行实际基准测试，少数运行Pauseless GC 并进行后台JIT编译。
+我们在2路3.2Ghz超线程Xeon处理器上运行IBM和SUN的JVM，内存为2GB, 操作系统是Red Hat Linux 2.6内核。杯具的是，BEA JVM 不支持这个版本的Linux，因此它只能运行在单路2.4Ghz超线程P4处理器上，物理内存512M，系统为Windows 2000. BEA JVM的堆内存限制为425M以避免使用交换内存。 为每个仓库模拟的对象缓存大约是40M的长寿存活数据; 425M的堆内存并不足以运行8个仓库。我们将BEA JVM限制为3个仓库，保持用于长期数据的堆的比例大致相同。我们还在2路1.2Ghz US3的机器上运行64位模式的SUN JVM，其中物理内存为4G，系统是Solaris 9. 我们尝试在较旧的24-CPU Sparc（450Mhz US2）平台上运行。在这里，我们希望Sparc能够使用备用CPU来达到良好的效果。但是，单线程并发收集器无法跟上mutator的需求，并且基准测试时碰到了大量的12秒 FullGC 停顿。在2-CPU Sparc上，单个并发GC线程需要消耗总CPU资源的一半才能跟上业务线程的需要。我们报告的是其中表现更好的2-CPU Sparc分数，尽管我们希望报告另一台高CPU数量机器的分数。 Azul JVM是一款64位JVM, 运行在16芯片（384-CPU）的Azul设备上的，具有128G的物理内存。和以前一样，我们将堆大小限制为1.5G。只有8个CPU用于运行实际基准测试，少数运行Pauseless GC 并进行后台JIT编译。
 
 We decided to NOT report SpecJBB score, which is reported in units of transactions/second, both because our run is not Speccompliant and because of the wide variation in hardware and JIT quality. Even on the same hardware, the JITs from different vendors produce code of substantially different quality. For the same 20 minute run, we saw JVMs execute between 15 million and 30 million transactions. While transaction throughput is an important metric, this paper is focused on removing the biggest reason for transaction time variability. We report transaction times instead.
 
-我们决定不报告SpecJBB得分，他的单位是 TPS（transactions/second），因为我们的运行不是Speccompliant，而且因为硬件和JIT的差异很大。即使在相同的硬件上，来自不同供应商的JIT也会生成质量差异很大的代码。 在相同的20分钟运行中，我们看到JVM执行了1500万到3000万次业务。虽然吞吐量是一个重要的指标，但本文的重点是消除各次请求之间的时间变化。所以报告了业务响应时间。
+我们决定不报告SpecJBB得分，它的单位是 TPS（transactions/second），因为我们的运行不是Speccompliant，而且因为硬件和JIT的差异很大。即使在相同的硬件上，来自不同供应商的JIT也会生成质量差异很大的代码。 在相同的20分钟运行中，我们看到JVM执行了1500万到3000万次业务。虽然吞吐量是一个重要的指标，但本文的重点是消除各次请求之间的时间变化。所以报告了业务响应时间。
 
 ### 8.2 Transaction Times
 
@@ -708,7 +716,7 @@ We measured both transaction times and GC pause times reported with “-verbose:
 
 Transaction times were gathered into buckets by duration, building a histogram. Duration was measured with Java's current- TimeMillis() and so is limited to millisecond resolution. Most transactions take 0 or 1 milliseconds, so we did not gather accurate times for these fast transactions. However, we are more interested in the slow transactions. All the collectors except Pauseless had a significant fraction of transactions take 100- 300ms (100 times slower than the fast transactions), with spikes to 1-4 seconds. We kept per-millisecond buckets from 0ms to 31ms. After that we grew the buckets by powers-of-2 with halves: 32-47ms, 48-63ms, 64-95ms, 96-127ms, and so on up to 16sec. This allowed us to compute the bucket index with a few shifts. Buckets were replicated per thread to avoid coherency costs then totaled together at the end of the run.
 
-业务响应时间按持续时间收集到桶中，构建直方图。使用Java的 `currentTimeMillis()` 方法测量持续时间，因此精度也就限制为毫秒级。大多数业务只需要0-1毫秒，因此我们没有收集这些快速事务的准确时间。但是，我们对慢响应的业务更感兴趣。除Pauseless之外的所有垃圾收集器都有相当一部分的业务需要耗费100-300ms（比快速的业务要慢100倍以上），峰值为1-4秒。我们将每毫秒的桶保持在0ms-31ms之间。在那之后，我们用2的2次幂增加了桶：32-47ms，48-63ms，64-95ms，96-127ms，依此类推，最长16秒。这允许我们用几个班次来计算桶索引。每个线程复制存储桶以避免一致性开销，然后在运行结束时汇总。
+业务响应时间按持续时间收集到桶中，构建直方图。使用Java的 `currentTimeMillis()` 方法测量持续时间，因此精度也就限制为毫秒级。大多数业务只需要0-1毫秒，因此我们没有收集这些快速事务的准确时间。但是，我们对慢响应的业务更感兴趣。除Pauseless之外的所有垃圾收集器都有相当一部分的业务需要耗费100-300ms（比快速的业务要慢100倍以上），峰值为1-4秒。我们将每毫秒的桶保持在0ms-31ms之间。在那之后，我们以2的幂次来增大桶的范围：32-47ms，48-63ms，64-95ms，96-127ms，依此类推，最长16秒。这允许我们用几次移位运算来计算桶索引。每个线程复制存储桶以避免一致性开销，然后在运行结束时汇总。
 
 A transaction that reports as taking 0ms clearly takes some finite time. The 0ms bucket's average transaction time is assumed to be 0.33ms, and the 1ms bucket's average transaction time is assumed to be 1.33ms. This is the largest source of measurement error we have. Almost no transactions landed in the 3ms to 30ms buckets, so a measurement error of up to 1ms in those buckets will not alter the data in any substantial way.
 
@@ -724,23 +732,27 @@ Figure 6 shows how many transactions the various JVMs kept in the 0ms and 1ms ra
 
 Figure 7 shows cumulative transaction times (not wall-clock time, which was 20 minutes) vs. transaction duration. Times are cumulative, reaching 1.00 (100% of total transaction time) at the top edge. Transaction duration runs across the bottom in a log scale. Lines that approach 1.00 quicker are better, representing a greater percentage of processing time spent in fast transactions.
 
-图7显示了累计的业务处理时间（不是挂钟时间，即20分钟）与交易持续时间的关系。时间是累积的，在最高达到1.00（总业务响应时间的100％）。交易持续时间以对数比例跨越底部。越快接近1.00的越好，表示在快速交易中花费的时间比例更大。
+图7显示了累计的业务处理时间（不是挂钟时间，即20分钟）与事务持续时间的关系。时间是累积的，在最高处达到1.00（总业务响应时间的100％）。事务持续时间以对数比例跨越底部。越快接近1.00的越好，表示在快速事务中花费的时间比例更大。
 
 We can see a couple of trends in this chart. Pauseless again does quite well, with essential 100% of time spent in fast transactions and a worst-case transaction time of 26 milliseconds. The other JVMs are roughly grouped into pairs with the parallel throughput collector line being slightly higher than the concurrent collector line for most of the chart. The lines cross as we near 100% of time and the slowest transactions; the concurrent collectors generally have smaller worst-cast times than the throughput collectors.
 
-我们可以在此图表中看到几个趋势。 Pauseless 表现相当不错，其中100％的时间花在快速交易上，最坏情况下的业务响应时间为26毫秒。其他JVM大致成对分组，大多数图表中，并行收集器的吞吐量略高于并发收集器。当接近100％的时间和最慢的交易时，这些线发生交叉; 并发收集器在最坏情况下通常比吞吐量收集器的停顿时间要小一些。
+我们可以在此图表中看到几个趋势。 Pauseless 表现相当不错，几乎100％的时间花在快速事务上，最坏情况下的业务响应时间为26毫秒。其他JVM大致成对分组，大多数图表中，并行收集器的吞吐量略高于并发收集器。当接近100％的时间和最慢的交易时，这些线发生交叉; 并发收集器在最坏情况下通常比吞吐量收集器的停顿时间要小一些。
 
 Table 1 shows the worse-case transaction times. The Pauseless algorithm's worse-case transaction time of 26ms is over 45 times better than the next JVM, BEA's parallel collector. Average transaction times are remarkable similar given the wide variation in hardware used.
 
-表1显示了最坏情况下的业务响应时间。 Pauseless算法在最差情况下消耗26ms，比下一款JVM（BEA的并行收集器）好了45倍。考虑到所用硬件并不一样，平均业务响应时间更能代表真实情况。
+表1显示了最坏情况下的业务响应时间。 Pauseless算法在最差情况下消耗26ms，比下一款JVM（BEA的并行收集器）好了45倍。考虑到所用硬件差异很大，平均事务时间却惊人地相似。
 
 ![](06_01_Worst-case_and_average_times.jpg)
 
 > Table 1: Worst-case and average times, in ms
 
+> 表1: 最坏情况与平均时间(单位: ms)
+
 ![](06_02_Short_transaction_times.jpg)
 
 > Figure 6: Short transaction times (0,1,2 ms) as a % of total
+
+> 图6: 短事务时间(0,1,2 ms)占总时间的百分比
 
 ![](07_01_Cumulative_transaction_times_vs_duration.jpg)
 
@@ -751,6 +763,8 @@ Table 1 shows the worse-case transaction times. The Pauseless algorithm's worse-
 ![](07_04_Cumulative_transaction_times_vs_duration.jpg)
 
 > Figure 7: Cumulative transaction times vs. duration (ms)
+
+> 图7: 累计事务时间与持续时间(ms)的关系
 
 
 ![](08_01_Reported_pause_times_vs_duration.jpg)
@@ -763,6 +777,8 @@ Table 1 shows the worse-case transaction times. The Pauseless algorithm's worse-
 
 > Figure 8: Reported pause times vs. duration (ms)
 
+> 图8: 报告的停顿时间与持续时间(ms)的关系
+
 
 
 ### 8.3 Reported Pause Times
@@ -771,12 +787,12 @@ Table 1 shows the worse-case transaction times. The Pauseless algorithm's worse-
 
 We collected GC pause times reported with “-verbose:gc”. We summed all reported times and present a histogram of cumulative pause times vs. pause duration. Figure 8 shows the reported pauses. Most of the concurrent collectors consistently report pause times in the 40-50ms range; IBM's concurrent collector has 150ms as it's common (mode) pause time. As expected, the parallel collectors all do worse with the bulk of time spent in pauses ranging from 150ms to several seconds.
 
-我们使用“-verbose：gc”来收集GC暂停时间的报告。 将所有停顿时间相加，汇总为一张 累积停顿时间VS.停顿持续时间的直方图。 图8显示了停顿报告。 大多数并发收集器的停顿时间一直在40-50ms范围内; IBM的并发收集器因为常见（模式）停顿时间而达到150毫秒左右。 正如预期的那样，并行收集器在停顿时间方面表现很糟糕，从大于150ms直到几秒之间都有。
+我们使用“-verbose:gc”来收集GC暂停时间的报告。 将所有停顿时间相加，汇总为一张 累积停顿时间VS.停顿持续时间的直方图。 图8显示了报告的停顿。 大多数并发收集器的停顿时间一直在40-50ms范围内; IBM的并发收集器最常见的（众数）停顿时间为150ms左右。 正如预期的那样，并行收集器在停顿方面表现更糟，大部分时间消耗在150ms到数秒的停顿中。
 
 Table 1 also shows the ratio of worst-case transaction time and worst-case reported pause times. Note that JBB transactions are highly regular, doing a fixed amount of work per transaction. Changes in transaction time can be directly attributed to GC.<sup>4</sup>
 Several of the worse-case transactions are a full second longer than the worse-case pauses. We have some guesses as to why this is so:
 
-表1还显示了最坏情况交易时间与最坏情况停顿时间的比率。 请注意，JBB事务是非常正规的，每个事务都执行固定数量的工作。 交易时间的变化可以直接归因于GC。<sup>4</sup>
+表1还显示了最坏情况事务时间与最坏情况停顿时间的比率。 请注意，JBB事务是非常有规律的，每个事务都执行固定数量的工作。 交易时间的变化可以直接归因于GC。<sup>4</sup>
 某些较糟糕的交易比最坏情况的停顿时间长一整秒。 我们有一些猜测，为什么会这样：
 
 > <sup>4</sup> We tested; all transactions are fast until the heap runs out. For the 64-bit JVMs we were able to test with a 64G heap.
@@ -785,21 +801,23 @@ Several of the worse-case transactions are a full second longer than the worse-c
 
 It is possible that the concurrent collectors did not keep up with the allocation rate, stalling mutators until they caught up. Unfortunately, this information was not obvious from the “-verbose: gc” output. Also, during some phases of some concurrent GCs, the mutators pay a heavy cost while making forward progress. This amounts to an unreported pause smeared out in time. Sometimes the GC pauses come in rapid succession so that the same transaction will get paused several times. Perhaps the underlying OS timesliced the 8 mutator threads very poorly across the 4 hyper-threaded CPUs.
 
-有可能是并发收集器的速度跟不上分配速度，拖慢了业务线程。不幸的是，这个信息在“-verbose: gc”的输出中并不明显。此外，在某些并发GC的部分阶段中，业务线程在并发执行时会付出沉重的代价。这相当于有一部分未报告的停顿时间被涂抹了。有时会快速连续地触发GC停顿，因此同一个事务可能会被停顿好几次。还有可能是底层只有4个超线程CPU内核，操作系统对8个业务线程分配了非常短的时间片。
+有可能是并发收集器的速度跟不上分配速度，拖慢了业务线程。不幸的是，这个信息在“-verbose: gc”的输出中并不明显。此外，在某些并发GC的部分阶段中，业务线程在并发执行时会付出沉重的代价。这相当于一次未报告的停顿被摊薄在时间线上。有时会快速连续地触发GC停顿，因此同一个事务可能会被停顿好几次。还有可能是底层操作系统在4个超线程CPU上对8个业务线程的时间片调度非常糟糕。
 
 In any case, **reported pause times can be highly misleading**.
 The concurrent collectors other than Pauseless under-report their effects by 2x to 6x! The parallel collectors also under- report, but only by 30% to 100%. Based on this data, we encourage the GC research community to test the end-to-end effects of GC algorithms carefully.
 
 无论如何，**停顿时间报告可能会产生很大的误导**。
-除了Pauseless之外的其他并发收集器可能会少报告2x到6x倍的影响！并行收集者也会少报告，但只有30％到100％。基于这些数据，我们鼓励GC研究团队仔细测试GC算法的端到端效果。
+除了Pauseless之外的其他并发收集器可能会少报告2x到6x倍的影响！并行收集器也会少报告，但只有30％到100％。基于这些数据，我们鼓励GC研究团队仔细测试GC算法的端到端效果。
 
 We also attempted to gather Minimum Mutator Utilization figures [12], especially to track the “trap storm” effects. MMU reports the smallest amount of time available to the mutators in a continuous rolling interval. Since our largest pause was over 20ms there exists a 20ms interval where the mutators make no progress, so MMU@20ms is 0. Preliminary figures are in Table 2, and represent MMU figures for the entire 20 minute run worst case across all threads. Looking at the MMU@50ms figure, we see about 40ms of pause out of 50ms. We know that about 20ms of that is reported as an STW pause, so we assume the remaining 20ms is due to the trap storm.
 
-我们还尝试收集 Minimum Mutator Utilization 数据（见[12]），特别是追踪“陷阱风暴”效应。 MMU报告在连续滚动间隔中业务线程可用的最小时间量。由于我们的最大停顿超过20ms，因此存在20ms的间隔，其中业务线程没有进展，因此 MMU@20ms 值为0. 初步数字在表2中，并且MMU数值代表所有线程在整个20分钟运行中的最坏情况。 再看 MMU@50ms 数值，可以发现在50ms内大约有40ms的停顿。我们知道其中大约 20ms 被报告为STW停顿，所以我们假定剩下的20ms是由陷阱风暴引起的。
+我们还尝试收集 Minimum Mutator Utilization 数据（见[12]），特别是追踪“陷阱风暴”效应。 MMU报告在连续滚动间隔中业务线程可用的最小时间量。由于我们的最大停顿超过20ms，因此存在20ms的间隔，其中业务线程没有进展，因此 MMU@20ms 值为0。 初步数字在表2中，并且MMU数值代表所有线程在整个20分钟运行中的最坏情况。 再看 MMU@50ms 数值，可以发现在50ms内大约有40ms的停顿。我们知道其中大约 20ms 被报告为STW停顿，所以我们假定剩下的20ms是由陷阱风暴引起的。
 
 ![](08_05_Minimum_Mutator_Utilization.jpg)
 
 > Table 2: Minimum Mutator Utilization
+
+> 表2: 最小业务线程利用率(Minimum Mutator Utilization)
 
 ## 9. Conclusions
 
@@ -807,7 +825,7 @@ We also attempted to gather Minimum Mutator Utilization figures [12], especially
 
 Azul Systems has taken the rare opportunity to produce custom hardware for running a garbage collected language in a shipping product. This custom hardware enables a very potent garbage collection algorithm. Even though the individual Azul CPUs are slower than the high-clocking X86 P4's compared against, worse-case transaction times are over 45 times better and average transaction times are comparable.
 
-Azul Systems 利用难得的机会, 定制化生产了硬件设备来运行垃圾收集语言, 并用在装运产品中(shipping product)。这种定制的硬件实现了非常高效的垃圾收集算法。尽管单个的 Azul CPU 主频比高频的 X86 P4 低一些，但最坏情况下的业务处理时间却比 P4 快了45倍，而平均业务处理时间两者相差不多。
+Azul Systems 利用难得的机会, 定制化生产了硬件设备来运行垃圾收集语言, 并用于正式发售的产品中(shipping product)。这种定制的硬件实现了非常高效的垃圾收集算法。尽管单个的 Azul CPU 主频比高频的 X86 P4 低一些，但最坏情况下的业务处理时间却比 P4 快了45倍，而平均业务处理时间两者相差不多。
 
 Azul's Pauseless GC algorithm is a fully parallel and concurrent algorithm engineered for large multi-processor systems. It does not need any Stop-The-World pauses, no places where all mutator threads must be simultaneously stopped. Dead object space can be reclaimed at any point during a GC cycle; there are no phases where the GC algorithm has to “race” to finish some phase before the mutators run out of free space. Also there are no phases where the mutators pay a continuous high cost while running. There are brief “trap storms” at some phase shifts, but due to the “self-healing” property of the algorithm these storms appear to be low cost.
 
@@ -815,11 +833,11 @@ Azul的Pauseless GC算法，是为大型多处理器系统设计的，支持并�
 
 Azul's custom hardware includes a read-barrier, an instruction executed against every ref loaded from the heap. The read-barrier allows global GC invariants to be cheaply maintained. It checks for loading of potentially unmarked objects, preventing the spread of unmarked objects into previously marked regions of the heap. This allows the concurrent incremental update Mark phase to terminate cleanly without needing a final STW pause. The read-barrier also checks for loading stale refs to relocated objects and it does it cheaper than a Brooks' style indirection barrier.
 
-Azul 定制的硬件包括一个读屏障，一个针对从堆内存加载引用时执行的指令。读屏障允许轻松维护全局的GC不变量。它检测可能是未标记对象的加载，防止未标记对象扩散到先前标记的区域中。这允许并发增量更新标记阶段干脆地停止，而不需要在最后来一下STW停顿。读屏障还会检查陈旧的指针，到迁移的对象，比起 Brooks 风格的间接屏障代价更低。
+Azul 定制的硬件包括一个读屏障，一条在从堆内存加载每个引用时执行的指令。读屏障允许轻松维护全局的GC不变量。它检测可能是未标记对象的加载，防止未标记对象扩散到先前标记的区域中。这允许并发增量更新标记阶段干脆利落地结束，而不需要在最后来一下STW停顿。读屏障还会检查是否加载了指向已迁移对象的陈旧引用，比起 Brooks 风格的间接屏障代价更低。
 
 Section 7, Reality Check, includes ongoing and future work. Another obvious and desirable feature is a generational variation of Pauseless. As presented, Pauseless is a single-generation algorithm. The entire heap is scanned in each Mark/Remap cycle. Because the algorithm is parallel and concurrent, and we have plentiful CPUs the cost is fairly well hidden. On a fully loaded system the GC threads will steal cycles from mutator threads, so we'd like the GC to be as efficient as possible. A generational version will only need to scan the young generation most of the time. The necessary hardware barriers already exists.
 
-在【第7节 现实状况】中，介绍了正在进行的和需要处理的工作。另一个明显令人憧憬的特征是分代化的Pauseless。根据前文我们知道 Pauseless 是一种不分代的GC算法。每次 Mark/Remap 循环都会扫描整个堆。因为算法是并行和并发的，而且我们拥有充足的CPU资源，所以开销相当不明显。但在满负载的系统上，GC线程会与mutator线程争抢CPU时钟，因此我们希望GC尽可能地高效。如果开发出分代版本，则大部分时间只需要扫描年轻代就行了。而相关的硬件屏障也已经有了。
+在【第7节 当前的实现】中，介绍了正在进行的和需要处理的工作。另一个明显令人憧憬的特征是分代化的Pauseless。根据前文我们知道 Pauseless 是一种不分代的GC算法。每次 Mark/Remap 循环都会扫描整个堆。因为算法是并行和并发的，而且我们拥有充足的CPU资源，所以开销相当不明显。但在满负载的系统上，GC线程会与mutator线程争抢CPU时钟，因此我们希望GC尽可能地高效。如果开发出分代版本，则大部分时间只需要扫描年轻代就行了。而相关的硬件屏障也已经有了。
 
 On a final note, we were quite surprised at the difference between reported pause times and the “user experience” delays seen by the transactions. We strongly encourage GC researchers and the production JVM providers to pay close attention to full GC algorithm costs, not just those costs that can easily have a timerstart/ timer-stop wrapped around them.
 
