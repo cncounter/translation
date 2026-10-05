@@ -28,7 +28,7 @@ ng-disabled 不起作用的解决办法
 	}]);
 
 
-但将 `button` 变为 `<div>`后, `ng-disabled` 标志就不起作用了。它将元素设置为禁用状态(disabled), 但点击的时候依然会触发 `ng-click` 。
+但将 `<button>` 变为 `<div>`后, `ng-disabled` 标志就不起作用了。它将元素设置为禁用状态(disabled), 但点击的时候依然会触发 `ng-click` 。
 
 
 解决办法是在 `ng-click` 里面先判断参数的值:
