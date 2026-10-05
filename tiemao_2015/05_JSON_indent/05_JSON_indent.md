@@ -2,11 +2,11 @@
 
 
 
-使用JavaScript处理XML基本上就是一个杯具,这也是JSON在程序开发中广受欢迎的原因。我曾经写过一个 JavaScript函数来[将XML转换为JSON](http://davidwalsh.name/convert-xml-json),那种~duang~duang~的痛点简直是折腾得你欲死欲仙。如果要将现有的对象转换为JSON字符串, 则可以使用 `JSON.stringify(obj)`函数, 可能你已经用过这个函数(在IE6，IE7中不支持)。但可能你还不知道在转换时可以通过参数控制生成漂亮的JSON格式!
+使用 JavaScript 处理 XML 基本上就是一个杯具, 这也是 JSON 在程序开发中广受欢迎的原因。我曾经写过一个 JavaScript 函数来 [将 XML 转换为 JSON](http://davidwalsh.name/convert-xml-json), 那种 ~duang~duang~ 的痛点简直是折腾得你欲死欲仙。如果要将现有的对象转换为 JSON 字符串, 则可以使用 `JSON.stringify(obj)` 函数, 可能你已经用过这个函数(在 IE6, IE7 中不支持)。但可能你还不知道在转换时可以通过参数控制生成漂亮的 JSON 格式!
 
-## 生成JSON数据
+## 生成 JSON 数据
 
-其实很简单，就是通过 `JSON.stringify` 函数的第三个参数来指定缩进的空格数:
+其实很简单, 就是通过 `JSON.stringify` 函数的第三个参数来指定缩进的空格数:
 
 
 ```js
@@ -43,18 +43,18 @@ console.dir(obj2);
 }
 ```
 
-## JSON文本排序比对
+## JSON 文本排序比对
 
 
-需求: 比对2个JSON消息
-背景: 2个JSON的key顺序不一致
+需求: 比对 2 个 JSON 消息
+背景: 2 个 JSON 的 key 顺序不一致
 
 执行步骤:
 
-1. 打开JSON排序页面: <https://www.bejson.com/json/jsonsort/>
-2. 粘贴JSON, 选择升序, 复制右侧代码;
-3. 打开并粘贴到JSON比对页面: <https://www.sojson.com/jsondiff.html>
-4. 重复 1、2步骤, 将结果粘贴到步骤3的页面右侧中. 
+1. 打开 JSON 排序页面: <https://www.bejson.com/json/jsonsort/>
+2. 粘贴 JSON, 选择升序, 复制右侧代码;
+3. 打开并粘贴到 JSON 比对页面: <https://www.sojson.com/jsondiff.html>
+4. 重复 1、2 步骤, 将结果粘贴到步骤 3 的页面右侧中。
 5. 查看比对结果。
 
 
