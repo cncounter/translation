@@ -1,4 +1,4 @@
-# Chrome控制台API
+# Chrome 控制台 API
 
 
 
@@ -90,4 +90,4 @@ copy()
 
 
 
-人员: [铁锚 http://blog.csdn.net/renfufei](http://blog.csdn.net/renfufei)
+翻译人员: [铁锚 http://blog.csdn.net/renfufei](http://blog.csdn.net/renfufei)
