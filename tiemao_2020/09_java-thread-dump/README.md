@@ -117,7 +117,7 @@ Java Mission Control（JMC）是一款客户端图形界面工具, 用于收集�
 启动JMC后, 首先会显示本地计算机上运行的Java进程列表。 当然也可以通过JMC连接到远程Java进程。
 
 
-可以鼠标右键单击对应的进程, 选择 “Start Flight Recording（开始飞行记录）” 。 结束之后, “Threads（线程）” 选项卡会显示“线程转储”：
+可以鼠标右键单击对应的进程, 选择 “Start Flight Recording（开始飞行记录）”。 结束之后, “Threads（线程）” 选项卡会显示“线程转储”：
 
 
 ![](https://www.baeldung.com/wp-content/uploads/2020/03/JMC-1024x544-1.png)
@@ -133,7 +133,7 @@ One of its many options allows us to capture a thread dump. If we right-click on
 
 jvisualvm 是一款客户端图形界面工具, 既简单又实用, 可用来监控 Java应用程序, 对JVM进行故障排查和性能分析。
 
-也可以用来获取线程转储。 鼠标右键单击Java进程, 选择“ Thread Dump”选项, 则可以创建线程转储, 完成后会在新选项卡中自动打开：
+也可以用来获取线程转储。 鼠标右键单击Java进程, 选择“Thread Dump”选项, 则可以创建线程转储, 完成后会在新选项卡中自动打开：
 
 ![](https://www.baeldung.com/wp-content/uploads/2020/03/JVisualVM.png)
 
@@ -206,7 +206,7 @@ Using our same pid from earlier examples, let's take a look at how to use kill t
 
 在Unix/Linux之类的系统中, 可以使用 `kill` 命令获取线程转储, 底层实现原理, 则是通过系统调用 `kill()` 将信号参数发送给进程。 这里需要发送的是 `-3` 信号。
 
-一般先通过 `jps` 找到JAVA进程对应的pid, `kill -3` 使用示例如下：
+一般先通过 `jps` 找到Java进程对应的pid, `kill -3` 使用示例如下：
 
 
 ```shell
@@ -333,7 +333,7 @@ As always, the full source code of the example is available [over on GitHub](htt
 然后讨论了命令行方式,
 最后介绍了JMX编程的方式。
 
-完整的示例代码请参考 [GitHub仓库](https://github.com/eugenp/tutorials/tree/master/core-java-modules/core-java-perf) 。
+完整的示例代码请参考 [GitHub仓库](https://github.com/eugenp/tutorials/tree/master/core-java-modules/core-java-perf)。
 
 ## 6. 附录: 线程状态及示例代码
 
@@ -471,7 +471,7 @@ public class ThreadStateTest implements Runnable {
 ## 相关链接
 
 
-更多信息科参考:
+更多信息可参考：
 
 - 原文链接: <https://www.baeldung.com/java-thread-dump>
 - [JVMTI](https://docs.oracle.com/javase/8/docs/platform/jvmti/jvmti.html)
