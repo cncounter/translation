@@ -82,7 +82,7 @@ Which of these two doctors would you rather be?  Now project these two doctors i
 
 Programmers are professionals.  They know more about designing and implementing software systems than their bosses do.  Indeed, they are hired for this knowledge and expertise.  And they have a solemn duty to prevent their managers from doing things that would be harmful.
 
-程序员作为软件行业的专业人士, 比管理人员掌握更多的系统设计知识与开发经验。事实上,就是因为需要你的设计和开发经验才把你招进来. 你天然有一项神圣的义务, 防止项目经理干蠢事, 把你们团队带进坑里。
+程序员作为软件行业的专业人士, 比管理人员掌握更多的系统设计知识与开发经验。事实上,就是因为需要你的设计和开发经验才把你招进来。你天然有一项神圣的义务, 防止项目经理干蠢事, 把你们团队带进坑里。
 
 All this boils down to one simple thing.  Professionals are willing to say “No”. When their managers come to them with direction that makes no sense, a professional programmer will refuse the direction.
 
@@ -94,7 +94,7 @@ Is this risky?  Sure.  But part of being a professional is the willingness to st
 
 Of course saying “No.” is only one side of the coin.  Professionals are also expected to explain their positions, and come up with viable alternatives.  Professionals _negotiate_ with their superiors until both parties are satisfied with the chosen direction.
 
-当然, 拒绝只是第一步。 专业人士会展现自己的职业素质, 提出可行的替代方案. 并与上级进行争取, 直到得出双方都满意的解决方案。
+当然, 拒绝只是第一步。 专业人士会展现自己的职业素质, 提出可行的替代方案, 并与上级进行争取, 直到得出双方都满意的解决方案。
 
 The poor web-designer schmuck in that cartoon was not behaving as a professional. He was behaving as a laborer.  The fiasco at the end was _his_ fault.  He should have said “No.” and started a _negotiation_ with his customer instead of just doing everything the customer said.
 
@@ -102,7 +102,7 @@ The poor web-designer schmuck in that cartoon was not behaving as a professional
 
 The cartoonist painted the web-designer as a wise but impotent victim, and the boss as the overbearing dufus.  The reality is that the web-designer took the role of the victim voluntarily and shirked his responsibility to refuse direction that he considered harmful.
 
-漫画中塑造的是一个聪明却软弱的受害者设计师, 他的上级却是一个专横霸道的人. 事实上这个设计师也是咎由自取, 因为他逃避责任, 没有指出错误的地方。
+漫画中塑造的是一个聪明却软弱的受害者设计师, 他的上级却是一个专横霸道的人。事实上这个设计师也是咎由自取, 因为他逃避责任, 没有指出错误的地方。
 
 If you are a professional, you _never_ allow yourself to be put in the role of the victim.
 
