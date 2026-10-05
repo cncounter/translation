@@ -1,13 +1,13 @@
-部分参考的中文地址:
+部分参考的中文地址：
 
 
 
 
 
 - [Java8并发教程：Threads和Executors](http://www.importnew.com/19727.html)
-​
 
-有一份GitBook的文档:
+
+有一份 GitBook 的文档：
 
 
 - 第一部分：[线程和执行器](https://wizardforcel.gitbooks.io/modern-java/content/ch4.html)
