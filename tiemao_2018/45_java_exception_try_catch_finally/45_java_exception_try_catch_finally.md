@@ -33,7 +33,7 @@ public class BaseDemo {
 }
 ```
 
-程序很简单,运行结果也很简单。控制台输出的内容为:
+程序很简单, 运行结果也很简单。控制台输出的内容为:
 
 ```
 total=3
@@ -92,7 +92,7 @@ Exception in thread "main" java.lang.NullPointerException
 
 为什么呢?
 
-我们通过 jd-gui 来看.class文件反编译后的代码:
+我们通过 jd-gui 来看 .class 文件反编译后的代码:
 
 ```
 // jd-gui-反编译
@@ -127,7 +127,7 @@ public class IntegerDemo2
 
 一个异常类, 继承了 `RuntimeException`, 那么这种异常就属于运行时异常, 也叫不受检查的异常(Unchecked Exceptions)。
 
-一个异常类(往上追朔,继承自 `Exception` 的才叫异常类), 如果没有继承 `RuntimeException`, 那么就属于一般异常, 也叫受检查的异常(Checked Exceptions)。
+一个异常类(往上追溯,继承自 `Exception` 的才叫异常类), 如果没有继承 `RuntimeException`, 那么就属于一般异常, 也叫受检查的异常(Checked Exceptions)。
 
 谁来检查? 一般是编译器, 比如著名的 `javac`, 当然, 也可能是 Idea 或者 Eclipse 先执行检查;
 
