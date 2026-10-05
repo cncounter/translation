@@ -1,12 +1,14 @@
-# How Do You Design Products to be Hated
+# 如何设计一款让人讨厌的产品
+
+How Do You Design Products to be Hated
 
 **SitePoint Design**
 
-As a designer, have you ever been asked to make something that people **_hate_**? Something designed to literally drive people away from a product?
+作为一名设计师,是否有人让你做过让人 **_讨厌_** 的东西? 也就是设计一些专门把用户从产品赶走的东西?
 
-I suspect not.
+我想没有吧。
 
-That's precisely the strange task that market research and UX research firm, [GfK](http://go.sitepoint.com/t/y-l-dkirdhy-jdiydklhii-i/) was set in 2012\. In Australia, smoking is so discouraged [legislation dictates](http://go.sitepoint.com/t/y-l-dkirdhy-jdiydklhii-u/) that the all cigarette packaging be deeply unattractive. This includes disturbing images of smoking-related illnesses.
+这正是市场研究与 UX 研究公司 [GfK](http://go.sitepoint.com/t/y-l-dkirdhy-jdiydklhii-i/) 在 2012 年接到的那项奇特任务。在澳大利亚,吸烟被极力劝阻,[法律规定](http://go.sitepoint.com/t/y-l-dkirdhy-jdiydklhii-u/)所有香烟包装都必须极度缺乏吸引力,其中还要印上吸烟相关疾病的惊悚图片。
 
 
 
@@ -14,9 +16,9 @@ That's precisely the strange task that market research and UX research firm, [Gf
 
 
 
-Not that's it's _**100%**_ effective. I have male smoker friends who specifically ask for the 'Smoking can harm your pregnancy' boxes because the message doesn't apply to them (I'm serious).
+不过,这并非 _**100%**_ 有效。我有些男性烟男朋友专门要那种"吸烟会危害你的孕期"的包装盒,因为这条警示对他们并不适用(我是认真的)。
 
-GfK was commissioned to study 1,000 smokers to determine the world's most visually offensive color.
+GfK 受托研究 1000 名烟民,以确定世界上最令人视觉反感的颜色。
 
 
 
@@ -24,14 +26,15 @@ GfK was commissioned to study 1,000 smokers to determine the world's most visual
 
 
 
-This is it - [Pantone 448C](http://go.sitepoint.com/t/y-l-dkirdhy-jdiydklhii-o/), also known by the more poetic name of 'opaque couché'. I'd call it a dark brown, leaning slightly into olive-green. GfK reported that smokers associated the color with "dirty", "death", and "tar".
+就是它——[Pantone 448C](http://go.sitepoint.com/t/y-l-dkirdhy-jdiydklhii-o/),它还有一个更诗意的名字"opaque couché"(不透光铜版色)。我会称之为深棕色,略微偏向橄榄绿。GfK 报告称,烟民会把这种颜色与"肮脏"、"死亡"和"焦油"联系起来。
 
-## 
+## 颜色真的天生就"坏"吗?
+
 Can colors really be born bad?
 
-Obviously, colors are just wavelengths of light, but we do have built-in reactions to them – some genetic, some learned.
+显然,颜色只是光的波长而已,但我们确实对颜色有与生俱来的反应——有些是遗传的,有些是后天习得的。
 
-Using Pantone 448C as the basis to create a montage of Flickr photos certainly [produces a gloomy, sickly collection](http://go.sitepoint.com/t/y-l-dkirdhy-jdiydklhii-b/).
+以 Pantone 448C 为基础,把 Flickr 照片拼成一个蒙太奇,[确实会得到一组阴郁、病态的画面](http://go.sitepoint.com/t/y-l-dkirdhy-jdiydklhii-b/)。
 
 
 
@@ -39,11 +42,11 @@ Using Pantone 448C as the basis to create a montage of Flickr photos certainly [
 
 
 
-There aren't many images with that color profile that fall under light-hearted or happy.
+带有这种色彩特征的图片,很少有属于轻松或愉悦类别的。
 
-But, on the other hand, many designers have used the color (or one very close to it) with great success in the past.
+但另一方面,过去也有很多设计师成功地使用过这种颜色(或与之非常接近的颜色)。
 
-Fashion megacorp Gucci currently offer a [£2,440 coat](http://go.sitepoint.com/t/y-l-dkirdhy-jdiydklhii-n/) they like to call 'thick army-green wool'. I'm afraid that is opaque couché, my friends.
+时尚巨头 Gucci 目前就提供一款 [£2,440 的外套](http://go.sitepoint.com/t/y-l-dkirdhy-jdiydklhii-n/),他们喜欢称之为"厚实的军绿色羊毛"。恐怕那就是 opaque couché,朋友们。
 
 
 
@@ -51,22 +54,23 @@ Fashion megacorp Gucci currently offer a [£2,440 coat](http://go.sitepoint.com/
 
 
 
-Lots of logo designers (for instance, [Cog Design](http://go.sitepoint.com/t/y-l-dkirdhy-jdiydklhii-p/) above) have used the color the bring an earthy, anti-establishment cool. 
+很多标志设计师(例如上文的 [Cog Design](http://go.sitepoint.com/t/y-l-dkirdhy-jdiydklhii-p/))都用过这种颜色,来营造一种质朴的、反建制的酷感。
 
-Da Vinci himself even used a palette of browny-green, couché-related colors throughout the background of the Mona Lisa.
+达·芬奇本人甚至在《蒙娜丽莎》的整个背景中,使用了由棕色偏绿、与 couché 相近的一组颜色构成的调色板。
 
-## 
+## 金属色的问题
+
 The Problem with Metallic Colors
 
-The funny thing is, historically the two most common colors in Australian cigarette packaging design have been:
+有趣的是,从历史上看,澳大利亚香烟包装设计中最常见的两种颜色一直是:
 
-*   **Red**: signaling vigor and strength (i.e. Marlboro and Winfield)
+*   **红色**:象征活力与力量(例如 Marlboro 和 Winfield)
 
-*   **Gold**: signaling wealth and prestige (i.e. Marlboro Gold and Benson & Hedges)
+*   **金色**:象征财富与声望(例如 Marlboro Gold 和 Benson & Hedges)
 
-Even the internal wrapper was often a gold-backed foil.
+甚至内部的包装纸也常常是金色衬箔。
 
-When you use any metallic card in packaging, its color naturally changes depending on where the light source is positioned – any color from a light, lemon yellow to a dark, deep chocolate.
+在包装上使用任何金属卡纸时,其颜色会随着光源的位置而自然变化——从淡淡的柠檬黄,到深沉的可可色,无所不有。
 
 
 
@@ -74,7 +78,7 @@ When you use any metallic card in packaging, its color naturally changes dependi
 
 
 
-And, yes, you guessed it – a color that reads as something very, very close to Pantone 448C.
+而且,没错,你猜到了——某种在观感上非常非常接近 Pantone 448C 的颜色。
 
 
 
@@ -82,15 +86,15 @@ And, yes, you guessed it – a color that reads as something very, very close to
 
 
 
-Now, I see these new cigarette boxes quite often, and to me, they read visually as a metallic gold – just not quite catching the light. I know that's not the case, but with the shiny plastic wrappers, my brain just can't shake that idea.
+如今,我经常看到这些新的香烟盒,在我看来,它们在视觉上就是金属金色——只是碰巧没怎么反光而已。我知道事实并非如此,但配上那一层闪亮的塑料膜,我的大脑就是甩不掉这个念头。
 
-So perhaps - given the specific history of cigarette packaging - a puke green or gangrenous pink might have been a better choice than a gold-hinting brown.
+所以,也许——考虑到香烟包装这段特定的历史——呕吐绿或坏疽粉可能会比带点金色的棕色更合适。
 
-And maybe the surveyed smokers knew _exactly_ what they were doing?
+又或者,那些受访的烟民其实 _完全_ 清楚自己在做什么?
 
-So, how do _**you**_ feel about Pantone 448C?
+那么,你(_**you**_)对 Pantone 448C 有什么感觉?
 
-Me, I don't hate the color. In fact, I'll be looking for design opportunities to slot it in.
+至于我,我并不讨厌这种颜色。事实上,我还会去找设计机会把它用进去。
 
 Cheers,
 
@@ -108,8 +112,10 @@ Editor
 
 
 
-### Related Posts
 
+### 相关文章
+
+Related Posts
 
 
 
@@ -120,7 +126,7 @@ Editor
 
 [5 Bankable UX Lessons from Brick and Mortar Store Design](http://go.sitepoint.com/t/y-l-dkirdhy-jdiydklhii-q/)
 
-Store design isn't accidental. Hundreds of years of retail experience have taught many UX lessons. Daniel explains how you can apply them in the digital world.
+门店设计并非偶然。数百年的零售经验教会了我们许多 UX 经验。Daniel 讲解如何把它们应用到数字世界中。
 
 **[Read more](http://go.sitepoint.com/t/y-l-dkirdhy-jdiydklhii-a/)**
 
@@ -134,7 +140,7 @@ Sponsored
 
 [Microsoft Azure](http://go.sitepoint.com/t/y-l-dkirdhy-jdiydklhii-f/)
 
-Open source. Free-for-all. Microsoft Azure App Service free sandbox.
+开源。人人可用。Microsoft Azure App Service 免费沙箱。
 
 
 
@@ -152,7 +158,7 @@ Open source. Free-for-all. Microsoft Azure App Service free sandbox.
 
 [7 Slack Integrations That Make Collaboration Easier](http://go.sitepoint.com/t/y-l-dkirdhy-jdiydklhii-v/)
 
-Daniel Schwarz looks at collaboration-focused Slack integrations, including bots, screen sharing extensions, polls and search tools.
+Daniel Schwarz 考察了一些专注于协作的 Slack 集成,包括机器人、屏幕共享扩展、投票和搜索工具。
 
 **[Read more](http://go.sitepoint.com/t/y-l-dkirdhy-jdiydklhii-e/)**
 
@@ -164,7 +170,7 @@ Daniel Schwarz looks at collaboration-focused Slack integrations, including bots
 
 [Enabling Upcoming CSS Features with PostCSS](http://go.sitepoint.com/t/y-l-dkirdhy-jdiydklhii-s/)
 
-Pavels continues his exploration of PostCSS, covering how to implement new properties and values from upcoming CSS specifications today using PostCSS.
+Pavels 继续他对 PostCSS 的探索,介绍如何用 PostCSS 在今天就用上尚未发布的 CSS 规范中的新属性和值。
 
 **[Read more](http://go.sitepoint.com/t/y-l-dkirdhy-jdiydklhii-g/)**
 
@@ -176,7 +182,7 @@ Pavels continues his exploration of PostCSS, covering how to implement new prope
 
 [How to Find Cool, Quirky, Copyright Free Photos on Flickr](http://go.sitepoint.com/t/y-l-dkirdhy-jdiydklhii-w/)
 
-Think you know Flickr? Did you know they store a vast reservoir of copyright free photos imagery from the world's great libraries, museums, & archives?
+你以为你很懂 Flickr? 你知道那里储存着来自世界各大图书馆、博物馆和档案馆的海量免版权图片吗?
 
 **[Read more](http://go.sitepoint.com/t/y-l-dkirdhy-jdiydklhii-yd/)**
 
@@ -188,7 +194,7 @@ Think you know Flickr? Did you know they store a vast reservoir of copyright fre
 
 [Quick Tip: Add Favicons Quickly and Easily to Your HTML](http://go.sitepoint.com/t/y-l-dkirdhy-jdiydklhii-yh/)
 
-Simon covers a simple way to add favicons to your website using the Real Favicon Generator web service.
+Simon 介绍了一种使用 Real Favicon Generator 网络服务,快速为网站添加 favicon 的简单方法。
 
 **[Read more](http://go.sitepoint.com/t/y-l-dkirdhy-jdiydklhii-yk/)**
 
@@ -200,7 +206,7 @@ Simon covers a simple way to add favicons to your website using the Real Favico
 
 [Build a Powerful Freelance Portfolio Website that Gets Results](http://go.sitepoint.com/t/y-l-dkirdhy-jdiydklhii-yu/)
 
-Learn how to plan, build, test, and use an effective freelance portfolio website.
+学习如何规划、构建、测试并使用一个行之有效的自由职业者作品集网站。
 
 **[Read more](http://go.sitepoint.com/t/y-l-dkirdhy-jdiydklhii-jl/)**
 
@@ -212,7 +218,7 @@ Learn how to plan, build, test, and use an effective freelance portfolio website
 
 How to Monetize Your Website with Google AdSense
 
-Despite what you may have heard, AdSense can still be a great way to monetize content sites. Here are some strategies to do so successfully.
+不管你听说过什么,AdSense 仍然是内容类网站变现的好方法。这里有一些可以成功实现变现的策略。
 
 **[Read more](http://go.sitepoint.com/t/y-l-dkirdhy-jdiydklhii-jr/)**
 
