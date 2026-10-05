@@ -89,7 +89,7 @@ sudo yum -y install MariaDB-server MariaDB-client
 
 ```
 
-yum 命令的 -y 选项指定不需要询问直接安装。 否则安装每个软件之前前,都会提示输入[`y`]确认。
+yum 命令的 -y 选项指定不需要询问直接安装。 否则安装每个软件之前,都会提示输入[`y`]确认。
 
 
 ### 2.3 启动MariaDB
@@ -158,7 +158,7 @@ ls -l
 cat /etc/nginx/nginx.conf
 ```
 
-可以看到，http层级下有这么这么一句:
+可以看到，http层级下有这么一句:
 
 ```
 include /etc/nginx/conf.d/*.conf;
@@ -267,7 +267,7 @@ sudo vim /etc/php.ini
 cgi.fix_pathinfo=0
 ```
 
-这样会比较安全,详情请搜索。 。
+这样会比较安全,详情请搜索。
 
 
 > vim 快捷搜索: 先按 ESC, 再以斜杠加搜索内容回车,例如: `/fix_pathinfo`。 查找下一个输入小写的 `n` 即可。
@@ -416,7 +416,7 @@ wget -O wordpress.latest.tar.gz https://wordpress.org/latest.tar.gz
 
 ```
 
-解压,:
+解压:
 
 ```
 sudo mkdir -p /usr/local/www/wordpress/
