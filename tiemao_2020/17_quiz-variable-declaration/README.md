@@ -1,6 +1,6 @@
 # Quiz Yourself: Variable Declaration (Intermediate)
 
-＃ Java坑人面试题系列: 变量声明（中级难度）
+# Java坑人面试题系列: 变量声明（中级难度）
 
 > The scope rules of Java variables and an examination of shadowing
 
@@ -15,7 +15,7 @@ Java Magazine上面有一个专门坑人的面试题系列: <https://blogs.oracl
 
 如果你看过往期的问题，就会发现每一个都不简单。
 
-这些试题模拟了认证考试中的一些难题。 而 “中级(intermediate)” 和 “高级(advanced)” 指的是试题难度，而不是说这些知识本身很深。 一般来说，“高级”问题会稍微难一点。
+这些试题模拟了认证考试中的一些难题。 而 “中级(intermediate)” 和 “高级(advanced)” 指的是考试难度，而不是试题本身。 一般来说，“高级”问题会稍微难一点。
 
 ### Given the following code snippets:
 
@@ -92,7 +92,7 @@ This question investigates the scope rules of Java along with an effect referred
 
 Consider this example:
 
-这道题主要考察变量的作用域以及优先级：同一作用域下如果存在两个相同的变量名称(标识符)，那么会简单会指向一个变量而忽略另一个。
+这道题主要考察变量的作用域，以及一种称为覆盖(shadowing)的现象：同一作用域下如果存在两个相同的变量名称(标识符)，那么简单的非限定名会指向其中一个变量而忽略另一个。
 一般来说，局部变量会覆盖同名的类属性和实例属性，但方法作用域内的局部变量则不允许覆盖。
 在编写程序代码时，一般规范都会要求明确指定类名或者 `this` 来引用对应的字段。
 
@@ -152,8 +152,8 @@ class C2 {
 ```
 
 类中定义了实例变量 `a`，在初始化语句块中又定义了一个局部变量`a`，类似于方法代码中的局部变量声明。
-所以在初始化块的作用域范围内, 局部变量覆盖了实例属性。
-这段代码可以正确编译并运行, 所以 `选项B正确` 。
+所以在初始化块的作用域范围内，局部变量覆盖了实例属性。
+这段代码可以正确编译并运行， 所以 `选项B正确` 。
 
 Option `C` declares two independent instance initializer blocks and each has a local variable named `a`, but their scopes, limited by their enclosing initializer blocks, do not overlap in any way so the variables do not conflict. This code is useless because variables inside instance initializer blocks are not visible anywhere else in the class and are immediately lost after the initializer completes. You could be forgiven for expecting the compiler to object in the same way that it does with unreachable code, but it does not; the syntax is valid, and option `C` is correct.
 
@@ -168,9 +168,9 @@ class C3 {
 ```
 
 在两个单独的初始块中， 都声明了局部变量`a`， 但各自的作用域范围都被限制为代码块之中， 所以不会发生重叠，也就没有变量冲突。
-当然，这段代码没什么实际的作用，因为在初始化块中声明的变量，在其他地方都不可看，在语句块执行完成后会被丢弃。
+当然，这段代码没什么实际的作用，因为在初始化块中声明的变量，在其他地方都不可见，在语句块执行完成后会被丢弃。
 可能有些同学会觉得编译器会报错，但实际上这些代码块都是会执行的，并没有不可达代码。
-既然语法没问题, 那么 `选项C正确` 。
+既然语法没问题， 那么 `选项C正确` 。
 
 In option `D` the code declares a local variable and immediately declares another with the same name in the loop. A variable declared in a for loop is a local variable having a scope that starts at the point of declaration and ends with the end of the loop. Of course, this means that two local variables of the same name appear to be in scope through the body of the loop, and this is prohibited. This situation is closely parallel to the code in option `A`, with the difference that in option `A`, the first-declared local variable was a method parameter, and in this option, the first-declared local variable is a simple local variable. However, you can see from this that option `D` is also incorrect.
 
@@ -187,9 +187,9 @@ class C4 {
 }
 ```
 
-代码​​块中先是声明了一个局部变量， 然后`for`循环中又声明了同名的变量。
+代码块中先是声明了一个局部变量， 然后`for`循环中又声明了同名的变量。
 因为for循环中声明的局部变量，作用域范围从声明处开始，直到循环结束。
-也就是说, 在循环体范围内，存在两个同名的局部变量，这是违反语法规定的。
+也就是说，在循环体范围内，存在两个同名的局部变量，这是违反语法规定的。
 跟选项 `A` 中的情况有点类似，区别只在于选项 `A` 中声明的是方法参数，而选项D中声明的是普通局部变量。
 由此可知， `选项D不正确`。
 
@@ -233,15 +233,15 @@ The contained Statement
 
 在 [《Java语言规范 - 6.3 变量声明与作用域》](https://docs.oracle.com/javase/specs/jls/se11/html/jls-6.html#jls-6.3) 一节中对变量声明的作用域范围做了详细说明。
 
-有两个需要着重强调的点:
+有两个需要着重强调的点：
 
-1. 方法参数的作用域范围： 形参的作用域范围，是方法，构造函数或lambda表达式对应的body。
-2. `for`循环初始化语句中声明的局部变量, 作用域范围包括： 初始化部分、初始化后面的条件判断部分，递增更新语句，以及循环体中的语句。
+1. 方法参数的作用域范围： 形参的作用域范围，是方法、构造函数或 lambda 表达式对应的 body。
+2. `for` 循环初始化语句中声明的局部变量，作用域范围包括： 初始化部分、初始化后面的条件判断部分、递增更新语句，以及循环体中的语句。
 
 
 The correct answer is options `B`,  `C`, and `E`.
 
-通过我们的分析可知，正确选项为: `B`,  `C`,  `E`.
+通过我们的分析可知，正确选项为： `B`、`C`、`E`。
 
 
 ### 相关链接
