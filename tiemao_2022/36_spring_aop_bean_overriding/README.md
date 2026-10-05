@@ -31,9 +31,9 @@ A bean with that name has already been defined in class path resource
 
 ## 解决方法
 
-其实是一个低级错误,  如果排查 `target` 目录应该能快速定位问题。
+其实是一个低级错误, 如果排查 `target` 目录应该能快速定位问题。
 
-`<resource>` 的 `<directory>` 中不要使用 `/src/main/resources.apollo`, 改为相对路径: `src/main/resources.apollo`;
+`<resource>` 的 `<directory>` 中不要使用 `/src/main/resources.apollo`, 改为相对路径: `src/main/resources.apollo`。
 
 ```xml
     <profiles>
