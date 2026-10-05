@@ -108,14 +108,14 @@ dmesg | grep Linux
 
 The disadvantages of this method are that it requires some extra typing and that there is still a lot of output to search through even though it has been greatly reduced through the use of the grep filter.
 
-这种方法的缺点在于, 输出内容过多, 需要很多命令来进行搜索和过滤。
+这种方法的缺点在于, 需要额外多敲一些命令, 而且, 即使通过 `grep` 过滤, 仍然有很多输出内容需要查看。
 
 A fifth method is to look in directories in which the kernel or its source code (i.e., the original version as written by humans in a programming language) is kept. There can be differences among systems, and some systems might not contain the source code. However, the kernel frequently resides in the boot directory, and thus its name, which includes the version and release numbers, can be found by using the ls command (which lists the contents of a directory) with that directory as an argument as follows:
 
-第5种方法, 是查看内核/源码所在的目录, (即。程序员编写的原始代码的版本). 各个系统可能不一致, 因为某些系统可能不包含源码. 但是,内核一般位于 `boot` 目录, 可以通过 ls 命令加上目录名称来查看目录结构:
+第5种方法, 是查看内核/源码所在的目录, (即, 程序员编写的原始代码的版本). 各个系统可能不一致, 因为某些系统可能不包含源码. 但是,内核一般位于 `boot` 目录, 可以通过 ls 命令加上目录名称来查看目录结构:
 
 ```
-ls /boot如下
+ls /boot
 ```
 
 结果如下所示:
