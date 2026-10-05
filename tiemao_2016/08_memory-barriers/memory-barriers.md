@@ -12,7 +12,7 @@ If you use source control, you’re on your way towards understanding memory ord
 In my last post, I wrote about memory ordering at compile time, which forms one half of the memory ordering puzzle. This post is about the other half: memory ordering at runtime, on the processor itself. Like compiler reordering, processor reordering is invisible to a single-threaded program. It only becomes apparent when lock-free techniques are used – that is, when shared memory is manipulated without any mutual exclusion between threads. However, unlike compiler reordering, the effects of processor reordering are only visible in multicore and multiprocessor systems.
 
 
-在前面的博文中, 介绍了[编译期内存排序](http://preshing.com/20120625/memory-ordering-at-compile-time), 这是内存排序中比较困难的一部分。
+在前面的博文中, 介绍了[编译期内存排序](http://preshing.com/20120625/memory-ordering-at-compile-time), 它构成了内存排序难题的一半。
 本文则是剩下的部分: 处理器内部运行时的内存排序。 和编译期重排序(compiler reordering)一样, 处理器重排序(processor reordering)在单线程应用中是不会发生的。
 只在使用[无锁技术(lock-free techniques)](http://preshing.com/20120612/an-introduction-to-lock-free-programming) 时才会出现，也就是多个线程之间读写共享内存(shared memory,如堆内存)，却没有使用互斥锁(mutual exclusion)的情况下才会发生。
 与编译器重排序的不同点在于, 处理器重排序[只在多核心/多处理器的系统中才会发生](http://preshing.com/20120515/memory-reordering-caught-in-the-act)。
@@ -34,7 +34,7 @@ You can enforce correct memory ordering on the processor by issuing any instruct
 
 - GCC内置的某些汇编指令, 如PowerPC专用的 `asm volatile("lwsync" ::: "memory")`
 - Win32所有的 [Interlocked操作](http://msdn.microsoft.com/en-us/library/windows/desktop/ms684122.aspx), 但Xbox 360除外.
-- C++11的一些[原子操作(atomic types)](http://en.cppreference.com/w/cpp/atomic/atomic), 如 `load(std::memory_order_acquire)``
+- C++11的一些[原子操作(atomic types)](http://en.cppreference.com/w/cpp/atomic/atomic), 如 `load(std::memory_order_acquire)`
 - POSIX系统中的互斥锁(mutexes), 例如 [`pthread_mutex_lock`](http://linux.die.net/man/3/pthread_mutex_lock)
 
 
@@ -48,7 +48,7 @@ Just as there are many instructions which act as memory barriers, there are many
 
 To begin with, consider the architecture of a typical multicore system. Here’s a device with two cores, each having 32 KiB of private L1 data cache. There’s 1 MiB of L2 cache shared between both cores, and 512 MiB of main memory.
 
-首先, 考虑典型的多核心CPU系统平台。 假设CPU有两个核心, 每个core有`32 KB`的私有L1 data cache. 以及`1 MB`的共享L2 cache, 物理内存为`512 MB`。
+首先, 考虑典型的多核心CPU系统平台。 假设CPU有两个核心, 每个core有`32 KiB`的私有L1 data cache. 以及`1 MiB`的共享L2 cache, 物理内存为`512 MiB`。
 
 
 ![](01_cpu-diagram.png)
@@ -58,7 +58,7 @@ To begin with, consider the architecture of a typical multicore system. Here’s
 
 A multicore system is a bit like a group of programmers collaborating on a project using a bizarre kind of source control strategy. For example, the above dual-core system corresponds to a scenario with just two programmers. Let’s name them Larry and Sergey.
 
-多核心CPU的系统平台, 类似于多个程序员通过版本工具的协作来开发项目。 例如, 双核系统对应于两个程序员的场景。 假设他们的名字是Larry(Larry)和谢尔盖(Sergey)。
+多核心CPU的系统平台, 类似于多个程序员通过版本工具的协作来开发项目。 例如, 双核系统对应于两个程序员的场景。 假设他们的名字是 Larry 和谢尔盖(Sergey)。
 
 > 这哥俩是Google的创始人
 
@@ -76,7 +76,8 @@ Which brings us to the source control strategy. In this analogy, the source cont
 
 
 看看代码版本控制策略。 在这个类比中, 代码版本控制策略非常奇怪。
-Larry和谢尔盖修改各自的工作副本, 他们在后台不断地修改BUG, 随时可能和中央仓库同步。 只要Larry编辑X文件, 他的修改就会写入将到中央仓库, 但是不能保证什么时候会同步, 可能会立即推送, 也可能稍后再推送。 还可能去编辑其他文件, 比如Y和Z, 而且这些修改还可能在X同步之前写入到中央仓库中。 通过这种方式, 有效地重排了将各个文件保存到仓库的顺序。
+当Larry和谢尔盖修改各自的工作副本时, 他们的改动会在后台、以完全随机的时间点, 不断地与中央仓库之间来回泄漏。
+只要Larry编辑X文件, 他的修改就会写入到中央仓库, 但是不能保证什么时候会同步, 可能会立即推送, 也可能稍后再推送。 还可能去编辑其他文件, 比如Y和Z, 而且这些修改还可能在X同步之前写入到中央仓库中。 通过这种方式, 有效地重排了将各个文件保存到仓库的顺序。
 
 
 Similarly, on Sergey’s machine, there’s no guarantee about the timing or the order in which those changes leak back from the repository into his working copy. In this manner, loads are effectively reordered on their way out of the repository.
@@ -92,7 +93,7 @@ Now, if each programmer works on completely separate parts of the repository, ne
 
 The analogy becomes more useful once our programmers start working on the same parts of the repository. Let’s revisit the example I gave in an earlier post. X and Y are global variables, both initially 0:
 
-一旦多个程序员开始处理相同的文件，这种类比就会变得更加明显。让我们回顾[前一篇文章中的例子](http://preshing.com/20120515/memory-reordering-caught-in-the-act)。X和Y是全局变量，初始值都为0:
+一旦多个程序员开始处理相同的文件，这种类比就会变得更有用。让我们回顾[前一篇文章中的例子](http://preshing.com/20120515/memory-reordering-caught-in-the-act)。X和Y是全局变量，初始值都为0:
 
 
 ![](03_marked-example2-2.png)
@@ -112,7 +113,6 @@ Think of X and Y as files which exist on Larry’s working copy of the repositor
 
 
 
-
 ## 内存屏障的类型
 
 
@@ -128,8 +128,8 @@ Fortunately, Larry and Sergey are not entirely at the mercy of these random, unp
 
 As Doug Lea points out, these four categories map pretty well to specific instructions on real CPUs – though not exactly. Most of the time, a real CPU instruction acts as some combination of the above barrier types, possibly in addition to other effects. In any case, once you understand these four types of memory barriers in the source control analogy, you’re in a good position to understand a large number of instructions on real CPUs, as well as several higher-level programming language constructs.
 
-[Doug Lea指出](http://gee.cs.oswego.edu/dl/jmm/cookbook.html), 这4种类型能很好地映射为CPU的特定指令 —— 尽管不是所有CPU都支持。
-大部分时候, 真正的CPU指令会实现以上多个屏障的效果，也就是会有其他效果。 无论如何，只要理解了这四种类型的内存屏障，也就能很好地理解真实CPU的大量指令, 以及一些高级编程语言的构造。
+[Doug Lea指出](http://gee.cs.oswego.edu/dl/jmm/cookbook.html), 这4种类型能很好地映射为CPU的特定指令 —— 尽管并不完全精确。
+大部分时候, 真正的CPU指令会实现以上多个屏障的组合效果, 可能还会带来其他影响。 无论如何，只要理解了这四种类型的内存屏障，也就能很好地理解真实CPU的大量指令, 以及一些高级编程语言的构造。
 
 
 ### `#LoadLoad`
@@ -143,7 +143,7 @@ LoadLoad屏障能防止屏障之前load与屏障之后的load被重排序。
 
 In our analogy, the `#LoadLoad` fence instruction is basically equivalent to a pull from the central repository. Think git pull, hg pull, p4 sync, svn update or cvs update, all acting on the entire repository. If there are any merge conflicts with his local changes, let’s just say they’re resolved randomly.
 
-在版本库类比中, `#LoadLoad` 栅栏指令基本上相当于将从中央仓库拉取代码。比如 `git pull`, `hg pull`, `p4 sync`, `svn update` 或者 `cvs update`, 作用于整个仓库。 如果与本地代码存在冲突, 此处假定为随机解决。
+在版本库类比中, `#LoadLoad` 栅栏指令基本上相当于从中央仓库拉取代码。比如 `git pull`, `hg pull`, `p4 sync`, `svn update` 或者 `cvs update`, 作用于整个仓库。 如果与本地代码存在冲突, 此处假定为随机解决。
 
 
 ![](06_loadload.png)
@@ -153,12 +153,12 @@ In our analogy, the `#LoadLoad` fence instruction is basically equivalent to a p
 
 Mind you, there’s no guarantee that #LoadLoad will pull the latest, or head, revision of the entire repository! It could very well pull an older revision than the head, as long as that revision is at least as new as the newest value which leaked from the central repository into his local machine.
 
-请注意, `#LoadLoad` 并不能保证会拉取到整个仓库最新的状态! 很可能会pull到一个比head要旧的修订, 只要能保证拉取到本地的修订至少和本地机器的修改一样新。
+请注意, `#LoadLoad` 并不能保证会拉取到整个仓库最新的状态! 很可能会pull到一个比head要旧的修订, 只要该修订至少和从中央仓库同步到本机的最新值一样新。
 
 
 This may sound like a weak guarantee, but it’s still a perfectly good way to prevent seeing stale data. Consider the classic example, where Sergey checks a shared flag to see if some data has been published by Larry. If the flag is true, he issues a #LoadLoad barrier before reading the published value:
 
-可能听起来这个保证有点弱, 但仍然是一个防止看到陈旧数据的好方案。 考虑经典的例子, 谢尔盖检查一个共享标志, 确定某些数据是否已经发送到Larry的机器。如果标志是true, 则在读取发布的数据前，插入一个 `#LoadLoad` 屏障:
+可能听起来这个保证有点弱, 但仍然是一个防止看到陈旧数据的好方案。 考虑经典的例子, 谢尔盖检查一个共享标志, 确认Larry是否已经发布了某些数据。如果标志是true, 则在读取发布的数据前，插入一个 `#LoadLoad` 屏障:
 
 ```
 	if (IsPublished)                   // Load and check shared flag
@@ -172,7 +172,7 @@ This may sound like a weak guarantee, but it’s still a perfectly good way to p
 
 Obviously, this example depends on having the IsPublished flag leak into Sergey’s working copy by itself. It doesn’t matter exactly when that happens; once the leaked flag has been observed, he issues a #LoadLoad fence to prevent reading some value of Value which is older than the flag itself.
 
-显然, 这个例子取决于 `IsPublished` 标志是否发布到了谢尔盖的工作副本中。 不管什么时候, 只要标志被检测到, 就发送一条 `#LoadLoad` 栅栏指令, 保证不会读取到比 flag 更古老的 Value 值。
+显然, 这个例子取决于 `IsPublished` 标志能自行泄漏到谢尔盖的工作副本中。 不管什么时候, 只要标志被检测到, 就发送一条 `#LoadLoad` 栅栏指令, 保证不会读取到比 flag 更古老的 Value 值。
 
 
 ### `#StoreStore`
@@ -186,7 +186,7 @@ StoreStore 屏障能有效防止在屏障之前的store，与屏障之后的stor
 
 In our analogy, the #StoreStore fence instruction corresponds to a push to the central repository. Think git push, hg push, p4 submit, svn commit or cvs commit, all acting on the entire repository.
 
-类比代码版本库, `#StoreStore` 栅栏指令对应push到中央存储库的操作。比如 `git push`, `hg push`, `p4 submit`, s`vn commit` 或者 `cvs commit`, 都是作用于整个存储库的。
+类比代码版本库, `#StoreStore` 栅栏指令对应push到中央存储库的操作。比如 `git push`, `hg push`, `p4 submit`, `svn commit` 或者 `cvs commit`, 都是作用于整个存储库的。
 
 
 ![](07_storestore.png)
@@ -196,7 +196,7 @@ In our analogy, the #StoreStore fence instruction corresponds to a push to the c
 
 As an added twist, let’s suppose that #StoreStore instructions are not instant. They’re performed in a delayed, asynchronous manner. So, even though Larry executes a #StoreStore, we can’t make any assumptions about when all his previous stores finally become visible in the central repository.
 
-作为额外的开关, 假设 `#StoreStore` 指令也不即时执行。 而是以延迟,异步的方式执行。 所以, 即使Larry执行了`#StoreStore`, 我们不能预判出他之前的store操作什么时候才会在中央存储库可见。
+作为额外的转折, 假设 `#StoreStore` 指令也不即时执行。 而是以延迟,异步的方式执行。 所以, 即使Larry执行了`#StoreStore`, 我们不能预判出他之前的store操作什么时候才会在中央存储库可见。
 
 
 This, too, may sound like a weak guarantee, but again, it’s perfectly sufficient to prevent Sergey from seeing any stale data published by Larry. Returning to the same example as above, Larry needs only to publish some data to shared memory, issue a #StoreStore barrier, then set the shared flag to true:
@@ -214,7 +214,7 @@ This, too, may sound like a weak guarantee, but again, it’s perfectly sufficie
 
 Again, we’re counting on the value of IsPublished to leak from Larry’s working copy over to Sergey’s, all by itself. Once Sergey detects that, he can be confident he’ll see the correct value of Value. What’s interesting is that, for this pattern to work, Value does not even need to be an atomic type; it could just as well be a huge structure with lots of elements.
 
-再次, 我们指望从Larry工作副本将 IsPublished 的值同步到 Sergey 的机器。一旦Sergey检测到, 他有可以确信 看到的 Value 值是正确的. 有趣的是,这种模式工作, Value 甚至可以不是原子类型; 它可以是一个有很多元素的庞大结构体。
+再次, 我们指望从Larry工作副本将 IsPublished 的值同步到 Sergey 的机器。一旦Sergey检测到, 他可以确信看到的 Value 值是正确的. 有趣的是,这种模式工作, Value 甚至可以不是原子类型; 它可以是一个有很多元素的庞大结构体。
 
 
 ### `#LoadStore`
@@ -224,7 +224,7 @@ Again, we’re counting on the value of IsPublished to leak from Larry’s worki
 Unlike #LoadLoad and #StoreStore, there’s no clever metaphor for #LoadStore in terms of source control operations. The best way to understand a #LoadStore barrier is, quite simply, in terms of instruction reordering.
 
 与 `#LoadLoad` , `#StoreStore` 屏障不同, `#LoadStore` 在版本控制操作中没有适当的类比。
-要理解`#LoadStore`屏障的比较好的方法，是理解一个简单的术语, 指令重排序(instruction reordering)。
+要理解 `#LoadStore` 屏障, 最简单的方法就是用指令重排序(instruction reordering)来解释。
 
 
 ![](08_get-back-to-later.png)
@@ -242,9 +242,9 @@ Larry有能力调整指令的执行顺序, 但只在某些特定的情况下允�
 
 On a real CPU, such instruction reordering might happen on certain processors if, say, there is a cache miss on the load followed by a cache hit on the store. But in terms of understanding the analogy, such hardware details don’t really matter. Let’s just say Larry has a boring job, and this is one of the few times when he’s allowed to get creative. Whether or not he chooses to do it is completely unpredictable. Fortunately, this is a relatively inexpensive type of reordering to prevent; when Larry encounters a #LoadStore barrier, he simply refrains from such reordering around that barrier.
 
-如果是真正的CPU, 指令重排序上可能在某些处理器上发生, 比如, 有一个load的操作数在缓存中未命中, 而后面紧跟的store却命中了缓存.
+如果是真正的CPU, 如果某个load发生缓存未命中(cache miss), 而随后的store命中缓存(cache hit), 那么在某些处理器上就可能发生这种指令重排序。
 但在理解类比时,这种底层的硬件实现细节并不重要。 假设Larry的工作有点无聊, 在为数不多的时候, 他可以自作主张.是否如此选择是完全不可预测的。
-幸运的是, 这是一种相对廉价的防止重排序的方式; 当Larry遇到 `#LoadStore` 屏障时, 只要在屏障附件去除重排序功能即可。
+幸运的是, 这是一种相对廉价的防止重排序的方式; 当Larry遇到 `#LoadStore` 屏障时, 只要在屏障附近避免重排序即可。
 
 
 In our analogy, it’s valid for Larry to perform this kind of LoadStore reordering even when there is a #LoadLoad or #StoreStore barrier between the load and the store. However, on a real CPU, instructions which act as a #LoadStore barrier typically act as at least one of those other two barrier types.
@@ -259,8 +259,8 @@ In our analogy, it’s valid for Larry to perform this kind of LoadStore reorder
 
 A StoreLoad barrier ensures that all stores performed before the barrier are visible to other processors, and that all loads performed after the barrier receive the latest value that is visible at the time of the barrier. In other words, it effectively prevents reordering of all stores before the barrier against all loads after the barrier, respecting the way a sequentially consistent multiprocessor would perform those operations.
 
-StoreLoad屏障, 能确保屏障之前执行的所有store操作，都对其他处理器可见; 在屏障后面执行的load指令, 都能接收到最新的值。
-换句话说, 有效阻止屏障之前的store指令，与屏障之后的load指令乱序 、即使是多核心处理器，在执行这些操作时的[]顺序也是一致的](http://preshing.com/20120612/an-introduction-to-lock-free-programming#sequential-consistency)。
+StoreLoad屏障, 能确保屏障之前执行的所有store操作，都对其他处理器可见; 在屏障后执行的load指令, 都能接收到屏障生效时可见的最新值。
+换句话说, 它能有效阻止屏障之前的所有 store 指令与屏障之后的 load 指令被重排序, 其行为与[顺序一致(sequentially consistent)](http://preshing.com/20120612/an-introduction-to-lock-free-programming#sequential-consistency)的多处理器执行这些操作的方式相同。
 
 
 #StoreLoad is unique. It’s the only type of memory barrier that will prevent the result r1 = r2 = 0 in the example given in Memory Reordering Caught in the Act; the same example I’ve repeated earlier in this post.
@@ -273,7 +273,7 @@ If you’ve been following closely, you might wonder: How is #StoreLoad differen
 如果你密切关注, 可能会想知道: `#StoreLoad` 屏障，与 `#StoreStore` + `#LoadLoad` 屏障的组合有什么区别?
 毕竟, `#StoreStore` 将更改推送到中央仓库, 而 `#LoadLoad` 将远程更改拉回来。 然而,这两个屏障类型是不够的。
 记住, push 操作可能会推迟到任意数量的指令后面, 而 pull 操作可能也拉取不到 head 修正。
-这业务暗示了为什么 PowerPC 的 `lwsync`指令并不能阻止该示例中的 `r1 = r2 = 0` 重排序,(`lwsync` 充当的是 `#LoadLoad`、`#LoadStore`和`#StoreStore`这3个内存屏障，却不是`#StoreLoad` 屏障.)
+这也暗示了为什么 PowerPC 的 `lwsync`指令并不能阻止该示例中的 `r1 = r2 = 0` 重排序,(`lwsync` 充当的是 `#LoadLoad`、`#LoadStore`和`#StoreStore`这3个内存屏障，却不是`#StoreLoad` 屏障.)
 
 
 In terms of the analogy, a #StoreLoad barrier could be achieved by pushing all local changes to the central repostitory, waiting for that operation to complete, then pulling the absolute latest head revision of the repository. On most processors, instructions that act as a #StoreLoad barrier tend to be more expensive than instructions acting as the other barrier types.
@@ -289,7 +289,7 @@ In terms of the analogy, a #StoreLoad barrier could be achieved by pushing all l
 If we throw a #LoadStore barrier into that operation, which shouldn’t be a big deal, then what we get is a full memory fence – acting as all four barrier types at once. As Doug Lea also points out, it just so happens that on all current processors, every instruction which acts as a #StoreLoad barrier also acts as a full memory fence.
 
 如果我们把 `#LoadStore`(???) 屏障扔进指令中, 可能问题不大, 我们得到的是一个完整的内存栅栏,充当所有四个屏障类型。
-[Doug Lea还指出](http://gee.cs.oswego.edu/dl/jmm/cookbook.html), 碰巧了, 在限制的所有处理器中, 充当 `#StoreLoad` 屏障的指令，也能扮演一个完整的内存内存栅栏。
+[Doug Lea还指出](http://gee.cs.oswego.edu/dl/jmm/cookbook.html), 碰巧了, 在当前的所有处理器中, 充当 `#StoreLoad` 屏障的指令，也能扮演一个完整的内存栅栏。
 
 
 
@@ -298,7 +298,7 @@ If we throw a #LoadStore barrier into that operation, which shouldn’t be a big
 
 As I’ve mentioned previously, every processor has different habits when it comes to memory ordering. The x86/64 family, in particular, has a strong memory model; it’s known to keep memory reordering to a minimum. PowerPC and ARM have weaker memory models, and the Alpha is famous for being in a league of its own. Fortunately, the analogy presented in this post corresponds to a weak memory model. If you can wrap your head around it, and enforce correct memory ordering using the fence instructions given here, you should be able to handle most CPUs.
 
-正如我前面所提到的, 各种处理器的内存排序行为都是不同的。尤其是 x86/64 家族,拥有强内存模型(strong memory model), 很少有内存重排序。而PowerPC和ARM 的是弱内存模型(weaker memory models),和 Alpha 而闻名的联盟。幸运的是, 这篇文章中给出的类比对应于一个弱内存模型(weak memory model)。如果你在大脑中记住, 并使用栅栏指令执行正确的内存排序, 你应该能应付大部分的 cpu。
+正如我前面所提到的, 各种处理器的内存排序行为都是不同的。尤其是 x86/64 家族,拥有强内存模型(strong memory model), 很少有内存重排序。而 PowerPC 和 ARM 则是弱内存模型(weaker memory models), Alpha 更是以独树一帜而闻名。幸运的是, 这篇文章中给出的类比对应于一个弱内存模型(weak memory model)。如果你能理解它, 并使用这里给出的栅栏指令来保证正确的内存排序, 你应该能够应付大多数 CPU。
 
 
 The analogy also corresponds pretty well to the abstract machine targeted by both C++11 (formerly known as C++0x) and C11. Therefore, if you write lock-free code using the standard library of those languages while keeping the above analogy in mind, it’s more likely to function correctly on any platform.
@@ -309,20 +309,19 @@ The analogy also corresponds pretty well to the abstract machine targeted by bot
 
 In this analogy, I’ve said that each programmer represents a single thread of execution running on a separate core. On a real operating system, threads tend to move between different cores over the course of their lifetime, but the analogy still works. I’ve also alternated between examples in machine language and examples written in C/C++. Obviously, we’d prefer to stick with C/C++, or another high-level language; this is possible because again, any operation which acts as a memory barrier also prevents compiler reordering.
 
-在这个比喻中,每个程序员代表运行在单独核心上的单个线程。在真正的操作系统中, 线程在生命周期中会在不同的 core 核之间执行, 但这个类比仍然是有效的。我也时常在机器语言和 C/C++ 程序的示例中选择. 显然,我们更喜欢 C/C++ 这样的高级语言, 这可能是因为, 充当内存屏障的任何操作同时也阻止了编译器重排序。
+在这个比喻中,每个程序员代表运行在单独核心上的单个线程。在真正的操作系统中, 线程在生命周期中往往会在不同核心之间迁移, 但这个类比仍然是有效的。我也在机器语言示例和 C/C++ 示例之间来回切换. 显然,我们更喜欢 C/C++ 这样的高级语言, 这也是可行的, 因为如前所述, 任何充当内存屏障的操作同时也阻止了编译器重排序。
 
 
 I haven’t written about every type of memory barrier yet. For instance, there are also data dependency barriers. I’ll describe those further in a future post. Still, the four types given here are the big ones.
 
 
-我没有介绍所有类型的内存屏障。例如,存在数据依赖关系的屏障。我将在今后的博文中介绍这些。当然,这里介绍的四种类型是最常见的。
+我没有介绍所有类型的内存屏障。例如, 还存在数据依赖屏障(data dependency barriers)。我将在今后的博文中介绍这些。当然,这里介绍的四种类型是最常见的。
 
 
 If you’re interested in how CPUs work under the hood – things like stores buffers, cache coherency protocols and other hardware implementation details – and why they perform memory reordering in the first place, I’d recommend the fine work of Paul McKenney & David Howells. Indeed, I suspect most programmers who have successfully written lock-free code have at least a passing familiarity with such hardware details.
 
 
-如果你对cpu在幕后如何工作感兴趣 —— 如存储缓冲区(stores buffers), 缓存一致性协议(cache coherency protocols) 或者 硬件相关的实现细节, 为什么他们会先执行内存重排序? 我推荐 Paul McKenney & David Howells 的相关文档: [whymb.2010.07.23a.pdf](whymb.2010.07.23a.pdf), [memory-barriers.txt](http://www.kernel.org/doc/Documentation/memory-barriers.txt), 。 事实上,我怀疑大多数写过无锁代码的程序员都不清楚硬件实现的细节。
-
+如果你对cpu在幕后如何工作感兴趣 —— 如存储缓冲区(stores buffers), 缓存一致性协议(cache coherency protocols) 或者 硬件相关的实现细节 —— 以及它们为什么会进行内存重排序, 我推荐 Paul McKenney & David Howells 的相关文档: [whymb.2010.07.23a.pdf](whymb.2010.07.23a.pdf), [memory-barriers.txt](http://www.kernel.org/doc/Documentation/memory-barriers.txt)。 事实上, 我猜想大多数成功写过无锁代码的程序员, 至少都对这些硬件细节有一定了解。
 
 
 
