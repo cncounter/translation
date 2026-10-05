@@ -1,7 +1,7 @@
 # 通过SDKMAN安装各种版本JDK
 
 
-SDKMAN 支持很多种安装包, 不只是JDK;
+SDKMAN 支持很多种安装包, 不只是JDK。
 
 ## 1. 安装SDKMAN管理器
 
