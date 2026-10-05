@@ -97,7 +97,7 @@ Here is a diagram illustrating the points above:
 
 Two threads have a set of local variables. One of the local variables (`Local Variable 2`) point to a shared object on the heap (Object 3). The two threads each have a different reference to the same object. Their references are local variables and are thus stored in each thread's thread stack (on each). The two different references point to the same object on the heap, though.
 
-两个线程都有自己的局部变量。其中有一个变量（`Local Variable 2`）指向了堆内层中的共享对象（Object 3）。
+两个线程都有自己的局部变量。其中有一个变量（`Local Variable 2`）指向了堆内存中的共享对象（Object 3）。
 
 这两个线程对同一对象具有不同的引用。它们的引用是局部变量，因此存储在各自线程的线程栈中。但这两个不同的引用，却指向了堆内存中的同一个对象。
 
@@ -185,75 +185,132 @@ Notice how the `MySharedObject` class contains two member variables too. The mem
 
 Notice also how `methodTwo()` creates a local variable named `localVariable1`. This local variable is an object reference to an `Integer` object. The method sets the `localVariable1` reference to point to a new `Integer` instance. The `localVariable1` reference will be stored in one copy per thread executing `methodTwo()`. The two `Integer` objects instantiated will be stored on the heap, but since the method creates a new `Integer` object every time the method is executed, two threads executing this method will create separate `Integer` instances. The `Integer` objects created inside `methodTwo()` correspond to Object 1 and Object 5 in the diagram above.
 
+另外注意，`methodTwo()` 创建了一个名为 `localVariable1` 的局部变量。该局部变量是一个指向 `Integer` 对象的对象引用。方法将 `localVariable1` 引用设置为指向一个新建的 `Integer` 实例。执行 `methodTwo()` 的每个线程都会保存一份自己的 `localVariable1` 引用副本。被实例化的两个 `Integer` 对象会存储在堆上，但由于每次执行该方法都会新建一个 `Integer` 对象，因此两个执行该方法的线程会创建各自独立的 `Integer` 实例。在 `methodTwo()` 中创建的 `Integer` 对象对应于上图中的对象 1 和对象 5。
+
 Notice also the two member variables in the class `MySharedObject` of type `long` which is a primitive type. Since these variables are member variables, they are still stored on the heap along with the object. Only local variables are stored on the thread stack.
+
+另外请注意，`MySharedObject` 类中还有两个类型为 `long` 的成员变量，`long` 是原生类型。由于这些变量是成员变量，它们仍然和对象一起存储在堆上。只有局部变量才会存储在线程栈中。
 
 
 
 ## Hardware Memory Architecture
 
+## 硬件内存架构
+
 Modern hardware memory architecture is somewhat different from the internal Java memory model. It is important to understand the hardware memory architecture too, to understand how the Java memory model works with it. This section describes the common hardware memory architecture, and a later section will describe how the Java memory model works with it.
 
+现代硬件的内存架构与 JVM 内部的 Java 内存模型并不完全相同。要理解 Java 内存模型如何与硬件内存架构协同工作，了解硬件内存架构也非常重要。本节介绍通用的硬件内存架构，后面的章节会说明 Java 内存模型如何与之配合。
+
 Here is a simplified diagram of modern computer hardware architecture:
+
+下面是现代计算机硬件架构的简化示意图：
 
 ![](11_04_java-memory-model-4.png)
 
 A modern computer often has 2 or more CPUs in it. Some of these CPUs may have multiple cores too. The point is, that on a modern computer with 2 or more CPUs it is possible to have more than one thread running simultaneously. Each CPU is capable of running one thread at any given time. That means that if your Java application is multithreaded, one thread per CPU may be running simultaneously (concurrently) inside your Java application.
 
+现代计算机通常带有 2 个或更多的 CPU，其中一些 CPU 还可能拥有多个核心。关键在于，在有 2 个或更多 CPU 的现代计算机上，可以同时运行多个线程。每个 CPU 在任一时刻都能运行一个线程。这意味着，如果你的 Java 应用是多线程的，那么每个 CPU 上可能同时（并发）运行着应用中的一个线程。
+
 Each CPU contains a set of registers which are essentially in-CPU memory. The CPU can perform operations much faster on these registers than it can perform on variables in main memory. That is because the CPU can access these registers much faster than it can access main memory.
+
+每个 CPU 都包含一组寄存器，寄存器本质上是 CPU 内部的内存。CPU 在寄存器上执行操作的速度，远快于对主内存中的变量执行操作的速度，因为 CPU 访问寄存器比访问主内存快得多。
 
 Each CPU may also have a CPU cache memory layer. In fact, most modern CPUs have a cache memory layer of some size. The CPU can access its cache memory much faster than main memory, but typically not as fast as it can access its internal registers. So, the CPU cache memory is somewhere in between the speed of the internal registers and main memory. Some CPUs may have multiple cache layers (Level 1 and Level 2), but this is not so important to know to understand how the Java memory model interacts with memory. What matters is to know that CPUs can have a cache memory layer of some sort.
 
+每个 CPU 还可能拥有一层 CPU 缓存。事实上，大多数现代 CPU 都有一定大小的缓存层。CPU 访问缓存的速度比主内存快得多，但通常比访问其内部寄存器略慢。因此，CPU 缓存的速度介于内部寄存器和主内存之间。有些 CPU 可能有多层缓存（一级缓存和二级缓存），但这对于理解 Java 内存模型如何与内存交互并不重要。需要知道的是：CPU 可能存在某种形式的缓存层。
+
 A computer also contains a main memory area (RAM). All CPUs can access the main memory. The main memory area is typically much bigger than the cache memories of the CPUs.
+
+计算机还包含一块主内存区域（RAM），所有 CPU 都可以访问主内存。主内存区域通常比 CPU 的缓存大得多。
 
 Typically, when a CPU needs to access main memory it will read part of main memory into its CPU cache. It may even read part of the cache into its internal registers and then perform operations on it. When the CPU needs to write the result back to main memory it will flush the value from its internal register to the cache memory, and at some point flush the value back to main memory.
 
+通常，当 CPU 需要访问主内存时，会先把主内存的一部分读入 CPU 缓存，甚至可能把缓存中的一部分读入内部寄存器，然后对其执行操作。当 CPU 需要把结果写回主内存时，会先把值从内部寄存器刷新(flush)到缓存，然后在某个时机再把值刷新回主内存。
+
 The values stored in the cache memory is typically flushed back to main memory when the CPU needs to store something else in the cache memory. The CPU cache can have data written to part of its memory at a time, and flush part of its memory at a time. It does not have to read / write the full cache each time it is updated. Typically the cache is updated in smaller memory blocks called "cache lines". One or more cache lines may be read into the cache memory, and one or mor cache lines may be flushed back to main memory again.
+
+当 CPU 需要在缓存中保存其他内容时，缓存中的值通常会被刷新回主内存。CPU 缓存可以每次只把数据写入其中一部分，也每次只把其中一部分刷新出去，不必在每次更新时读写整个缓存。缓存通常以称为"缓存行(cache line)"的较小内存块为单位进行更新。可以一次把一条或多条缓存行读入缓存，也可以一次把一条或多条缓存行刷新回主内存。
 
 
 
 ## Bridging The Gap Between The Java Memory Model And The Hardware Memory Architecture
 
+## Java 内存模型与硬件内存架构之间的衔接
+
 As already mentioned, the Java memory model and the hardware memory architecture are different. The hardware memory architecture does not distinguish between thread stacks and heap. On the hardware, both the thread stack and the heap are located in main memory. Parts of the thread stacks and heap may sometimes be present in CPU caches and in internal CPU registers. This is illustrated in this diagram:
+
+如前所述，Java 内存模型与硬件内存架构是不同的。硬件内存架构并不区分线程栈和堆。在硬件上，线程栈和堆都位于主内存中。线程栈和堆的一部分有时也可能出现在 CPU 缓存和 CPU 内部寄存器中，如下图所示：
 
 ![](11_05_java-memory-model-5.png)
 
 When objects and variables can be stored in various different memory areas in the computer, certain problems may occur. The two main problems are:
 
+当对象和变量可以存储在计算机中各种不同的内存区域时，就可能出现一些问题。两个主要问题是：
+
 - Visibility of thread updates (writes) to shared variables.
 - Race conditions when reading, checking and writing shared variables.
 
+- 线程对共享变量的更新（写入）的可见性问题。
+- 读取、检查和写入共享变量时的竞态条件(race condition)问题。
+
 Both of these problems will be explained in the following sections.
+
+以下各节将详细解释这两个问题。
 
 
 
 ### Visibility of Shared Objects
 
+### 共享对象的可见性
+
 If two or more threads are sharing an object, without the proper use of either `volatile` declarations or synchronization, updates to the shared object made by one thread may not be visible to other threads.
+
+如果两个或多个线程共享一个对象，而又没有正确使用 `volatile` 声明或同步，那么一个线程对该共享对象的更新，可能对其他线程不可见。
 
 Imagine that the shared object is initially stored in main memory. A thread running on CPU one then reads the shared object into its CPU cache. There it makes a change to the shared object. As long as the CPU cache has not been flushed back to main memory, the changed version of the shared object is not visible to threads running on other CPUs. This way each thread may end up with its own copy of the shared object, each copy sitting in a different CPU cache.
 
+假设共享对象最初存储在主内存中。运行在 CPU 1 上的线程把共享对象读入自己的 CPU 缓存，并在那里修改了它。只要 CPU 缓存没有刷新回主内存，修改后的共享对象版本对运行在其他 CPU 上的线程就是不可见的。这样，每个线程最终可能都持有共享对象的一份自己的副本，各副本分别位于不同的 CPU 缓存中。
+
 The following diagram illustrates the sketched situation. One thread running on the left CPU copies the shared object into its CPU cache, and changes its `count` variable to 2. This change is not visible to other threads running on the right CPU, because the update to `count` has not been flushed back to main memory yet.
+
+下图描述了上面所描述的情况。在左侧 CPU 上运行的一个线程把共享对象复制到自己的 CPU 缓存中，并把它的 `count` 变量改为 2。这一修改对运行在右侧 CPU 上的其他线程不可见，因为对 `count` 的更新还没有刷新回主内存。
 
 ![](11_06_java-memory-model-6.png)
 
 To solve this problem you can use [Java's volatile keyword](http://tutorials.jenkov.com/java-concurrency/volatile.html). The `volatile` keyword can make sure that a given variable is read directly from main memory, and always written back to main memory when updated.
 
+要解决这个问题，可以使用 [Java 的 volatile 关键字](http://tutorials.jenkov.com/java-concurrency/volatile.html)。`volatile` 关键字可以保证：给定的变量直接从主内存读取，并且在更新时总是写回主内存。
+
 
 
 ### Race Conditions
 
+### 竞态条件
+
 If two or more threads share an object, and more than one thread updates variables in that shared object,[race conditions](http://tutorials.jenkov.com/java-concurrency/race-conditions-and-critical-sections.html) may occur.
+
+如果两个或多个线程共享一个对象，并且不止一个线程在更新该共享对象中的变量，就可能发生[竞态条件(race conditions)](http://tutorials.jenkov.com/java-concurrency/race-conditions-and-critical-sections.html)。
 
 Imagine if thread A reads the variable `count` of a shared object into its CPU cache. Imagine too, that thread B does the same, but into a different CPU cache. Now thread A adds one to `count`, and thread B does the same. Now `var1` has been incremented two times, once in each CPU cache.
 
+假设线程 A 把共享对象的变量 `count` 读入自己的 CPU 缓存；线程 B 也做同样的事，但读入的是另一个 CPU 缓存。现在线程 A 给 `count` 加 1，线程 B 也给它加 1。这样 `count` 就被递增了两次，分别发生在两个 CPU 缓存中。
+
 If these increments had been carried out sequentially, the variable `count` would be been incremented twice and had the original value + 2 written back to main memory.
+
+如果这两次递增是顺序执行的，变量 `count` 就会被加两次，写回主内存的值将是原值 + 2。
 
 However, the two increments have been carried out concurrently without proper synchronization. Regardless of which of thread A and B that writes its updated version of `count` back to main memory, the updated value will only be 1 higher than the original value, despite the two increments.
 
+然而，这两次递增是在没有正确同步的情况下并发执行的。不管线程 A 和 B 中哪一个把自己更新后的 `count` 版本写回主内存，写回的值都只会比原值大 1，尽管实际上发生了两次递增。
+
 This diagram illustrates an occurrence of the problem with race conditions as described above:
+
+下图描述了上述竞态条件问题的一次发生过程：
 
 ![](11_07_java-memory-model-7.png)
 
 To solve this problem you can use a [Java synchronized block](http://tutorials.jenkov.com/java-concurrency/synchronized.html). A synchronized block guarantees that only one thread can enter a given critical section of the code at any given time. Synchronized blocks also guarantee that all variables accessed inside the synchronized block will be read in from main memory, and when the thread exits the synchronized block, all updated variables will be flushed back to main memory again, regardless of whether the variable is declared volatile or not.
+
+要解决这个问题，可以使用 [Java 同步块(synchronized block)](http://tutorials.jenkov.com/java-concurrency/synchronized.html)。同步块保证在任一时刻只有一个线程能进入给定的临界区代码。同步块还保证：同步块内访问的所有变量都会从主内存中读入；当线程退出同步块时，所有被更新的变量都会再次刷新回主内存——无论变量是否声明为 volatile。
 
 <<http://tutorials.jenkov.com/java-concurrency/java-memory-model.html>>
