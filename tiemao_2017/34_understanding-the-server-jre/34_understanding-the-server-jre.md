@@ -14,7 +14,7 @@ The JRE is used to run a broad variety of Java programs including Java applicati
 
 JRE 可以运行各种Java程序, 包括桌面端Java程序。
 
-而JDK是给开发人员使用的, 其中包含了一个完整的JRE, 以及必要的开发工具, 例如 创建Java程序, 代码签名, 生成文档,等等。JDK还提供了一些监视和调试工具。
+而JDK是给开发人员使用的, 其中包含了一个完整的JRE, 以及必要的开发工具, 例如创建Java程序, 代码签名, 生成文档,等等。JDK还提供了一些监视和调试工具。
 
 So where does the Server JRE fit in?  From the perspective of common server-side applications, the JRE is missing monitoring tools and, in the case of applications that compile Java source code at run-time, javac. On the other hand, the JDK includes additional functionality that system administrators may not need on their production systems like the Java Plugin for web browsers, auto update agents, and development tools like javadoc.
 
@@ -32,7 +32,7 @@ No. If an application requires functionality outside of what is provided in the 
 
 #### Server JRE 兼容所有的服务端程序吗? 
 
-No. 如果应用程序需要用到 Server JRE 不支持的功能,如额外的开发工具或JavaFX, 那就不应该选择 Server JRE 了, 比如 JavaFX 之类的程序。
+No. 如果应用程序需要用到 Server JRE 不支持的功能,如额外的开发工具或JavaFX, 那 Server JRE 就不是该程序的合适选择。
 
 **If the JDK is a super-set of the Server JRE, why not simply use that?**
 
@@ -40,7 +40,7 @@ Removing unused components decreases the potential attack surface, and the small
 
 #### 如果JDK是Server JRE的一个超集,那为何不直接使用JDK呢?
 
-删除用不到的组件, 可以减少潜在的漏洞; 当然, 精简之后体积变小, 部署也就更快. 在 Linux x64 系统上, Server JRE 8 的大小只有 full JDK 8 的 40%左右。
+删除用不到的组件, 可以减少潜在的攻击面; 当然, 精简之后体积变小, 部署也就更快. 在 Linux x64 系统上, Server JRE 8 的大小只有 full JDK 8 的 40%左右。
 
 **My software vendor claims their applications needs the JDK, but can I use the Server JRE instead?**
 
