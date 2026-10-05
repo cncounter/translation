@@ -22,19 +22,19 @@ MySQL角色的命名规则与帐号命名类似, 细微差别请参考: [Section
 在 [`CREATE USER`](https://dev.mysql.com/doc/refman/8.0/en/create-user.html), [`GRANT`](https://dev.mysql.com/doc/refman/8.0/en/grant.html), 以及 [`SET PASSWORD`](https://dev.mysql.com/doc/refman/8.0/en/set-password.html) 等SQL语句中, 帐号命名遵循以下规则:
 
 - Account name syntax is  `'user_name'@'host_name'` .
-- An account name consisting only of a user name is equivalent to  `'user_name'@'％'`. For example, `'me'` is equivalent to `'me'@'%'`.
+- An account name consisting only of a user name is equivalent to  `'user_name'@'%'`. For example, `'me'` is equivalent to `'me'@'%'`.
 - The user name and host name need not be quoted if they are legal as unquoted identifiers. Quotes are necessary to specify a *`user_name`* string containing special characters (such as space or `-`), or a *`host_name`* string containing special characters or wildcard characters (such as `.` or `%`). For example, in the account name `'test-user'@'%.com'`, both the user name and host name parts require quotes.
 - Quote user names and host names as identifiers or as strings, using either backticks (\`), single quotation marks (`'`), or double quotation marks (`"`). For string-quoting and identifier-quoting guidelines, see [Section 9.1.1, “String Literals”](https://dev.mysql.com/doc/refman/8.0/en/string-literals.html), and [Section 9.2, “Schema Object Names”](https://dev.mysql.com/doc/refman/8.0/en/identifiers.html).
 - The user name and host name parts, if quoted, must be quoted separately. That is, write `'me'@'localhost'`, not `'me@localhost'`. The latter is actually equivalent to `'me@localhost'@'%'`.
 - A reference to the [`CURRENT_USER`](https://dev.mysql.com/doc/refman/8.0/en/information-functions.html#function_current-user) or [`CURRENT_USER()`](https://dev.mysql.com/doc/refman/8.0/en/information-functions.html#function_current-user) function is equivalent to specifying the current client's user name and host name literally.
 
 - 1、帐号名称的格式为: `'user_name'@'host_name'`;
-- 2、如果只指定了 user_name, 则等价于 `'user_name'@'％'`; 例如, `'me'` 等价于 `'me'@'%'`。
+- 2、如果只指定了 user_name, 则等价于 `'user_name'@'%'`; 例如, `'me'` 等价于 `'me'@'%'`。
 - 3、如果用户名和主机名是合法的标识符, 则可以省略引号。 否则必须用引号引起来, 包括以下情形:
   * 用户名中包含特殊字符(例如空格或者横线 `-`);
-  * 主机名部分包含特殊字符或通配符(例如`.`或者`％`)。
+  * 主机名部分包含特殊字符或通配符(例如`.`或者`%`)。
   * 示例: 如果帐号名是 `'test-user'@'%.com'`, 那么用户名部分和主机名部分都必须用引号引起来。
-- 4、可以使用反引号(\`, backticks, 点顿号)、单引号(`'`, single quotation marks) 或者双引号(`"`, double quotation marks)将用户名和主机名当做标识符/字符串引起来。 关于字符串引用和标识符引用的具体规则, 请参考: [Section 9.1.1, “String Literals”](https://dev.mysql.com/doc/refman/8.0/en/string-literals.html) 和  [Section 9.2, “Schema Object Names”](https://dev.mysql.com/doc/refman/8.0/en/identifiers.html)。
+- 4、可以使用反引号(\`, backticks)、单引号(`'`, single quotation marks) 或者双引号(`"`, double quotation marks)将用户名和主机名当做标识符/字符串引起来。 关于字符串引用和标识符引用的具体规则, 请参考: [Section 9.1.1, “String Literals”](https://dev.mysql.com/doc/refman/8.0/en/string-literals.html) 和  [Section 9.2, “Schema Object Names”](https://dev.mysql.com/doc/refman/8.0/en/identifiers.html)。
 - 5、用户名和主机名是两个部分, 要分别加引号。
   * 正确示例: `'me'@'localhost'`;
   * 错误示例: `'me@localhost'`; 因为这样写就等价于 `'me@localhost'@'%'`。
@@ -67,7 +67,7 @@ The user name part of an account name is either a nonblank value that literally 
 
 用户名部分可以是:
 
-- 如果用户名是非空白值(nonblank value), 客户端连接时使用的用户名必须在字符上与这个值完全一致,
+- 如果用户名是非空白值(nonblank value), 客户端连接时使用的用户名必须在字符上与这个值完全一致。
 - 如果用户名是一个空白值(空字符串), 则可以和任意用户名匹配。 帐号中用户名为空, 也就是匿名用户。 要在SQL中指定匿名用户, 请使用引号把空串作为用户名引起来, 例如 `''@'localhost'`。
 
 The host name part of an account name can take many forms, and wildcards are permitted:
