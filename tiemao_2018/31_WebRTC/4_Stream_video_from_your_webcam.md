@@ -112,7 +112,7 @@ Open `index.html` in your browser and you should see something like this (featur
 
 ![](04_01_demo.png)
 
-当然, 页面中展示的你本地摄像头实时拍摄到的内容。
+当然, 页面中展示的是你本地摄像头实时拍摄到的内容。
 
 
 ## How it works
@@ -180,7 +180,7 @@ const hdConstraints = {
 
 The [MediaTrackConstraints specification](https://w3c.github.io/mediacapture-main/getusermedia.html#media-track-constraints) lists all potential constraint types, though not all options are supported by all browsers. If the resolution requested isn't supported by the currently selected camera, `getUserMedia()` will be rejected with an `OverconstrainedError` and the user will not be prompted to give permission to access their camera.
 
-[MediaTrackConstraints 规范文档](https://w3c.github.io/mediacapture-main/getusermedia.html#media-track-constraints) 列出了所有可用的约束类型, 虽然有一些浏览器不兼容其中的某些选项。如果当前选择的摄像头不支持给定的约束选项, 调用 `getUserMedia()` 时则会抛出 `OverconstrainedError` 错误。默认也不会提示用户进行再次授权。
+[MediaTrackConstraints 规范文档](https://w3c.github.io/mediacapture-main/getusermedia.html#media-track-constraints) 列出了所有可用的约束类型, 虽然有一些浏览器不兼容其中的某些选项。如果当前选择的摄像头不支持给定的约束选项, 调用 `getUserMedia()` 时则会抛出 `OverconstrainedError` 错误。同时也不会提示用户授予摄像头访问权限。
 
 当然, 用户随时可以管理授权信息, 或者切换摄像头, 如下图所示:
 
@@ -259,7 +259,7 @@ In this step you learned how to:
 
 * 如何从网络摄像头获取视频。
 * 设置媒体约束条件(media constraint)。
-* 混合视频元素。
+* 对 video 元素进行各种操作。
 
 
 A complete version of this step is in the **step-01** folder.
@@ -274,7 +274,7 @@ A complete version of this step is in the **step-01** folder.
 *   There are lots more options for `getUserMedia()` constraints. Take a look at the demo at [webrtc.github.io/samples/src/content/peerconnection/constraints](https://webrtc.github.io/samples/src/content/peerconnection/constraints/). As you'll see, there are lots of interesting WebRTC samples on that site.
 
 * 记得设置 `video` 元素的 `autoplay` 属性。如果没有设置, 则只能看到第一帧画面!
-* `getUserMedia()`方法提供了很多可选参数, 请参考 <https://webrtc.github.io/samples/src/content/peerconnection/constraints/>. 当然, 其中也有一些有趣的 WebRTC 示例。
+* `getUserMedia()`方法提供了很多可选参数, 请参考 <https://webrtc.github.io/samples/src/content/peerconnection/constraints/>。当然, 其中还有很多有趣的 WebRTC 示例。
 
 ## Best practice
 
