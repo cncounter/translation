@@ -10,7 +10,7 @@ In this article series, we’ll focus on metrics and factors related to performa
 
 
 
-自 1990 年代中期创建 Java 和 JVM 以来，发生了很多变化。 Java 的发明解决了导致开发人员花费大量时间处理内存问题、内存泄漏的重要问题。 Java 和 JVM 解决了这个问题，使 Java 开发人员能够更多地专注于实现软件旨在实现的目标，而不是调试内存问题。不幸的是，Java 的解决方案垃圾回收 (GC) 产生了一种新问题：应用程序性能的突然随机延迟。今天，这种拖延是不能容忍的。
+自 1990 年代中期创建 Java 和 JVM 以来，发生了很多变化。 Java 的发明解决了导致开发人员花费大量时间处理内存问题、内存泄漏的重要问题。 Java 和 JVM 解决了这个问题，使 Java 开发人员能够更多地专注于实现软件旨在实现的目标，而不是调试内存问题。不幸的是，Java 的解决方案垃圾回收 (GC) 产生了一种新问题：应用程序性能的突然随机延迟。今天，这种延迟是不能容忍的。
 
 在本系列文章中，我们将重点关注与延迟上下文中的性能相关的指标和因素，尤其是高尾延迟。在第一篇文章中，我们大体上讨论了软件延迟的问题和影响，同时涉及 Java 在应用程序延迟方面造成的独特问题。我们的下一篇文章将特别关注 Java 如何在高性能应用程序中导致非常高的尾部延迟。
 
@@ -40,8 +40,8 @@ An interesting article in InfoWorld defined [4 sources of latency](https://www.i
 
 InfoWorld 中的一篇有趣的文章定义了 [4 个延迟来源](https://www.infoworld.com/article/3235340/4-sources-of-latency-and-how-to-avoid-them.html):
 
-- 网络输入/输出
-- 磁盘输入/输出
+- 网络 I/O
+- 磁盘 I/O
 - 运行环境
 - 你的代码
 
@@ -61,11 +61,11 @@ What you, as a developer, have most control over is your code. But, even here, t
 In addition, input data sets can affect latency, particularly in cases where the software is performing mathematical analysis of a data stream. Sometimes the input data set has an easy solution, and complex code is never entered. Other times the input data requires a much more complex path through the software, resulting in significantly higher software processing time. This can be the case, for example, in financial trading systems or scientific data analysis systems like weather forecasting or analyzing military satellite data streams. Here is where second-level JVM JIT compilers excel. Languages like C/C++ and Python cannot adapt and optimize for changing data conditions. JVMs that use adaptive compilation strategies can.
 
 
-不同的运行环境提供不同的[性能](https://www.azul.com/resources/azul-technology/zing-consistent-low-latency-performance/)：“运行实时应用程序的运行环境——在共享硬件、容器、虚拟机或云中——会显着影响延迟。”
+不同的运行环境提供不同的[性能](https://www.azul.com/resources/azul-technology/zing-consistent-low-latency-performance/)：“运行实时应用程序的运行环境——在共享硬件、容器、虚拟机或云中——会显著影响延迟。”
 
-作为开发人员，您最能控制的是您的代码。但是，即使在这里，也存在差异：对于相同的计算，不同的语言具有不同的延迟。例如，C/C++ 的性能与 Python 的性能不同。与通常提供静态性能的 C/C++ 和 Python 不同，Java 虚拟机 (JVM) 语言是独一无二的：二级即时 (JIT) 编译器可以根据正在使用的代码路径重新优化字节码大多数在给定的时间；但是，JVM 还包括垃圾收集 (GC)，在大多数算法中，这会导致应用程序线程在执行 GC 的不同方面时暂停。
+作为开发人员，您最能控制的是您的代码。但是，即使在这里，也存在差异：对于相同的计算，不同的语言具有不同的延迟。例如，C/C++ 的性能与 Python 的性能不同。与通常提供静态性能的 C/C++ 和 Python 不同，Java 虚拟机 (JVM) 语言是独一无二的：二级即时 (JIT) 编译器可以根据在给定时间使用最频繁的代码路径重新优化字节码；但是，JVM 还包括垃圾收集 (GC)，在大多数算法中，这会导致应用程序线程在执行 GC 的不同方面时暂停。
 
-此外，输入数据集会影响延迟，特别是在软件对数据流进行数学分析的情况下。有时输入数据集有一个简单的解决方案，从不输入复杂的代码。其他时候，输入数据需要通过更复杂的软件路径，导致软件处理时间显着增加。例如，在金融交易系统或科学数据分析系统（如天气预报或分析军事卫星数据流）中就是这种情况。这就是二级 JVM JIT 编译器的优势所在。 C/C++ 和 Python 等语言无法适应和优化不断变化的数据条件。使用自适应编译策略的 JVM 可以。
+此外，输入数据集会影响延迟，特别是在软件对数据流进行数学分析的情况下。有时输入数据集有一个简单的解决方案，不会进入复杂的代码路径。其他时候，输入数据需要通过更复杂的软件路径，导致软件处理时间显著增加。例如，在金融交易系统或科学数据分析系统（如天气预报或分析军事卫星数据流）中就是这种情况。这就是二级 JVM JIT 编译器的优势所在。 C/C++ 和 Python 等语言无法适应和优化不断变化的数据条件。使用自适应编译策略的 JVM 可以。
 
 
 ## Software Latency Example
