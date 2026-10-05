@@ -9,19 +9,19 @@ Table of Contents
 
 
 - [8.1 MySQL调优概述](./8.1-optimize-overview.md) 【粗翻】
-- [8.2 Optimizing SQL Statements](./8.2-statement-optimization.md)【部分】
-- [8.3 Optimization and Indexes](./8.3-optimization-indexes.md)
-- [8.4 Optimizing Database Structure](./8.4-optimizing-database-structure.md)
-- [8.5 Optimizing for InnoDB Tables](./8.5-optimizing-innodb.md)
-- [8.6 Optimizing for MyISAM Tables](./README.md)
-- [8.7 Optimizing for MEMORY Tables](./README.md)
-- [8.8 Understanding the Query Execution Plan](./8.8-execution-plan-information.md)
-- [8.9 Controlling the Query Optimizer](./8.9-controlling-optimizer.md)【部分】
-- [8.10 Buffering and Caching](./8.10-buffering-caching.md)
-- [8.11 Optimizing Locking Operations](./8.11-locking-issues.md)
-- [8.12 Optimizing the MySQL Server](./8.12-optimizing-server.md)
-- [8.13 Measuring Performance (Benchmarking)](./8.13-optimize-benchmarking.md)
-- [8.14 Examining Server Thread (Process) Information](./8.14-thread-information.md)
+- [8.2 优化SQL语句](./8.2-statement-optimization.md)【部分】
+- [8.3 优化与索引](./8.3-optimization-indexes.md)
+- [8.4 优化数据库结构](./8.4-optimizing-database-structure.md)
+- [8.5 InnoDB表优化](./8.5-optimizing-innodb.md)
+- [8.6 MyISAM表优化](./README.md)
+- [8.7 MEMORY表优化](./README.md)
+- [8.8 理解查询执行计划](./8.8-execution-plan-information.md)
+- [8.9 控制查询优化器](./8.9-controlling-optimizer.md)【部分】
+- [8.10 缓冲与缓存](./8.10-buffering-caching.md)
+- [8.11 锁操作优化](./8.11-locking-issues.md)
+- [8.12 优化MySQL服务器](./8.12-optimizing-server.md)
+- [8.13 性能度量(基准测试)](./8.13-optimize-benchmarking.md)
+- [8.14 查看服务器线程(进程)信息](./8.14-thread-information.md)
 
 
 
