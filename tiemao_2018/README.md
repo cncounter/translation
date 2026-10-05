@@ -42,7 +42,7 @@ CNCounter translation - 2018年目录
 41. [JVM异常处理机制](41_how-jvm-handle-exception/41_how-jvm-handle-exception.md)
 42. [禁止iframe引用网页](42_x-frame-options/42_x-frame-options.md)
 43. [**CSS高级技巧:自动省略左侧文本**](43_css-ellipsis-left/43_css-ellipsis-left.md)
-44. [guava简介](44_guava_intro/)
+44. [guava简介](44_guava_intro/README.md)
 45. [Java异常简介](45_java_exception_try_catch_finally/45_java_exception_try_catch_finally.md)
 46. [Chapter 11. Exceptions](46_javase_specs_Exceptions/46_javase_specs_Exceptions.md)
 
