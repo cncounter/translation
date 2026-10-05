@@ -23,7 +23,7 @@ MS-Office 97-2003 格式的文档称为二进制文档,存储结构较大。如�
 所以本文不讨论 .doc 文档,这种二进制文档,使用 FreeMarker 处理起来, 应该也讨不了好。请参考上面提到的[haohaoxuexi 的博客](http://haohaoxuexi.iteye.com/category/156541).
 
 
-盐归正传, 2007以后的Word,支持多种格式。最常见的是 `.docx`, 我熟悉的还有一种, `.xml` 格式。 
+言归正传, 2007以后的Word,支持多种格式。最常见的是 `.docx`, 我熟悉的还有一种, `.xml` 格式。 
 
 ## XML 格式的Word替换
 
