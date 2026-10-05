@@ -9,17 +9,17 @@ In a distributed system, just as in the local system, it is desirable to automat
 
 To accomplish reference-counting garbage collection, the RMI runtime keeps track of all live references within each Java virtual machine. When a live reference enters a Java virtual machine, its reference count is incremented. The first reference to an object sends a "referenced" message to the server for the object. As live references are found to be unreferenced in the local virtual machine, the count is decremented. When the last reference has been discarded, an unreferenced message is sent to the server. Many subtleties exist in the protocol; most of these are related to maintaining the ordering of referenced and unreferenced messages in order to ensure that the object is not prematurely collected.
 
-为实现引用计数, RMI 运行时需要跟踪各JVM中的存活对象引用. 当一个对象引用进入JVM时, 它的引用次数加 1; client第一次引用某个对象时, 会向服务器发送一条 "referenced" 消息. 在本地JVM中, 如果释放某个引用一次, 则引用次数减 1。当最后一个引用被丢弃时, 向服务器发送一条 "unreferenced" 消息. 协议中有很多坑; 但大多数消息都是在维护 referenced 和 unreferenced 消息, 目的是确保这些对象不会被过早回收(prematurely collected)。
+为实现引用计数, RMI 运行时需要跟踪各JVM中的存活对象引用. 当一个对象引用进入JVM时, 它的引用次数加 1; client第一次引用某个对象时, 会向服务器发送一条 "referenced" 消息. 在本地JVM中, 如果释放某个引用一次, 则引用次数减 1。当最后一个引用被丢弃时, 向服务器发送一条 "unreferenced" 消息. 协议中有很多坑; 但大多数细节都与维护 referenced 和 unreferenced 消息的顺序有关, 目的是确保这些对象不会被过早回收(prematurely collected)。
 
 
 When a remote object is not referenced by any client, the RMI runtime refers to it using a weak reference. The weak reference allows the Java virtual machine's garbage collector to discard the object if no other local references to the object exist. The distributed garbage collection algorithm interacts with the local Java virtual machine's garbage collector in the usual ways by holding normal or weak references to objects.
 
-如果某个 remote object 不再被任何客户端引用, RMI运行时就会使用弱引用来指向它. 假如服务端也不存在其他强引用, 那么在垃圾收集时, 就有可能会将弱引用丢弃.  分布式垃圾收集算法, 与 client JVM 之间, 主要是通过常规引用(normal reference), 以及弱引用(weak reference)的方式来进行交互。
+如果某个 remote object 不再被任何客户端引用, RMI运行时就会使用弱引用来指向它. 假如本地不存在其他引用, 那么在垃圾收集时, 就有可能会将这个对象丢弃.  分布式垃圾收集算法, 与本地 JVM 的垃圾收集器之间, 主要是通过常规引用(normal reference), 以及弱引用(weak reference)的方式来进行交互。
 
 
 As long as a local reference to a remote object exists, it cannot be garbage-collected and it can be passed in remote calls or returned to clients. Passing a remote object adds the identifier for the virtual machine to which it was passed to the referenced set. A remote object needing unreferenced notification must implement the`java.rmi.server.Unreferenced` interface. When those references no longer exist, the `unreferenced` method will be invoked. `unreferenced` is called when the set of references is found to be empty so it might be called more than once. Remote objects are only collected when no more references, either local or remote, still exist.
 
-只要客户端还有引用指向 remote object, 就不应该回收服务器中的这个对象, 有可能还会通过该对象进行远程调用(remote call), 或者作为返回值传递给客户端. 服务端在传递 remote object 给 client 时,会添加客户JVM的标识, 然后放到 referenced set 中。 远程对象必须实现 `java.rmi.server.Unreferenced` 接口, 以支持 unreferenced 通知。当客户端发现没有任何引用指向 remote object 时, 就会调用该对象的 `unreferenced`方法。`unreferenced` 方法可能会被调用多次, 只要客户端发现 references set 是空的就会调用一次。远程对象的回收, 只有当本地引用和远程引用都不存在时, 才会进行。
+只要客户端还有引用指向 remote object, 就不应该回收服务器中的这个对象, 有可能还会通过该对象进行远程调用(remote call), 或者作为返回值传递给客户端. 服务端在传递 remote object 给 client 时,会添加客户端JVM的标识, 然后放到 referenced set 中。 远程对象必须实现 `java.rmi.server.Unreferenced` 接口, 以支持 unreferenced 通知。当客户端发现没有任何引用指向 remote object 时, 就会调用该对象的 `unreferenced`方法。`unreferenced` 方法可能会被调用多次, 只要客户端发现 references set 是空的就会调用一次。远程对象的回收, 只有当本地引用和远程引用都不存在时, 才会进行。
 
 
 Note that if a network partition exists between a client and a remote server object, it is possible that premature collection of the remote object will occur (since the transport might believe that the client crashed). Because of the possibility of premature collection, remote references cannot guarantee referential integrity; in other words, it is always possible that a remote reference may in fact not refer to an existing object. An attempt to use such a reference will generate a `RemoteException` which must be handled by the application.
