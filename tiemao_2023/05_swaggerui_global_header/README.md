@@ -1,6 +1,6 @@
 # SwaggerUI 增加公共的Global全局Header
 
-> 为了调试方便, 想要在 SwaggerUI 的 "Try it out" 页面中增加一个认证 Header, 一个个接口添加注解就太麻烦了，有没有什么方式可以全局生成呢? 网上找了很多资料都不生效, 最后终于搞定了, 所以才有了这篇文章。
+> 为了调试方便, 想要在 SwaggerUI 的 "Try it out" 页面中增加一个认证 Header, 一个个接口添加注解就太麻烦了, 有没有什么方式可以全局生成呢? 网上找了很多资料都不生效, 最后终于搞定了, 所以才有了这篇文章。
 
 实现后的效果图如下所示:
 
@@ -8,7 +8,7 @@
 
 ## 简介
 
-SwaggerUI 是一个自动为 SpringMVC Controller 接口生成接口文档的框架。 还通过注解添加额外的备注,提供更友好的信息。 
+SwaggerUI 是一个自动为 SpringMVC Controller 接口生成接口文档的框架。 还通过注解添加额外的备注, 提供更友好的信息。 
 
 老版本的 Swagger UI 增加Header配置, 使用的是 `Docket`, 可以参考: [Global Header in Swagger-Ui Spring-Boot](https://dev.to/s2agrahari/global-header-in-swagger-ui-spring-boot-5188)
 
@@ -17,7 +17,7 @@ SwaggerUI, 现在改名叫做 springdoc-openapi, 相关的属性配置可以参�
 > https://springdoc.org/properties.html
 
 
-普通的SpringBoot项目, 可以在 `pom.xml` 中使用如下依赖引入 SwaggerUI :
+普通的SpringBoot项目, 可以在 `pom.xml` 中使用如下依赖引入 SwaggerUI:
 
 
 ```xml
@@ -93,7 +93,7 @@ public OpenApiCustomiser customerGlobalHeaderOpenApiCustomiser() {
 
 但是这哥们的方案也提供了一些思路。
 
-按照Spring的套路, 应该是需要自己注册Bean, 于是翻阅代码, 搜索 `OpenApiCustomiser` , 找到了 `GroupedOpenApi` 类。
+按照Spring的套路, 应该是需要自己注册Bean, 于是翻阅代码, 搜索 `OpenApiCustomiser`, 找到了 `GroupedOpenApi` 类。
 
 
 又找到了一篇Swagger老版本和新版本迁移的注解变化, 可参考:
