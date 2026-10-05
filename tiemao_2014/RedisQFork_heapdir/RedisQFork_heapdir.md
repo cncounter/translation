@@ -14,7 +14,7 @@ MS Open Tech 技术团队最近花了很多时间来测试最新构建的Windows
 
 测试结果令人振奋 —— 我们只发现了一个 BUG,当然我们已经修正了.
 
-这些已经完成的测试是基于Linux版的Redis2.6.8迁移到 Windows 版的, 这个版本完成了我们[在1月宣布的所有目标](http://msopentech.com/blog/2013/01/15/one-step-closer-to-full-support-for-redis-on-windows-ms-open-tech-releases-64-bit-and-azure-installer), 比如支持64位系统。 我们的目标是确保开发者可以放心地在Windows上使用Redis,包括高靠性要求的业务场景. 我们计划继续在更“严苛”的场景中进行测试, 确保我们没有漏过任何东西。
+这些已经完成的测试是基于Linux版的Redis2.6.8迁移到 Windows 版的, 这个版本完成了我们[在1月宣布的所有目标](http://msopentech.com/blog/2013/01/15/one-step-closer-to-full-support-for-redis-on-windows-ms-open-tech-releases-64-bit-and-azure-installer), 比如支持64位系统。 我们的目标是确保开发者可以放心地在Windows上使用Redis,包括高可靠性要求的业务场景. 我们计划继续在更“严苛”的场景中进行测试, 确保我们没有漏过任何东西。
 
 如果您对业务场景和测试计划/策略有什么意见或建议,请务必告诉作者们。 我们很乐意使用Redis开发者觉得适合的任意app或场景。
 
