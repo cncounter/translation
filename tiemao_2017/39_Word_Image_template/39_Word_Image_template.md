@@ -12,7 +12,7 @@
 4. 下载 src 为 byte[];
 5. 处理为对象;
 6. 处理对应的 XML 文档,生成 String 和 byte[]
-6. 替换 docx/zip 文件的某些 entry, 加上图片的 entry.
+7. 替换 docx/zip 文件的某些 entry, 加上图片的 entry.
 
 ## 相关源代码
 
