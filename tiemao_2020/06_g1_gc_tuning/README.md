@@ -42,7 +42,7 @@ The G1 GC uses independent Remembered Sets (RSets) to track references into regi
 本文先简要介绍怎样配置G1参数, 然后再介绍如何对GC性能进行分析和评估。
 想要进行GC调优，至少要对 [Java的垃圾收集机制](https://blog.csdn.net/renfufei/article/details/54144385) 有一定了解。
 
-G1是一款增量式的分代垃圾收集器。 什么是增量呢？
+G1是一款分区化的分代垃圾收集器。 什么是分区呢？
 G1把堆内存分为很多个大小相同的【小区域、小块】(region)。
 在JVM启动时，根据堆内存的配置，确定每个region的大小。 region的大小取值范围是 `1MB`到`32MB`，总数一般不会超过2048region。
 在G1中，新生代（eden），存活区（survivor）和老年代（old generation）都是逻辑上的概念，由这些region组合而成，这些region之间并不需要保持连续。
@@ -111,7 +111,7 @@ G1的标记周期包括以下这些阶段：
 
 - 【初始标记阶段】(`Initial mark phase`)： 在此阶段标记 GC roots, 一般是附加在某次常规的年轻代GC中顺带着执行。
 - 【扫描GC根所在的region】(`Root region scanning phase`)： 根据初始标记阶段确定的GC根元素，扫描这些元素所在region，获取对老年代的引用，并标记被引用的对象。 该阶段与应用线程并发执行，也就是说没有STW停顿，必须在下一次年轻代GC开始之前完成。
-- 【并发标记阶段】(`Concurrent marking phase`)”： 遍历整个堆，查找所有可达的存活对象。 此阶段与应用线程并发执行， 也允许被年轻代GC打断。
+- 【并发标记阶段】(`Concurrent marking phase`)： 遍历整个堆，查找所有可达的存活对象。 此阶段与应用线程并发执行， 也允许被年轻代GC打断。
 - 【再次标记阶段】(`Remark phase`)： 此阶段有一次STW暂停，以完成标记周期。 G1会清空SATB缓冲区，跟踪未访问到的存活对象，并进行引用处理。
 - 【清理阶段】(`Cleanup phase`)： 这是最后的子阶段，G1在执行统计和清理RSet时会有一次STW停顿。 在统计过程中，会把完全空闲的region标记出来，也会标记出适合于进行混合模式GC的候选region。 清理阶段有一部分是并发执行的，比如在重置空闲region并将其加入空闲列表时。
 
@@ -128,7 +128,7 @@ G1是一款自适应垃圾收集器，大部分的参数都有默认值，一般
 
 Sets the size of a G1 region. The value will be a power of two and can range from 1MB to 32MB. The goal is to have around 2048 regions based on the minimum Java heap size.
 
-用来设置G1 region 的大小。 必须是`2的幂`（x次方)，允许的范围是 `1MB` 至 `32MB`。
+用来设置G1 region 的大小。 必须是`2的幂`（x次方），允许的范围是 `1MB` 至 `32MB`。
 这个参数的默认值, 会根据堆内存的初始大小动态调整，以便将堆内存切分为2048个左右的region。
 
 #### `-XX:MaxGCPauseMillis=200`
@@ -232,7 +232,7 @@ To change the value of experimental flags, you must unlock them first. You can d
 
 ## 6. 如何解锁实验性质的JVM参数
 
-要修改实验性质的JVM参数值，必须先进行声明。
+要修改实验性质的JVM参数值，必须先解锁。
 我们可以在命令行参数中，设置实验性质的参数之前，明确指定 `-XX:+UnlockExperimentalVMOptions`。 例如：
 
 ```
