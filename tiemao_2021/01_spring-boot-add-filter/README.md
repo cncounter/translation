@@ -131,7 +131,7 @@ To set URL patterns for the filter, we can use the `addUrlPatterns()` or `setUrl
 
 这样配置之后, 过滤器只会过滤符合 `/users/*` 模式的URL。
 
-要设置过滤器的URL格式,使用 `addUrlPatterns()` 或者 `setUrlPatterns()` 方法即可。
+要设置过滤器的URL匹配模式,使用 `addUrlPatterns()` 或者 `setUrlPatterns()` 方法即可。
 
 
 ## 3. A Quick Example
