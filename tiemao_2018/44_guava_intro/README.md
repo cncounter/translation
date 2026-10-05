@@ -22,7 +22,7 @@ Guava是一款核心库, 包括:
 
 - 函数类型, functional types;
 - 内存缓存, in-memory cache;
-- 并发相关的API/工具类, APIs/utilities for concurrency
+- 并发相关的API/工具类, APIs/utilities for concurrency;
 - 其他类: 如 I/O, 哈希(hashing), 原生数据类型, 反射, 字符串处理, 注解 等等;
 
 Guava有两个版本:
@@ -84,10 +84,10 @@ dependencies {
 其中的内容包括:
 
 - 基础工具类: 让Java编程更方便.
-  - [避免 null 值](https://github.com/google/guava/wiki/UsingAndAvoidingNullExplained): `null` 是指不明确的值, 可能会造成一些问题, `null`值判断在某些人看来呢又很别扭. Guava 相关的很多工具类, 在碰到 null 时都会迅速地失败并返回, 不再继续进行处理.
-  - [条件预判 Preconditions](https://github.com/google/guava/wiki/PreconditionsExplained): 方便进行条件判定. 其中的工具方法会抛出异常, 使用时需要根据业务情况, 进行一些处理, 比如统一错误拦截, 以及日志输出判断, 否则就会输出一堆无意义的错误堆栈。
+  - [避免 null 值](https://github.com/google/guava/wiki/UsingAndAvoidingNullExplained): `null` 是指不明确的值, 可能会造成一些问题, `null`值判断在某些人看来又很别扭. Guava 相关的很多工具类, 在碰到 null 时都会迅速地失败并返回, 不再继续进行处理.
+  - [条件预判 Preconditions](https://github.com/google/guava/wiki/PreconditionsExplained): 方便进行条件判定. 其中的工具方法会抛出异常, 使用时需要根据业务情况, 进行一些处理, 比如统一错误拦截, 以及日志输出判断, 否则就会输出一堆无意义的错误堆栈.
   - [object相关的通用方法](https://github.com/google/guava/wiki/CommonObjectUtilitiesExplained): `Object` 类中对应方法的简单实现, 比如 `hashCode()` 以及 `toString()`等.
-  - [Ordering](https://github.com/google/guava/wiki/OrderingExplained):  "`Comparator`" 的流式实现.
+  - [Ordering](https://github.com/google/guava/wiki/OrderingExplained): 流畅风格(fluent)的 `Comparator` 实现.
   - [Throwables](https://github.com/google/guava/wiki/ThrowablesExplained): 对异常和错误进行简单的判断和处理.
 - 集合相关的类: Guava对JDK的集合体系进行了扩充. 例如:
   - [不可变集合(Immutable collections)](https://github.com/google/guava/wiki/ImmutableCollectionsExplained), 适用于 防御式编程(defensive programming), 常量集合(constant collections), 以及需要提升性能的场景.
@@ -95,18 +95,22 @@ dependencies {
   - [增强的集合工具类](https://github.com/google/guava/wiki/CollectionUtilitiesExplained), 对 `java.util.Collections` 进行增强, 支持一些常见的操作.
   - [扩展工具类](https://github.com/google/guava/wiki/CollectionHelpersExplained): 想要对 `Collection` 进行装饰? 想要实现 `Iterator` 接口? 可以使用Guava.
 - [图数据结构相关的类](https://github.com/google/guava/wiki/GraphsExplained): 支持图数据结构(graph-structured data)建模的库, 比如说, 实体和实体之间的关系. 主要包括: 
-  * [Graph](https://github.com/google/guava/wiki/GraphsExplained#graph): 最简单的图结构, 边界节点没有明确的标识. 
-  * [ValueGraph](https://github.com/google/guava/wiki/GraphsExplained#valuegraph): 有数值特征的图结构, 给定的边界, 具有相关的值(非唯一).
-  * [Network](https://github.com/google/guava/wiki/GraphsExplained#network): 网状图, 每个节点都是唯一的. 支持可变/不可变图结构, 直接/非直接图结构, 以及其他属性.
+  * [Graph](https://github.com/google/guava/wiki/GraphsExplained#graph): 最简单的图结构, 边(edge)上没有关联的值. 
+  * [ValueGraph](https://github.com/google/guava/wiki/GraphsExplained#valuegraph): 有数值特征的图结构, 边(edge)上可以关联值(非唯一).
+  * [Network](https://github.com/google/guava/wiki/GraphsExplained#network): 网状图, 每条边(edge)都是唯一的. 支持可变/不可变图结构, 有向/无向图结构, 以及其他属性.
 - [缓存相关的类](https://github.com/google/guava/wiki/CachesExplained): 本地缓存, 以及相关的API操作, 过期策略支持.
 - [Functional idioms](https://github.com/google/guava/wiki/FunctionalExplained): 合理使用, 不要滥用的话, Guava 提供的函数功能, 可以有效精简代码.
-- 并发操作相关的类: 用来编写并发代码的抽象库,简单易用,功能强大.
+- 并发操作相关的类: 用来编写并发代码的抽象库, 简单易用, 功能强大.
   - [ListenableFuture](https://github.com/google/guava/wiki/ListenableFutureExplained): Futures, with callbacks when they are finished.
+    即 Future, 完成后可以注册回调.
   - [Service](https://github.com/google/guava/wiki/ServiceExplained): Things that start up and shut down, taking care of the difficult state logic for you.
+    即服务的启动与关闭, 帮你处理复杂的状态逻辑.
 - [Strings](https://github.com/google/guava/wiki/StringsExplained): A few extremely useful string utilities: splitting, joining, padding, and more.
+  即一些极其有用的字符串工具: 拆分(splitting), 连接(joining), 补齐(padding) 等.
 - [Primitives](https://github.com/google/guava/wiki/PrimitivesExplained): 支持JDK未提供的原生数据类型操作, 如 `int` 或者 `char` 之类, 以及无符号数据类型.
 - [Ranges](https://github.com/google/guava/wiki/RangesExplained): 范围相关的API, 基于 `Comparable` 类型, 支持线性数据(continuous)和离散数据(discrete).
 - [I/O](https://github.com/google/guava/wiki/IOExplained): Simplified I/O operations, especially on whole I/O streams and files, for Java 5 and 6.
+  即简化的 I/O 操作, 尤其针对完整的 I/O 流和文件, 支持 Java 5 和 6.
 - [哈希工具类](https://github.com/google/guava/wiki/HashingExplained): 比 `Object.hashCode()` 更精巧的哈希计算方法, 使用布隆过滤器(Bloom filters)算法.
 - [事件总线(EventBus)](https://github.com/google/guava/wiki/EventBusExplained): 发布订阅模式(Publish-subscribe-style), 避免组件之间显式的依赖.
 - [数学工具类](https://github.com/google/guava/wiki/MathExplained): 实现了JDK没有提供的数学计算方法.
@@ -118,7 +122,7 @@ dependencies {
 
 想要用好Guava, 下面的链接可能会提供帮助.
 
-  - [Guava理念(Philosophy)介绍](https://github.com/google/guava/wiki/PhilosophyExplained): Guava 辨析以及设计目标.
+  - [Guava理念(Philosophy)介绍](https://github.com/google/guava/wiki/PhilosophyExplained): Guava 的设计理念以及目标.
   - [在项目构建中引入Guava](https://github.com/google/guava/wiki/UseGuavaInYourBuild), 比如 Maven, Gradle, 等等.
   - [用ProGuard实现精简定制](https://github.com/google/guava/wiki/UsingProGuardWithGuava), 可以选择只打包需要的部分.
   - [从 Apache Commons 迁移](https://github.com/google/guava/wiki/ApacheCommonCollectionsEquivalents), 将依赖 Apache Commons Collections 的代码, 迁移到使用Guava.
