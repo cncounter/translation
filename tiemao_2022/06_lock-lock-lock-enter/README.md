@@ -1,5 +1,7 @@
 # Lock Lock Lock: Enter!
 
+# 锁, 锁, 锁: 进来吧!
+
 ## Java locks
 
 There are 2 majors locks in java:
@@ -8,6 +10,15 @@ There are 2 majors locks in java:
 - **java.util.concurrent.Lock** (with ReentrantLock implementation).
 
 In this post we will dig into internals of those locks.
+
+## Java 中的锁
+
+Java 中有 2 种主要的锁:
+
+- **synchronized** 关键字
+- **java.util.concurrent.Lock** (实现类是 ReentrantLock)。
+
+本文中, 我们将深入分析这些锁的内部机制。
 
 ## Synchronized keyword
 
@@ -22,6 +33,20 @@ The Mark Word can be summarized by this table [1]:
 ![img](https://jpbempel.github.io/assets/2013/03/MarkWord.png)
 
 The Mark Word encodes different informations depending on the state of the object indicated by the 2 lowest bits: the Tag. If the object is not used as a lock, the Mark Word contains cached version of the hashcode and the age of the object (for GC/survivors). Then, there is 3 other states for locking: light-weight, heavy-weight & biased.
+
+## synchronized 关键字
+
+这种锁机制的主要优势在于与语言本身的集成。正因如此, JVM 可以自由地优化, 而不会影响到已有的代码。
+
+此外, 每个对象都带有相应的结构, 使得我们可以在任何地方执行加锁操作。但代价是对象会变得更大。
+
+每个对象至少有 2 个字(word)(32 位下为 2x4 字节, 64 位下为 2x8 字节, 不含 CompressedOops)。第一个字称为 **Mark Word**, 也就是对象头, 它包含各种信息, 其中也包括与锁相关的信息。第二个字是指向元数据类的指针, 用于定义该对象的类型。这里也包含 VMT (Virtual Method Table, 虚方法表, 参见 [Virtual Call 911](https://jpbempel.github.io/2012/10/24/virtual-call-911.html))。
+
+Mark Word 可以用下面这张表来概括 [1]:
+
+![img](https://jpbempel.github.io/assets/2013/03/MarkWord.png)
+
+Mark Word 会根据对象的状态编码不同的信息, 该状态由最低的 2 个位来标识, 也就是 Tag。如果对象没有被用作锁, 那么 Mark Word 中保存的就是 hashCode 的缓存值以及对象的年龄 (用于 GC/幸存者区)。此外, 还有 3 种用于锁定的状态: 轻量级、重量级和偏向锁。
 
 ### Light-weight
 
@@ -46,9 +71,27 @@ Basically, the critical part is the CAS operation: `lock cmpxchg`
 
 In contended case, the lock is inflated to heavy-weight mechanism.
 
+### 轻量级锁
+
+如果我们尝试获取一个无竞争的锁, 就会涉及轻量级机制: 执行一次 CAS (Compare-And-Swap, 比较并交换) 操作, 把 Mark Word 置换到当前栈上。由于 synchronized 只能作用于同一个栈, 所以它会把 Mark Word 的旧值保存到栈中, 并允许保存更多信息, 以便处理存在竞争以及递归的情况。
+
+对于前面的这段代码, JIT 会生成什么指令呢?
+
+![img](https://jpbempel.github.io/assets/2013/03/synchronized_lw.png)
+
+上图我用绿色高亮的部分, 是在无竞争(也就是最佳)情况下执行的指令。蓝色部分则是 synchronized 块内部的代码。
+
+基本上, 关键部分是 CAS 操作: `lock cmpxchg`
+
+在有竞争的情况下, 锁会膨胀为重量级机制。
+
 ### Heavy-weight
 
 If the lock detects contention with another thread, the lock is inflated. It means that a special object “monitor” is allocated to store lock information with also Mark Word information since then, Mark Word contains address of this monitor. Monitor object stores WaitSet for threads waiting to acquire the lock. Lock mechanism is based on OS primitives like Mutex or Events. This implies a context switch for the Thread. This is why this heavy-weight should be avoid for performance.
+
+### 重量级锁
+
+如果锁检测到与其他线程存在竞争, 锁就会膨胀。这意味着会分配一个特殊的 “monitor” 对象, 用来保存锁信息以及 Mark Word 信息, 从此以后 Mark Word 中保存的就是这个 monitor 的地址。monitor 对象中保存着 WaitSet, 用来存放正在等待获取该锁的线程。锁机制基于操作系统原语, 比如 Mutex 或 Events。这意味着线程会发生上下文切换。所以出于性能考虑, 应该避免使用这种重量级锁。
 
 ### Biased
 
@@ -59,6 +102,16 @@ If the lock is only aquired by one thread, JVM can optimize it by biasing the lo
 As you can see, the instructions highlighted in green are basic, no lock cmpxchg. So it seems better, but in fact it comes with a high cost: If another thread try to acquire this lock, JVM need to revoke the bias. And bias revocation costs a [safepoint](https://jpbempel.github.io/2013/03/04/safety-first-safepoints.html). It means that all threads must be stopped in order to perform the revocation. So in certain circumstances, it is better to deactivate this kind of optimization: `-XX:-UseBiasedLocking`
 
 Please note also that BiasedLocking is enabled only 4 seconds after startup. You can tune it by `-XX:BiasedLockingStartupDelay=4000`
+
+### 偏向锁
+
+如果某个锁只被一个线程获取, JVM 可以让锁偏向这个线程, 从而进行优化。这意味着我们在 MarkWord 中保存获取该锁的线程 Id, 之后再次获取锁时, 只需要简单地检查线程 id 是否相同, 而不需要任何 CAS 指令。
+
+![img](https://jpbempel.github.io/assets/2013/03/synchronized_biased.png)
+
+可以看到, 绿色高亮的指令都很基础, 没有 lock cmpxchg。所以看起来更好, 但实际上它也有很高的代价: 如果有另一个线程尝试获取这个锁, JVM 就需要撤销偏向。而撤销偏向需要付出一次 [safepoint](https://jpbempel.github.io/2013/03/04/safety-first-safepoints.html) 的代价。这意味着必须停止所有线程才能完成撤销。所以在某些情况下, 最好关闭这种优化: `-XX:-UseBiasedLocking`
+
+另外请注意, 偏向锁(BiasedLocking)只在启动 4 秒之后才启用。可以通过 `-XX:BiasedLockingStartupDelay=4000` 来调整。
 
 ### Other optimizations
 
@@ -88,9 +141,23 @@ Then, if we apply Escape Analysis and we detect that StringBuffer instance does 
 
 In this case sb instance is local and there will be never contention in here. So we can suppress locks. This is **Lock Elision**. However, those optimizations seems to be very specific for this kind of object, and are not very common in today’s code.
 
+### 其他优化
+
+在某些情况下, JVM 还可以应用额外的优化, 主要针对像 StringBuffer 或 Hashtable 这样所有方法都同步的对象。对于这类对象, 由于我们可以多次调用 synchronized 方法, 因此可以把多次方法调用归组到同一把大锁之下, 从而避免大量的加锁/解锁操作。
+
+这里 3 次调用被放在唯一的一把大锁之下, 避免了 3 次加锁/解锁操作。这就是**锁粗化(lock coarsening)**。
+
+接下来, 如果我们应用逃逸分析(Escape Analysis), 检测出 StringBuffer 实例没有逃逸出局部作用域, 就能证明这些 synchronized 方法永远不会发生竞争。
+
+在这种情况下, sb 实例是局部的, 因此永远不会发生竞争。所以我们可以消除锁。这就是**锁消除(Lock Elision)**。不过, 这些优化似乎非常针对这类特定的对象, 在如今的代码中并不常见。
+
 ## ReentrantLock
 
 Unlike synchronized, ReentrantLock is a regular class integrated into the JDK. But some primitives are provided by the JVM like the ability to perform CAS operations through `Unsafe.compareAndSwapInt()` method. This method is handled specifically by the JVM because it is declared as intrinsic. It means that JIT can generate special set of instructions for it instead of the regular call to JNI implementation.
+
+## ReentrantLock(可重入锁)
+
+与 synchronized 不同, ReentrantLock 是集成在 JDK 中的一个普通类。但 JVM 提供了一些原语, 比如通过 `Unsafe.compareAndSwapInt()` 方法执行 CAS 操作的能力。这个方法由 JVM 特殊处理, 因为它被声明为 intrinsic (内联函数)。这意味着 JIT 可以为它生成一组特殊的指令, 而不是常规地去调用 JNI 实现。
 
 ### Intrinsics
 
@@ -149,6 +216,18 @@ static void call()
 
 As you can see, the code contains in fact very few instructions, and the main one: `lock cmpxchg`
 
+### 内联函数(Intrinsics)
+
+以 AtomicInteger 类为例, 这就是 compareAndSet 方法的实现:
+
+而 compareAndSwapInt 在 Unsafe 类中的声明如下 (摘自 OpenJDK 源码):
+
+所以它被声明为一个 JNI 实现, 下面这段同样摘自 OpenJDK 源码:
+
+通常情况下, 调用这样的方法, 就是在运行时常规地调用上面这段编译后的代码。下面用这段 Java 代码的反汇编结果来验证:
+
+可以看到, 生成的代码实际上包含的指令非常少, 其中最关键的一条是: `lock cmpxchg`
+
 ### Uncontended case
 
 For the following code:
@@ -173,11 +252,27 @@ We have the following output for disassembly:
 
 Highlighted in green, the path executed when we acquired successfully the lock. Notice again the main instruction `lock cmpxchg`.
 
+### 无竞争的情况
+
+对于下面这段代码:
+
+反汇编得到的输出如下:
+
+![img](https://jpbempel.github.io/assets/2013/03/ReentrantLock.png)
+
+绿色高亮的部分, 是成功获取到锁时执行的路径。请再次注意那条关键指令 `lock cmpxchg`。
+
 ## Conclusion
 
 Except for biased version, other versions are similar. So here no clear winner for what is the fastest lock. Biased locking seems very efficient here, but at a high cost of a safepoint if revoked. `ReentrantLock` is more stable in terms of execution since there is no special optimization beside the intrinsic form of `CompareAndSwap` operation.
 
 In any case you can notice that there is overhead by using lock, even in best case when there is no contention.
+
+## 结论
+
+除了偏向锁这个版本之外, 其他版本都很相似。所以这里并没有一个明确的赢家来说明哪种锁最快。偏向锁在这里看起来非常高效, 但一旦被撤销, 就要付出一次 safepoint 的高昂代价。`ReentrantLock` 在执行方面更加稳定, 因为除了 `CompareAndSwap` 操作的内联形式之外, 它没有任何特殊的优化。
+
+无论如何, 你都可以注意到, 使用锁是有额外开销的, 即使在无竞争的最佳情况下也是如此。
 
 
 
