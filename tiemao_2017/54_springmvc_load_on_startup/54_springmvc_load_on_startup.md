@@ -16,7 +16,7 @@ Tomcat的 `catalina.out` 日志信息如下:
 [2017-12-05 12:14:06 DEBUG org.springframework.web.context.support.StandardServletEnvironment:109 ] Adding [servletConfigInitParams] PropertySource with lowest search precedence
 ```
 
-可以看大, 12:11 分 Tomcat启动成功。 而 12:14 分才初始化 DispatcherServlet， 简单排查了一下， 在 `web.xml` 中加上 `load-on-startup` 即可。
+可以看到, 12:11 分 Tomcat启动成功。 而 12:14 分才初始化 DispatcherServlet， 简单排查了一下， 在 `web.xml` 中加上 `load-on-startup` 即可。
 
 ```
 
