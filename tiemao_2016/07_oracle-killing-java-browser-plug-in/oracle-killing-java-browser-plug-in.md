@@ -9,7 +9,7 @@ Oracle宣称将要终结浏览器中的Applet插件。该举动比预期要来�
 
 ![](02_ciscoReport.png)
 
-**2015 年,针对Java的恶意软件(Malware)开始减少, 针对 Flash  的却大幅提升**
+**2015 年,针对Java的恶意软件(Malware)开始减少, 针对 Flash 的却大幅提升**
 
 
 尽管安全方面有所改进,但发布Java 9时Oracle仍然建议不要使用Applet插件,并表示在未来某个时刻将会完全删除它。Edge 和 Chrome 浏览器都已经[在路线图中放弃了对Applet的支持](http://www.extremetech.com/mobile/220136-google-plans-to-remove-oracles-java-apis-from-android-n); Firefox在2015年年底也宣布准备这样做。在历史上, Oracle一直对Applet中的漏洞反应迟钝,而它的沙盒却从未像广告宣传的那样万无一失。
