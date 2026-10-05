@@ -8,7 +8,7 @@
 [2015年07月28日] Oracle 最近宣称要在 Java 9 中去除私有 API: `sun.misc.Unsafe`, 这就像点燃了炸药桶, 遭到 [许多开发者的抗议](http://www.javaworld.com/article/2952639/java-se/java-devs-abhor-oracles-plan-to-kill-private-api.html), 他们认为 [这会严重破坏Java的生态系统](http://blog.dripstat.com/removal-of-sun-misc-unsafe-a-disaster-in-the-making/)
 
 
-开源博主 Rafael Winterhalter 在博文 "[Understanding sun.misc.Unsafe](https://dzone.com/articles/understanding-sunmiscunsafe)" 中说, [底层编程(low-level programming)](http://programmers.stackexchange.com/questions/22525/low-level-programming-whats-in-it-for-me) 中经常会使用到 unsafe , 这样程序员就能为特定需求而修改平台功能. 虽然 JNI (Java Native Interface) 是最安全(safest)的底层编程方式, 但因为限制更少， 开源项目都更青睐 Unsafe , .
+开源博主 Rafael Winterhalter 在博文 "[Understanding sun.misc.Unsafe](https://dzone.com/articles/understanding-sunmiscunsafe)" 中说, [底层编程(low-level programming)](http://programmers.stackexchange.com/questions/22525/low-level-programming-whats-in-it-for-me) 中经常会使用到 unsafe , 这样程序员就能为特定需求而修改平台功能. 虽然 JNI (Java Native Interface) 是最安全(safest)的底层编程方式, 但因为限制更少, 开源项目都更青睐 Unsafe.
 
 
 Winterhalter 列举了如何使用 **`Unsafe`** 来绕过 Java编程中的一些限制:
