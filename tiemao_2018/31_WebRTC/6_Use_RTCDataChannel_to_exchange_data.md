@@ -175,7 +175,7 @@ RTCDataChannel 其提供了 `send()` 方法与 `message` 事件, 使用的语法
 
 Notice the use of `dataConstraint`. Data channels can be configured to enable different types of data sharing — for example, prioritizing reliable delivery over performance. You can find out more information about options at [Mozilla Developer Network](https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/createDataChannel).
 
-请注意 `dataConstraint` 的使用。数据通道可以通过配置, 来传递各种类型特征的数据 —— 比如, 可靠性优先还是效率优先. 更多的信息请参考MDN上的文档: <https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/createDataChannel> 。
+请注意 `dataConstraint` 的使用。数据通道可以通过配置, 来传递各种类型特征的数据 —— 比如, 可靠性优先还是效率优先。 更多的信息请参考MDN上的文档: <https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/createDataChannel> 。
 
 **Three types of constraints**
 
@@ -205,7 +205,7 @@ Find out more about constraints and options:
 2. Use CSS to improve page layout, and add a placeholder attribute to the "dataChannelReceive" textarea.
 3. Test the page on a mobile device.
 
-1. WebRTC数据通道使用的协议为: [SCTP](https://bloggeek.me/sctp-data-channel/), 在默认配置时, 具备了可靠/顺序的消息传输能力. 如果 RTCDataChannel 需要更高的可靠性, 或者需要效率优先时怎么处理呢? —— 许多场景丢点数据无所谓, 比如视频聊天。
+1. WebRTC数据通道使用的协议为: [SCTP](https://bloggeek.me/sctp-data-channel/), 在默认配置时, 具备了可靠/顺序的消息传输能力。 如果 RTCDataChannel 需要更高的可靠性, 或者需要效率优先时怎么处理呢? —— 许多场景丢点数据无所谓, 比如视频聊天。
 2. 使用CSS来美化页面布局, 以及为 "dataChannelReceive" 对应的 `textarea` 添加 placeholder 属性。
 3. 在移动设备上进行测试。
 
@@ -241,7 +241,7 @@ A complete version of this step is in the **step-03** folder.
 
 You've learned how to exchange data between peers on the same page, but how do you do this between different machines? First, you need to set up a signaling channel to exchange metadata messages. Find out how in the next step!
 
-我们学习了如何在同一页面中WebRTC客户端之间传输数据, 但不同设备的客户端之间如何进行数据传输呢? 当然这有一个前提: 客户端之间需要建立信令通道,来交换元数据消息. 在下一节我们会进行讲解!
+我们学习了如何在同一页面中WebRTC客户端之间传输数据, 但不同设备的客户端之间如何进行数据传输呢? 当然这有一个前提: 客户端之间需要建立信令通道,来交换元数据消息。 在下一节我们会进行讲解!
 
 
 原文链接: <https://codelabs.developers.google.com/codelabs/webrtc-web/#5>
