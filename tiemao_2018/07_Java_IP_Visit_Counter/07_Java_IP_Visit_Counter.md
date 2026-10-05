@@ -2,7 +2,7 @@
 
 本文简要介绍如何实现一个IP访问计数器。
 
-为了简单, 使用 JSP 来实现, 但读者需要明白, Java代码可以在到处运行。
+为了简单, 使用 JSP 来实现, 但读者需要明白, Java代码可以到处运行。
 
 
 示例Demo页面: <http://www.cncounter.com/test/counter.jsp>
