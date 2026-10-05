@@ -105,11 +105,11 @@ JVM启动相关的操作包括：
 
 6. 创建VM并初始化之后，会加载Main-Class，引导程序从Main-Class中获取`main`方法的信息。
 
-7. 接着VM通过 `usingCallStaticVoidMethod` 来执行java程序的main方法,  同时会整理命令行选项，形成 main方法的参数传进去。
+7. 接着VM通过 `CallStaticVoidMethod` 来执行java程序的main方法,  同时会整理命令行选项，形成 main方法的参数传进去。
 
-8. 在 main 方法执行完成后，需要检查是否抛出了异常, 并通过 `callingExceptionOccurred` 清除异常， 如果处理成功则返回`0`，否则返回其他值，这个返回值最终会传递给调用进程。
+8. 在 main 方法执行完成后，需要检查是否抛出了异常, 并通过 `ExceptionOccurred` 清除异常， 如果处理成功则返回`0`，否则返回其他值，这个返回值最终会传递给调用进程。
 
-9. 使用 `DetachCurrentThread` 分离主线程，并减少前台线程的总数(count)，以便安全地调用 `DestroyJavaVM`，同时也确保该线程不再由其他操作, 还要确保线程栈上没有存活的帧(java frame)。
+9. 使用 `DetachCurrentThread` 分离主线程，并减少前台线程的总数(count)，以便安全地调用 `DestroyJavaVM`，同时也确保该线程不再执行其他操作, 还要确保线程栈上没有存活的帧(java frame)。
 
 The most important phases are the JNI_CreateJavaVM and DestroyJavaVM these are described in the next sections.
 
@@ -225,7 +225,7 @@ The load class phase takes a class or interface name, finds the binary in classf
 
 类加载首先肯定是需要一个类或接口的名称，然后去找到二进制classfile格式的文件，然后再定义该类并创建 `java.lang.Class` 对象。
 如果找不到二进制表示形式，则会抛出 `NoClassDefFound` 错误。
-此外，装载阶段并不去检查 classfile 的语法和格式，而验证过程中可能会抛出 `ClassFormatError` 或 `UnsupportedClassVersionError`。
+此外，装载阶段会对 classfile 的语法进行格式检查，可能会抛出 `ClassFormatError` 或 `UnsupportedClassVersionError`。
 在某个类的加载过程中，JVM必须加载其所有的超类和接口。
 如果类层次结构有问题（例如，该类是自己的超类或接口,死循环了），则JVM将抛出 `ClassCircularityError`。
 而如果实现的接口并不是一个 interface，或者声明的超类是一个 interface，也会抛出 `IncompatibleClassChangeError`。
@@ -281,15 +281,27 @@ These hash tables are all protected by the SystemDictionary_lock. In general the
 
 The Java language is a type-safe language, and standard Java compilers produce valid classfiles and type-safe code, but the JVM can't guarantee that the code was produced by a trustworthy compiler, so it must reestablish that type-safety through a process at link-time called bytecode verification.
 
+Java 语言是类型安全的语言，标准的 Java 编译器会生成合法的 classfile 和类型安全的代码，但 JVM 无法保证这些代码是由可信的编译器生成的，因此必须在链接时通过一个称为字节码校验(bytecode verification)的过程来重新建立类型安全。
+
 Bytecode verification is specified in section 4.8 of the Java Virtual Machine Specification. The specification prescribes both static and dynamic constraints on the code which the JVM verifies. If any violations are found, the VM will throw a VerifyError and prevent the class from being linked.
+
+字节码校验在《Java虚拟机规范》的第 4.8 节中有明确规定。该规范对 JVM 所校验的代码规定了静态约束和动态约束。一旦发现违规，VM 将抛出 `VerifyError`，并阻止该类被链接。
 
 Many of the constraints on the bytecodes can be checked statically, such as the operand of an ‘ldc’code must be a valid constant pool index whose type is CONSTANT_Integer, CONSTANT_Stringor CONSTANT_Float. Other constraints which check the type and number of arguments for other instructions requires dynamic analysis of the code to determine which operands will be present on the expression stack during execution.
 
+字节码上的许多约束可以静态检查，例如 `ldc` 指令的操作数必须是有效的常量池索引，且类型为 CONSTANT_Integer、CONSTANT_String 或 CONSTANT_Float。而另一些约束需要检查其他指令的参数类型和数量，这就要对代码进行动态分析，以确定执行期间表达式栈上会出现哪些操作数。
+
 There are currently two methods of analyzing the bytecodes to determine the types and number of operands that will be present for each instruction. The traditional method is called “type inference”, and operates by performing an abstract interpretation of each bytecode and merging type states at branch targets or exception handles. The analysis iterates over the bytecode until a steady state for the types are found. If a steady state cannot be found, or if the resulting types violate some bytecode constraint, then a VerifyErroris thrown. The code for this verification step is present in thelibverify.so external library, and uses JNI to gather whatever information is needed about classes and types.
+
+目前有两种分析字节码的方法，用来确定每条指令将会出现的操作数类型和数量。传统方法称为“类型推断(type inference)”，其做法是对每条字节码执行抽象解释，并在分支目标或异常处理器处合并类型状态。分析会反复迭代遍历字节码，直到找到类型的稳定状态为止。如果找不到稳定状态，或者结果类型违反了某些字节码约束，就会抛出 `VerifyError`。这一校验步骤的代码位于 libverify.so 外部库中，并通过 JNI 来收集所需的类和类型信息。
 
 New in JDK6 is the second method for verification which is called “type verification”. In this method the Java compiler provides the steady-state type information for each branch or exception target, via the code attribute, StackMapTable. The StackMapTable consists of a number of stack map frames, each which indicates the types of the items on the expression stack and in the local variables at some offset in the method. The JVM needs to then only perform one pass through the bytecode to verify the correctness of the types to verify the bytecode. This is the method already used by JavaME CLDC. Since it it smaller and faster, this method of verification is built directly in the VM itself.
 
+JDK6 引入了第二种校验方法，称为“类型校验(type checking)”。在这种方法中，Java 编译器通过代码属性 StackMapTable 为每个分支或异常目标提供稳定状态的类型信息。StackMapTable 由若干栈映射帧(stack map frame)组成，每一帧指明了方法中某个偏移位置上表达式栈和局部变量中条目的类型。这样 JVM 只需对字节码做一次遍历即可完成类型正确性的校验。JavaME CLDC 已经采用了这种方法。由于它更小更快，这种校验方法被直接内置在 VM 中。
+
 For all classfiles with a version number less than 50, such as those created prior to JDK6, the JVM will use the traditional type inference method to verify the classfiles. For classfiles greater than or equal to 50, the StackMapTable attributes will be present and the new verifier will be used. Because of the possibility of older external tools that might instrument the bytecode but neglect to update theStackMapTable attribute, certain verification errors that occur during type-checking verification may failover to the type-inference method. Should that pass succeed, the class file will be verified.
+
+对于版本号小于 50 的 classfile（例如 JDK6 之前创建的文件），JVM 会使用传统的类型推断方法进行校验。对于版本号大于等于 50 的 classfile，会带有 StackMapTable 属性并使用新的校验器。由于一些较老的外部工具可能会修改字节码却忽略更新 StackMapTable 属性，类型校验过程中出现的某些校验错误可能会降级回退到类型推断方法。如果类型推断校验通过了，该 classfile 也会被视为校验通过。
 
 ### Class Data Sharing
 
@@ -297,17 +309,31 @@ For all classfiles with a version number less than 50, such as those created pri
 
 Class data sharing (CDS) is a feature introduced in J2SE 5.0 that is intended to reduce the startup time for Java programming language applications, in particular smaller applications, as well as reduce footprint. When the JRE is installed on 32-bit platforms using the Sun provided installer, the installer loads a set of classes from the system jar file into a private internal representation, and dumps that representation to a file, called a “shared archive”. If the Sun JRE installer is not being used, this can be done manually, as explained below. During subsequent JVM invocations, the shared archive is memory-mapped in, saving the cost of loading those classes and allowing much of the JVM's metadata for these classes to be shared among multiple JVM processes.
 
+类数据共享(Class Data Sharing, CDS)是 J2SE 5.0 引入的特性，目的是缩短 Java 应用程序（尤其是较小的应用）的启动时间，同时减少内存占用(footprint)。在 32 位平台上使用 Sun 提供的安装器安装 JRE 时，安装器会从系统 jar 文件中加载一组类，转换为私有的内部表示形式，并把这种表示转储到一个称为“共享存档(shared archive)”的文件中。如果没有使用 Sun 的 JRE 安装器，也可以手动完成，具体见下文说明。在随后的 JVM 启动过程中，共享存档会被内存映射进去，从而省去了加载这些类的开销，并使这些类的大部分 JVM 元数据可以在多个 JVM 进程之间共享。
+
 Class data sharing is supported only with the Java HotSpot Client VM, and only with the serial garbage collector.
+
+类数据共享只在 Java HotSpot Client VM 上受支持，并且只能配合串行垃圾收集器使用。
 
 The primary motivation for including CDS is the decrease in startup time it provides. CDS produces better results for smaller applications because it eliminates a fixed cost: that of loading certain core classes. The smaller the application relative to the number of core classes it uses, the larger the saved fraction of startup time.
 
+引入 CDS 的主要动机是它带来的启动时间缩短。CDS 对较小的应用程序效果更好，因为它消除了一项固定开销：加载某些核心类的成本。相对于所使用的核心类数量而言，应用程序越小，节省的启动时间比例就越大。
+
 The footprint cost of new JVM instances has been reduced in two ways. First, a portion of the shared archive, currently between five and six megabytes, is mapped read-only and therefore shared among multiple JVM processes. Previously this data was replicated in each JVM instance. Second, since the shared archive contains class data in the form in which the Java Hotspot VM uses it, the memory which would otherwise be required to access the original class information in rt.jar is not needed. These savings allow more applications to be run concurrently on the same machine. On Microsoft Windows, the footprint of a process, as measured by various tools, may appear to increase, because a larger number of pages are being mapped in to the process' address space. This is offset by the reduction in the amount of memory (inside Microsoft Windows) which is needed to hold portions on rt.jar. Reducing footprint remains a high priority.
+
+新 JVM 实例的内存占用成本从两个方面得到了降低。第一，共享存档的一部分（目前约 5~6 MB）被映射为只读，因此可以在多个 JVM 进程之间共享；以前这些数据会在每个 JVM 实例中各复制一份。第二，由于共享存档以 Java HotSpot VM 所使用的形式保存类数据，原本访问 rt.jar 中原始类信息所需的内存就不再需要了。这些节省可以让更多应用程序在同一台机器上并发运行。在 Microsoft Windows 上，用各种工具测量的进程内存占用可能会显得变大，因为有更多的内存页被映射进了进程地址空间；但这被 Windows 内部用于保存 rt.jar 部分内容的内存减少所抵消。降低内存占用依然是高优先级目标。
 
 In HotSpot, the class data sharing implementation introduces new Spaces into the permanent generation which contain the shared data. The classes.jsa shared archive is memory mapped into these Spaces at VM startup. Subsequently, the shared region is managed by the existing VM memory management subsystem.
 
+在 HotSpot 中，类数据共享的实现向永久代(permanent generation)中引入了新的空间(Space)，用来存放共享数据。classes.jsa 共享存档在 VM 启动时被内存映射到这些空间中。随后，共享区域由现有的 VM 内存管理子系统进行管理。
+
 Read-only shared data includes constant method objects (constMethodOops), symbol objects (symbolOops), and arrays of primitives, mostly character arrays.
 
+只读共享数据包括常量方法对象(constMethodOops)、符号对象(symbolOops)，以及基本类型数组（主要是字符数组）。
+
 Read-write shared data consists of mutable method objects (methodOops), constant pool objects (constantPoolOops), VM internal representation of Java classes and arrays (instanceKlasses and arrayKlasses), and various String, Class, and Exception objects.
+
+可读写共享数据包括可变方法对象(methodOops)、常量池对象(constantPoolOops)、VM 内部表示的 Java 类和数组（instanceKlasses 和 arrayKlasses），以及各种 String、Class 和 Exception 对象。
 
 ### Interpreter
 
@@ -315,13 +341,23 @@ Read-write shared data consists of mutable method objects (methodOops), constant
 
 The current HotSpot interpreter, which is used for executing bytecodes, is a template based interpreter. The HotSpot runtime a.k.a. InterpreterGenerator generates an interpreter in memory at the startup using the information in the TemplateTable (assembly code corresponding to each bytecode). A template is a description of each bytecode. The TemplateTable defines all the templates and provides accessor functions to get the template for a given bytecode. The non-product flag -XX:+PrintInterpretercan be used to view the template table generated in memory during the VM's startup process.
 
+目前用于执行字节码的 HotSpot 解释器是基于模板(template)的解释器。HotSpot 运行时（又称 InterpreterGenerator）在启动时使用 TemplateTable 中的信息（每条字节码对应的汇编代码）在内存中生成解释器。模板是对每条字节码的描述。TemplateTable 定义了所有模板，并提供了访问函数，用于获取给定字节码对应的模板。可以使用非产品版标志 `-XX:+PrintInterpreter` 查看 VM 启动过程中在内存中生成的模板表。
+
 The template design performs better than a classic switch-statement loop for several reasons. First, the switch statement performs repeated compare operations, and in the worst case it may be required to compare a given command with all but one bytecodes to locate the required one. Second, it uses a separate software stack to pass Java arguments, while the native C stack is used by the VM itself. A number of JVM internal variables, such as the program counter or the stack pointer for a Java thread, are stored in C variables, which are not guaranteed to be always kept in the hardware registers. Management of these software interpreter structures consumes a considerable share of total execution time.[5]
+
+出于几个原因，模板设计比经典的 switch 语句循环性能更好。第一，switch 语句需要反复进行比较操作，最坏情况下，需要将给定指令与除一个之外的所有字节码逐一比较才能定位到所需项。第二，它使用独立的软件栈来传递 Java 参数，而 VM 本身使用的是原生 C 栈。许多 JVM 内部变量（例如 Java 线程的程序计数器或栈指针）存储在 C 变量中，而这些变量不保证始终保留在硬件寄存器中。对这些软件解释器结构的管理消耗了总执行时间中相当大的份额。[5]
 
 Overall, the gap between the VM and the real machine is significantly narrowed by the HotSpot interpreter, which makes the interpretation speed considerably higher. This, however, comes at a price of e.g. large machine-specific chunks of code (roughly about 10 KLOC (thousand lines of code) of Intel-specific and 14 KLOC of SPARC-specific code). Overall code size and complexity is also significantly higher, since e.g. the code supporting dynamic code generation is needed. Obviously, debugging dynamically generated machine code is significantly more difficult than static code. These properties certainly do not facilitate implementation of runtime evolution, but they don’t make it infeasible either.[5]
 
+总体来说，HotSpot 解释器显著缩小了 VM 与真实机器之间的差距，使解释执行的速度大幅提高。不过这是有代价的，例如大段依赖特定机器的代码（大约 1 万行 Intel 特定代码和 1.4 万行 SPARC 特定代码）。整体代码的规模和复杂度也显著提高，因为还需要诸如支持动态代码生成的代码。显然，调试动态生成的机器码比静态代码困难得多。这些特性当然不利于运行时演进的实现，但也并非使之不可行。[5]
+
 The interpreter calls out to the VM runtime for complex operations (basically anything too complicated to do in assembly language) such as constant pool lookup.
 
+对于复杂的操作（基本上是任何用汇编语言实现起来过于复杂的操作），例如常量池查找，解释器会转而调用 VM 运行时来完成。
+
 The HotSpot interpreter is also a critical part of the overall HotSpot adaptive optimization story. Adaptive optimization solves the problems of JIT compilation by taking advantage of an interesting program property. Virtually all programs spend the vast majority of their time executing a minority of their code. Rather than compiling method by method, just in time, the Java HotSpot VM immediately runs the program using an interpreter, and analyzes the code as it runs to detect the critical hot spots in the program. Then it focuses the attention of a global native-code optimizer on the hot spots. By avoiding compilation of infrequently executed code (most of the program), the Java HotSpot compiler can devote more attention to the performance-critical parts of the program, without necessarily increasing the overall compilation time. This hot spot monitoring is continued dynamically as the program runs, so that it literally adapts its performance on the fly to the user's needs.
+
+HotSpot 解释器也是 HotSpot 整体自适应优化方案的关键部分。自适应优化利用一个有趣的程序特性来解决 JIT 编译的问题：几乎所有程序的大部分执行时间都花在少数代码上。Java HotSpot VM 并不逐方法进行即时编译，而是先用解释器立即运行程序，并在运行过程中分析代码，以检测程序中的关键热点(hot spot)。然后，它将全局原生代码优化器的注意力集中到这些热点上。通过避免编译执行频率低的代码（程序的大部分），Java HotSpot 编译器可以把更多精力放在程序中对性能敏感的部分，而不必增加整体编译时间。这种热点监测在程序运行期间持续动态进行，因此它实际上是在运行过程中自适应地满足用户的性能需求。
 
 ### Java Exception Handling
 
@@ -329,11 +365,19 @@ The HotSpot interpreter is also a critical part of the overall HotSpot adaptive 
 
 Java virtual machines use exceptions to signal that a program has violated the semantic constraints of the Java language. For example, an attempt to index outside the bounds of an array will cause an exception. An exception causes a non-local transfer of control from the point where the exception occurred (or was*thrown*) to a point specified by the programmer (or where the exception is *caught)*.[6]
 
+Java 虚拟机用异常来表示程序违反了 Java 语言的语义约束。例如，试图越界访问数组下标就会引发异常。异常会导致控制流从异常发生（或*抛出*）的位置非本地地转移到程序员指定的位置（或异常被*捕获*的位置）。[6]
+
 The HotSpot interpreter, dynamic compilers, and runtime all cooperate to implement exception handling. There are two general cases of exception handling: either the exception is thrown or caught in the same method, or it's caught by a caller. The latter case is more complicated and requires *stack unwinding* to find the appropriate handler.
+
+HotSpot 的解释器、动态编译器和运行时相互配合来实现异常处理。异常处理一般有两种情形：要么异常在同一个方法内被抛出并被捕获，要么它被某个调用方捕获。后一种情况更复杂，需要*栈展开(stack unwinding)*来找到合适的处理器。
 
 Exceptions can be initiated by the *throw* bytecode, a return from a VM-internal call, a return from a JNI call, or a return from a Java call. (The last case is really just a later stage of the first 3.) When the VM recognizes that an exception has been thrown, the runtime system is invoked to find the nearest handler for that exception. Three pieces of information are used to find the handler; the current method, the current bytecode, and the exception object. If a handler is not found in the current method, as mentioned above, the current activation stack frame is popped and the process is iteratively repeated for previous frames.
 
+异常可以由 *throw* 字节码发起，也可以由 VM 内部调用的返回、JNI 调用的返回或 Java 调用的返回发起。（最后一种情况实际上只是前三种的后续阶段。）当 VM 识别到异常被抛出时，会调用运行时系统为该异常查找最近的处理器。查找处理器需要用到三项信息：当前方法、当前字节码和异常对象。如果在当前方法中找不到处理器，如前所述，就会弹出当前的活动栈帧，并对之前的帧重复这一迭代过程。
+
 Once the correct handler is found, the VM execution state is updated, and we jump to the handler as Java code execution is resumed.
+
+一旦找到正确的处理器，就会更新 VM 的执行状态，并跳转到处理器处，恢复 Java 代码的执行。
 
 ### Synchronization
 
@@ -477,7 +521,7 @@ A native thread attaches to the VM using the JNI call AttachCurrentThread. In re
 
 
 native 线程通过JNI调用 `AttachCurrentThread` 连接到JVM中。 对于这个调用的响应，JVM会创建关联的 `OSThread` 和 `JavaThread` 实例，并执行基本初始化。
-接下来，必须为连接的线程创建一个 `java.lang.Thread` 对象，该方法是根据连接线程时提供的参数，以反射方式调用Thread类构造函数对于的Java代码来完成的。
+接下来，必须为连接的线程创建一个 `java.lang.Thread` 对象，该方法是根据连接线程时提供的参数，以反射方式调用Thread类构造函数对应的Java代码来完成的。
 连接后，线程可以通过其他可用的JNI方法调用所需的任何Java代码。
 最后，当 native 线程不再希望与JVM关联时，可以调用JNI的 `DetachCurrentThread` 方法, 将其与JVM解除关联（同时会释放资源，删除对 `java.lang.Thread` 实例的引用，析构 `JavaThread` 和 `OSThread` 对象等等）。
 
@@ -614,11 +658,19 @@ Safepoints are initiated using a cooperative, polling-based mechanism. In simple
 
 In addition to the Java heap, which is maintained by the Java heap manager and garbage collectors, HotSpot also uses the C/C++ heap (also called the malloc heap) for storage of VM-internal objects and data. A set of C++ classes derived from the base class *Arena* is used to manage C++ heap operations.
 
+除了由 Java 堆管理器和垃圾收集器维护的 Java 堆之外，HotSpot 还使用 C/C++ 堆（也称为 malloc 堆）来存放 VM 内部的对象和数据。一组派生自基类 *Arena* 的 C++ 类被用来管理 C++ 堆操作。
+
 Arena and its subclasses provide a fast allocation layer that sits on top of malloc/free. Each Arena allocates memory blocks (or *Chunks**)* out of 3 global *ChunkPool**s.* Each ChunkPool satisfies allocation requests for a distinct range of allocation sizes. For example, a request for 1k of memory will be allocated from the “small” ChunkPool, while a 10K allocation will be made from the "medium" ChunkPool. This is done to avoid wasteful memory fragmentation.
+
+Arena 及其子类提供了一层建立在 malloc/free 之上的快速分配机制。每个 Arena 从 3 个全局的 *ChunkPool* 中分配内存块（或称 *Chunk*）。每个 ChunkPool 满足某一分配大小范围内的请求。例如，1k 的内存请求会从“small” ChunkPool 中分配，而 10K 的分配则来自“medium” ChunkPool。这样做是为了避免浪费性的内存碎片。
 
 The Arena system also provides better performance than pure malloc/free. The latter operations may require acquisition of global OS locks, which affects scalability and can hurt performance. Arenas are thread-local objects which cache a certain amount of storage, so that in the fast-path allocation case a lock is not required. Likewise, Arena free operations do not require a lock in the common case.
 
+Arena 系统还提供了比纯 malloc/free 更好的性能。后者的操作可能需要获取全局的 OS 锁，这会影响可伸缩性并损害性能。Arena 是线程本地对象，会缓存一定量的存储空间，因此在快速路径分配时不需要加锁。同样，Arena 的释放操作在常见情况下也不需要加锁。
+
 Arenas are used for thread-local resource management (*ResourceArea*) and handle management (*HandleArea*). They are also used by both the client and server compilers during compilation.
+
+Arena 用于线程本地资源管理（*ResourceArea*）和句柄管理（*HandleArea*）。client 和 server 编译器在编译期间也会用到它们。
 
 ### Java Native Interface (JNI)
 
@@ -626,25 +678,47 @@ Arenas are used for thread-local resource management (*ResourceArea*) and handle
 
 The JNI is a native programming interface. It allows Java code that runs inside a Java virtual machine to interoperate with applications and libraries written in other programming languages, such as C, C++, and assembly.
 
+JNI 是一种原生编程接口。它允许在 Java 虚拟机中运行的 Java 代码，与其他编程语言（如 C、C++ 和汇编）编写的应用程序和库互操作。
+
 While applications can be written entirely in Java, there are situations where Java alone does not meet the needs of an application. Programmers use the JNI to write *Java native methods* to handle those situations when an application cannot be written entirely in Java.
+
+虽然应用程序可以完全用 Java 编写，但有些情况下仅靠 Java 无法满足应用的需求。当应用程序无法完全用 Java 编写时，程序员会使用 JNI 编写 *Java 本地方法*来处理这些情形。
 
 JNI native methods can be used to create, inspect, and update Java objects, call Java methods, catch and throw exceptions, load classes and obtain class information, and perform runtime type checking.
 
+JNI 本地方法可用于创建、检查和更新 Java 对象，调用 Java 方法，捕获和抛出异常，加载类并获取类信息，以及执行运行时类型检查。
+
 The JNI may also be used with the *Invocation API* to enable an arbitrary native application to embed the Java VM. This allows programmers to easily make their existing applications Java-enabled without having to link with the VM source code. [9]
+
+JNI 还可以与*调用 API(Invocation API)*配合使用，让任意的本地应用程序嵌入 Java VM。这使程序员能够轻松地让现有应用支持 Java，而不必与 VM 源代码链接。[9]
 
 It is important to remember that once an application uses the JNI, it risks losing two benefits of the Java platform.
 
+需要重点记住的是，一旦应用程序使用了 JNI，它就可能失去 Java 平台的两大好处。
+
 First, Java applications that depend on the JNI can no longer readily run on multiple host environments. Even though the part of an application written in the Java programming language is portable to multiple host environments, it will be necessary to recompile the part of the application written in native programming languages.
+
+第一，依赖 JNI 的 Java 应用程序无法再方便地运行在多种宿主环境中。即使应用中用 Java 编程语言编写的部分可以移植到多种宿主环境，用本地编程语言编写的部分也必须重新编译。
 
 Second, while the Java programming language is type-safe and secure, native languages such as C or C++ are not. As a result, Java developers must use extra care when writing applications using the JNI. A misbehaving native method can corrupt the entire application. For this reason, Java applications are subject to security checks before invoking JNI features.
 
+第二，虽然 Java 编程语言是类型安全且安全的，但 C 或 C++ 等本地语言并非如此。因此，Java 开发人员在使用 JNI 编写应用时必须格外小心。一个行为不当的本地方法可能会破坏整个应用程序。出于这个原因，Java 应用程序在调用 JNI 功能之前要经过安全检查。
+
 As a general rule, developers should architect the application so that native methods are defined in as few classes as possible. This entails a cleaner isolation between native code and the rest of the application.[10]
+
+一般来说，开发人员应该这样架构应用：让本地方法定义在尽可能少的类中。这样可以在本地代码与应用程序其余部分之间形成更清晰的隔离。[10]
 
 In HotSpot, the implementation of the JNI functions is relatively straightforward. It uses various VM internal primitives to perform activities such as object creation, method invocation, etc. In general, these are the same runtime primitives used by other subsystems such as the interpreter.
 
+在 HotSpot 中，JNI 函数的实现相对直接。它使用各种 VM 内部原语来执行对象创建、方法调用等活动。总体上，这些原语与解释器等其他子系统所使用的运行时原语相同。
+
 A command line option, -Xcheck:jni, is provided to aid in debugging problems in JNI usage by native methods. Specifying -Xcheck:jni causes an alternate set of debugging interfaces to be used by JNI calls. The alternate interface verifies arguments to JNI calls more stringently, as well as performing additional internal consistency checks.
 
+HotSpot 提供了命令行选项 `-Xcheck:jni`，用于帮助调试本地方法在 JNI 使用中的问题。指定 `-Xcheck:jni` 后，JNI 调用会改用另一套调试接口。这套备用接口会对 JNI 调用的参数进行更严格的验证，并执行额外的内部一致性检查。
+
 HotSpot must take special care to keep track of which threads are currently executing in native methods. During some VM activities, notably some phases of garbage collection, one or more threads must be halted at a *safepoint* in order to guarantee that the Java memory heap is not modified during the sensitive activity. When we wish to bring a thread executing in native code to a safepoint, it is allowed to continue executing native code, but the thread will be stopped when it attempts to return into Java code or make a JNI call.
+
+HotSpot 必须特别留意跟踪哪些线程当前正在执行本地方法。在某些 VM 活动期间，尤其是垃圾收集的某些阶段，必须让一个或多个线程停在*安全点(safepoint)*上，以保证敏感活动期间 Java 内存堆不被修改。当我们要让一个正在执行本地代码的线程到达安全点时，允许它继续执行本地代码，但该线程在试图返回 Java 代码或发起 JNI 调用时会被停下来。
 
 ### VM Fatal Error Handling
 
@@ -652,28 +726,50 @@ HotSpot must take special care to keep track of which threads are currently exec
 
 It is very important to provide easy ways to handle fatal errors for any software. Java Virtual Machine, i.e. JVM is not an exception. A typical fatal error would be OutOfMemoryError. Another common fatal error on Windows is called Access Violation error which is equivalent to Segmentation Fault on Solaris/Linux platforms. It is critical to understand the cause of these kind of fatal errors in order to fix them either in your application or sometimes, in JVM itself.
 
+对任何软件来说，提供简单易用的致命错误处理方式都非常重要，Java 虚拟机（JVM）也不例外。典型的致命错误是 OutOfMemoryError。Windows 上另一个常见的致命错误称为 Access Violation（访问违例），相当于 Solaris/Linux 平台上的 Segmentation Fault（段错误）。弄清楚这类致命错误的原因至关重要，这样才能在应用程序中修复它们，有时甚至需要在 JVM 本身中修复。
+
 Usually when JVM crashes on a fatal error, it will dump a hotspot error log file called hs_err_pid*<pid>*.log, (where *<pid>* is replaced by the crashed java process id) to the Windows desktop or the current application directory on Solaris/Linux. Several enhancements have been made to improve the diagnosability of this file since JDK 6 and many of them have been back ported to the JDK-1.4.2_09 release. Here are some highlights of these improvements:
+
+通常当 JVM 因致命错误崩溃时，它会转储出一个名为 hs_err_pid*<pid>*.log 的 HotSpot 错误日志文件（其中 *<pid>* 会替换为崩溃的 java 进程 id），存放在 Windows 桌面，或 Solaris/Linux 上的当前应用目录。从 JDK 6 开始，针对该文件的可诊断性做了多项增强，其中许多已向后移植到 JDK-1.4.2_09 版本。以下是这些改进的一些要点：
 
 - Memory map is included in the error log file so it is easy to see how memory was laid out during crash.
 - -XX:ErrorFile= option is provided so that user can set the path name of the error log file.
 - OutOfMemoryError will trigger the file to be generated as well.
 
+- 错误日志文件中包含了内存映射，因此很容易看到崩溃时的内存布局。
+- 提供了 `-XX:ErrorFile=` 选项，用户可以设置错误日志文件的路径名。
+- OutOfMemoryError 也会触发该文件的生成。
+
 Another important feature is you can specify -XX:OnError="*cmd1 args...;com2 ...*" to the java command so that whenever VM crashes, it will execute a list of commands you specified within the quotes shown above. A typical usage of this feature is you can invoke the debugger such as dbx or Windbg to look into the crash when that happens. For the earlier releases, you can specify
 -XX:+ShowMessageBoxOnError as a runtime option so that when VM crashes, you can attach the running Java process to your favorite debugger.
 
+另一个重要的功能是，可以为 java 命令指定 `-XX:OnError="cmd1 args...;com2 ..."`，这样每当 VM 崩溃时，它就会执行引号中指定的一系列命令。这个功能的典型用法是，在崩溃发生时调用 dbx 或 Windbg 等调试器来查看崩溃情况。对于较早的版本，可以指定 `-XX:+ShowMessageBoxOnError` 作为运行时选项，这样当 VM 崩溃时，你就可以把正在运行的 Java 进程附加到你喜欢的调试器上。
+
 Having said something about HotSpot error log files, here is a brief summary on how JVM internally handles fatal errors.
+
+介绍了 HotSpot 错误日志文件之后，下面简要总结 JVM 内部如何处理致命错误。
 
 - The VMError class was invented for aggregating and dumping the `hs_err_pid*<pid>*.log` file. It is invoked by the OS-specific code when an unrecognized signal/exception is seen.
 - The VM uses signals internally for communication. The fatal error handler is invoked when the signal is not recognized. In the unrecognized case, it may come from a fault in application JNI code, OS native libraries, JRE native libraries, or the JVM itself.
 - The fatal error handler was carefully written to avoid causing faults itself, in the case of StackOverflow or crashes when critical locks are held (like malloc lock).
 
+- `VMError` 类用于汇总并转储 `hs_err_pid*<pid>*.log` 文件。当出现无法识别的信号/异常时，由操作系统相关的代码调用它。
+- VM 内部使用信号进行通信。当信号无法被识别时，就会调用致命错误处理器。在无法识别的情况下，信号可能来自应用 JNI 代码、OS 本地库、JRE 本地库或 JVM 自身中的错误。
+- 致命错误处理器的编写非常小心，以避免自身引发错误，例如在发生 StackOverflow、或持有关键锁（如 malloc 锁）时崩溃的情形。
+
 Since OutOfMemoryError is so common to some large scale applications, it is critical to provide useful diagnostic message to users so that they could quickly identify a solution, sometimes by just specifying a larger Java heap size. When OutOfMemoryError happens, the error message will indicate which type of memory is problematic. For example, it could be Java heap space or PermGen space etc. Since JDK 6, a stack trace will be included in the error message. Also,
 -XX:OnOutOfMemoryError="*<cmd>*" option was invented so that a command will be run when the first OutOfMemoryError is thrown. Another nice feature that is worth mentioning is a built-in heap dump at OutOfMemoryError. It is enabled by specifying -XX:+HeapDumpOnOutOfMemoryError option and you can also tell the VM where to put the heap dump file by specifying
 -XX:HeapDumpPath=*<pathname>*.
 
+由于 OutOfMemoryError 在某些大规模应用中非常常见，因此向用户提供有用的诊断信息至关重要，这样他们才能快速确定解决方案，有时只需指定更大的 Java 堆大小即可。当 OutOfMemoryError 发生时，错误信息会指明是哪类内存出了问题，例如可能是 Java heap space 或 PermGen space 等。从 JDK 6 开始，错误信息中会包含堆栈跟踪。此外，还引入了 `-XX:OnOutOfMemoryError="<cmd>"` 选项，在第一次抛出 OutOfMemoryError 时会运行指定的命令。另一个值得一提的实用功能是 OutOfMemoryError 时内置的堆转储。通过指定 `-XX:+HeapDumpOnOutOfMemoryError` 选项启用，还可以通过指定 `-XX:HeapDumpPath=<pathname>` 来告诉 VM 把堆转储文件放在哪里。
+
 Even though applications are carefully written to avoid deadlocks, sometimes it still happens. When deadlock occurs, you can type “Ctrl+Break” on Windows or grab the Java process id and send SIGQUIT to the hang process on Solaris/Linux. A Java level stack trace will be dumped out to the standard out so that you can analyze the reasons of deadlock. Since JDK 6, this feature has been built into jconsole which is a very useful tool in the JDK. So when the application hangs on a deadlock, use jconsole to attach the process and it will analyze which lock is problematic. Most of the time, the deadlock is caused by acquiring locks in the wrong order.
 
+即使应用程序经过精心编写以避免死锁，有时死锁仍然会发生。发生死锁时，可以在 Windows 上按“Ctrl+Break”，或者在 Solaris/Linux 上获取 Java 进程 id 并向挂起的进程发送 SIGQUIT。Java 级别的堆栈跟踪会转储到标准输出，这样你就可以分析死锁的原因。从 JDK 6 开始，这个功能已被内置到 JDK 中非常有用的工具 jconsole 里。因此当应用程序因死锁而挂起时，用 jconsole 附加该进程，它就会分析出哪个锁有问题。大多数情况下，死锁是由于以错误的顺序获取锁造成的。
+
 We strongly encourage you to check out the “Trouble-Shooting and Diagnostic Guide”[11]. It contains a lot of information which might be very useful to diagnose fatal errors.
+
+我们强烈建议你阅读《Trouble-Shooting and Diagnostic Guide》（故障排除与诊断指南）[11]。其中包含大量信息，对诊断致命错误可能非常有用。
 
 ### Further Reading
 
