@@ -6,7 +6,7 @@
 
 * [01.软件开发中的幂等性](./01_idempotent/README.md)
 * [02.一次Java包冲突的问题排查案例](./02_package_conflict_sample/README.md)【初稿】
-* [03.JVM调优经验系列文章: GC线程数](./03_graal-java-jit-compiler/README.md)【粗翻】
+* [03.JVM调优经验系列文章: GC线程数](./03_gc_thread_count/README.md)【粗翻】
 * [04.Java对象的里里外外漫谈](./04_jvm-objects-inside-out/README.md)
 * [05.JVM Anatomy Quarks](./05-jvm-anatomy-quarks/README.md)
 * [06.Lock Lock Lock: Enter!](./06_lock-lock-lock-enter/README.md)
