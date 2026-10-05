@@ -2,13 +2,13 @@
 
 ## Apache Maven Assembly Plugin
 
-### <a name="Introduction"></a>Introduction
+### <a name="Introduction"></a>简介
 
-The Assembly Plugin for Maven is primarily intended to allow users to aggregate the project output along with its dependencies, modules, site documentation, and other files into a single distributable archive.
+Maven 的 Assembly Plugin 主要用于将项目的输出与其依赖、模块、站点文档及其他文件聚合为单个可分发的归档包。
 
-Your project can build distribution "assemblies" easily, using one of the convenient, [prefabricated assembly descriptors](http://maven.apache.org/plugins/maven-assembly-plugin/descriptor-refs.html). These descriptors handle many common operations, such as packaging a project's artifact along with generated documentation into a [single zip archive](http://maven.apache.org/plugins/maven-assembly-plugin/descriptor-refs.html#bin). Alternatively, your project can provide its own [descriptor](http://maven.apache.org/plugins/maven-assembly-plugin/assembly.html) and assume a much higher level of control over how dependencies, modules, file-sets, and individual files are packaged in the assembly.
+你可以使用一个方便的[预制 assembly 描述符](http://maven.apache.org/plugins/maven-assembly-plugin/descriptor-refs.html), 轻松为项目构建分发包("assembly")。这些描述符处理了许多常见操作, 例如将项目的构件连同生成的文档打包成一个 [zip 归档包](http://maven.apache.org/plugins/maven-assembly-plugin/descriptor-refs.html#bin)。或者, 你的项目可以提供自己的[描述符](http://maven.apache.org/plugins/maven-assembly-plugin/assembly.html), 从而对依赖、模块、文件集以及单个文件如何打包进 assembly 拥有高得多的控制力。
 
-Currently it can create distributions in the following formats:
+目前它可以创建以下格式的分发包:
 
 *   zip
 *   tar
@@ -17,67 +17,67 @@ Currently it can create distributions in the following formats:
 *   jar
 *   dir
 *   war
-*   and any other format that the ArchiveManager has been configured for
+*   以及 ArchiveManager 已配置支持的其他任意格式
 
-If your project wants to package your artifact in an uber-jar, the assembly plugin provides only basic support. For more control, use the [Maven Shade Plugin](http://maven.apache.org/plugins/maven-shade-plugin/).
+如果你的项目想将构件打包成 uber-jar, assembly 插件只提供基本的支持。若需要更多控制, 请使用 [Maven Shade Plugin](http://maven.apache.org/plugins/maven-shade-plugin/)。
 
-To use the Assembly Plugin in Maven, you simply need to:
+要在 Maven 中使用 Assembly Plugin, 你只需:
 
-*   choose or write the assembly descriptor to use,
-*   configure the Assembly Plugin in your project's <tt>pom.xml</tt>, and
-*   run "mvn assembly:single" on your project.
+*   选择或编写要使用的 assembly 描述符,
+*   在你的项目 <tt>pom.xml</tt> 中配置 Assembly Plugin, 以及
+*   在你的项目上运行 "mvn assembly:single"。
 
-To write your own custom assembly, you will need to refer to the [Assembly Descriptor Format](http://maven.apache.org/plugins/maven-assembly-plugin/assembly.html) reference.
+要编写自己的自定义 assembly, 你需要参考 [Assembly Descriptor Format](http://maven.apache.org/plugins/maven-assembly-plugin/assembly.html) 参考文档。
 
-### <a name="What_is_an_Assembly"></a>What is an Assembly?
+### <a name="What_is_an_Assembly"></a>什么是 Assembly?
 
-An "assembly" is a group of files, directories, and dependencies that are assembled into an archive format and distributed. For example, assume that a Maven project defines a single JAR artifact that contains both a console application and a Swing application. Such a project could define two "assemblies" that bundle the application with a different set of supporting scripts and dependency sets. One assembly would be the assembly for the console application, and the other assembly could be a Swing application bundled with a slightly different set of dependencies.
+一个 "assembly" 是一组文件、目录和依赖, 它们被打包成某种归档格式并分发。例如, 假设一个 Maven 项目定义了一个单独的 JAR 构件, 其中同时包含一个控制台应用和一个 Swing 应用。这样的项目可以定义两个 "assembly", 分别用不同的配套脚本和依赖集来打包该应用。一个 assembly 是控制台应用的 assembly, 另一个可以是捆绑了一组稍有不同依赖的 Swing 应用 assembly。
 
-The Assembly Plugin provides a descriptor format which allows you to define an arbitrary assembly of files and directories from a project. For example, if your Maven project contains the directory "src/main/bin", you can instruct the Assembly Plugin to copy the contents of this directory to the "bin" directory of an assembly and to change the permissions of the files in the "bin" directory to UNIX mode 755\. The parameters for configuring this behavior are supplied to the Assembly Plugin by way of the [assembly descriptor](http://maven.apache.org/plugins/maven-assembly-plugin/assembly.html).
+Assembly Plugin 提供了一种描述符格式, 允许你从项目中定义由任意文件和目录组成的 assembly。例如, 如果你的 Maven 项目包含 "src/main/bin" 目录, 你可以指示 Assembly Plugin 将该目录的内容复制到 assembly 的 "bin" 目录, 并将 "bin" 目录中文件的权限改成 UNIX mode 755。用于配置此行为的参数通过 [assembly 描述符](http://maven.apache.org/plugins/maven-assembly-plugin/assembly.html)提供给 Assembly Plugin。
 
-### <a name="Goals"></a>Goals
+### <a name="Goals"></a>目标(Goals)
 
-The main goal in the assembly plugin is the [single](http://maven.apache.org/plugins/maven-assembly-plugin/single-mojo.html) goal. It is used to create all assemblies. **All other goals are deprecated and will be removed in a future release.**
+assembly 插件的核心目标是 [single](http://maven.apache.org/plugins/maven-assembly-plugin/single-mojo.html) 目标。它用于创建所有的 assembly。**其他所有目标均已废弃, 并将在未来的版本中移除。**
 
-For more information about the goals that are available in the Assembly Plugin, see [the plugin documentation page](http://maven.apache.org/plugins/maven-assembly-plugin/plugin-info.html).
+有关 Assembly Plugin 中可用目标的更多信息, 请参阅[插件文档页面](http://maven.apache.org/plugins/maven-assembly-plugin/plugin-info.html)。
 
-Usage of the <tt>assembly:assembly</tt>, <tt>assembly:attached</tt>, <tt>assembly:directory</tt>, and <tt>assembly:directory-inline</tt> are **deprecated**, since they wreak havoc with normal build processes and promote non-standard build practices.
+对 <tt>assembly:assembly</tt>、<tt>assembly:attached</tt>、<tt>assembly:directory</tt> 和 <tt>assembly:directory-inline</tt> 的使用方式是**已废弃**的, 因为它们会破坏正常的构建过程, 并助长非标准的构建实践。
 
-The <tt>assembly:single-directory</tt> goal is redundant, and has been **deprecated** in favor of the <tt>dir</tt> assembly format.
+<tt>assembly:single-directory</tt> 目标是多余的, 已被**废弃**, 建议改用 <tt>dir</tt> assembly 格式。
 
-Finally, the <tt>assembly:unpack</tt> goal has been **deprecated** in favor of the far more comprehensive [Maven Dependency Plugin](http://maven.apache.org/plugins/maven-dependency-plugin/).
+最后, <tt>assembly:unpack</tt> 目标已被**废弃**, 建议改用功能全面得多的 [Maven Dependency Plugin](http://maven.apache.org/plugins/maven-dependency-plugin/)。
 
-### Usage
+### 用法
 
-General instructions on how to use the Assembly Plugin can be found on the [usage page](http://maven.apache.org/plugins/maven-assembly-plugin/usage.html). Some more specific use cases are described in the examples given below. Last but not least, users occasionally contribute additional examples, tips or errata to the [plugin's wiki page](http://docs.codehaus.org/display/MAVENUSER/Assembly+Plugin).
+有关如何使用 Assembly Plugin 的通用说明, 请参阅[用法页面](http://maven.apache.org/plugins/maven-assembly-plugin/usage.html)。一些更具体的用例在下面的示例中描述。最后但同样重要的是, 用户偶尔会向[插件的 wiki 页面](http://docs.codehaus.org/display/MAVENUSER/Assembly+Plugin)贡献额外的示例、技巧或勘误。
 
-In case you still have questions regarding the plugin's usage, please have a look at the [FAQ](http://maven.apache.org/plugins/maven-assembly-plugin/faq.html) and feel free to contact the [user mailing list](http://maven.apache.org/plugins/maven-assembly-plugin/mail-lists.html). The posts to the mailing list are archived and could already contain the answer to your question as part of an older thread. Hence, it is also worth browsing/searching the [mail archive](http://maven.apache.org/plugins/maven-assembly-plugin/mail-lists.html).
+如果你对插件的用法仍有疑问, 请查看 [FAQ](http://maven.apache.org/plugins/maven-assembly-plugin/faq.html), 并欢迎联系[用户邮件列表](http://maven.apache.org/plugins/maven-assembly-plugin/mail-lists.html)。发往邮件列表的帖子会被归档, 其中较早的讨论串可能已经包含了你的问题的答案。因此, 也值得浏览/搜索[邮件归档](http://maven.apache.org/plugins/maven-assembly-plugin/mail-lists.html)。
 
-If you feel like the plugin is missing a feature or has a defect, you can fill a feature request or bug report in our [issue tracker](http://maven.apache.org/plugins/maven-assembly-plugin/issue-tracking.html). When creating a new issue, please provide a comprehensive description of your concern. Especially for fixing bugs it is crucial that the developers can reproduce your problem. For this reason, entire debug logs, POMs or most preferably little demo projects attached to the issue are very much appreciated. Of course, patches are welcome, too. Contributors can check out the project from our [source repository](http://maven.apache.org/plugins/maven-assembly-plugin/source-repository.html) and will find supplementary information in the [guide to helping with Maven](http://maven.apache.org/guides/development/guide-helping.html).
+如果你觉得插件缺少某个功能或有缺陷, 可以在我们的[问题跟踪器](http://maven.apache.org/plugins/maven-assembly-plugin/issue-tracking.html)中提交功能请求或缺陷报告。创建新问题时, 请提供对你所关注问题的全面描述。特别是对于修复缺陷来说, 开发者能够重现你的问题至关重要。为此, 非常欢迎在问题中附上完整的调试日志、POM, 最好是小型演示项目。当然, 补丁也欢迎。贡献者可以从我们的[源码仓库](http://maven.apache.org/plugins/maven-assembly-plugin/source-repository.html)检出项目, 并会在[帮助改进 Maven 指南](http://maven.apache.org/guides/development/guide-helping.html)中找到补充信息。
 
-### Examples
+### 示例
 
-To provide you with better understanding on some usages of the Assembly Plugin, you can take a look into the examples which can be found [here](http://maven.apache.org/plugins/maven-assembly-plugin/examples/index.html).
+为了让你更好地理解 Assembly Plugin 的一些用法, 你可以查看[这里](http://maven.apache.org/plugins/maven-assembly-plugin/examples/index.html)的示例。
 
-## Usage
+## 用法
 
-To handle filtering this version of Maven Assembly Plugin uses [Maven Filtering](http://maven.apache.org/shared/maven-filtering/index.html) 1.3.
+为了处理过滤, 此版本的 Maven Assembly Plugin 使用 [Maven Filtering](http://maven.apache.org/shared/maven-filtering/index.html) 1.3。
 
-To handle archiving this version of Maven Assembly Plugin uses [Maven Archiver](http://maven.apache.org/shared/maven-archiver/index.html) 2.5.
+为了处理归档, 此版本的 Maven Assembly Plugin 使用 [Maven Archiver](http://maven.apache.org/shared/maven-archiver/index.html) 2.5。
 
-This document is intended to provide instructions for using the maven-assembly-plugin. In order for this discussion to be useful, it's critical to cover two topics: configuration of the plugin - both inside the POM and, where possible, from the command line - and the different execution styles. For the sake of clarity, we'll cover configuration before execution.
+本文档旨在提供使用 maven-assembly-plugin 的说明。为了让这一讨论有用, 必须涵盖两个主题: 插件的配置——既包括 POM 内部的配置, 也包括在可能情况下的命令行配置——以及不同的执行方式。为清楚起见, 我们将先讲配置, 再讲执行。
 
-### <a name="Deprecation_notice"></a>Deprecation notice
+### <a name="Deprecation_notice"></a>废弃声明
 
-All goals except <tt>assembly:single</tt> have been **deprecated**. See the [introduction page](http://maven.apache.org/plugins/maven-assembly-plugin/index.html) for more details.
+除 <tt>assembly:single</tt> 之外的所有目标均已**废弃**。更多细节见[简介页面](http://maven.apache.org/plugins/maven-assembly-plugin/index.html)。
 
-### <a name="Configuration"></a>Configuration
+### <a name="Configuration"></a>配置
 
-Getting started with the Assembly Plugin is pretty simple. If you want to use one of the prefabricated assembly descriptors, you configure which descriptor to use with the <<tt>descriptorRefs></tt>/<<tt>descriptorRef></tt> parameter. If you want to use a custom assembly descriptor, you configure the path to your descriptor using the <<tt>descriptors></tt>/<<tt>descriptor></tt> parameter.
+Assembly Plugin 的入门相当简单。如果你想使用某个预制的 assembly 描述符, 通过 <<tt>descriptorRefs></tt>/<<tt>descriptorRef></tt> 参数配置要使用哪个描述符。如果你想使用自定义的 assembly 描述符, 通过 <<tt>descriptors></tt>/<<tt>descriptor></tt> 参数配置描述符的路径。
 
-Note that a single invocation of the Assembly Plugin can actually produce assemblies from multiple descriptors, allowing you maximum flexibility to customize the suite of binaries your project produces. When the assembly is created it will use the assemblyId as the artifact's classifier and will attach the created assembly to the project so that it will be uploaded into the repository on the install and deploy goals.
+注意, 一次调用 Assembly Plugin 实际上可以根据多个描述符生成 assembly, 让你最大限度地灵活定制项目产生的各类二进制包。创建 assembly 时, 它会使用 assemblyId 作为构件的 classifier, 并将创建好的 assembly 附加到项目上, 以便在 install 和 deploy 目标时上传到仓库。
 
-For example, imagine that our project produces a JAR. If we want to create an assembly binary that includes our project's dependencies, we can take advantage of one of the Assembly Plugin's prefabricated descriptors. You configure it as follows in your project's <tt>pom.xml</tt>:
+例如, 假设我们的项目会产出一个 JAR。如果我们想创建一个包含项目依赖的 assembly 二进制包, 可以利用 Assembly Plugin 的一个预制描述符。在你的项目 <tt>pom.xml</tt> 中配置如下:
 
 ```
 <project>
@@ -100,9 +100,9 @@ For example, imagine that our project produces a JAR. If we want to create an as
 </project>
 ```
 
-Note that the Assembly Plugin allows you to specify multiple <tt>descriptorRefs</tt> at once, to produce multiple types of assemblies in a single invocation.
+注意, Assembly Plugin 允许你一次性指定多个 <tt>descriptorRefs</tt>, 从而在单次调用中生成多种类型的 assembly。
 
-Alternatively, we've created a custom assembly descriptor called <tt>src.xml</tt> in the <tt>src/assembly</tt> directory (see the [Resources](http://maven.apache.org/plugins/maven-assembly-plugin/usage.html#Resources) section for more information). We can tell the Assembly Plugin to use that instead:
+或者, 我们在 <tt>src/assembly</tt> 目录下创建了一个名为 <tt>src.xml</tt> 的自定义 assembly 描述符(更多信息请参见 [Resources](http://maven.apache.org/plugins/maven-assembly-plugin/usage.html#Resources) 小节)。我们可以告诉 Assembly Plugin 改用这个描述符:
 
 ```
 <project>
@@ -122,17 +122,17 @@ Alternatively, we've created a custom assembly descriptor called <tt>src.xml</t
 </project>
 ```
 
-Again, note that we could specify multiple custom assembly descriptors here. Additionally, it's possible to specify a mixture of <tt>descriptors</tt> and <tt>descriptorRefs</tt> within the same configuration.
+同样, 注意这里可以指定多个自定义 assembly 描述符。此外, 也可以在同一份配置中混合使用 <tt>descriptors</tt> 和 <tt>descriptorRefs</tt>。
 
-**Note:** Many other configuration options are available for the various goals in the Assembly Plugin. For more information, see the [examples section](http://maven.apache.org/plugins/maven-assembly-plugin/examples/index.html) or the [plugin parameter documentation](http://maven.apache.org/plugins/maven-assembly-plugin/plugin-info.html).
+**注意:** Assembly Plugin 中各种目标还有许多其他配置选项可用。更多信息请参见[示例小节](http://maven.apache.org/plugins/maven-assembly-plugin/examples/index.html)或[插件参数文档](http://maven.apache.org/plugins/maven-assembly-plugin/plugin-info.html)。
 
-### <a name="Execution:_Building_an_Assembly"></a>Execution: Building an Assembly
+### <a name="Execution:_Building_an_Assembly"></a>执行: 构建 Assembly
 
-Once you've configured the various <tt>descriptors</tt> and <tt>descriptorRefs</tt> for the assemblies you want the project to produce, it's time to build them.
+一旦你为项目想要生成的各个 assembly 配置好了 <tt>descriptors</tt> 和 <tt>descriptorRefs</tt>, 就该构建它们了。
 
-In most cases, you'll want to make sure your assemblies are created as part of your normal build process. This ensures the assembly archives are made available for installation and deployment, and that they are created during the release of your project. This is handled by the <tt>assembly:single</tt> goal.
+在大多数情况下, 你会希望确保 assembly 作为常规构建过程的一部分被创建。这样可以保证 assembly 归档包可用于安装和部署, 并且会在项目发布期间生成。这由 <tt>assembly:single</tt> 目标来处理。
 
-To bind the <tt>single</tt> goal to a project's build lifecycle, you can add this configuration (assuming you're using the <tt>jar-with-dependencies</tt> prefabricated descriptor):
+要将 <tt>single</tt> 目标绑定到项目的构建生命周期上, 可以添加如下配置(假设你使用的是 <tt>jar-with-dependencies</tt> 预制描述符):
 
 ```
 <project>
@@ -162,31 +162,31 @@ To bind the <tt>single</tt> goal to a project's build lifecycle, you can add t
 </project>
 ```
 
-Then, to create a project assembly, simple execute the normal <tt>package</tt> phase from the default lifecycle:
+然后, 要创建项目的 assembly, 只需执行默认生命周期中常规的 <tt>package</tt> 阶段:
 
 ```
 mvn package
 ```
 
-When this build completes, you should see a file in the <tt>target</tt> directory with a name similar to the following:
+构建完成后, 你应该会在 <tt>target</tt> 目录中看到一个名称类似如下的文件:
 
 ```
 target/sample-1.0-SNAPSHOT-jar-with-dependencies.jar
 ```
 
-Notice the artifact classifier, between the end of the version and the beginning of the file extension, <tt>jar-with-dependencies</tt>. This is the <tt>id</tt> of the assembly descriptor used to create this artifact.
+注意其中位于版本号末尾与文件扩展名开头之间的构件 classifier, 即 <tt>jar-with-dependencies</tt>。它正是用于创建该构件的 assembly 描述符的 <tt>id</tt>。
 
-#### <a name="GOTCHA"></a>GOTCHA!
+#### <a name="GOTCHA"></a>注意!
 
-In most cases, the <tt>single</tt> goal should be bound to the <tt>package</tt> phase of the build. However, if your assembly doesn't require binaries, or if you need to use one assembly as input for another, you may need to change this. While it's possible to assign the <tt>single</tt> goal to any phase of the build lifecycle, you should be careful to make sure the resources included in your assembly exist before that assembly is created.
+在大多数情况下, <tt>single</tt> 目标应当绑定到构建的 <tt>package</tt> 阶段。但是, 如果你的 assembly 不需要二进制文件, 或者你需要用一个 assembly 作为另一个 assembly 的输入, 则可能需要改动这一点。虽然可以把 <tt>single</tt> 目标分配到构建生命周期的任意阶段, 但你要小心确保 assembly 中包含的资源在该 assembly 被创建之前就已经存在。
 
-### <a name="Advanced_Configuration"></a>Advanced Configuration
+### <a name="Advanced_Configuration"></a>高级配置
 
-#### <a name="Creating_an_Executable_JAR"></a>Creating an Executable JAR
+#### <a name="Creating_an_Executable_JAR"></a>创建可执行 JAR
 
-As you've no doubt noticed, the Assembly Plugin can be a very useful way to create a self-contained binary artifact for your project, among many other things. However, once you've created this self-contained JAR, you will probably want the ability to execute it using the <tt>-jar</tt> JVM switch.
+你肯定已经注意到, Assembly Plugin 是一种非常有用的方式, 可以为项目创建自包含的二进制构件, 诸如此类。不过, 一旦创建了这个自包含的 JAR, 你可能希望用 JVM 的 <tt>-jar</tt> 开关来执行它。
 
-To accommodate this, the Assembly Plugin supports configuration of an <tt><archive></tt> element which is handled by <tt>maven-archiver</tt> (see [Resources](http://maven.apache.org/plugins/maven-assembly-plugin/usage.html#Resources)). Using this configuration, it's easy to configure the <tt>Main-Class</tt> attribute of the JAR manifest:
+为满足这一点, Assembly Plugin 支持配置一个由 <tt>maven-archiver</tt> 处理的 <tt><archive></tt> 元素(参见 [Resources](http://maven.apache.org/plugins/maven-assembly-plugin/usage.html#Resources))。使用该配置, 可以很容易地设置 JAR manifest 的 <tt>Main-Class</tt> 属性:
 
 ```
 <project>
@@ -211,28 +211,26 @@ To accommodate this, the Assembly Plugin supports configuration of an <tt><arch
 </project>
 ```
 
-If we add this configuration to the <tt>single</tt> goal example above and rebuild, we will see an entry like this in the <tt>META-INF/MANIFEST.MF</tt> file of the resulting JAR:
+如果我们把这份配置加到上面 <tt>single</tt> 目标的示例中再重新构建, 就会在生成的 JAR 的 <tt>META-INF/MANIFEST.MF</tt> 文件中看到类似这样的一行:
 
 ```
 [...]
 Main-Class: org.sample.App
 ```
 
-For more information on advanced configuration for the Assembly Plugin, see the [Resources](http://maven.apache.org/plugins/maven-assembly-plugin/usage.html#Resources) section.
+有关 Assembly Plugin 高级配置的更多信息, 请参见 [Resources](http://maven.apache.org/plugins/maven-assembly-plugin/usage.html#Resources) 小节。
 
-#### <a name="GOTCHA"></a>GOTCHA!
+#### <a name="GOTCHA"></a>注意!
 
-At this point, only the <tt>jar</tt> and <tt>war</tt> assembly formats support the <tt><archive></tt> configuration element.
+目前, 只有 <tt>jar</tt> 和 <tt>war</tt> 两种 assembly 格式支持 <tt><archive></tt> 配置元素。
 
-### <a name="Resources">Resources</a>
+### <a name="Resources">资源</a>
 
-1.  For more information on writing your own assembly descriptor, read the [Assembly Descriptor](http://maven.apache.org/plugins/maven-assembly-plugin/assembly.html)
-2.  For more information about <tt>maven-archiver</tt>, look [here](http://maven.apache.org/shared/maven-archiver/index.html).
-3.  For more information on advanced <tt>maven-assembly-plugin</tt> configuration, see the [examples](http://maven.apache.org/plugins/maven-assembly-plugin/examples/index.html).
-
+1.  有关编写自己的 assembly 描述符的更多信息, 请阅读 [Assembly Descriptor](http://maven.apache.org/plugins/maven-assembly-plugin/assembly.html)
+2.  有关 <tt>maven-archiver</tt> 的更多信息, 请看[这里](http://maven.apache.org/shared/maven-archiver/index.html)。
+3.  有关高级 <tt>maven-assembly-plugin</tt> 配置的更多信息, 请参阅[示例](http://maven.apache.org/plugins/maven-assembly-plugin/examples/index.html)。
 
 
 
 
 原文地址: [http://maven.apache.org/plugins/maven-assembly-plugin/](http://maven.apache.org/plugins/maven-assembly-plugin/)
-
