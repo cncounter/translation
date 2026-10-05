@@ -16,7 +16,7 @@ We’re going to be looking at querying documents with *Query* and *Criteria* cl
 
 For the Maven setup, have a look at our [introductory article](https://www.baeldung.com/spring-data-mongodb-tutorial).
 
-关于Maven项目的设置, 请参考前文: <./05_01_spring-data-mongodb-tutorial.md>。
+关于Maven项目的设置, 请参考前文: [Spring Data MongoDB系列(一): 简介](05_01_spring-data-mongodb-tutorial.md)。
 
 ## **2. Documents Query**
 
@@ -225,7 +225,7 @@ The database is:
         "name" : "Antony",
         "age" : 55
     }
-}
+]
 ```
 
 
@@ -341,7 +341,7 @@ And here’s the result of the query – nicely sorted by *age*:
 
 ### **2.5. Pageable**
 
-### 2.5. 分页(`Pageable`)
+### 2.5、分页(`Pageable`)
 
 Let’s look at a quick example using pagination.
 
@@ -574,7 +574,7 @@ With this annotation, we can specify a raw query – as a Mongo JSON query strin
 
 ### **4.1. FindBy**
 
-### 4.1、 FindBy方式
+### 4.1、FindBy方式
 
 Let’s start simple and look at how we would represent **a find by type of method** first:
 
@@ -598,7 +598,7 @@ List<User> users = userRepository.findUsersByName("Eric");
 
 ### **4.2 $regex**
 
-### 4.2 $regex方式
+### 4.2、$regex方式
 
 Let’s also look at **a regex driven query** – which of course produces the same result as in 2.2 and 3.2:
 
@@ -625,7 +625,7 @@ List<User> users = userRepository.findUsersByRegexpName("c$");
 
 ### **4.3. $lt and $gt**
 
-### 4.3. $lt 和 $gt
+### 4.3、$lt 和 $gt
 
 Let’s now implement the lt and *gt* query:
 
@@ -638,7 +638,7 @@ List<User> findUsersByAgeBetween(int ageGT, int ageLT);
 
 
 
-Now how, now that the method has 2 parameters, we’re referencing each of these by index in the raw query: *?0* and *?1*.
+Note how, now that the method has 2 parameters, we’re referencing each of these by index in the raw query: *?0* and *?1*.
 
 这个方法有两个参数, 我们在原生查询中通过: `?0` 和`?1` 来引用这些参数。
 
@@ -651,7 +651,7 @@ List<User> users = userRepository.findUsersByAgeBetween(20, 50);
 
 ## **5. QueryDSL Queries**
 
-## 5. QueryDSL 查询
+## 5、QueryDSL 查询
 
 *MongoRepository* has good support for the [QueryDSL](http://www.querydsl.com/) project – so we can leverage that nice, type-safe API here as well.
 
@@ -659,11 +659,11 @@ List<User> users = userRepository.findUsersByAgeBetween(20, 50);
 
 ### **5.1. The Maven Dependencies**
 
-### 5.1. Maven依赖
+### 5.1、Maven依赖
 
 First, let’s make sure we have the correct Maven dependencies defined in the pom:
 
-首先, 确保 Maven 项目的依赖关系:
+首先, 确保 pom 中定义了正确的 Maven 依赖:
 
 ```
 <dependency>
@@ -682,7 +682,7 @@ First, let’s make sure we have the correct Maven dependencies defined in the p
 
 ### **5.2. Q-classes**
 
-### 5.2. Q-classes
+### 5.2、Q-classes
 
 QueryDSL used Q-classes for creating queries. But, since we don’t really want to create these by hand, **we need to generate them** somehow.
 
@@ -801,7 +801,7 @@ A quick fix is to manually point to the JDK in *eclipse.ini*:
 
 ### **5.3. The New Repository**
 
-### 5.3. 新的 Repository
+### 5.3、新的 Repository
 
 Now we need to actually enable QueryDSL support in our repositories – which is done by simply **extending the QueryDslPredicateExecutor interface**:
 
@@ -816,7 +816,7 @@ public interface UserRepository extends
 
 ### **5.4. Eq**
 
-### 5.4. Eq
+### 5.4、Eq
 
 With support enabled, **let’s now implement the same queries** as the ones we illustrated before.
 
@@ -836,7 +836,7 @@ List<User> users = (List<User>) userRepository.findAll(predicate);
 
 ### **5.5. StartingWith and EndingWith**
 
-### 5.5. StartingWith 与 EndingWith
+### 5.5、StartingWith 与 EndingWith
 
 Similarly, let’s implement the previous queries – and find users with names that are starting with *A*:
 
@@ -862,17 +862,17 @@ List<User> users = (List<User>) userRepository.findAll(predicate);
 
 
 
-The result with same as in 2.2, 3.2 or 4.2.
+The result is the same as in 2.2, 3.2 or 4.2.
 
 结果和 2.2、 3.2、 4.2一致。
 
 ### **5.6. Between**
 
-### 5.6. Between
+### 5.6、Between
 
 The next one query will return users with age between 20 and 50 – similar to the previous sections:
 
-查询年龄在20到50之间的年龄, 代码也类似:
+查询年龄在20到50之间的User, 代码也类似:
 
 ```
 QUser qUser = new QUser("user");
@@ -884,7 +884,7 @@ List<User> users = (List<User>) userRepository.findAll(predicate);
 
 ## **6. Conclusion**
 
-## 6. 结论
+## 6、结论
 
 In this article, we explored the many ways we can query using Spring Data MongoDB.
 
@@ -905,7 +905,7 @@ The implementation of all these examples and code snippets **can be found in** [
 
 - [Spring Data MongoDB系列(一): 简介](05_01_spring-data-mongodb-tutorial.md)
 - [Spring Data MongoDB系列(二): 简单查询](05_02_queries-in-spring-data-mongodb.md)
-- [Spring Data MongoDB系列(三): 索引、注解和转换器](05_02_queries-in-spring-data-mongodb.md)
+- [Spring Data MongoDB系列(三): 索引、注解和转换器](05_03_spring-data-mongodb-index-annotations-converter.md)
 - [Spring Data MongoDB系列(八): 映射与聚合](05_08_spring-data-mongodb-projections-aggregations.md)
 
 
