@@ -1,27 +1,29 @@
 # A Friendly Introduction to Flexbox for Beginners
 
-*This is the updated version of an article published on 4th February 2013. Updates include:rewriting paragraphs and sections to fit new developments in browser support for flexbox and in CSS with the advent of Grid Layout, creating live demos on CodePen, modifying code snippets, title change, adding a featured image, and a few grammatical changes.*
+# 写给初学者的 Flexbox 友好入门
 
-Do you remember when tables were the only layout method for a website? At least until people realized that it’s a semantic nightmare to misuse something that’s actually reserved to display tabular data for the structure of an internet site. So a new “tool” needed to be found and soon floats and absolute positioning were discovered as a “proper” replacement.
+*本文是 2013 年 2 月 4 日发布的一篇文章的更新版。更新内容包括：随着浏览器对 flexbox 支持的进步以及 CSS Grid Layout 的出现，重写了部分段落和章节；在 CodePen 上创建了在线演示；修改了代码片段；更换了标题；添加了特色图片；以及修正了一些语法问题。*
 
-Just like tables, of course, the true purpose of these two methods wasn’t to give websites a shape.
+你还记得网页布局只能用表格(table)的年代吗？至少在人们意识到，把一个本来专门用于展示表格数据的元素挪去搭建网站结构，在语义上简直是一场灾难之前，确实如此。于是需要找到一种新的"工具"，很快浮动(float)和绝对定位(absolute positioning)就被发现，并当作"正规"的替代方案。
 
-Only recently, major browsers have provided support for [CSS Grid Layout](https://www.w3.org/TR/css-grid-1/), a robust layout engine built into CSS. You could use Grid in production websites right now, provided you cater for non supporting browsers with appropriate fallbacks.
+当然，和表格一样，这两种方法的真正用途也并不是为了给网站塑造布局。
 
-A great fallback strategy is to serve flexbox-based (or “[Flexible Box Layout Module](http://dev.w3.org/csswg/css3-flexbox/)” as the W3C likes to call it) layouts to all browsers without support for Grid Layout. This works great in most cases, since today flexbox has excellent [browser support](http://caniuse.com/#search=flexbox)across the board.
+直到最近，各大浏览器才开始支持 [CSS Grid Layout](https://www.w3.org/TR/css-grid-1/)——这是一款内置于 CSS 中的强大布局引擎。只要为非支持浏览器准备好合适的降级方案，你现在就可以在生产环境中使用 Grid。
+
+一个很好的降级策略是：对不支持 Grid Layout 的浏览器，改用基于 flexbox 的布局(或者按 W3C 的说法叫 "[Flexible Box Layout Module](http://dev.w3.org/csswg/css3-flexbox/)")。在大多数情况下这套方案都很好用，因为如今 flexbox 在各浏览器上都获得了出色的 [browser support](http://caniuse.com/#search=flexbox)。
 
 
 
-## Advantages of Using Flexbox
+## 使用 Flexbox 的优势
 
-Some of the advantages of flexbox are:
+flexbox 的一些优势如下：
 
-- Page content can be laid out in any direction (to the left, to the right, downwards or even upwards)
-- Bits of content can have their visual order reversed or rearranged
-- Items can “flex” their sizes to respond to the available space and can be aligned with respect to their container or each other
-- Achieving equal-column layouts (irrespective of the amount of content inside each column) is a breeze.
+- 页面内容可以朝任意方向排列(向左、向右、向下，甚至向上)
+- 各部分内容的视觉顺序可以反转或重新排列
+- 条目(Item)可以"弹性"伸缩尺寸以响应可用空间，并且可以相对其容器或彼此对齐
+- 实现等宽列布局(无论每列内部内容多少)变得轻而易举。
 
-To illustrate the various properties and possibilities let’s assume the following simple layout for some of the demos in this article:
+为了演示各种属性和可能性，本文部分示例将采用下面这个简单的布局：
 
 ```
 <div class="example">
@@ -45,15 +47,15 @@ To illustrate the various properties and possibilities let’s assume the follow
 </div>
 ```
 
-The first step is to place the elements within `.main`, i.e., `<nav>` and `<aside>`, side by side. Without flexbox we’d probably float all the three elements, but making it work as desired wouldn’t be very straightforward. Moreover, the traditional way of doing things would present a well-known problem: every column is just as high as its content. As a consequence, you would need to set an equal height for all three columns to have the same length, or use some sort of [hack](http://callmenick.com/post/css-equal-height-columns-three-different-ways).
+第一步是把 `.main` 内的元素，也就是 `<nav>` 和 `<aside>`，并排放置。如果没有 flexbox，我们大概会让这三个元素都浮动(float)，但要达到预期效果并不那么容易。而且，传统的做法会带来一个众所周知的问题：每一列的高度都只和它自己的内容一样高。因此，为了让三列等高，你需要为它们设置一个相同的高度，或者使用某种 [hack](http://callmenick.com/post/css-equal-height-columns-three-different-ways) 技巧。
 
-Enter flexbox to the rescue.
+这时 flexbox 就派上用场了。
 
-## Let’s Flex
+## 让我们 Flex 起来
 
-The core element of flexbox is the new `flex` value of the `display` property, which needs to be set for the container element. Doing so turns its children into “flex items”. These items acquire some handy properties by default. For example, they get placed side by side, and elements without a specified width automatically take up the remaining space.
+flexbox 的核心是 `display` 属性新增的 `flex` 取值，它需要设置在容器元素上。这样做会把它的子元素变成"flex items"。这些条目默认就会获得一些便利属性。例如，它们会并排排列，而未指定宽度的元素会自动占据剩余空间。
 
-So, if you set `display: flex` for `.main`, its `.content` child element is automatically squeezed in between `<nav>` and `<aside>`. No more calculations, how handy is that? As a special bonus, all of these three elements magically have the same height.
+所以，如果你为 `.main` 设置 `display: flex`，它的子元素 `.content` 就会自动挤在 `<nav>` 和 `<aside>` 之间。再也不用做各种计算，是不是很方便？额外的好处是，这三个元素会神奇地拥有相同的高度。
 
 ```
 .main {
@@ -61,7 +63,7 @@ So, if you set `display: flex` for `.main`, its `.content` child element is auto
 }
 ```
 
-Check out the demo below for all the details:
+查看下面的演示了解所有细节：
 
 ![](01_flex_main.png)
 
@@ -71,11 +73,11 @@ Check out the demo below for all the details:
 
 
 
-## The Order of Things: Flexbox `order` Property
+## 元素顺序：Flexbox 的 `order` 属性
 
-Another property of flexbox is the ability to easily change the order of elements. Let’s assume you’ve built the above layout for a client and she now wants `.content` to come before `<nav>`.
+flexbox 的另一个能力是可以轻松改变元素的顺序。假设你为客户做好了上面的布局，现在她希望 `.content` 排在 `<nav>` 前面。
 
-Normally, you’d dive into the HTML source code and change the order there. With flexbox you can accomplish the task entirely with CSS. Just set the `order` property of `.content` to `-1` and the content column will come first.
+通常情况下，你会去改 HTML 源码里的顺序。而使用 flexbox，你完全可以只用 CSS 完成这件事。只要把 `.content` 的 `order` 属性设为 `-1`，内容列就会排到最前面。
 
 ```
 .main {
@@ -87,19 +89,19 @@ Normally, you’d dive into the HTML source code and change the order there. Wit
 }
 ```
 
-In this case you don’t need to state the order for the other columns:
+这种情况下，你不需要为其他几列指定顺序：
 
 ![](02_flex_content_order.png)
 
 在线调试请访问: <https://codepen.io/SitePoint/pen/wexYza>
 
-If you prefer to specify the value of the `order` property explicitly for each column instead, you can go ahead and set `order` to `1`for `.content`, to `2` for `<nav>` and to `3` for `<aside>`.
+如果你更愿意为每一列显式指定 `order` 的值，也可以把 `.content` 的 `order` 设为 `1`，把 `<nav>` 设为 `2`，把 `<aside>` 设为 `3`。
 
-### HTML Source Code Independent from CSS Styles with Flexbox
+### 使用 Flexbox 让 HTML 源码与 CSS 样式解耦
 
-But your client isn’t satisfied yet. She’d like the `<footer>` to be the first element on the page, even before the `<header>`. Well, once again, flexbox is your friend (although in cases like this one, perhaps it would be better to educate your client rather than follow suit). Since you need to rearrange not only the inner elements but also the outer one, the `display: flex` rule will have to be set for `<div class="example">`. **Notice how you can nest flex containers in your web page to achieve the result you’re after.**
+但你的客户还是不满意。她希望 `<footer>` 成为页面上的第一个元素，甚至排在 `<header>` 前面。好吧，flexbox 又一次帮上了忙(不过像这种情况，或许更好的做法是说服你的客户，而不是一味照做)。由于要重新排列的不只是内部元素，还有外层元素，因此必须为 `<div class="example">` 设置 `display: flex`。**注意，你可以在网页中嵌套 flex 容器，以此达到想要的效果。**
 
-Because `<header>`, `<main.main>` and `<footer>` are stacked on top of each other, you need to set a vertical context first, which you can quickly do with `flex-direction: column`. Additionally, the `<footer>` gets the `order` value of `-1` so that it will appear first on the page. It’s as easy as that.
+由于 `<header>`、`<main.main>` 和 `<footer>` 是纵向堆叠的，你需要先设置一个纵向的上下文，用 `flex-direction: column` 就能快速完成。此外，给 `<footer>` 设置 `order: -1`，它就会出现在页面最前面。就这么简单。
 
 ```
 .example {
@@ -112,25 +114,25 @@ footer {
 }
 ```
 
-So, if you ever want to change a row of elements into a column or vice versa, you can use the `flex-direction` property and set it to `column` or `row` accordingly (`row` is the default value):
+所以，如果你想把一行元素变成一列，或者反过来，可以使用 `flex-direction` 属性，相应地设为 `column` 或 `row`(`row` 是默认值)：
 
 ![](03_flex_footer_order.png)
 
 在线调试请访问: <https://codepen.io/SitePoint/pen/JJBmNa>
 
-However, with great power comes great responsibility: keep in mind that a number of visitors will be using the keyboard to navigate your flexbox-based websites, therefore if the order of elements in the HTML source is at odds with what appears on the screen, accessibility could become a serious concern. To learn more on this, don’t miss [HTML Source Order vs CSS Display Order](http://adrianroselli.com/2015/10/html-source-order-vs-css-display-order.html), an in-depth treatment of exactly this problem by accessibility and usability expert Adrian Roselli.
+不过，能力越大责任越大：要记住，有不少访客会使用键盘来浏览你的 flexbox 网站，因此如果 HTML 源码中元素的顺序与屏幕上显示的顺序不一致，可访问性(accessibility)就可能成为一个严重问题。想进一步了解，请不要错过可访问性与可用性专家 Adrian Roselli 的 [HTML Source Order vs CSS Display Order](http://adrianroselli.com/2015/10/html-source-order-vs-css-display-order.html)，它深入探讨了这个问题。
 
-### How to Align Items with Flexbox
+### 如何用 Flexbox 对齐条目
 
-Flexbox also makes it quite straightforward to align its child elements both horizontally and vertically.
+flexbox 也让你能相当简单地对其子元素进行水平和垂直对齐。
 
-You can apply the same alignment to all the elements within a flex container with `align-items`. If you’d like different alignments for individual items, use `align-self`. The alignment of the elements is dependent on the value of the `flex-direction`property. If its value is `row` (that is, the elements run in a horizontal line), the alignment applies to the vertical axis. If `flex-direction` is set to `column` (that is, the elements run in a vertical line), it applies to the horizontal axis.
+你可以用 `align-items` 对 flex 容器内的所有元素统一应用同一种对齐方式。如果想让各个条目采用不同的对齐方式，就使用 `align-self`。元素的对齐方式取决于 `flex-direction` 属性的值。如果它取值为 `row`(即元素沿水平方向排列)，对齐作用于垂直轴；如果 `flex-direction` 设为 `column`(即元素沿垂直方向排列)，对齐则作用于水平轴。
 
-For instance, you have a number of shapes you’d like to align differently inside a container element. You need to: .
+例如，你有若干形状(shape)，想在某个容器元素内让它们采用不同的对齐方式。你需要：。
 
-- Set each shape’s `align-self` property to the appropriate value. Possible values are: `center`, `stretch` (the element is positioned to fit its container), `flex-start`, `flex-end`, and `baseline` (the element is positioned at the baseline of its container)
-- Set the container element to `display:flex`
-- Finally, pay attention to the `flex-direction` property on the parent container, because its value affects the childeren’s alignment.
+- 为每个形状的 `align-self` 属性设置合适的值。可选值有：`center`、`stretch`(元素拉伸以填满其容器)、`flex-start`、`flex-end` 和 `baseline`(元素定位到其容器的基线处)
+- 把容器元素设置为 `display:flex`
+- 最后，注意父容器上的 `flex-direction` 属性，因为它的值会影响子元素的对齐方式。
 
 ```
 .example {
@@ -151,13 +153,13 @@ For instance, you have a number of shapes you’d like to align differently insi
 }
 ```
 
-Try toggling the parent container’s `flex-direction` property in the demo below from `row` to `column` and vice versa to see this behavior in action:
+试着在下面的演示中把父容器的 `flex-direction` 属性在 `row` 和 `column` 之间来回切换，看看这种效果是如何表现的：
 
 ![](04_flex-direction.png)
 
 在线调试请访问: <https://codepen.io/SitePoint/pen/owMaom>
 
-If all of the elements within a parent container need to be aligned the same way, you can use the property `align-items` in the parent container. Possible values are `center`, `flex-start`, `flex-end`, `stretch` (default value: items are stretched to fit their container), and `baseline` (items are positioned at the baseline of their containers).
+如果父容器内所有元素都需要以相同方式对齐，可以在父容器上使用 `align-items` 属性。可选值为 `center`、`flex-start`、`flex-end`、`stretch`(默认值：条目拉伸以填满其容器)和 `baseline`(条目定位到其容器的基线处)。
 
 ```
 .example {
@@ -166,7 +168,7 @@ If all of the elements within a parent container need to be aligned the same way
 }
 ```
 
-As usual, try toggling the value of the `flex-direction` property on the parent element between `row` and `column` to see how the effect of the values you apply to `align-items` changes:
+和前面一样，试着在父元素上把 `flex-direction` 在 `row` 和 `column` 之间切换，看看应用到 `align-items` 上的各个值的效果会如何变化：
 
 ![](05_align_items_center.png)
 
@@ -176,13 +178,13 @@ As usual, try toggling the value of the `flex-direction` property on the parent 
 
 
 
-## Justifying Content with Flexbox
+## 使用 Flexbox 主轴对齐内容
 
-Another property for alignment is `justify-content`, which is pretty handy when you want to distribute the available space evenly among multiple elements.
+另一个用于对齐的属性是 `justify-content`，当你想要在多个元素之间均匀分配可用空间时，它非常好用。
 
-Accepted values are: `center`, `flex-start`, `flex-end`, `space-between` (items are positioned with spaces between the lines), and `space-around` (items are positioned with space before, between, and after the lines).
+可接受的值为：`center`、`flex-start`、`flex-end`、`space-between`(各条目之间留出间隔)和 `space-around`(各条目的前、中、后都留出间隔)。
 
-For instance, inside the `<main>` element in the simple HTML template you’ve been using all along, you can find three elements: `<nav>`, `.content`, and `<aside>`. At the moment, they’re all pushed to the left of the page. If you’d like to display these three elements in such a way as to create some space in between them, but not to the leftmost and rightmost sides of the first and last element respectively, set `justify-content` inside `.main` (their parent container) to `space-between`:
+例如，在前面一直使用的那个简单 HTML 模板中，`<main>` 元素内有三个元素：`<nav>`、`.content` 和 `<aside>`。目前它们都靠页面左侧。如果你希望这三个元素之间留出一些间隔，但第一个元素最左侧和最后一个元素最右侧不留间隔，就把它们的父容器 `.main` 中的 `justify-content` 设为 `space-between`：
 
 ```
 .main {
@@ -191,13 +193,13 @@ For instance, inside the `<main>` element in the simple HTML template you’ve b
 }
 ```
 
-Try also experimenting with `space-around` and notice the different results:
+也可以试试 `space-around`，注意观察结果有何不同：
 
 ![](06_justifu_content.png)
 
 在线调试请访问:  <https://codepen.io/SitePoint/pen/OgwBqR>
 
-In the demo above, I’ve also centered the text inside the `<header>` element both horizontally and vertically by using `justify-content` (horizontal centering) and `align-items` (vertical centering) and setting them both to `center`:
+在上面的演示中，我还通过 `justify-content`(水平居中)和 `align-items`(垂直居中)，并把它们都设为 `center`，让 `<header>` 元素内的文字实现了水平加垂直居中：
 
 ```
 header {
@@ -208,17 +210,17 @@ header {
 }
 ```
 
-### Flexing Items Dimensions with Flexbox
+### 用 Flexbox 弹性调整条目尺寸
 
-With the `flex` property you can control the length of your element with respect to other elements inside a flex container.
+借助 `flex` 属性，你可以控制元素相对于 flex 容器内其他元素的长度。
 
-This property is a shorthand for the following individual properties:
+该属性是下面几个独立属性的简写：
 
-- `flex-grow` — A number specifying how much the element will grow relative to other flexible elements
-- `flex-shrink` — A number specifying how much the element will shrink relative other flexible elements
-- `flex-basis` — The length of the element. Accepted values are: `auto`, `inherit`, or a number followed by “%”, *px*, *em* or any other length unit.
+- `flex-grow` — 一个数字，指定该元素相对于其他弹性元素增长多少
+- `flex-shrink` — 一个数字，指定该元素相对于其他弹性元素收缩多少
+- `flex-basis` — 元素的长度。可接受的值为：`auto`、`inherit`，或一个数字加上 "%"、*px*、*em* 或其他任意长度单位。
 
-For example, to get three equal columns just set `flex: 1` for each column and you’re done:
+例如，要得到三个等宽的列，只需为每一列设置 `flex: 1` 即可：
 
 ```
 nav, aside, .content {
@@ -226,26 +228,26 @@ nav, aside, .content {
 }
 ```
 
-If you need the content area to be twice the width of `<nav>` and `<aside>`, set `flex: 2` for the `.content` and leave the other two at `1`:
+如果你需要让内容区的宽度是 `<nav>` 和 `<aside>` 的两倍，就把 `.content` 设为 `flex: 2`，另外两个保持为 `1`：
 
 ![](07_flex_one.png)
 
 在线调试请访问:  <https://codepen.io/SitePoint/pen/OgwBKb>
 
-That’s just the simplest application of the `flex` property, it’s also possible to set `flex-grow`, `flex-shrink` and `flex-basis`values, but that’s beyond the scope of this article.
+这只是 `flex` 属性最简单的用法，也可以分别设置 `flex-grow`、`flex-shrink` 和 `flex-basis` 的值，但那超出了本文的范围。
 
-## Further Resources
+## 延伸资源
 
-If you’re ready to move on and learn more about mastering flexbox, checkout these resources:
+如果你想继续深入学习并精通 flexbox，请查看以下资源：
 
 - [Flexbox](https://www.sitepoint.com/premium/courses/flexbox-2950), a paid course on SitePoint Premium by Guy Routledge
 - [Building Mega Menus with Flexbox](https://www.sitepoint.com/building-mega-menus-flexbox/)
 - [How 3 Modern Tools are Using Flexbox Grids](https://www.sitepoint.com/3-modern-tools-using-flexbox-grids/)
 - [Make Forms Fun with Flexbox](https://www.sitepoint.com/make-forms-fun-with-flexbox/).
 
-## Conclusion
+## 结语
 
-As you can see, flexbox can make our lives so much easier if we need to control the position of elements on a website. It’s rock solid and makes any hacks, collapsing containers or other weird stuff we have had to deal with every day, obsolete.
+如你所见，当我们需要控制网站上元素的位置时，flexbox 能让生活轻松很多。它非常可靠，让各种 hack、容器塌陷以及其他我们过去每天都要打交道的怪问题都变得不再必要。
 
 
 
