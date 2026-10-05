@@ -191,7 +191,7 @@ To make use of custom repositories (extending the *MongoRepository*) – we need
 
 ### 4.2. Java Configuration
 
-### 4.2。Java 配置
+### 4.2. Java 配置
 
 Similarly, we’ll build on the configuration we already created in section 3.2 and add a new annotation into the mix:
 
@@ -532,7 +532,7 @@ The returned *user object* has the same values as the initial state in the datab
 
 However, the new state in the database is:
 
-当然, 数据库新的状态是:
+而此时数据库新的状态是:
 
 ```
 {
@@ -546,7 +546,7 @@ However, the new state in the database is:
 
 ### 5.7. Upsert
 
-### 5.7. 替换(`upsert`)
+### 5.7. Upsert
 
 The *upsert* works operate on the find and modify else create semantics: if the document is matched, update it, else create a new document by combining the query and update object.
 
@@ -779,7 +779,7 @@ Finally, here is the state of the database:
 
 Note again how, in this example, *save* works with *update* semantics, because we are using an existing object.
 
-再次注意, 在这个例子中, *save* 具有 *insert* 语义, 因为使用现有的对象。
+再次注意, 在这个例子中, *save* 具有 *update* 语义, 因为使用的是现有对象。
 
 ### 6.4. Delete
 
@@ -863,7 +863,7 @@ The result which will return the existing data:
 
 ### 6.6. Exists
 
-### 6.6。存在
+### 6.6. Exists
 
 The state of the database before calling *exists*:
 
@@ -1006,7 +1006,7 @@ The result in *users* list will be only one user:
 
 Finally, let’s also go over the simple annotations that Spring Data uses to drive these API operations.
 
-最后, 我们使用简单的注解, Spring Data 统一支持使用注解来操作。
+最后, 再看看 Spring Data 用来支撑这些 API 操作的几个简单注解。
 
 ```
 @Id
@@ -1061,5 +1061,5 @@ The implementation of all these examples and code snippets can be found [over on
 
 - [Spring Data MongoDB系列(一): 简介](05_01_spring-data-mongodb-tutorial.md)
 - [Spring Data MongoDB系列(二): 简单查询](05_02_queries-in-spring-data-mongodb.md)
-- [Spring Data MongoDB系列(三): 索引、注解和转换器](05_02_queries-in-spring-data-mongodb.md)
+- [Spring Data MongoDB系列(三): 索引、注解和转换器](05_03_spring-data-mongodb-index-annotations-converter.md)
 - [Spring Data MongoDB系列(八): 映射与聚合](05_08_spring-data-mongodb-projections-aggregations.md)
