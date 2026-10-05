@@ -1,6 +1,6 @@
 # CSS Ellipsis Beginning of String
 
-# CSS高级技巧:自动省略左侧文本
+# CSS高级技巧：自动省略左侧文本
 
 I was incredibly happy when CSS `text-overflow: ellipsis` (married with fixed `width` and `overflow: hidden` was introduced to the CSS spec and browsers; the feature allowed us to stop trying to marry JavaScript width calculation with string width calculation and truncation.  CSS ellipsis was also very friendly to accessibility.
 
@@ -18,7 +18,7 @@ Let me show you a trick for ellipsis at the begging of the string!
 
 下面介绍一个小技巧, 让自动省略出现在左边!
 
-###The CSS
+### The CSS
 
 ### CSS样式
 
@@ -54,7 +54,7 @@ To add an ellipsis at the beginning of a string, use RTL and and `text-align` to
 
 Playing RTL off of `text-align` is a genius way to get the desired effect of CSS ellipsis at the beginning of an element or string.  It would be great for the CSS spec to implement a more robust ellipsis system but, for now, I worship amazing CSS tricks like this!
 
-使用`text-align`和RTL来实现自动省略左侧文本的CSS特效, 是一个非常精巧的设计; 也许未来会很普及, 但现在这个技巧还很高端, 会的人不多!
+利用`text-align`和RTL来实现自动省略左侧文本的CSS特效, 是一个非常精巧的设计; 如果CSS规范能提供一套更完善的省略机制就太好了, 但在那之前, 我只能膜拜这种神奇的CSS技巧了!
 
 
 
