@@ -103,7 +103,7 @@ when the class is loaded by the JVM. If your code tries to access a non-static v
 complain, because those variables are not created yet and they are not associated with any instance.
 
 
-### 2.7 Java语言中的7大基本数据类型是什么?
+### 2.7 Java语言中的8大基本数据类型是什么?
 
 The eight primitive data types supported by the Java programming language are:
 • byte
@@ -183,7 +183,7 @@ one interfaces.
 
 
 
-### 2.18 接口语抽象类有什么区别?
+### 2.18 接口与抽象类有什么区别?
 
 Java provides and supports the creation both of abstract classes and interfaces. Both implementations share some common
 characteristics, but they differ in the following features:
@@ -507,7 +507,7 @@ garbage collector.
 
 
 
-### 5.9 对象什么变成垃圾?
+### 5.9 对象什么时候变成垃圾?
 
 An Object becomes eligible for Garbage collection in Java ?
 A Java object is subject to garbage collection when it becomes unreachable to the program in which it is currently used.
