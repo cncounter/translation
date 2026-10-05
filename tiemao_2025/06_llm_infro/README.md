@@ -99,7 +99,7 @@ MCP (Model Context Protocol), Tool , Function calling,
 MongoDB MCP Server - 结构化数据
 
 
-Embding,
+Embedding,
 微调(LoRA);
 提示工程技术:  套提示词模板/语言引导+经验积累
 
