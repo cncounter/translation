@@ -7,7 +7,7 @@
 - [MAVEN基础系列（〇）Maven五分钟入门教程](./maven-in-five-minutes.md)
 - [MAVEN基础系列（一）项目构建的各个阶段](./introduction-to-the-lifecycle.md)
 - [MAVEN基础系列（二）POM文件](./README.md)
-- [MAVEN基础系列（三）按环境Profiles打包](./introduction-to-profiles.md)
+- [MAVEN基础系列（三） Profiles配置打包环境](./introduction-to-profiles.md)
 - [MAVEN基础系列（四）标准的Maven项目结构](./standard-directory-layout.md)
 - [MAVEN基础系列（五）浅析pom依赖机制](./introduction-to-dependency-mechanism.md)
 - [MAVEN基础系列（六）依赖项排除与可选依赖](./optional-and-excludes-dependencies.md)
@@ -82,7 +82,7 @@ You will notice that the *generate* goal created a directory with the same name 
 如果刚刚安装Maven, 则第一次执行需要等待一段时间。 因为Maven需要将最新的组件(artifact, 比如 plugin和其他文件)下载到本地。
 如果网络不好, 从远程服务器下载某些文件会超时, 可能需要重复执行几次才会成功。 当然, 这有其他解决办法, 这里先不管。
 
-generate 目标命令执行成功后, 可以看到创建了一个目录,  目录名称就是 artifactId 的值。
+generate 目标命令执行成功后, 可以看到创建了一个目录, 目录名称就是 artifactId 的值。
 
 我们使用 cd 命令切换到这个目录。
 
@@ -235,7 +235,7 @@ In the following example, we have configured our Maven project to use version 3.
 ### 4. Java 9及更高版本
 
 默认情况下使用的 `maven-compiler-plugin` 版本, 可能不支持Java 9或更高的版本。
-要兼容 Java 9或更高版本, `maven-compiler-plugin' 至少需要 3.6.0 以上版本, 并将 `maven.compiler.release` 属性设置为目标Java版本(例如 9, 10, 11, 12, 15, 16 等等)。
+要兼容 Java 9或更高版本, `maven-compiler-plugin` 至少需要 3.6.0 以上版本, 并将 `maven.compiler.release` 属性设置为目标Java版本(例如 9, 10, 11, 12, 15, 16 等等)。
 
 在以下Maven项目配置示例中, 我们将使用 `maven-compiler-plugin` 的3.8.1版本, 并以Java 11为目标:
 
@@ -259,7 +259,7 @@ In the following example, we have configured our Maven project to use version 3.
 
 To learn more about `javac`'s `--release` option, see [JEP 247](https://openjdk.java.net/jeps/247).
 
-要了解  `javac`  的 `--release` 选项, 请参考规范 [JEP 247](https://openjdk.java.net/jeps/247)。
+要了解 `javac` 的 `--release` 选项, 请参考规范 [JEP 247](https://openjdk.java.net/jeps/247)。
 
 
 ### Running Maven Tools
