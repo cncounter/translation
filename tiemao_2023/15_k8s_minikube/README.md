@@ -6,7 +6,7 @@ Minikube 是一种轻量级的 Kubernetes 实现，可在本地计算机上创�
 
 参考官方文档, k8s集群搭建的工具主要包括:
 
-- minikube, 用于在开发或测试环境运行 kubernetes 环境, 支持 Windows、macOS 和 Linux 系统。
+- minikube, 用于在开发或测试环境运行 Kubernetes 环境, 支持 Windows、macOS 和 Linux 系统。
 - kind, 能够在本地计算机上运行 Kubernetes
 - kubeadm, 可以创建一个符合最佳实践的最小化 Kubernetes 集群
 - 二进制安装包
@@ -56,7 +56,7 @@ minikube start --image-mirror-country='cn'
 sudo minikube start --force --driver=docker
 
 
-# 启动时-附带插件一起启用
+# 启动时附带插件一起启用
 minikube start --addons ingress --addons dashboard
 
 ```
