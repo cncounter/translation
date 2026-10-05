@@ -5,7 +5,7 @@
 
 This article explains the internal architecture of the Java Virtual Machine (JVM).  The following diagram show the key internal components of a typical JVM that conforms to [The Java Virtual Machine Specification Java SE 7 Edition](http://www.amazon.co.uk/Virtual-Machine-Specification-Edition-Series/dp/0133260445).
 
-本文详细介绍Java虚拟机(JVM)的内部结构. 下图展示了符合 [Java虚拟机规范第7版](http://www.amazon.co.uk/Virtual-Machine-Specification-Edition-Series/dp/0133260445) 的JVM核心组件。
+本文详细介绍 Java 虚拟机(JVM)的内部结构。下图展示了符合 [Java 虚拟机规范第 7 版](http://www.amazon.co.uk/Virtual-Machine-Specification-Edition-Series/dp/0133260445) 的 JVM 核心组件。
 
 ![internal architecture of Java Virtual Machine (JVM)](JVM_Internal_Architecture.png)
 
@@ -13,7 +13,7 @@ This article explains the internal architecture of the Java Virtual Machine (JVM
 
 The components shown on this diagram are each explained below in two sections.  [First section](#threads) covers the components that are created for each thread and the [second section](#shared_between_threads) covers the components that are created independently of threads.
 
-我们将这些组件分成两个部分来介绍.
+我们将这些组件分成两个部分来介绍。
 
 第一部分是每个线程自己的组件:
 
@@ -45,7 +45,7 @@ The components shown on this diagram are each explained below in two sections.  
   * [Run Time Constant Pool,运行时常量池](#constant_pool)
   * [Exception Table,异常表](#exception_table)
   * [Symbol Table符号表](#symbol_table)
-  * [Interned Strings,内联字符串 (String Table,字符串表)](#string_table)
+  * [Interned Strings,内部化字符串 (String Table,字符串表)](#string_table)
 
 
 
@@ -57,10 +57,10 @@ The components shown on this diagram are each explained below in two sections.  
 
 A thread is a thread of execution in a program. The JVM allows an application to have multiple threads of execution running concurrently.  In the Hotspot JVM there is a direct mapping between a Java Thread and a native operating system Thread.  After preparing all of the state for a Java thread such as thread-local storage, allocation buffers, synchronization objects, stacks and the program counter, the native thread is created.  The native thread is reclaimed once the Java thread terminates.  The operating system is therefore responsible for scheduling all threads and dispatching them to any available CPU.  Once the native thread has initialized it invokes the run() method in the Java thread.  When the run() method returns, uncaught exceptions are handled, then the native thread confirms if the JVM needs to be terminated as a result of the thread terminating (i.e. is it the last non-deamon thread).  When the thread terminates all resources for both the native and Java thread are released.
 
-线程就是程序执行时的一条线。 JVM允许程序同时启动多个线程. Hotspot JVM 直接将Java线程一对一的映射为底层操作系统线程。
+线程就是程序执行时的一条线。 JVM 允许程序同时启动多个线程. Hotspot JVM 直接将 Java 线程一对一的映射为底层操作系统线程。
 
-JVM需要为Java线程准备好各种相关数据之后才能启动底层的操作系统线程。
-包括 `线程本地存储`(thread-local storage)、 `分配缓冲区`(allocation buffers), `同步对象`(synchronization objects), stacks(栈)和 program counter(程序计数器). 在Java线程终止时本地线程也将被回收。 操作系统负责所有的线程调度, 以及给线程分派可用的CPU. 本地线程完成初始化以后, 就会调用Java线程的 `run()` 方法. 当 `run()` 方法执行完成返回, 或者抛出未捕获的异常, 那么本地线程就会检车是否需要终止JVM( 例如, 判断该线程是否是最后存活的 non-deamon 线程)。线程终止时, 本地线程的资源和Java线程的所有资源都会被释放。
+JVM 需要为 Java 线程准备好各种相关数据之后才能启动底层的操作系统线程。
+包括 `线程本地存储`(thread-local storage)、 `分配缓冲区`(allocation buffers)、 `同步对象`(synchronization objects)、 stacks(栈)和 program counter(程序计数器). 在 Java 线程终止时本地线程也将被回收。 操作系统负责所有的线程调度, 以及给线程分派可用的 CPU. 本地线程完成初始化以后, 就会调用 Java 线程的 `run()` 方法. 当 `run()` 方法执行完成返回, 或者抛出未捕获的异常时, 本地线程就会检查是否需要终止 JVM( 例如, 判断该线程是否是最后存活的 non-deamon 线程)。线程终止时, 本地线程的资源和 Java 线程的所有资源都会被释放。
 
 ### JVM System Threads
 
@@ -68,7 +68,7 @@ JVM需要为Java线程准备好各种相关数据之后才能启动底层的操�
 
 If you use jconsole or any debugger it is possible to see there are numerous threads running in the background.  These background threads run in addition to the main thread, which is created as part of invoking `public static void main(String[])`, and any threads created by the main thread.  The main background system threads in the Hotspot JVM are:
 
-如果使用 `jconsole` 或者其他调试器(debugger), 就可以看到JVM中有许多线程在后台运行. 这些后台线程运行在主线程之外, 主线程(main thread)就是执行 `public static void main(String[])` 的那个线程, 当然主线程也可能会创建一些自定义线程。Hotspot JVM中主要的系统线程包括:
+如果使用 `jconsole` 或者其他调试器(debugger), 就可以看到 JVM 中有许多线程在后台运行. 这些后台线程运行在主线程之外, 主线程(main thread)就是执行 `public static void main(String[])` 的那个线程, 当然主线程也可能会创建一些自定义线程。Hotspot JVM 中主要的系统线程包括:
 
 * VM thread
   This thread waits for operations to appear that require the JVM to reach a safe-point.  The reason these operations have to happen on a separate thread is because they all require the JVM to be at a safe point where modifications to the heap can not occur.  The type of operations performed by this thread are "stop-the-world" garbage collections, thread stack dumps, thread suspension and biased locking revocation.
@@ -84,15 +84,15 @@ If you use jconsole or any debugger it is possible to see there are numerous thr
 ----
 
 * VM thread(虚拟机线程)
-  这个线程等待需要JVM到达安全点的那些操作. 为什么要将这些操作抽出来单独用一个线程来执行呢? 是因为需要JVM中的线程都到达安全点, 这样堆内存才不会发生变化. 这个线程执行的操作就是 "stop-the-world" 垃圾收集, 线程栈转储, 线程暂停, 以及偏向锁撤销。
+  这个线程等待需要 JVM 到达安全点的那些操作. 为什么要将这些操作抽出来单独用一个线程来执行呢? 是因为需要 JVM 中的线程都到达安全点, 这样堆内存才不会发生变化. 这个线程执行的操作就是 "stop-the-world" 垃圾收集, 线程栈转储, 线程暂停, 以及偏向锁撤销。
 * Periodic task thread(定期任务线程)
   这个线程负责用于执行周期任务计划的 timer 事件(即中断,interrupts)
 * GC线程
-  这些线程支持JVM中各种类型的垃圾收集活动
+  这些线程支持 JVM 中各种类型的垃圾收集活动
 * Compiler threads(编译线程)
   这些线程在运行时将字节码编译为本地机器代码
 * Signal dispatcher thread(信号调度线程)
-  这个线程接收发送给JVM进程的各种信号, 并调用相关的处理方法。
+  这个线程接收发送给 JVM 进程的各种信号, 并调用相关的处理方法。
 
 
 ## Per Thread
@@ -109,7 +109,7 @@ Each thread of execution has the following components:
 
 Address of the current instruction (or opcode) unless it is native.  If the current method is native then the PC is undefined.  All CPUs have a PC, typically the PC is incremented after each instruction and therefore holds the address of the next instruction to be executed.  The JVM uses the PC to keep track of where it is executing instructions, the PC will in fact be pointing at a memory address in the Method Area.
 
-PC中记录的是当前指令(或操作码)的地址, 如果当前方法是native 方法, 则PC的值为 undefined. 所有的CPU/内核都有自己的 PC , 通常是每条指令执行完成后递增, 因此持有的是下一条指令的地址. JVM通过 PC 来跟踪当前执行指令的地址, 事实上PC指向方法区中的某个内存地址。
+PC 中记录的是当前指令(或操作码)的地址, 如果当前方法是 native 方法, 则 PC 的值为 undefined. 所有的 CPU/内核都有自己的 PC , 通常是每条指令执行完成后递增, 因此持有的是下一条指令的地址. JVM 通过 PC 来跟踪当前执行指令的地址, 事实上 PC 指向方法区中的某个内存地址。
 
 ### Stack
 
@@ -125,7 +125,7 @@ Each thread has its own stack that holds a frame for each method executing on th
 
 Not all JVMs support native methods, however, those that do typically create a per thread native method stack.  If a JVM has been implemented using a C-linkage model for Java Native Invocation (JNI) then the native stack will be a C stack.  In this case the order of arguments and return value will be identical in the native stack to typical C program. A native method can typically (depending on the JVM implementation) call back into the JVM and invoke a Java method.  Such a native to Java invocation will occur on the stack (normal Java stack); the thread will leave the native stack and create a new frame on the stack (normal Java stack).
 
-并不是所有jvm都支持本地方法, 通常每个线程都会创建一个本地方法栈. 如果JVM实现使用 C-linkage 模型来处理Java本地调用(JNI), 那么本地方法栈就是一个 C stack. 在这种情况下,参数和返回值的顺序与普通C程序是相同的. 本地方法可以和Java方法互相调用. 如果Native调用Java方法,则会使用普通Java栈; 线程将离开native栈并在Java栈上创建一个新的栈帧。
+并不是所有 jvm 都支持本地方法, 通常每个线程都会创建一个本地方法栈. 如果 JVM 实现使用 C-linkage 模型来处理 Java 本地调用(JNI), 那么本地方法栈就是一个 C stack. 在这种情况下,参数和返回值的顺序与普通 C 程序是相同的. 本地方法可以和 Java 方法互相调用. 如果 Native 调用 Java 方法,则会使用普通 Java 栈; 线程将离开 native 栈并在 Java 栈上创建一个新的栈帧。
 
 ### Stack Restrictions
 
@@ -133,7 +133,7 @@ Not all JVMs support native methods, however, those that do typically create a p
 
 A stack can be a dynamic or fixed size.  If a thread requires a larger stack than allowed a StackOverflowError is thrown.  If a thread requires a new frame and there isn’t enough memory to allocate it then an OutOfMemoryError is thrown.
 
-栈的大小可能是动态的或固定的。如果线程需要的stack大小超过限制，则会抛出 `StackOverflowError`. 如果线程需要一个新的栈帧，但没有足够的内存可分配, 则会抛出 `OutOfMemoryError`。
+栈的大小可能是动态的或固定的。如果线程需要的 stack 大小超过限制，则会抛出 `StackOverflowError`. 如果线程需要一个新的栈帧，但没有足够的内存可分配, 则会抛出 `OutOfMemoryError`。
 
 ### Frame
 
@@ -163,7 +163,7 @@ Each frame contains:
 
 The array of local variables contains all the variables used during the execution of the method, including a reference to this, all method parameters and other locally defined variables.  For class methods (i.e. static methods) the method parameters start from zero, however, for instance method the zero slot is reserved for this.
 
-局部变量的数组包含所有执行期间使用的变量的方法,包括一个参考,所有其他方法参数和局部定义的变量.类方法(即静态方法)的方法参数从0开始,然而,例如方法零槽为其预留。
+局部变量数组包含方法执行期间使用的所有变量, 包括对 this 的引用、所有方法参数, 以及其它局部定义的变量。对于类方法(即静态方法), 方法参数从 0 号槽位开始; 而对于实例方法, 0 号槽位预留给 this。
 
 A local variable can be:
 
@@ -180,20 +180,20 @@ A local variable can be:
 *   reference
 *   returnAddress
 
-*布尔
-*字节
-*字符
-*长
-*短
-* int
-*浮动
-*双
-*参考
-* returnAddress
+*   boolean(布尔)
+*   byte(字节)
+*   char(字符)
+*   long(长整型)
+*   short(短整型)
+*   int(整型)
+*   float(单精度浮点)
+*   double(双精度浮点)
+*   reference(引用)
+*   returnAddress(返回地址)
 
 All types take a single slot in the local variable array except long and double which both take two consecutive slots because these types are double width (64-bit instead of 32-bit).
 
-所有类型的局部变量数组中的单个槽除了长和双连续取两个插槽,因为这些都是双宽32位(64位)。
+除 long 和 double 之外, 所有类型在局部变量数组中只占一个槽位; long 和 double 因为宽度翻倍(64 位而非 32 位), 所以要占用两个连续的槽位。
 
 ### Operand Stack
 
@@ -201,7 +201,7 @@ All types take a single slot in the local variable array except long and double 
 
 The operand stack is used during the execution of byte code instructions in a similar way that general-purpose registers are used in a native CPU.  Most JVM byte code spends its time manipulating the operand stack by pushing, popping, duplicating, swapping, or executing operations that produce or consume values.  Therefore, instructions that move values between the array of local variables and the operand stack are very frequent in byte code. For example, a simple variable initialization results in two byte codes that interact with the operand stack.
 
-操作数栈执行期间使用字节码指令以类似的方式,通用寄存器是用于本地CPU.JVM字节码花大部分时间操作的操作数堆栈推动,弹出,复制、交换,或执行操作,生成或使用值.因此,指令之间移动值的局部变量和数组操作数堆栈在字节码非常频繁.例如,一个简单的变量初始化结果在两个字节码,与操作数栈交互。
+操作数栈用于字节码指令的执行期间, 其作用类似于本地 CPU 中的通用寄存器。大多数 JVM 字节码都在操作操作数栈: 压入、弹出、复制、交换, 或执行产生/消耗值的操作。因此, 在局部变量数组与操作数栈之间移动值的指令在字节码中非常频繁。例如, 一个简单的变量初始化就会产生两条与操作数栈交互的字节码。
 
 ```
     int i;
@@ -222,7 +222,7 @@ Gets compiled to the following byte code:
 
 For more detail explaining interactions between the local variables array, operand stack and run time constant pool [see the section on Class File Structure below](#class_file_structure).
 
-更详细地解释局部变量数组之间的相互作用,操作数堆栈和运行时常量池(参见下面的类文件结构部分)(# class_file_structure)。
+关于局部变量数组、操作数栈与运行时常量池之间的交互, 更详细的解释请参见下面的[类文件结构](#class_file_structure)一节。
 
 ### Dynamic Linking
 
@@ -230,15 +230,15 @@ For more detail explaining interactions between the local variables array, opera
 
 Each frame contains a reference to the runtime constant pool.  The reference points to the constant pool for the class of the method being executed for that frame.  This reference helps to support dynamic linking.
 
-每一帧包含一个引用到运行时常量池。参考点的常量池类的方法被执行框架.这个参考帮助支持动态链接。
+每个栈帧都包含一个指向运行时常量池的引用。该引用指向当前栈帧所执行方法所属类的常量池。这个引用用于支持动态链接。
 
 C/C++ code is typically compiled to an object file then multiple object files are linked together to product a usable artifact such as an executable or dll.  During the linking phase symbolic references in each object file are replaced with an actual memory address relative to the final executable.  In Java this linking phase is done dynamically at runtime.
 
-C / c++代码通常是编译为一个对象文件然后多个目标文件连接在一起的产品可用的工件如可执行文件或dll.在每个对象在链接阶段符号引用文件替换为一个实际的内存地址相对于最终的可执行文件.在Java连接阶段是在运行时动态地完成的。
+C/C++ 代码通常先编译为目标文件(object file), 然后多个目标文件链接在一起, 生成可用的产物, 例如可执行文件或 dll。在链接阶段, 每个目标文件中的符号引用会被替换为相对于最终可执行文件的实际内存地址。在 Java 中, 这个链接阶段是在运行时动态完成的。
 
 When a Java class is compiled, all references to variables and methods are stored in the class's constant pool as a symbolic reference. A symbolic reference is a logical reference not a reference that actually points to a physical memory location.  The JVM implementation can choose when to resolve symbolic references, this can happen when the class file is verified, after being loaded, called eager or static resolution, instead this can happen when the symbolic reference is used for the first time called lazy or late resolution. However the JVM has to behave as if the resolution occurred when each reference is first used and throw any resolution errors at this point.  Binding is the process of the field, method or class identified by the symbolic reference being replaced by a direct reference, this only happens once because the symbolic reference is completely replaced.  If the symbolic reference refers to a class that has not yet been resolved then this class will be loaded.  Each direct reference is stored as an offset against the storage structure associated with the runtime location of the variable or method.
 
-编译Java类时,所有的变量和方法的引用存储在类的常量池是一种象征性参考.符号引用实际上是一个逻辑引用不是一个引用,指向一个物理内存的位置.JVM实现可以选择解决符号的引用时,会发生这种验证类文件时,被加载后,称为急切的或静态的决议,相反,这可能发生在第一次使用的符号引用称为懒惰或决议.但是JVM必须表现得好像解决发生在每个引用是第一次使用,把任何解析错误.绑定的过程,方法或类确定的符号引用被取而代之的是直接引用,这只发生一次,因为符号引用是完全取代。如果符号引用是指尚未解决的一个类然后将加载这个类.每个直接引用存储为一个偏移量对存储结构与运行时的位置相关联的变量或方法。
+Java 类被编译时, 所有对变量和方法的引用都以符号引用(symbolic reference)的形式存储在类的常量池中。符号引用是逻辑引用, 并不是真正指向物理内存地址的引用。JVM 实现可以选择何时解析符号引用: 可以在类文件校验时、加载之后解析, 称为急切解析(eager)或静态解析; 也可以在符号引用第一次被使用时才解析, 称为惰性解析(lazy)或延迟解析。不过 JVM 的行为必须表现得像是在每个引用第一次使用时就完成了解析, 并在此时抛出任何解析错误。绑定(binding)是指符号引用所标识的字段、方法或类被直接引用替换的过程; 这只会发生一次, 因为符号引用被完全替换。如果符号引用指向的类尚未解析, 那么这个类会被加载。每个直接引用都存储为相对于变量或方法运行时位置所关联存储结构的偏移量。
 
 
 
@@ -252,24 +252,26 @@ When a Java class is compiled, all references to variables and methods are store
 
 The Heap is used to allocate class instances and arrays at runtime. Arrays and objects can never be stored on the stack because a frame is not designed to change in size after it has been created.  The frame only stores references that point to objects or arrays on the heap.  Unlike primitive variables and references in the local variable array (in each frame) objects are always stored on the heap so they are not removed when a method ends.  Instead objects are only removed by the garbage collector.
 
-使用堆分配类实例在运行时和数组。数组和对象不能存储在堆栈上因为一个框架不是为了改变大小后创建的.帧存储指向对象的引用或数组在堆上.与原始变量和局部变量引用数组(在每一帧)对象总是存储在堆方法结束的时候他们不删除.相反,对象只是被垃圾收集器。
+堆用于在运行时分配类实例和数组。数组和对象永远不能存储在栈上, 因为栈帧创建之后其大小不允许改变。栈帧只存储指向堆上对象或数组的引用。与局部变量数组中的基本类型变量和引用(位于每个栈帧中)不同, 对象总是存储在堆上, 因此方法结束时它们不会被移除, 只能由垃圾收集器回收。
 
 To support garbage collection the heap is divided into three sections:
 
-支持垃圾回收堆分为三个部分:
+为支持垃圾回收, 堆被划分为三个部分:
 
 *   **Young Generation**
 
   *   Often split between Eden and Survivor
 
 
-*经常伊甸园和幸存者
-
 *   **Old Generation** (also called Tenured Generation)
 *   **Permanent Generation**
 
-* * *老一辈* *(也称为终身代)
-永久一代* * * * *
+*   **年轻代(Young Generation)**
+
+  *   通常分为 Eden 区和 Survivor 区
+
+*   **老年代(Old Generation)** (也称为 Tenured Generation/终身代)
+*   **永久代(Permanent Generation)**
 
 
 
@@ -279,21 +281,21 @@ To support garbage collection the heap is divided into three sections:
 
 Objects and Arrays are never explicitly de-allocated instead the garbage collector automatically reclaims them.
 
-对象和数组不显式地释放而不是垃圾收集器会自动回收。
+对象和数组永远不会被显式释放, 而是由垃圾收集器自动回收。
 
 Typically this works as follows:
 
-这是典型的工作如下:
+其典型工作方式如下:
 
 1.  New objects and arrays are created into the young generation
 2.  Minor garbage collection will operate in the young generation.  Objects, that are still alive, will be moved from the eden space to the survivor space.
 3.  Major garbage collection, which typically causes the application threads to pause, will move objects between generations.  Objects, that are still alive, will be moved from the young generation to the old (tenured) generation.
 4.  The permanent generation is collected every time the old generation is collected.  They are both collected when either becomes full.
 
-1. 创建新的对象和数组到年轻一代
-2. 小垃圾收集操作的年轻一代。对象,仍然活着,将从伊甸园幸存者空间的空间。
-3. 主要的垃圾收集,这通常会导致应用程序线程暂停,将对象之间的几代人.对象,仍然活着,将从年轻一代老(终身)的一代。
-4. 永久一代收集每次收集旧的一代。他们都是收集时变得完整。
+1. 新的对象和数组被分配到年轻代
+2. Minor GC(小垃圾收集)作用于年轻代。仍然存活的对象会从 Eden 区移动到 Survivor 区。
+3. Major GC(主垃圾收集)通常会导致应用线程暂停, 它会在各代之间移动对象。仍然存活的对象会从年轻代移动到老年代(tenured)。
+4. 每次回收老年代时也会回收永久代。当其中任意一个满了, 两者都会被回收。
 
 
 
@@ -303,7 +305,7 @@ Typically this works as follows:
 
 Objects that are logically considered as part of the JVM mechanics are not created on the Heap.
 
-逻辑的对象视为JVM力学的一部分并不是在堆上创建的。
+从逻辑上被视为 JVM 机制一部分的对象, 并不在堆上创建。
 
 The non-heap memory includes:
 
@@ -313,13 +315,13 @@ The non-heap memory includes:
   * the method area
   * interned strings
 
-* * *永久代* *,其中包含
-*方法区
-*实际字符串
+* **永久代(Permanent Generation)**, 其中包含
+  * 方法区
+  * 内部化字符串(interned strings)
 
 * **Code Cache** used for compilation and storage of methods that have been compiled to native code by the JIT compiler
 
-* * * * *代码缓存用于编译和存储的方法已经被JIT编译器编译为本机代码
+* **代码缓存(Code Cache)**, 用于存放由 JIT 编译器编译为本地代码的方法
 
 ### Just In Time (JIT) Compilation
 
@@ -327,7 +329,7 @@ The non-heap memory includes:
 
 Java byte code is interpreted however this is not as fast as directly executing native code on the JVM’s host CPU.  To improve performance the Oracle Hotspot VM looks for “hot” areas of byte code that are executed regularly and compiles these to native code.  The native code is then stored in the code cache in non-heap memory.  In this way the Hotspot VM tries to choose the most appropriate way to trade-off the extra time it takes to compile code verses the extra time it take to execute interpreted code.
 
-然而Java字节码解释这不是尽快直接执行本机代码在JVM上的主机CPU.以提高性能Oracle Hotspot VM寻找“热”定期执行字节码和编译原生代码.然后存储在本机代码中的代码缓存非堆内存.以这种方式Hotspot VM试图权衡选择最适当的方法所花费的额外时间编译代码节要花额外的时间来执行解释代码。
+Java 字节码是解释执行的, 但速度不如直接在 JVM 宿主 CPU 上执行本地代码快。为提高性能, Oracle Hotspot VM 会寻找那些经常执行的"热点"字节码, 并将它们编译为本地代码。编译后的本地代码存放在非堆内存的代码缓存中。Hotspot VM 正是通过这种方式, 在编译代码所需的额外时间与执行解释代码所需的额外时间之间进行权衡, 选择最合适的方式。
 
 ### Method Area
 
@@ -335,7 +337,7 @@ Java byte code is interpreted however this is not as fast as directly executing 
 
 The method area stores per-class information such as:
 
-方法区存储每个类信息,如:
+方法区存储每个类的信息, 例如:
 
 * **Classloader Reference**
 * **Run Time Constant Pool**
@@ -369,42 +371,42 @@ The method area stores per-class information such as:
         * PC offset for handler code
         * Constant pool index for exception class being caught
 
-* * * * *类加载器参考
-运行时常量池* * * * *
-*数字常量
-*字段引用
-*方法引用
-*属性
-* * * * *领域数据
-*每个字段
-*名字
-*类型
-*修饰符
-*属性
-* * * * *方法数据
-*每个方法
-*名字
-*返回类型
-*参数类型(按顺序)
-*修饰符
-*属性
-* * * * *方法代码
-*每个方法
-*字节码
-*操作数堆栈大小
-*局部变量大小
-*局部变量表
-*例外表
-* /异常处理程序
-*起点
-*终点
-* PC抵消处理程序代码
-*常量池指数异常类被抓住
+*   **类加载器引用(Classloader Reference)**
+*   **运行时常量池(Run Time Constant Pool)**
+  *   数字常量
+  *   字段引用
+  *   方法引用
+  *   属性
+*   **字段数据(Field data)**
+  *   每个字段
+    *   名称
+    *   类型
+    *   修饰符
+    *   属性
+*   **方法数据(Method data)**
+  *   每个方法
+    *   名称
+    *   返回类型
+    *   参数类型(按顺序)
+    *   修饰符
+    *   属性
+*   **方法代码(Method code)**
+  *   每个方法
+    *   字节码
+    *   操作数栈大小
+    *   局部变量大小
+    *   局部变量表
+    *   异常表
+      *   每个异常处理器
+        *   起始点
+        *   结束点
+        *   处理器代码的 PC 偏移量
+        *   被捕获异常类对应的常量池索引
 
 
 All threads share the same method area, so access to the method area data and the process of dynamic linking must be thread safe.  If two threads attempt to access a field or method on a class that has not yet been loaded it must only be loaded once and both threads must not continue execution until it has been loaded.
 
-所有线程共享相同的方法,所以访问方法区域数据和动态链接的过程必须是线程安全的.如果两个线程试图访问一个类的字段或方法尚未加载它只能加载一次,两个线程不能继续执行,直到它被加载。
+所有线程共享同一个方法区, 因此对方法区数据的访问以及动态链接的过程必须是线程安全的。如果两个线程试图访问一个尚未加载类的字段或方法, 该类只能被加载一次, 并且在加载完成之前两个线程都不能继续执行。
 
 ### Class File Structure
 
@@ -412,7 +414,7 @@ All threads share the same method area, so access to the method area data and th
 
 A compiled class file consists of the following structure:
 
-编译后的类文件由以下结构:
+编译后的类文件由以下结构组成:
 
 ```
 ClassFile {
@@ -456,28 +458,28 @@ ClassFile {
 * attributes
   array of different value that provide additional information about the class including any annotations with RetentionPolicy.`CLASS` or RetentionPolicy.`RUNTIME`
 
-*魔法,minor_version major_version
-指定的版本信息类和这个版本的JDK类被编译。
+* magic, minor_version, major_version
+  指定该类文件的版本信息, 以及该类所面向的 JDK 版本。
 * constant_pool
-类似于符号表虽然它包含更多的数据(这是后面将更详细地描述。)(# constant_pool)
+  类似于符号表, 不过它包含更多的数据([后面会详细描述](#constant_pool))。
 * access_flags
-提供了这个类修饰符的列表。
+  提供该类的修饰符列表。
 * this_class
-索引constant_pool提供这类的完全限定名称即org/jamesdbloom/foo/Bar
+  指向 constant_pool 的索引, 给出该类的完全限定名, 例如 org/jamesdbloom/foo/Bar
 * super_class
-索引到constant_pool提供一个超类即符号引用java / lang /对象
-*接口
-数组的索引constant_pool提供一个象征性的引用已经实现的所有接口。
-*字段
-数组的索引constant_pool给每个字段的完整描述。
-*方法
-数组的索引constant_pool给每一个方法签名的完整描述,如果方法没有抽象的或本地字节码也存在。
-*属性
-提供额外的信息的一系列不同的值与RetentionPolicy类包括任何注释。`CLASS`或RetentionPolicy。`RUNTIME`
+  指向 constant_pool 的索引, 给出父类的符号引用, 例如 java/lang/Object
+* interfaces
+  由指向 constant_pool 的索引组成的数组, 给出所有已实现接口的符号引用。
+* fields
+  由指向 constant_pool 的索引组成的数组, 给出每个字段的完整描述。
+* methods
+  由指向 constant_pool 的索引组成的数组, 给出每个方法签名的完整描述; 如果方法不是 abstract 或 native, 则还会包含字节码。
+* attributes
+  由多个不同值组成的数组, 提供该类的附加信息, 包括所有 RetentionPolicy.`CLASS` 或 RetentionPolicy.`RUNTIME` 注解。
 
 It is possible to view the byte code in a compiled Java class by using the javap command.
 
-可以查看编译Java类的字节码使用javap命令。
+可以使用 javap 命令查看编译后的 Java 类文件的字节码。
 
 If you compile the following simple class:
 
@@ -497,7 +499,7 @@ public class SimpleClass {
 
 Then you get the following output if you run:
 
-然后你得到以下输出运行:
+运行以下命令会得到如下输出:
 
 ```
 javap -v -p -s -sysinfo -constants classes/org/jvminternals/SimpleClass.class
@@ -579,7 +581,7 @@ Constant pool:
 
 This class file shows three main sections the constant pool, the constructor and the sayHello method.
 
-这类文件显示了三个主要部分常量池,构造函数和sayHello方法。
+这个类文件显示了三个主要部分: 常量池、构造函数以及 sayHello 方法。
 
 * Constant Pool – this provides the same information that a symbol table typically provides and is described in more detail below.
 * Methods – each containing four areas:
@@ -588,16 +590,16 @@ This class file shows three main sections the constant pool, the constructor and
   * LineNumberTable – this provides information to a debugger to indicate which line corresponds to which byte code instruction, for example line 6 in the Java code corresponds to byte code 0 in the sayHello method and line 7 corresponds to byte code 8.
   * LocalVariableTable – this lists all local variables provided in the frame, in both examples the only local variable is this.
 
-*常量池,这提供了相同的信息,一个符号表通常提供,后面将更详细地描述。
-*方法——每个都包含四个方面:
-*签名和访问的旗帜
-*字节代码
-* LineNumberTable——此信息提供了一个调试器指示线对应的字节码指令,例如第6行Java代码对应的字节代码0 sayHello方法和第7行对应于8字节码。
-* LocalVariableTable——这列出所有局部变量提供的框架,在这两个例子只有局部变量是这样的。
+* 常量池(Constant Pool) —— 它提供的信息与符号表通常提供的信息相同, 后面会详细描述。
+* 方法(Methods) —— 每个方法包含四个方面:
+  * 签名和访问标志
+  * 字节码
+  * LineNumberTable —— 向调试器提供信息, 用于指示哪一行代码对应哪条字节码指令, 例如 Java 代码中的第 6 行对应 sayHello 方法中的字节码 0, 第 7 行对应字节码 8。
+  * LocalVariableTable —— 列出栈帧中提供的所有局部变量, 在上面的两个例子中, 唯一的局部变量是 this。
 
 The following byte code operands are used in this class file
 
-下面的字节码操作数中使用这类文件
+这个类文件中用到了以下字节码操作数:
 
 * aload_0
   This opcode is one of a group of opcodes with the format aload_&lt;n&gt;.  They all load an object reference into the operand stack.  The &lt;n&gt; refers to the location in the local variable array that is being accessed but can only be 0, 1, 2 or 3.  There are other similar opcodes for loading values that are not an object reference iload_&lt;n&gt;, lload_&lt;n&gt;, float_&lt;n&gt; and dload_&lt;n&gt; where i is for int, l is for long, f is for float and d is for double.  Local variables with an index higher than 3 can be loaded using iload, lload, float, dload and aload.  These opcodes all take a single operand that specifies the index of local variable to load.
@@ -611,23 +613,23 @@ The following byte code operands are used in this class file
     This opcode is in a group of opcodes ireturn, lreturn, freturn, dreturn, areturn and return.  Each of these opcodes are a typed return statement that returns a different type where i is for int, l is for long, f is for float, d is for double and a is for an object reference.  The opcode with no leading type letter return only returns void.
 
 * aload_0
-这个操作码是一组操作码格式aload_&lt;n&gt;。他们都一个对象引用加载到操作数堆栈.& lt;n&gt;指的是位置访问局部变量数组,但只能是0,1,2或3.还有其他类似的操作码加载值而不是一个对象引用iload_&lt;n&gt;lload_&lt;n&gt;,float_&lt;n&gt;和dload_&lt;n&gt;我是int,l是长时间,f是浮动和d是翻倍。局部变量的指数高于3可以使用iload加载,lload,浮动,dload aload.这些操作码都需要一个操作数指定本地变量的指数。
+  这个操作码属于格式为 `aload_<n>` 的一组操作码。它们都把对象引用加载到操作数栈中。`<n>` 指的是所访问的局部变量数组中的位置, 但只能是 0、1、2 或 3。还有其他类似的操作码用于加载非对象引用的值: `iload_<n>`、`lload_<n>`、`fload_<n>` 和 `dload_<n>`, 其中 i 表示 int, l 表示 long, f 表示 float, d 表示 double。索引大于 3 的局部变量可以使用 iload、lload、fload、dload 和 aload 来加载。这些操作码都接受一个操作数, 用于指定要加载的局部变量的索引。
 * ldc
-这个操作码用于推动从运行时常量池常数到操作数堆栈。
+  这个操作码用于从运行时常量池中把常量压入操作数栈。
 * getstatic
-这操作码是用来把一个静态值从一个静态字段中列出运行时常量池到操作数堆栈。
-* invokespecial invokevirtual
-这些操作码的一组操作码调用这些方法invokedynamic,invokeinterface,invokespecial,invokestatic invokevirtual.在这类文件invokespecial和invokevirutal都使用这些之间的区别是,invokevirutal调用一个方法基于类的对象.invokespecial指令用于调用实例初始化方法以及私有方法和当前类的超类的方法。
-*返回
-这个操作码是一组操作码ireturn,lreturn,freturn,dreturn,areturn并返回.每一个操作码是一种类型的返回语句,返回一个不同的类型,我是int,l是长期以来,f是浮动,d是双和对象引用.没有主要的操作码信只返回void返回类型。
+  这个操作码用于把运行时常量池中列出的静态字段的静态值压入操作数栈。
+* invokespecial, invokevirtual
+  这些操作码属于一组调用方法的操作码, 分别是 invokedynamic、invokeinterface、invokespecial、invokestatic、invokevirtual。在这个类文件中同时用到了 invokespecial 和 invokevirtual, 二者的区别在于 invokevirtual 根据对象的实际类来调用方法。invokespecial 指令用于调用实例初始化方法, 以及 private 方法和当前类的父类方法。
+* return
+  这个操作码属于一组操作码: ireturn、lreturn、freturn、dreturn、areturn 和 return。每个操作码都是一种带类型的返回语句, 返回不同的类型, 其中 i 表示 int, l 表示 long, f 表示 float, d 表示 double, a 表示对象引用。不带类型字母前缀的 return 操作码只返回 void。
 
 As in any typical byte code the majority of the operands interact with the local variables, operand stack and run time constant pool as follows.
 
-与任何典型的字节代码的大部分操作数与局部变量,交互操作数堆栈和运行时常量池如下。
+和任何典型的字节码一样, 大部分操作数都会与局部变量、操作数栈和运行时常量池交互, 如下所示。
 
 The constructor has two instructions first this is pushed onto the operand stack, next the constructor for the super class is invoked which consumes the value off this and therefore pops it off the operand stack.
 
-构造函数有两个指令第一这是推到操作数堆栈,下一个调用超类的构造函数使用这个值,因此出现了操作数堆栈。
+构造函数包含两条指令: 首先把 this 压入操作数栈, 接着调用父类的构造函数, 它会消耗掉 this 的值, 因此把 this 从操作数栈中弹出。
 
 ![local variables, operand stack and run time constant pool changes when invoking a static method in Java Virtual Machine (JVM)](bytecode_explanation_SimpleClass.png)
 
@@ -635,7 +637,7 @@ The constructor has two instructions first this is pushed onto the operand stack
 
 The sayHello() method is more complex as it has to resolve symbolic references to actual references using the run time constant pool, [as explained in more detail above](#dynamic_linking).  The first operand getstatic is used to push a reference to the static field out of the System class on to the operand stack.  The next operand ldc pushes the string "Hello" onto the operand stack.  The final operand invokevirtual invokes the println method of System.out which pops "Hello" off the operand stack as an argument and creates a new frame for the current thread.
 
-sayHello()方法则更为复杂,因为它必须解决符号引用实际引用使用运行时常量池,(如上面详细解释)(# dynamic_linking).第一个操作数getstatic用于推动静态字段的引用的系统类操作数堆栈。下一个操作数ldc将字符串“Hello”到操作数堆栈.最后一个操作数invokevirtual调用println方法系统。哪些流行“Hello”的操作数堆栈作为参数并为当前线程创建了一个新的框架。
+sayHello() 方法则更为复杂, 因为它必须借助运行时常量池, 把符号引用解析为实际引用, [如上面所详述](#dynamic_linking)。第一个操作数 getstatic 用于把 System 类中静态字段 out 的引用压入操作数栈。下一个操作数 ldc 把字符串 "Hello" 压入操作数栈。最后一个操作数 invokevirtual 调用 System.out 的 println 方法, 它把 "Hello" 作为参数从操作数栈弹出, 并为当前线程创建一个新的栈帧。
 
 ![local variables, operand stack and run time constant pool changes when calling System.out in Java Virtual Machine (JVM)](bytecode_explanation_sayHello.png)
 
@@ -647,20 +649,20 @@ sayHello()方法则更为复杂,因为它必须解决符号引用实际引用使
 
 The JVM starts up by loading an initial class using the bootstrap classloader.  The class is then linked and initialized before `public static void main(String[])` is invoked.  The execution of this method will in turn drive the loading, linking and initialization of additional classes and interfaces as required.
 
-JVM启动时使用引导类加载器加载一个初始类。然后联系并初始化类`public static void main(String[])`被调用。这个方法的执行将驱动加载、链接和初始化所需的额外的类和接口。
+JVM 启动时, 先用引导类加载器(bootstrap classloader)加载一个初始类。该类在执行 `public static void main(String[])` 之前会先完成链接和初始化。这个方法的执行又会按需驱动其他类和接口的加载、链接和初始化。
 
 **Loading** is the process of finding the class file that represents the class or interface type with a particular name and reading it into a byte array.  Next the bytes are parsed to confirm they represent a Class object and have the correct major and minor versions.  Any class or interface named as a direct superclass is also loaded.  Once this is completed a class or interface object is created from the binary representation.
 
-* *装* *就是发现的过程代表类或接口的类文件类型与特定名称和阅读到一个字节数组.parsed to the Next are they confirm字节到Class程度和宗旨和主要有照搬*版本。named class or Any接口作为直接superclass is还loaded.一旦完成创建一个类或接口对象的二进制表示。
+**加载(Loading)** 是这样一个过程: 找到代表具有特定名称的类或接口类型的类文件, 并将其读入一个字节数组。接着解析这些字节, 确认它们表示一个 Class 对象, 且主次版本号正确。任何被命名为直接父类的类或接口也会被加载。完成之后, 就根据这个二进制表示创建一个类或接口对象。
 
 **Linking** is the process of taking a class or interface verifying and preparing the type and its direct superclass and superinterfaces.  Linking consists of three steps verifying, preparing and optionally resolving.
 
-* *与* *就是一个类或接口验证的过程和准备的类型及其直接超类和它的超接口.验证链接包括三个步骤,准备和可选地解决。
+**链接(Linking)** 是这样一个过程: 对一个类或接口进行校验和准备, 并处理该类型及其直接父类和父接口。链接包含三个步骤: 校验(verifying)、准备(preparing)以及可选的解析(resolving)。
 
   **_Verifying_** is the process of confirming the class or interface representation is structurally correct and obeys the semantic requirements of the Java programming language and JVM, for example the following checks are performed:
 
 
-* * _Verifying_ * *确认类或接口的过程表示结构正确,遵循Java编程语言的语义需求和JVM,例如进行以下检查:
+  **_校验(Verifying)_** 是确认类或接口表示在结构上正确, 并且遵守 Java 编程语言和 JVM 的语义要求的过程。例如会执行以下检查:
 
 1. consistent and correctly formatted symbol table
 2. final methods / classes not overridden
@@ -670,30 +672,30 @@ JVM启动时使用引导类加载器加载一个初始类。然后联系并初�
 6. variables are initialized before being read
 7. variables are a value of the correct type
 
-1. 一致和正确格式化的符号表
-2. 最后的方法/类不覆盖
-3. 方法对访问控制关键字
-4. 方法正确的数目和类型的参数
-5. 字节码不操作堆栈错误
-6. 变量初始化之前阅读
-7. 变量的值是正确的类型
+1. 符号表一致且格式正确
+2. final 方法和 final 类没有被重写/继承
+3. 方法遵守访问控制关键字
+4. 方法的参数数量和类型正确
+5. 字节码没有以错误方式操作栈
+6. 变量在被读取之前已经初始化
+7. 变量具有正确类型的值
 
 Performing these checks during the verifying stages means these checks do not need to be performed at runtime.  Verification during linking slows down class loading however it avoids the need to perform these checks multiple when executing the bytecode.
 
-执行这些检查在验证阶段意味着这些检查不需要在运行时执行.验证链接时减慢类加载但是它避免了需要执行这些检查多个执行字节码时。
+在校验阶段执行这些检查, 意味着运行时不再需要执行它们。在链接期进行校验会拖慢类加载, 但它避免了在执行字节码时多次重复这些检查。
 
   **_Preparing_** involves allocation of memory for static storage and any data structures used by the JVM such as method tables.  Static fields are created and initialized to their default values, however, no initializers or code is executed at this stage as that happens as part of initialization.
 
 
-* * _Preparing_ * *涉及为静态存储分配内存和JVM使用的任何数据结构表等方法.创建和初始化静态字段默认值,但是,没有执行初始化程序或代码会发生在这个阶段,初始化的一部分。
+  **_准备(Preparing)_** 涉及为静态存储以及 JVM 使用的数据结构(例如方法表)分配内存。此时会创建静态字段并将其初始化为默认值, 但在这个阶段不会执行任何初始化器或代码, 那属于初始化的一部分。
 
   **_Resolving_** is an optional stage which involves checking symbolic references by loading the referenced classes or interfaces and checking the references are correct.  If this does not take place at this point the resolution of symbolic references can be deferred until just prior to their use by a byte code instruction.
 
-* * _Resolving_ * *是一个可选的阶段包括检查符号通过加载引用的类或接口的引用和引用检查是正确的.如果这没有发生在这一点上符号引用的决议可以推迟到他们之前使用的字节码指令。
+  **_解析(Resolving)_** 是一个可选阶段, 它通过加载被引用的类或接口并检查引用是否正确来检查符号引用。如果此时不进行解析, 符号引用的解析可以推迟到字节码指令即将使用它之前才进行。
 
 **Initialization** of a class or interface consists of executing the class or interface initialization method <clinit>
 
-* *初始化* *的一个类或接口由执行类或接口初始化方法< clinit >
+**初始化(Initialization)** 一个类或接口, 就是执行该类或接口的初始化方法 <clinit>
 
 ![class loading, linking and initialization in the Java Virtual Machine (JVM)](Class_Loading_Linking_Initializing.png)
 
@@ -701,23 +703,23 @@ Performing these checks during the verifying stages means these checks do not ne
 
 In the JVM there are multiple classloaders with different roles.  Each classloader delegates to its parent classloader (that loaded it) except the **bootstrap classloader** which is the top classloader.
 
-在JVM中有多个类加载器不同的角色.每个类加载器代表它的父类加载器(加载),除了* *引导类加载器* *的类加载器。
+JVM 中有多个承担不同角色的类加载器。除了位于顶层的**引导类加载器(bootstrap classloader)**之外, 每个类加载器都会委派给它的父类加载器(即加载它的那个加载器)。
 
 **_Bootstrap Classloader_** is usually implemented as native code because it is instantiated very early as the JVM is loaded.  The bootstrap classloader is responsible for loading the basic Java APIs, including for example rt.jar.  It only loads classes found on the boot classpath which have a higher level of trust; as a result it skips much of the validation that gets done for normal classes.
 
-* * * * _Bootstrap Classloader_通常实现为本机代码,因为它是实例化早期JVM加载.引导类加载器负责加载基本的Java api,包括例如rt.jar.它只加载类的引导类路径上发现一个更高层次的信任;因此它跳过所做的验证为正常类。
+**引导类加载器(Bootstrap Classloader)** 通常用本地代码实现, 因为它在 JVM 加载的早期就被实例化了。引导类加载器负责加载基础的 Java API, 例如 rt.jar。它只加载引导类路径(boot classpath)上找到的类, 这些类具有更高的信任级别, 因此它会跳过许多针对普通类所做的校验。
 
 **_Extension Classloader_** loads classes from standard Java extension APIs such as security extension functions.
 
-* * * * _Extension Classloader_加载类等标准的Java扩展api的安全扩展函数。
+**扩展类加载器(Extension Classloader)** 从标准的 Java 扩展 API(例如安全扩展功能)中加载类。
 
 **_System Classloader_** is the default application classloader, which loads application classes from the classpath.
 
-* * _System Classloader_ * *是默认的应用程序类加载器加载的应用程序类路径。
+**系统类加载器(System Classloader)** 是默认的应用程序类加载器, 它从类路径(classpath)加载应用程序类。
 
 **_User Defined Classloaders_** can alternatively be used to load application classes.  A user defined classloader is used for a number of special reasons including run time reloading of classes or separation between different groups of loaded classes typically required by web servers such as Tomcat.
 
-* * _User Classloaders_ * *或者可以用来定义加载应用程序类.一个用户定义的类装入器是用于一些特殊原因包括运行时重新加载的类或分离不同组的加载的类通常所需的web服务器 比如Tomcat。
+**用户自定义类加载器(User Defined Classloaders)** 也可以用来加载应用程序类。用户定义的类加载器用于一些特殊场景, 包括在运行时重新加载类, 或者将不同组已加载的类隔离开来 —— 这通常是 Web 服务器(例如 Tomcat)所需要的。
 
 ![classloader hierarchy in the Java Virtual Machine (JVM)](class_loader_hierarchy.png)
 
@@ -729,7 +731,7 @@ In the JVM there are multiple classloaders with different roles.  Each classload
 
 A feature called Class Data Sharing (CDS) was introduce in HotSpot JMV from version 5.0.  During the installation process of the JVM the installer loads a set of key JVM classes, such as rt.jar, into a memory-mapped shared archive.  CDS reduces the time it takes to load these classes improving JVM start-up speed and allows these classes to be shared between different instances of the JVM reducing the memory footprint.
 
-一个功能叫做类数据共享(CDS)在热点JMV介绍从版本5.0。JVM的在安装过程中安装程序加载一组关键JVM类,如rt.jar,到一个内存映射共享档案.cd减少所花费的时间加载这些类改进JVM启动速度和允许将这些类的不同实例之间共享JVM减少了内存占用。
+从 5.0 版本开始, HotSpot JVM 引入了一项称为类数据共享(Class Data Sharing, CDS)的特性。在 JVM 的安装过程中, 安装程序会把一组关键的 JVM 类(例如 rt.jar)加载到一个内存映射的共享归档文件中。CDS 可减少加载这些类所需的时间, 从而提高 JVM 的启动速度, 并让这些类可以在不同的 JVM 实例之间共享, 从而减少内存占用。
 
 ### Where Is The Method Area
 
@@ -737,7 +739,7 @@ A feature called Class Data Sharing (CDS) was introduce in HotSpot JMV from vers
 
 [The Java Virtual Machine Specification Java SE 7 Edition](http://www.amazon.co.uk/Virtual-Machine-Specification-Edition-Series/dp/0133260445) clearly states:  “Although the method area is logically part of the heap, simple implementations may choose not to either garbage collect or compact it.”  In contradiction to this jconsole for the Oracle JVM shows the method area (and code cache) as being non-heap.  The [OpenJDK](http://openjdk.java.net/) code shows that the CodeCache is a separate field of the VM to the ObjectHeap.
 
-[Java虚拟机规范Java SE 7版)(http://www.amazon.co).显然英国/ Virtual-Machine-Specification-Edition-Series / dp / 0133260445):“虽然方法是逻辑上堆的一部分,简单的实现可以选择不垃圾收集或紧凑.“在矛盾这jconsole Oracle JVM显示区域(和代码缓存)方法是短命的。(OpenJDK)(http://openjdk.java).net/)代码表明,CodeCache ObjectHeap VM的一个单独的字段。
+[Java 虚拟机规范第 7 版](http://www.amazon.co.uk/Virtual-Machine-Specification-Edition-Series/dp/0133260445)明确指出: “尽管方法区在逻辑上是堆的一部分, 但简单的实现可以选择不对其进行垃圾收集或压缩。” 与此矛盾的是, Oracle JVM 的 jconsole 却把方法区(以及代码缓存)显示为非堆内存。[OpenJDK](http://openjdk.java.net/) 的代码表明, CodeCache 是 VM 中独立于 ObjectHeap 的一个字段。
 
 ### Classloader Reference
 
@@ -745,7 +747,7 @@ A feature called Class Data Sharing (CDS) was introduce in HotSpot JMV from vers
 
 All classes that are loaded contain a reference to the classloader that loaded them.  In turn the classloader also contains a reference to all classes that it has loaded.
 
-所有的类都包含一个引用类加载器加载,加载它们。反过来所有类的类加载器还包含一个引用,它加载。
+所有被加载的类都包含一个指向加载它的类加载器的引用。反过来, 类加载器也包含一个指向它已加载的所有类的引用。
 
 ### Run Time Constant Pool
 
@@ -753,11 +755,11 @@ All classes that are loaded contain a reference to the classloader that loaded t
 
 The JVM maintains a per-type constant pool, a run time data structure that is similar to a symbol table although it contains more data.  Byte codes in Java require data, often this data is too large to store directly in the byte codes, instead it is stored in the constant pool and the byte code contains a reference to the constant pool. The run time constant pool is used in dynamic linking [as described above](#dynamic_linking)
 
-JVM保持每种类型常量池,运行时数据结构,类似于一个符号表虽然它包含更多的数据.用Java字节码需要数据,通常这数据太大直接存储字节码,相反,它存储在常量池和字节代码包含一个引用常量池。运行时常量池中使用动态链接(如上所述)(# dynamic_linking)
+JVM 为每种类型维护一个常量池, 它是一个运行时数据结构, 类似于符号表, 只不过包含的数据更多。Java 中的字节码需要数据, 而这些数据往往太大, 无法直接存储在字节码中, 因此它被存放在常量池里, 字节码则包含一个指向常量池的引用。运行时常量池用于动态链接, [如前所述](#dynamic_linking)。
 
 Several types of data is stored in the constant pool including
 
-几种类型的数据存储在常量池中包括
+常量池中存储的数据类型包括:
 
 * numeric literals
 * string literals
@@ -765,11 +767,11 @@ Several types of data is stored in the constant pool including
 * field references
 * method references
 
-*数字字面值
-*字符串
-*类引用
-*字段引用
-*方法引用
+* 数字字面量
+* 字符串字面量
+* 类引用
+* 字段引用
+* 方法引用
 
 For example the following code:
 
@@ -783,7 +785,7 @@ Object foo = new Object();
 
 Would be written in byte code as follows:
 
-会写的字节代码如下:
+会被写成如下字节码:
 
 ```
 0:     new #2             // Class java/lang/Object
@@ -795,7 +797,7 @@ Would be written in byte code as follows:
 
 The new opcode (operand code) is followed by the #2 operand.  This operand is an index into the constant pool and therefore is referencing the second entry in the constant pool.  The second entry is a class reference, this entry in turn references another entry in the constant pool containing the name of the class as a constant UTF8 string with the value // Class java/lang/Object.  This symbolic link can then be used to lookup the class for java.lang.Object.  The new opcode creates a class instance and initializes its variables.  A reference to the new class instance is then added to the operand stack.  The dup opcode then creates an extra copy of the top reference on the operand stack and adds this to the top of the operand stack.  Finally an instance initialization method is called on line 2 by invokespecial.  This operand also contains a reference to the constant pool.  The initialization method consumes (pops) the top reference off the operand pool as an argument to the method.  At the end there is one reference to the new object that has been both created and initialized.
 
-新操作码(操作数代码)其次是# 2操作数。这个操作是索引到常量池中,因此是引用常量池中的第二个条目.第二项是一个类引用,这个条目反过来引用常量池中的另一个条目包含类的名称作为一个常数UTF8字符串值/ java / lang /对象/类.这个符号链接可以用来查找类java . lang . object。新操作码创建一个类实例和初始化变量.然后新的类实例的引用添加到操作数堆栈.民联操作码然后创建一个额外的复制操作数堆栈上的参考和添加操作数堆栈的顶部.最后一个实例初始化方法叫做invokespecial第2行。这个操作还包含一个引用常量池.初始化方法消耗(pop)上面引用的操作数池作为参数的方法.最后有一个参考的新对象创建和初始化。
+new 操作码(操作数代码)后面跟着 #2 操作数。这个操作数是常量池的索引, 因此它引用常量池中的第二个条目。第二个条目是一个类引用, 该条目又引用常量池中的另一个条目, 其中包含以 UTF8 字符串常量形式表示的类名, 值为 // Class java/lang/Object。这个符号链接随后可用于查找 java.lang.Object 这个类。new 操作码创建一个类实例并初始化其变量。然后, 指向这个新类实例的引用被添加到操作数栈。接着 dup 操作码在操作数栈顶复制一份该引用, 并将副本添加到栈顶。最后, 在第 2 行通过 invokespecial 调用一个实例初始化方法。这个操作数同样包含一个指向常量池的引用。初始化方法消耗(弹出)栈顶引用, 将其作为方法的参数。最终, 栈上只剩下一个指向这个新对象的引用, 该对象既已被创建也已被初始化。
 
 If you compile the following simple class:
 
@@ -817,7 +819,7 @@ public class SimpleClass {
 
 The constant pool in the generated class file would look like:
 
-生成的类文件中的常量池的样子:
+生成的类文件中的常量池大致如下:
 
 ```
     Constant pool:
@@ -869,15 +871,15 @@ The constant pool contains the following types:
 - `NameAndType` A colon separated pair of values each pointing at other entries in the constant pool.  The first value (before the colon) points at a Utf8 string entry that is the method or field name.  The second value points at a Utf8 entry that represents the type, in the case of a field this is the fully qualified class name, in the case of a method this is a list of fully qualified class names one per parameter.
 - `Fieldref`,`Methodref`,`InterfaceMethodref` A dot separated pair of values each pointing at other entries in the constant pool.  The first value (before the dot) points at a Class entry.  The second value points at a NameAndType entry.
 
-- `Integer`一个4字节整数常数
-- `Long`一个8字节长常数
-- `Float`一个4字节浮点数常量
-- `Double`——一个8字节双常数
-- `String`——一个字符串常量,常量池中的指向另一个Utf8条目包含实际的字节
-- `Utf8`一串字节代表Utf8编码的字符序列
-- `Class`类常量,常量池中的指向另一个Utf8条目包含内部JVM格式的完全限定类名(这是使用的动态链接 过程)(# dynamic_linking))
-- `NameAndType`冒号分隔的值常量池中的每个指向其他条目。第一个值(冒号之前)指向一个字符串条目use Utf8方法或字段名.第二个价值点Utf8条目表示类型,字段的完全限定类名,在一个方法的情况下这是一个全限定类名的列表/参数。
-- `Fieldref`,`Methodref`,`InterfaceMethodref`一双点分隔的值常量池中的每个指向其他条目。第一个值(点之前)指向一个类条目。第二个价值点NameAndType条目。
+- `Integer` 一个 4 字节的 int 常量
+- `Long` 一个 8 字节的 long 常量
+- `Float` 一个 4 字节的 float 常量
+- `Double` 一个 8 字节的 double 常量
+- `String` 一个 String 常量, 指向常量池中另一个 Utf8 条目, 其中包含实际的字节
+- `Utf8` 一段字节流, 表示以 UTF-8 编码的字符序列
+- `Class` 一个 Class 常量, 指向常量池中另一个 Utf8 条目, 其中包含采用 JVM 内部格式的完全限定类名(用于[动态链接过程](#dynamic_linking))
+- `NameAndType` 由冒号分隔的一对值, 各自指向常量池中的其他条目。冒号前的第一个值指向一个 Utf8 字符串条目, 即方法名或字段名。第二个值指向一个 Utf8 条目, 表示类型: 对于字段, 它是完全限定类名; 对于方法, 它是由每个参数的完全限定类名组成的列表。
+- `Fieldref`,`Methodref`,`InterfaceMethodref` 由点号分隔的一对值, 各自指向常量池中的其他条目。点号前的第一个值指向一个 Class 条目。第二个值指向一个 NameAndType 条目。
 
 ### Exception Table
 
@@ -885,29 +887,29 @@ The constant pool contains the following types:
 
 The exception table stores per-exception handler information such as:
 
-除了表存储一个异常处理程序信息,如:
+异常表存储每个异常处理器的信息, 例如:
 
 * Start point
 * End point
 * PC offset for handler code
 * Constant pool index for exception class being caught
 
-*起点
-*终点
-* PC抵消处理程序代码
-*常量池指数异常类被抓住
+* 起始点
+* 结束点
+* 处理器代码的 PC 偏移量
+* 被捕获异常类对应的常量池索引
 
 If a method has defined a try-catch or a try-finally exception handler then an Exception Table will be created.  This contains information for each exception handler or finally block including the range over which the handler applies, what type of exception is being handled and where the handler code is.
 
-如果一个方法定义了一个try - catch或终于尝试异常处理程序然后异常表将被创建.这包含为每个异常处理程序或finally块包括信息处理程序的适用范围,是什么类型的异常处理和处理程序代码在哪里。
+如果一个方法定义了 try-catch 或 try-finally 异常处理器, 那么就会创建一个异常表(Exception Table)。它包含每个异常处理器或 finally 块的信息, 包括处理器的生效范围、所处理的异常类型以及处理器代码所在的位置。
 
 When an exception is thrown the JVM looks for a matching handler in the current method, if none is found the method ends abruptly popping the current stack frame and the exception is re-thrown in the calling method (the new current frame).  If no exception handler is found before all frames have been popped then the thread is terminated.   This can also cause the JVM itself to terminate if the exception is thrown in the last non-daemon thread, for example if the thread is the main thread.
 
-当一个异常JVM查找匹配的处理程序在当前的方法,如果没有发现该方法结束时突然弹出当前堆栈帧和异常re-thrown在调用方法(新当前帧).如果没有找到异常处理程序之前所有帧都出现线程终止.这也会导致JVM终止如果异常在过去非守护线程,例如如果是主线程的线程。
+当抛出异常时, JVM 会在当前方法中查找匹配的处理器; 如果没有找到, 方法会突然结束, 弹出当前栈帧, 并在调用方方法(新的当前帧)中重新抛出该异常。如果在所有栈帧都被弹出之前仍没有找到异常处理器, 那么线程会被终止。如果异常是在最后一个非守护线程(例如主线程)中抛出的, 这也可能导致 JVM 本身终止。
 
 Finally exception handlers match all types of exceptions and so always execute whenever an exception is thrown.  In the case when no exception is thrown a finally block is still executed at the end of a method, this is achieved by jumping to the finally handler code immediately before the return statement is executed.
 
-最后异常处理程序匹配所有类型的异常,所以总是执行时就会抛出一个异常.在无异常的情况下finally块仍执行的方法,这是通过跳最后处理程序代码立即返回语句之前执行。
+finally 异常处理器会匹配所有类型的异常, 因此只要有异常抛出就总会执行。在未抛出异常的情况下, finally 块仍会在方法结束时执行, 这是通过在执行 return 语句之前跳转到 finally 处理器代码来实现的。
 
 ### Symbol Table
 
@@ -915,19 +917,19 @@ Finally exception handlers match all types of exceptions and so always execute w
 
 In addition to per-type run-time constant pools the Hotspot JVM has a symbol table held in the permanent generation.  The symbol table is a Hashtable mapping symbol pointers to symbols (i.e. Hashtable&lt;Symbol*, Symbol&gt;) and includes a pointer to all symbols including those held in run time constant pools in each class.
 
-除了每种类型运行时常量池Hotspot JVM的符号表的永久的一代。符号表是一个散列表映射指向符号(即象征.Hashtable&lt;符号*,Symbol&gt;)和包含一个指针指向所有符号包括那些在每个类的运行时常量池。
+除了每种类型的运行时常量池之外, HotSpot JVM 还在永久代中持有一个符号表(symbol table)。符号表是一个把符号指针映射到符号的 Hashtable(即 Hashtable&lt;Symbol*, Symbol&gt;), 它包含一个指向所有符号的指针, 包括每个类的运行时常量池中持有的符号。
 
 Reference counting is used to control when a symbol is removed from the symbol table.  For example when a class is unloaded the reference count of all symbols held in its run time constant pool are decremented.  When the reference count of a symbol in the the symbol table goes to zero then the symbol table knows that symbol is not being referenced anymore and the symbol is unloaded from the symbol table. For both the symbol table and the string table (see below) all entries are held in a canonicalized form to improve efficiency and ensure each entry only appears once.
 
-引用计数符号时用于控制从符号表中删除.例如当一个类是卸载所有符号的引用计数在其运行时常量池是递减的.当引用计数的一个象征符号表趋于零的符号表知道符号是不再被引用和符号表的符号是卸载.符号表和字符串表(见下文)所有条目在规范化的形式来提高效率并确保每个条目只出现一次。
+引用计数用于控制何时从符号表中移除某个符号。例如, 当一个类被卸载时, 其运行时常量池中持有的所有符号的引用计数都会递减。当符号表中某个符号的引用计数降为零时, 符号表就知道该符号不再被引用, 于是将其从符号表中卸载。对于符号表和字符串表(见下文)来说, 所有条目都以规范化(canonicalized)的形式保存, 以提高效率并确保每个条目只出现一次。
 
 ### Interned Strings (String Table)
 
-### 实际字符串(字符串表)
+### 内部化字符串(字符串表)
 
 The Java Language Specification requires that identical string literals, that contain the same sequence of Unicode code points, must refer to the same instance of String.  In addition if String.intern() is called on an instance of String a reference must be returned that would be identical to the reference return if the string was a literal. The following therefore holds true:
 
-Java语言规范要求相同的字符串,包含相同序列的Unicode代码点,必须引用同一个字符串的实例。此外,如果字符串.实习生()在字符串的实例的引用必须返回相同的引用返回的字符串是一个文字。因此适用如下:
+Java 语言规范要求: 包含相同 Unicode 码点序列的相同字符串字面量, 必须引用同一个 String 实例。此外, 如果对某个 String 实例调用 String.intern(), 那么返回的引用必须与把该字符串作为字面量时返回的引用相同。因此以下等式成立:
 
 ```
 ("j" + "v" + "m").intern() == "jvm"
@@ -937,11 +939,11 @@ Java语言规范要求相同的字符串,包含相同序列的Unicode代码点,�
 
 In the Hotspot JVM interned string are held in the string table, which is a Hashtable mapping object pointers to symbols (i.e. Hashtable&lt;oop, Symbol&gt;), and is held in the permanent generation.  For both the symbol table (see above) and the string table all entries are held in a canonicalized form to improve efficiency and ensure each entry only appears once.
 
-在Hotspot JVM实习字符串在字符串表,这是一个散列表映射对象指针符号(例如Hashtable&lt;oop,Symbol&gt;),并在永久的一代.符号表(见上图)和字符串表所有条目都保存在一个规范化的形式来提高效率并确保每个条目只出现一次。
+在 HotSpot JVM 中, 内部化字符串(interned string)保存在字符串表(string table)中, 它是一个把对象指针映射到符号的 Hashtable(即 Hashtable&lt;oop, Symbol&gt;), 并且位于永久代中。对于符号表(见上文)和字符串表来说, 所有条目都以规范化的形式保存, 以提高效率并确保每个条目只出现一次。
 
 String literals are automatically interned by the compiler and added into the symbol table when the class is loaded.  In addition instances of the String class can be explicitly interned by calling String.intern().  When String.intern() is called, if the symbol table already contains the string then a reference to this is returned, if not the string is added to the string table and its reference is returned.
 
-字符串是由编译器自动实习并添加到符号表在类加载时.此外字符串类的实例可以通过调用显式地拘留String.intern()。当字符串.实习生(),如果符号表已经包含字符串返回一个引用,如果不是字符串添加到字符串返回表及其参考。
+字符串字面量由编译器自动内部化(intern), 并在类加载时添加到符号表中。此外, String 类的实例可以通过调用 String.intern() 显式地内部化。当调用 String.intern() 时, 如果符号表已经包含该字符串, 就返回对它的引用; 否则把该字符串添加到字符串表并返回其引用。
 
 
 原文链接: <http://blog.jamesdbloom.com/JVMInternals.html>
