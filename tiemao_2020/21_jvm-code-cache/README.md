@@ -129,7 +129,7 @@ For example, separating short-lived compiled code from long-lived code improves 
 具体是:
 
 - 非方法段(non-method segment), 保存相关的JVM内部代码，例如字节码解释器。 默认情况下，此段约为 `5 MB`。 可通过 `-XX:NonNMethodCodeHeapSize` 参数进行调整。
-- 待分析代码段(profiled-code segment), 包含经过简单优化的代码，使用寿命很短。 此段的大小默认为 `122 MB`，可以通过 `-XX:ProfiledCodeHeapSize` 参数进行调整。
+- 待分析代码段(profiled-code segment), 包含经过简单优化的代码，使用寿命可能很短。 此段的大小默认为 `122 MB`，可以通过 `-XX:ProfiledCodeHeapSize` 参数进行调整。
 - 静态代码段(non-profiled segment), 保存经过全面优化的本地代码，使用寿命可能很长。 默认大小同样是 `122 MB`。 可以通过`-XX:NonProfiledCodeHeapSize` 参数进行调整。
 
 这种新的分段结构，以不同方式处理各种类型的编译代码，整体上具有更好的性能。
