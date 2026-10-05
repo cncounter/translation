@@ -217,7 +217,7 @@ Furthermore, you can see that in the minimal POM the *repositories* were not spe
 POM文件必须指定 groupId, artifactId, 以及 version。 这三个配置可以唯一定位一个项目， 其格式为 `<groupId>:<artifactId>:<version>`。
 对于上面的示例，其完全限定名称为 "com.mycompany.app:my-app:1"。
 
-POM简介我们提到，如果未指定某个配置的信息，则Maven使用默认值。
+POM简介中我们提到，如果未指定某个配置的信息，则Maven使用默认值。
 其中的一个默认值是打包类型（packaging type）。每个Maven项目都有打包类型。如果未在POM中指定，则使用默认值 "jar"。
 
 可以看到，最小POM中并未指定 `repositories`。
@@ -253,7 +253,7 @@ POM中的这些元素会被合并：
 - 插件配置信息
 - 资源信息
 
-Super POM 是项目继承结构的一个示例，当然我们也可以在POM中直接指定 `parent` 元素来引入父POM，情况下面的演示。
+Super POM 是项目继承结构的一个示例，当然我们也可以在POM中直接指定 `parent` 元素来引入父POM，如下面的示例所示。
 
 #### Example 1
 
@@ -416,7 +416,7 @@ Project Aggregation is similar to [Project Inheritance](https://maven.apache.org
 但不再采用每个模块指定 parent POM 的方式, 而是直接在 parent POM 中指定每一个子模块.
 所以 parent 项目需要知道每一个模块的信息,
 如果在 parent 项目目录下执行Maven命令, 则同样会对每一个子模块都执行相同的操作.
-执行项目组合的操作为:
+执行项目聚合的操作为:
 
 - 将 parent POM 的打包类型修改为 "pom".
 - 在 parent POM 中指定每个子模块(children POMs)的目录.
@@ -589,7 +589,7 @@ Given the previous original artifact POMs again,
 
 
 
-#### 第4个例子
+#### 第5个例子
 
 ##### 场景描述
 
@@ -716,12 +716,12 @@ These variables are all referenced by the prefix "`project.`". You may also see 
 
 ##### 项目模型变量
 
-项目模型(POM)中的所有字段都可以被当成单个变量值来引用。
-例如，`$ {project.groupId}`，`$ {project.version}`，`$ {project.build.sourceDirectory}` 等等。
-查看完整的属性列表请参阅 [POM参考手册]()。
+项目模型(POM)中的所有单值(single value)字段都可以被当成变量来引用。
+例如，`${project.groupId}`，`${project.version}`，`${project.build.sourceDirectory}` 等等。
+查看完整的属性列表请参阅 [POM参考手册](https://maven.apache.org/pom.html)。
 
 这些变量引用的前缀都是 "`project.`"。
-有些时候可能还会看到带有 `pom.` 前缀的引用，但现在已经完全废弃，我们就不要再用了。
+有些时候可能还会看到带有 `pom.` 前缀、甚至完全省略前缀的引用，但现在已经废弃，我们就不要再用了。
 
 ##### Special Variables
 
