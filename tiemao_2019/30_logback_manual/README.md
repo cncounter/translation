@@ -31,7 +31,7 @@ The complete logback manual documents the latest version of logback framework. I
 The logback manual describes the logback API in considerable detail, including its features and design rationale. Authored by Ceki Gülcü and Sébastien Pennec, the main contributors to the logback project, the logback manual is intended for developers already familiar with the Java language but new to logback, as much as for experienced logback users. With the aid of introductory material and many examples, new users should quickly come up to speed.
 
 Logback用户手册详细描述了logback的API，包括其功能和设计原理。
-手册由Logback项目的主要贡献者 CekiGülcü 和 SébastienPennec 撰写，面向熟悉Java语言的开发者，适用于Logback新用户和老司机。
+手册由Logback项目的主要贡献者 Ceki Gülcü 和 Sébastien Pennec 撰写，面向熟悉Java语言的开发者，适用于Logback新用户和老司机。
 通过这些文档和示例，希望能够让新用户快速上手Logback。
 
 Without further ado, here are the contents of the manual:
@@ -52,7 +52,7 @@ logback手册的目录如下：
 - [Chapter 12: Groovy Configuration](./12_groovy.md)
 - [Chapter 13: Migration from log4j](./13_migrationFromLog4j.md)
 - [Chapter 14: Receivers](./14_receivers.md)
-- [Chapter 15: Using SSL](./15_usingSSL.md)
+- [第15章: 使用SSL](./15_usingSSL.md)
 
 
 
