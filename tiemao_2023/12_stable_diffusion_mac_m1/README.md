@@ -2,13 +2,13 @@
 
 [TOC]
 
-苹果公司的程序员为 M1,M2 之类的ARM64芯片专门创建了一个  stable-diffusion 的仓库:
+苹果公司的程序员为 M1、M2 之类的ARM64芯片专门创建了一个 stable-diffusion 的仓库:
 
 > Run Stable Diffusion on Apple Silicon with Core ML
 
 链接为: <https://github.com/apple/ml-stable-diffusion>
 
-可以充分利用  M1 内置的人工智能芯片(神经网络芯片), 需要转换 PyTorch 模型为 Apple Core ML 模型。
+可以充分利用 M1 内置的人工智能芯片(神经网络芯片), 需要转换 PyTorch 模型为 Apple Core ML 模型。
 
 本文基于这个仓库进行操作。
 
@@ -25,7 +25,7 @@
 
 ### 3. 基础软件环境
 
-- git: 下载仓库源码;  理论上需要更新到最新版
+- git: 下载仓库源码; 理论上需要更新到最新版
 - conda: 主要用来创建Python环境
 - Python: 需要3.8 版本, 高了低了都不行, 使用 conda 来安装即可。
 
@@ -57,7 +57,7 @@ conda下载页面为: <https://docs.conda.io/en/latest/miniconda.html>
 
 下载 miniconda 并安装即可。
 
-miniconda是一个简化版, 只内置了python。 其他什么 C++, Java什么的环境都暂时去除了。
+miniconda是一个简化版, 只内置了Python。 其他什么 C++, Java什么的环境都暂时去除了。
 
 ### 3. 创建python环境
 
@@ -117,7 +117,7 @@ pip install -r requirements.txt
 
 ### 6. 转换模型
 
-为了利用  M1 内置的人工智能芯片(神经网络芯片), 需要转换 PyTorch 模型为 Apple Core ML 模型。
+为了利用 M1 内置的人工智能芯片(神经网络芯片), 需要转换 PyTorch 模型为 Apple Core ML 模型。
 
 
 转换模型对应的命令为:
@@ -290,7 +290,7 @@ pip uninstall torch # 卸载torch版本
 pip install torch==1.13.1 # 安装指定版本
 ```
 
-OK, 1.3.1 版本可以成功处理。
+OK, 1.13.1 版本可以成功处理。
 
 
 ### 3. 网络问题
