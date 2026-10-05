@@ -18,18 +18,18 @@ Machine learning algorithms are often divided into supervised (the training data
 Unsupervised learning is further divided into clustering (finding groups of similar objects, such as running shoes, walking shoes, and dress shoes), association (finding common sequences of objects, such as coffee and cream), and dimensionality reduction (projection, feature selection, and feature extraction).
 
 
-##机器学习解释
+## 机器学习解释
 
 机器学习算法通常分为有监督的（训练数据用答案标记）和无监督的（任何可能存在的标签都不会显示给训练算法）。 有监督的机器学习问题进一步分为分类（预测非数字答案，例如错过按揭付款的概率）和回归（预测数字答案，例如下个月将在曼哈顿商店出售的小部件数量）。
 
-无监督学习进一步分为聚类（寻找相似物体的组，如跑鞋、步行鞋和正装鞋）、关联（寻找物体的共同序列，如咖啡和奶油）和降维（投影、特征选择） ，和特征提取）。
+无监督学习进一步分为聚类（寻找相似物体的组，如跑鞋、步行鞋和正装鞋）、关联（寻找物体的共同序列，如咖啡和奶油）和降维（投影、特征选择和特征提取）。
 
 
 ## Classification algorithms
 
 A classification problem is a supervised learning problem that asks for a choice between two or more classes, usually providing probabilities for each class. Leaving out neural networks and deep learning, which require a much higher level of computing resources, the most common algorithms are Naive Bayes, Decision Tree, Logistic Regression, K-Nearest Neighbors, and Support Vector Machine (SVM). You can also use ensemble methods (combinations of models), such as Random Forest, other Bagging methods, and boosting methods such as AdaBoost and XGBoost.
 
-##分类算法
+## 分类算法
 
 分类问题是一种监督学习问题，要求在两个或多个类之间进行选择，通常为每个类提供概率。 除了需要更高级别计算资源的神经网络和深度学习之外，最常见的算法是朴素贝叶斯、决策树、逻辑回归、K-最近邻和支持向量机 (SVM)。 您还可以使用集成方法（模型的组合），例如随机森林、其他 Bagging 方法和增强方法，例如 AdaBoost 和 XGBoost。
 
@@ -39,13 +39,13 @@ A regression problem is a supervised learning problem that asks the model to pre
 
 ## 回归算法
 
-回归问题是一种监督学习问题，它要求模型预测一个数字。 最简单和最快的算法是线性（最小二乘法）回归，但您不应止步于此，因为它通常会给您带来平庸的结果。 其他常见的机器学习回归算法（神经网络的缩写）包括朴素贝叶斯、决策树、K-最近邻、LVQ（学习向量量化）、LARS 套索、弹性网络、随机森林、AdaBoost 和 XGBoost。 您会注意到用于回归和分类的机器学习算法之间存在一些重叠。
+回归问题是一种监督学习问题，它要求模型预测一个数字。 最简单和最快的算法是线性（最小二乘法）回归，但您不应止步于此，因为它通常会给您带来平庸的结果。 其他常见的机器学习回归算法（不包括神经网络）包括朴素贝叶斯、决策树、K-最近邻、LVQ（学习向量量化）、LARS 套索、弹性网络、随机森林、AdaBoost 和 XGBoost。 您会注意到用于回归和分类的机器学习算法之间存在一些重叠。
 
 ## Clustering algorithms
 
 A clustering problem is an unsupervised learning problem that asks the model to find groups of similar data points. The most popular algorithm is K-Means Clustering; others include Mean-Shift Clustering, DBSCAN (Density-Based Spatial Clustering of Applications with Noise), GMM (Gaussian Mixture Models), and HAC (Hierarchical Agglomerative Clustering).
 
-##聚类算法
+## 聚类算法
 
 聚类问题是一种无监督学习问题，它要求模型找到相似数据点的组。 最流行的算法是 K-Means Clustering； 其他包括 Mean-Shift 聚类、DBSCAN（基于密度的噪声应用空间聚类）、GMM（高斯混合模型）和 HAC（分层凝聚聚类）。
 
@@ -69,7 +69,7 @@ Common refinements on stochastic gradient descent add factors that correct the d
 
 训练和评估通过优化参数权重将监督学习算法转变为模型，以找到与数据的基本事实最匹配的值集。 算法通常依赖于最速下降的变体作为其优化器，例如随机梯度下降，它本质上是从随机起点执行多次的最速下降。
 
-随机梯度下降的常见改进添加了基于动量校正梯度方向的因素，或根据从一次数据（称为一个时期或批次）到下一次的进度调整学习率。
+随机梯度下降的常见改进添加了基于动量校正梯度方向的因素，或根据一次遍历数据（称为一个时期或批次）到下一次遍历的进度来调整学习率。
 
 ## Data cleaning for machine learning
 
@@ -83,9 +83,9 @@ There is no such thing as clean data in the wild. To be useful for machine learn
 
 There is a lot more you can do, but it will depend on the data collected. This can be tedious, but if you set up a data cleaning step in your machine learning pipeline you can modify and repeat it at will.
 
-##机器学习的数据清洗
+## 机器学习的数据清洗
 
-野外没有干净的数据。为了对机器学习有用，必须积极过滤数据。例如，您需要：
+野外没有干净的数据。为了对机器学习有用，必须对数据进行严格过滤。例如，您需要：
 
 - 1. 查看数据并排除任何有大量缺失数据的列。
 - 2. 再次查看数据并选择要用于预测的列（特征选择）。这是您在迭代时可能想要改变的东西。
@@ -107,7 +107,7 @@ To use numeric data for machine regression, you usually need to normalize the da
 
 要使用分类数据进行机器分类，您需要将文本标签编码为另一种形式。有两种常见的编码。
 
-一种是标签编码，这意味着每个文本标签值都替换为一个数字。另一种是one-hot编码，这意味着每个文本标签值都变成了一个带有二进制值（1或0）的列。大多数机器学习框架都有为您进行转换的功能。通常，首选单热编码，因为标签编码有时会使机器学习算法混淆，认为编码列应该是有序列表。
+一种是标签编码，这意味着每个文本标签值都替换为一个数字。另一种是one-hot编码，这意味着每个文本标签值都变成了一个带有二进制值（1或0）的列。大多数机器学习框架都有为您进行转换的功能。通常，首选 one-hot 编码，因为标签编码有时会使机器学习算法混淆，认为编码列应该是有序列表。
 
 要使用数字数据进行机器回归，通常需要对数据进行归一化。否则，具有较大范围的数字可能倾向于支配特征向量之间的欧几里得距离，它们的影响可能会以牺牲其他字段为代价而被放大，并且最速下降优化可能难以收敛。有多种方法可以对机器学习的数据进行归一化和标准化，包括最小-最大归一化、均值归一化、标准化和缩放到单位长度。这个过程通常称为特征缩放。
 
@@ -121,7 +121,7 @@ Some of the transformations that people use to construct new features or reduce 
 
 ## 机器学习的特征工程
 
-特征是个体可测量的特性或被观察现象的特征。 “特征”的概念与解释变量的概念相关，用于线性回归等统计技术。特征向量将单行的所有特征组合成一个数值向量。
+特征是被观察现象的某一项可测量的属性或特征。 “特征”的概念与解释变量的概念相关，用于线性回归等统计技术。特征向量将单行的所有特征组合成一个数值向量。
 
 选择特征的部分艺术是选择解释问题的最小自变量集。如果两个变量高度相关，要么需要将它们组合成一个特征，要么应该删除一个。有时人们执行主成分分析将相关变量转换为一组线性不相关变量。
 
@@ -139,11 +139,11 @@ There are several other schemes for splitting the data. One common technique, cr
 
 ## 为机器学习拆分数据
 
-监督式机器学习的通常做法是将数据集拆分为用于训练、验证和测试的子集。一种工作方式是将 80% 的数据分配给训练数据集，将 10% 分配给验证和测试数据集。 （确切的分割是一个偏好问题。）大部分训练是针对训练数据集完成的，而预测是针对每个时期结束时的验证数据集完成的。
+监督式机器学习的通常做法是将数据集拆分为用于训练、验证和测试的子集。一种工作方式是将 80% 的数据分配给训练数据集，将 10% 分配给验证和测试数据集。（确切的分割是一个偏好问题。）大部分训练是针对训练数据集完成的，而预测是针对每个时期结束时的验证数据集完成的。
 
 验证数据集中的错误可用于识别停止标准，或驱动超参数调整。最重要的是，验证数据集中的错误可以帮助您找出模型是否过度拟合了训练数据。
 
-针对测试数据集的预测通常是在最终模型上完成的。如果测试数据集从未用于训练，则有时将其称为保持数据集。
+针对测试数据集的预测通常是在最终模型上完成的。如果测试数据集从未用于训练，则有时将其称为保留数据集(holdout)。
 
 还有其他几种拆分数据的方案。一种常见的技术是交叉验证，它涉及将完整数据集反复拆分为训练数据集和验证数据集。在每个 epoch 结束时，数据被打乱并再次拆分。
 
@@ -179,7 +179,7 @@ The learning occurs basically by strengthening the connection between two neuron
 
 How are the neurons modeled? Each has a propagation function that transforms the outputs of the connected neurons, often with a weighted sum. The output of the propagation function passes to an activation function, which fires when its input exceeds a threshold value.
 
-##人工神经网络中的神经元
+## 人工神经网络中的神经元
 
 神经元是如何建模的？ 每个都有一个传播函数，用于转换连接神经元的输出，通常带有加权和。 传播函数的输出传递给激活函数，当其输入超过阈值时触发。
 
@@ -215,7 +215,7 @@ For those interested in the details, back propagation uses the gradient of the e
 
 ## 训练神经网络
 
-神经网络的监督学习就像任何其他机器学习一样完成：您向网络提供训练数据组，将网络输出与所需输出进行比较，生成误差向量，并根据误差向量对网络应用修正 . 在应用更正之前一起运行的成批训练数据称为纪元。
+神经网络的监督学习就像任何其他机器学习一样完成：您向网络提供训练数据组，将网络输出与所需输出进行比较，生成误差向量，并根据误差向量对网络应用修正。在应用修正之前一起运行的成批训练数据称为一个时期(epoch)。
 
 对于那些对细节感兴趣的人，反向传播使用误差（或成本）函数相对于模型的权重和偏差的梯度来发现正确的方向以最小化误差。 有两件事控制修正的应用：优化算法和学习率变量。 学习率变量通常需要很小以保证收敛并避免导致死 ReLU 神经元。
 
@@ -228,7 +228,7 @@ As with all machine learning, you need to check the predictions of the neural ne
 
 ## 神经网络优化器
 
-神经网络的优化器通常使用某种形式的梯度下降算法来驱动反向传播，通常具有帮助避免陷入局部最小值的机制，例如优化随机选择的小批量（随机梯度下降）并将动量校正应用于 坡度。 一些优化算法还通过查看梯度历史（AdaGrad、RMSProp 和 Adam）来调整模型参数的学习率。
+神经网络的优化器通常使用某种形式的梯度下降算法来驱动反向传播，通常具有帮助避免陷入局部最小值的机制，例如优化随机选择的小批量（随机梯度下降）并将动量校正应用于梯度。 一些优化算法还通过查看梯度历史（AdaGrad、RMSProp 和 Adam）来调整模型参数的学习率。
 
 与所有机器学习一样，您需要根据单独的验证数据集检查神经网络的预测。 如果不这样做，您就有可能创建只记住输入而不是学习成为广义预测器的神经网络。
 
@@ -271,7 +271,7 @@ Some of the best Python deep learning frameworks are TensorFlow, Keras, PyTorch,
 
 注意模块是将权重应用于输入向量的广义门。分层神经注意力编码器使用多层注意力模块来处理数以万计的过去输入。
 
-随机决策森林 (RDF) 不是神经网络，可用于解决一系列分类和回归问题。 RDF 由许多层构成，但 RDF 不是神经元，而是由决策树构成，并输出单个树的预测的统计平均值（分类模式或回归平均值）。 RDF 的随机方面是对单个树使用引导聚合（也称为装袋），并为树获取特征的随机子集。
+随机决策森林 (RDF) 不是神经网络，可用于解决一系列分类和回归问题。 RDF 由许多层构成，但与神经元不同，它由决策树构成，并输出各单棵树预测结果的统计平均值（分类取众数，回归取平均值）。 RDF 的随机方面是对单个树使用引导聚合（也称为装袋），并为树获取特征的随机子集。
 
 XGBoost（eXtreme Gradient Boosting），也不是深度神经网络，是一种可扩展的端到端树提升系统，在许多机器学习挑战中产生了最先进的结果。 Bagging 和 boosting 经常被同时提到；不同之处在于，梯度树提升不是生成随机树的集合，而是从单个决策树或回归树开始，对其进行优化，然后从第一棵树的残差构建下一棵树。
 
@@ -295,7 +295,7 @@ In addition, deep learning has been used successfully to predict how molecules w
 
 对于许多问题，一些经典的机器学习算法会产生一个“足够好”的模型。对于其他问题，经典机器学习算法过去并没有表现得非常好。
 
-深度学习经常受到攻击的一个领域是自然语言处理，包括语言翻译、自动摘要、共参考解析、话语分析、形态分割、命名实体识别、自然语言生成、自然语言理解、词性标记、情感分析和语音识别。
+经常使用深度学习来攻克的一个领域是自然语言处理，包括语言翻译、自动摘要、共参考解析、话语分析、形态分割、命名实体识别、自然语言生成、自然语言理解、词性标记、情感分析和语音识别。
 
 深度学习的另一个主要领域是图像分类，包括具有定位的图像分类、对象检测、对象分割、图像风格迁移、图像着色、图像重建、图像超分辨率和图像合成。
 
