@@ -16,4 +16,4 @@
 
 
 
-- [Why choose Java for High-Frequency Trading application: Voice of Custome](https://www.azul.com/blog/java-for-high-frequency-trading-application/)
+- [Why choose Java for High-Frequency Trading application: Voice of Customer](https://www.azul.com/blog/java-for-high-frequency-trading-application/)
