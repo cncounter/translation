@@ -30,7 +30,7 @@ Java 虚拟机启动时，先加载指定的类(class)或接口(interface)，然
 [§12.1](#jls-12.1) 小节概述了执行 `main` 方法所涉及的加载(loading)、链接(linking)和初始化(initialization)步骤，作为本章中基础概念的介绍。
 接下来的部分，详细说明了加载 ([§12.2](#jls-12.2))、链接 ([§12.3](#jls-12.3)) 和初始化 ([§12.4](#jls-12.4)) 的细节与规范。
 
-接着 [§12.5](#jls-12.5) 介绍类的新实例创建过程；以及类对象的最终确定（[§12.6](#jls-12.6)）。
+接着 [§12.5](#jls-12.5) 介绍类的新实例创建过程；以及类实例的终结（[§12.6](#jls-12.6)）。
 最后 [§12.7](#jls-12.7) 描述了类的卸载；还有程序退出时需要遵循的过程 ([§12.8](#jls-12.8))。
 
 
@@ -106,7 +106,7 @@ The resolution step is optional at the time of initial linkage. An implementatio
 
 解析是检查从 `Test` 到其他类和接口的符号引用的过程，会加载引用到的其他类和接口, 并检查引用是否正确。
 
-在初始化链接时，解析步骤是可选的。 JVM实现可以在链接类或接口的早期阶段解析符号引用，甚至可以递归地解析来自更深层引用的类和接口中的所有符号引用。 （但这种递归解决方案可能会导致进一步的加载和链接步骤出错。）这种实现选择代表了一个极端，类似于多年来在 C 语言的简单实现中所做的那种“静态”链接。 （在这些C编译器实现中，编译的程序通常表示为 "`a.out`" 文件，其中包含程序的完全链接版本，包括程序使用的库例程的完全解析链接。这些库例程的副本被打包到 "`a.out`" 文件中。）
+在初始链接时，解析步骤是可选的。 JVM实现可以在链接类或接口的早期阶段解析符号引用，甚至可以递归地解析来自更深层引用的类和接口中的所有符号引用。 （但这种递归解析方式可能会导致进一步的加载和链接步骤出错。）这种实现选择代表了一个极端，类似于多年来在 C 语言的简单实现中所做的那种“静态”链接。 （在这些C编译器实现中，编译的程序通常表示为 "`a.out`" 文件，其中包含程序的完全链接版本，包括程序使用的库例程的完全解析链接。这些库例程的副本被打包到 "`a.out`" 文件中。）
 
 An implementation may instead choose to resolve a symbolic reference only when it is actively used; consistent use of this strategy for all symbolic references would represent the "laziest" form of resolution. In this case, if `Test` had several symbolic references to another class, then the references might be resolved one at a time, as they are used, or perhaps not at all, if these references were never used during execution of the program.
 
@@ -114,9 +114,9 @@ The only requirement on when resolution is performed is that any errors detected
 
 The resolution process is described further in [§12.3.3](#jls-12.3.3).
 
-具体的JVM实现可能会选择仅在主动使用符号引用时才去解析；对所有符号引用一致使用此策略将代表“最懒惰”的解决形式。 在这种情况下，如果 `Test` 有多个对另其它类的符号引用，那么这些引用可能会在使用时, 用到一个解析一个，或者如果在程序执行期间从未使用过这些引用，则可能根本不进行解析。
+具体的JVM实现可能会选择仅在主动使用符号引用时才去解析；对所有符号引用一致使用此策略将代表“最懒惰”的解析方式。 在这种情况下，如果 `Test` 有多个对另一个类的符号引用，那么这些引用可能会在使用时, 用到一个解析一个，或者如果在程序执行期间从未使用过这些引用，则可能根本不进行解析。
 
-关于何时执行解析的唯一要求是，在解析期间检测到的任何错误必须在程序中的某个点抛出，程序可能需要在链接到涉及的类或接口出错时, 对这种错误采取某些直接或间接的操作.  如果JVM使用上面描述的“静态”方式实现，在加载和链接 `Test` 类中提到的类或接口, 或任何进一步的递归引用的类和接口，假如报错，则可能会在程序执行之前发生加载和链接错误。 在使用“最懒惰”解决方案的系统中，只有在主动使用错误的符号引用时才会抛出这些错误。
+关于何时执行解析的唯一要求是，在解析期间检测到的任何错误必须在程序中的某个点抛出，程序可能需要在链接到涉及的类或接口出错时, 对这种错误采取某些直接或间接的操作.  如果JVM使用上面描述的“静态”方式实现，在加载和链接 `Test` 类中提到的类或接口, 或任何进一步的递归引用的类和接口，假如报错，则可能会在程序执行之前发生加载和链接错误。 在使用“最懒惰”解析策略的系统中，只有在主动使用错误的符号引用时才会抛出这些错误。
 
 [§12.3.3](#jls-12.3.3) 中进一步描述了解析过程。
 
@@ -205,7 +205,7 @@ For further discussion of these issues, see *The Java Virtual Machine Specificat
 
 恶意类加载器可能会违反这些特性。 但是，它不会破坏类型系统的安全性， 因为 Java 虚拟机对此进行了防范。
 
-有关这些问题的进一步讨论，请参阅 *The Java Virtual Machine Specification, Java SE 11 Edition* 和论文 *Dynamic Class Loading in the Java Virtual Machine*，作者 Sheng Liang 和 Gilad Bracha，在 *Proceedings of OOPSLA '98*，出版为 *ACM SIGPLAN Notices*，第 33 卷，第 10 期，1998 年 10 月，第 36-44 页。 Java 编程语言的一个基本设计原则是，运行时类型系统不能被 Java 编程语言编写的代码所颠覆，即使是 `ClassLoader` and `SecurityManager` 等敏感系统类的实现也不行。
+有关这些问题的进一步讨论，请参阅 *The Java Virtual Machine Specification, Java SE 11 Edition* 和论文 *Dynamic Class Loading in the Java Virtual Machine*，作者 Sheng Liang 和 Gilad Bracha，在 *Proceedings of OOPSLA '98*，出版为 *ACM SIGPLAN Notices*，第 33 卷，第 10 期，1998 年 10 月，第 36-44 页。 Java 编程语言的一个基本设计原则是，运行时类型系统不能被 Java 编程语言编写的代码所颠覆，即使是 `ClassLoader` 和 `SecurityManager` 等敏感系统类的实现也不行。
 
 <a name="jls-12.2.1"></a>
 
@@ -262,9 +262,9 @@ Because linking involves the allocation of new data structures, it may fail with
 
 *The Java Virtual Machine Specification, Java SE 11 Edition* 的第 5 章给出了链接的精确语义。 在这里，我们从 Java 编程语言的角度概述该过程。
 
-本规范允许在JVM实现在任意时刻灵活地执行链接活动（以及递归链接而产生的加载行为），前提是尊重 Java 编程语言的语义， 在初始化之前对类或接口进行完全的验证和准备，并且在链接期间检测到的错误会在程序执行过程中的某个点被抛出，在该点上，程序执行了一些可能需要链接到错误中所涉及的类或接口的操作。
+本规范允许 JVM 实现在任意时刻灵活地执行链接活动（以及递归链接而产生的加载行为），前提是尊重 Java 编程语言的语义， 在初始化之前对类或接口进行完全的验证和准备，并且在链接期间检测到的错误会在程序执行过程中的某个点被抛出，在该点上，程序执行了一些可能需要链接到错误中所涉及的类或接口的操作。
 
-例如，JVM实现可以选择懒惰或延迟解析(lazy or late resolution), 仅在用到时单独解析类或接口中的每一个符号引用； 或者选择静态解析(static resolution)，在验证类时一次性解析。 这意味着在某些JVM实现中，在类或接口完成初始化之后，解析过程还可能在断断续续执行。
+例如，JVM实现可以选择懒惰或延迟解析(lazy or late resolution), 仅在用到时单独解析类或接口中的每一个符号引用； 或者选择静态解析(static resolution)，在验证类时一次性解析。 这意味着在某些JVM实现中，在类或接口完成初始化之后，解析过程还可能继续进行。
 
 因为链接涉及新数据结构的分配，所以可能会失败并抛出 `OutOfMemoryError`。
 
@@ -332,7 +332,7 @@ If an error occurs during resolution, then an error will be thrown. Most typical
 
 - `IllegalAccessError`：非法访问错误; 遇到一个符号引用，对某个字段进行使用或赋值，或调用某个方法，或创建某个类的实例，但是包含这个引用的代码无权限访问，因为该字段或方法被声明为  `private`, `protected` 或包访问（非 `public` ），或者因为在导出或打开到包含引用的代码的包中未将类声明为 `public`。
 
-  例如，一个类的某个字段, 原先声明为 `public`, 其他类引用这个字段完全没问题, 可以通过编译; 但是在编译完成后 又将 `public` 声明的字段改为 `private` 访问权限, 如果只编译修改后的这个类, 那么在运行时就会出现这种问类; 或者，一个package中导出的public类, 如果在引用该类的另一个模块被编译后，这个package却不再由其模块导出该类等情况（([§13.4.1](https://docs.oracle.com/javase/specs/jls/se11/html/jls-13.html#jls-13.4.1)))。
+  例如，一个类的某个字段, 原先声明为 `public`, 其他类引用这个字段完全没问题, 可以通过编译; 但是在编译完成后 又将 `public` 声明的字段改为 `private` 访问权限, 如果只编译修改后的这个类, 那么在运行时就会出现这种问题; 或者，一个package中导出的public类, 如果在引用该类的另一个模块被编译后，这个package却不再由其模块导出该类等情况（([§13.4.1](https://docs.oracle.com/javase/specs/jls/se11/html/jls-13.html#jls-13.4.1)))。
 
 - `InstantiationError`：实例化错误; 遇到一个符号引用，用来对某个类进行实例创建，但无法创建对应的实例，因为该引用指向的是接口或者抽象类。
 
@@ -418,7 +418,7 @@ The intent is that a class or interface type has a set of initializers that put 
 
 The fact that initialization code is unrestricted allows examples to be constructed where the value of a class variable can be observed when it still has its initial default value, before its initializing expression is evaluated, but such examples are rare in practice. (Such examples can be also constructed for instance variable initialization ([§12.5](#jls-12.5)).) The full power of the Java programming language is available in these initializers; programmers must exercise some care. This power places an extra burden on code generators, but this burden would arise in any case because the Java programming language is concurrent ([§12.4.2](#jls-12.4.2)).
 
-请注意，编译器可能会在接口中生成一些合成的默认方法，即既是不显式也是不隐式声明的默认方法。 尽管源代码中没有表明应该初始化接口，但这些方法将触发接口的连带自动初始化。
+请注意，编译器可能会在接口中生成一些合成的默认方法，即既不是显式声明也不是隐式声明的默认方法。 尽管源代码中没有表明应该初始化接口，但这些方法将触发接口的连带自动初始化。
 
 目的是因为类或接口类型有一组初始化器，将其置于一致状态，并且此状态是其他类观察到的第一个状态。 静态初始化器和类变量初始化器以源代码中的文本顺序执行，并且不允许引用该类中在其后声明的类变量。 此限制旨在编译时检测大多数循环或其他格式的错误初始化。
 
@@ -465,7 +465,7 @@ The class `One` is never initialized, because it not used actively and therefore
 
 > **Example 12.4.1-2. Only The Class That Declares `static` Field Is Initialized**
 
-> **Example 12.4.1-2. 在使用static字段时, 只有直接声明 `static` 字段的类, 才会被初始化 **
+> **Example 12.4.1-2. 在使用static字段时, 只有直接声明 `static` 字段的类, 才会被初始化**
 
 
 ```java
@@ -498,7 +498,7 @@ because the class `Sub` is never initialized; the reference to `Sub.taxi` is a r
 
 > **Example 12.4.1-3. Interface Initialization Does Not Initialize Superinterfaces**
 
-> **Example 12.4.1-3. 接口的初始化不会触发超接口的初始化 **
+> **Example 12.4.1-3. 接口的初始化不会触发超接口的初始化**
 
 ```java
 interface I {
@@ -588,7 +588,7 @@ For each class or interface C, there is a unique initialization lock `LC`. The m
 
 1. 同步 `C` 的初始化锁 `LC` 。 这包括等待当前线程可以获取`LC`。
 
-2. 如果 `C` 的 `Class` 对象表明其他线程正在对 `C` 进行初始化，则释放 `LC` 并阻塞当前线程，直到收到通知之前正在进行的初始化已完成，此时重复此步骤 .
+2. 如果 `C` 的 `Class` 对象表明其他线程正在对 `C` 进行初始化，则释放 `LC` 并阻塞当前线程，直到收到通知，得知正在进行的初始化已经完成，此时再重复此步骤。
 
 3. 如果 `C` 的 `Class` 对象表明当前线程正在对 `C`进行初始化，那么这一定是一个递归的初始化请求。 释放 `LC` 并正常完成。
 
@@ -610,7 +610,7 @@ For each class or interface C, there is a unique initialization lock `LC`. The m
 
    If the initialization of S completes abruptly because of a thrown exception, then acquire `LC`, label the `Class` object for C as erroneous, notify all waiting threads, release `LC`, and complete abruptly, throwing the same exception that resulted from initializing S.
 
-7. 接下来，如果 `C` 是类而不是接口，则令 `SC` 为其超类，并令 `SI1`，`...`，`SIn` 为声明至少一个默认方法(default method)的 `C` 的所有超接口。 超级接口的顺序由 `C` 直接实现的每个接口的超级接口层次结构上的递归枚举给出（深度优先，并按照 `C` 的 `implements` 子句从左到右的顺序）。 对于由 `C` 直接实现的每个接口 `I` ，在返回 `I` 之前，会在 `I` 的超接口上重复枚举（按 `I` 的 `extends` 子句从左到右的顺序）。
+7. 接下来，如果 `C` 是类而不是接口，则令 `SC` 为其超类，并令 `SI1`，`...`，`SIn` 为声明至少一个默认方法(default method)的 `C` 的所有超接口。 超接口的顺序由 `C` 直接实现的每个接口的超接口层次结构上的递归枚举给出（深度优先，并按照 `C` 的 `implements` 子句从左到右的顺序）。 对于由 `C` 直接实现的每个接口 `I` ，在返回 `I` 之前，会在 `I` 的超接口上重复枚举（按 `I` 的 `extends` 子句从左到右的顺序）。
 
     对于 [ SC, SI1, ..., SIn ] 列表中的每个 `S` ，如果 `S` 还没有被初始化，那么递归地对S执行整个过程。 如果需要，还要先验证和准备 `S` 。
 
@@ -644,7 +644,7 @@ Compile-time analysis may, in some cases, be able to eliminate many of the check
 
 JVM实现如果确定类的初始化已经完成时，可以优化这个过程, 比如省略步骤 1 中的锁获取（并在步骤 4/5 中释放），但去掉锁的一个前提是，从内存模型而言，需要保证，获取锁过程的时候对应的所有 happens-before 操作，在进行锁优化操作替换时，对应的状态仍然一致。
 
-代码生成器需要保留类或接口可能的初始化点，插入刚刚描述的初始化过程的调用。 如果此初始化过程正常完成并且`Class`对象已完全初始化并已准备好， 则不再需要调用初始化过程，并且可以从代码中消除它 - 例如，通过修补它或以其他方式重新生成编码。
+代码生成器需要保留类或接口可能的初始化点，插入刚刚描述的初始化过程的调用。 如果此初始化过程正常完成并且`Class`对象已完全初始化并已准备好， 则不再需要调用初始化过程，并且可以从代码中消除它 - 例如，通过修补它或以其他方式重新生成代码。
 
 在某些情况下，编译时分析器如果确定一组相关类型都已经完成初始化，则可以从生成的代码中修剪掉很多对某个类型进行初始化的检查。 然而，这种分析必须充分考虑并发性和初始化代码不受限制的事实。
 
@@ -669,8 +669,8 @@ A new class instance may be implicitly created in the following situations:
 - Evaluation of a method reference expression ([§15.13.3](https://docs.oracle.com/javase/specs/jls/se11/html/jls-15.html#jls-15.13.3)) or a lambda expression ([§15.27.4](https://docs.oracle.com/javase/specs/jls/se11/html/jls-15.html#jls-15.27.4)) may require that a new instance of a class that implements a functional interface type be created.
 
 
-- 加载包含字符串值的类或接口时, 可以创建一个新的 `String` 对象来表示这些字符。 （如果表示相同 Unicode 编码序列的字符串先前已被内联，则不会发生这种情况。）
-- 执行导致装箱转换的操作（[§5.1.7](https://docs.oracle.com/javase/specs/jls/se11/html/jls-5.html#jls-5.1.7)）. 装箱转换可能会创建与原生类型相关联的包装类（`Boolean`、`Byte`、`Short`、`Character`、`Integer`、`Long`、`Float`、`Double`）的新对象。
+- 加载包含字符串字面量的类或接口时, 可以创建一个新的 `String` 对象来表示该字面量。 （如果表示相同 Unicode 编码序列的字符串先前已被内联，则不会发生这种情况。）
+- 执行导致装箱转换的操作（[§5.1.7](https://docs.oracle.com/javase/specs/jls/se11/html/jls-5.html#jls-5.1.7)）. 装箱转换可能会创建与原始类型相关联的包装类（`Boolean`、`Byte`、`Short`、`Character`、`Integer`、`Long`、`Float`、`Double`）的新对象。
 - 字符串连接运算符 `+` 不是常量表达式的一部分, 总是创建一个新的`String` 对象来表示结果。 字符串连接运算符还可以为原始类型的值创建临时包装对象。【这里可能会发生javac编译器优化, 消除纯字面量的 `+` 操作】
 - 执行方法引用表达式 ([§15.13.3](https://docs.oracle.com/javase/specs/jls/se11/html/jls-15.html#jls-15.13.3)) 或lambda 表达式 ([§15.27.4](https://docs.oracle.com/javase/specs/jls/se11/html/jls-15.html#jls-15.27.4)) 可能需要创建一个实现函数接口类型的类的实例。
 
@@ -772,7 +772,7 @@ Next, the initializers for the instance variables of class `ColoredPoint` are ex
 
 > **Example 12.5-2. Dynamic Dispatch During Instance Creation**
 
-> **Example 12.5-2. 在实例创建时的动态分发/多态 **
+> **Example 12.5-2. 在实例创建时的动态分发/多态**
 
 ```java
 class Super {
@@ -808,7 +808,7 @@ This shows that the invocation of `printThree` in the constructor for class `Sup
 
 ## 12.6. Finalization of Class Instances
 
-## 12.6. 对象的终结
+## 12.6. 类实例的终结
 
 > `finalize()` 方法算是一种糟粕, 一般只在某些遗留系统和历史代码中存在; 理论上是可以在其中处理某些外部资源或者将this复活一次;
 > 2001年时Effective Java就提示避免, 自2008年之后官方已不推荐使用，会造成各种各样的困扰;
@@ -819,31 +819,59 @@ This shows that the invocation of `printThree` in the constructor for class `Sup
 
 The class `Object` has a `protected` method called `finalize`; this method can be overridden by other classes. The particular definition of `finalize` that can be invoked for an object is called the *finalizer* of that object. Before the storage for an object is reclaimed by the garbage collector, the Java Virtual Machine will invoke the finalizer of that object.
 
+`Object` 类有一个 `protected` 方法叫 `finalize`，其他类可以覆写它。对某个对象来说，实际被调用的那个 `finalize` 定义，称为该对象的 *终结器(finalizer)*。在对象占用的存储被垃圾收集器回收之前，Java 虚拟机会调用该对象的终结器。
+
 Finalizers provide a chance to free up resources that cannot be freed automatically by an automatic storage manager. In such situations, simply reclaiming the memory used by an object would not guarantee that the resources it held would be reclaimed.
+
+终结器提供了一个机会，用来释放自动存储管理器无法自动释放的资源。在这种场景下，仅仅回收对象占用的内存，并不能保证它持有的资源也会被回收。
 
 The Java programming language does not specify how soon a finalizer will be invoked, except to say that it will happen before the storage for the object is reused.
 
+Java 编程语言没有规定终结器会多快被调用，只说明它会发生在对象的存储被复用之前。
+
 The Java programming language does not specify which thread will invoke the finalizer for any given object.
+
+Java 编程语言没有规定由哪个线程来调用某个对象的终结器。
 
 It is important to note that many finalizer threads may be active (this is sometimes needed on large shared memory multiprocessors), and that if a large connected data structure becomes garbage, all of the `finalize` methods for every object in that data structure could be invoked at the same time, each finalizer invocation running in a different thread.
 
+需要注意的是，可能同时有多个终结器线程处于活动状态（在大型共享内存的多处理器上有时确实需要如此）；而且如果一个大范围的连通数据结构变成了垃圾，该数据结构中每个对象的 `finalize` 方法都可能被同时调用，每次终结器调用都运行在不同的线程中。
+
 The Java programming language imposes no ordering on `finalize` method calls. Finalizers may be called in any order, or even concurrently.
+
+Java 编程语言对 `finalize` 方法的调用顺序没有任何规定。终结器可以按任意顺序调用，甚至并发调用。
 
 As an example, if a circularly linked group of unfinalized objects becomes unreachable (or finalizer-reachable), then all the objects may become finalizable together. Eventually, the finalizers for these objects may be invoked, in any order, or even concurrently using multiple threads. If the automatic storage manager later finds that the objects are unreachable, then their storage can be reclaimed.
 
+举个例子，如果一组循环链接、尚未终结的对象变成了不可达（或者变成终结器可达），那么这些对象可能会一起变为可终结状态。最终，这些对象的终结器可能会被按任意顺序调用，甚至由多个线程并发调用。如果自动存储管理器之后发现这些对象已经不可达，那么它们的存储就可以被回收。
+
 It is straightforward to implement a class that will cause a set of finalizer-like methods to be invoked in a specified order for a set of objects when all the objects become unreachable. Defining such a class is left as an exercise for the reader.
+
+实现这样一个类并不困难：当一组对象全部变为不可达时，让一组类似终结器的方法按指定的顺序对这些对象调用。定义这样的类就留给读者作为练习。
 
 It is guaranteed that the thread that invokes the finalizer will not be holding any user-visible synchronization locks when the finalizer is invoked.
 
+可以保证的是：调用终结器的线程在终结器被调用时，不会持有任何用户可见的同步锁。
+
 If an uncaught exception is thrown during the finalization, the exception is ignored and finalization of that object terminates.
+
+如果在终结过程中抛出了未捕获的异常，该异常会被忽略，对该对象的终结也就终止了。
 
 The completion of an object's constructor happens-before ([§17.4.5](https://docs.oracle.com/javase/specs/jls/se11/html/jls-17.html#jls-17.4.5)) the execution of its `finalize` method (in the formal sense of happens-before).
 
+一个对象构造函数的执行完成 happens-before（[§17.4.5](https://docs.oracle.com/javase/specs/jls/se11/html/jls-17.html#jls-17.4.5)）其 `finalize` 方法的执行，这里的 happens-before 是形式化的定义。
+
 The `finalize` method declared in class `Object` takes no action. The fact that class `Object` declares a `finalize` method means that the `finalize` method for any class can always invoke the `finalize` method for its superclass. This should always be done, unless it is the programmer's intent to nullify the actions of the finalizer in the superclass. (Unlike constructors, finalizers do not automatically invoke the finalizer for the superclass; such an invocation must be coded explicitly.)
+
+`Object` 类中声明的 `finalize` 方法不执行任何操作。`Object` 类声明了 `finalize` 方法，这意味着任何类的 `finalize` 方法都可以调用其超类的 `finalize` 方法。一般都应该这样做，除非程序员的意图就是让超类终结器的行为失效。（与构造函数不同，终结器不会自动调用超类的终结器；这样的调用必须显式编写代码。）
 
 For efficiency, an implementation may keep track of classes that do not override the `finalize` method of class `Object`, or override it in a trivial way.
 
+为了提高效率，实现可以跟踪那些没有覆写 `Object` 类的 `finalize` 方法的类，或者只是以无实际意义的方式覆写了该方法的类。
+
 For example:
+
+例如：
 
 ```java
 protected void finalize() throws Throwable {
@@ -853,35 +881,65 @@ protected void finalize() throws Throwable {
 
 We encourage implementations to treat such objects as having a finalizer that is not overridden, and to finalize them more efficiently, as described in [§12.6.1](#jls-12.6.1).
 
+我们鼓励实现把这类对象视为“没有覆写终结器”，并按 [§12.6.1](#jls-12.6.1) 中描述的方式更高效地对它们进行终结。
+
 A finalizer may be invoked explicitly, just like any other method.
 
+终结器也可以像其他任何方法一样被显式调用。
+
 The package `java.lang.ref` describes weak references, which interact with garbage collection and finalization. As with any API that has special interactions with the Java programming language, implementors must be cognizant of any requirements imposed by the `java.lang.ref` API. This specification does not discuss weak references in any way. Readers are referred to the API documentation for details.
+
+`java.lang.ref` 包描述了弱引用，弱引用与垃圾收集和终结机制存在交互。和任何与 Java 编程语言有特殊交互的 API 一样，实现者必须了解 `java.lang.ref` API 提出的各项要求。本规范不讨论弱引用方面的内容。详情请读者参阅该 API 的文档。
 
 <a name="jls-12.6.1"></a>
 
 ### 12.6.1. Implementing Finalization
 
+### 12.6.1. 终结的实现
+
 Every object can be characterized by two attributes: it may be *reachable*, *finalizer-reachable*, or *unreachable*, and it may also be *unfinalized*, *finalizable*, or *finalized*.
+
+每个对象都可以用两个属性来描述：它可能是 *可达的(reachable)*、*终结器可达的(finalizer-reachable)* 或 *不可达的(unreachable)*；同时也可能是 *未终结的(unfinalized)*、*可终结的(finalizable)* 或 *已终结的(finalized)*。
 
 A *reachable* object is any object that can be accessed in any potential continuing computation from any live thread.
 
+*可达的对象* 是指：从任意存活线程出发，在任意可能的后续计算中都能访问到的对象。
+
 A *finalizer-reachable* object can be reached from some finalizable object through some chain of references, but not from any live thread.
+
+*终结器可达的对象* 是指：可以通过某条引用链从某个可终结对象到达，但从任何存活线程都无法到达的对象。
 
 An *unreachable* object cannot be reached by either means.
 
+*不可达的对象* 是指上述两种方式都无法到达的对象。
+
 An *unfinalized* object has never had its finalizer automatically invoked.
+
+*未终结的对象* 是指其终结器从未被自动调用过的对象。
 
 A *finalized* object has had its finalizer automatically invoked.
 
+*已终结的对象* 是指其终结器已经被自动调用过的对象。
+
 A *finalizable* object has never had its finalizer automatically invoked, but the Java Virtual Machine may eventually automatically invoke its finalizer.
+
+*可终结的对象* 是指其终结器从未被自动调用过，但 Java 虚拟机最终可能会自动调用其终结器的对象。
 
 An object `o` is not finalizable until its constructor has invoked the constructor for `Object` on `o` and that invocation has completed successfully (that is, without throwing an exception). Every pre-finalization write to a field of an object must be visible to the finalization of that object. Furthermore, none of the pre-finalization reads of fields of that object may see writes that occur after finalization of that object is initiated.
 
+只有当对象 `o` 的构造函数调用了 `o` 的 `Object` 构造函数，并且该调用成功完成（也就是没有抛出异常）之后，对象 `o` 才是可终结的。对某个对象字段的每一次“终结前写入”，都必须对该对象的终结过程可见。此外，对该对象字段的“终结前读取”都不能看到在该对象终结开始之后发生的写入。
+
 Optimizing transformations of a program can be designed that reduce the number of objects that are reachable to be less than those which would naively be considered reachable. For example, a Java compiler or code generator may choose to set a variable or parameter that will no longer be used to `null` to cause the storage for such an object to be potentially reclaimable sooner.
+
+可以设计一些程序优化变换，使得可达对象的数量少于按朴素方式判断出来的可达对象数量。例如，Java 编译器或代码生成器可以把不再使用的变量或参数置为 `null`，从而让这类对象的存储有可能更早被回收。
 
 Another example of this occurs if the values in an object's fields are stored in registers. The program may then access the registers instead of the object, and never access the object again. This would imply that the object is garbage. Note that this sort of optimization is only allowed if references are on the stack, not stored in the heap.
 
+另一个例子是：对象字段的值被保存在寄存器中。此后程序访问的是寄存器而不是该对象，并且再也不会访问该对象，这就意味着该对象已经是垃圾。注意，只有当引用位于栈上、而不是存放在堆中时，才允许这种优化。
+
 For example, consider the *Finalizer Guardian* pattern:
+
+例如，来看 *终结器守护者(Finalizer Guardian)* 模式：
 
 ```java
 class Foo {
@@ -895,50 +953,95 @@ class Foo {
 
 The finalizer guardian forces `super.finalize` to be called if a subclass overrides `finalize` and does not explicitly call `super.finalize`.
 
+如果子类覆写了 `finalize` 却没有显式调用 `super.finalize`，终结器守护者会强制调用 `super.finalize`。
+
 If these optimizations are allowed for references that are stored on the heap, then a Java compiler can detect that the `finalizerGuardian` field is never read, null it out, collect the object immediately, and call the finalizer early. This runs counter to the intent: the programmer probably wanted to call the `Foo` finalizer when the `Foo` instance became unreachable. This sort of transformation is therefore not legal: the inner class object should be reachable for as long as the outer class object is reachable.
+
+如果允许对存放在堆中的引用做这类优化，那么 Java 编译器就会发现 `finalizerGuardian` 字段从未被读取，把它置为 null，立即回收该对象，并提前调用终结器。这与本意相违背：程序员很可能希望在 `Foo` 实例变得不可达时才调用 `Foo` 的终结器。因此，这种变换是不合法的：只要外部类对象是可达的，内部类对象就应该是可达的。
 
 Transformations of this sort may result in invocations of the `finalize` method occurring earlier than might be otherwise expected. In order to allow the user to prevent this, we enforce the notion that synchronization may keep the object alive. *If an object's finalizer can result in synchronization on that object, then that object must be alive and considered reachable whenever a lock is held on it.*
 
+这类变换可能会导致 `finalize` 方法的调用比原本预期的更早发生。为了让使用者能够避免这种情况，我们规定：同步可以让对象保持存活。*如果一个对象的终结器可能导致在该对象上执行同步，那么只要持有该对象上的锁，该对象就必须是存活的，并且被视为可达。*
+
 Note that this does not prevent synchronization elimination: synchronization only keeps an object alive if a finalizer might synchronize on it. Since the finalizer occurs in another thread, in many cases the synchronization could not be removed anyway.
+
+注意，这并不妨碍消除同步：只有当终结器可能在该对象上同步时，同步才会让对象保持存活。由于终结器发生在另一个线程中，在很多情况下这种同步本来也无法消除。
 
 <a name="jls-12.6.2"></a>
 
 ### 12.6.2. Interaction with the Memory Model
 
+### 12.6.2. 与内存模型的交互
+
 It must be possible for the memory model ([§17.4](https://docs.oracle.com/javase/specs/jls/se11/html/jls-17.html#jls-17.4)) to decide when it can commit actions that take place in a finalizer. This section describes the interaction of finalization with the memory model.
+
+内存模型（[§17.4](https://docs.oracle.com/javase/specs/jls/se11/html/jls-17.html#jls-17.4)）必须能够判定：何时可以提交终结器中发生的动作。本节描述终结机制与内存模型之间的交互。
 
 Each execution has a number of *reachability decision points*, labeled *di*. Each action either *comes-before di* or *comes-after di*. Other than as explicitly mentioned, the comes-before ordering described in this section is unrelated to all other orderings in the memory model.
 
+每次执行都有若干个 *可达性判定点(reachability decision points)*，记为 *di*。每个动作要么 *comes-before di*（先于 di 发生），要么 *comes-after di*（后于 di 发生）。除特别说明之外，本节描述的 comes-before 顺序与内存模型中的其他所有顺序都无关。
+
 If *r* is a read that sees a write *w* and *r* comes-before *di*, then *w* must come-before *di*.
+
+如果 *r* 是一次读操作，并且它读到了写入 *w* 的值，且 *r* comes-before *di*，那么 *w* 必须 come-before *di*。
 
 If *x* and *y* are synchronization actions on the same variable or monitor such that *so(x, y)* ([§17.4.4](https://docs.oracle.com/javase/specs/jls/se11/html/jls-17.html#jls-17.4.4)) and *y* comes-before *di*, then *x* must come-before *di*.
 
+如果 *x* 和 *y* 是对同一个变量或监视器(monitor)的同步动作，并且满足 *so(x, y)*（[§17.4.4](https://docs.oracle.com/javase/specs/jls/se11/html/jls-17.html#jls-17.4.4)），且 *y* comes-before *di*，那么 *x* 必须 come-before *di*。
+
 At each reachability decision point, some set of objects are marked as unreachable, and some subset of those objects are marked as finalizable. These reachability decision points are also the points at which references are checked, enqueued, and cleared according to the rules provided in the API documentation for the package `java.lang.ref`.
 
+在每个可达性判定点，都会有一些对象被标记为不可达，其中一部分对象会被标记为可终结。按照 `java.lang.ref` 包 API 文档中给出的规则，对引用进行检查、入队和清除，也是在这些可达性判定点上进行的。
+
 The only objects that are considered definitely reachable at a point *di* are those that can be shown to be reachable by the application of these rules:
+
+在点 *di* 处，只有能通过应用下列规则被证明为可达的对象，才被认为是“确定可达(definitely reachable)”的对象：
 
 - An object `B` is definitely reachable at *di* from `static` fields if there exists a write *w1* to a `static` field `v` of a class C such that the value written by *w1* is a reference to `B`, the class C is loaded by a reachable classloader, and there does not exist a write *w2* to `v` such that *hb(w2, w1)* is not true and both *w1* and *w2* come-before *di*.
 - An object `B` is definitely reachable from `A` at *di* if there is a write *w1* to an element `v` of `A` such that the value written by *w1* is a reference to `B` and there does not exist a write *w2* to `v` such that *hb(w2, w1)* is not true and both *w1* and *w2* come-before *di*.
 - If an object `C` is definitely reachable from an object `B`, and object `B` is definitely reachable from an object `A`, then `C` is definitely reachable from `A`.
 
+- 在 *di* 处，如果存在对类 C 的某个 `static` 字段 `v` 的写入 *w1*，满足：*w1* 写入的值是对 `B` 的引用、类 C 由可达的类加载器加载，并且不存在对 `v` 的写入 *w2* 使得 *hb(w2, w1)* 不成立、且 *w1* 和 *w2* 都 come-before *di*，那么对象 `B` 在 *di* 处从 `static` 字段出发是确定可达的。
+- 在 *di* 处，如果存在对 `A` 的某个元素 `v` 的写入 *w1*，满足：*w1* 写入的值是对 `B` 的引用，并且不存在对 `v` 的写入 *w2* 使得 *hb(w2, w1)* 不成立、且 *w1* 和 *w2* 都 come-before *di*，那么对象 `B` 在 *di* 处从 `A` 出发是确定可达的。
+- 如果对象 `C` 从对象 `B` 确定可达，而对象 `B` 又从对象 `A` 确定可达，那么 `C` 从 `A` 确定可达。
+
 If an object `X` is marked as unreachable at *di*, then:
+
+如果在 *di* 处对象 `X` 被标记为不可达，那么：
 
 - `X` must not be definitely reachable at *di* from `static` fields; and
 - All *active uses* of `X` in thread `t` that come-after *di* must occur in the finalizer invocation for `X` or as a result of thread `t` performing a read that comes-after *di* of a reference to `X`; and
 - All reads that come-after *di* that see a reference to `X` must see writes to elements of objects that were unreachable at *di*, or see writes that came-after *di*.
 
+- `X` 在 *di* 处不能从 `static` 字段出发是确定可达的；并且
+- 线程 `t` 中对 `X` 的所有 *活动使用(active uses)*，凡是 come-after *di*，都必须发生在对 `X` 的终结器调用中，或者是由线程 `t` 在 *di* 之后读到对 `X` 的引用所导致的；并且
+- 所有 come-after *di* 且读到了对 `X` 的引用的读取，读到的必须是在 *di* 处不可达的对象的元素上的写入，或者是 come-after *di* 的写入。
+
 An action *a* is an active use of `X` if and only if at least one of the following is true:
+
+当且仅当下列条件至少有一个成立时，动作 *a* 才是对 `X` 的活动使用：
 
 - *a* reads or writes an element of `X`
 - *a* locks or unlocks `X` and there is a lock action on `X` that happens-after the invocation of the finalizer for `X`
 - *a* writes a reference to `X`
 - *a* is an active use of an object `Y`, and `X` is definitely reachable from `Y`
 
+- *a* 读取或写入 `X` 的某个元素
+- *a* 对 `X` 加锁或解锁，并且存在一个对 `X` 的加锁动作，它 happens-after 对 `X` 的终结器调用
+- *a* 写入对 `X` 的引用
+- *a* 是对某个对象 `Y` 的活动使用，并且 `X` 从 `Y` 确定可达
+
 If an object `X` is marked as finalizable at *di*, then:
+
+如果在 *di* 处对象 `X` 被标记为可终结，那么：
 
 - `X` must be marked as unreachable at *di*; and
 - *di* must be the only place where `X` is marked as finalizable; and
 - actions that happen-after the finalizer invocation must come-after *di*.
+
+- `X` 必须在 *di* 处被标记为不可达；并且
+- *di* 必须是唯一把 `X` 标记为可终结的位置；并且
+- happens-after 终结器调用的动作必须 come-after *di*。
 
 <a name="jls-12.7"></a>
 
@@ -960,7 +1063,7 @@ Java 编程语言的实现可以 *卸载（unload）* 类。
 
 被启动类加载器（bootstrap loader）所加载的类和接口可能不会被卸载。
 
-类卸载是一种优化行为，有助于减少内存占用。 显然，程序的语义不应该依赖于于系统是否卸载类，以及JVM选择如何实现诸如类卸载之类的优化。 否则会损害程序的可移植性。 因此，一个类或接口是否被卸载应该对程序是透明的。
+类卸载是一种优化行为，有助于减少内存占用。 显然，程序的语义不应该依赖于系统是否卸载类，以及JVM选择如何实现诸如类卸载之类的优化。 否则会损害程序的可移植性。 因此，一个类或接口是否被卸载应该对程序是透明的。
 
 However, if a class or interface C was unloaded while its defining loader was potentially reachable, then C might be reloaded. One could never ensure that this would not happen. Even if the class was not referenced by any other currently loaded class, it might be referenced by some class or interface, D, that had not yet been loaded. When D is loaded by C's defining loader, its execution might cause reloading of C.
 
@@ -968,7 +1071,7 @@ Reloading may not be transparent if, for example, the class has `static` variabl
 
 Since we can never guarantee that unloading a class or interface whose loader is potentially reachable will not cause reloading, and reloading is never transparent, but unloading must be transparent, it follows that one must not unload a class or interface while its loader is potentially reachable. A similar line of reasoning can be used to deduce that classes and interfaces loaded by the bootstrap loader can never be unloaded.
 
-但是，假如一个类或接口 C 被卸载了，但定义C的类加载器还可以继续访问的话，那么 C 就有可能会被重新加载。 谁都永远保证这种情况不会发生。 即使该类没有被当前加载的任何其他类所引用，它也可能被一些尚未加载的类或接口 D 引用。 当 D 被定义 C 的类加载器加载时，它的执行可能会导致 C 被重新加载。
+但是，假如一个类或接口 C 被卸载了，但定义C的类加载器还可以继续访问的话，那么 C 就有可能会被重新加载。 谁都永远无法保证这种情况不会发生。 即使该类没有被当前加载的任何其他类所引用，它也可能被一些尚未加载的类或接口 D 引用。 当 D 被定义 C 的类加载器加载时，它的执行可能会导致 C 被重新加载。
 
 重新加载类的过程可能不是透明的, 例如，如果类具有 `static` 变量（那么其状态将会丢失）、静态初始化器（可能有副作用）或  `native` 方法（可能保留静态状态）。 此外，`Class` 对象的哈希值取决于其身份。 因此，通常不可能以完全透明的方式重新加载类或接口。
 
