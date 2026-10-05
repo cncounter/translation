@@ -17,7 +17,7 @@
 
 Google搜索 "catalina.out log format", 看到一些文章, 发现通过 `${tomcat-base}/conf/logging.properties` 文件进行配置。
 
-其中, `${tomcat-base}` 指的是具体运行实例的工作目录。 `${tomcat-home}` 则是安装目录。 
+其中, `${catalina.base}` 指的是具体运行实例的工作目录。 `${catalina.home}` 则是安装目录。 
 
 也就是说, 一台服务器上, 可以安装一份 Tomcat, 指定多个base工作目录, 则可以启动多个实例。
 
@@ -80,6 +80,6 @@ org.apache.catalina.core.ContainerBase.[Catalina].[localhost].[/host-manager].ha
 当然, 能升级最好是升级版本。
 
 
-更多信息，请参考: <https://tomcat.apache.org/tomcat-8.0-doc/logging.html>
+更多信息, 请参考: <https://tomcat.apache.org/tomcat-8.0-doc/logging.html>
 
 2018年5月7日
