@@ -18,7 +18,7 @@ In a 32-bit operating system, JVM can address only up to 4GB (i.e., 2 ^ 32) memo
 
 由于操作系统的限制，32位版本的JVM, 内存地址空间最大只能到 4GB(`2 ^ 32`字节)。
 如果要管理更大的内存，需要使用64位JVM。
-而如果JVM使用64位OOP，则最多可以管理 18.5 Exabytes(`2 ^ 64`字节）。
+而如果JVM使用64位OOP，则最多可以管理 18.5 Exabytes(`2 ^ 64`字节)。
 这是一个非常大的空间。 当今世界上还没有哪台服务器有这么大的物理内存。
 
 > 那么问题来了: 64位JVM上, 使用32位的压缩指针如何管理32GB内存呢?
@@ -38,8 +38,8 @@ What this means is that for a twice as big address, a much larger memory area ca
 
 To activate this feature, you were required to pass `-XX:+UseCompressedOops` JVM argument. However, starting from Java SE 6u23 and later versions, the use of compressed oops is made as default. Thus you don't need to pass this flag explicitly anymore.
 
-要启用这个功能，可以传入JVM启动参数 `-XX:+UseCompressedOops`。
-但从 Java SE 6U23 开始，JVM会默认开启压缩指针。
+要启用这个功能，需要传入JVM启动参数 `-XX:+UseCompressedOops`。
+但从 Java SE 6u23 开始，JVM会默认开启压缩指针。
 因此, 我们不需要再手动传递这个参数。
 
 
