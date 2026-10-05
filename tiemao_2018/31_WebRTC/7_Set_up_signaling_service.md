@@ -36,7 +36,7 @@ In order to set up and maintain a WebRTC call, WebRTC clients (peers) need to ex
 - **Offer** and **answer** messages providing information about media, such as resolution and codecs.
 
 - 候选网络信息(Candidate);
-- 媒介相关的邀请信息(Offer)和响应信息(answer), 比如分辨率(resolution), 编解码器(codec)等。
+- 媒体相关的邀请信息(Offer)和响应信息(answer), 比如分辨率(resolution), 编解码器(codec)等。
 
 In other words, an exchange of metadata is required before peer-to-peer streaming of audio, video, or data can take place. This process is called **signaling**.
 
@@ -44,7 +44,7 @@ In other words, an exchange of metadata is required before peer-to-peer streamin
 
 In the previous steps, the sender and receiver RTCPeerConnection objects are on the same page, so 'signaling' is simply a matter of passing metadata between objects.
 
-在前面的小节中, 发送方和接收方都是同一个页中的 RTCPeerConnection 对象, 所以传递信令只需要在对象间直接拷贝就行, 显得特别简单, 。
+在前面的小节中, 发送方和接收方都是同一个页中的 RTCPeerConnection 对象, 所以传递信令只需要在对象间直接拷贝, 显得特别简单。
 
 In a real world application, the sender and receiver RTCPeerConnections run in web pages on different devices, and you need a way for them to communicate metadata.
 
@@ -85,7 +85,7 @@ WebRTC使用客户端方式的JavaScript API, 在实际应用中, 需要有信�
 
 In this step you'll build a simple Node.js signaling server, using the Socket.IO Node.js module and JavaScript library for messaging. Experience with Node.js and Socket.IO will be useful, but not crucial; the messaging components are very simple.
 
-在本节课程中, 我们先创建简单的 Node.js 信令服务器, 使用 Socket.IO 模块和JavaScript库来传递消息。 如果你熟悉Node.js和Socket.IO, 会比较容易理解； 如果不熟悉也没关系; 消息组件的使用非常简单。
+在本节课程中, 我们先创建简单的 Node.js 信令服务器, 使用 Socket.IO 模块和JavaScript库来传递消息。 如果你熟悉Node.js和Socket.IO, 会比较容易理解； 如果不熟悉也没关系； 消息组件的使用非常简单。
 
 **Choosing the right signaling server**
 
@@ -281,7 +281,7 @@ cnpm install
 
 You should see an installation log that ends something like this:
 
-然后可以看到相关的日志信息.
+然后可以看到相关的日志信息。
 
 
 
