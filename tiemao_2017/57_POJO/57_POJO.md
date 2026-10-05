@@ -24,11 +24,11 @@ The term "POJO" initially denoted a Java object which does not follow any of the
 
 The term continues the pattern of older terms for technologies that do not use fancy new features, such as POTS (Plain Old Telephone Service) in telephony and Pod (Plain Old Documentation) in Perl. The equivalent to POJO on the .NET framework is Plain Old CLR Object (POCO).[3] For PHP, it is Plain Old PHP Object (POPO).
 
-术语仍然旧条款的模式技术,不使用新奇的特性,如锅(普通电话服务)电话和Pod在Perl(旧的纯文本文档).上相当于POJO。净框架是普通CLR对象(略)。[3]为PHP,这是普通PHP对象(泡泡)。
+这个术语延续了以往那些不使用花哨新特性的技术术语的命名模式, 例如电话领域的 POTS(Plain Old Telephone Service, 普通老式电话服务), 以及 Perl 中的 POD(Plain Old Documentation, 普通老式文档)。在 .NET 框架中, 与 POJO 对应的是 POCO(Plain Old CLR Object)[3]; 在 PHP 中则是 POPO(Plain Old PHP Object)。
 
 The POJO phenomenon has most likely gained widespread acceptance because of the need for a common and easily understood term that contrasts with complicated object frameworks.[citation needed]
 
-POJO现象最有可能得到广泛的接受,因为需要一个共同的和容易理解的术语,与复杂的对象框架。[引文需要]
+POJO 现象之所以能被广泛接受, 最可能是因为人们需要一个通俗易懂、且与复杂对象框架形成对照的术语。[需要引用]
 
 ## Definition
 
@@ -36,9 +36,11 @@ POJO现象最有可能得到广泛的接受,因为需要一个共同的和容易
 
 Ideally speaking, a POJO is a Java object not bound by any restriction other than those forced by the Java Language Specification; i.e. a POJO **should not** have to
 
-理论上讲,一个POJO是一个Java对象不受任何限制其他比Java语言规范强制的;即一个POJO * *不* *
+理论上讲, 一个 POJO 是不受除 Java 语言规范强制要求之外的任何约束的 Java 对象; 也就是说, 一个 POJO **不应** 被迫:
 
 1.  Extend prespecified classes, as in
+
+1. 继承预先指定的类, 例如
 
 ```java
 public class Foo extends javax.servlet.http.HttpServlet { ...
@@ -56,7 +58,7 @@ public class Bar implements javax.ejb.EntityBean { ...
 
 3.  Contain prespecified [annotations](https://en.wikipedia.org/wiki/Java_annotation "Java annotation"), as in
 
-3. 包含指定[注释](https://en.wikipedia.org/wiki/Java_annotation“Java注释”),如
+3. 包含预先指定的[注解](https://en.wikipedia.org/wiki/Java_annotation "Java annotation"), 例如
 
 ```java
 @javax.persistence.Entity public class Baz { ...
@@ -65,7 +67,7 @@ public class Bar implements javax.ejb.EntityBean { ...
 
 However, due to technical difficulties and other reasons, many software products or frameworks described as POJO-compliant actually still require the use of prespecified annotations for features such as persistence to work properly. The idea is that if the object (actually class) was a POJO before any annotations were added, and would return to POJO status if the annotations are removed then it can still be considered a POJO. Then the basic object remains a POJO in that it has no special characteristics (such as an implemented interface) that makes it a "Specialized Java Object" (SJO or (sic) SoJO).
 
-然而,由于技术上的困难和其他原因,许多软件产品或框架描述为POJO-compliant实际上仍然需要指定注释的使用特性,比如坚持正常工作.实际上我们的想法是,如果对象(类)是一个POJO之前添加了注释,并将返回POJO状态如果注释删除然后它仍然可以被认为是一个POJO.然后基本的对象仍然是一个POJO,它没有特色(如一个接口实现),使其成为一个“专业Java对象”(SJO或(原文如此)SoJO)。
+然而, 由于技术上的困难以及其他原因, 许多号称符合 POJO 的软件产品或框架, 实际上仍然要求使用预先指定的注解, 才能让持久化之类的功能正常工作。其思路是: 如果某个对象(实际上是类)在添加任何注解之前是一个 POJO, 并且在移除这些注解后又能恢复为 POJO, 那么它仍然可以被视为 POJO。此时基础对象依然是 POJO, 因为它没有使其成为"专用 Java 对象"(SJO 或 (原文如此) SoJO) 的特殊特征(例如实现了某个接口)。
 
 ## Contextual variations
 
@@ -77,11 +79,11 @@ However, due to technical difficulties and other reasons, many software products
 
 A [JavaBean](https://en.wikipedia.org/wiki/JavaBean "JavaBean") is a POJO that is [serializable](https://en.wikipedia.org/wiki/Serialization#Java "Serialization"), has a no-argument [constructor](https://en.wikipedia.org/wiki/Constructor_(computer_science) "Constructor (computer science)"), and allows access to properties using [getter and setter methods](https://en.wikipedia.org/wiki/Mutator_method "Mutator method") that follow a simple naming convention. Because of this convention, simple declarative references can be made to the properties of arbitrary JavaBeans. Code using such a declarative reference does not have to know anything about the type of the bean, and the bean can be used with many frameworks without these frameworks having to know the exact type of the bean. The JavaBeans specification, if fully implemented, slightly breaks the POJO model as the class must implement the [Serializable](https://en.wikipedia.org/wiki/Serialization#Java "Serialization") interface to be a true JavaBean. Many POJO classes still called JavaBeans do not meet this requirement. Since [Serializable](https://en.wikipedia.org/wiki/Serialization "Serialization") is a marker (method-less) interface, this is not much of a burden.
 
-(JavaBean)(https://en.wikipedia.org/wiki/JavaBean“对象”)是一个POJO(序列化)(https://en.wikipedia.org/wiki/Serialization # Java“序列化”),有一个无参数构造函数(https://en.wikipedia.org/wiki/Constructor_(computer_science)“构造函数(计算机科学)”),并允许访问属性使用getter和setter方法(https://en.wikipedia.org/wiki/Mutator_method Mutator方法),遵循一个简单的命名约定。因为本公约,简单声明属性的引用可以任意的javabean.代码使用这样一个声明引用不需要知道任何关于类型的bean,与许多框架可以使用bean没有这些框架需要知道确切的类型的bean.JavaBeans规范,如果完全实现,略休息POJO模型的类必须实现Serializable(https://en.wikipedia.org/wiki/Serialization # Java序列化)接口是一个真正的JavaBean。许多POJO类仍然叫javabean不符合这个要求。因为(序列化)(https://en.wikipedia.org/wiki/Serialization“序列化”)是一个标记(method-less)接口,这不是太大的负担。
+[JavaBean](https://en.wikipedia.org/wiki/JavaBean "JavaBean") 是一种 [可序列化](https://en.wikipedia.org/wiki/Serialization#Java "Serialization")、具有无参[构造方法](https://en.wikipedia.org/wiki/Constructor_(computer_science) "Constructor (computer science)")、并允许通过遵循简单命名约定的 [getter 和 setter 方法](https://en.wikipedia.org/wiki/Mutator_method "Mutator method") 访问属性的 POJO。正因为这一约定, 我们可以对任意 JavaBean 的属性使用简单的声明式引用。使用这种声明式引用的代码无需了解 bean 类型的任何信息, 而 bean 也可以被许多框架使用, 这些框架同样无需知道 bean 的确切类型。JavaBeans 规范如果被完全实现, 会在一定程度上破坏 POJO 模型, 因为类必须实现 [Serializable](https://en.wikipedia.org/wiki/Serialization#Java "Serialization") 接口才算真正的 JavaBean。许多仍被称为 JavaBean 的 POJO 类并不满足这一要求。由于 [Serializable](https://en.wikipedia.org/wiki/Serialization "Serialization") 只是一个标记(无方法)接口, 所以这不会带来太大负担。
 
 The following shows an example of a [JavaServer Faces](https://en.wikipedia.org/wiki/JavaServer_Faces "JavaServer Faces") (JSF) component having a [bidirectional](https://en.wikipedia.org/wiki/Duplex_(telecommunications) "Duplex (telecommunications)") binding to a POJO's property:
 
-下面展示了一个示例(JavaServer Faces)(https://en.wikipedia.org/wiki/JavaServer_Faces JavaServer Faces)(JSF)组件(双向)(https://en.wikipedia.org/wiki/Duplex_(电信)“满足”(电信))binding to a POJO的财产:
+下面展示了一个示例: 一个 [JavaServer Faces](https://en.wikipedia.org/wiki/JavaServer_Faces "JavaServer Faces")(JSF)组件与某个 POJO 的属性之间建立了[双向](https://en.wikipedia.org/wiki/Duplex_(telecommunications) "Duplex (telecommunications)")绑定:
 
 ```html
 <h:inputText value="#{MyBean.someProperty}"/>
@@ -110,7 +112,7 @@ public class MyBean {
 
 Because of the JavaBean naming conventions the single "someProperty" reference can be automatically translated to the "getSomeProperty()" (or "isSomeProperty()" if the property is of [Boolean type](https://en.wikipedia.org/wiki/Boolean_type "Boolean type")) method for getting a value, and to the "setSomeProperty(String)" method for setting a value.
 
-因为JavaBean命名约定单一“someProperty”引用可以自动翻译“getSomeProperty()”(或“isSomeProperty()“如果[布尔的属性 类型)(https://en.wikipedia.org/wiki/Boolean_type“布尔类型”))方法获取一个值,和“setSomeProperty(字符串)“方法设置一个值。
+因为 JavaBean 命名约定的存在, 单个 "someProperty" 引用可以被自动转换为 "getSomeProperty()"(如果该属性是[布尔类型](https://en.wikipedia.org/wiki/Boolean_type "Boolean type"), 则转换为 "isSomeProperty()")方法来获取值, 并转换为 "setSomeProperty(String)" 方法来设置值。
 
 ### Transparently adding services
 
@@ -118,11 +120,11 @@ Because of the JavaBean naming conventions the single "someProperty" reference c
 
 As designs using POJOs have become more commonly used, systems have arisen that give POJOs the full functionality used in frameworks and more choice about which areas of functionality are actually needed. In this model, the programmer creates nothing more than a POJO. This POJO purely focuses on [business logic](https://en.wikipedia.org/wiki/Business_logic "Business logic") and has no dependencies on (enterprise) frameworks. [Aspect-oriented programming](https://en.wikipedia.org/wiki/Aspect-oriented_programming "Aspect-oriented programming") (AOP) frameworks then transparently add cross-cutting concerns like persistence, transactions, security, and so on.
 
-使用pojo的设计变得更加常用,系统出现给pojo中使用的完整功能框架和更多的选择哪些领域的功能实际上是必要的.在这个模型中,程序员创建一个POJO。这个POJO纯粹关注业务逻辑(https://en.wikipedia.org/wiki/Business_logic“业务逻辑”)和没有依赖关系(企业)框架。面向方面的编程(https://en.wikipedia.org/wiki/Aspect-oriented_programming“面向方面编程”)(AOP)框架然后透明地添加横切关注点,如持久性、事务、安全性,等等。
+随着使用 POJO 的设计变得越来越常见, 出现了一些系统, 它们赋予 POJO 框架中所用的完整功能, 并在真正需要哪些功能领域方面提供了更多选择。在这种模型中, 程序员只需创建一个 POJO。这个 POJO 纯粹专注于[业务逻辑](https://en.wikipedia.org/wiki/Business_logic "Business logic"), 不依赖任何(企业级)框架。随后, [面向切面编程](https://en.wikipedia.org/wiki/Aspect-oriented_programming "Aspect-oriented programming")(AOP)框架会透明地添加持久化、事务、安全等横切关注点。
 
 [Spring](https://en.wikipedia.org/wiki/Spring_Framework "Spring Framework") was an early implementation of this idea and one of the driving forces behind popularizing this model.
 
-(春天)(https://en.wikipedia.org/wiki/Spring_Framework“Spring框架”)是一个早期实施这个想法和推广这种模式背后的驱动力之一。
+[Spring](https://en.wikipedia.org/wiki/Spring_Framework "Spring Framework") 是这一思想的早期实现, 也是推广这种模型的驱动力之一。
 
 An example of an EJB bean being a POJO:
 
@@ -132,9 +134,9 @@ An example of an EJB bean being a POJO:
 *   [Java Persistence API](https://en.wikipedia.org/wiki/Java_Persistence_API "Java Persistence API") (JPA) (including [Hibernate](https://en.wikipedia.org/wiki/Hibernate_(Java) "Hibernate (Java)"))
 *   [CDI (Contexts and Dependency Injection for the Java EE platform)](http://jcp.org/en/jsr/summary?id=299)
 
-*(Enterprise javabean)(https://en.wikipedia.org/wiki/Enterprise_JavaBeans Enterprise javabean)(EJB),
-*[](API https://en.wikipedia.org/wiki/Java_Persistence_API爪哇持久性”(API爪哇坚忍不拔的JPA)”)(包括[Hibernate](https://en.wikipedia.org/wiki/Hibernate_(爪哇)“Hibernate(爪哇)”))
-*(CDI(Java EE平台的上下文和依赖注入))(http://jcp.org/en/jsr/summary?id=299)
+*   [Enterprise JavaBeans](https://en.wikipedia.org/wiki/Enterprise_JavaBeans "Enterprise JavaBeans") (EJB),
+*   [Java Persistence API](https://en.wikipedia.org/wiki/Java_Persistence_API "Java Persistence API") (JPA)(包括 [Hibernate](https://en.wikipedia.org/wiki/Hibernate_(Java) "Hibernate (Java)"))
+*   [CDI(Java EE 平台的上下文和依赖注入)](http://jcp.org/en/jsr/summary?id=299)
 
 The following shows a fully functional EJB bean, demonstrating how EJB3 leverages the POJO model:
 
@@ -151,7 +153,7 @@ public class HelloWorldService {
 
 As given, the bean does not need to extend any EJB class or implement any EJB interface and also does not need to contain any EJB annotations. Instead, the programmer declares in an external [XML](https://en.wikipedia.org/wiki/XML "XML") file which EJB services should be added to the bean:
 
-鉴于,豆不需要扩展任何EJB类或实现任何EJB接口,也不需要包含任何EJB注释.相反,程序员声明在一个外部文件(XML)(https://en.wikipedia.org/wiki/XML“XML”)应该被添加到bean:EJB服务
+如上所示, 这个 bean 不需要继承任何 EJB 类, 也不需要实现任何 EJB 接口, 同样不需要包含任何 EJB 注解。相反, 程序员在一个外部 [XML](https://en.wikipedia.org/wiki/XML "XML") 文件中声明应向该 bean 添加哪些 EJB 服务:
 
 ```xml
 <enterprise-beans>
@@ -170,7 +172,7 @@ In practice, some people find annotations elegant, while they see XML as verbose
 
 Thus, as an alternative to XML, many frameworks (e.g. Spring, EJB and JPA) allow annotations to be used instead of or in addition to XML. The following shows the same EJB bean as showed above but with an annotation added. In this case the XML file is no longer needed:
 
-因此,作为替代XML,许多框架(如弹簧、EJB和JPA)允许注释,而不是使用或除了XML.下面显示了相同的EJB bean如上显示,但是添加了一个注释。在这种情况下,XML文件不再需要:
+因此, 作为 XML 的替代方案, 许多框架(例如 Spring、EJB 和 JPA)允许使用注解来替代 XML, 或者与 XML 配合使用。下面展示了与上面相同的 EJB bean, 只是添加了一个注解。在这种情况下, 不再需要 XML 文件:
 
 ```java
 @Stateless
@@ -185,7 +187,7 @@ public class HelloWorldService {
 
 With the annotation as given above the bean isn't a truly pure POJO anymore, but since annotations are merely passive metadata this has far fewer harmful drawbacks compared to the invasiveness of having to extend classes and/or implement interfaces. Accordingly, the programming model is still very much like the pure POJO model.
 
-与注释上面给出的bean并不是一个真正纯粹的POJO,但由于仅仅是被动的元数据注释这相比有更少的有害缺陷的侵袭性扩展类和/或接口实现.因此,编程模型还很像纯POJO模型。
+加上上面给出的注解之后, 这个 bean 就不再是一个真正纯粹的 POJO 了, 但由于注解仅仅是被动的元数据, 与"必须继承类和/或实现接口"这种侵入性做法相比, 它的有害缺陷要少得多。因此, 这种编程模型仍然非常接近纯粹的 POJO 模型。
 
 ## See also
 
@@ -194,8 +196,8 @@ With the annotation as given above the bean isn't a truly pure POJO anymore, but
 *   [Data transfer object](https://en.wikipedia.org/wiki/Data_transfer_object "Data transfer object") (DTO)
 *   [Anemic domain model](https://en.wikipedia.org/wiki/Anemic_domain_model "Anemic domain model")
 
-*(数据传输对象)(https://en.wikipedia.org/wiki/Data_transfer_object数据传输对象)(DTO)
-*(贫血领域模型)(https://en.wikipedia.org/wiki/Anemic_domain_model域模型)
+*   [数据传输对象](https://en.wikipedia.org/wiki/Data_transfer_object "Data transfer object")(DTO)
+*   [贫血领域模型](https://en.wikipedia.org/wiki/Anemic_domain_model "Anemic domain model")
 
 
 
@@ -203,15 +205,15 @@ With the annotation as given above the bean isn't a truly pure POJO anymore, but
 
 > From <https://spring.io/understanding/POJO>
 
-> 从< https://spring.io/understanding/POJO >
+> 从 <https://spring.io/understanding/POJO>
 
 POJO means **Plain Old Java Object**. It refers to a Java object (instance of definition) that isn't bogged down by framework extensions.
 
-POJO意味着* * * *普通Java对象。它指的是一个Java对象(实例定义)这不是框架扩展的泥潭。
+POJO 意为 **Plain Old Java Object**(普通的 Java 对象)。它指的是一个不会被框架扩展所束缚的 Java 对象(定义的实例)。
 
 For example, to receive messages from JMS, you need to write a class that implements the `MessageListener` interface.
 
-例如,JMS接收消息,您需要编写一个类,它实现了`MessageListener`接口。
+例如, 要从 JMS 接收消息, 你需要编写一个实现了 `MessageListener` 接口的类。
 
 ```
 public class ExampleListener implements MessageListener {
@@ -235,11 +237,11 @@ public class ExampleListener implements MessageListener {
 
 This ties your code to a particular solution (JMS in this example) and makes it hard to later migrate to an alternative messaging solution. If you build your application with lots of listeners, choosing AMQP or something else can become hard or impossible based on biting off this much technical debt.
 
-这关系你的代码到一个特定的解决方案(在这个例子中JMS),以后很难迁移到另一个消息传递解决方案.如果您构建您的应用程序有很多听众,选择AMQP或别的东西可以变得很难或不可能基于咬掉这么多技术债务。
+这会把你的代码绑定到某个特定的解决方案(本例中是 JMS), 使得日后迁移到其他消息传递方案变得困难。如果你在应用程序中使用了大量这样的监听器, 那么由于积累了这么多技术债, 选择 AMQP 或其他方案可能会变得困难甚至不可能。
 
 A POJO-driven approach means writing your message handling solution free of interfaces.
 
-POJO-driven方法意味着编写消息处理解决方案的接口。
+POJO 驱动的方式意味着在不依赖接口的前提下编写消息处理方案。
 
 ```
 @Component
@@ -254,28 +256,28 @@ public class ExampleListener {
 
 In this example, your code isn't directly tied to any interface. Instead, the responsibility of connecting it to a JMS queue is moved into annotations, which are easier to update. In this specific example, you could replace `@JmsListener` with `@RabbitListener`. In other situations, it's possible to have POJO-based solutions without ANY specific annotations.
 
-在这个例子中,您的代码不直接绑定到任何接口。相反,连接到一个JMS队列的责任是进入注释,这是容易更新.在这个特定的例子中,你可以替换`@JmsListener`与`@RabbitListener`。在其他情况下,可以基于pojo的解决方案没有任何具体的注释。
+在这个例子中, 你的代码并不直接绑定到任何接口。相反, 将其连接到 JMS 队列的职责被移到了注解里, 这样更容易更新。在这个特定的例子中, 你可以把 `@JmsListener` 替换为 `@RabbitListener`。在其他情况下, 也可以实现不带任何特定注解的基于 POJO 的方案。
 
 This is just one example. It is not meant to illustrate JMS vs. RabbitMQ, but instead the value of coding without being tied to specific interfaces. By using **plain old Java objects**, your code can be much simpler. This lends itself to better testing, flexibility, and ability to make new decisions in the future.
 
-这只是一个例子。这不是为了说明JMS和RabbitMQ,而是编码的值没有被绑定到特定的接口.通过使用* * * *普通Java对象,代码可以简单得多。这有助于更好地测试、灵活性和能力在未来做出新的决定。
+这只是一个例子。它并不是要说明 JMS 与 RabbitMQ 孰优孰劣, 而是要说明在不绑定特定接口的前提下编码的价值。通过使用 **普通 Java 对象**, 你的代码可以简单得多。这有助于获得更好的可测试性、灵活性, 以及在未来做出新决策的能力。
 
 The Spring Framework and its various portfolio projects are always aiming for ways to reduce coupling between your code and existing libraries. This is a principle concept of dependency injection, where the way your service is utilized should be part of wiring the application and not the service itself.
 
-Spring框架和它的各种组合项目总是瞄准方法来减少代码之间的耦合和现有的库.这是一个依赖注入的原理概念,您的服务的方式是利用应该是连接应用程序的一部分,而不是服务本身。
+Spring 框架及其各种组合项目始终在寻求减少代码与现有库之间耦合的方法。这是依赖注入的一个核心原则: 你的服务被使用的方式, 应当属于应用程序装配的一部分, 而不是服务本身的一部分。
 
 
 # What is POJO in Java?
 
-# 用Java POJO是什么?
+# Java 中的 POJO 是什么?
 
 > From <https://www.quora.com/What-is-POJO-in-Java>
 
-> 从https://www.quora.com/What-is-POJO-in-Java > <
+> 从 <https://www.quora.com/What-is-POJO-in-Java>
 
 POJO stands for “Plain Old Java Object” — it’s a pure data structure that has fields with getters and possibly setters, and may override some methods from Object (e.g. equals) or some other interface like Serializable, but does not have behavior of its own. It’s the Java equivalent of a C `struct`
 
-POJO代表“普通旧式Java对象”——这是一个纯粹的数据结构,字段getter和setter,并且可能覆盖一些方法从对象(如.equals)或some,目的Serializable like界面other减损父母亲of its own。“the爪哇差别of a C`struct`
+POJO 代表“Plain Old Java Object”(普通老式 Java 对象)——它是一种纯粹的数据结构, 包含带 getter(可能还有 setter)的字段, 并且可以覆盖 Object 中的某些方法(例如 equals)或某个接口(如 Serializable)的方法, 但它本身不具有自己的行为。它相当于 Java 世界里的 C 语言 `struct`。
 
 For example, this is a POJO:
 
@@ -296,11 +298,11 @@ For example, this is a POJO:
 
 As soon as you start adding methods that operate on points, like vector addition or complex multiplication, you no longer have a POJO.
 
-一旦你开始添加方法,操作点,向量加法或复杂的乘法,你不再有一个POJO。
+一旦你开始添加对点进行操作的方法, 比如向量加法或复数乘法, 它就不再是一个 POJO 了。
 
 POJOs can have all of their methods defined automatically based on their field names and types — IDEs can do this for you, but the most elegant way is to use the annotations defined by [Project Lombok](https://projectlombok.org/):
 
-pojo可以定义所有的方法自动根据字段名称和类型——ide可以为你这样做,但最优雅的方式是使用定义的注释(Project Lombok)(https://projectlombok.org/):
+POJO 可以根据字段名称和类型自动定义它的所有方法 —— IDE 可以帮你做到这一点, 但最优雅的方式是使用 [Project Lombok](https://projectlombok.org/) 提供的注解:
 
 ```
 
@@ -320,4 +322,3 @@ pojo可以定义所有的方法自动根据字段名称和类型——ide可以�
 - quora的回答: <https://www.quora.com/What-is-POJO-in-Java>
 
 - Spring文档: <https://spring.io/understanding/POJO>
-
