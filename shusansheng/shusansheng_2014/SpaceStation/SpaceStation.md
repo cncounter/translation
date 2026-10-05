@@ -12,7 +12,7 @@
 
 **空间站用着陆舱寄东西给地球**
 
-[领英公司,Intuitive Machines](http://intuitivemachines.com/news/trv/) 制造的返回舱将改变这一状况。 返回舱是一个小小的舱体, 看起来有点像 [天梭](http://www.extremetech.com/tag/space-shuttle) 或者是没有翅膀的 [波音 X-37B 太空飞船](http://www.extremetech.com/extreme/181426-us-militarys-mysterious-x-37b-space-plane-passes-500-days-in-orbit-but-we-still-have-no-clue-what-its-actually-doing-up-there)。 我们现在还不确定返回舱的具体尺寸, 但长度应该不会超过一米。 从上面的概念图大致可以看出, 它的大小跟一个小孩差不多。(但早期的 TRV 肯定不能快递活着的生物啦^_^)。 从图中可以看到, 我们将返回舱装满科学样本, 然后通过气闸, 接着用日本制造的机器手推入太空。 它和其他航天器一样,穿过大气层返回地球, 在最后阶段展开降落伞减慢速度, 然后还会有一个更大的降落伞让它安全地着陆在犹他州(Utah)。
+[领英公司,Intuitive Machines](http://intuitivemachines.com/news/trv/) 制造的返回舱将改变这一状况。 返回舱是一个小小的舱体, 看起来有点像 [航天飞机](http://www.extremetech.com/tag/space-shuttle) 或者是没有翅膀的 [波音 X-37B 太空飞船](http://www.extremetech.com/extreme/181426-us-militarys-mysterious-x-37b-space-plane-passes-500-days-in-orbit-but-we-still-have-no-clue-what-its-actually-doing-up-there)。 我们现在还不确定返回舱的具体尺寸, 但长度应该不会超过一米。 从上面的概念图大致可以看出, 它的大小跟一个小孩差不多。(但早期的 TRV 肯定不能快递活着的生物啦^_^)。 从图中可以看到, 我们将返回舱装满科学样本, 然后通过气闸, 接着用日本制造的机械臂推入太空。 它和其他航天器一样,穿过大气层返回地球, 在最后阶段展开降落伞减慢速度, 然后还会有一个更大的降落伞让它安全地着陆在犹他州(Utah)。
 
 扩展阅读: [SpaceX把首台零重力3D打印机送到空间站](http://www.extremetech.com/extreme/190629-spacex-rocket-launches-to-the-space-station-carrying-the-first-ever-zero-g-3d-printer)
 
@@ -26,7 +26,7 @@ Intuitive Machines 正和 NASA 以及 CASIS合作开发着陆舱。空间科学�
 
 
 
-(NASA最近准备将老鼠送到国际空间站, 但现在的计划是将其解刨后,把冻结器官送回地球 —— 但我觉得将活着的动物用返回舱寄回地球要人道一点)。
+(NASA最近准备将老鼠送到国际空间站, 但现在的计划是将其解剖后,把冻结器官送回地球 —— 但我觉得将活着的动物用返回舱寄回地球要人道一点)。
 
 **更多阅读**: 
 
@@ -35,7 +35,7 @@ Intuitive Machines 正和 NASA 以及 CASIS合作开发着陆舱。空间科学�
 
 [认真看待 4K TV 的设计](http://robbreport.com/sony/articles/taking-4K-design-seriously)
 
-[我们战胜气候变化的6大法宝 (第一条绝对让你吃一斤!)](http://decarboni.se/insights/top-6-ways-well-beat-climate-change-number-1-will-surprise-you?utm_source=ob&utm_source=ob)
+[我们战胜气候变化的6大法宝 (第一条绝对让你吃惊!)](http://decarboni.se/insights/top-6-ways-well-beat-climate-change-number-1-will-surprise-you?utm_source=ob&utm_source=ob)
 
 [可以终止气候变化的5项科技](http://decarboni.se/insights/5-technologies-will-disrupt-climate-change?utm_source=ob&utm_source=ob)
 
