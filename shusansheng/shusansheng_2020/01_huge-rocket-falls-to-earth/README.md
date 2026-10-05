@@ -8,11 +8,11 @@ The Long March 5B is China’s next-generation launch platform with a payload ca
 
 Most space launches include the release of rocket stages over open ocean, or in the case of SpaceX, landed on a drone ship. Uncontrolled reentry of space debris is not uncommon, but the pieces are rarely as large as the 17.8-ton Long March stage. This was the largest uncontrolled reentry since the 39-ton Soviet Salyut 7 space station crashed to Earth in 1991.
 
-中国上周庆祝成功，当时它的原型载人航天器在轨道上运行了几天后返回地球。它是借助新型的更强大的火箭（长征5B）到达那里的。核心舞台一直停留在太空中，直到昨天溅入大西洋。不过，这并不是一点点空间碎片。中国火箭级是几十年来最大的无节制重返。
+中国上周庆祝成功，当时它的原型载人航天器在轨道上运行了几天后返回地球。它是借助新型的更强大的火箭（长征5B）到达那里的。火箭芯级一直留在太空中，直到昨天溅入大西洋。不过，这可不是一小块太空碎片。中国这次坠落的火箭级段，是几十年来最大的不受控再入。
 
-长征5B号是中国的下一代发射平台，其有效载荷能力略高于SpaceX Falcon9。中国希望使用这枚新火箭在地球轨道上组装一个模块化空间站，因此它对测试舱的重量施加了额外的负担燃料以模拟20吨工位。该航天器上周安全返回地球，但核心级火箭一直呆在太空中，直到昨天它不受控制地坠落到地球上。
+长征5B号是中国的下一代发射平台，其有效载荷能力略高于SpaceX Falcon9。中国希望使用这枚新火箭在地球轨道上组装一个模块化空间站，因此它用额外的燃料给测试舱增重，以模拟 20 吨重的空间站舱段。该航天器上周安全返回地球，但火箭芯级一直留在太空中，直到昨天它不受控制地坠落到地球上。
 
-大多数太空发射都包括在公海中释放火箭级，或者在SpaceX的情况下，将其放到无人机上。不受控制地进入太空碎片的情况并不少见，但碎片很少像17.8吨长征阶段那样大。这是自1991年39吨重的苏联礼炮7号太空站撞向地球以来最大的一次不受控制的重返。
+大多数太空发射都会在公海上空抛弃火箭级段，或者在 SpaceX 的情况下，让它降落在回收无人船上。太空碎片不受控再入的情况并不少见，但碎片很少像 17.8 吨的长征火箭级段这么大。这是自 1991 年 39 吨重的苏联礼炮 7 号空间站坠向地球以来最大的一次不受控再入。
 
 The odds of an unneeded satellite or rocket segment hitting anything important are small, but space agencies still try to drop them in the ocean via controlled reentry. China did plan for the booster to fall to Earth, but it didn’t know where. Its resting place turned out to be just off the coast of Africa, about 100 miles from Mauritania.
 
@@ -20,11 +20,11 @@ Astronomer Jonathan McDowell from the Harvard-Smithsonian Center for Astrophysic
 
 China is moving aggressively to send astronauts beyond low-Earth orbit, and the recovery of its experimental capsule from a high orbit is a significant step in accomplishing that goal. We can expect more rocket segments to drop out of the sky as China continues its testing. Hopefully, they’re a bit more careful where the equipment drops, though.
 
-不需要的卫星或火箭弹击中任何重要物体的几率很小，但太空机构仍试图通过控制性的重返过程将它们抛入海洋。中国确实计划将助推器降落到地球，但它不知道在哪里。原来它的安息之地就在非洲海岸附近，距毛里塔尼亚约100英里。
+多余的卫星或火箭级段砸中重要目标的概率很小，但航天机构仍会尽量通过受控再入把它们丢进海洋。中国确实计划让助推器落回地球，但并不知道会落在哪里。它最终的坠落地点就在非洲海岸附近，距毛里塔尼亚约 100 英里。
 
-哈佛-史密森尼天体物理学中心的天文学家乔纳森·麦克道威尔说，他从未见过像大长征5B那样，有如此大规模的再入口越过人口稠密的地区。在下降期间，它甚至飞越纽约市仅105英里（170公里）。作为一个不受控制的重返市场，中国政府在这个阶段没有任何发言权，但是您可以辩称，让它在没有任何计划的情况下重新进入大气层是不负责任的。
+哈佛-史密森尼天体物理学中心的天文学家乔纳森·麦克道威尔(Jonathan McDowell)说，他从未见过一次重大再入会像长征 5B 这样飞越如此多的人口稠密地区。在下降过程中，它甚至从纽约市上空仅 105 英里（170 公里）处掠过。由于这是一次不受控再入，中国政府无法决定芯级的飞行轨迹，但你可以说，在毫无计划的情况下让它再入大气层是不负责任的。
 
-中国正在积极采取行动，将宇航员送离低地球轨道，从高轨道上恢复其实验舱是实现这一目标的重要一步。我们可以预期，随着中国继续进行测试，更多的火箭弹将从天上掉下来。希望他们在设备掉落的地方更加谨慎。
+中国正积极行动，要把宇航员送往近地轨道之外，而从高轨道回收其试验舱是实现这一目标的重要一步。可以预见，随着中国继续测试，还会有更多火箭级段从天而降。不过，希望他们在设备坠落地点上能更谨慎一些。
 
 
 - https://www.extremetech.com/extreme/310438-huge-chinese-rocket-stage-falls-to-earth-in-uncontrolled-reentry
