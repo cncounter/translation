@@ -5,7 +5,7 @@
 
 ## 不能回滚的语句(Statements you can’t ROLLBACK)
 
-很遗憾滴通知你, 并不是所有的数据库操作都支持回滚( ROLLBACK ) 。如果你更改数据库/表结构(schema), 所有当前事务都会被提交, 而升级(alteration )将会在其独有的事务中运行(不属于任何客户端事务)。这些语句包括:
+很遗憾滴通知你, 并不是所有的数据库操作都支持回滚( ROLLBACK ) 。如果你更改数据库/表结构(schema), 所有当前事务都会被提交, 而升级(alteration)将会在其独有的事务中运行(不属于任何客户端事务)。这些语句包括:
 
 - CREATE DATABASE
 - ALTER DATABASE
@@ -39,13 +39,13 @@
 	-- 没机会了,数据已经不要你了. no chance, mate - your data's gone
 
 
->###提示: 临时表(TEMPORARY)
+> ### 提示: 临时表(TEMPORARY)
 > 创建、升级和删除(CREATE, ALTER, and DROP)临时表并不会引起隐式提交(implicit COMMIT. )。当然,这些操作也是不能回滚的。
 
 
 ## 保存点(Savepoint)
 
-我们对异常那是爱之深责之切,那么让我们来看看另一个设计优美的部分。保存点(Savepoint)是事务中有效的命名位置。你可以回滚到某个保存点而不影响改点之前的SQL更新。。。有点像Photoshop中的历史面板。
+我们对异常那是爱之深责之切,那么让我们来看看另一个设计优美的部分。保存点(Savepoint)是事务中有效的命名位置。你可以回滚到某个保存点而不影响该点之前的SQL更新。。。有点像Photoshop中的历史面板。
 
 最简单的方法，我们一起来看个示例:
 
