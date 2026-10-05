@@ -27,7 +27,7 @@
 
     
 
-通过这些启动参数, `Test` 类将运行在调试模式下, 并等待调试器连接到JVM的调试地址: 在Windows上是 `debug`, 在Oracle Solaris 或 Linux操作系统上是 `8888`端口 。
+通过这些启动参数, `Test` 类将运行在调试模式下, 并等待调试器连接到JVM的调试地址: 在Windows上是 `debug`, 在Oracle Solaris 或 Linux操作系统上是 `8888`端口。
 
 
 ### 3. 新开一个命令行窗口, 并使用以下命令来启动 “jdb” 并将它连接到正在运行的调试服务器:
@@ -63,7 +63,7 @@
 当 `jdb` 工具执行到断点时, 就可以探查程序的当前上下文,以判断程序是否按预期正常运行。
 
 
-### 5。(可选) 要进行 native-level 的调试, 请在运行JDWP的Java进程上附加 native debuggers 。
+### 5. (可选) 要进行 native-level 的调试, 请在运行JDWP的Java进程上附加 native debuggers。
 
 
 在 Oracle Solaris上, 可以使用 `dbx` 工具, 在 Linux 上, 可以使用 `gdb` 工具。
