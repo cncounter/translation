@@ -80,7 +80,7 @@ Add a link to the current version of [**adapter.js**](https://github.com/webrtc/
 
 **adapter.js** is a shim to insulate apps from spec changes and prefix differences. (Though in fact, the standards and protocols used for WebRTC implementations are highly stable, and there are only a few prefixed names.)
 
-**adapter.js** 是一个适配程序, 隔离了应用程序和规范之间的变更、前缀等差异.(当然, WebRTC实现所使用的标准和协议都已经是稳定版了, 有前缀的API也没几个。)
+**adapter.js** 是一个适配程序, 隔离了应用程序和规范之间的变更、前缀等差异。(当然, WebRTC实现所使用的标准和协议都已经是稳定版了, 有前缀的API也没几个。)
 
 In this step, we've linked to the most recent version of **adapter.js**, which is fine for a codelab but not may not be right for a production app**. **The [adapter.js GitHub repo](https://github.com/webrtc/adapter) explains techniques for making sure your app always accesses the most recent version.
 
@@ -88,7 +88,7 @@ In this step, we've linked to the most recent version of **adapter.js**, which i
 
 For full information about WebRTC interop, see [webrtc.org/web-apis/interop](https://webrtc.org/web-apis/interop/).
 
-WebRTC 详细的交互日志, 请参考: <https://webrtc.org/web-apis/interop/>。
+关于 WebRTC 互操作性(interop)的详细信息, 请参考: <https://webrtc.org/web-apis/interop/>。
 
 **Index.html** should now look like this:
 
@@ -145,7 +145,7 @@ You'll learn how the code works in a moment.
 
 Open **index.html**, click the **Start** button to get video from your webcam, and click **Call** to make the peer connection. You should see the same video (from your webcam) in both video elements. View the browser console to see WebRTC logging.
 
-浏览器中通过http协议打开 **index.html**页面, 单击 **Start** 按钮获取摄像头的视频, 之后点击 **Call** 按钮来建立对等连接(peer connection)。 如果连接成功, 那么就可以在两个 video 中中看到同样的画面.  请打开浏览器的控制台, 查看 WebRTC 相关的日志信息。
+浏览器中通过http协议打开 **index.html**页面, 单击 **Start** 按钮获取摄像头的视频, 之后点击 **Call** 按钮来建立对等连接(peer connection)。 如果连接成功, 那么就可以在两个 video 中看到同样的画面。  请打开浏览器的控制台, 查看 WebRTC 相关的日志信息。
 
 ## How it works
 
@@ -221,7 +221,7 @@ First up, Alice and Bob exchange network information. The expression 'finding ca
 
   > WebRTC is designed to work peer-to-peer, so users can connect by the most direct route possible. However, WebRTC is built to cope with real-world networking: client applications need to traverse [NAT gateways](http://en.wikipedia.org/wiki/NAT_traversal) and firewalls, and peer to peer networking needs fallbacks in case direct connection fails.
 
-  > WebRTC 是为 peer-to-peer 网络设计的, 所以用户可以在大部分可以直连的网络中使用. 但现实情况非常复杂, WebRTC面临的真实环境是: 客户端程序需要穿透 [NAT网关](http://en.wikipedia.org/wiki/NAT_traversal) ,以及各类防火墙。 所以在直连失败的情况下, peer-to-peer 网络需要一种回退措施。
+  > WebRTC 是为 peer-to-peer 网络设计的, 所以用户可以通过尽可能直接的路径进行连接。 但现实情况非常复杂, WebRTC面临的真实环境是: 客户端程序需要穿透 [NAT网关](http://en.wikipedia.org/wiki/NAT_traversal) ,以及各类防火墙。 所以在直连失败的情况下, peer-to-peer 网络需要一种回退措施。
 
   > As part of this process, the WebRTC APIs use STUN servers to get the IP address of your computer, and TURN servers to function as relay servers in case peer-to-peer communication fails. [WebRTC in the real world](http://www.html5rocks.com/en/tutorials/webrtc/infrastructure/) explains in more detail.
 
@@ -262,7 +262,7 @@ First up, Alice and Bob exchange network information. The expression 'finding ca
 5. When Bob gets a candidate message from Alice, he calls `addIceCandidate()`, to add the candidate to the remote peer description:
 
 3. 在网络候选者变为可用时, 步骤1中引入的 `onicecandidate` 回调函数, 会被执行。
-4. Alice 将序列化之后的候选者信息发送给 Bob。这个过程被称为 **signaling**(信令), 实际应用中, 会通过消息服务来传递。 在后面的教程中会看到. 当然,在本节中, 因为两个 RTCPeerConnection 实例处于同一个页面, 所以可以直接通信, 不再需要外部消息服务。
+4. Alice 将序列化之后的候选者信息发送给 Bob。这个过程被称为 **signaling**(信令), 实际应用中, 会通过消息服务来传递。 在后面的教程中会看到。 当然,在本节中, 因为两个 RTCPeerConnection 实例处于同一个页面, 所以可以直接通信, 不再需要外部消息服务。
 5. Bob从Alice处获得候选者信息后, 调用 `addIceCandidate()` 方法, 将候选信息传给 remote peer description:
 
 ```
@@ -291,7 +291,7 @@ function handleConnection(event) {
 
 WebRTC peers also need to find out and exchange local and remote audio and video media information, such as resolution and codec capabilities. Signaling to exchange media configuration information proceeds by exchanging blobs of metadata, known as an **offer** and an **answer**, using the Session Description Protocol format, known as [SDP](http://en.wikipedia.org/wiki/Session_Description_Protocol):
 
-WebRTC客户端还需要获取本地和远程的音频/视频媒体信息, 比如分辨率、编码/解码器的能力等等. 交换媒体配置信息的信令过程, 是通过交换元数据的blob数据进行的, 即一次 **offer** 与一次 **answer**, 使用会话描述协议(Session Description Protocol), 简称 [SDP](http://en.wikipedia.org/wiki/Session_Description_Protocol):
+WebRTC客户端还需要获取本地和远程的音频/视频媒体信息, 比如分辨率、编码/解码器的能力等等。 交换媒体配置信息的信令过程, 是通过交换元数据的blob数据进行的, 即一次 **offer** 与一次 **answer**, 使用会话描述协议(Session Description Protocol), 简称 [SDP](http://en.wikipedia.org/wiki/Session_Description_Protocol):
 
 1. Alice runs the RTCPeerConnection `createOffer()` method. The promise returned provides an RTCSessionDescription: Alice's local session description:
 
@@ -379,7 +379,7 @@ WebRTC客户端还需要获取本地和远程的音频/视频媒体信息, 比�
   - Make sure the layout works on mobile.
 
   - 将视频并排在一起。
-  - 统一按钮的宽高, 使用更大的字号。
+  - 统一按钮的宽度, 使用更大的字号。
   - 适配移动端。
 
 3. From the Chrome Dev Tools console, look at `localStream`, `localPeerConnection` and `remotePeerConnection`.
@@ -419,7 +419,7 @@ A complete version of this step is in the **step-2** folder.
 - Find out more about the adapter.js shim from the [adapter.js GitHub repo](https://github.com/webrtc/adapter).
 - Want to see what the world's best video chat app looks like? Take a look at AppRTC, the WebRTC project's canonical app for WebRTC calls: [app](https://appr.tc/), [code](https://github.com/webrtc/apprtc). Call setup time is less than 500 ms.
 
-- 本节涉及到很多知识点! 关于 RTCPeerConnection 的更多信息, 请参考 [webrtc.org/start](https://webrtc.org/start). 里面有一些对 JavaScript 框架的建议, 如果想使用WebRTC, 也想深入了解API细节的话。
+- 本节涉及到很多知识点! 关于 RTCPeerConnection 的更多信息, 请参考 [webrtc.org/start](https://webrtc.org/start)。里面有一些对 JavaScript 框架的建议, 如果想使用WebRTC, 但又不想费心处理API细节的话。
 - 参考 [adapter.js GitHub repo](https://github.com/webrtc/adapter) 仓库, 获取更多信息。
 - 如果想要体验当下最先进的WebRTC视频通话应用, 可以看看 AppRTC, 这也是WebRTC项目的标准实现:  app访问地址: <https://appr.tc/>, 代码地址 <https://github.com/webrtc/apprtc>。 创建通话的时间可以控制在 500 ms以内。
 
