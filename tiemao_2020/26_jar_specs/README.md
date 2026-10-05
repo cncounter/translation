@@ -86,7 +86,7 @@ A class file under a versioned directory, of version `N` say, in a multi-release
 如果N的值小于9 将被忽略, 不符合上述规范的版本目录也会被忽略。
 
 在多版本JAR中, 版本目录`N`下面的 class 文件, 其 class file version 必须小于等于Java平台第N个大版本对应的 major version。
-如果类文件中的类是 public 或 protected 的, 那么根目录下也必须能够找到具有完全限定名和访问修饰符的class。
+如果类文件中的类是 public 或 protected 的, 那么顶级目录下也必须存在具有相同完全限定名和访问修饰符的类文件。
 通过逻辑扩展, 这同样适用于版本小于`N`的类文件。
 
 If a multi-release JAR file is deployed on the class path or module path (as an automatic module or an explicit [multi-release module](#modular-multi-release-jar-files)) of major version `N` of a Java platform release runtime, then a class loader loading classes from that JAR file will first search for class files under the `N`th versioned directory, then prior versioned directories in descending order (if present), down to a lower major version bound of `9`, and finally under the top-level directory.
@@ -95,7 +95,7 @@ The public API exported by the classes in a multi-release JAR file must be *exac
 
 如果将多版本JAR文件部署到 class path 或 module path 中, 假设JDK版本为 `N`,  那么class loader从该JAR文件加载class的时候, 将优先搜索版本目录`N`, 找不到则递减, 搜索 `N-1`, 直到下限9为止, 最后才会搜索顶级目录。
 
-多版本JAR文件中, 各个版本暴露的 public API 必须 “完全一致`,  这就解释了为什么特定版本目录下的 public 和 protected 类文件, 都必须在根目录下存在相同限定名的类。
+多版本JAR文件中, 各个版本暴露的 public API 必须 "完全一致",  这就解释了为什么特定版本目录下的 public 和 protected 类文件, 都必须在根目录下存在相同限定名的类。
 执行扩展API的校验非常困难而且开销很大, 所以并不要求 `jar` 之类的工具来验证,  也不要求Java运行时来执行这类验证。
 本规范未来的版本可能会放宽完全一致的API约束, 以支持谨慎的演进。
 
@@ -134,13 +134,13 @@ Tooling, such as the `jar` tool, should perform such verification of versioned m
 
 模块化的多版本JAR文件, 内部兼容多个JDK版本, 通过描述模块信息的 `module-info.class` 文件来描述, 这个描述文件位于模块化JAR文件的顶层目录, 或者位于版本目录中。
 
-在模块描述符中未声明为导出的包称为非导出包, 其中的 public 或 protected 类, 不需要具有相同的完全限定名和访问修饰符的类, 其 class 文件直接放到顶级目录下。
+在模块描述符中未声明为导出的包称为非导出包, 其中的 public 或 protected 类, 不需要在顶级目录下存在具有相同完全限定名和访问修饰符的类文件。
 
 模块描述符与其他的class文件或资源文件并不区别对待。 模块描述符可以存放在版本化区域下, 而不必存放在顶级目录下。 这样就确保了只有 Java 8 版本的类会出现在顶级目录下, 而Java 9版本的类(包括模块描述符)会出现在`9`版本目录下。
 
-更小版本的模块描述符, 或者顶层的模块描述符, 都必须与`M`相同, 但有两个例外:
+版本化的模块描述符, 无论是主导了更低版本的模块描述符, 还是主导了顶层的模块描述符(设为 `M`), 都必须与 `M` 相同, 但有两个例外:
 
-1. 主版本描述符可以和 `java.*` 和 `jdk.*` 模块具有不同的 non-`transitive` `requires` 子句；
+1. 主导版本描述符可以和 `java.*` 和 `jdk.*` 模块具有不同的 non-`transitive` `requires` 子句；
 2. 主导版本描述符可以具有不同的 `uses` 子句, 即使是在 `java.*` 和 `jdk.*` 模块之外定义的服务类型也是如此。
 
 例如 `jar` 之类的工具, 应该执行版本化模块描述符的验证, 但 Java 运行时不需要执行任何验证。
@@ -206,7 +206,7 @@ All the specifications in this document use the same grammar in which terminal s
 
 在介绍每个配置文件内容之前, 需要明确一些格式约定。 清单文件和签名文件中包含的信息格式, 受RFC822标准启发, 在大部分情况下, 表示为 "名:值" 对。 我们也将其称为报头(header)或属性(attribute)。
 
-一组名/值对, 称为一“段(Section)`。 各段之间用空行分隔。
+一组名/值对, 称为一个 "段(Section)"。 各段之间用空行分隔。
 
 任何形式的二进制数据都使用 base64 表示。 二进制数据需要连续, 这会导致行长超过72个字节。 例如摘要(digest)和签名(signature)。
 
@@ -232,7 +232,7 @@ JVM实现需要支持最大65535字节的报头值。
 
 Non-terminal symbols defined in the above specification will be referenced in the following specifications.
 
-> 注意: 为防止直接通过电子邮件发送的文件损坏, 没有标题时则以四个字母 "From" 开头。
+> 注意: 为防止直接通过电子邮件发送的文件损坏, 任何报头都不能以四个字母 "From" 开头。
 
 以上规范中定义的非终结符, 将在后面的规范中引用。
 
@@ -253,7 +253,7 @@ A JAR file manifest consists of a main section followed by a list of sections fo
 
 JAR文件的清单中,有一个 main section, 后面是各个条目的 section 列表, 各个部分之间用换行符分隔。 main section 和其他 section 都遵循上面指定的语法。 每个 section 都有自己特定的限制和规则。
 
-- main section 主要是安全和配置信息, 包含JAR文件以及应用程序的。 还定义了适用于每个清单实体的主要属性。 这部分的任何属性名, 都不能为“`Name``。 以空行结束。
+- main section 主要是安全和配置信息, 包含JAR文件以及应用程序的。 还定义了适用于每个清单实体的主要属性。 这部分的任何属性名, 都不能为 "`Name`"。 以空行结束。
 - 各个部分定义了JAR文件中包含的程序包或文件的各种属性。 JAR文件中的所有文件并不是都要在清单条目中列出,  但所有要签名的文件都必须列出。 清单文件自身不能列出。 每个部分都必须以名为 "`Name`" 的属性开头, 对应的值必须是文件的相对路径, 或者是引用外部数据的绝对URL。
 - 如果同一文件条目有多个 section, 则这些section中的属性将被合并。 如果某个属性在不同section中具有不同的值, 则将取最后一个的值。
 - 无法解析的属性将被忽略。这样的属性主要用于保存某些特定实现的信息。
@@ -332,7 +332,7 @@ Main 属性是清单文件中, main section 部分中存在的属性。 它们�
   - `Specification-Title`: 该值是一个字符串，用于定义扩展规范的标题。
   - `Specification-Version`: 该值是一个字符串，用于定义扩展规范的版本。
   - `Specification-Vendor`: 该值是一个字符串，用于定义维护扩展规范的组织。
-  - `Sealed`: 此属性定义此JAR文件是否密封。 值可以是  "true" or "false" ，忽略大小写。如果将其设置为"true"，则JAR文件中的所有程序包均默认为密封的，除非另行定义。 另请参见 [Package Sealing](#package-sealing) 一节。
+  - `Sealed`: 此属性定义此JAR文件是否密封。 值可以是 "true" 或 "false"，忽略大小写。如果将其设置为"true"，则JAR文件中的所有程序包均默认为密封的，除非另行定义。 另请参见 [Package Sealing](#package-sealing) 一节。
 
 ### Per-Entry Attributes
 
@@ -371,7 +371,7 @@ The per-entry attributes fall into the following groups:
   - `Content-Type`: 用于为特定文件条目指定 MIME类型和子数据类型。 字符串值的形式为 *type/subtype*。 例如， "image/bmp" 表示 bmp类型的图像。 这指示该文件为图像，数据存储为位图。 RFC [1521](http://www.ietf.org/rfc/rfc1521.txt) 和 [1522](http://www.ietf.org/rfc/rfc1522.txt) 定义和探讨了MIME类型定义。
 - 软件包版本控制和密封信息相关的属性: 这些属性与上面定义的 main 属性相同， 定义了扩展软件包版本控制和密封信息。 当用作各项的属性时，这些属性将覆盖main属性，但仅用于清单条目指定的单个文件。
 - 为bean对象定义的属性:
-  - `Java-Bean`: 定义某个特定的文件条目是否为Java Bean对象。该值应为"true" or "false"，忽略大小写。
+  - `Java-Bean`: 定义某个特定的文件条目是否为Java Bean对象。该值应为 "true" 或 "false"，忽略大小写。
 - 用于签名相关的属性: 这些属性用于签名和验证。
   - `x-Digest-y`: 属性名是用于计算相应文件条目的摘要值的摘要算法名称。 属性值则是实际的摘要值。 前缀 'x' 指定算法名称，可选后缀 'y' 表示摘要值应针对哪种语言进行验证。
   - `Magic`: 这是一个可选属性，应用程序可以用该属性来指示验证者应如何计算清单条目中包含的摘要值。此属性的值是一组用逗号分隔的上下文特定的字符串。
@@ -404,7 +404,7 @@ Subsets of a JAR file can be signed by using the `java.security` API. A signed J
 
 For every file entry signed in the signed JAR file, an individual manifest entry is created for it as long as it does not already exist in the manifest. Each manifest entry lists one or more digest attributes and an optional [Magic attribute](#the-magic-attribute).
 
-请注意，如果此类文件位于 `META-INF` 目录中，则它们不被视为与签名相关。 这些文件名不区分大小写, 也不会被签名。
+请注意，如果此类文件位于 `META-INF` 的子目录中，则它们不被视为与签名相关。 这些文件名不区分大小写的变体属于保留名, 同样不会被签名。
 
 可以使用 `java.security` 包中的 API 对JAR文件的子集进行签名。 已签名的JAR文件与原始JAR文件完全相同，不同之处在于其清单文件被更新，并将两个文件添加到  `META-INF` 目录中:
 
@@ -413,7 +413,7 @@ For every file entry signed in the signed JAR file, an individual manifest entry
 
 不使用 jarsigner 时，签名程序必须构造签名文件和签名块文件。
 
-对于签名JAR中的每个签名文件条目，只要清单中不存在该条目，就会为其创建一个单独的清单条目。 每个清单条目列出一个或多个摘要属性以及一个可选的 [Magic属性](#the-magic-attribute)。
+对于签名JAR文件中被签名的每个文件条目，只要清单中不存在该条目，就会为其创建一个单独的清单条目。 每个清单条目列出一个或多个摘要属性以及一个可选的 [Magic属性](#the-magic-attribute)。
 
 
 ### Signature File
@@ -438,7 +438,7 @@ Paths or URLs appearing in the manifest file but not in the signature file are n
 
 main section 后面是各个条目的列表，其名称也必须出现在清单文件中。每个单独的条目必须至少包含清单文件中相应条目的摘要。
 
-清单文件中的 Path 或者 URL, 如果计算中不使用, 则不出现在签名文件中。
+出现在清单文件中、但未出现在签名文件中的 Path 或 URL, 不参与计算。
 
 ### Signature Validation
 
@@ -470,7 +470,7 @@ JAR文件验证涉及以下步骤:
    - 3.1 如果签名文件中存在 `x-Digest-Manifest-Main-Attributes` 条目，则对照清单文件中的主要属性上计算摘要来验证该值。如果计算失败，那么JAR文件验证失败。 可以记住这一判断以提高效率。如果签名文件中不存在 `x-Digest-Manifest-Main-Attributes` 条目，则不会影响JAR文件验证，并且不会验证清单的主要属性。
    - 3.2 根据清单文件中对应条目计算的摘要值，验证签名文件中每个源文件信息部分中的摘要值。 如果有任何摘要值不匹配，则JAR文件验证将失败。
 
-   存储在 `x-Digest-Manifest` 属性中的清单文件摘要值可能不等于当前清单文件的摘要值的一个原因是，文件签名之后，可能包含新添加文件的部分。 例如，假设在生成签名(并生成了签名文件)后, 使用jar工具将一个或多个文件添加到了JAR文件中。 如果JAR文件由其他签名者再次签名，则清单文件将更改(通过 jarsigner 工具将新文件添加到节中)并创建新的签名文件，但原始签名文件未更改。 如果自那时以来未更改生成签名时JAR文件中的所有文件，则原始签名的验证仍被认为是成功的，如果签名文件的非标头部分中的摘要值属于这种情况，则认为已成功等于清单文件中相应节的摘要值。
+   存储在 `x-Digest-Manifest` 属性中的清单文件摘要值可能不等于当前清单文件的摘要值的一个原因是，文件签名之后，可能包含新添加文件的部分。 例如，假设在生成签名(并生成了签名文件)后, 使用jar工具将一个或多个文件添加到了JAR文件中。 如果JAR文件由其他签名者再次签名，则清单文件将更改(通过 jarsigner 工具将新文件添加到节中)并创建新的签名文件，但原始签名文件未更改。 如果生成签名时JAR文件中的文件自那以后都没有被更改，则对原始签名的验证仍被视为成功；当签名文件非标头部分中的摘要值等于清单文件中相应部分的摘要值时，就属于这种情况。
 
 4. For each entry in the manifest, verify the digest value in the manifest file against a digest calculated over the actual data referenced in the "Name:" attribute, which specifies either a relative file path or URL. If any of the digest values don't match, then JAR file verification fails.
 
@@ -520,7 +520,7 @@ Here are two examples of the potential use of Magic attribute in the manifest fi
 
 ### Magic属性
 
-另一个清单条目签名的验证要求是，验证者应理解该条目清单清单中的一个或多个 Magic key-pair 值。
+另一个清单条目签名的验证要求是，验证者应理解该条目的清单条目中 Magic 键值对(key-pair)的一个或多个值。
 
 Magic属性是可选的，但如果要验证条目的签名，则解析器需要了解该条目的Magic key 的值。
 
@@ -544,9 +544,9 @@ In the first example, these Magic values may indicate that the result of an http
 
 In the second example, the Magic value indicates that the document retrieved may have been content-negotiated for a specific language, and that the digest to verify against is dependent on which language the document retrieved is written in.
 
-在前一个示例中，这些Magic值可以指明http查询的结果是嵌入在文档中的脚本(而不是document)，并且该脚本是动态生成的。 这两条信息指示如何计算与清单的摘要值进行比较的哈希值，从而比较签名的有效性。
+在前一个示例中，这些Magic值可以指明http查询的结果是嵌入在文档中的脚本(而不是文档本身)，并且该脚本是动态生成的。 这两条信息指示如何计算与清单的摘要值进行比较的哈希值，从而比较签名的有效性。
 
-在第二个示例中，Magic值指示所获取的文档可能已针对特定语言进行了内容协商，并且要进行验证的摘要取决于所写入的文档使用的语言。
+在第二个示例中，Magic值指示所获取的文档可能已针对特定语言进行了内容协商，并且要进行验证的摘要取决于检索到的文档所使用的语言。
 
 ## Digital Signatures
 
@@ -556,7 +556,7 @@ Digital signature files have the same filenames as the `.SF` files but different
 
 ## 8. 数字签名
 
-数字签名(digital signature)是一个版本的 `.SF` 签名文件。 这是二进制文件，不需要被人工解读。
+数字签名(digital signature)是 `.SF` 签名文件的签名版本。 这是二进制文件，不需要被人工解读。
 
 数字签名文件的基本文件名与`.SF`文件相同，但后缀不同。 后缀扩展名取决于数字签名的类型。
 
@@ -615,10 +615,10 @@ Following is a list of additional restrictions and rules that apply to manifest 
 
 - 属性(Attributes):
   - 所有section中, 不识别的属性, 在所有情况下都会被忽略。
-  - 属性名不区分大小写。 但是，生成清单和签名文件的程序, 应使用本规范中所示的案例。
+  - 属性名不区分大小写。 但是，生成清单和签名文件的程序, 应使用本规范中所示的大小写。
   - 属性名称在同一节中不能重复。
 - 版本(Versions):
-  - 必须先列出 `Manifest-Version` 和 `Signature-Version`，并且在这种情况下(这样才能很容易地将它们识别为 magic 字符串)。除此之外，main section 中的属性顺序并不重要。
+  - 必须先列出 `Manifest-Version` 和 `Signature-Version`，并且大小写必须完全一致(这样才能很容易地将它们识别为 magic 字符串)。除此之外，main section 中的属性顺序并不重要。
 - 顺序(Ordering):
   - 单个清单条目的顺序不重要。
   - 各个签名条目的顺序并不重要，除了要签名的摘要按该顺序排列。
@@ -667,7 +667,7 @@ The UTF-8 encoding is used to support non ASCII characters in file or package na
 
 ### 10.2 索引文件规范
 
-`INDEX.LIST` 文件包含1到多节，各节之间由一个空行分隔。 1个section定义一个jar文件的内容，其中的头定义了jar文件的路径名，后面跟着包或文件名的列表，每行一个元素。 所有的jar文件路径都相对于根jar文件的代码库。 这些路径名的解析方式与当前扩展机制对捆绑扩展名的解析方式相同。
+`INDEX.LIST` 文件包含一个或多个节，各节之间由一个空行分隔。 1个section定义一个jar文件的内容，其中的头定义了jar文件的路径名，后面跟着包或文件名的列表，每行一个元素。 所有的jar文件路径都相对于根jar文件的代码库。 这些路径名的解析方式与当前扩展机制对捆绑扩展名的解析方式相同。
 
 UTF-8编码用于支持索引文件中, 文件名或包名中的非ASCII字符。
 
@@ -762,7 +762,7 @@ a.jar b.jar lib/x.jar
 
 Of course, if `x.jar` had dependencies of its own then these would be added according to the same rules and so on for each subsequent URL. In the actual implementation, JAR file dependencies are processed lazily so that the JAR files are not actually opened until needed.
 
-当然，如果 `x.jar` 具有自己的依赖关系，则根据相同的规则添加这些依赖关系，依此类推，为每个后续URL添加依此类推。 在实际的实现中，对JAR文件的依赖关系将会延迟进行处理，因此，直到实际需要时才打开JAR文件。
+当然，如果 `x.jar` 具有自己的依赖关系，则根据相同的规则添加这些依赖关系，并对每个后续URL依此类推。 在实际的实现中，对JAR文件的依赖关系将会延迟进行处理，因此，直到实际需要时才打开JAR文件。
 
 ## Package Sealing
 
@@ -813,7 +813,7 @@ Package sealing is also important for security, because it restricts access to p
 
 The unnamed package is not sealable, so classes that are to be sealed must be placed in their own packages.
 
-指定此JAR压缩文件中的所有软件包，都进行密封密封处理。除非在清单条目中使用 `Sealed` 属性对特定软件包单独指定。
+指定此JAR压缩文件中的所有软件包，都进行密封处理，除非在清单条目中使用 `Sealed` 属性对特定软件包单独指定。
 
 如果缺少此属性，则为了向后兼容，假定JAR文件不被密封。 然后，系统默认检查包的标头中的密封信息。
 
