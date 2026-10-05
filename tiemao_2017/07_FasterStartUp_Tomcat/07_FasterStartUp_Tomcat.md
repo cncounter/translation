@@ -17,7 +17,7 @@
 *   Web fragments (`META-INF/web-fragment.xml`)
 *   打包在jar文件中的WEB应用资源(`META-INF/resources/*`)
 *   注解定义的web应用组件 (如 `@WebServlet` .)
-*   为第三方库定义组件的注解, 这些第三库由 SCI 负责初始化, (使用 `@HandlesTypes` 注解的 annotation )
+*   为第三方库定义组件的注解, 这些第三方库由 SCI 负责初始化, (使用 `@HandlesTypes` 注解的 annotation )
 
 
 早期规范所引入的一些特性:
@@ -27,7 +27,7 @@
 
 对注解的扫描是最慢的。因为必须读取每个 class 文件, 并解析和查找其中的注解。
 
-Tomcat 7.0.47 之后的版本, 及 Tomcat 8, 会扫描 [WebSocket](https://wiki.apache.org/tomcat/WebSocket) 注解的API实现. 包括 `@ServerEndpoint` 注解的类, 以及实现了 `ServerApplicationConfig` 接口的类, 还有集成了 abstract `Endpoint` 的类。如果不需要使用 [WebSockets](https://wiki.apache.org/tomcat/WebSockets), 则可以删除Tomcat的lib目录下WebSocket 相关的 jar 包 (`websocket-api.jar`, `tomcat7-websocket.jar`, 以及 `tomcat-websocket.jar` 这种包)。
+Tomcat 7.0.47 之后的版本, 及 Tomcat 8, 会扫描 [WebSocket](https://wiki.apache.org/tomcat/WebSocket) 注解的API实现. 包括 `@ServerEndpoint` 注解的类, 以及实现了 `ServerApplicationConfig` 接口的类, 还有继承了 abstract `Endpoint` 的类。如果不需要使用 [WebSockets](https://wiki.apache.org/tomcat/WebSockets), 则可以删除Tomcat的lib目录下WebSocket 相关的 jar 包 (`websocket-api.jar`, `tomcat7-websocket.jar`, 以及 `tomcat-websocket.jar` 这种包)。
 
 
 **注意**: 在Tomcat 7及之前的版本中, 会执行两次TLD扫描,
@@ -51,7 +51,7 @@ Tomcat 7.0.47 之后的版本, 及 Tomcat 8, 会扫描 [WebSocket](https://wiki.
 2. 在其中添加一个空元素 `<absolute-ordering />`。
 
 
-设置 `metadata-complete="true"` 可以禁止扫描 web应用和库类, 主要是对注解的扫描(例如 Servlet等)。 `metadata-complete`  选项并不能禁止所有的注解扫描. 加入存在 `@HandlesTypes` 注解的SCI, 则Tomcat 一定会扫描整个应用, 以确定使用对应注解的类和接口。
+设置 `metadata-complete="true"` 可以禁止扫描 web应用和库类, 主要是对注解的扫描(例如 Servlet等)。 `metadata-complete`  选项并不能禁止所有的注解扫描. 假如存在 `@HandlesTypes` 注解的SCI, 则Tomcat 一定会扫描整个应用, 以确定使用对应注解的类和接口。
 
 `<absolute-ordering>` 元素直接指定了哪些 JAR 包需要扫描 web fragment(在 `WEB-INF/web-fragment.xml` 文件中指定), 包括 SCI, fragment 以及 annotation.  `<absolute-ordering/>` 元素是空的, 则表示一个类都不需要扫描。
 
