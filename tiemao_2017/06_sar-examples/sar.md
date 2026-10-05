@@ -1,7 +1,7 @@
 
 
 
-### 1. 安装
+## 1. 安装
 
 	sudo yum install -y sysstat
 
@@ -13,7 +13,7 @@
 
 
 
-## 3。 查看历史数据
+## 3. 查看历史数据
 
 
 	ll /var/log/sa/
