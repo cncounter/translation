@@ -1,6 +1,6 @@
 # Quiz Yourself: Comparing Loop Constructs (Intermediate)
 
-＃ Java坑人面试题系列: 比对while与for循环（中级难度）
+# Java坑人面试题系列: 比对while与for循环（中级难度）
 
 
 If you have worked on our quiz questions in the past, you know none of them is easy. They model the more difficult questions from certification examinations. The levels marked “intermediate” and “advanced” refer to the exams, rather than the questions. Although in almost all cases, “advanced” questions will be harder. We write questions for the certification exams, and we intend that the same rules apply. Take words at their face value and trust that the questions are not intended to deceive you, but straightforwardly test your knowledge of the ins and outs of the language.
@@ -66,7 +66,7 @@ Let’s consider how these requirements would affect your implementation if you 
 
 ### 答案和解析
 
-这个问题要求做一个最佳选择，一般不会让你选择多个答案。
+这道题要求你做一个主观判断，而这在选择题考试中通常是不太受欢迎的。
 
 有两个关键的地方，可以帮助我们进行判断。
 一、 步骤1和步骤2都必须至少执行一次; 也就是说，至少要读取一个命令之后，代码才会退出。
@@ -74,7 +74,7 @@ Let’s consider how these requirements would affect your implementation if you 
 
 让我们考虑一下，如果使用 【`while`循环】需要怎么处理。
 首先 `while` 循环在入口处执行条件判断; 该测试是在循环体执行之前执行的。
-所以，如果使用`while` 循环来进行控制，一种可能的方式，是在循环开始之前打印提示并读取命令，伪代码所下所示:
+所以，如果使用`while` 循环来进行控制，一种可能的方式，是在循环开始之前打印提示并读取命令，伪代码如下所示:
 
 
 ```
@@ -87,7 +87,7 @@ While (command is not "quit") // 判断如果命令不是quit才进入循环
 
 Now, that approach might not look like a problem, but you still need to issue subsequent prompts and read the subsequent commands. That must be done every time through the loop, so the relevant code must be inside the loop. That means the code must be in two places at once, which is an indirect way of saying that it must be duplicated. The code would look like this:
 
-可能初看起来没有什么问题，但我们还需要提示并并读取后续命令。
+可能初看起来没有什么问题，但我们还需要提示并读取后续命令。
 每次的循环操作中都需要执行这个操作的相关代码。
 也就是说会有代码重复。伪代码示例如下:
 
@@ -141,7 +141,7 @@ Here are a few side notes. Option A mentions using a `break` statement and optio
 
 
 剩下的选项是 `do/while` 循环。 这种方式将决定是否继续循环的测试条件放在 `do/while` 结构的末尾，
-效果就是 `do/while` 循环的body至少会被执行一次，因为必须先执行body之后才能到达测试条件判断。
+效果就是 `do/while` 循环的循环体至少会被执行一次，因为必须先执行循环体之后才能到达测试条件判断。
 也就是循环体是在判断条件之前执行的。
 `do/while` 主要就是适用于这样的场景: 可以在循环体中进行引导提示，并读取命令输入。
 这样就没有重复的代码，确保提示和输入发生在条件判断之前，代码结构会比较干净和简洁。
@@ -151,7 +151,7 @@ Here are a few side notes. Option A mentions using a `break` statement and optio
 通过这些解析，我们最终可以说 `选项D是正确答案`，而选项A、B和C是不正确的。
 
 > 注: 选项A中提到使用 `break` 语句，而选项C提到使用 `continue` 语句。
-> 虽然使用 `for` 和 `break`的方式也可以让循环体强制执行，但这两种方式的代码也不会很优雅。
+> 虽然使用 `for` 和 `break`的方式也可以勉强实现，但这两种方式的代码也不会很优雅。
 
 选项A的伪代码大致如下:
 
