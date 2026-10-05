@@ -2,16 +2,16 @@
 
 `Headless` 是指没有图形化界面(GUI),运行在后台的程序。
 
-本文简要介绍如何通过 NodeJS 来调用HeadLess-Chrome。 
+本文简要介绍如何通过 NodeJS 来调用 Headless-Chrome。
 
-使用 HeadLess-Chrome 的好处是: 
+使用 Headless-Chrome 的好处是: 
 
 - 不需要显卡支持, 可以在Linux服务器环境上运行。
 
 - 还可以用于自动化测试环境。 
 
 
-###  1. 安装 Chrome(可省略...)
+### 1. 安装 Chrome(可省略...)
 
 要求最新版, 至少是 Chrome60+。 请通过搜索引擎来查询和下载。
 
@@ -41,11 +41,11 @@ npm -v
 ```
 
 
-NodeJS安装完成后, 自动安装了 node环境, 以及 npm 等工具。
+NodeJS安装完成后, 自动安装了 node 环境, 以及 npm 等工具。
 
 其中, node 是一个 REPL 环境, 可以执行各种JS脚本.
 
-npm 全称就是 node package manage, 即Node的软件包管理工具.
+npm 全称就是 node package manager, 即Node的软件包管理工具.
 
 如果某些安装包被墙,则可以配置代理, 或者使用淘宝的npm注册中心:
 
@@ -88,7 +88,7 @@ cnpm i puppeteer
 
 ### 4. puppeteer 打印PDF
 
-在 puppeteerdemo 文件夹下创建 puppeteer.js 文件:
+在 puppeteerdemo 文件夹下创建 `puppeteer.js` 文件:
 
 ```
 // 加载依赖库
@@ -119,7 +119,7 @@ const puppeteer = require('puppeteer');
 node puppeteer.js
 ```
 
-具体的配置项请参考: <puppeteer.js> 文件。
+具体的配置项请参考: `puppeteer.js` 文件。
 
 
 puppeteer相关的API和配置项请参考: <https://github.com/GoogleChrome/puppeteer/blob/master/docs/api.md>
