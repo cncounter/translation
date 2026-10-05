@@ -1,10 +1,10 @@
 ## 月份与星期
 
-> Mongth and Week
+> Month and Week
 
 English vs. Chinese
 
-### 月份(Mongth)
+### 月份(Month)
 
 | Month         | 月份           |
 | ------------- | ------------- |
