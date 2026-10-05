@@ -13,7 +13,7 @@
 - [可汗学院_网易公开课](https://open.163.com/khan/) : 网易教育汉化字幕的版本
 - [TED 演讲 - 英文版](https://ed.ted.com/ted_ed_collections) : 演讲资源
 - [TED 演讲 - 网易公开课](https://open.163.com/ted/) : 网易教育汉化字幕的版本
-- [天才的数学和计算机课程学习 brilliant ](https://brilliant.org/) : 很多角度简直是天才的设想
+- [天才的数学和计算机课程学习 brilliant](https://brilliant.org/) : 很多角度简直是天才的设想
 - [教程点睛 - tutorialspoint](https://www.tutorialspoint.com/index.htm): 各种IT资源和工程领域教程
 - [代码学院 - codecademy](https://www.codecademy.com/): 各种开发语言学习
 - [Oracle Developer Live — Java](https://developer.oracle.com/community/events/devlive-java-recordings.html) : 一些Java视频分享
@@ -62,7 +62,7 @@
 ## 杂站
 
 - [经典的小漫画网站 - The Oatmeal](https://theoatmeal.com/comics)
-- [漫画和笑话 comic ](https://comic.browserling.com/)
+- [漫画和笑话 comic](https://comic.browserling.com/)
 - [大漠老师 91fache](https://www.91fache.com/)
 - [网络匿名漫游指南](https://anonymousplanet.org/guide.html)
 - [探索好点子 - medium.com](https://medium.com/)
