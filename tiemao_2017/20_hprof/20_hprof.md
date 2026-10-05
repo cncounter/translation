@@ -4,7 +4,7 @@
 
 The Java 2 Platform Standard Edition (J2SE) has always provided a simple command line profiling tool called HPROF for heap and cpu profiling. HPROF is actually a JVM native agent library which is dynamically loaded through a command line option, at JVM startup, and becomes part of the JVM process. By supplying HPROF options at startup, users can request various types of heap and/or cpu profiling features from HPROF. The data generated can be in textual or binary format, and can be used to track down and isolate performance problems involving memory usage and inefficient code. The binary format file from HPROF can be used with tools such as [jhat](https://hat.dev.java.net/) to browse the allocated objects in the heap.
 
-JDK始终提供一款名为`HPROF`的简单命令行分析工具，用于堆内存和cpu分析。 HPROF实际上是JVM中的一个本地agent，通过命令行参数可以在JVM启动时动态加载，并成为JVM进程的一部分。 
+Java 2 平台标准版(J2SE) 一直提供一款名为`HPROF`的简单命令行分析工具，用于堆内存和cpu分析。 HPROF实际上是JVM中的一个本地agent，通过命令行参数可以在JVM启动时动态加载，并成为JVM进程的一部分。 
 
 通过在启动时指定不同的HPROF选项，可以让HPROF执行各种类型的堆/cpu分析功能。 生成的数据可能是文本或二进制格式，用于跟踪和鉴别到底是内存问题还是低效代码的性能问题。 HPROF生成的二进制文件可以用 [jhat](https://hat.dev.java.net/) 等工具来查看堆内存中的对象。
 
@@ -125,7 +125,7 @@ The msa option only applies to Solaris and causes the Solaris Micro State Accoun
 
 The interval, msa, and force options are new HPROF options in J2SE 1.5.
 
-`interval`, `msa,` 以及 `force` 都是 J2SE 1.5 后增加的HPROF选项。
+`interval`, `msa` 以及 `force` 都是 J2SE 1.5 后增加的HPROF选项。
 
 
 ## Example Usage
@@ -135,7 +135,7 @@ The interval, msa, and force options are new HPROF options in J2SE 1.5.
 
 We could create an application, but let's instead pick on an existing Java application in the J2SE, `javac`. With `javac` I need to pass Java options in with -J. If you were running Java directly, you would not use the -J prefix.
 
-可以创建新程序, 也可以直接使用Java平台现有的程序: 如 `javac`。 通过  `-J` 选项可以将某些标识传给运行 `javac` 程序的底层JVM。 如果运行普通的Java应用, 则不需要 `-J ` 前缀。
+可以创建新程序, 也可以直接使用Java平台现有的程序: 如 `javac`。 通过  `-J` 选项可以将某些标识传给运行 `javac` 程序的底层JVM。 如果运行普通的Java应用, 则不需要 `-J` 前缀。
 
 
 There is also a way to pass in J2SE 5.0 Java options with an environment variable JAVA_TOOL_OPTIONS, but with all environment variables you need to be careful that you don't impact more VMs than you intend.
@@ -460,7 +460,7 @@ BCI的具体工作是由共享库`java_crw_demo`执行的, 其输入项包括 op
 
 Currently HPROF injects calls to static Java methods which in turn call a native method that is in the HPROF agent library itself. This was an early design choice to limit the extra Java code introduced during profiling. So the combination of the requested JVM TI events, and the created BCI events, provides the basics for HPROF to work.
 
-目前, HPROF注入对静态Java方法的调用, 其中反过来调用HPROF agent的native方法. 这是一个早期的设计, 用来避免在Java代码分析时又产生新的对象. 所以要求组合 JVM TI事件, 以及创建的BCI事件,以支持 HPROF 执行。
+目前, HPROF注入对静态Java方法的调用, 其中反过来调用HPROF agent的native方法. 这是早期的一个设计选择, 用于限制分析过程中引入的额外Java代码. 所以要求组合 JVM TI事件, 以及创建的BCI事件,以支持 HPROF 执行。
 
 
 The cpu=samples option doesn't use BCI, HPROF just spawns a separate thread that sleeps for a fixed number of micro seconds, and wakes up and samples all the running thread stacks using JVM TI.
@@ -475,7 +475,7 @@ The cpu=times option attempts to track the running stack of all threads, and kee
 
 The heap=sites and heap=dump options are the ones that need to track object allocations. These options can be memory intensive (less so with hprof=sites) and applications that allocate many objects or allocate and free many objects will be impacted more with these options. On each object allocation, the stack must be sampled so we know where the object was allocated, and that stack information must be saved. HPROF has a series of tables allocated in the C or `malloc()` heap that track all it's information. HPROF currently does not allocate any Java objects.
 
-- `heap=sites` 和 `heap=dump` 选项需要跟踪对象的分配.  所以内存密集型的，分配/释放大量对象的程序，受到的影响可能会更大(`hprof=sites`还好一些).  在每一次对象分配时, 都必须采样线程调用栈, 才能知道是在哪个位置分配的, 还必须保存调用栈数据。HPROF在 C r或者 `malloc()` heap 中保存有一系列的表, 用于存放所有的跟踪信息。HPROF 不生成任何Java对象。
+- `heap=sites` 和 `heap=dump` 选项需要跟踪对象的分配.  所以内存密集型的，分配/释放大量对象的程序，受到的影响可能会更大(`hprof=sites`还好一些).  在每一次对象分配时, 都必须采样线程调用栈, 才能知道是在哪个位置分配的, 还必须保存调用栈数据。HPROF 在 C 或者 `malloc()` heap 中保存有一系列的表, 用于存放所有的跟踪信息。HPROF 不生成任何Java对象。
 
 
 ## Summary
