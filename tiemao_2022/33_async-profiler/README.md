@@ -16,7 +16,7 @@ async-profiler 可以跟踪的事件类型包括:
 - 锁尝试, 包括管程锁(Java object monitor) 以及 ReentrantLock
 
 
-由于优异的性能和完备的特征, 很多工具在内部都使用了 async-profiler, 比如我们熟悉的编辑器 IntelliJ Idea, 以及交互分析工具 Arthas。
+由于优异的性能和完备的特征, 很多工具在内部都使用了 async-profiler, 比如我们熟悉的编辑器 IntelliJ IDEA, 以及交互分析工具 Arthas。
 
 
 ## 演示程序
@@ -44,7 +44,7 @@ public class StringBuilderTest {
 }
 ```
 
-代码很简单, 一直在 StringBuilder 末尾追加 5 个字符, 并删除 StringBuilder 开头的5哥字符; 这里真正的瓶颈是 `delete()`, 因为需要移动 100 万个字符。  
+代码很简单, 一直在 StringBuilder 末尾追加 5 个字符, 并删除 StringBuilder 开头的5个字符; 这里真正的瓶颈是 `delete()`, 因为需要移动 100 万个字符。  
 
 大多数采样分析器的结果都有问题。 基于安全点的分析器会将 `Thread.isAlive()` 显示为热点方法。 JFR 则根本不会报告任何有用的信息，因为它无法在 JVM 执行 `System.arraycopy()` 时遍历调用栈。
 
@@ -58,7 +58,7 @@ public class StringBuilderTest {
 
 ## 采样分析器
 
-sampling profiler, 采样分析器, 有时候也称为 "抽样分析器"。 
+sampling profiler, 采样分析器, 有时候也称为“抽样分析器”。 
 
 根据概率学知识, 通过采样/抽样, 只要样本达到一定规模, 我们就可以进行推导分析，认为这些样本大概率能够暴露应用所遇到的性能问题。
 我们在进行性能优化或者系统故障排查时, 一般都是通过监控来分析代码行为和性能瓶颈。 
@@ -184,7 +184,7 @@ OpenJDK 11可以使用以下命令：
 
 async-profiler 也支持分配分析模式, 可以通过数据采集, 确定分配了大量堆内存的代码位置。
 
-async-profiler 没有使用侵入性的技术，比如字节码检测(bytecode instrumentation), 或者昂贵的 DTrace 探测器等技术。 因为这类技术会对系统性能产生很大影响。  也不会影响逃逸分析, 或者阻止分配擦除之类的 JIT 优化。 
+async-profiler 没有使用侵入性的技术，比如字节码检测(bytecode instrumentation), 或者昂贵的 DTrace 探测器等技术。 因为这类技术会对系统性能产生很大影响。  也不会影响逃逸分析, 或者阻止分配消除之类的 JIT 优化。 
 而是只测量实际的堆内存分配。
 
 async-profiler 具有 TLAB 驱动的采样功能。 依赖于 HotSpot 特定的回调钩子来接收两种通知:
@@ -236,7 +236,7 @@ Agent库是通过 JVMTI 参数接口配置的。 参数字符串的格式也可�
 
 例如，`-e wall` 会转换为 `event=wall`，`-f profile.html` 会转换成 `file=profile.html`，等等。 
 当然，有些参数是直接由 `profiler.sh` 脚本处理的。 
-例如。 `-d 5` 导致 3 个动作:
+例如, `-d 5` 导致 3 个动作:
 
 - 使用 `start` 命令挂载 agent; 
 - 休眠 5 秒;
@@ -475,7 +475,7 @@ Alternatively, if changing Docker configuration is not possible, you may fall ba
 
   检查方式: `run lsof -p PID | grep java_pid`
 
-  如果结果输出了 socket 文件, 但该文件不存在, 那么这就定位问题了。
+  如果结果输出了 socket 文件, 但该文件不存在, 那么这就定位到问题了。
 
 - 2. JVM启动时指定了 `-XX:+DisableAttachMechanism` 选项, 禁用了挂载机制, 这时候根据需要处理即可。
 
@@ -485,7 +485,7 @@ Alternatively, if changing Docker configuration is not possible, you may fall ba
 
 - 4. JVM繁忙, 无法到达安全点。 例如，JVM 正在进行长时间运行的垃圾收集。
 
-  检查方式: 运行 `kill -3 PID`。 健康的 JVM 进程会在自身对应的制台中打印线程转储和堆内存信息。
+  检查方式: 运行 `kill -3 PID`。 健康的 JVM 进程会在自身对应的控制台中打印线程转储和堆内存信息。
 
 
 > `Failed to inject profiler into <pid>`
@@ -513,12 +513,12 @@ Alternatively, if changing Docker configuration is not possible, you may fall ba
 
 > No AllocTracer symbols found. Are JDK debug symbols installed?
 
-直接翻译为: `没有找到 AllocTracer 符号表, 是否正确安装了 JDK 调试符号表?`;  分配分析需要泳道 OpenJDK 调试符号。 有关信息请参阅 [安装调试符号](./README.md)。  如果成功安装调试符号后这个错误消息仍然存在, 则可能是在安装调试符号时升级了 JDK。 在这种情况下, 想要分析在安装之前就已经启动的任何 Java 进程, 都会一直显示此消息, 因为JVM进程已加载了缺少调试符号的旧版本 JDK。 重启受影响的 Java 进程, 应该可以解决这个问题。
+直接翻译为: `没有找到 AllocTracer 符号表, 是否正确安装了 JDK 调试符号表?`;  分配分析需要用到 OpenJDK 调试符号。 有关信息请参阅 [安装调试符号](./README.md)。  如果成功安装调试符号后这个错误消息仍然存在, 则可能是在安装调试符号时升级了 JDK。 在这种情况下, 想要分析在安装之前就已经启动的任何 Java 进程, 都会一直显示此消息, 因为JVM进程已加载了缺少调试符号的旧版本 JDK。 重启受影响的 Java 进程, 应该可以解决这个问题。
 
 
 > VMStructs unavailable. Unsupported JVM?
 
-直接翻译为: `没有找到 AllocTracer 符号表, 是否正确安装了 JDK 调试符号表?`;  JVM 共享库没有导出 `gHotSpotVMStructs*` 符号表 - 很显然这不是 HotSpot JVM。 有时候，构建错误的 JDK 也可能导致相同的消息; 请参阅 [#218](https://github.com/jvm-profiling-tools/async-profiler/issues/218)。 在这种情况下，安装 JDK 调试符号有可能会解决问题。
+直接翻译为: `VMStructs 不可用, 不支持的 JVM?`;  JVM 共享库没有导出 `gHotSpotVMStructs*` 符号表 - 很显然这不是 HotSpot JVM。 有时候，构建错误的 JDK 也可能导致相同的消息; 请参阅 [#218](https://github.com/jvm-profiling-tools/async-profiler/issues/218)。 在这种情况下，安装 JDK 调试符号有可能会解决问题。
 
 
 > Could not parse symbols from `<libname.so>`
@@ -543,7 +543,7 @@ Alternatively, if changing Docker configuration is not possible, you may fall ba
 
 - 5. 如果目标JVM的 `-XX:MaxJavaStackTraceDepth` 为零或负数, 则不会采集 Java 调用栈。
 
-- 6. profiling 的采样间隔周期如果设置的太小, 可能会导致 `clone()` 之类的繁重系统调用频繁中断, 从而永远无法完成; 请参阅 [https://github.com/jvm-profiling-tools/async-profiler/issues/97](https://github.com/jvm-profiling-tools/async-profiler/issues/97)。解决方法就是增加间隔周期。
+- 6. profiling 的采样间隔周期如果设置得太小, 可能会导致 `clone()` 之类的繁重系统调用频繁中断, 从而永远无法完成; 请参阅 [https://github.com/jvm-profiling-tools/async-profiler/issues/97](https://github.com/jvm-profiling-tools/async-profiler/issues/97)。解决方法就是增加间隔周期。
 
 - 7. 如果在 JVM 启动时未通过 `-agentpath` 加载agent代理, 强烈建议设置 `-XX:+UnlockDiagnosticVMOptions -XX:+DebugNonSafepoints` 启动参数。 如果没有这些标志，分析器仍然可以正常工作，但结果可能不太准确。 例如，假设没有 `-XX:+DebugNonSafepoints`，简单的内联方法很可能不会出现在分析结果中。 在运行过程中挂载 agent 代理时, `CompiledMethodLoad` JVMTI 事件会启用调试信息，但只会对挂载之后进行本地编译的方法生效。
 
@@ -570,7 +570,7 @@ Alternatively, if changing Docker configuration is not possible, you may fall ba
 ./profiler.sh -d 5 -e alloc MyAppName
 ```
 
-如果具有多个进程, 自动定位的方式可能会存在一些问题, 这时候使用具体的PID才能精准定位;
+如果存在多个进程, 自动定位的方式可能会存在一些问题, 这时候使用具体的PID才能精准定位;
 
 
 接下来, 我们介绍一些更具体的使用示例; 
@@ -894,7 +894,7 @@ RxJava框架的一个特征是内存中分配的对象会持续存活多个GC周
 - [async-profiler GitHub项目首页](https://github.com/jvm-profiling-tools/async-profiler)
 - [async-profiler WIKI](https://github.com/jvm-profiling-tools/async-profiler/wiki)
 - [Async-profiler作者的分享视频](https://www.youtube.com/playlist?list=PLNCLTEx3B8h4Yo_WvKWdLvI9mj1XpTKBr)
-- [Async-profiler作者的分享PPT: java-profiling.pdf)](https://github.com/apangin/java-profiling-presentation/blob/master/presentation/java-profiling.pdf)
+- [Async-profiler作者的分享PPT: java-profiling.pdf](https://github.com/apangin/java-profiling-presentation/blob/master/presentation/java-profiling.pdf)
 - [Safepoints: Meaning, Side Effects and Overheads](http://psy-lob-saw.blogspot.com/2015/12/safepoints.html)
 - [安全点偏差问题: Why (Most) Sampling Java Profilers Are Fu*cking Terrible](http://psy-lob-saw.blogspot.com/2016/02/why-most-sampling-java-profilers-are.html)
 - [Profiling Java Applications with Async Profiler](https://hackernoon.com/profiling-java-applications-with-async-profiler-049s2790)
