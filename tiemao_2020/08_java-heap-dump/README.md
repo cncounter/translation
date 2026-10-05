@@ -20,7 +20,7 @@ In the next sections, we'll go through multiple tools and approaches to generate
 
 堆内存转储（Heap Dump），是指JVM堆内存在某一个时刻的快照，一般使用 `hprof` 格式的二进制文件来保存。 可用于分析内存泄漏问题，以及Java程序的内存使用优化。
 
-常见的内存转储分析工具包括: [jhat](https://blog.csdn.net/renfufei/article/details/41444559)， [JVisualVM](https://gitbook.cn/gitchat/column/5de76cc38d374b7721a15cec/topic/5df0be5d44f0aa237c287862)， 以及基于Eclipse的 [MAT](https://gitbook.cn/gitchat/column/5de76cc38d374b7721a15cec/topic/5df0bf9144f0aa237c28786d)工具.
+常见的内存转储分析工具包括：[jhat](https://blog.csdn.net/renfufei/article/details/41444559)， [JVisualVM](https://gitbook.cn/gitchat/column/5de76cc38d374b7721a15cec/topic/5df0be5d44f0aa237c287862)， 以及基于Eclipse的 [MAT](https://gitbook.cn/gitchat/column/5de76cc38d374b7721a15cec/topic/5df0bf9144f0aa237c28786d)工具。
 
 下面介绍获取堆内存转储的常用方法。
 
@@ -38,7 +38,7 @@ In the next sections, we'll show how to use these tools in order to capture heap
 ## 2. 使用JDK内置工具
 
 JDK内置了很多诊断工具，位于 `JDK_HOME/bin` 目录下，一般来说这个目录可以包含到系统PATH路径中，可以直接在命令行中调用。
-JDK内置的堆内存转储工具包括:
+JDK内置的堆内存转储工具包括：
 
 
 ### 2.1. jmap
@@ -68,12 +68,12 @@ An example would be like this:
 
 在 `-dump:` 选项后面， 可以指定以下参数：
 
-- `live`: 可选参数；表示只输出存活对象，也就是会先执行一次FullGC来清除可以被回收的部分。
-- `format=b`: 可选参数, 指定 dump 文件为二进制格式(binary format). 在堆内存转储时，默认就是二进制格式。
-- `file`:  指定转储文件的保存路径。
-- `pid`: 指定Java进程的pid。
+- `live`：可选参数；表示只输出存活对象，也就是会先执行一次FullGC来清除可以被回收的部分。
+- `format=b`：可选参数，指定 dump 文件为二进制格式（binary format）。在堆内存转储时，默认就是二进制格式。
+- `file`：指定转储文件的保存路径。
+- `pid`：指定Java进程的pid。
 
-使用示例如下:
+使用示例如下：
 
 ```
 jmap -dump:live,format=b,file=/tmp/dump.hprof 12587
@@ -156,7 +156,7 @@ For these cases, Java provides the `HeapDumpOnOutOfMemoryError` command-line opt
 
 ## 3. 自动执行堆内存转储
 
-前面介绍的工具都是手工执行的，有时候，我们希望在发生内存溢出错误 `java.lang.OutOfMemoryError` 时, JVM自动执行堆内存转储，以方便事后进行排查和分析。 JVM提供了一个命令行启动参数 `HeapDumpOnOutOfMemoryError`， 使用的格式为：
+前面介绍的工具都是手工执行的，有时候，我们希望在发生内存溢出错误 `java.lang.OutOfMemoryError` 时，JVM自动执行堆内存转储，以方便事后进行排查和分析。 JVM提供了一个命令行启动参数 `HeapDumpOnOutOfMemoryError`， 使用的格式为：
 
 
 ```
@@ -165,9 +165,9 @@ java -XX:+HeapDumpOnOutOfMemoryError
 
 By default, it stores the dump in a `java_pid.hprof` file in the directory where we're running the application. If we want to specify another file or directory we can set it in the `HeapDumpPath` option:
 
-如果不用 `HeapDumpPath` 选项指定转储路径，则会自动保存到启动目录下，文件名的格式为: `java_pid<pid>.hprof`。
+如果不用 `HeapDumpPath` 选项指定转储路径，则会自动保存到启动目录下，文件名的格式为：`java_pid<pid>.hprof`。
 
-指定 `HeapDumpPath` 参数的使用示例如下:
+指定 `HeapDumpPath` 参数的使用示例如下：
 
 ```
 java -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=<file-or-dir-path>
@@ -195,13 +195,13 @@ Finally, this option can also be specified at runtime by using the `HotSpotDiagn
 
 可以看到，这个选项非常有用，而且对正常运行的程序来说没有什么开销。 因此强烈建议开启该选项，特别是在生产环境中。
 
-当然，这个选项也可以通过 `HotSpotDiagnostic` MBean 来动态设置，比如在JMX客户端之中设置 `HeapDumpOnOutOfMemoryError` 选项的值为 `true`:
+当然，这个选项也可以通过 `HotSpotDiagnostic` MBean 来动态设置，比如在JMX客户端之中设置 `HeapDumpOnOutOfMemoryError` 选项的值为 `true`：
 
 [![img](https://www.baeldung.com/wp-content/uploads/2018/09/jconsole-setvmoption-1.png)](https://www.baeldung.com/wp-content/uploads/2018/09/jconsole-setvmoption-1.png)
 
 We can find more information about MBeans and JMX in this [article](https://www.baeldung.com/java-management-extensions).
 
-MBeans 和 JMX 的更多信息请参考: https://www.baeldung.com/java-management-extensions
+MBeans 和 JMX 的更多信息请参考：https://www.baeldung.com/java-management-extensions
 
 
 ## 4. JMX
@@ -217,8 +217,8 @@ In the next sections, we'll show 2 different ways to invoke this method in order
 
 最后，我们来看看怎么通过JMX方式获取堆内存转储。 本质上是调用 `HotSpotDiagnostic` 这个MBean，其提供了一个 `dumpHeap` 方法， 参数为：
 
-- `outputFile`: 转储文件的路径， 一般以 `.hprof` 后缀结尾。
-- `live`: 如果设置为 `true`, 则只转储存活对象, 和 `jmap` 的使用类似。
+- `outputFile`：转储文件的路径， 一般以 `.hprof` 后缀结尾。
+- `live`：如果设置为 `true`，则只转储存活对象，和 `jmap` 的使用类似。
 
 下面是使用示例：
 
@@ -234,13 +234,13 @@ If we open `JConsole` and connect to a running Java process, we can navigate to 
 
 `HotSpotDiagnostic` MBean 最容易操作的方式是图形界面客户端， 例如 `JConsole`， `JVisualVM` 等。
 
-打开 `JConsole`, 连接到指定的Java进程， 切换到 `MBeans` 页签， 定位到 `com.sun.management.` 包下面的 `HotSpotDiagnostic`， 执行对应的 `dumpHeap` 方法即可。
+打开 `JConsole`，连接到指定的Java进程， 切换到 `MBeans` 页签， 定位到 `com.sun.management.` 包下面的 `HotSpotDiagnostic`， 执行对应的 `dumpHeap` 方法即可。
 
 ![img](https://www.baeldung.com/wp-content/uploads/2018/09/jconsole-dump-1.png)
 
 As shown, we just need to introduce the parameters `outputFile` and `live` into the `p0` and `p1` text fields in order to perform the `dumpHeap` operation.
 
-然后在 `p0` 和  `p1` 槽位填写对应的参数 `outputFile`, `live`, 执行 `dumpHeap` 即可。
+然后在 `p0` 和 `p1` 槽位填写对应的参数 `outputFile`、`live`，执行 `dumpHeap` 即可。
 
 
 
@@ -255,7 +255,7 @@ Let's see it in code:
 
 ### 4.2. 编程方式调用
 
-首先，需要获取 `MBeanServer` 实例，然后再获取系统注册的 `HotSpotDiagnosticMXBean` MBean， 接着调用 `dumpHeap` 方法， 示例代码如下:
+首先，需要获取 `MBeanServer` 实例，然后再获取系统注册的 `HotSpotDiagnosticMXBean` MBean， 接着调用 `dumpHeap` 方法， 示例代码如下：
 
 ```java
 public static void dumpHeap(String filePath, boolean live) throws IOException {
@@ -289,11 +289,11 @@ As always, the full source code of the examples is available [over on GitHub](ht
 
 本文介绍了几种获取堆内存转储的方法。 简单总结一下：
 
-1. 强烈建议指定JVM启动参数 `HeapDumpOnOutOfMemoryError`.
-2. 如果 `jmap` 不能使用，可以使用其他的替代方式，例如  jcmd、JVisualVM、JMX等等。
-3. 本文对应的代码请参考: [GitHub仓库](https://github.com/eugenp/tutorials/tree/master/core-java-modules/core-java-perf).
+1. 强烈建议指定JVM启动参数 `HeapDumpOnOutOfMemoryError`。
+2. 如果 `jmap` 不能使用，可以使用其他的替代方式，例如 jcmd、JVisualVM、JMX等等。
+3. 本文对应的代码请参考：[GitHub仓库](https://github.com/eugenp/tutorials/tree/master/core-java-modules/core-java-perf)。
 
 
 
 
-- https://www.baeldung.com/java-heap-dump-capture
+- 原文链接: <https://www.baeldung.com/java-heap-dump-capture>
