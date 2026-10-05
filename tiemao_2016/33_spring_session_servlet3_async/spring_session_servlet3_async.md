@@ -23,7 +23,7 @@
 </dependency>
 ```
 
-当然,一般是使用 Redis,:
+当然,一般是使用 Redis:
 
 ```
 <!-- redis -->
@@ -121,7 +121,7 @@
 
 
 
-记得在 web.xml 中配置的Filter需要加上 `<async-supported>true</async-supported>` 配置. 或者使用注解时也需要指定属性
+记得在 web.xml 中配置的Filter需要加上 `<async-supported>true</async-supported>` 配置。或者使用注解时也需要指定属性
 
 ```
 @WebFilter(value="/", asyncSupported=true)
