@@ -61,7 +61,7 @@ Replace **js/main.js** with the contents of **step-05/js/main.js**.
 
 If you are not following this codelab from your **work** directory, you may need to install the dependencies for the **step-05**folder or your current working folder. Run the following command from your working directory:
 
-如果没有执行上一节的操作, 需要在 **step-05**目录下, 或者工作目录下, 安装相应的依赖, 命令如下:
+如果不是在 **work** 目录下进行本节操作, 则需要在 **step-05**目录下, 或者当前工作目录下, 安装相应的依赖, 命令如下:
 
 ```
 npm install
@@ -108,7 +108,7 @@ View logging in the browser console.
 4. How could you change the app
 
 1. 本应用只支持一对一视频。请修改设计方案, 以支持多人使用同一聊天室。
-2. 示例中的房间号硬编码为 *cnc*。有什么方法可以使用其他房间号呢?
+2. 示例中的房间号硬编码为 *foo*。有什么方法可以使用其他房间号呢?
 3. 用户怎样才能分享他的房间号? 请尝试一种分享房间号的办法。
 4. 尝试改进这个应用。
 
@@ -146,7 +146,7 @@ A complete version of this step is in the **step-05** folder.
 - 可以访问 <https://test.webrtc.org/> 来检查本地环境, 比如摄像头和麦克风等等。
 - 如果碰到奇怪的缓存问题, 可以尝试以下步骤:
 - 强制刷新浏览器, 比如 `CTRL+F5`, 或者按住ctrl键, 并单击刷新按钮。
-- 重启计算机或者浏览器
+- 重启浏览器
 - 执行清理npm缓存的命令: `npm cache clean`
 
 ## Next up
