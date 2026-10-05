@@ -33,7 +33,7 @@ public class User {
 
 Now that the `name` field is indexed – let’s have a look at the indexes in MongoDB:
 
-现在 `name` 字段就会被索引 —— 让看看MongoDB中的索引:
+现在 `name` 字段就会被索引 —— 让我们看看MongoDB中的索引:
 
 ```
 db.user.getIndexes();
@@ -100,7 +100,7 @@ MongoDB支持复合索引, 即单个索引结构引用多个字段。
 
 Let’s see a quick example using compound indexes:
 
-让看一个使用复合索引的简单例子:
+让我们看一个使用复合索引的简单例子:
 
 ```
 @QueryEntity
@@ -139,14 +139,14 @@ Note that a `DBRef` field cannot be marked with `@Index` – that field can only
 
 ## 3. Common Annotations
 
-## 3.通用注解
+## 3. 通用注解
 
 ### 3.1 `@Transient` 注解
 
 
 As you would expect, this simple annotation excludes the field from being persisted in the database:
 
-如你所愿, 这个注解阻止将某个字段持久化到数据库:
+正如你所期望的, 这个注解会阻止将某个字段持久化到数据库:
 
 ```
 public class User {
@@ -251,11 +251,11 @@ And the state of the database:
 
 `@PersistenceConstructor` marks a constructor, even one that’s package protected, to be the primary constructor used by the persistence logic. The constructor arguments are mapped by name to the key values in the retrieved `DBObject`.
 
-`@PersistenceConstructor`标记构造函数,即使是包保护级别的构造函数, 持久化逻辑依然会用来作为主构造函数。 构造函数的参数根据获取的 `DBObject` 中key名称映射。
+`@PersistenceConstructor`标记构造函数,即使是包保护级别的构造函数, 持久化逻辑依然会将其用作主构造函数。 构造函数的参数根据获取的 `DBObject` 中key名称映射。
 
 Let’s look at this constructor for our `User` class:
 
-让看看`User`类的构造函数 :
+让我们看看 `User` 类的构造函数:
 
 ```
 @PersistenceConstructor
@@ -270,15 +270,15 @@ public User(String name, @Value("#root.age ?: 0") Integer age, EmailAddress emai
 
 Notice the use of the standard Spring `@Value` annotation here. It’s with the help of this annotation that we can use the Spring Expressions to transform a key’s value retrieved from the database before it is used to construct a domain object. That is a very powerful and highly useful feature here.
 
-注意这里的 `@Value` 标准注解。 在这个注解中，可以使用 Spring EL 表达式来映射数据库中的值. 这是一个非常强大，非常有用的功能。
+注意这里的 `@Value` 标准注解。 在这个注解中，可以使用 Spring EL 表达式来转换数据库中取出的值。这是一个非常强大，非常有用的功能。
 
 In our example if `age` is not set that it will be set to `0` by default.
 
-在的示例中, 如果`age`没有值则将被设置为`0`。
+在我们的示例中, 如果`age`没有值则将被设置为`0`。
 
 Let’s now see how it works:
 
-现在让看看它是如何工作的:
+现在让我们看看它是如何工作的:
 
 ```
 User user = new User();
@@ -290,7 +290,7 @@ mongoTemplate.insert(user);
 
 Our database will look:
 
-的数据库将会是:
+我们的数据库将会是:
 
 ```
 {
@@ -304,7 +304,7 @@ Our database will look:
 
 So the `age` field is `null`, but when we query the document and retrieve `age`:
 
-因此,数据库值 `age`字段的值是`null`,但当查询和检索的文档`age`:
+因此, 数据库中 `age` 字段的值是 `null`, 但当查询文档并检索 `age` 时:
 
 ```
 mongoTemplate.findOne(Query.query(Criteria.where("name").is("Alex")), User.class).getAge();
@@ -321,23 +321,23 @@ The result will be `0`.
 Let’s now take a look at another very useful feature in Spring Data MongoDB – converters, and specifically at the `MongoConverter`.
 
 
-现在让看一下 Spring Data MongoDB 另一个非常有用的功能： 转换器, 特别是 `MongoConverter`。
+现在让我们看一下 Spring Data MongoDB 另一个非常有用的功能： 转换器, 特别是 `MongoConverter`。
 
 This is used to handle the mapping of all Java types to `DBObjects` when storing and querying these objects.
 
-这用于处理所有的Java类型和`DBObjects`的映射，比如在保存和查询时。
+这用于在保存和查询这些对象时, 处理所有 Java 类型到 `DBObject` 的映射。
 
 We have two options – we can either work with `MappingMongoConverter –` or `SimpleMongoConverter` in earlier versions (this was deprecated in Spring Data MongoDB M3 and its functionality has been moved into `MappingMongoConverter`).
 
-有两个选择，可以使用 `MappingMongoConverter`，或者在早期版本中的 `SimpleMongoConverter` (这在Spring Data MongoDB M3中弃用，其功能已移动到`MappingMongoConverter`中).
+有两个选择，可以使用 `MappingMongoConverter`，或者在早期版本中的 `SimpleMongoConverter` (这在Spring Data MongoDB M3中弃用，其功能已移动到`MappingMongoConverter`中)。
 
 Or we can write our own custom converter. To do that, we would need to implement the `Converter` interface and register the implementation in `MongoConfig.`
 
-也可以自定义转换器。要做到这一点,需要实现`Converter`接口，并且在`MongoConfig`中注册.
+也可以自定义转换器。要做到这一点,需要实现`Converter`接口，并且在`MongoConfig`中注册。
 
 Let’s look at a quick example. As you’ve seen in some of the JSON output here, all objects saved in a database have the field `_class` which is saved automatically. If however we’d like to skip that particular field during persistence, we can do that using a `MappingMongoConverter`.
 
-让看看一个简单的例子。可以看到, 保存在数据库中的所有对象都有一个自动保存的 `_class` 字段。 如果想在保存时跳过这个字段,可以使用 `MappingMongoConverter`。
+让我们看一个简单的例子。可以看到, 保存在数据库中的所有对象都有一个自动保存的 `_class` 字段。 如果想在保存时跳过这个字段,可以使用 `MappingMongoConverter`。
 
 First – here’s the custom converter implementation:
 
@@ -366,7 +366,7 @@ public class UserWriterConverter implements Converter<User, DBObject> {
 
 Notice how we can easily hit the goal of not persisting `_class` by specifically removing the field directly here.
 
-直接删除不想要的 `_class` 字段。
+注意, 这里通过直接删除该字段, 轻松实现了不持久化 `_class` 字段的目标。
 
 Now we need to register the custom converter:
 
@@ -417,7 +417,7 @@ mongoOps.insert(user);
 
 The resulting document in the database no longer contains the class information:
 
-数据库中不再包含class信息:
+数据库中生成的文档不再包含 class 信息:
 
 ```
 {
@@ -433,7 +433,7 @@ The resulting document in the database no longer contains the class information:
 
 In this tutorial we’ve covered some core concepts of working with Spring Data MongoDB – indexing, common annotations and converters.
 
-在本教程中，我们介绍了 Spring Data MongoDB的一些核心概念——索引、公共注解，转换器，及其使用示例。
+在本教程中，我们介绍了 Spring Data MongoDB的一些核心概念——索引、通用注解、转换器，及其使用示例。
 
 The implementation of all these examples and code snippets can be found in [`my github project`](https://github.com/eugenp/tutorials/tree/master/persistence-modules/spring-data-mongodb) – this is an Eclipse based project, so it should be easy to import and run as it is.
 
@@ -447,5 +447,5 @@ The implementation of all these examples and code snippets can be found in [`my 
 
 - [Spring Data MongoDB系列(一): 简介](05_01_spring-data-mongodb-tutorial.md)
 - [Spring Data MongoDB系列(二): 简单查询](05_02_queries-in-spring-data-mongodb.md)
-- [Spring Data MongoDB系列(三): 索引、注解和转换器](05_02_queries-in-spring-data-mongodb.md)
+- [Spring Data MongoDB系列(三): 索引、注解和转换器](05_03_spring-data-mongodb-index-annotations-converter.md)
 - [Spring Data MongoDB系列(八): 映射与聚合](05_08_spring-data-mongodb-projections-aggregations.md)
