@@ -22,7 +22,7 @@
 
 Logback is intended as a successor to the popular log4j project. It was designed by Ceki Gülcü, log4j's founder. It builds upon a decade of experience gained in designing industrial-strength logging systems. The resulting product, i.e. logback, is faster and has a smaller footprint than all existing logging systems, sometimes by a wide margin. Just as importantly, logback offers [unique and rather useful features](https://logback.qos.ch/reasonsToSwitch.html) missing in other logging systems.
 
-Logback由log4j项目的创始人CekiGülcü设计，基于产品级日志系统数十年的设计经验，目标是成为log4j的后续版本。
+Logback由log4j项目的创始人Ceki Gülcü设计，基于产品级日志系统数十年的设计经验，目标是成为log4j的后续版本。
 所以， logback才会比业界所有的日志系统都要快，占用资源少。
 同样重要的是，logback提供了其他日志系统所缺少的[独特且实用的功能](https://logback.qos.ch/reasonsToSwitch.html)。
 
@@ -73,7 +73,7 @@ public class HelloWorld1 {
 
 `HelloWorld1` class is defined in the `chapters.introduction` package. It starts by importing the [`Logger`](http://slf4j.org/api/org/slf4j/Logger.html) and [`LoggerFactory`](http://slf4j.org/api/org/slf4j/LoggerFactory.html) classes defined in the SLF4J API, specifically within the `org.slf4j` package.
 
-`HelloWorld1`类定义在`chapters.introduction`包中。 首先引入了SLF4J API里面，`org.slf4j`包中的 [`Logger`](http://slf4j.org/api/org/slf4j/Logger.html) 和 [`LoggerFactory`](http://slf4j.org/api/org/slf4j/LoggerFactory.html) 这两个类，。
+`HelloWorld1`类定义在`chapters.introduction`包中。 首先引入了SLF4J API里面，`org.slf4j`包中的 [`Logger`](http://slf4j.org/api/org/slf4j/Logger.html) 和 [`LoggerFactory`](http://slf4j.org/api/org/slf4j/LoggerFactory.html) 这两个类。
 
 On the first line of the main() method, the variable named `logger` is assigned a `Logger` instance retrieved by invoking the static `getLogger` method from the `LoggerFactory` class. This logger is named "chapters.introduction.HelloWorld1". The main method proceeds to call the `debug` method of this logger passing "Hello World" as an argument. We say that the main method contains a logging statement of level DEBUG with the message "Hello world".
 
@@ -109,7 +109,7 @@ Logback can report information about its internal state using a built-in status 
 
 Logback可以使用内置状态系统来报告其内部状态相关的信息。
 可以通过名为`StatusManager`的组件,访问在logback的生命周期中发生的重要事件。
-我们通过调用`StatusPrinter`类的静态方法`print（）`来让logback打印其内部状态。
+我们通过调用`StatusPrinter`类的静态方法`print()`来让logback打印其内部状态。
 
 > Example 1.2: Printing Logger Status
 
@@ -178,7 +178,7 @@ Here is a list of the three required steps in order to enable logging in your ap
 
 1. 配置Logback环境。可以通过简单或者复杂的方式来实现这一目标。 稍后会详细介绍。
 2. 在希望记录日志的每个类中，通过调用 `org.slf4j.LoggerFactory` 类的 `getLogger()` 方法来获得 `Logger` 实例， 可以将当前类的名称或者class本身作为参数。
-3. 调用 logger 实例的方法来输出日志, 比如 `debug()`, `info()`, `warn()` and `error()` 等, 将在配置的appender上产生日志输出。
+3. 调用 logger 实例的方法来输出日志, 比如 `debug()`, `info()`, `warn()` 和 `error()` 等, 将在配置的appender上产生日志输出。
 
 
 ## Building logback
@@ -199,7 +199,7 @@ Logback发行版包含完整的源代码，您可以修改logback的代码并构
 
 For building logback under an IDE, please see the [relevant section on the class path setup page](https://logback.qos.ch/setup.html#ide).
 
-要在IDE中构建回溯，请参阅 [class path 设置页面中的相关章节](https://logback.qos.ch/setup.html#ide)。
+要在IDE中构建logback，请参阅 [class path 设置页面中的相关章节](https://logback.qos.ch/setup.html#ide)。
 
 
 原文链接: <https://logback.qos.ch/manual/introduction.html>
