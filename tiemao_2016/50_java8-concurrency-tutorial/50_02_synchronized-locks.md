@@ -1,24 +1,26 @@
-# Java 8 Concurrency Tutorial: Synchronization and Locks
+# Java 8 并发教程：同步与锁
 
-April 30, 2015
+> 原文: Java 8 Concurrency Tutorial: Synchronization and Locks
 
-Welcome to the second part of my Java 8 Concurrency Tutorial out of a series of guides teaching multi-threaded programming in Java 8 with easily understood code examples. In the next 15 min you learn how to synchronize access to mutable shared variables via the synchronized keyword, locks and semaphores.
+2015年4月30日
 
-
-*   Part 1: [Threads and Executors](50_01_thread-executor.md)
-*   Part 2: [Synchronization and Locks](50_02_synchronized-locks.md)
-*   Part 3: [Atomic Variables and ConcurrentMap](50_03_atomic-concurrent-map.md)
+欢迎阅读我的 Java 8 并发教程第二部分，这是一系列通过易于理解的代码示例来讲解 Java 8 多线程编程的指南。在接下来的 15 分钟里，你将学会如何通过 synchronized 关键字、锁和信号量来同步对可变共享变量的访问。
 
 
-The majority of concepts shown in this article also work in older versions of Java. However the code samples focus on Java 8 and make heavy use of lambda expressions and  new concurrency features. If you're not yet familiar with lambdas I recommend reading my [Java 8 Tutorial](http://winterbe.com/posts/2014/03/16/java-8-tutorial/) first.
+*   第 1 部分：[线程与执行器](50_01_thread-executor.md)
+*   第 2 部分：[同步与锁](50_02_synchronized-locks.md)
+*   第 3 部分：[原子变量与 ConcurrentMap](50_03_atomic-concurrent-map.md)
 
-For simplicity the code samples of this tutorial make use of the two helper methods `sleep(seconds)` and `stop(executor)` as defined [here](https://github.com/winterbe/java8-tutorial/blob/master/src/com/winterbe/java8/samples/concurrent/ConcurrentUtils.java).
 
-### Synchronized
+本文展示的大部分概念在更早版本的 Java 中同样适用。不过代码示例聚焦于 Java 8，并大量使用了 lambda 表达式和新的并发特性。如果你还不熟悉 lambda，建议先阅读我的 [Java 8 教程](http://winterbe.com/posts/2014/03/16/java-8-tutorial/)。
 
-In the [previous tutorial]((/posts/2015/04/07/java8-concurrency-tutorial-thread-executor-examples/)) we've learned how to execute code in parallel via executor services. When writing such multi-threaded code you have to pay particular attention when accessing shared mutable variables concurrently from multiple threads. Let's just say we want to increment an integer which is accessible simultaneously from multiple threads.
+为简单起见，本教程的代码示例使用了两个辅助方法 `sleep(seconds)` 和 `stop(executor)`，它们的定义见[这里](https://github.com/winterbe/java8-tutorial/blob/master/src/com/winterbe/java8/samples/concurrent/ConcurrentUtils.java)。
 
-We define a field `count` with a method `increment()` to increase count by one:
+### 同步(Synchronized)
+
+在[上一篇教程](/posts/2015/04/07/java8-concurrency-tutorial-thread-executor-examples/)中，我们学会了如何通过 executor 服务并行执行代码。编写这类多线程代码时，从多个线程并发访问共享可变变量必须格外小心。假设我们想要对一个可被多个线程同时访问的整数进行自增。
+
+我们定义了一个字段 `count`，以及一个将其加一的方法 `increment()`：
 
     int count = 0;
 
@@ -26,7 +28,7 @@ We define a field `count` with a method `increment()` to increase count by one:
         count = count + 1;
     }
 
-When calling this method concurrently from multiple threads we're in serious trouble:
+当从多个线程并发调用这个方法时，我们就会遇到大麻烦：
 
     ExecutorService executor = Executors.newFixedThreadPool(2);
 
@@ -37,17 +39,17 @@ When calling this method concurrently from multiple threads we're in serious tro
 
     System.out.println(count);  // 9965
 
-Instead of seeing a constant result count of 10000 the actual result varies with every execution of the above code. The reason is that we share a mutable variable upon different threads without synchronizing the access to this variable which results in a [race condition](http://en.wikipedia.org/wiki/Race_condition).
+结果并不是固定的 10000，而是每次执行上面的代码都会得到不同的实际结果。原因在于我们在不同线程之间共享了一个可变变量，却没有同步对该变量的访问，从而导致了[竞态条件](http://en.wikipedia.org/wiki/Race_condition)。
 
-Three steps have to be performed in order to increment the number: (i) read the current value, (ii) increase this value by one and (iii) write the new value to the variable. If two threads perform these steps in parallel it's possible that both threads perform step 1 simultaneously thus reading the same current value. This results in lost writes so the actual result is lower. In the above sample 35 increments got lost due to concurrent unsynchronized access to count but you may see different results when executing the code by yourself.
+要让这个数字自增，必须执行三个步骤：(i) 读取当前值，(ii) 将该值加一，(iii) 把新值写回变量。如果两个线程并行执行这些步骤，它们有可能同时执行第 1 步，从而读到相同的当前值。这会导致写丢失，因此实际结果偏低。在上面的示例中，由于对 count 的并发且未同步的访问，丢失了 35 次自增，但你自己执行这段代码时可能会看到不同的结果。
 
-Luckily Java supports thread-synchronization since the early days via the `synchronized` keyword. We can utilize `synchronized` to fix the above race conditions when incrementing the count:
+幸运的是，Java 从早期开始就通过 `synchronized` 关键字支持线程同步。我们可以利用 `synchronized` 来修复上面自增 count 时的竞态条件：
 
     synchronized void incrementSync() {
         count = count + 1;
     }
 
-When using `incrementSync()` concurrently we get the desired result count of 10000. No race conditions occur any longer and the result is stable with every execution of the code:
+并发使用 `incrementSync()` 时，我们得到了期望的结果 10000。不再发生竞态条件，每次执行代码的结果都是稳定的：
 
     ExecutorService executor = Executors.newFixedThreadPool(2);
 
@@ -58,7 +60,7 @@ When using `incrementSync()` concurrently we get the desired result count of 100
 
     System.out.println(count);  // 10000
 
-The `synchronized` keyword is also available as a block statement.
+`synchronized` 关键字也可以作为块语句使用。
 
     void incrementSync() {
         synchronized (this) {
@@ -66,21 +68,21 @@ The `synchronized` keyword is also available as a block statement.
         }
     }
 
-Internally Java uses a so called _monitor_ also known as [monitor lock or intrinsic lock](https://docs.oracle.com/javase/tutorial/essential/concurrency/locksync.html) in order to manage synchronization. This monitor is bound to an object, e.g. when using synchronized methods each method share the same monitor of the corresponding object.
+在内部，Java 使用一种称为 _监视器_（monitor）的机制来管理同步，它也被称为[监视器锁或内置锁](https://docs.oracle.com/javase/tutorial/essential/concurrency/locksync.html)。这个监视器绑定到一个对象上，例如使用 synchronized 方法时，每个方法都共享对应对象的同一个监视器。
 
-All implicit monitors implement the _reentrant_ characteristics. Reentrant means that locks are bound to the current thread. A thread can safely acquire the same lock multiple times without running into deadlocks (e.g. a synchronized method calls another synchronized method on the same object).
+所有隐式监视器都具备 _可重入_ 特性。可重入意味着锁绑定到当前线程。一个线程可以安全地多次获取同一把锁而不会陷入死锁（例如一个 synchronized 方法调用同一对象上的另一个 synchronized 方法）。
 
-### Locks
+### 锁(Locks)
 
-Instead of using implicit locking via the `synchronized` keyword the Concurrency API supports various explicit locks specified by the `Lock` interface. Locks support various methods for finer grained lock control thus are more expressive than implicit monitors.
+除了通过 `synchronized` 关键字使用隐式锁，并发 API 还支持由 `Lock` 接口定义的各种显式锁。锁提供了多种方法以实现更细粒度的锁控制，因此比隐式监视器更具表达力。
 
-Multiple lock implementations are available in the standard JDK which will be demonstrated in the following sections.
+标准 JDK 中提供了多种锁的实现，将在后续各节中演示。
 
 #### ReentrantLock
 
-The class `ReentrantLock` is a mutual exclusion lock with the same basic behavior as the implicit monitors accessed via the `synchronized` keyword but with extended capabilities. As the name suggests this lock implements reentrant characteristics just as implicit monitors.
+`ReentrantLock` 类是一种互斥锁，其基本行为与通过 `synchronized` 关键字访问的隐式监视器相同，但具备更强的扩展能力。顾名思义，这种锁和隐式监视器一样实现了可重入特性。
 
-Let's see how the above sample looks like using `ReentrantLock`:
+让我们看看使用 `ReentrantLock` 时上面的示例是什么样子：
 
     ReentrantLock lock = new ReentrantLock();
     int count = 0;
@@ -94,9 +96,9 @@ Let's see how the above sample looks like using `ReentrantLock`:
         }
     }
 
-A lock is acquired via `lock()` and released via `unlock()`. It's important to wrap your code into a `try/finally` block to ensure unlocking in case of exceptions. This method is thread-safe just like the synchronized counterpart. If another thread has already acquired the lock subsequent calls to `lock()` pause the current thread until the lock has been unlocked. Only one thread can hold the lock at any given time.
+锁通过 `lock()` 获取，通过 `unlock()` 释放。重要的是要把代码包裹在 `try/finally` 块中，以确保发生异常时也能解锁。这个方法与 synchronized 版本一样是线程安全的。如果另一个线程已经获取了锁，那么后续对 `lock()` 的调用会暂停当前线程，直到锁被释放。任意时刻只能有一个线程持有该锁。
 
-Locks support various methods for fine grained control as seen in the next sample:
+锁提供了多种方法以实现细粒度控制，如下一个示例所示：
 
     ExecutorService executor = Executors.newFixedThreadPool(2);
     ReentrantLock lock = new ReentrantLock();
@@ -119,17 +121,17 @@ Locks support various methods for fine grained control as seen in the next sampl
 
     stop(executor);
 
-While the first task holds the lock for one second the second task obtains different information about the current state of the lock:
+第一个任务持有锁一秒钟，同时第二个任务获取了关于锁当前状态的不同信息：
 
     Locked: true
     Held by me: false
     Lock acquired: false
 
-The method `tryLock()` as an alternative to `lock()` tries to acquire the lock without pausing the current thread. The boolean result must be used to check if the lock has actually been acquired before accessing any shared mutable variables.
+`tryLock()` 方法作为 `lock()` 的替代方案，尝试获取锁而不暂停当前线程。在访问任何共享可变变量之前，必须使用布尔返回值来检查锁是否真的获取成功。
 
 #### ReadWriteLock
 
-The interface `ReadWriteLock` specifies another type of lock maintaining a pair of locks for read and write access. The idea behind read-write locks is that it's usually safe to read mutable variables concurrently as long as nobody is writing to this variable. So the read-lock can be held simultaneously by multiple threads as long as no threads hold the write-lock. This can improve performance and throughput in case that reads are more frequent than writes.
+`ReadWriteLock` 接口定义了另一种锁，它维护一对分别用于读访问和写访问的锁。读写锁背后的思想是：只要没有线程在写入某个可变变量，并发读取它通常是安全的。因此，只要没有线程持有写锁，读锁就可以被多个线程同时持有。在读操作比写操作更频繁的情况下，这可以提升性能和吞吐量。
 
     ExecutorService executor = Executors.newFixedThreadPool(2);
     Map<String, String> map = new HashMap<>();
@@ -145,7 +147,7 @@ The interface `ReadWriteLock` specifies another type of lock maintaining a pair 
         }
     });
 
-The above example first acquires a write-lock in order to put a new value to the map after sleeping for one second. Before this task has finished two other tasks are being submitted trying to read the entry from the map and sleep for one second:
+上面的示例先获取写锁，以便在休眠一秒后向 map 中放入一个新值。在这个任务完成之前，又提交了另外两个任务，它们尝试从 map 中读取条目并休眠一秒钟：
 
     Runnable readTask = () -> {
         lock.readLock().lock();
@@ -162,13 +164,13 @@ The above example first acquires a write-lock in order to put a new value to the
 
     stop(executor);
 
-When you execute this code sample you'll notice that both read tasks have to wait the whole second until the write task has finished. After the write lock has been released both read tasks are executed in parallel and print the result simultaneously to the console. They don't have to wait for each other to finish because read-locks can safely be acquired concurrently as long as no write-lock is held by another thread.
+执行这个代码示例时，你会注意到两个读任务都必须等待整整一秒，直到写任务完成。写锁释放之后，两个读任务会并行执行，并同时把结果打印到控制台。它们不必互相等待完成，因为只要没有其他线程持有写锁，读锁就可以被安全地并发获取。
 
 #### StampedLock
 
-Java 8 ships with a new kind of lock called `StampedLock` which also support read and write locks just like in the example above. In contrast to `ReadWriteLock` the locking methods of a `StampedLock` return a stamp represented by a `long` value. You can use these stamps to either release a lock or to check if the lock is still valid. Additionally stamped locks support another lock mode called _optimistic locking_.
+Java 8 附带了一种名为 `StampedLock` 的新锁，它和上面的示例一样也支持读锁和写锁。与 `ReadWriteLock` 不同的是，`StampedLock` 的加锁方法会返回一个由 `long` 值表示的 stamp（时间戳）。你可以用这些 stamp 来释放锁，或检查锁是否仍然有效。此外，stamped 锁还支持另一种称为 _乐观锁_ 的锁模式。
 
-Let's rewrite the last example code to use `StampedLock` instead of `ReadWriteLock`:
+让我们把上一个示例的代码改用 `StampedLock` 而不是 `ReadWriteLock`：
 
     ExecutorService executor = Executors.newFixedThreadPool(2);
     Map<String, String> map = new HashMap<>();
@@ -199,11 +201,11 @@ Let's rewrite the last example code to use `StampedLock` instead of `ReadWriteLo
 
     stop(executor);
 
-Obtaining a read or write lock via `readLock()` or `writeLock()` returns a stamp which is later used for unlocking within the finally block. Keep in mind that stamped locks don't implement reentrant characteristics. Each call to lock returns a new stamp and blocks if no lock is available even if the same thread already holds a lock. So you have to pay particular attention not to run into deadlocks.
+通过 `readLock()` 或 `writeLock()` 获取读锁或写锁会返回一个 stamp，稍后在 finally 块中用它来解锁。请记住，stamped 锁不实现可重入特性。每次加锁都会返回一个新的 stamp，即使同一个线程已经持有了锁，只要没有可用的锁它就会阻塞。因此你必须格外注意，避免陷入死锁。
 
-Just like in the previous `ReadWriteLock` example both read tasks have to wait until the write lock has been released. Then both read tasks print to the console simultaneously because multiple reads doesn't block each other as long as no write-lock is held.
+和前面的 `ReadWriteLock` 示例一样，两个读任务都必须等待写锁被释放。然后两个读任务会同时向控制台打印，因为只要没有持有写锁，多个读操作就不会互相阻塞。
 
-The next example demonstrates _optimistic locking_:
+下一个示例演示 _乐观锁_：
 
     ExecutorService executor = Executors.newFixedThreadPool(2);
     StampedLock lock = new StampedLock();
@@ -234,9 +236,9 @@ The next example demonstrates _optimistic locking_:
 
     stop(executor);
 
-An optimistic read lock is acquired by calling `tryOptimisticRead()` which always returns a stamp without blocking the current thread, no matter if the lock is actually available. If there's already a write lock active the returned stamp equals zero. You can always check if a stamp is valid by calling `lock.validate(stamp)`.
+乐观读锁通过调用 `tryOptimisticRead()` 获取，它总是返回一个 stamp 而不会阻塞当前线程，无论锁实际上是否可用。如果当前已经有写锁处于活动状态，返回的 stamp 等于 0。你随时可以通过调用 `lock.validate(stamp)` 来检查某个 stamp 是否有效。
 
-Executing the above code results in the following output:
+执行上面的代码会得到如下输出：
 
     Optimistic Lock Valid: true
     Write Lock acquired
@@ -244,11 +246,11 @@ Executing the above code results in the following output:
     Write done
     Optimistic Lock Valid: false
 
-The optimistic lock is valid right after acquiring the lock. In contrast to normal read locks an optimistic lock doesn't prevent other threads to obtain a write lock instantaneously. After sending the first thread to sleep for one second the second thread obtains a write lock without waiting for the optimistic read lock to be released. From this point the optimistic read lock is no longer valid. Even when the write lock is released the optimistic read locks stays invalid.
+乐观锁在获取之后立即是有效的。与普通读锁不同，乐观锁不会阻止其他线程立刻获取写锁。在让第一个线程休眠一秒之后，第二个线程无需等待乐观读锁被释放就获取了写锁。从这一刻起，乐观读锁不再有效。即使写锁被释放，乐观读锁仍然保持无效。
 
-So when working with optimistic locks you have to validate the lock every time _after_ accessing any shared mutable variable to make sure the read was still valid.
+因此，使用乐观锁时，你必须在访问任何共享可变变量 _之后_ 每次都验证锁，以确保这次读取仍然有效。
 
-Sometimes it's useful to convert a read lock into a write lock without unlocking and locking again. `StampedLock` provides the method `tryConvertToWriteLock()` for that purpose as seen in the next sample:
+有时，在不先解锁再重新加锁的情况下把读锁转换为写锁是很有用的。为此，`StampedLock` 提供了 `tryConvertToWriteLock()` 方法，如下一个示例所示：
 
     ExecutorService executor = Executors.newFixedThreadPool(2);
     StampedLock lock = new StampedLock();
@@ -272,13 +274,13 @@ Sometimes it's useful to convert a read lock into a write lock without unlocking
 
     stop(executor);
 
-The task first obtains a read lock and prints the current value of field `count` to the console. But if the current value is zero we want to assign a new value of `23`. We first have to convert the read lock into a write lock to not break potential concurrent access by other threads. Calling `tryConvertToWriteLock()` doesn't block but may return a zero stamp indicating that no write lock is currently available. In that case we call `writeLock()` to block the current thread until a write lock is available.
+这个任务首先获取读锁，并把字段 `count` 的当前值打印到控制台。但如果当前值为 0，我们就想赋予它一个新值 `23`。首先必须把读锁转换为写锁，以免破坏其他线程可能的并发访问。调用 `tryConvertToWriteLock()` 不会阻塞，但可能返回一个为 0 的 stamp，表示当前没有可用的写锁。这种情况下，我们调用 `writeLock()` 来阻塞当前线程，直到有写锁可用为止。
 
-### Semaphores
+### 信号量(Semaphores)
 
-In addition to locks the Concurrency API also supports counting semaphores. Whereas locks usually grant exclusive access to variables or resources, a semaphore is capable of maintaining whole sets of permits. This is useful in different scenarios where you have to limit the amount concurrent access to certain parts of your application.
+除了锁之外，并发 API 还支持计数信号量。锁通常授予对变量或资源的独占访问，而信号量能够维护一整套许可。在你需要限制对应用某些部分的并发访问量的各种场景中，这非常有用。
 
-Here's an example how to limit access to a long running task simulated by `sleep(5)`:
+下面是一个示例，演示如何限制对一个由 `sleep(5)` 模拟的长时间运行任务的访问：
 
     ExecutorService executor = Executors.newFixedThreadPool(10);
 
@@ -308,9 +310,9 @@ Here's an example how to limit access to a long running task simulated by `sleep
 
     stop(executor);
 
-The executor can potentially run 10 tasks concurrently but we use a semaphore of size 5, thus limiting concurrent access to 5. It's important to use a `try/finally` block to properly release the semaphore even in case of exceptions.
+这个执行器理论上可以并发运行 10 个任务，但我们使用了一个大小为 5 的信号量，从而把并发访问限制为 5。重要的是要使用 `try/finally` 块，以便即使发生异常也能正确释放信号量。
 
-Executing the above code results in the following output:
+执行上面的代码会得到如下输出：
 
     Semaphore acquired
     Semaphore acquired
@@ -323,11 +325,11 @@ Executing the above code results in the following output:
     Could not acquire semaphore
     Could not acquire semaphore
 
-The semaphores permits access to the actual long running operation simulated by `sleep(5)` up to a maximum of 5. Every subsequent call to `tryAcquire()` elapses the maximum wait timeout of one second, resulting in the appropriate console output that no semaphore could be acquired.
+信号量最多允许 5 个线程访问由 `sleep(5)` 模拟的实际长时间运行操作。之后每次对 `tryAcquire()` 的调用都会耗尽最长一秒的等待超时，从而在控制台输出相应的信息，表示无法获取信号量。
 
-This was the second part out of a series of concurrency tutorials. More parts will be released in the near future, so stay tuned. As usual you find all code samples from this article on [GitHub](https://github.com/winterbe/java8-tutorial), so feel free to fork the repo and try it by your own.
+这是并发教程系列的第二部分。近期还会发布更多部分，敬请关注。和往常一样，你可以在 [GitHub](https://github.com/winterbe/java8-tutorial) 上找到本文的所有代码示例，欢迎 fork 这个仓库并亲自尝试。
 
-I hope you've enjoyed this article. If you have any further questions send me your feedback in the comments below. You should also [follow me on Twitter](https://twitter.com/winterbe_) for more dev-related stuff!
+希望你喜欢这篇文章。如果你还有任何疑问，欢迎在下方评论区把反馈发给我。你也可以[在 Twitter 上关注我](https://twitter.com/winterbe_)，获取更多与开发相关的内容！
 
 *   Part 1: [Threads and Executors](50_01_thread-executor.md)
 *   Part 2: [Synchronization and Locks](50_02_synchronized-locks.md)
@@ -371,4 +373,3 @@ Benjamin is Software Engineer, Full Stack Developer at [Pondus](http://pondus.de
 - 人生设计师: <http://blog.longjiazuo.com/>
 
 原文链接: [http://winterbe.com/posts/2015/04/30/java8-concurrency-tutorial-synchronized-locks-examples/](http://winterbe.com/posts/2015/04/30/java8-concurrency-tutorial-synchronized-locks-examples/)
-
