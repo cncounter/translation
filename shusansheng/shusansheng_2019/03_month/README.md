@@ -16,9 +16,9 @@
 | eight       | eighth      | 8th  | 8          |
 | nine        | ninth       | 9th  | 9          |
 | ten         | tenth       | 10th | 10         |
-| eleven      | eleventh    | 11th, 11st  | 11  |
-| twelve      | twelfth     | 12th, 12nd  | 12  |
-| thirteen    | thirteenth  | 13th, 13rd  | 13  |
+| eleven      | eleventh    | 11th        | 11  |
+| twelve      | twelfth     | 12th        | 12  |
+| thirteen    | thirteenth  | 13th        | 13  |
 | fourteen    | fourteenth  | 14th  | 14        |
 | fifteen     | -----       | --th  | 15         |
 | sixteen     | -----       | --th  | 1          |
@@ -54,7 +54,7 @@
 | July        | Jul | 七月 |
 | August      | Aug | 八月 |
 | September | Sep | 九月 |
-| Octomber  | Oct | 十月 |
+| October   | Oct | 十月 |
 | November  | Nov | 十一月 |
 | December  | Dec | 十二月 |
 
