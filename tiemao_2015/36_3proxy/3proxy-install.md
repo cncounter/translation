@@ -20,7 +20,7 @@
 
 
 
-## Windws 版本安装
+## Windows 版本安装
 
 假设解压后的目录为 : 	`C:\Program Files\3proxy-0.7.1.3-x64`
 
