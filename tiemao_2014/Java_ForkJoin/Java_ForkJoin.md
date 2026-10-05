@@ -2,80 +2,80 @@
 
 
 
-## Introduction
+## 1. 简介
 
-These notes describe the bare basics of the Java ForkJoin Framework (JSR-166) for students new to parallel programming. This material is only enough to code up basic parallel maps and reductions for pedagogical purposes. The focus is on the few classes and methods you need to get started. Separate lecture notes and a programming project give much more detail on benefits of the library, how to approach programming with it, asymptotic guarantees, etc.
+这些笔记面向初次接触并行编程的学生, 介绍 Java ForkJoin 框架(JSR-166)最基础的内容。 这些材料仅够用于编写基本的并行 map 和 reduce 操作, 供教学之用。 重点放在上手所需的少数几个类和方法上。 另有单独的讲义和一个编程项目, 更详细地讲解这个库的优势、如何使用它来编程、渐进复杂度保证等内容。
 
-We focus on using Java's library, not on how it is implemented. Libraries/languages with similar facilities exist for other environments including Cilk and Intel's Thread Building Blocks (TBB) for C/C++ and the Task Parallel Library for C#.
+我们关注的是如何使用 Java 的这个库, 而不是它内部是如何实现的。 其他环境也有类似的工具, 例如 Cilk、面向 C/C++ 的 Intel Thread Building Blocks(TBB), 以及 C# 的任务并行库(Task Parallel Library)。
 
-We will first describe what Java version you need. We will then describe the 3 or 4 classes you will need to write basic divide-and-conquer parallel algorithms manually. We will present a full working program that you can use as a template. We will mention a few complications in case you stumble into them. Finally, we will discuss best practices for timing how long a computation takes and reasons why a sequential version might appear faster.
+我们先说明需要哪个 Java 版本, 然后介绍手动编写基本的分治并行算法所需的 3、4 个类, 接着给出一个完整可运行的程序作为模板, 再提一下可能踩到的几个坑, 最后讨论测量计算耗时的最佳实践, 以及为什么串行版本有时看起来反而更快。
 
-## Java Versions
+## 2. Java版本
 
-We do not describe here how to determine what version of Java you are using, but that is clearly an important consideration. You probably have Java 8 (or later), in which case there is nothing more you need to do.
+这里不介绍如何判断你正在使用哪个 Java 版本, 但那显然是一个重要的考量。 你可能已经装了 Java 8(或更高版本), 那样的话就无需再做任何准备。
 
-Java 8 (or higher):
+Java 8(或更高):
 
-The ForkJoin Framework is part of Java 8's standard libraries, and most of the rest of this file assumes you have (any version of) Java 8. If you do not, keep reading.
+ForkJoin 框架是 Java 8 标准库的一部分, 本文后续大部分内容都假设你使用的是(任意版本的)Java 8。 如果不是, 请继续往下看。
 
 Java 7:
 
-The ForkJoin Framework is part of Java 7's standard libraries, but the `ForkJoinPool` class does not have the `commonPool` method that we advocate using, so you will need to create your own `ForkJoinPool` object as described in Getting Started, below.
+ForkJoin 框架是 Java 7 标准库的一部分, 但 `ForkJoinPool` 类没有我们推荐使用的 `commonPool` 方法, 所以你需要像下文“快速上手”中描述的那样, 自己创建一个 `ForkJoinPool` 对象。
 
 Java 6:
 
-If you need to use Java 6 for some reason, you can still use the ForkJoin Framework, but you must download it explicitly and use some strange arguments as described in detail below.
+如果出于某些原因必须使用 Java 6, 你仍然可以使用 ForkJoin 框架, 但必须显式下载它, 并使用一些奇怪的参数, 具体细节见下文。
 
-You need a copy of `jsr166.jar`. Newer versions are released occasionally and posted at http://gee.cs.oswego.edu/dl/jsr166/dist/jsr166.jar. To create an Eclipse project that uses the library, you can follow the steps below in order. There are alternatives for some of these steps (e.g., you could put the `.jar` file in a different directory), but these should work.
+你需要一份 `jsr166.jar`。 新版本会不定期发布, 地址是 http://gee.cs.oswego.edu/dl/jsr166/dist/jsr166.jar 。 要创建一个使用该库的 Eclipse 项目, 可以按顺序执行下面的步骤。 其中某些步骤有替代做法(例如, 你可以把 `.jar` 文件放到别的目录), 但下面的做法应该可行。
 
-1. Outside of Eclipse, make a new directory (folder) and put `jsr166.jar` and other relevant Java code in it. Make sure it is called `jsr166.jar`, renaming the file if your web browser somehow changed the name when downloading it.
-2. In Eclipse, create a new Java project. Choose "Create project from existing source" and choose the directory you created in the previous step.
-3. In the project, choose Project → Properties from the menu. Under "Java Compiler" check "Enable project specific settings" and make sure the choice is Java 1.6 (earlier versions will not work).
-4. In the list of files in the package viewer (over on the left), right-click on `jsr166.jar` and choose "Add to Build Path."
-5. Make a new class for your project. Define a `main` method you can run.
-6. Under Run → Configurations, create a new configuration. Under Arguments, you are used to putting program arguments in the top and that is as usual. But also under "VM arguments" on the bottom you need to enter: `-Xbootclasspath/p:jsr166.jar` exactly like that.
+1. 在 Eclipse 之外新建一个目录(文件夹), 把 `jsr166.jar` 和其他相关的 Java 代码放进去。 确保文件名就是 `jsr166.jar`, 如果浏览器在下载时莫名其妙改了名字, 就手动改回来。
+2. 在 Eclipse 中新建一个 Java 项目。 选择 "Create project from existing source", 并选中上一步创建的目录。
+3. 在该项目中, 从菜单选择 Project → Properties。 在 "Java Compiler" 下勾选 "Enable project specific settings", 并确保版本选择 Java 1.6(更早的版本无法工作)。
+4. 在左侧包浏览器的文件列表中, 右键点击 `jsr166.jar`, 选择 "Add to Build Path"。
+5. 为你的项目新建一个类。 定义一个可以运行的 `main` 方法。
+6. 在 Run → Configurations 下新建一个配置。 在 Arguments 中, 上面照常填写程序参数。 但下面的 "VM arguments" 里你需要填写: `-Xbootclasspath/p:jsr166.jar`, 一字不差。
 
-If you instead run `javac` and `java` from a command-line, you need `jsr166.jar` to be in your build path when you compile and you need `-Xbootclasspath/p:jsr166.jar` as an option when you run `javac` and when you run `java`.
+如果你改为从命令行运行 `javac` 和 `java`, 那么编译时需要把 `jsr166.jar` 加入构建路径, 并且运行 `javac` 和 `java` 时都需要加上 `-Xbootclasspath/p:jsr166.jar` 选项。
 
-Java 5 and earlier:
+Java 5 及更早版本:
 
-The ForkJoin Framework is not available for Java 5 and earlier.
+ForkJoin 框架在 Java 5 及更早版本中不可用。
 
-## Documentation
+## 3. 文档
 
-As the ForkJoin Framework is standard in Java 8 and Java 7, you can view the javadoc documentation for all the classes in the [standard places](https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/package-summary.html), though the documentation has much more information than beginners need. The classes are in the package `java.util.concurrent` and methods are often defined (and therefore documented) in superclasses of the classes you are using.
+由于 ForkJoin 框架是 Java 8 和 Java 7 的标准库, 你可以在[标准的文档位置](https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/package-summary.html)查看所有类的 javadoc 文档, 不过这些文档包含的信息远超初学者所需。 这些类位于 `java.util.concurrent` 包中, 而方法往往定义(因而也被文档记录)在你所使用的类的父类里。
 
-For cutting-edge documentation and potential upcoming changes, the main web site for JSR-166 is http://gee.cs.oswego.edu/dl/concurrency-interest/index.html. It has much more information than beginners need, which is why we have distilled the basics into these notes. If you need the javadoc for the cutting-edge versions, see http://gee.cs.oswego.edu/dl/jsr166/dist/jsr166ydocs/.
+要想获取最新文档和可能即将发生的变化, JSR-166 的主站是 http://gee.cs.oswego.edu/dl/concurrency-interest/index.html 。 它包含的信息远超初学者所需, 所以我们才把基础内容提炼成了这些笔记。 如果你需要最新版本的 javadoc, 请看 http://gee.cs.oswego.edu/dl/jsr166/dist/jsr166ydocs/ 。
 
-## Getting Started
+## 4. 快速上手
 
-For learning about basic parallel operations, there are only 2-4 classes you need to know about:
+要学习基本的并行操作, 你只需要了解 2 到 4 个类:
 
-1. `ForkJoinPool`: An instance of this class is used to run all your fork-join tasks in the whole program.
-2. `RecursiveTask<V>`: You run a subclass of this in a pool and have it return a result; see the examples below.
-3. `RecursiveAction`: just like `RecursiveTask` except it does not return a result
-4. `ForkJoinTask<V>`: superclass of `RecursiveTask<V>` and `RecursiveAction`. `fork` and `join` are methods defined in this class. You won't use this class directly, but it is the class with most of the useful javadoc documentation, in case you want to learn about additional methods.
+1. `ForkJoinPool`: 这个类的实例用于在整个程序中运行你所有的 fork-join 任务。
+2. `RecursiveTask<V>`: 你在池中运行它的子类, 并让它返回一个结果; 参见下面的示例。
+3. `RecursiveAction`: 和 `RecursiveTask` 类似, 只是它不返回结果。
+4. `ForkJoinTask<V>`: `RecursiveTask<V>` 和 `RecursiveAction` 的父类。 `fork` 和 `join` 都是定义在这个类中的方法。 你不会直接使用这个类, 但它包含了大部分有用的 javadoc 文档, 如果你想了解其他方法, 可以去看它。
 
-All the classes are in the package `java.util.concurrent`, so it is natural to have import statements like this:
+所有类都在 `java.util.concurrent` 包中, 因此 import 语句通常写成这样:
 
 ```
   import java.util.concurrent.ForkJoinPool;
   import java.util.concurrent.RecursiveTask;
 ```
 
-To use the library, you need a `ForkJoinPool` object. In Java 8, get the object you want by calling the static method `ForkJoinPool.commonPool()`. In Java 7 or 6 only, you need to create a pool via `new ForkJoinPool()`, but do this only once and store the result in a static field of some class, so your whole program can use it:
+要使用这个库, 你需要一个 `ForkJoinPool` 对象。 在 Java 8 中, 调用静态方法 `ForkJoinPool.commonPool()` 即可获得你需要的对象。 在 Java 7 或 6 中, 你需要通过 `new ForkJoinPool()` 来创建池, 但只创建一次, 并把结果保存到某个类的静态字段中, 这样整个程序都能使用它:
 
 ```
   public static ForkJoinPool fjPool = new ForkJoinPool();
 ```
 
-(This constructor encourages the pool to use all the available processors, which is a good choice. In Java 8, the common-pool object does this too.) You do not want to have more than one `ForkJoinPool` object in your program — the library supports it for advanced uses but discourages even experts from doing it.
+(这个构造函数会让池尽可能使用所有可用的处理器, 这是个不错的选择。 在 Java 8 中, 公共池对象也会这么做。)你并不希望程序中出现多个 `ForkJoinPool` 对象 —— 这个库虽然为高级用法提供了支持, 但即便是专家也不鼓励这么做。
 
-It is the job of the pool to take all the tasks that can be done in parallel and actually use the available processors effectively.
+池的职责就是把所有可以并行执行的任务收集起来, 并真正有效地利用可用的处理器。
 
-## A Useless Example
+## 5. 一个无用的示例
 
-To use the pool you create a subclass of `RecursiveTask<V>` for some type `V` (or you create a subclass of `RecursiveAction`). In your subclass, you override the `compute()` method. Then you call the `invoke` method on the `ForkJoinPool` passing an object of type `RecursiveTask<V>`. Here is a dumb example:
+要使用池, 你需要为某个类型 `V` 创建 `RecursiveTask<V>` 的子类(或者创建 `RecursiveAction` 的子类)。 在子类中重写 `compute()` 方法。 然后对 `ForkJoinPool` 调用 `invoke` 方法, 传入一个 `RecursiveTask<V>` 类型的对象。 下面是一个很蠢的示例:
 
 ```
 // define your class
@@ -92,21 +92,21 @@ class Incrementor extends RecursiveTask<Integer> {
 int fortyThree = ForkJoinPool.commonPool().invoke(new Incrementor(42));
 ```
 
-The reason this example is dumb is there is no parallelism. We just hand an object over to the pool, the pool uses some processor to run the `compute` method, and then we get the answer back. We could just as well have done:
+这个示例之所以蠢, 是因为它没有任何并行性。 我们只是把一个对象交给池, 池用某个处理器运行 `compute` 方法, 然后我们拿回结果。 我们完全可以这样写:
 
 ```
    int fortyThree = (new Incrementor(42)).compute();
 ```
 
-Nonetheless, this dumb example shows one nice thing: the idiom for passing data to the `compute()` method is to pass it to the constructor and then store it into a field. Because you are overriding the `compute` method, it must\ take zero arguments and return `Integer` (or whatever type argument you use for `RecursiveTask`).
+尽管如此, 这个蠢示例还是说明了一件好事: 向 `compute()` 方法传递数据的惯用做法是, 通过构造函数传入, 然后存到字段中。 因为你重写了 `compute` 方法, 所以它必须接收零个参数并返回 `Integer`(或者你用于 `RecursiveTask` 的任何类型参数)。
 
-In Java 7 or Java 6, recall that `ForkJoinPool.commonPool()` will not work. Replace this expression with the (static) field where you have stored the result of your once-ever-while-the-program-runs call to `new ForkJoinPool()`. From here on, we will assume Java 8 or higher, but remember this details for Java 7 or Java 6 if you need it.
+在 Java 7 或 Java 6 中, 请记住 `ForkJoinPool.commonPool()` 是行不通的。 把该表达式替换为那个(静态)字段, 也就是你存放“程序运行期间只调用一次 `new ForkJoinPool()`”结果的地方。 从现在起, 我们假设你使用 Java 8 或更高版本, 但如果你需要 Java 7 或 Java 6, 请记住这个细节。
 
-## A Useful Example
+## 6. 一个有用的示例
 
-The key for non-dumb examples, which is hinted at nicely by the name `RecursiveTask`, is that your `compute` method can create other `RecursiveTask` objects and have the pool run them in parallel. First you create another object. Then you call its `fork` method. That actually starts parallel computation — `fork` itself returns quickly, but more computation is now going on. When you need the answer, you call the `join` method on the object you called `fork` on. The `join` method will get you the answer from `compute()` that was figured out by `fork`. If it is not ready yet, then `join` will block (i.e., not return) until it is ready. So the point is to call `fork` “early” and call `join` “late”, doing other useful work in-between.
+非蠢示例的关键(从 `RecursiveTask` 这个名字就能得到不错的提示)在于, 你的 `compute` 方法可以创建其他 `RecursiveTask` 对象, 并让池并行运行它们。 首先创建另一个对象, 然后调用它的 `fork` 方法。 这会真正启动并行计算 —— `fork` 本身很快返回, 但此时已有更多计算正在进行。 当你需要结果时, 就对那个被 `fork` 的对象调用 `join` 方法。 `join` 方法会取回 `fork` 通过 `compute()` 算出的答案。 如果结果还没就绪, 那么 `join` 会阻塞(即不返回), 直到结果就绪。 所以要点是尽早调用 `fork`, 晚点调用 `join`, 中间去做其他有用的事情。
 
-Those are the “rules” of how `fork`, `join`, and `compute` work, but in practice a lot of the parallel algorithms you write in this framework have a very similar form, best seen with an example. What this example does is sum all the elements of an array, using parallelism to potentially process different 5000-element segments in parallel. (The types `long` / `Long` are just like `int` / `Integer` except they are 64 bits instead of 32. They can be a good choice if your data can be large — a sum could easily exceed 232, but exceeding 264 is less likely.)
+这些就是 `fork`、`join` 和 `compute` 如何运作的“规则”, 但在实践中, 你用这个框架编写的许多并行算法都有非常相似的形式, 用一个示例来看最清楚。 这个示例做的事情是对数组的所有元素求和, 利用并行性, 可能并行处理不同的 5000 个元素的分段。(类型 `long` / `Long` 和 `int` / `Integer` 一样, 只不过它们是 64 位而不是 32 位。 如果你的数据可能很大, 它们是个不错的选择 —— 求和结果很容易超过 2^32, 但超过 2^64 的可能性较小。)
 
 ```
 import java.util.concurrent.ForkJoinPool;
@@ -148,31 +148,27 @@ class Sum extends RecursiveTask<Long> {
 }
 ```
 
-How does this code work? A `Sum` object is given an array and a range of that array. The `compute` method sums the elements in that range. If the range has fewer than `SEQUENTIAL_THRESHOLD` elements, it uses a simple for-loop like you learned in introductory programming. Otherwise, it creates two `Sum` objects for problems of half the size. It uses `fork` to compute the left half in parallel with computing the right half, which this object does itself by calling `right.compute()`. To get the answer for the left, it calls `left.join()`.
+这段代码是怎么工作的? 一个 `Sum` 对象接收一个数组以及该数组的一个区间。 `compute` 方法对区间内的元素求和。 如果区间中的元素少于 `SEQUENTIAL_THRESHOLD` 个, 就使用你在编程入门课上学过的那种简单 for 循环。 否则, 它会创建两个规模减半的 `Sum` 对象。 它用 `fork` 在并行计算左半部分的同时计算右半部分 —— 右半部分由该对象自己调用 `right.compute()` 完成。 要得到左半部分的结果, 它调用 `left.join()`。
 
-Why do we have a `SEQUENTIAL_THRESHOLD`? It would be correct instead to keep recurring until `high==low+1` and then return `array[low]`. But this creates a lot more `Sum` objects and calls to `fork`, so it will end up being much less efficient despite the same asymptotic complexity.
+为什么需要 `SEQUENTIAL_THRESHOLD`? 一直递归到 `high==low+1` 然后返回 `array[low]`, 这样是正确的。 但这会创建多得多的 `Sum` 对象并调用 `fork`, 所以尽管渐进复杂度相同, 最终效率却会低得多。
 
-Why do we create more `Sum` objects than we are likely to have procesors? Because it is the framework's job to make a reasonable number of parallel tasks execute efficiently and to schedule them in a good way. By having lots of fairly small parallel tasks it can do a better job, especially if the number of processors available to your program changes during execution (e.g., because the operating system is also running other programs) or the tasks end up taking different amounts of time.
+为什么我们要创建比处理器数量还多的 `Sum` 对象? 因为让合理数量的并行任务高效执行并以良好的方式调度, 是这个框架的职责。 通过拥有大量较小的并行任务, 它能做得更好, 尤其是当程序可用的处理器数量在执行期间发生变化(例如操作系统同时还在运行其他程序), 或者各个任务最终耗时不同的时候。
 
-So setting `SEQUENTIAL_THRESHOLD` to a good-in-practice value is a trade-off. The documentation for the ForkJoin framework suggests creating parallel subtasks until the number of basic computation steps is somewhere over 100 and less than 10,000. The exact number is not crucial provided you avoid extremes.
+所以把 `SEQUENTIAL_THRESHOLD` 设为一个实践中合适的值是一种权衡。 ForkJoin 框架的文档建议持续创建并行子任务, 直到基本计算步骤的数量达到 100 多一点、小于 10,000 为止。 只要避免走极端, 具体数值并不关键。
 
-## Gotchas
+## 7. 坑
 
-There are a few “gotchas” when using the library that you might need to be aware of:
+使用这个库时有一些“坑”, 你可能需要留意:
 
-1. It might seem more natural to call `fork` twice for the two subproblems and then call `join` twice. This is naturally a little less efficient than just calling `compute` for no benefit since you are creating more parallel tasks than is helpful. But it turns out to be a lot less efficient, for reasons that are specific to the current implementation of the library and related to the overhead of creating tasks that do very little work themselves.
+1. 对两个子问题分别调用两次 `fork`, 然后再调用两次 `join`, 看起来可能更自然。 这自然比直接调用 `compute` 效率略低, 而且没有任何好处, 因为你创建的并行任务超过了有用的数量。 但事实证明它的效率会低得多, 原因与这个库当前的实现相关, 涉及那些自身几乎不做任何工作的任务在创建时的开销。
 
-2. Remember that calling
-
-
+2. 记住, 调用
 
    ```
    join
    ```
 
-
-
-   blocks until the answer is ready. So if you look at the code:
+   会阻塞, 直到结果就绪。 所以如果你看这段代码:
 
    ```
        left.fork();
@@ -181,7 +177,7 @@ There are a few “gotchas” when using the library that you might need to be a
        return leftAns + rightAns;
    ```
 
-   you'll see that the order is crucial. If we had written:
+   你会发现顺序至关重要。 如果我们写成:
 
    ```
        left.fork();
@@ -190,7 +186,7 @@ There are a few “gotchas” when using the library that you might need to be a
        return leftAns + rightAns;
    ```
 
-   our entire array-summing algorithm would have no parallelism since each step would completely compute the left before starting to compute the right. Similarly, this version is non-parallel because it computes the right before starting to compute the left:
+   那么我们整个数组求和算法就没有任何并行性, 因为每一步都会先把左边完全算完, 才开始算右边。 同样, 下面这个版本也没有并行性, 因为它先算右边再开始算左边:
 
    ```
        long rightAns = right.compute();
@@ -199,25 +195,25 @@ There are a few “gotchas” when using the library that you might need to be a
        return leftAns + rightAns;
    ```
 
-3. You should not use the `invoke` method of a `ForkJoinPool` from within a `RecursiveTask` or `RecursiveAction`. Instead you should always call `compute` or `fork` directly even if the object is a different subclass of `RecursiveTask` or `RecursiveAction`. You may be conceptually doing a “different” parallel computation, but it is still part of the same parallel task. Only sequential code should call `invoke` to begin parallelism. (More recent versions of the library may have made this less of an issue, but if you are having problems, this may be the reason.)
+3. 你不应该在 `RecursiveTask` 或 `RecursiveAction` 内部使用 `ForkJoinPool` 的 `invoke` 方法。 相反, 即使对象是 `RecursiveTask` 或 `RecursiveAction` 的另一个子类, 你也应该始终直接调用 `compute` 或 `fork`。 你在概念上可能在做一个“不同”的并行计算, 但它仍然是同一个并行任务的一部分。 只有串行代码才应该调用 `invoke` 来启动并行。 (该库较新的版本可能已经让这不那么成问题, 但如果你遇到问题, 这可能就是原因。)
 
-4. When debugging an uncaught exception, it is common to examine the “stack trace” in the debugger: the methods on the call stack when the exception occurred. With a fork-join computation, this is not as simple since the call to `compute` occurs in a different thread than the conceptual caller (the code that called `fork`). The library and debugger try to give helpful information including stack information for the thread running `compute` and the thread that called `fork`, but it can be hard to read and it includes a number of calls related to the library implementation that you should ignore. You may find it easier to debug by catching the exception inside the call to `compute` and just printing that stack trace.
+4. 在调试未捕获的异常时, 常见做法是查看调试器中的“栈轨迹(stack trace)”: 异常发生时调用栈上的方法。 对于 fork-join 计算来说, 这没那么简单, 因为对 `compute` 的调用发生在与概念上的调用者(也就是调用 `fork` 的代码)不同的线程中。 这个库和调试器会尽量提供有用的信息, 包括运行 `compute` 的线程以及调用 `fork` 的线程的栈信息, 但它可能很难读懂, 而且其中包含许多与库实现相关的调用, 你应该忽略它们。 你可能会发现, 在 `compute` 的调用内部捕获异常并只打印该栈轨迹, 调试起来会更容易。
 
-5. In terms of performance, there are many reasons a fork-join computation might run slower than you expect, even slower than a sequential version of the algorithm. See the next section.
+5. 在性能方面, 有很多原因会导致 fork-join 计算比你预期的更慢, 甚至比该算法的串行版本还慢。 参见下一节。
 
-## Timing Issues
+## 8. 计时问题
 
-It is natural to write a simple fork-join program and compare its performance to a sequential program solving the same problem. Doing so is trickier than you might like for a variety of good reasons. Here we list various reasons and what to do about them. You can use this as a list of things to check when you are not seeing the parallel speed-up you might expect. Some of these issues are relevant for any microbenchmarking on modern systems while others are more specific to parallelism.
+写一个简单的 fork-join 程序, 并把它的性能与解决同一问题的串行程序做比较, 是很自然的事。 但由于种种合理的原因, 这比你想象的要棘手。 下面我们列出各种原因以及应对方法。 当你没有看到预期的并行加速时, 可以把这当作一份检查清单。 其中一些问题对现代系统上的任何微基准测试都适用, 另一些则更针对并行。
 
-1. Time for long enough: To compare the time to run two pieces of code, make sure they each run for at least a few seconds. You can put the computation you care about in a loop, but see below for how to do this without creating artificial effects.
-2. Have enough data elements: For a computation over an array, for example, use an array with at least a million elements.
-3. Make sure you have the number of processors you think you do: A parallel computation is unlikely to “win” with 1 processor nor produce the results you expect if the operating system is not providing as many processors as you think. One thing you can do is pass an explicit number to the `ForkJoinPool` constructor (e.g., 1, 2, 4, 8) and see if larger numbers (up to the number of processors you expect are available) lead to better performance.
-4. Warm up the library: The framework itself is just Java code and the Java implementation “takes a while” to decide this code is performance critical and optimize it. For timing purposes, it is best to run a couple fork-join computations before timing a fork-join computation as otherwise the first, slow run will dominate the results.
-5. Do enough computation on each element: Very simple operations like adding together numbers take so little time that many computers will be limited by the time to get the data from memory, which may prevent effective use of parallelism. While a fork-join reduction that sums a ten-million element array may outperform a sequential version, a map that sets `out[i] = in1[i]+in2[i]` for similar-length arrays may not because doing three memory operations and one addition may cause processors to wait for each other to access memory. Try a more sophisticated operation like `out[i] = (Math.abs(in[i-1])+Math.abs(in[i])+Math.abs(in[i+1]))/3` or even just `out[i] = in[i]in[i]`.
-6. Use the result of your computation: A clever compiler might skip doing computations it can tell are not used by a program. After computing a result and after timing, do something like print the answer out. To avoid printing out a large array, you could choose a random element of the array to print.
-7. Do not use very simple inputs: Some compilers might be so clever to notice that simple arrays where, for example, `arr[i] = i` have a structure that can be optimized, leading to sequential code that is “unfairly” fast. (It is unfair: nobody wants to sum an array with such inputs, we have constant-time algorithms to sum the integers from 1 to n.) Perhaps fill the array with random elements, or at least change a few of the elements to other values after the initialization.
-8. Use slightly different inputs for each iteration: For various reasons above (long enough timing runs, warming up the library), you may perform the same computation many times in a loop. Again the compiler might “notice” that the sequential or parallel code is doing the same thing across iterations and avoid doing unnecessary computations, leading to you not timing what you think you are. You should be able to “confuse” the compiler by swapping around a few array elements between iterations.
-9. Double-check your sequential cut-offs: Make sure your fork-join code is correctly computing when to switch to a sequential algorithm. You want lots of small tasks, but each should still be doing a few thousand or tens of thousands of arithmetic operations. If too low, you will slow down the fork-join code due to the overhead of task creation. If too large, you will leave processors idle, which naturally slows things down.
+1. 计时要足够长: 要比较两段代码的运行时间, 确保它们各自至少运行几秒钟。 你可以把关心的计算放进一个循环里, 但如何避免产生人为的副作用, 见下文。
+2. 数据元素要足够多: 例如, 对于针对数组的计算, 请使用至少一百万个元素的数组。
+3. 确认处理器数量符合你的预期: 只有 1 个处理器时, 并行计算不太可能“胜出”; 如果操作系统提供的处理器数量没有你想象的那么多, 也不会产生你预期的结果。 你可以做的一件事是, 给 `ForkJoinPool` 构造函数传入一个明确的数字(例如 1、2、4、8), 看看更大的数字(直到你预期可用的处理器数量)是否会带来更好的性能。
+4. 预热这个库: 框架本身就是 Java 代码, 而 Java 实现需要“一段时间”才能判定这些代码对性能至关重要并加以优化。 出于计时的目的, 最好在正式计时之前先运行几次 fork-join 计算, 否则第一次较慢的运行会主导结果。
+5. 每个元素上要做足够的计算: 像把数字相加这样非常简单的操作耗时太短, 许多计算机会受限于从内存取数据的时间, 这可能会妨碍有效利用并行。 虽然对一千万个元素的数组求和的 fork-join reduce 可能比串行版本更快, 但对类似长度的数组执行 `out[i] = in1[i]+in2[i]` 的 map 却未必, 因为执行三次内存操作和一次加法可能会让处理器互相等待访存。 试试更复杂的操作, 比如 `out[i] = (Math.abs(in[i-1])+Math.abs(in[i])+Math.abs(in[i+1]))/3`, 或者干脆就用 `out[i] = in[i]in[i]`。
+6. 使用你的计算结果: 聪明的编译器可能会跳过它能判断出程序不会用到的计算。 在算出结果并完成计时之后, 做点什么, 比如把答案打印出来。 为了避免打印整个大数组, 你可以随机选取数组中的一个元素来打印。
+7. 不要使用非常简单的输入: 有些编译器可能聪明到能发现像 `arr[i] = i` 这样有规律的简单数组可以被优化, 从而使串行代码“不公平地”变快。(确实不公平: 没人会用这种输入来对数组求和, 我们有常数时间算法来计算从 1 到 n 的整数和。)也许可以用随机元素填充数组, 或者至少在初始化之后把其中几个元素改成别的值。
+8. 每次迭代使用略有不同的输入: 出于上面各种原因(计时足够长、预热库), 你可能会在循环中多次执行同样的计算。 编译器同样可能“注意到”串行或并行代码在各次迭代中做着同样的事情, 从而避免不必要的计算, 导致你计时的并不是你以为的东西。 你应该可以通过在迭代之间交换几个数组元素来“迷惑”编译器。
+9. 仔细检查你的串行切换阈值: 确保你的 fork-join 代码正确判断何时切换到串行算法。 你希望有大量的小任务, 但每个任务仍应执行几千到几万次算术运算。 如果太低, 任务创建的开销会拖慢 fork-join 代码。 如果太高, 会让处理器闲置, 这自然也会拖慢速度。
 
 
 
