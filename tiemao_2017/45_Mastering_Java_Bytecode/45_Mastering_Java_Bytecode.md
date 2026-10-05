@@ -65,8 +65,8 @@ So, get ready for your journey to the center of the JVM, and don’t forget your
 
 请做好准备， 我们马上进入JVM的核心，不要忘记了编译器哦 ;-)
 
-- [第一部分：Java字节码简介]（）
-- [第二部分：ASM入门]（）
+- [第一部分：Java字节码简介]()
+- [第二部分：ASM入门]()
 
 
 
@@ -127,7 +127,7 @@ The opcodes `iconst_1` and `iconst_2` put constants 1 and 2 to the stack. The in
 
 As the name implies, `Java bytecode` consists of one-byte instructions, hence there are 256 possible opcodes. There are a little less real instructions than the set permits – approximately 200 opcodes are utilized, where some of the opcodes are reserved for debugger operation.
 
-有一件有趣的事情， `Java bytecode` 就如名称所示, 由单个字节(byte)的指令组成，所以最多只能有 `256` 个操作码。
+顾名思义， `Java bytecode` 就如名称所示, 由单个字节(byte)的指令组成，所以最多只能有 `256` 个操作码。
 实际上Java中只有200个左右的操作码， 还有一些操作码则保留了用于调试操作。
 
 
@@ -218,7 +218,7 @@ You might have noticed that some of the instructions are referring to some numbe
 
 可以看到，反编译后的代码清单中, 有一个默认的构造函数, 以及 main 方法。
 刚学Java时我们就知道， 如果不定义任何构造函数，那么仍然会有一个默认的构造函数，这里再次验证了这个知识点。
-好吧，这比较容易理解！我们证实了编译后的class文件中存在默认构造函数，所以这是Java编译器生成的， 而不是运行时由JVM字段生成。
+好吧，这比较容易理解！我们证实了编译后的class文件中存在默认构造函数，所以这是Java编译器生成的， 而不是运行时由JVM生成的。
 
 
 构造函数应该是空的方法体，但这里看到里面依然有一些指令。这是为什么呢？
@@ -268,7 +268,7 @@ You can also find the denoted constant definitions in the constant pool:
 
 我们还可以看到 `ACC_PUBLIC` 和 `ACC_SUPER` 访问标志符。
 `ACC_PUBLIC` 标志很容易理解：这个类是public类，因此这个标志来说明。
-但 `ACC_PUBLIC` 标志是怎么回事呢？ 这就是历史原因了, 引入 `ACC_SUPER` 的目的是为了修正 `invokespecial` 指令调用 super 类方法的问题。
+但 `ACC_SUPER` 标志是怎么回事呢？ 这就是历史原因了, 引入 `ACC_SUPER` 的目的是为了修正 `invokespecial` 指令调用 super 类方法的问题。
 这算是 Java 1.0版本的BUG修正, 以便可以正确查找到超类方法。 从 Java 1.1 开始， 编译器都会在字节码中强制生成`ACC_SUPER`访问器标志。
 
 终于看到常量池中的常量定义了：
@@ -306,10 +306,10 @@ The accessor flags are also generated for methods, but we can also see how deep 
 
 To understand the details of the bytecode, we need to have an idea of the model of execution of the bytecode. A JVM is a stack-based machine. Each thread has a JVM stack which stores frames. Every time a method is invoked a frame is created. A frame consists of an operand stack, an array of local variables, and a reference to the runtime constant pool of the class of the current method. We have seen all this in our initial example, the disassembled Main class.
 
-要了解字节码的细节，我们需要对字节码的执行模型有所了解。 JVM是一款基于栈的计算机。
+要了解字节码的细节，我们需要对字节码的执行模型有所了解。 JVM是一款基于栈的机器。
 每个线程都有一个独属于自己的线程栈(JVM stack)，用于存储 栈帧(Frame)。
 每调用一个方法，就会创建一个栈帧。
-`栈帧` 由 `操作数栈`， `局部变量数组` 以及一个`class引用`组成(指向运行时常量池中当前方法对应的class）。
+`栈帧` 由 `操作数栈`， `局部变量数组` 以及一个`class引用`组成（指向运行时常量池中当前方法对应的class）。
 我们在前面反编译的那个示例中已经看到这些内容。
 
 
@@ -412,8 +412,8 @@ There are some more complex instructions: `swap, dup_x1 and dup2_x1`, for instan
 
 还有一些复杂的指令：例如，`swap`, `dup_x1` 和 `dup2_x1`。
 顾名思义，`swap` 指令可交换栈顶两个元素的值，例如A和B交换位置（下图中的示例4）；
-`dup_x1` 将复制栈顶元素的值，并在栈顶插入两次（下图中的示例5）；
-`dup2_x1` 则复制栈顶两个元素的值，并插入第三个值（下图中的示例6）。
+`dup_x1` 复制栈顶元素的值，并将其插入到距栈顶第二个值的位置（下图中的示例5）；
+`dup2_x1` 则复制栈顶两个元素的值，并插入到第三个值的下方（下图中的示例6）。
 
 
 ![duplicating top values stack](https://jrebel.com/wp-content/uploads/2013/08/duplicating-values-stack.jpg)
@@ -426,7 +426,7 @@ The `dup_x1` and `dup2_x1` instructions seem to be a bit esoteric – why would 
 请看一个实际的示例：如何交换2个double类型的值？
 需要注意的是, 一个double值占两个槽位，也就是说如果栈中有两个double值，它们将占用四个槽位。
 要交换两个double值，你可能想到了 `swap` 指令，但问题是 swap 只适用于单字指令(one-word instructions)，所以它不能处理double类型, 而又没有 swap2 指令。
-怎么办呢? 解决方法是使用 `dup2_x2`指令, 将操作数栈顶部的double值, 复制到底部的d​​ouble值下方， 然后再使用 `pop2` 指令弹出栈顶的double值。结果就是交换了两个 double 值。 如下图所示:
+怎么办呢? 解决方法是使用 `dup2_x2`指令, 将操作数栈顶部的double值, 复制到底部的double值下方， 然后再使用 `pop2` 指令弹出栈顶的double值。结果就是交换了两个 double 值。 如下图所示:
 
 ![swap instructor duplicate top double value pop2](https://jrebel.com/wp-content/uploads/2013/08/pop2-instruction.jpg)
 
@@ -562,7 +562,7 @@ The flow control instructions are used to organize the flow of the execution dep
 
 流程控制指令, 用于根据判断条件来控制程序的执行流程。
 一般是 `If-Then-Else` 这种三元运算符（ternary operator），
-Java中的各种循环，甚至异常处的理操作码都可归属于 程序流程控制字节码。 这就是现在关于跳转(jump)和goto的全部 :)
+Java中的各种循环，甚至异常处理的操作码都可归属于 程序流程控制字节码。 这就是现在关于跳转(jump)和goto的全部 :)
 
 We will now change our example so that it will handle an arbitrary number of numbers that can be submitted to the MovingAverage class:
 
@@ -621,7 +621,7 @@ The instructions at positions 8 through 16 are used to organize the loop control
 The first instructions of the loop body are used to perform the comparison of the loop counter to the array length:
 
 位置 [8~16] 的指令用于循环控制。
-可以看到, 在LocalVariableTable 中有三个在源码中没有真出现的变量： `arr$`, `len$`, `i$`， 这就是循环变量。
+可以看到, 在LocalVariableTable 中有三个在源码中没有真正出现的变量： `arr$`, `len$`, `i$`， 这就是循环变量。
 `arr$` 变量保存了 numbers 的引用值，
 `len$` 由 `arraylength` 指令使用, 得出循环的长度。
 `i$` 则是循环计数器， 每次迭代后使用 `iinc` 指令来递增。
@@ -639,7 +639,7 @@ We load the values of `i$` and `len$` to the stack and call the `if_icmpge` to c
 At the end of the loop it loop counter is incremented by 1 and the loop jumps back to the beginning to validate the loop condition again:
 
 这段指令将 `i$` 和 `len$` 的值加载到栈中，并调用 `if_icmpge` 指令来比较他们的值。
-【`if_icmpge` 解读: if, integer, compare, greate equal】, 如果一个数的值大于或等于另一个值，则程序执行流程应该跳转到`pc=43`的地方继续执行。
+【`if_icmpge` 解读: if, integer, compare, greater equal】, 如果一个数的值大于或等于另一个值，则程序执行流程应该跳转到`pc=43`的地方继续执行。
 在这个例子中就是， 如果 `i$` 大于或等于 `len$`, 循环结束，方法也就返回了(43对应的是return).
 如果条件不成立，则循环继续进行下一次迭代。
 
@@ -837,7 +837,7 @@ class C implements  X
 The interface method is not at the same position as in class B any more and this is why runtime is more restricted in respect to `invokinterface`, meaning it can do less assumptions in method resolution process than with `invokevirtual`.
 
 C中的接口方法位置与B类的不同，这就是为什么运行时在 `invokinterface` 方面受到更多限制的原因，
-与 `invokevirtual` 相比，在方法解析过程中 `invokinterface` 可以做更少的假设, 效率更高。
+与 `invokevirtual` 相比，在方法解析过程中 `invokinterface` 可以做更少的假设。
 这也是为什么推荐使用 interface 编程，以及 HashMap 接口直接声明实现 Map 接口的一部分原因。
 
 ------
@@ -846,7 +846,11 @@ C中的接口方法位置与B类的不同，这就是为什么运行时在 `invo
 
 ## Part II: Getting Started with ASM
 
+## 二、ASM入门
+
 [ObjectWeb ASM](http://asm.ow2.org/) is the `de-facto` standard for `Java bytecode` analysis and manipulation. ASM exposes the internal aggregate components of a given Java class through its visitor oriented API. The API itself is not very broad – with a limited set of classes you can achieve pretty much all you need. ASM can be used for modifying the binary bytecode, as well as generating new bytecode. For instance, ASM can be applied to implement a new programming language semantics (Groovy, Kotlin, Scala), compiling the high-level programming idioms into bytecode capable for execution in the JVM.
+
+[ObjectWeb ASM](http://asm.ow2.org/) 是 `Java bytecode` 分析与操纵的事实标准(de-facto)。ASM 通过面向访问者(visitor)的 API，暴露给定 Java 类的内部聚合组件。这个 API 本身并不庞大 —— 用有限的几个类就能完成几乎所有需要的工作。ASM 既可以用于修改二进制字节码，也可以用于生成新的字节码。例如，可以用 ASM 来实现一门新语言的语义(Groovy、Kotlin、Scala)，把高层的编程惯用法编译成能够在 JVM 中执行的字节码。
 
 
 > “We didn’t even consider using anything else instead of ASM, because other projects at JetBrains use ASM successfully for a long time.”
@@ -862,9 +866,24 @@ C中的接口方法位置与B类的不同，这就是为什么运行时在 `invo
 > I mostly know about ASM, just because it’s the one used by Groovy :) However, knowing that it’s backed by people like Rémi Forax, who is a major contributor in the JVM world is very important and guarantees that it follows the latest improvements.
 > – CÉDRIC CHAMPEAU, GROOVY
 
+> “我们压根没考虑过用 ASM 之外的其他东西，因为 JetBrains 的其他项目已经成功使用 ASM 很长时间了。”
+> – ANDREY BRESLAV, KOTLIN
+
+> ------
+>
+> 我第一次亲手接触字节码，是在开始帮忙做 Groovy 项目的时候，那时我们已经定了用 ASM。ASM 能完成需要做的事，体积小，也不会自作聪明挡你的路。ASM 追求内存与性能上的高效。比如，你不需要创建一大堆对象来生成字节码。顺便说一句，它还是最早支持 `invokedynamic` 的工具之一。当然它有利有弊，但总的来说我对它很满意，因为用它我就能把活干完。
+> – JOCHEN THEODOROU, GROOVY
+
+> ------
+>
+> 我了解 ASM，主要是因为它被 Groovy 用到 :) 不过，知道它有 Rémi Forax 这样 JVM 世界的重要贡献者撑腰，这一点非常重要，也保证了它能跟上最新的改进。
+> – CÉDRIC CHAMPEAU, GROOVY
+
 ------
 
 To give you a very gentle introduction we will generate a “Hello World” example using the ASM library and add a loop to print the phrase an arbitrary number of times.
+
+为了给你一个非常友好的入门示例，我们将用 ASM 库生成一个 "Hello World" 示例，并添加一个循环，把这句话打印任意多次。
 
 ```
 public class HelloWorld {
@@ -878,6 +897,10 @@ The most common scenario to generate bytecode that corresponds to the example so
 
 First, let’s construct the ClassWriter instance:
 
+与示例源码对应的字节码，最常见的生成方式是：创建一个 `ClassWriter`，访问结构 —— 字段、方法等，完成之后再写出最终的字节。
+
+首先，构造 ClassWriter 实例：
+
 ```
     ClassWriter cw = new ClassWriter(
         ClassWriter.COMPUTE_MAXS |
@@ -887,6 +910,10 @@ First, let’s construct the ClassWriter instance:
 The `ClassWriter` instance can be instantiated with some constants that indicate the behavior that the instance should have. `COMPUTE_MAXS` tells ASM to automatically compute the maximum stack size and the maximum number of local variables of methods. `COMPUTE_FRAMES` flag makes ASM to automatically compute the stack map frames of methods from scratch.
 
 The define a class we must invoke the `visit()` method of ClassWriter:
+
+`ClassWriter` 实例可以通过一些常量来实例化，这些常量指示该实例应当具有的行为。`COMPUTE_MAXS` 让 ASM 自动计算方法的最大栈深度和最大局部变量个数。`COMPUTE_FRAMES` 标志则让 ASM 从头自动计算方法的栈映射帧(stack map frames)。
+
+要定义类，必须调用 ClassWriter 的 `visit()` 方法：
 
 ```
     cw.visit(
@@ -899,6 +926,8 @@ The define a class we must invoke the `visit()` method of ClassWriter:
 ```
 
 Next, we have to generate the default constructor and the main method. If you skip generating the default constructor nothing bad will happen, but it is still polite to generate one.
+
+接下来，我们必须生成默认构造函数和 main 方法。如果跳过默认构造函数的生成，也不会出什么问题，但生成一个还是更礼貌的做法。
 
 ```
      MethodVisitor constructor =
@@ -923,7 +952,11 @@ Next, we have to generate the default constructor and the main method. If you sk
 
 We first created the constructor using the `visitMethod() `method. Next, we indicate that we’re now about to start generating the body of the constructor by calling `visitCode()` method. At the end we call to `visitMaxs()` – this is to ask ASM to recompute the maximum stack size. As we indicated that ASM can do that for us automatically using `COMPUTE_MAXS` flag in ClassWriter’s constructor, we can pass in random arguments to `visitMaxs()` method. At last, we indicate that the generating bytecode for the method is complete with `visitEnd()` method.
 
+我们先用 `visitMethod() ` 方法创建构造函数。接着，通过调用 `visitCode()` 方法，表明现在开始生成构造函数的方法体。最后我们调用 `visitMaxs()` —— 这是请 ASM 重新计算最大栈深度。由于我们在 ClassWriter 的构造函数中用 `COMPUTE_MAXS` 标志指明 ASM 可以自动完成这件事，因此可以给 `visitMaxs()` 方法传入任意参数。最后，用 `visitEnd()` 方法表明该方法的字节码生成完毕。
+
 Here’s what ASM code for main method looks like:
+
+下面看看 main 方法对应的 ASM 代码长什么样：
 
 ```
     MethodVisitor mv = cw.visitMethod(
@@ -945,6 +978,10 @@ By calling the `visitMethod()` again, we generated the new method definition wit
 
 As you can see the code is full of constants, “flags” and “indicators” and the final code is not very fluently readably by human eyes. At the same time, to write such code one needs to keep in mind the bytecode execution plan to be able to produce correct version of bytecode. This is what makes writing such code rather a complicated task. This is where everyone has his own approach it writing code with ASM.
 
+再次调用 `visitMethod()`，我们就生成了一份新的方法定义，包含名称、修饰符和签名。同样地，`visitCode()`、`visitMaxs()` 和 `visitEnd()` 方法的用法与构造函数的情形完全一样。
+
+可以看到，这段代码充满了常量、"标志"和"指示符"，最终代码对人眼来说并不那么流畅易读。同时，要写出这样的代码，脑子里必须始终装着字节码的执行计划，才能生成正确版本的字节码。这就使得编写这类代码成了相当复杂的工作。也正因如此，每个人用 ASM 写代码都有自己的套路。
+
 > ------
 >
 > Our approach is using Kotlin’s ability to enhance existing Java APIs: we created some helper functions (many of them extension functions) that make ASM APIs look very much like a bytecode manipulation DSL.
@@ -960,25 +997,50 @@ As you can see the code is full of constants, “flags” and “indicators” a
 > ASM is a nice low-level API, but I think we miss an up-to-date higher level API, for example for generating proxies and so on. In Groovy we want to limit the number of dependencies we add to the project, so it would be cool if ASM provided this out- of-the-box, but the general idea behind ASM is more to stick with a low level API.
 > – CÉDRIC CHAMPEAU, GROOVY
 
+> 我们的做法是利用 Kotlin 增强现有 Java API 的能力：我们创建了一些辅助函数(其中很多是扩展函数)，让 ASM 的 API 看起来非常像一个字节码操作 DSL。
+> – ANDREY BRESLAV, KOTLIN
+
+> ------
+>
+> 我在编译器里内置了一些 meta API。比如，它让你可以做 swap，而不用管涉及的是什么类型。上面给的链接里没有，但我猜你知道：double 和 long 占两个槽位，其他任何类型只占一个。swap 指令只处理单槽位的情形。所以如果你要交换一个 int 和一个 long、一个 long 和一个 int，或者一个 long 和一个 long，得到的指令集是不同的。我还为局部变量加了一个辅助 API，免得还要去管理索引。如果你想要更好看的代码……Cedric 写了一个 Groovy DSL 来生成字节码。它或多或少还是字节码，只是绕来绕去的方法少了，反而不那么清晰。
+> – JOCHEN THEODOROU, GROOVY
+
+> ------
+>
+> ASM 是一个不错的底层 API，但我觉得我们缺少一个跟得上时代的高层 API，比如用来生成代理之类的东西。在 Groovy 里我们想限制加入项目的依赖数量，所以如果 ASM 能开箱即用地提供这些就好了，但 ASM 背后的总体思路更倾向于坚持低层 API。
+> – CÉDRIC CHAMPEAU, GROOVY
+
 
 
 ------
 
 ### ASM and Tooling
 
+### ASM 与工具链
+
 The tools can be a great help for studying and working with bytecode. The best way to learn to use ASM is to write a Java source file that is equivalent to what you want to generate and then use the ASMifier mode of the Bytecode Outline plugin for Eclipse (or the ASMifier tool) to see the equivalent ASM code. If you want to implement a class transformer, write two Java source files (before and after transformation) and use the compare view of the plugin in ASMifier mode to compare the equivalent ASM code.
 
+对于学习和使用字节码来说，工具能帮上大忙。学习使用 ASM 的最佳方式，是先写一个与你想要生成的字节码等价的 Java 源文件，然后用 Eclipse 的 Bytecode Outline 插件的 ASMifier 模式(或 ASMifier 工具)，查看等价的 ASM 代码。如果你想实现一个类转换器，就写两个 Java 源文件(转换前和转换后)，用该插件的比较视图在 ASMifier 模式下比较等价的 ASM 代码。
+
 > Bytecode outline plugin view in Eclipse
+
+> Eclipse 中的 Bytecode Outline 插件视图
 
 ![bytecode outline plugin view in Eclipse](https://jrebel.com/wp-content/uploads/2013/08/bytecode-outline-plugin-view.jpg)
 
 For IntelliJ IDEA users there’s the ASM bytecode outline plugin available in the plugins repository and it is quite easy to use too. Right click in the source and select Show Bytecode outline – this will open a view with the code generated by the ASMifier tool.
 
+对于 IntelliJ IDEA 用户，插件仓库里有 ASM bytecode outline 插件，用起来也很简单。在源码中右键，选择 Show Bytecode outline —— 就会打开一个视图，显示由 ASMifier 工具生成的代码。
+
 > ASM outline plugin in IntelliJ IDEA
+
+> IntelliJ IDEA 中的 ASM outline 插件
 
 ![ASM outline plugin in IntelliJ IDEA](https://jrebel.com/wp-content/uploads/2013/08/ASM-outline-plugin.jpg)
 
 You can also apply the ASMifier directly, without the IDE plugin, as it is a part of ASM library:
+
+你也可以不用 IDE 插件，直接使用 ASMifier，因为它是 ASM 库的一部分：
 
 ```
 $java -classpath "asm.jar;asm-util.jar" \
@@ -1003,9 +1065,28 @@ $java -classpath "asm.jar;asm-util.jar" \
 > That is not supposed to tell you I am good at generating bytecode… no no.. I wouldn’t be able to read it so good if I had not the questionable pleasure of looking at it countless times, because there again was a pop of an empty stack or something like that. It is more that the problems I have to look for tend to repeat themselves and I have a whit of what to look for even before I fire up Textifier.
 > – JOCHEN THEODOROU, GROOVY
 
+> 我们用 IntelliJ IDEA 的 ASM bytecode outline，以及我们自己写的类似插件，来显示编译器生成的字节码。
+> – ANDREY BRESLAV, KOTLIN
+
+> ------
+>
+> 其实，IntelliJ IDEA 的 “bytecode viewer” 插件就是我写的，我经常用它 :) 在 Groovy 这边，我也用 AST browser 视图，它同样提供了字节码视图，尽管它确实亟待改进。
+> – CÉDRIC CHAMPEAU, GROOVY
+
+> ------
+>
+> 我的工具主要就是 `org.objectweb.asm.util.Textifier` 和 `org.objectweb.asm.util.CheckClassAdapter`。前些时候我还写过一个工具，帮我可视化字节码和栈信息。它让我可以沿着字节码走一遍，看看栈上发生了什么。虽然一开始字节码对我来说也是读得让人抓狂，但看得太多了之后，我甚至不再需要用那个工具了，因为直接看 Textifier 输出的文本通常更快。
+>
+> 这并不是想告诉你我很擅长生成字节码……不不不……要不是我无数次地“自虐”盯着它看，我也读不了这么好，因为经常又是空栈上弹出一个 pop 之类的问题。更确切地说，我要找的问题往往反复出现，所以在打开 Textifier 之前，我心里就已经有数该找什么了。
+> – JOCHEN THEODOROU, GROOVY
+
 ### Fun stories from bytecode experts
 
+### 来自字节码专家的趣事
+
 We asked Andrey, Jochen and Cédric to share some fun facts from their experiences with `Java bytecode`. While the words “bytecode” and “fun” might not stick very well together there are still cases to learn from and the guys warmly share the experiences:
+
+我们请 Andrey、Jochen 和 Cédric 分享了一些他们与 `Java bytecode` 打交道的趣闻。虽然 "bytecode" 和 "fun" 这两个词放在一起并不太搭，但仍有值得学习的案例，几位专家也热情地分享了这些经历：
 
 > ------
 >
@@ -1030,13 +1111,42 @@ We asked Andrey, Jochen and Cédric to share some fun facts from their experienc
 > We also came across a few interesting things in HotSpot, for example, if you call an absent method on an array object `(like array.set())`, you don’t get a `NoSuchMethodError`, or anything like that. What you get (what we got on a HotSpot we had a year ago, anyway) is… a native crash. Segmentation fault, if I am not mistaken. Our theory is that the vtable for arrays if so optimized that it is not even there, and lookup crashes because of that.
 > – ANDREY BRESLAV, KOTLIN
 
+> 嗯……字节码和趣事？把这两个词放在同一句话里真是个奇怪的组合 ;)
+>
+> 嗯……也许有一次有一点点……我跟你讲过，我用来做 swap 的那个 API。一开始它当然不能正常工作。部分原因是我误解了其中一条 DUP 指令，但主要是因为我代码里有个很简单的 bug：我执行的是 1-2 交换，而不是 2-1 交换(意思是交换 1 槽位和 2 槽位的操作数)。于是我盯着代码看，一头雾水，心想这应该能跑啊，看着自己的代码……然后又觉得是自己那几条 dup 用错了，就按新的理解把代码改掉……
+>
+> 自始至终，代码其实并没有那么错，只是交换的分支被写反了。总之……盯着字节码看了大半天，看得头疼，我终于找到了自己的错误，再看代码，发现它跟之前看起来几乎一模一样……然后我才恍然大悟，原来只是这么一个简单的错误，本可以一分钟改好，却耗了我一整天。其实并不好笑，但我确实自嘲地笑了一下。
+> – JOCHEN THEODOROU, GROOVY
+
+> ------
+>
+> 其实，最有趣的事是我为 Groovy 写了那个 “bytecode DSL”，它让你可以直接在方法体里用 DSL 写字节码，这套 DSL 跟 ASM outline 提供的东西非常接近，也有一个更 “Groovy 风味” 的 DSL 版本。虽然我启动这个项目只是当作概念验证和个人实验，但我收到了很多反馈和关注。
+>
+> 今天我觉得，这是让人们直接测试字节码的一种非常简单的方式，比如给学生用。它让写字节码比直接用 ASM 容易得多。不过，我也收到了不少抱怨，有人说我打开了潘多拉魔盒，会在生产环境里产生难以阅读的代码 :D(我也绝对不建议在生产环境使用它)。然而，这个项目发布已经一年多了，我还没听说过有谁在用，所以大概字节码真的没那么有趣吧！
+> – CÉDRIC CHAMPEAU, GROOVY
+
+> ------
+>
+> 很多有趣的事情都与 Android 有关：Dalvik 对你的字节码是否符合 JVM 规范非常挑剔。而 HotSpot 对其中许多事情根本不在意。我们在 HotSpot 上平稳运行了很久，却不知道自己有那么多东西做错了。现在我们用 Dalvik 的 verifier 来检查我们生成的每一个 class 文件，确保没有人忘记在类上标注 `ACC_SUPER`、给局部变量表正确的偏移量之类的事情。
+>
+> 我们在 HotSpot 里也遇到了一些有意思的事，比如，如果你在数组对象上调用一个不存在的方法 `(like array.set())`，你不会得到 `NoSuchMethodError` 之类的错误。你得到的是(至少一年前我们在 HotSpot 上遇到的是)……一次 native 崩溃。如果我没记错，是段错误(Segmentation fault)。我们的推测是：数组的 vtable 被优化得甚至根本不存在，所以查找时崩溃了。
+> – ANDREY BRESLAV, KOTLIN
+
 ## Too Long, Didn’t Read (TL;DR)
+
+## 太长不看 (TL;DR)
 
 The JVM is a wonderful piece of engineering, and like any beautiful machine it is important to be able to understand and appreciate the technology powering the underlying layers. Java bytecode is the machine code that enables the JVM to interpret and compile language code such as Java, Scala, Groovy, Kotlin and a dozen more in order to deliver applications to hungry consumers.
 
 Java bytecode runs the JVM quietly in the background most of the time–so the average developer rarely needs to consider it. But it is the form of the instructions that the JVM executes, so it is essential to the areas of tooling and program analysis, where the applications can modify the bytecode to adjust the behavior according to the application’s domain. Any developer looking to create profilers, mocking frameworks, AOP and other tools should understand `Java bytecode` thoroughly.
 
 Thanks for tuning in to this RebelLabs report. For the latest blog posts and reports you follow [@ZeroTurnaround](http://twitter.com/ZeroTurnaround) on Twitter.
+
+JVM 是一件美妙的工程作品，就像任何精美的机器一样，能够理解和欣赏支撑其底层各层的技术是很重要的。Java 字节码是让 JVM 得以解释和编译 Java、Scala、Groovy、Kotlin 等十几种语言代码、从而把应用交付给嗷嗷待哺的用户的机器码。
+
+大多数时候，Java 字节码都在后台默默运行着 JVM —— 所以普通开发者很少需要去考虑它。但它是 JVM 所执行指令的形式，因此对于工具和程序分析领域至关重要，在这些领域里，程序可以修改字节码，根据应用的业务领域来调整行为。任何想要创建 profiler、mocking 框架、AOP 及其他工具的开发者，都应该彻底理解 `Java bytecode`。
+
+感谢收看本期 RebelLabs 报告。想获取最新的博客文章和报告，请在 Twitter 上关注 [@ZeroTurnaround](http://twitter.com/ZeroTurnaround)。
 
 
 
