@@ -103,6 +103,6 @@
     <!-- ... -->
 
 
-日期： 2016年9月6日
+日期: 2016年9月6日
 参考: [https://gist.github.com/hatemalimam/9804007](https://gist.github.com/hatemalimam/9804007)
 
