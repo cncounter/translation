@@ -88,7 +88,7 @@ From the table above we can see that the naming and the version number have been
 
 Major versions were released after every 2 years, however the Java SE 7 took 5 years to be available after its predecessor Java SE 6, and 3 years for Java SE 8 to be available to public afterward.
 
-主要版本每两年发布一次，但JavaSE 7 和 JavaSE 6 之间跨越了整整5年，而 JavaSE 8 和7之间则跨越了3年。
+主要版本每两年发布一次，但JavaSE 7 和 JavaSE 6 之间跨越了整整5年，而 JavaSE 8 和 7 之间则跨越了3年。
 
 Since Java SE 10,  new versions will be released very six months.
 
