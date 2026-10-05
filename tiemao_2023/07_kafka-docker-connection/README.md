@@ -7,16 +7,16 @@
 - [Guide to Setting Up Apache Kafka Using Docker](https://www.baeldung.com/ops/kafka-docker-setup)
 
 
-## 1. Overview
+## 1. 概述
 
-[Apache Kafka](https://kafka.apache.org/) is a very popular event streaming platform that is used with [Docker](https://www.docker.com/) frequently. Often, people experience connection establishment problems with Kafka, especially when the client is not running on the same Docker network or the same host. This is primarily due to the misconfiguration of Kafka's advertised listeners.
+[Apache Kafka](https://kafka.apache.org/) 是一款非常流行的事件流平台, 经常与 [Docker](https://www.docker.com/) 搭配使用。 很多人会遇到 Kafka 连接建立失败的问题, 特别是当客户端与 Kafka 不在同一个 Docker 网络或者同一台宿主机上时。 这主要是因为 Kafka 的 advertised listeners(对外通告的监听器)配置不当造成的。
 
-In this tutorial, we will learn how to configure the listeners so that clients can connect to a Kafka broker running within Docker.
+本文介绍如何配置监听器(listeners), 让客户端能够连接到运行在 Docker 容器内的 Kafka broker。
 
 
-## 2. Setup Kafka
+## 2. 启动 Kafka 服务
 
-Before we try to establish the connection, we need to run a [Kafka broker using Docker](https://www.baeldung.com/ops/kafka-docker-setup). Here's a snippet of our [docker-compose.yaml](https://www.baeldung.com/ops/docker-compose) file:
+在尝试建立连接之前, 我们需要先用 Docker 运行一个 [Kafka broker](https://www.baeldung.com/ops/kafka-docker-setup)。 下面是 [docker-compose.yaml](https://www.baeldung.com/ops/docker-compose) 文件的片段:
 
 ```yml
 version: '2'
@@ -45,13 +45,13 @@ networks:
     name: kafka_docker_example_net
 ```
 
-Here, we defined two must-have services – `Kafka` and `Zookeeper`. 
+这里定义了两个必需的服务 – `Kafka` 和 `Zookeeper`。
 
-We also defined a custom network – `kafka_docker_example_net`, which our services will use.
+我们还定义了一个自定义网络 – `kafka_docker_example_net`, 供这两个服务使用。
 
-We will look at the `KAFKA_LISTENERS`, `KAFKA_ADVERTISED_LISTENERS`, and `KAFKA_LISTENER_SECURITY_PROTOCOL_MAP` properties in more detail later.
+稍后我们会详细介绍 `KAFKA_LISTENERS`、`KAFKA_ADVERTISED_LISTENERS` 和 `KAFKA_LISTENER_SECURITY_PROTOCOL_MAP` 这几个属性。
 
-With the above `docker-compose.yaml` file, we start the services:
+使用上面的 `docker-compose.yaml` 文件, 启动这些服务:
 
 
 ```sh
@@ -61,53 +61,53 @@ Creating zookeeper ... done
 Creating kafka ... done
 ```
 
-Also, we will be using the Kafka [console producer](https://kafka-tutorials.confluent.io/kafka-console-consumer-producer-basics/kafka.html) utility as a sample client to test the connection to the Kafka broker. To use the Kafka-console-producer script without Docker, we need to have [Kafka](https://kafka.apache.org/downloads) downloaded.
+此外, 我们会使用 Kafka 的 [console producer](https://kafka-tutorials.confluent.io/kafka-console-consumer-producer-basics/kafka.html) 工具作为示例客户端, 来测试与 Kafka broker 的连接。 如果想不使用 Docker 来运行 kafka-console-producer 脚本, 则需要先下载 [Kafka](https://kafka.apache.org/downloads)。
 
-## 3. Listeners
+## 3. 监听器
 
-Listeners, advertised listeners, and listener protocols play a considerable role when connecting with Kafka brokers.
+在连接 Kafka broker 时, 监听器(listeners)、对外通告的监听器(advertised listeners)以及监听协议都起着相当重要的作用。
 
-We manage listeners with the `KAFKA_LISTENERS` property, where we declare a comma-separated list of URIs, which specify the sockets that the broker should listen on for incoming TCP connections.
+我们通过 `KAFKA_LISTENERS` 属性来管理监听器, 在其中声明一组以逗号分隔的 URI, 用于指定 broker 应该监听哪些 socket 来接收传入的 TCP 连接。
 
-Each URI comprises a protocol name, followed by an interface address and a port:
+每个 URI 由协议名、接口地址和端口组成:
 
 ```yml
 EXTERNAL_SAME_HOST://0.0.0.0:29092,INTERNAL://0.0.0.0:9092
 ```
 
-Here, we specified a 0.0.0.0 meta address to bind the socket to all interfaces. Further, EXTERNAL_SAME_HOST and INTERNAL are the custom listener names that we need to specify when defining listeners in the URI format.
+这里我们指定了 0.0.0.0 这个元地址, 把 socket 绑定到所有网络接口。 另外, EXTERNAL_SAME_HOST 和 INTERNAL 是自定义的监听器名称, 在以 URI 格式定义监听器时需要指定。
 
-### 3.2. Bootstrapping
+### 3.2. 客户端引导(Bootstrapping)
 
-For initial connections, Kafka clients need a bootstrap server list where we specify the addresses of the brokers. The list should contain at least one valid address to a random broker in the cluster.
+初次连接时, Kafka 客户端需要一个 bootstrap server 列表, 用于指定各个 broker 的地址。 该列表中至少要包含集群内任意一个 broker 的有效地址。
 
-The client will use that address to connect to the broker. If the connection is successful, the broker will return the metadata about the cluster, including the advertised listener lists for all the brokers in the cluster. For subsequent connections, the clients will use that list to reach the brokers.
+客户端会使用这个地址连接 broker。 如果连接成功, broker 会返回集群的元数据, 其中包括集群内所有 broker 的 advertised listener 列表。 后续连接时, 客户端就会使用这个列表来访问各个 broker。
 
-### 3.3. Advertised Listeners
+### 3.3. 对外通告的监听器(Advertised Listeners)
 
-Just declaring listeners is not enough because it's just a socket configuration for the broker. We need a way to tell the clients (consumers and producers) how to connect to Kafka.
+仅仅声明监听器是不够的, 因为它只是 broker 侧的 socket 配置。 我们还需要一种方式, 来告诉客户端(消费者和生产者)应该如何连接 Kafka。
 
-This is where advertised listeners come into the picture with the help of the `KAFKA_ADVERTISED_LISTENERS` property. It has a similar format as the listener's property:
+这时就要借助 `KAFKA_ADVERTISED_LISTENERS` 属性来配置 advertised listeners。 它的格式与 listener 属性类似:
 
 ```yml
 <listener protocol>://<advertised host name>:<advertised port>
 ```
 
-The clients use the addresses specified as advertised listeners after the initial bootstrapping process.
+在完成初次引导(bootstrapping)之后, 客户端就会使用 advertised listeners 中指定的地址来连接。
 
 
-### 3.4. Listener Security Protocol Map
+### 3.4. 监听器安全协议映射(Listener Security Protocol Map)
 
-Apart from listeners and advertised listeners, we need to tell the clients about the security protocols to use when connecting to Kafka. In the `KAFKA_LISTENER_SECURITY_PROTOCOL_MAP`, we map our custom protocol names to valid security protocols.
+除了监听器和 advertised listeners 之外, 我们还需要告诉客户端连接 Kafka 时使用哪种安全协议。 在 `KAFKA_LISTENER_SECURITY_PROTOCOL_MAP` 中, 我们把自定义的协议名映射到合法的安全协议上。
 
-In the configuration in the previous section, we declared two custom protocol names – `INTERNAL` and `EXTERNAL_SAME_HOST`. We can name them as we want, but we need to map them to valid security protocols.
+在前面一节的配置中, 我们声明了两个自定义协议名 – `INTERNAL` 和 `EXTERNAL_SAME_HOST`。 名称可以随意取, 但必须把它们映射到合法的安全协议。
 
-One of the security protocols we specified is `PLAINTEXT`, which means that the clients don't need to authenticate with the Kafka broker. Also, the data exchanged is not encrypted.
+我们指定的其中一种安全协议是 `PLAINTEXT`, 它表示客户端不需要与 Kafka broker 进行认证, 而且交换的数据也不加密。
 
 
-## 4. Client Connecting from the Same Docker Network
+## 4. 客户端从同一个 Docker 网络连接
 
-Let's start the Kafka console producer from another container and try to produce messages to the broker:
+我们在另一个容器中启动 Kafka console producer, 尝试向 broker 发送消息:
 
 ```sh
 docker run -it --rm --network kafka_docker_example_net confluentinc/cp-kafka /bin/kafka-console-producer --bootstrap-server kafka:9092 --topic test_topic
@@ -115,16 +115,16 @@ docker run -it --rm --network kafka_docker_example_net confluentinc/cp-kafka /bi
 >world
 ```
 
-Here, we are attaching this container to the existing kafka_docker_example_net network to communicate to our broker freely. We also specify the broker's address –  `kafka:9092` and the name of the topic, which will be created automatically.
+这里把这个容器接入已有的 kafka_docker_example_net 网络, 从而可以自由地与 broker 通信。 同时指定了 broker 地址 `kafka:9092` 以及主题(topic)名称, 该主题会被自动创建。
 
-We were able to produce the messages to the topic, which means that the connection to the broker was successful.
+我们成功把消息发送到了该主题, 说明与 broker 的连接是成功的。
 
 
-## 5. Client Connecting from the Same Host
+## 5. 客户端从同一台宿主机连接
 
-Let's connect to the broker from the host machine when the client is not containerized. For external connection, we advertised EXTERNAL_SAME_HOST listener, which we can use to establish the connection from the host. From the advertised listener property, we know that we have to use the localhost:29092 address to reach Kafka broker.
+当客户端没有容器化时, 我们来从宿主机连接 broker。 对于外部连接, 我们通告了 EXTERNAL_SAME_HOST 监听器, 可以用它从宿主机建立连接。 从 advertised listener 的配置可以看出, 需要通过 localhost:29092 才能访问到 Kafka broker。
 
-To test connectivity from the same host, we will use a non-Dockerized Kafka console producer:
+为了测试从同一台宿主机的连通性, 我们使用一个非容器化的 Kafka console producer:
 
 ```sh
 kafka-console-producer --bootstrap-server localhost:29092 --topic test_topic_2
@@ -133,13 +133,13 @@ kafka-console-producer --bootstrap-server localhost:29092 --topic test_topic_2
 ```
 
 
-Since we managed to produce the topic, it means that both the initial bootstrapping and the subsequent connection (where advertised listeners are used by the client) to the broker were successful.
+既然成功发送了消息, 说明无论是初次引导, 还是后续连接(此时客户端会使用 advertised listeners), 与 broker 的通信都是成功的。
 
-The port number `29092` that we configured in `docker-compose.yaml` earlier made the Kafka broker reachable outside Docker.
+前面在 `docker-compose.yaml` 中配置的端口号 `29092`, 使得 Kafka broker 在 Docker 外部也可以访问。
 
-## 6. Client Connecting from a Different Host
+## 6. 客户端从另一台宿主机连接
 
-How would we connect to a Kafka broker if it's running on a different host machine? Unfortunately, we can't re-use existing listeners because they are only for the same Docker network or host connection. So instead, we need to define a new listener and advertise it:
+如果 Kafka broker 运行在另一台宿主机上, 该如何连接呢? 很遗憾, 现有的监听器无法复用, 因为它们只适用于同一个 Docker 网络或者同一台宿主机的连接。 所以需要定义一个新的监听器, 并把它对外通告:
 
 ```yml
 KAFKA_LISTENERS: EXTERNAL_SAME_HOST://:29092,EXTERNAL_DIFFERENT_HOST://:29093,INTERNAL://:9092
@@ -147,11 +147,11 @@ KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka:9092,EXTERNAL_SAME_HOST://localhost
 KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,EXTERNAL_SAME_HOST:PLAINTEXT,EXTERNAL_DIFFERENT_HOST:PLAINTEXT
 ```
 
-We created a new listener called `EXTERNAL_DIFFERENT_HOST` with security protocol `PLAINTEXT` and port `29093` associated. In `KAFKA_ADVERTISED_LISTENERS`, we also added the IP address of the cloud machine Kafka is running on.
+我们新建了一个名为 `EXTERNAL_DIFFERENT_HOST` 的监听器, 关联的安全协议为 `PLAINTEXT`, 端口为 `29093`。 在 `KAFKA_ADVERTISED_LISTENERS` 中, 还加上了 Kafka 所在云主机的 IP 地址。
 
-We have to keep in mind that we can't use localhost because we are connecting from a different machine (local workstation in this case). Also, port `29093` is published under the ports section so that it's reachable outside Docker.
+要注意, 这里不能用 localhost, 因为是从另一台机器(此处是本地工作站)去连接的。 另外, 端口 `29093` 已在 ports 配置段中发布, 以便在 Docker 外部可以访问。
 
-Let's try producing a few messages:
+我们来试着发送几条消息:
 
 ```sh
 kafka-console-producer --bootstrap-server 157.245.80.232:29093 --topic test_topic_3
@@ -159,11 +159,11 @@ kafka-console-producer --bootstrap-server 157.245.80.232:29093 --topic test_topi
 >REMOTE SERVER
 ```
 
-We can see that we were able to connect to the Kafka broker and produce messages successfully.
+可以看到, 我们成功连接到了 Kafka broker, 并成功发送了消息。
 
-## 7. Conclusion
+## 7. 总结
 
-In this article, we learned how to configure the listeners so that clients can connect to a Kafka broker running within Docker. We looked at different scenarios where the client was running on the same Docker network, same host, different host, etc. We saw that the configurations for listeners, advertised listeners, and security protocol maps determine the connectivity.
+本文介绍了如何配置监听器, 让客户端能够连接到运行在 Docker 容器内的 Kafka broker。 我们分析了客户端位于同一个 Docker 网络、同一台宿主机、不同宿主机等几种场景。 可以看出, listener、advertised listener 以及安全协议映射的配置决定了连接能否建立。
 
 
 
