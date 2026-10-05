@@ -1,6 +1,6 @@
 # Quiz Yourself: Wrapper Classes (Intermediate)
 
-＃ Java坑人面试题系列: 包装类（中级难度）
+# Java坑人面试题系列: 包装类（中级难度）
 
 
 If you have worked on our quiz questions in the past, you know none of them is easy. They model the difficult questions from certification examinations. The levels marked “intermediate” and “advanced” refer to the exams, rather than the questions. Although in almost all cases, “advanced” questions will be harder. We write questions for the certification exams, and we intend that the same rules apply: Take words at their face value and trust that the questions are not intended to deceive you, but straightforwardly test your knowledge of the ins and outs of the language.
@@ -71,7 +71,7 @@ Wrappers provide three main ways to obtain instances. Each wrapper provides a st
 In Java, anytime a constructor is invoked using the `new` keyword, only two outcomes are possible. Either a new instance of exactly the named type is created and returned, or an exception arises. This is actually a limitation and, today, factory methods are generally preferred because they can have these two effects, but they can also have additional outcomes.
 
 在Java中，只要使用 `new` 关键字调用构造函数，只会发生两种情况： 要么成功创建指定类型的新对象并返回，要么就抛异常。
-这实际上是一个限制，如今一般是推荐使用工厂方法， 因为工厂方法除了达成构造函数的效果之外， 还会有一些优化。
+这实际上是一个限制，如今一般是推荐使用工厂方法， 因为工厂方法除了达成构造函数的效果之外， 还可能会有一些额外的结果。
 
 One capability of a factory, which is impossible for a constructor, is to return an existing object that matches the request. Given that the `Integer` wrapper is immutable, two objects of this type representing the same number are entirely interchangeable. Because of this, it’s a waste of memory to create two objects to represent the same value. Further, such an approach allows comparing such objects using `==` instead of the `equals(Object o)` method. With the `Integer` class, values in the range of -128 to +127 are typically reused in this way.
 
@@ -107,7 +107,7 @@ Now, the factories for most of the wrappers will throw an exception if they are 
 
 大部分包装类的工厂方法, 如果传入了 `null` 参数, 或者字符串参数不符合目标值的表现形式就会抛出异常,例如，`Integer.valueOf("six")` 就会抛异常。
 
-但 `java.lang.Boolean` 类的工厂方法是个特例， 内部实现判断的是非空(`null`)并且等于 "`true`"（忽略大小写）。
+但 `java.lang.Boolean` 类的工厂方法是个特例， 内部实现判断的是参数不为 `null` 并且等于 "`true`"（忽略大小写）。
 
 内部实现如下所示：
 
@@ -136,7 +136,7 @@ The general rule is that the test expression of an `if` statement must have `boo
 一般来说 `if` 语句小括号中的表达式必须是 `boolean` 类型。
 显然，这里会自动将 `Boolean` 对象进行拆箱操作, 变为 `boolean` 类型。
 这算是Java的基础知识，当然，如果在 Java 5 之前的版本这样写, 代码确实会无法编译。
-即使有这样的担忧，但因为没有【编译错误】的选项，所以我们不关注这个问题。
+即使有这样的担忧，但因为没有【编译错误】这个选项，所以可以认为它会按显而易见的方式执行（自动拆箱）。
 
 In this case, you’ve established that the object referred to by `b1` represents a `false` value. Because of that, the `if` test fails, and the body of the code is not executed. From that, you can determine that option D is correct.
 
@@ -155,7 +155,7 @@ Java语言中有两种形式的相等比较。
 - 第二种是 `equals(Object o)` 方法，本质上是一个API。
 
 每个对象都可以使用 `equals(Object o)` 方法，因为这个方法是在 `java.lang.Object` 类中定义的。
-除非某个类覆写了equals方法，否则这个方法一般不定返回 `true`。
+除非某个类覆写了equals方法，否则这个方法一般不会返回 `true`。
 下面我们主要讨论 `==` 运算符，如果对 equals 方法的实现感兴趣, 请参考: [Java中hashCode与equals方法的约定及重写原则](https://blog.csdn.net/renfufei/article/details/14163329)。
 
 The `==` operator compares the values of two expressions. That sounds simple enough except each value can be one of two different types depending on what the basic type of the expression is. This fact is important because the apparent effect of `==` is very different between the two types. By the way, the term “expression” is used here deliberately, and a variable is a simple expression. So if you prefer to think in terms of the values and types of variables, the discussion will still be `true`; you’ll just have a smaller chunk of truth than you might otherwise have had.
@@ -211,7 +211,7 @@ System.out.print(v1 == v2);
 which is closely parallel to the code in the question, using one constructor call and one use of autoboxing would still definitely print `false`. The object created by the constructor will be a unique new object and, therefore, not the one returned by the factory that provides the autoboxed value.
 
 这与面试题中的代码很像，一个使用构造函数, 一个使用自动装箱，可以肯定这也会输出 `false`。
-构造函数创建的对象必定是唯一的新对象，因此，不可能 `==` 自动装箱为工厂方法返回的对象。
+构造函数创建的对象必定是唯一的新对象，因此，不可能与自动装箱（工厂方法）返回的对象相等。
 
 
 ###############
@@ -243,12 +243,12 @@ would definitely print `true`.
 The guarantee quoted earlier is mentioned only in the documentation for the `valueOf(int)` method and for `valueOf(String)`. However, in practice, both of these methods exhibit the same pooling behavior.
 
 虽然只在 `valueOf(int)` 和 `valueOf(String)` 方法的文档说明中提到了这个缓存保证。
-但在实际的实现中， 其他包装类也表现出相同的缓存行为。
+但在实际的实现中， 这两个方法都表现出相同的缓存行为。
 
 Of course, the question here discusses two `Integer` objects: one created with a constructor and the other using autoboxing (which uses the `Integer.valueOf(int)` method). This means that if the body of the `if` statement had been entered, the output would have been false. But you’ve already established that option D is correct, so options B and C must be incorrect, and this is just an interesting side discussion. We hope it’s an interesting one, of course! The correct option is D.
 
 当然，这里讨论了两个 `Integer` 对象： 一个是使用构造函数创建，另一个是使用自动装箱创建（`Integer.valueOf(int)` 方法）。
-假如我们稍微改变一下面试题中 `if` 语句，则输出内容将为 `false`。
+假如面试题中 `if` 语句体被执行了，则输出内容将为 `false`。
 
 总结: 本文开始提到的面试题， 选项D是正确答案。 这里只是附带的讨论。
 
