@@ -6,7 +6,7 @@
 
 You can build tables to organize information in comments, issues, pull requests, and wikis.
 
-在Github上, comment(注释/评论), issue(问题反馈), pull request(代码推送请求), 以及 wiki(项目知识库) 都支持 Markdown语法, 当然也包括表格(table);
+在GitHub上, comment(注释/评论), issue(问题反馈), pull request(代码推送请求), 以及 wiki(项目知识库) 都支持 Markdown语法, 当然也包括表格(table);
 
 ### Creating a table
 
@@ -30,7 +30,7 @@ You can create tables with pipes `|` and hyphens `-`. Hyphens are used to create
 
 The pipes on either end of the table are optional.
 
-每一行最末尾的竖线是可选的, 可有可无, 有的话可能源码格式更整齐和美观。
+表格两端(每行首尾)的竖线是可选的, 可有可无, 有的话可能源码格式更整齐和美观。
 
 Cells can vary in width and do not need to be perfectly aligned within columns. There must be at least three hyphens in each column of the header row.
 
