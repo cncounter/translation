@@ -53,7 +53,7 @@ These lifecycle phases (plus the other lifecycle phases not shown here) are exec
 
 每一个构建生命周期都由不同的构建阶段列表来定义，其中，构建阶段（build phase）表示生命周期中的一个阶段。
 
-例如， `default` 生命周期包含以下阶段：
+例如， `default` 生命周期包含以下阶段（完整的阶段列表请参考 [生命周期参考文档](#Lifecycle_Reference)）：
 
 - `validate` - 验证项目的正确性，确保所有必要的信息均可用。
 - `compile` - 编译项目的源代码。
@@ -104,7 +104,7 @@ mvn clean deploy
 
 The same command can be used in a multi-module scenario (i.e. a project with one or more subprojects). Maven traverses into every subproject and executes `clean`, then executes `deploy` (including all of the prior build phase steps).
 
-可以在多模块方案中使用同一命令（即具有一个或多个子项目的项目）。 Maven遍历每个子项目并执行“清理”，然后执行“部署”（包括所有先前的构建阶段步骤）。
+可以在多模块方案中使用同一命令（即具有一个或多个子项目的项目）。 Maven遍历每个子项目并执行 `clean`，然后执行 `deploy`（包括所有先前的构建阶段步骤）。
 
 #### A Build Phase is Made Up of Plugin Goals
 
@@ -120,7 +120,7 @@ A plugin goal represents a specific task (finer than a build phase) which contri
 可以绑定到零到多个构建阶段。
 没有绑定任何构建生命周期的插件目标，也可以通过直接调用来执行，不受任何构建阶段约束。
 执行的顺序取决于调用目标和构建阶段的顺序。
- 例如下面的命令，构建阶段是  `clean` 和 `package` 参数，而 `dependency:copy-dependencies` 则是插件的目标。
+例如下面的命令，构建阶段是 `clean` 和 `package` 参数，而 `dependency:copy-dependencies` 则是插件的目标。
 
 ```shell
 mvn clean dependency:copy-dependencies package
@@ -135,13 +135,13 @@ Furthermore, a build phase can also have zero or more goals bound to it. If a bu
 (*Note: In Maven 2.0.5 and above, multiple goals bound to a phase are executed in the same order as they are declared in the POM, however multiple instances of the same plugin are not supported. Multiple instances of the same plugin are grouped to execute together and ordered in Maven 2.0.11 and above*).
 
 
-运行此命令，则首先会执行 `clean` 阶段（也就是执行清理周期之前的所有阶段，以及“清理”阶段本身），然后执行 `dependency:copy-dependencies` 目标，最后执行 `package` 阶段（以及默认生命周期中，打包之前的所有构建阶段）。
+运行此命令，则首先会执行 `clean` 阶段（也就是执行 clean 生命周期中位于它之前的所有阶段，以及 `clean` 阶段本身），然后执行 `dependency:copy-dependencies` 目标，最后执行 `package` 阶段（以及默认生命周期中，打包之前的所有构建阶段）。
 
 当然，如果某个目标绑定到一个或多个构建阶段，则在这些阶段中都会调用这个目标。
 
 此外，构建阶段也可以绑定零到多个目标。 如果某个构建阶段没有绑定目标，则该构建阶段就不会执行。 但如果绑定了一个或多个目标，它将挨个执行所有绑定的目标。
 
-> 注意：在 Maven 2.0.5 及更高版本中，绑定到某个阶段的多个目标, 将按照在POM中声明的顺序执行，但是不支持同一插件的多个实例。  而在 Maven 2.0.11 及更高版本中， 同一插件的多个实例会分到一个组并按顺序执行。
+> 注意：在 Maven 2.0.5 及更高版本中，绑定到某个阶段的多个目标, 将按照在POM中声明的顺序执行，但是不支持同一插件的多个实例。 而在 Maven 2.0.11 及更高版本中， 同一插件的多个实例会分到一个组并按顺序执行。
 
 #### Some Phases Are Not Usually Called From the Command Line
 
@@ -154,12 +154,12 @@ Failsafe and code coverage plugins bind goals to `integration-test` and `verify`
 
 #### 某些阶段通常不从命令行调用
 
-通常不从命令行直接调用以连字符命名的阶段（如 `pre-*`, `post-*`, or `process-*`）。
+通常不从命令行直接调用以连字符命名的阶段（如 `pre-*`, `post-*`, 或 `process-*`）。
 这些阶段对构建进行排序，产生中间结果，这些结果在构建外部无用。 在调用 `integration-test` 的情况下，环境可能处于挂起状态。
 
-Jacoco 等代码覆盖率检测工具, 以及Tomcat，Cargo  和Docker 等执行容器插件将目标绑定到 `pre-integration-test` 阶段，以准备集成测试容器环境。这些插件还将目标绑定到 `post-integration-test` 阶段，以收集覆盖率统计信息，或者停用集成测试容器。
+Jacoco 等代码覆盖率检测工具, 以及Tomcat、Cargo 和 Docker 等执行容器插件将目标绑定到 `pre-integration-test` 阶段，以准备集成测试容器环境。这些插件还将目标绑定到 `post-integration-test` 阶段，以收集覆盖率统计信息，或者停用集成测试容器。
 
-故障安全和代码覆盖检测插件将目标绑定到 `integration-test` 和 `verify` 阶段。 最终结果是测试报告和覆盖率报告，并且在 `verify` 阶段之后可用。 如果直接从命令行调用 `integration-test`，则不会生成任何报告。 更糟糕的是，集成测试容器环境处于挂起状态； Tomcat Web服务器或Docker实例保持运行状态，甚至 Maven 还无法自行终止。
+Failsafe 和代码覆盖检测插件将目标绑定到 `integration-test` 和 `verify` 阶段。 最终结果是测试报告和覆盖率报告，并且在 `verify` 阶段之后可用。 如果直接从命令行调用 `integration-test`，则不会生成任何报告。 更糟糕的是，集成测试容器环境处于挂起状态； Tomcat Web服务器或Docker实例保持运行状态，甚至 Maven 还无法自行终止。
 
 ### Setting Up Your Project to Use the Build Lifecycle
 
@@ -167,7 +167,7 @@ The build lifecycle is simple enough to use, but when you are constructing a Mav
 
 ### 设置项目以使用构建生命周期
 
-构建生命周期很容易使用， 但是当您为项目配置Maven构建时，如何为每个构建阶段分配任务呢？
+构建生命周期很容易使用，但是当您为项目配置Maven构建时，如何为每个构建阶段分配任务呢？
 
 #### Packaging
 
@@ -198,9 +198,9 @@ Note that for some packaging types to be available, you may also need to include
 
 这基本上算是 [标准绑定集](https://maven.apache.org/ref/current/maven-core/default-bindings.html)；
 但是，有些打包类型对它们的处理方式有所不同。
-例如，纯粹是元数据的项目（类型为`pom`）只将目标绑定到 `install` 和 `deploy` 阶段。
+例如，纯粹是元数据的项目（类型为 `pom`）只将目标绑定到 `install` 和 `deploy` 阶段（某些打包类型的目标与构建阶段的绑定关系，完整列表请参考 [生命周期参考文档](#Lifecycle_Reference)）。
 
-请注意，对于某些可用的打包类型，我们可能还需要在POM的 `<build>` 部分中包含特定的插件，并为插件指定`<extensions>true</extensions>`。 Plexus 插件是其中的一个示例，它可以提供 `plexus-application` 和 `plexus-service` 包。
+请注意，对于某些可用的打包类型，我们可能还需要在POM的 `<build>` 部分中包含特定的插件，并为插件指定`<extensions>true</extensions>`。 Plexus 插件就是其中一个示例，它可以提供 `plexus-application` 和 `plexus-service` 打包类型。
 
 --------------
 
@@ -224,12 +224,12 @@ For example, the Modello plugin binds by default its goal `modello:java` to the 
 下面我们会讲到，插件可以通过配置将目标绑定到具体的某个生命周期阶段。
 请注意，仅仅是添加插件是不够的，还必须指定要在构建过程中运行的目标。
 
-从所选的包中，将配置的目标添加到绑定的生命周期的目标列表中。
+配置的目标会追加到由所选打包类型绑定到该生命周期的目标列表中。
 如果某个阶段绑定了多个目标，则先执行包中的目标，然后再执行POM文件中配置的目标。
 注意，我们可以使用 `<executions>` 元素来控制特定目标的顺序。
 
 例如，Modello 插件默认情况下将其目标 `modello:java` 绑定到 `generate-sources` 阶段。`modello:java` 目标用于生成Java源代码。
-因此，要使用Modello插件并将其从模型生成的代码合并到构建中，可以在POM中,  `<build>` 元素下的 `<plugins>` 中添加以下配置：
+因此，要使用Modello插件并将其从模型生成的代码合并到构建中，可以在POM中的 `<build>` 元素下的 `<plugins>` 中添加以下配置：
 
 ```xml
 ...
@@ -261,9 +261,9 @@ When multiple executions are given that match a particular phase, they are execu
 Now, in the case of `modello:java`, it only makes sense in the `generate-sources` phase. But some goals can be used in more than one phase, and there may not be a sensible default. For those, you can specify the phase yourself. For example, let's say you have a goal `display:time` that echos the current time to the commandline, and you want it to run in the `process-test-resources` phase to indicate when the tests were started. This would be configured like so:
 
 为什么要在这里配置 `<executions>` 元素呢？ 通过这种方式，我们可以根据需要，用不同的配置来运行同一个目标。
-还可以为每次执行分配一个ID，以便在继承或应用配置文件期间，控制目标配置是合并呢还是转换为其他执行。
+还可以为每次执行分配一个ID，以便在继承或应用配置文件期间，控制目标配置是被合并，还是变成一次额外的执行。
 
-当某个阶段匹配多个 execution 时，将按照在POM文件中的顺序来执行，而且先执行继承来的 execution 。
+当某个阶段匹配多个 execution 时，将按照在POM文件中的顺序来执行，而且先执行继承来的 execution。
 
 `modello:java` 目标，仅在 `generate-sources` 阶段才有意义。
 但某些目标可以在多个阶段中使用，可能还没有明显的默认配置。
@@ -365,7 +365,7 @@ The following lists all build phases of the `default`, `clean` and `site` lifecy
 | `test-compile`            | 将测试代码编译到测试目标目录中。              |
 | `process-test-classes`    | 对测试编译生成的文件进行后期处理，例如对Java类进行字节码增强。 |
 | `test`                    | 使用合适的单元测试框架运行测试。 这些测试不应要求打包或部署代码。 |
-| `prepare-package`         | 准备打包，在实际打包之前进行一些必要的准备工作。 这通常会生产未打包的，但已处理过的版本。 |
+| `prepare-package`         | 准备打包，在实际打包之前进行一些必要的准备工作。 这通常会生成未打包、但已处理过的版本。 |
 | `package`                 | 将编译后的代码打包为可分发格式，例如JAR。 |
 | `pre-integration-test`    | 在执行集成测试前进行所需的操作。 可能涉及准备集成环境等操作。 |
 | `integration-test`        | 集成测试， 在必要时将打包好的程序部署到可运行集成测试的环境中。 |
@@ -406,11 +406,15 @@ Some phases have goals bound to them by default. And for the default lifecycle, 
 
 #### Clean Lifecycle Bindings
 
+#### clean 生命周期的绑定
+
 | Phase   | plugin:goal   |
 | :------ | :------------ |
 | `clean` | `clean:clean` |
 
 #### Default Lifecycle Bindings - Packaging `ejb` / `ejb3` / `jar` / `par` / `rar` / `war`
+
+#### default 生命周期的绑定 - 打包类型 `ejb` / `ejb3` / `jar` / `par` / `rar` / `war`
 
 | Phase                    | plugin:goal                                                  |
 | :----------------------- | :----------------------------------------------------------- |
@@ -425,6 +429,8 @@ Some phases have goals bound to them by default. And for the default lifecycle, 
 
 #### Default Lifecycle Bindings - Packaging `ear`
 
+#### default 生命周期的绑定 - 打包类型 `ear`
+
 | Phase                | plugin:goal                    |
 | :------------------- | :----------------------------- |
 | `generate-resources` | `ear:generate-application-xml` |
@@ -434,6 +440,8 @@ Some phases have goals bound to them by default. And for the default lifecycle, 
 | `deploy`             | `deploy:deploy`                |
 
 #### Default Lifecycle Bindings - Packaging `maven-plugin`
+
+#### default 生命周期的绑定 - 打包类型 `maven-plugin`
 
 | Phase                    | plugin:goal                                        |
 | :----------------------- | :------------------------------------------------- |
@@ -449,6 +457,8 @@ Some phases have goals bound to them by default. And for the default lifecycle, 
 
 #### Default Lifecycle Bindings - Packaging `pom`
 
+#### default 生命周期的绑定 - 打包类型 `pom`
+
 | Phase     | plugin:goal       |
 | :-------- | :---------------- |
 | `package` |                   |
@@ -456,6 +466,8 @@ Some phases have goals bound to them by default. And for the default lifecycle, 
 | `deploy`  | `deploy:deploy`   |
 
 #### Site Lifecycle Bindings
+
+#### site 生命周期的绑定
 
 | Phase         | plugin:goal   |
 | :------------ | :------------ |
