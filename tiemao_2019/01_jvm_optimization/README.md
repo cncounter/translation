@@ -3,11 +3,19 @@
 
 JVM performance optimization: Read the series
 
+JVM 性能优化系列文章:
+
 - Part 1: Overview
 - Part 2: Compilers
 - Part 3: Garbage collection
 - Part 4: Concurrently compacting GC
 - Part 5: Scalability
+
+- 第1部分: 概述
+- 第2部分: 编译器
+- 第3部分: 垃圾收集
+- 第4部分: 并发压缩式垃圾收集器
+- 第5部分: 可扩展性
 
 
 
