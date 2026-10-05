@@ -26,7 +26,7 @@ Alternatively, click the following button to download a .zip file of the code:
 
 Open the downloaded zip file. This will unpack a project folder (**adaptive-web-media**) that contains one folder for each step of this codelab, along with all of the resources you will need.
 
-下载完成后进行解压, 里面是一个自适应的网络资源项目(**adaptive-web-media**), 包含多个步骤对应的文件夹, 以及部分资源。
+下载完成后进行解压, 里面是一个自适应的网络资源项目(**adaptive-web-media**), 包含每个步骤对应的文件夹, 以及所需的全部资源。
 
 You'll be doing all your coding work in the directory named **work**.
 
@@ -86,7 +86,7 @@ Click the **CHOOSE FOLDER** button, and select the **work** folder you just crea
 
 Then stop and restart the server by sliding the toggle labeled **Web Server: STARTED** to the left and then back to the right.
 
-接下来需要停止并重启一次 server, 通过滑动切换标签 **Web Server: STARTED**,  (即先滑到左边, 再滑到到右边)。
+接下来需要停止并重启一次 server, 通过滑动切换标签 **Web Server: STARTED**,  (即先滑到左边, 再滑到右边)。
 
 ![](03_06_restart_server.png)
 
