@@ -20,18 +20,18 @@
 - [12.2 MAVEN基础系列（二）POM文件](./12_introduction-to-the-pom/README.md)【粗翻】
 * [13.诊断问题和排查故障非常难？](./13_why-troubleshooting-so-hard/README.md)【已完成】
 * [14.JVM性能指标监控工具 -- Micrometer](./14_micrometer_intro/README.md)【已完成】
-* [15.DataDog集成MySQL的配置](./15_datadog_mysql/README.md)【已完成】
+* [15.DataDog集成MySQL的配置：](./15_datadog_mysql/README.md)【已完成】
 * [16.迁移Ubuntu下MySQL的data目录](./16_mysql_data_dir/README.md)【已完成】
 * [17.Java坑人面试题系列: 变量声明（中级难度）](./17_quiz-variable-declaration/README.md)【已完成】
 * [18.实战MySQL唯一索引](./18_mysql-unique-index/README.md)【粗翻.TODO】
-* [19.Java坑人面试题系列: 使用Collectors（高级难度）](./19_quiz-advanced-collectors/README.md)【粗翻】
+* [19.Java坑人面试题系列: 集合（高级难度）](./19_quiz-advanced-collectors/README.md)【粗翻】
 * [20.真实用户监控与综合性能监控](./20_monitoring-vs-synthetic-monitoring/README.md)【机器翻译】
 * [21.深入JVM - Code Cache内存池](./21_jvm-code-cache/README.md)【已完成】
-* [22.Java 9 Module System(系列)](./22_Java_9_Module_System/README.md) 【系列文章】
+* [22.Java 9 Module System](./22_Java_9_Module_System/README.md) 【系列文章】
 * [23.ZGC简介](./23_zgc_intro/README.md)【已校对】
-* [24.Python Tutorial](./24_python-tutorial/README.md)【系列文章】
-* [25.系统设计最佳实践](./25_embedded-rules-of-thumb/README.md)【系列文章】
-* [26.Java规范系列：JAR文件规范](./26_jar_specs/README.md)【粗翻】
+* [24.Python简明教程](./24_python-tutorial/README.md)【系列文章】
+* [25.系统设计原则与最佳实践](./25_embedded-rules-of-thumb/README.md)【系列文章】
+* [26.Java规范系列: JAR文件规范](./26_jar_specs/README.md)【粗翻】
 * [27.vim与vi跳到行尾的技巧](./27_vi-vim-editor-end-of-line/README.md)
 * [28.深入剖析JVM实现细节(系列)](./28_anatomy-quarks/README.md)【系列文章】
 * [29.通过线程调度延迟来探测CPU性能抖动](./29_sleep_test/README.md)【已完成】
@@ -40,19 +40,19 @@
 * [32.Spring Boot 实战教程](./32_spring-boot-tutorials/README.md)
 * [33.数据结构与集合](./33_collection_intro/README.md)
 * [34.Word创建目录与导出技巧](./34_word_skill/README.md)【已完成】
-* [35.MySQL优化手册 - 官方文档[中文版]](./35_mysql_optimization/README.md)【系列文章】
+* [35.MySQL调优手册官方文档-中文翻译](./35_mysql_optimization/README.md)【系列文章】
 * [36.InnoDB引擎中AUTO_INCREMENT的处理机制](./36_innodb-auto-increment-handling/README.md)
-* [37.CompressedOops详解](./37_CompressedOops/README.md)
-* [38.如何选择机器学习平台](./38_how-to-choose-a-cloud-machine-learning-platform/README.md)
-* [39.辨析深度学习和机器学习](./39_deep-learning-vs-machine-learning/README.md)
+* [37.CompressedOops](./37_CompressedOops/README.md)
+* [38.如何选择机器学习云平台](./38_how-to-choose-a-cloud-machine-learning-platform/README.md)
+* [39.深度学习和机器学习的区别](./39_deep-learning-vs-machine-learning/README.md)
 * [40.JDK16新特性（不断更新中）](./40_jdk-16-whats-coming-in-java-16/README.md)【粗翻】
 * [41.深入JVM - 实例详解invoke相关操作码](./41_invoke_opcode/README.md)【已完成】
-* [42.案例讲解JVM方法体字节码](./42_method_byte_code/README.md)
+* [42.深入JVM - 案例讲解方法体字节码](./42_method_byte_code/README.md)
 * [43.Java多线程与并发面试题](./43_java_thread_conc_interview/README.md)【已完成】
 * [44.深入系列: InnoDB存储引擎](./44_innodb-storage-engine/README.md)【系列文章】
 * [44.7 InnoDB的锁和事务模型](./44_innodb-storage-engine/14.7_innodb-locking-transaction-model_CN.md)【已完成】
 * [45.Java正则表达式入门与实战](./45_java_and_regex/README.md)【写作中ing...】
-* [46.Linux内核文档: 内存屏障](./46_Linux_Kernel_Memory_Barriers/README.md)
+* [46.Linux内核参考文档: 内存屏障](./46_Linux_Kernel_Memory_Barriers/README.md)
 
 
 
