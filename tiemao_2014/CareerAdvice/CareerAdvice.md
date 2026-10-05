@@ -3,7 +3,7 @@
 
 As the old Faces song "Ooh La La" goes, I wish that I knew what I know now when I was younger. Back then, I simply loved to code and could have cared less about my "career" or about playing well with others. I could have saved myself a ton of trouble if I'd just followed a few simple practices.
 
-就如儿歌 "[Ooh La La](http://en.wikipedia.org/wiki/Ooh_La_La_(Faces_song))" 所唱的那样: 多希望我年轻的时候，就懂得如今才领悟的道理呀。 那时候的我心里只装着代码, 才不愿意去想想自己的职业生涯呢，也不会主动维持朋友和同事之间的关系。 要是当初有人指点一二, 我肯定要少走多少弯路啊!
+正如 Faces 乐队的老歌 "[Ooh La La](http://en.wikipedia.org/wiki/Ooh_La_La_(Faces_song))" 所唱的那样: 多希望我年轻的时候，就懂得如今才领悟的道理呀。 那时候的我心里只装着代码, 才不愿意去想想自己的职业生涯呢，也不会主动维持朋友和同事之间的关系。 要是当初有人指点一二, 我肯定要少走多少弯路啊!
 
 ## 1. Take names.
 
@@ -19,7 +19,7 @@ Also, take note of your peers. If you're an early 20-something, chances are you 
 
 刚毕业的我, 一门心思都扑在了计算机上面, 电脑就是我心爱的大老婆, 如果谁让我和电脑分开、我甚至会想翻脸。 好吧,说翻脸可能夸张了一点. 但那时候虽然我见过很多业界知名的专家, 也参加过各种交流会、认识很多真心值得去结交的人, 但可惜我没有留下他们的名片, 平时也没有花心思去联系和问候。 只有跳槽和找工作时会加一些邮箱联系人(那时候还没有视频, 也没有微信)。
 
-今天的开发者可能有点难以理解 “需要一份工作” 这种事情.  但说真的, 那时候还没有谷歌, 如果你只会点语言基础和基本的语法, 还只会使用搜索引擎的话, 是很难找到份好工作的。 有一段时间, 程序员被猎头称为是 无尽的骚扰。 隔一段时间之后，这样的一幕很可能还会再次上演。
+今天的开发者可能有点难以理解 “需要一份工作” 这种事情.  但说真的, 那时候还没有谷歌, 如果你只会点语言基础和基本的语法, 还只会使用搜索引擎的话, 是很难找到份好工作的。 曾经有一段时间, 是程序员主动打电话给猎头, 而不是被他们无休止地骚扰。 迟早，这样的一幕很可能还会再次上演。
 
 更重要的是, 很多经验丰富的程序员也干得不开心, 甚至不算成功。 有的是没有机会, 有的是没能在合适的时间遇到对的人。 确实, 时机和运气都很重要, 但我们也可以自己创造机会. 也许参加9次交流活动, 都没找到聊得来的人, 你只是去做灯泡和背景的, 但第十次很可能就会遇到人生中的贵人(真正愿意赏识你的那人)。
 
@@ -33,13 +33,13 @@ Problem solving is essentially the same thing you learned in abstract in seventh
 
 ## 2. 善用排错法
 
-计算机软件是一种神奇的存在, 只要把错误都解决掉, 他就能正常运行。
+计算机软件是一种神奇的存在, 只要把错误都解决掉, 它就能正常运行。
 
 刚工作没几年的时候, 很多问题会让人抓狂、沮丧、欲死欲仙、秃头到顶。
 
 幸运的是, 只要持续学习, 我们解决问题的能力会越来越厉害。
 
-排错法是一种非常有用的技巧, 避免认知偏见, 也不要固执己见。 证明十种假设都不对, 也比证明自己的推测是对的要容易很多。
+排错法是一种非常有用的技巧, 避免认知偏见, 也不要固执己见。 证明三种假设都不对, 也比证明自己的推测是对的要容易很多。
 
 此外, 想一想各种可能的情况。 比如提示信息说端口冲突, 但我们却怎么都找不到, 那也许是其他地方出问题了。 比如要连接的网络不对,或者是IP地址没分配等等, 因为错误提示可能也是错误的。
 
@@ -90,16 +90,16 @@ I don't mean you should work in a sweatshop or run yourself to death, but make a
 
 I disagree with Joseph Gentle. People are still messing up software development in the same dumb ways since software separated from hardware. Programming simply requires reading, concentration, and logic. Luckily, plenty of books, courses, and patterns can tell you how to do all of that (see No. 6). Coordination with other people on any scale? That's hard.
 
-## 7. 编程语言并不难
+## 7. 编程并不难,除非你自己把它搞难
 
-我不同意 Joseph Gentle 的观点。将软件和硬件分离以后, 很多人仍然把软件开发搞的一团糟. 要编程只需掌握 阅读(reading)、专注(concentration) 并有一定的 逻辑思维(logic) 即可。幸运的是, 现在有大量的书籍、课程和模板可以让你学习(请参考第6条). 在开发中和别人进行良好的协作? 这倒是有点难度。
+我不同意 Joseph Gentle 的观点。将软件和硬件分离以后, 很多人仍然把软件开发搞得一团糟. 要编程只需掌握 阅读(reading)、专注(concentration) 并有一定的 逻辑思维(logic) 即可。幸运的是, 现在有大量的书籍、课程和模式可以让你学习(请参考第6条). 在开发中和别人进行良好的协作? 这倒是有点难度。
 
 ## 8. For Zod's sake, learn to communicate.
 
 If you are unable to write properly in English (or the appropriate language for your community), take a writing course. If you are unable to give a talk, get over your stage fright, take a course, practice in front of a mirror, and/or attend some meetups and learn. This is probably as important as writing code.
 
 
-8. 说句心里话, 需要学一些沟通技巧
+## 8. 说句心里话, 需要学一些沟通技巧
 
 如果写作不好, 可以参加培训班。如果不擅长与人交谈, 那么请克服怯场, 参加一些培训, 或者在镜子前练习, 也可以参加一些交流活动或者讲座。沟通交流应该是和写代码一样重要的东西。
 
