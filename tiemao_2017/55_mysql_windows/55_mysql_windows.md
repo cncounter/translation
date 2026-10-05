@@ -22,5 +22,5 @@ MySQL官方网站为: <https://www.mysql.com/>
 
 下拉到页面最下方, 点击链接 [No thanks, just start my download.](https://dev.mysql.com/downloads/file/?id=473309).
 
-即可直接下载, 当然, 注册个Oracle账户并登陆也是可以的。
+即可直接下载, 当然, 注册个Oracle账户并登录也是可以的。
 
