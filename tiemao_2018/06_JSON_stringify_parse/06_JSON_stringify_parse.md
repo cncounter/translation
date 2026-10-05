@@ -43,7 +43,7 @@ Parameters
 - `text` 参数
 
   The string to parse as JSON. See the JSON object for a description of JSON syntax.
-  需要要解析的JSON格式字符串。关于JSON的语法, 请参考: [JSON](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/JSON)。
+  需要解析的JSON格式字符串。关于JSON的语法, 请参考: [JSON](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/JSON)。
 
 - reviver Optional
 
@@ -67,7 +67,7 @@ The Object corresponding to the given JSON text.
 
 Throws a SyntaxError exception if the string to parse is not valid JSON.
 
-如果传入的JSON字符串无效的, 则会抛出 [SyntaxError](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/SyntaxError) 异常。
+如果传入的JSON字符串无效, 则会抛出 [SyntaxError](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/SyntaxError) 异常。
 
 ### Examples
 
@@ -95,11 +95,11 @@ Using the reviver parameter
 
 If a reviver is specified, the value computed by parsing is transformed before being returned. Specifically, the computed value and all its properties (beginning with the most nested properties and proceeding to the original value itself) are individually run through the reviver. Then it is called, with the object containing the property being processed as this, and with the property name as a string, and the property value as arguments. If the reviver function returns undefined (or returns no value, for example, if execution falls off the end of the function), the property is deleted from the object. Otherwise, the property is redefined to be the return value.
 
-如果指定了转换函数(reviver), 那么, 在返回解析出来的值/对象之前, 会调用转换函数, 在其中可以执行某些转换/修改(transformed). 具体来说, 计算出来的值及其所有属性(从最开始嵌套属性和原始值本身进行)通过兴奋剂单独运行.然后,正在处理的对象包含属性,属性名称作为一个字符串,和属性值作为参数.如果兴奋剂函数返回定义(或不返回任何值,例如,如果执行脱落的函数),房地产从对象中删除.否则,属性定义返回值。
+如果指定了转换函数(reviver), 那么, 在返回解析出来的值之前, 会先调用转换函数, 在其中可以执行某些转换/修改(transform)。具体来说, 解析得到的值及其所有属性(从最嵌套的属性开始, 逐层向外, 直到原始值本身)会逐一经过转换函数处理。调用时, 以当前正在处理的属性所在的对象作为 `this`, 以属性名(字符串形式)和属性值作为参数。如果转换函数返回 `undefined`(或者不返回任何值, 例如函数执行到结尾自然结束), 则该属性会从对象中删除; 否则, 该属性会被重新定义为返回值。
 
 If the reviver only transforms some values and not others, be certain to return all untransformed values as-is, otherwise they will be deleted from the resulting object.
 
-如果兴奋剂只变换一些值而不是别人,一定会按原样返回所有untransformed值,否则他们将被删除从生成的对象。
+如果转换函数只转换部分值而不转换其他值, 请务必将未转换的值按原样返回, 否则它们会从最终生成的对象中被删除。
 
 ```
 JSON.parse('{"p": 5}', (key, value) =>
@@ -218,14 +218,14 @@ The value to convert to a JSON string.
 
 A function that alters the behavior of the stringification process, or an array of String and Number objects that serve as a whitelist for selecting/filtering the properties of the value object to be included in the JSON string. If this value is null or not provided, all properties of the object are included in the resulting JSON string.
 
-一个函数,改变stringification的行为过程,或一个字符串和数字对象数组作为白名单选择/过滤值对象的属性被包括在JSON字符串.如果这个值是null或不提供,对象的所有属性都包含在生成的JSON字符串。
+一个函数, 用来改变字符串化(stringification)过程的行为; 或者一个由 String 和 Number 组成的数组, 作为白名单(whitelist), 用来筛选值对象中哪些属性要包含到 JSON 字符串里。如果这个参数为 `null` 或者未提供, 则对象的所有属性都会包含在生成的 JSON 字符串中。
 
 - `space`, 可选参数, 缩进
 
 
 A String or Number object that's used to insert white space into the output JSON string for readability purposes. If this is a Number, it indicates the number of space characters to use as white space; this number is capped at 10 (if it is greater, the value is just 10). Values less than 1 indicate that no space should be used. If this is a String, the string (or the first 10 characters of the string, if it's longer than that) is used as white space. If this parameter is not provided (or is null), no white space is used.
 
-一个字符串或数字对象,用来插入空白便于阅读的JSON字符串输出.如果这是一个数字,它指示空格字符的数量作为空白;这个数字是限制在10(如果它是更大的,价值是10).值小于1表明,不应该使用空间。如果这是一个字符串,字符串(或第一个10个字符的字符串,如果是超过)用作空白.如果没有提供这个参数(或者为空),不使用空格。
+一个字符串或数字, 用来在输出的 JSON 字符串中插入空白, 以便于阅读。如果是数字, 则表示每级缩进使用的空格数量, 上限为 10(超过 10 则按 10 处理); 小于 1 表示不使用空白。如果是字符串, 则使用该字符串(超过 10 个字符时取前 10 个字符)作为空白。如果没有提供这个参数(或者为 `null`), 则不使用空白。
 
 Return value
 
@@ -245,15 +245,15 @@ JSON.stringify()将一个值转换为JSON符号表示:
 
 Boolean, Number, and String objects are converted to the corresponding primitive values during stringification, in accord with the traditional conversion semantics.
 
-布尔值、数字和字符串对象转换为相应的原始值stringification期间,符合传统的语义转换。
+布尔值、数字和字符串对象, 在字符串化(stringification)过程中会被转换为对应的原始值, 符合传统的转换语义。
 
 If undefined, a function, or a symbol is encountered during conversion it is either omitted (when it is found in an object) or censored to null (when it is found in an array). JSON.stringify can also just return undefined when passing in "pure" values like JSON.stringify(function(){}) or JSON.stringify(undefined).
 
-如果未定义,一个函数,或者遇到一个符号在转换是省略了(当它存在于一个对象)或审查为null(当它存在于一个数组)。JSON.stringify也可以返回传递“纯”时未定义值像JSON.stringify(函数(){ })或JSON.stringify(定义)。
+如果在转换过程中遇到 `undefined`、函数或 Symbol 值, 会被忽略(当它出现在对象中时), 或者被转换为 `null`(当它出现在数组中时)。当传入"纯"值时, 比如 `JSON.stringify(function(){})` 或 `JSON.stringify(undefined)`, `JSON.stringify()` 也会直接返回 `undefined`。
 
 All Symbol-keyed properties will be completely ignored, even when using the replacer function.
 
-所有Symbol-keyed属性将被完全忽略,即使使用代用品函数。
+所有以 Symbol 作为键的属性会被完全忽略, 即使使用了替换函数(replacer)也一样。
 
 Non-enumerable properties will be ignored
 
@@ -300,39 +300,39 @@ JSON.stringify( Object.create(null, { x: { value: 'x', enumerable: false }, y: {
 
 The replacer parameter
 
-替代者参数
+替换器(replacer)参数
 
 The replacer parameter can be either a function or an array. As a function, it takes two parameters, the key and the value being stringified. The object in which the key was found is provided as the replacer's this parameter. Initially it gets called with an empty key representing the object being stringified, and it then gets called for each property on the object or array being stringified. It should return the value that should be added to the JSON string, as follows:
 
-替代者参数可以是一个函数或一个数组。作为一个函数,它接受两个参数,stringified的键和值.的对象被发现的关键是提供代用品的这个参数.最初它被称为空着关键代表被stringified的对象,然后它被调用每个属性的对象或数组stringified.它应该返回的值应该被添加到JSON字符串,如下:
+replacer 参数可以是一个函数, 也可以是一个数组。作为函数时, 它接收两个参数: 键(key)和正在被字符串化的值(value)。包含该键的对象会作为 `this` 传给替换函数。最开始调用时会传入一个空键, 代表正在被字符串化的对象本身; 之后对被字符串化的对象或数组的每个属性都会各调用一次。它应该返回要添加到 JSON 字符串中的值, 规则如下:
 
 If you return a Number, the string corresponding to that number is used as the value for the property when added to the JSON string.
 
-如果你返回一个数字,这个数字对应的字符串作为属性的值添加到JSON字符串。
+如果返回一个数字, 则将该数字对应的字符串作为属性的值, 添加到 JSON 字符串中。
 
 If you return a String, that string is used as the property's value when adding it to the JSON string.
 
-如果你返回一个字符串,该字符串用作房产价值当添加JSON字符串。
+如果返回一个字符串, 则将该字符串作为属性的值, 添加到 JSON 字符串中。
 
 If you return a Boolean, "true" or "false" is used as the property's value, as appropriate, when adding it to the JSON string.
 
-如果你返回一个布尔值,使用“true”或“false”为属性的值,如合适,当添加JSON字符串。
+如果返回一个布尔值, 则根据情况使用“true”或“false”作为属性的值, 添加到 JSON 字符串中。
 
 If you return any other object, the object is recursively stringified into the JSON string, calling the replacer function on each property, unless the object is a function, in which case nothing is added to the JSON string.
 
-如果你返回任何其他对象,对象是递归地stringified JSON字符串,调用代用品函数在每个属性,除非是一个函数对象,在这种情况下,没有添加到JSON字符串。
+如果返回其他任何对象, 则该对象会被递归地进行字符串化, 写入 JSON 字符串, 并且对其中每个属性都会调用替换函数; 除非该对象是函数, 这种情况下不会向 JSON 字符串中添加任何内容。
 
 If you return undefined, the property is not included (i.e., filtered out) in the output JSON string.
 
-如果你返回未定义,属性(即不包括。过滤掉),输出JSON字符串。
+如果返回 `undefined`, 则该属性不会包含在输出的 JSON 字符串中(即被过滤掉)。
 
 Note: You cannot use the replacer function to remove values from an array. If you return undefined or a function then null is used instead.
 
-注意:您不能使用代用品函数将值从一个数组中。如果你返回未定义或一个函数,那么使用null代替。
+注意: 不能使用替换函数从数组中删除值。如果返回 `undefined` 或者一个函数, 则会以 `null` 代替。
 
 Example with a function
 
-一个函数的示例
+使用函数的示例
 
 ```
 function replacer(key, value) {
@@ -352,11 +352,11 @@ JSON.stringify(foo, replacer);
 
 Example with an array
 
-例子,一个数组
+使用数组的示例
 
 If replacer is an array, the array's values indicate the names of the properties in the object that should be included in the resulting JSON string.
 
-如果代用品是一个数组,数组的值属性的对象的名称表明应该被包括在生成的JSON字符串。
+如果 replacer 是一个数组, 则数组的元素表示对象中哪些属性名要包含在生成的 JSON 字符串中。
 
 ```
 JSON.stringify(foo, ['week', 'month']);  
@@ -367,11 +367,11 @@ JSON.stringify(foo, ['week', 'month']);
 
 The space argument
 
-空间参数
+缩进(space)参数
 
 The space argument may be used to control spacing in the final string. If it is a number, successive levels in the stringification will each be indented by this many space characters (up to 10). If it is a string, successive levels will be indented by this string (or the first ten characters of it).
 
-空间参数可以用来控制间距在最后的字符串。如果它是一个数字,连续水平stringification将各自被这么多空格字符缩进(10).如果它是一个字符串,将缩进连续水平这个字符串(或它的前10个字符)。
+space 参数可以用来控制最终字符串中的缩进。如果是数字, 则字符串化时的每一级缩进都使用这么多空格(上限 10); 如果是字符串, 则每一级缩进使用这个字符串(或其前 10 个字符)。
 
 ```
 JSON.stringify({ a: 2 }, null, ' ');
@@ -384,7 +384,7 @@ JSON.stringify({ a: 2 }, null, ' ');
 
 Using a tab character mimics standard pretty-print appearance:
 
-使用制表符模仿标准的外观形式打印:
+使用制表符可以模仿标准的美化输出(pretty-print)外观:
 
 ```
 JSON.stringify({ uno: 1, dos: 2 }, null, '\t');
@@ -403,19 +403,19 @@ toJSON()行为
 
 If an object being stringified has a property named toJSON whose value is a function, then the toJSON() method customizes JSON stringification behavior: instead of the object being serialized, the value returned by the toJSON() method when called will be serialized. JSON.stringify() calls toJSON with one parameter:
 
-如果一个对象被stringified toJSON属性的值是一个函数,然后toJSON()方法定制JSON stringification行为:要序列化的对象,而是toJSON()方法调用时返回的值将被序列化。JSON.stringify()调用toJSON一个参数:
+如果被字符串化的对象有一个名为 `toJSON` 的属性, 且其值是一个函数, 那么 `toJSON()` 方法可以定制 JSON 字符串化的行为: 不再序列化对象本身, 而是序列化调用 `toJSON()` 方法后返回的值。`JSON.stringify()` 调用 `toJSON` 时会传入一个参数:
 
 if this object is a property value, the property name
 
-如果这个对象属性值,属性名
+如果这个对象是一个属性值, 则参数为属性名
 
 if it is in an array, the index in the array, as a string
 
-如果是在一个数组,数组中的索引,作为一个字符串
+如果它在数组中, 则参数为它在数组中的下标, 以字符串形式表示
 
 an empty string if JSON.stringify() was directly called on this object
 
-一个空字符串如果JSON.stringify()直接呼吁这个对象
+如果 `JSON.stringify()` 是直接在这个对象上调用的, 则参数为空字符串
 
 For example:
 
@@ -460,11 +460,11 @@ JSON.stringify(monitorCandidate)
 
 Issue with plain JSON.stringify for use as JavaScript
 
-问题简单的JSON。stringify用作JavaScript
+直接把 JSON.stringify() 的结果当作 JavaScript 使用的问题
 
 Note that JSON is not a completely strict subset of JavaScript, with two line terminators (Line separator and Paragraph separator) not needing to be escaped in JSON but needing to be escaped in JavaScript. Therefore, if the JSON is meant to be evaluated or directly utilized within JSONP, the following utility can be used:
 
-注意,JSON是JavaScript的完全不是一个严格的子集,有两行结束符(行分隔符和段落分隔符)不需要JSON逃脱,但需要在JavaScript中逃走了.因此,如果JSON是评估或直接使用JSONP内,可以使用以下工具:
+注意, JSON 并不是 JavaScript 的一个完全严格的子集: 有两种行终止符(行分隔符 Line separator 和段落分隔符 Paragraph separator)在 JSON 中不需要转义, 但在 JavaScript 中需要转义。因此, 如果 JSON 要在 JSONP 中求值或直接使用, 可以使用下面的工具函数:
 
 ```
 function jsFriendlyJSONStringify (s) {
@@ -495,15 +495,15 @@ alert(jsFriendlyJSONStringify(s)); // {"a":"\u2028","b":"\u2029"}
 
 Example of using JSON.stringify() with localStorage
 
-与localStorage使用JSON.stringify()的例子
+配合 localStorage 使用 JSON.stringify() 的示例
 
 In a case where you want to store an object created by your user and allowing it to be restored even after the browser has been closed, the following example is a model for the applicability of JSON.stringify():
 
-在一个情况下你想要存储一个对象创建的用户,甚至让它恢复浏览器已经关闭后,下面的例子是一个模型的适用性JSON.stringify():
+在需要存储用户创建的对象, 并且即使在浏览器关闭之后也能恢复它的场景下, 下面的示例演示了 JSON.stringify() 的一种典型用法:
 
 Functions are not a valid JSON data type so they will not work. However, they can be displayed if first converted to a string (e.g. in the replacer), via the function's toString method. Also, some objects like Date will be a string after JSON.parse().
 
-函数并不是一个有效的JSON数据类型,这样他们不会工作。然而,他们可以显示如果首先转换成字符串(例如代用品),通过函数的toString方法.此外,一些物品,例如日期后将一个字符串JSON.parse()。
+函数并不是有效的 JSON 数据类型, 所以它们无法直接处理。不过, 可以先通过函数的 toString 方法将其转换为字符串(例如在 replacer 中), 这样就能显示出来了。另外, 有些对象(比如 Date)经过 JSON.parse() 之后会变成字符串。
 
 ```
 // Creating an example of JSON
