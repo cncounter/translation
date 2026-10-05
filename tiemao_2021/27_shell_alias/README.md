@@ -1,8 +1,8 @@
 # 一些好用的 alias 命令
 
-Linux和MaxOSX的 alias 命令使用技巧
+Linux和MacOSX的 alias 命令使用技巧
 
-因为 gist 被强的比较厉害，所以只好放到 repo 中。
+因为 gist 被墙的比较厉害，所以只好放到 repo 中。
 
 # alias
 
@@ -149,7 +149,7 @@ top
 - 2) 对目标使用哪种颜色, 输入 `0-7` 即可。
 - 2) 设置好一种颜色之后, 可以通过第1步的命令切换不同的设置目标。
 - 3) 结束设置; 输入 `Enter` 退出设置界面。
-- 3) 这一步也 支持 `a` 或 `w` 来切换各种颜色, 不太好用;
+- 3) 这一步也支持 `a` 或 `w` 来切换各种颜色, 不太好用;
 
 这样设置之后, 退回到 top 命令的显示界面。 注意的是这里并没有持久化保存设置
 
@@ -202,7 +202,7 @@ yum -y install bind-utils
 man nslookup
 
 
-# DNS查询工具: nsloopup
+# DNS查询工具: nslookup
 $ nslookup www.cncounter.com
 Server:		114.114.114.114
 Address:	114.114.114.114#53
