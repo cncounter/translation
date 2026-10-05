@@ -49,7 +49,7 @@ The circumstances in which Java VisualVM will not automatically discover JMX age
 
 Before you can make an explicit JMX connection from Java VisualVM to a running application, this application must be started with the correct system properties. The system properties in question are the following:
 
-之前你可以显式的JMX连接从Java VisualVM运行的应用程序,这个应用程序必须启动正确的系统属性. 包括:
+在从 Java VisualVM 显式连接到某个正在运行的应用程序之前, 该应用程序必须使用正确的系统属性启动。相关的系统属性如下:
 
 
 - `com.sun.management.jmxremote.port`, to specify the port number through which the application will be exposed
@@ -160,13 +160,13 @@ You can also make explicit JMX connections to applications running on remote hos
 
 5. If the JMX connection is secured and you did not provide a username and password in the Add JMX Connection dialog, you will be prompted to provide a username and password.
 
-6. 如果 JMX 有密码保护, 而在上一步中没有输入 username and password, 则会弹出密码输入框:
+6. 如果 JMX 有密码保护, 而在上一步中没有输入用户名和密码, 则会弹出密码输入框:
 
    ![JMX connector security credentials.](07_security-credentials.png)
 
 7. If you know the correct username and password, the JMX connection will be established, and the JMX connection will appear in the application tree, with a special JMX connection icon.
 
-8. 输入正确的 username and password, 就建立了 JMX connection, 左侧的应用程序列表中, 出现带 “JMX” 水印标识的连接.
+8. 输入正确的用户名和密码, 就建立了 JMX 连接, 左侧的应用程序列表中, 出现带 “JMX” 水印标识的连接.
 
    ![Remote JMX connection shown in application tree.](08_remote-jmx-icon.png)
 
