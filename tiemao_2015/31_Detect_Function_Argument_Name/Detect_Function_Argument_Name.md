@@ -3,7 +3,7 @@ JavaScript: 取得 function 的所有参数名
 
 在阅读 [promisify-node](https://github.com/nodegit/promisify-node) 源码的时候, 想看看作者是如何将基本的函数和对象转换为对应的 promised-based API 的。我很快意识到他们通过函数的签名来查找通用的回调参数名称, 如 `callback` 或者 `cb`。代码看起来有点古怪但确实很有效。【注: 新一代的JS框架大多采用这种探测策略,如 **AngularJS**】
 
-我写了一个 JavaScrip t函数来解析函数的参数名称, 代码如下:
+我写了一个 JavaScript 函数来解析函数的参数名称, 代码如下:
 
 
 	
