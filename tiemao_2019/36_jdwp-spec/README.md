@@ -1,6 +1,6 @@
 # Java Debug Wire Protocol
 
-＃JDWP协议规范
+# JDWP协议规范
 
 
 ## Overview
@@ -18,7 +18,7 @@ Currently, the JDWP does not specify any mechanism for transport rendezvous or a
 
 JDWP is one layer within the Java Platform Debugger Architecture (JPDA). This architecture also contains the higher-level Java Debug Interface (JDI). The JDWP is designed to facilitate efficient use by the JDI; many of its abilities are tailored to that end. The JDI is more appropriate than JDWP for many debugger tools, particularly those written in the Java programming language. For more information on the Java Platform Debugger Architecture, see the [Java Platform Debugger Architecture documentation](https://docs.oracle.com/javase/8/docs/technotes/guides/jpda/index.html) for this release.
 
-##概述
+## 概述
 
 `JDWP` 全称是 `Java Debug Wire Protocol`, 中文翻译为 `Java调试线协议`, 是用于规范 调试器（debugger）与目标JVM之间通信的协议。
 JDWP是一个可选组件；可能在某些JDK实现中不可用。
@@ -114,8 +114,6 @@ JDWP是异步的； 在收到某个应答之前，可以发送多个命令包。
   - command (1 byte)
 - data (长度不固定)
 
-  标头长度（4个字节）id（4个字节）标志（1个字节）命令集（1个字节）命令（1个字节）数据（变量）
-
 > 应答包（Reply Packet）
 
 - Header
@@ -127,7 +125,7 @@ JDWP是异步的； 在收到某个应答之前，可以发送多个命令包。
 
 可以看到， 这两种数据包的Header中， 前三个字段格式是相同的。
 
-通过JDWP发送的所有字段和数据都应采用大端字节序(big-endian)。 （大端字节序的定义请参考《Java虚拟机规范》
+通过JDWP发送的所有字段和数据都应采用大端字节序(big-endian)。 （大端字节序的定义请参考《Java虚拟机规范》）
 
 ### Command and Reply Packet Fields
 
@@ -252,7 +250,7 @@ If a debuggee receives a Command Packet with a non-implemented or non-recognized
 通常，它们的大小与JNI和JVMDI调用中用于这些项目的 native 标识符的大小相对应。  这些类型中最大的size为8个字节。
 当然, 调试器可以使用 "idSizes" 这个命令来确定每种类型的大小。
 
-如果JVM收到的命令包里面含有未实现(non-implemented)或无法识别(non-recognized)的命令/命令集，则会返回带有错误码 NOT_IMPLEMENTED 的应答包。具体的错误常量可参考: Error Constants](https://docs.oracle.com/javase/8/docs/platform/jpda/jdwp/jdwp-protocol.html#JDWP_Error)。
+如果JVM收到的命令包里面含有未实现(non-implemented)或无法识别(non-recognized)的命令/命令集，则会返回带有错误码 NOT_IMPLEMENTED 的应答包。具体的错误常量可参考: [Error Constants](https://docs.oracle.com/javase/8/docs/platform/jpda/jdwp/jdwp-protocol.html#JDWP_Error)。
 
 [JDWP协议的具体内容](https://docs.oracle.com/javase/8/docs/platform/jpda/jdwp/jdwp-protocol.html)
 
