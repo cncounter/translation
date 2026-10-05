@@ -28,7 +28,7 @@ How are queries executed at the back-end by the database engine? Let’s take an
 
 当然，`HAVING` 子句和 `GROUP BY` 子句, 可能会在 `SELECT` 之后执行，具体取决于查询中指定的顺序。
 
-数据库引擎在后端数如何执行查询的？ 我们通过实例来对每个子句的执行顺序加深理解。
+数据库引擎在后端是如何执行查询的？ 我们通过实例来对每个子句的执行顺序加深理解。
 
 ```sql
 SELECT * 
@@ -110,7 +110,7 @@ Finally, the last step is the `ORDER BY` clause. The `ORDER BY` clause is used t
 
 最后一步是 `ORDER BY` 子句。 
 `ORDER BY` 子句用于对结果集中的记录进行排序。 
-在同时包含 `GROUP BY` 和 `ORDER BY` 子句的查询中，只有在分组之后生成的新临时结果中存在的列，才能在 `ORDER BY` 中引用，比如 `GROUP BY` 中的列或 聚合函数的结果。
+在同时包含 `GROUP BY` 和 `ORDER BY` 子句的查询中，只有在分组之后生成的新临时结果中存在的列，才能在 `ORDER BY` 中引用，比如 `GROUP BY` 中的列或聚合函数的结果。
 
 
 ```sql
@@ -128,7 +128,7 @@ In the above example, `GROUP BY` will be executed first and then `ORDER BY` Clau
 
 在上面的例子中，先执行子查询中的 `GROUP BY` 操作，然后是外层 `ORDER BY` 子句。 
 在带有 `GROUP BY` 子句的 `SELECT` 中使用非聚合列是非标准的(MySQL中有参数开关)。 MySQL 通常会返回它找到的第一行的值, 丢弃余下的。 
-任何 `ORDER BY` 子句仅适用于返回的列值，而不管被丢弃的值。
+任何 `ORDER BY` 子句仅适用于返回的列值，而不适用于被丢弃的值。
 
 ------
 
