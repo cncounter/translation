@@ -42,7 +42,7 @@ If a thread reads a memory location while another thread writes to it, what valu
 
 Without proper precautions any of these outcomes are possible. The behaviour would not even be predictable. The outcome could change from time to time. Therefore it is important as a developer to know how to take the right precautions - meaning learning to control how threads access shared resources like memory, files, databases etc. That is one of the topics this Java concurrency tutorial addresses.
 
-毫无疑问，这些结果都可能出现。 甚至是不可预测的。情境随时会变。 因此, 开发者必须要了解如何采取正确的预防措施 —— 也就是学习如何去控制多个线程来访问这些共享资源, 比如内存、文件、数据库等等. 这也是本教程将要介绍的一个主题。
+如果不采取适当的预防措施，上述任何一种结果都有可能出现。其行为甚至可能是不可预测的，结果随时会变化。 因此, 开发者必须要了解如何采取正确的预防措施 —— 也就是学习如何去控制多个线程来访问这些共享资源, 比如内存、文件、数据库等等. 这也是本教程将要介绍的一个主题。
 
 ### Multithreading and Concurrency in Java
 
@@ -50,27 +50,27 @@ Without proper precautions any of these outcomes are possible. The behaviour wou
 
 Java was one of the first languages to make multithreading easily available to developers. Java had multithreading capabilities from the very beginning. Therefore, Java developers often face the problems described above. That is the reason I am writing this trail on Java concurrency. As notes to myself, and any fellow Java developer whom may benefit from it.
 
-Java语言是第一个多线程容易给开发商。Java多线程功能从一开始.因此,Java开发人员经常面临上述问题。这是我写这小道的原因在Java并发性.对自己笔记,和任何其他Java开发人员可能从中受益。
+Java语言是最早让开发人员能够方便地使用多线程的语言之一。Java从一开始就具备多线程能力。因此，Java开发人员经常要面对上面提到的问题。这也是我撰写本Java并发系列教程的原因——既是写给自己的笔记，也希望能对其他Java开发者有所帮助。
 
 The trail will primarily be concerned with multithreading in Java, but some of the problems occurring in multithreading are similar to problems occurring in multitasking and in distributed systems. References to multitasking and distributed systems may therefore occur in this trail too. Hence the word "concurrency" rather than "multithreading".
 
-跟踪主要会涉及多线程在Java中,但有些问题发生在多线程类似问题发生在多任务处理和分布式系统.引用多任务和分布式系统也可能因此发生在这小道。因此这个词“并发”而不是“多线程”。
+本教程将主要讨论Java中的多线程，但多线程中出现的一些问题，与多任务和分布式系统中的问题类似。因此本教程中也会涉及多任务和分布式系统的相关内容。这也是标题使用“并发(concurrency)”而不是“多线程(multithreading)”的原因。
 
 ### Java Concurrency in 2015 and Forward
 
-### 2015年之前的Java并发技术
+### 2015年及以后的Java并发技术
 
 A lot has happened in the world of concurrent architecture and design since the first Java concurrency books were written, and even since the Java 5 concurrency utilities were released.
 
-世界上发生了很多并发架构和设计以来第一个Java并发写书,甚至自Java 5并发实用程序被释放。
+自从最早的Java并发书籍出版，甚至自从Java 5并发工具包发布以来，并发架构与设计领域已经发生了很多变化。
 
 New, asynchronous "shared-nothing" platforms and APIs like Vert.x and Play / Akka and Qbit have emerged. These platforms use a different concurrency model than the standard Java / JEE concurrency model of threading, shared memory and locking. New non-blocking concurrency algorithms have been published, and new non-blocking tools like the LMax Disrupter have been added to our toolkits. New functional programming parallelism has been introduced with the Fork and Join framework in Java 7, and the collection streams API in Java 8.
 
-新、异步“无共享”平台和api喜欢绿色。x和播放/ Akka Qbit已经出现.这些平台上使用不同的并发模型比标准Java / JEE线程的并发模型,共享内存和锁定.新的非阻塞并发算法已经出版,和非阻塞工具像LMax破坏者已经增加了我们的工具包.新函数式编程并行性与Fork和Join框架引入了在Java 7中,和收集流API在Java 8。
+一些新的异步“无共享(shared-nothing)”平台和API相继出现，例如 Vert.x、Play / Akka 和 Qbit。这些平台使用的并发模型，不同于标准的 Java / JEE 基于线程、共享内存和锁的并发模型。新的非阻塞并发算法陆续发表，新的非阻塞工具（如 LMAX Disruptor）也被加入了我们的工具箱。Java 7 通过 Fork/Join 框架，Java 8 通过集合 Stream API，引入了新的函数式编程并行方式。
 
 With all these new developments it is about time that I updated this Java Concurrency tutorial. Therefore, this tutorial is once again work in progress. New tutorials will be published whenever time is available to write them.
 
-所有这些新发展的时候了,我这个Java并发更新教程。因此,本教程是再一次工作进展.新教程时将发表时间可以写他们。
+有了这么多新进展，也确实到了更新本Java并发教程的时候。因此，本教程正在重新编写中。一旦有时间，就会发布新的章节。
 
 ### Java Concurrency Study Guide
 
@@ -78,11 +78,11 @@ With all these new developments it is about time that I updated this Java Concur
 
 If you are new to Java concurrency, I would recommend that you follow the study plan below. You can find links to all the topics in the menu in the left side of this page too.
 
-如果您是Java并发,我建议你遵循下面的学习计划。你可以找到所有的主题的链接在页面的左边菜单。
+如果你是Java并发的新手，我建议你按照下面的学习计划进行学习。你也可以在本页面左侧的菜单中找到所有主题的链接。
 
 General concurrency and multithreading theory:
 
-一般和多线程并发性理论:
+通用的并发与多线程理论：
 
 - Multithreading Benefits
 - Multithreading Costs
@@ -98,7 +98,7 @@ General concurrency and multithreading theory:
 
 The basics of Java concurrency:
 
-基本的Java并发性:
+Java并发基础：
 
 - Creating and Starting Java Threads
 - Race Conditions and Critical Sections
@@ -111,18 +111,18 @@ The basics of Java concurrency:
 - Java Thread Signaling
 
 - 创建和启动Java线程
-- 竞争条件和关键部分
-- 线程安全,共享资源
-- 线程安全性和不变性
+- 竞态条件与临界区
+- 线程安全与共享资源
+- 线程安全与不可变性
 - Java内存模型
-- Java Synchronized块
-- Java不稳定的关键字
+- Java同步块(synchronized block)
+- Java volatile关键字
 - Java ThreadLocal
-- Java线程的信号
+- Java线程信号
 
 Typical problems in Java concurrency:
 
-典型的Java并发性问题:
+Java并发中的典型问题：
 
 - Deadlock
 - Deadlock Prevention
@@ -132,13 +132,13 @@ Typical problems in Java concurrency:
 
 - 死锁
 - 死锁预防
-- 饥饿和公平
-- 嵌套管程闭锁(Monitor Lockout)
-- 了条件
+- 饥饿与公平性
+- 嵌套管程锁死(Nested Monitor Lockout)
+- 滑动条件(Slipped Conditions)
 
 Java concurrency constructs that help against the issues above:
 
-Java并发结构帮助对上面的问题:
+有助于解决上述问题的Java并发构件：
 
 - Locks in Java
 - Read / Write Locks in Java
@@ -148,13 +148,13 @@ Java并发结构帮助对上面的问题:
 - Thread Pools
 - Compare and Swap
 
-- 锁在Java中
-- 读/写锁在Java中
-- 再进入停摆
+- Java中的锁
+- Java中的读/写锁
+- 重入锁死(Reentrance Lockout)
 - 信号量
 - 阻塞队列
 - 线程池
-- 比较和交换
+- 比较并交换(CAS)
 
 Further topics:
 
@@ -165,7 +165,7 @@ Further topics:
 - Amdahl's Law
 - References
 
-- 分析同步器
+- 同步器剖析(Anatomy of a Synchronizer)
 - 非阻塞算法
 - Amdahl法则
 - 参考文献
