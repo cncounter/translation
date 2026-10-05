@@ -1,4 +1,4 @@
-# Quiz Yourself: Using Collectors (Advanced)）
+# Quiz Yourself: Using Collectors (Advanced)
 
 > Where care is needed to get the results you expect from the Collectors class
 
@@ -15,11 +15,11 @@ Java Magazine上面有一个专门坑人的面试题系列: <https://blogs.oracl
 
 如果你看过往期的问题，就会发现每一个都不简单。
 
-这些试题模拟了认证考试中的一些难题。 而 “中级(intermediate)” 和 “高级(advanced)” 指的是试题难度，而不是说这些知识本身很深。 一般来说，“高级”问题会稍微难一点。
+这些试题模拟了认证考试中的一些难题。 而 “中级(intermediate)” 和 “高级(advanced)” 指的是考试的级别，而不是指试题本身。 一般来说，“高级”问题会稍微难一点。
 
 The objective is to save results to a collection using the `collect` method and group or partition data using the `Collectors` class. Given the following `Student` class and given a `Stream<Student> s` that is initialized, unused, in scope, and contains students of varying ages:
 
-假设我们需要使用 `Collectors` 工具类的 `collect` 方法, 将结果保存到某个集合中，并使用Collectors类将数据分组或分区。
+假设我们需要使用 `collect` 方法将结果保存到某个集合中，并使用 `Collectors` 类将数据分组或分区。
 给定如下的 `Student` 类定义：
 
 ```java
@@ -39,7 +39,7 @@ class Student {
 
 Which of the following code fragments prints the number of students under 18 and the number of students 18 years old or older in the best way? Choose one.
 
-假设方法中已经初始化好了 `Stream<Student> s`，其中包含不同年龄的学生,
+假设方法中已经初始化好了 `Stream<Student> s`，其中包含不同年龄的学生，
 下面的哪段代码能根据年龄正确输出特定年龄段的学生数量？
 
 - A.
@@ -216,7 +216,7 @@ Now, the behavior of option B is similar to this idea, but it has a couple of va
 
 可以看到，选项B的行为与问题要求比较类似，但有一些变化。
 首先，分类器产生的结果Map的key本质上是布尔值，而不是数字，因为需要对18岁以上和18岁以下的学生进行分类。
-但是，选项B中的代码实际上链接了两个下游操作，当然也必须链接2个。
+但是，选项B中的代码实际上串联了两个下游操作，这种写法是允许的，而且可能非常有用。
 但是第一个下游收集器执行的却是映射操作，从每个 `Student` 对象中提取名称。
 第二个下游集合对结果的名称进行计数。
 
@@ -229,19 +229,19 @@ The mapping operation does not render the result incorrect; the code effectively
 In addition to the `groupingBy` behavior factory in the `Collectors` class, there is another factory that produces a result that’s somewhat similar. This factory is called `partitioningBy`, and the difference in its behavior is simply that instead of creating a `Map` with an arbitrary key type, it specifically creates a Map with a `Boolean` key. To support this, the classifier should be a predicate rather than a function. Option C uses the `partitioningBy` behavior and produces the correct output. It is better than option B for two reasons: First, it does not involve the wasted step of extracting names from the students. Second, `partitioningBy` is specifically provided exactly for the purpose of grouping by a simple true/false result and, as such, it is a (marginally) better design choice. By the same logic, it would be better than option A, even if that option had valid syntax.
 
 `Collectors` 类中除了 `groupingBy` 工厂方法，另一个 `partitioningBy` 方法产生的结果也有点类似。
-其行为上的区别仅在于，它创建的部署任意 key 类型的 `Map`，而是专门创建了具有 `Boolean` key 的 Map。
+其行为上的区别仅在于，它创建的不是任意 key 类型的 `Map`，而是专门创建了具有 `Boolean` key 的 `Map`。
 为了支持这一点，分类器需要是谓词而不是函数。
 选项C使用 `partitioningBy` 方法并产生了正确的结果。
 比选项B更好，原因有两个：
 首先，它不需要提取学生姓名。
 第二， `partitioningBy` 是为了简单地按 `true/false` 结果分组而专门提供的方法。
 因此，这是一种更好的设计选择。
-按照相同的逻辑，也比选项A更好，虽然选项A也具有有效的语法。
+按照相同的逻辑，即使选项A的语法是有效的，选项C也会比它更好。
 
 Option D uses handcrafted code and might also produce the correct answer. The major problem is that this code operates by means of side effects. Specifically, it modifies variables outside a lambda expression. This kind of behavior makes code unsafe in concurrent or parallel execution; particularly in stream-based systems, this type of code should be avoided precisely because a stream can easily be run in a parallel mode.
 
 选项D使用手工编写的代码，也可以产生正确的结果。
-主要的问题是此代码通过副作用来生效。
+主要的问题是此代码通过副作用来实现功能。
 具体来说，它会修改lambda表达式之外的变量。
 这种行为使代码在并发执行时并不安全；
 特别是在基于流的系统中，应避免使用此类代码，因为流可以在并行模式下轻松地运行。
@@ -252,8 +252,8 @@ The code compiles successfully, and if the stream ran sequentially, it would pri
 
 The correct answer is option C.
 
-值得注意的是，在设计lambda表达式或者方法内部类时，禁止从lambda或内部类中访问局部变量，除非是 final 变量。
-选项D中的代码通过使用有效的 final 引用来到达其所引用的 `List` 中的可变数据，从而产生其副作用。
+值得注意的是，在设计lambda表达式或者方法内部类时，禁止从lambda或内部类中访问局部变量，除非这些变量是事实final(effectively final)变量。
+选项D中的代码通过使用事实final(effectively final)引用，来修改其所引用的 `List` 中的可变数据，从而产生副作用。
 
 代码可以成功编译，如果stream按顺序运行，则会打印正确的结果。
 但是，这种设计不合理，如果流是并行的，将会执行失败，因此选项D不正确。
