@@ -16,11 +16,11 @@
 
 ## [7.配置信令服务器](7_Set_up_signaling_service.md)
 
-## [8.Combine peer connection and signaling](8_Combine_peer_connection_and_signaling.md)
+## [8.集成对等通信和信令服务](8_Combine_peer_connection_and_signaling.md)
 
-## [9.Take a photo and share it via a data channel](9_Take_photo_and_share_via_data_channel.md)
+## [9.拍照并传给对方](9_Take_photo_and_share_via_data_channel.md)
 
-## [10.Congratulations](10_Congratulations.md)
+## [10.总结](10_Congratulations.md)
 
 
 
