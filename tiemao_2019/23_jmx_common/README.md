@@ -131,7 +131,7 @@ Map<String, Object> result = new HashMap<>();
 result.put("memoryMXBean", memoryMXBean);
 ```
 
-结果 ：
+结果:
 
 ```json
 {
