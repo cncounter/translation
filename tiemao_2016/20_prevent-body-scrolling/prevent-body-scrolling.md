@@ -10,7 +10,7 @@ One of my pet peeves with fixed or absolute positioned elements is the `<body>`�
 
 So what's the best way to prevent the `<body>`  scrolling in the background?  Pass on `scroll` events and `preventDefault` or `stopPropagation`, that wont work.  The easiest way is a simple CSS snippet:
 
-那么怎样才算是比较好的处理方式?  监听 `scroll` 事件并且执行 `preventDefault` 和/或 `stopPropagation`, 但却没什么用。 最简单的方式是使用CSS:
+那么怎样才算是比较好的处理方式?  监听 `scroll` 事件并且执行 `preventDefault` 和/或 `stopPropagation`, 但却没什么用。 最简单的方式是使用 CSS:
 
 
 	/* ...或者其他类名,如: body.dialogShowing */
@@ -23,7 +23,7 @@ So what's the best way to prevent the `<body>`  scrolling in the background? �
 
 Preventing overflow on the entire `<body>`  assures scrolling on elements other than the desired fixed or absolute element wont happen.  It's an easy way to freeze the page for a hovered focus element.
 
-对整个 `<body>` 禁止溢出, 可以保证只有获取焦点的元素会滚动, 其他的元素不会连带着滚动。这是一种简单却实用的方法, 当然,你需要JS代码来配合,动态的增加/移除`body`元素上相应的CSS类。
+对整个 `<body>` 禁止溢出, 可以保证只有获取焦点的元素会滚动, 其他的元素不会连带着滚动。这是一种简单却实用的方法, 当然, 你需要 JS 代码来配合, 动态地增加/移除 `body` 元素上相应的 CSS 类。
 
 
 This trick has been used forever -- make sure you keep it in your toolbox!
