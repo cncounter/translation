@@ -18,7 +18,7 @@ Java programming language memory model， 即Java编程语言内存模型， 另
 
 可以对某个引用使用 `synchronized` 语句, 来获取具体对象上面的管程。 线程执行时，只有锁定了相应的管程才能继续运行，执行语句块中的代码。`synchronized` 语句块执行（正常执行/异常执行）完毕，会自动解锁一次该语句块对应的管程。
 
-调用 `synchronized` 方法时会自动执行锁定操作，只要获取到对应的锁才会执行该方法的方法体。 实例方法锁定的是`this`所指向对象的管程， 静态方法(`static`) 锁定的则是对应 Class 对象的管程。 方法退出时，会自动触发一次相应管程的unlock操作。
+调用 `synchronized` 方法时会自动执行锁定操作，只有获取到对应的锁才会执行该方法的方法体。 实例方法锁定的是`this`所指向对象的管程， 静态方法(`static`) 锁定的则是对应 Class 对象的管程。 方法退出时，会自动触发一次相应管程的unlock操作。
 
 Java语言不负责死锁的检测，由程序员负责处理。 必要时请使用高级别的锁定原语。
 
@@ -28,6 +28,6 @@ Java还支持其他的同步机制，例如 `volatile` 域以及 `java.util.conc
 
 每个对象都有一个关联的管程，也就有对应的等待集合(wait set)，也就是线程集合。
 
-新创建的对象，其等待集合是空的。增加或者减少等待集的过程是原子性的，对应的操作方法是 `Object#wait`, `Object#notify`, 和 `Object#notifyAll`。 线程中断也会影响等待集， 但 sleep 和join并不会影响。
+新创建的对象，其等待集合是空的。增加或者减少等待集的过程是原子性的，对应的操作方法是 `Object#wait`, `Object#notify`, 和 `Object#notifyAll`。 线程中断也会影响等待集， 但 sleep 和 join 并不会影响。
 
 ### wait
