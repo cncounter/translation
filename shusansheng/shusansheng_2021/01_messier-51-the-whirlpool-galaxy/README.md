@@ -25,7 +25,7 @@ During the 18th century, famed French astronomer [Charles Messier](http://www.un
 One of these is the spiral galaxy located in the constellation [Canes Venatici](https://www.universetoday.com/32834/canes-venatici/) known as the Whirlpool Galaxy (aka. Messier 51). Located between 19 and 27 million light-years from the Milky Way, this deep sky object was the very first to be classified as a spiral galaxy. It is also one of the best known galaxies among amateur astronomers, and is easily observable using binoculars and small telescopes.
 
 
-这个目录中有一个是位于 [Canes Venatici](https://www.universetoday.com/32834/canes-venatici/) 星座中的旋涡星系，被称为惠而浦星系(又名 Messier 51)。距银河系约19到2700万光年，这个深空天体是第一个被归类为旋涡星系的物体。它也是业余天文学家中最著名的星系之一，并且使用双筒望远镜和小型望远镜很容易观察到。
+这个目录中有一个是位于 [Canes Venatici](https://www.universetoday.com/32834/canes-venatici/) 星座中的旋涡星系，被称为漩涡星系(又名 Messier 51)。距银河系约 1900 万到 2700 万光年，这个深空天体是第一个被归类为旋涡星系的物体。它也是业余天文学家中最著名的星系之一，并且使用双筒望远镜和小型望远镜很容易观察到。
 
 
 ## DESCRIPTION:
@@ -48,13 +48,13 @@ Of course, one of the most outstanding features of the Whirlpool Galaxy is its b
 
 > M51的可见光(左)和红外图像(右)，分别由基特峰国家天文台和NASA的Spitzer太空望远镜拍摄。 -图片来源: NASA / JPL-Caltech / R。 Kennicutt(亚利桑那大学)/ DSS
 
-当然，惠而浦星系最突出的特征之一就是其美丽的螺旋结构-也许是它与其同伴星系NGC 5195之间紧密相互作用的结果？ 作为S. Beckwith，
+当然，漩涡星系最突出的特征之一就是其美丽的螺旋结构-也许是它与其同伴星系 NGC 5195 之间紧密相互作用的结果？ 正如 S. Beckwith 所说：
 
 > “This sharpest-ever image of the Whirlpool Galaxy, taken in January 2005 with the Advanced Camera for Surveys aboard NASA’s Hubble Space Telescope, illustrates a spiral galaxy’s grand design, from its curving spiral arms, where young stars reside, to its yellowish central core, a home of older stars. At first glance, the compact galaxy appears to be tugging on the arm. Hubble’s clear view, however, shows that NGC 5195 is passing behind the Whirlpool. The small galaxy has been gliding past the Whirlpool for hundreds of millions of years. As NGC 5195 drifts by, its gravitational muscle pumps up waves within the Whirlpool’s pancake-shaped disk. The waves are like ripples in a pond generated when a rock is thrown in the water. When the waves pass through orbiting gas clouds within the disk, they squeeze the gaseous material along each arm’s inner edge. The dark dusty material looks like gathering storm clouds. These dense clouds collapse, creating a wake of star birth, as seen in the bright pink star-forming regions. The largest stars eventually sweep away the dusty cocoons with a torrent of radiation, hurricane-like stellar winds, and shock waves from supernova blasts. Bright blue star clusters emerge from the mayhem, illuminating the Whirlpool’s arms like city streetlights.”
 
 But there were more surprises just waiting to be found – like a black hole, surrounded by a ring of dust. What makes it even more odd is a secondary ring crosses the primary ring on a different axis, a phenomenon that is contrary to expectations and a pair of ionization cones extend from the axis of the main dust ring. As H. Ford,
 
-> “这张惠而浦星系有史以来最清晰的影像，是在2005年1月用美国国家航空航天局哈勃太空望远镜上的高级勘测相机拍摄的，描绘了一个旋涡星系的宏伟设计，从其弯曲的旋臂(年轻恒星所在的地方)到其偏黄的中心核心，更年长的恒星的家。乍一看，紧凑的银河系似乎在拖曳手臂。但是，哈勃的清晰视野表明，NGC 5195正从惠而浦后面驶过。这个小型星系已经滑过漩涡了几亿年。随着NGC 5195的漂移，它的重力肌肉将漩涡中的波浪形泵浦起来。波浪就像池塘里的涟漪，是在水中扔石头时产生的。当海浪穿过磁盘内的绕行气体云时，它们会沿每个臂的内边缘挤压气态物质。深色尘土飞扬的物质看起来像是聚集暴风云。如在明亮的粉红色恒星形成区域中所见，这些浓密的云层坍塌，产生了恒星诞生的唤醒。最大的恒星最终以辐射，飓风般的恒星风和超新星爆炸产生的冲击波的洪流冲走尘土飞扬的茧。明亮的蓝色星团从混乱中冒出，照亮了漩涡，就像城市的路灯一样。”
+> “这张漩涡星系有史以来最清晰的影像，是在2005年1月用美国国家航空航天局哈勃太空望远镜上的高级勘测相机拍摄的，描绘了一个旋涡星系的宏伟设计，从其弯曲的旋臂(年轻恒星所在的地方)到其偏黄的中心核心，更年长的恒星的家。乍一看，紧凑的银河系似乎在拖曳手臂。但是，哈勃的清晰视野表明，NGC 5195正从漩涡后面驶过。这个小型星系已经滑过漩涡了几亿年。随着 NGC 5195 漂移而过，它的引力会搅动漩涡星系扁平盘面内的波。这些波就像往池塘里投石激起的涟漪。当波穿过盘面内环绕的气体云时，会沿每条旋臂的内缘挤压气态物质。那些暗淡的尘埃物质看起来就像正在聚集的风暴云。这些致密的云团坍缩，产生了一连串的恒星诞生，正如明亮的粉红色恒星形成区所示。最大的恒星最终会以奔涌的辐射、飓风般的星风和超新星爆炸的冲击波，扫走这些尘埃茧。明亮的蓝色星团从这片混乱中浮现，像城市的街灯一样照亮漩涡星系的旋臂。”
 
 但是，还有更多的惊喜在等待被发现–就像一个黑洞，周围是一团尘土。更奇怪的是，次级环在不同的轴线上穿过初级环，这是与预期相反的现象，并且一对电离锥从主集尘环的轴线延伸。作为H. Ford，
 
@@ -72,23 +72,23 @@ The Whirlpool Galaxy was first discovered by Charles Messier on October 13th, 17
 
 ## 观察历史:
 
-惠而浦银河最早是由查尔斯·梅西耶(Charles Messier)在1773年发现的，并于1774年1月11日再次被重新观察以作记录。他在笔记中写道:
+漩涡星系最早由查尔斯·梅西耶(Charles Messier)于 1773 年 10 月 13 日发现，并于 1774 年 1 月 11 日再次观测以作记录。他在笔记中写道：
 
->“非常模糊的星云，没有星，在北灵狮(猎狗)的眼睛附近，在Ursa Major尾巴的第二等星的星际Eta下方: M。Mesier于1773年10月13日发现了这个星云 看着当时可见的彗星。 用3.5英尺的普通望远镜无法毫不费力地看到这个星云: 在它附近是8级的恒星。 梅西耶(M. Messier)在1773年和1774年观测到的彗星图上报告了它的位置。它是双重的，每个都有一个明亮的中心，相隔4'35“。 这两个“气氛”相互接触，一个甚至比另一个更暗淡。”
+>“非常模糊的星云，没有恒星，位于北天猎犬座的眼睛附近、大熊座尾部二等星 Eta 之下：梅西耶先生于 1773 年 10 月 13 日发现了这个星云，当时他正在观测那颗可见的彗星。用一架普通的 3.5 英尺望远镜，要看清这个星云并非易事；它附近有一颗 8 等星。梅西耶先生在 1773 年和 1774 年观测的那颗彗星的星图上报告了它的位置。它是双重的，各有一个明亮的中心，两者相距 4′35″。两个“大气层”相互接触，一个甚至比另一个更暗淡。”
 
 It would be his faithful friend and assistant, Pierre Mechain who would discover NGC 5195 on March 21st, 1781. Even though it would be many, many years before it was proven that galaxies were indeed independent systems, historic astronomers were much, much sharper than we gave them credit for. Sir William Herschel would observe M51 many times, but it would be his son John who would be the very first to comment on M51’s scheme:
 
 > “This very singular object is thus described by Messier: – “Nebuleuse sans etoiles.” “On ne peut la voir que difficilement avec une lunette ordinaire de 3 1/2 pieds.” “Elle est double, ayant chacune un centre brillant eloigne l’un de l’autre de 4′ 35″. Les deux atmospheres se touchent.” By this description it is evident that the peculiar phenomena of the nebulous ring which encircles the central nucleus had escaped his observation, as might have been expected from the inferior light of his telescopes. My Father describes it in his observations of Messier’s nebulae as a bright round nebula, surrounded by a halo or glory at a distance from it, and accompanied by a companion; but I do not find that the partial subdivision of the ring into two branches throughout its south following limb was noticed by him. This is, however, one of its most remarkable and interesting features. Supposing it to consist of stars, the appearance it would present to a spectator placed on a planet attendant on one of them eccentrically situated towards the north preceding quarter of the central mass, would be exactly similar to that of our Milky Way, traversing in a manner precisely analogous the firmament of large stars, into which the central cluster would be seen projected, and (owing to its distance) appearing, like it, to consist of stars much smaller than those in other parts of the heavens. Can it, then, be that we have here a brother-system bearing a real physical resemblance and strong analogy of structure to our own? Were it not for the subdivision of the ring, the most obvious analogy would be that of the system of Saturn, and the idea of Laplace respecting the formation of that system would be powerfully recalled by this object. But it is evident that all idea of symmetry caused by rotation on an axis must be relinquished, when we consider that the elliptic form of the inner subdivided portion indicates with extreme probability an elevation of that portion above the plane of the rest, so that the real form must be that of a ring split through half its circumference, and having the split portions set asunder at an angle of about 45 deg each to the plane of the other.”
 
-将是他忠实的朋友和助手Pierre Mechain，他将在1781年3月21日发现NGC5195。尽管要证明银河系确实是独立的系统还需要很多很多年，但历史上的天文学家却比他更加犀利。我们给了他们荣誉。威廉·赫歇尔爵士(Sir William Herschel)会多次观察M51，但将是他的儿子约翰(John John)成为第一个对M51方案发表评论的人:
+发现 NGC 5195 的，是他的忠实朋友兼助手 Pierre Mechain，时间是 1781 年 3 月 21 日。尽管还要过很多很多年，人们才证明星系确实是彼此独立的系统，但历史上的天文学家其实比我们所以为的敏锐得多。威廉·赫歇尔爵士(Sir William Herschel)曾多次观测 M51，但第一个评论 M51 形态的，是他的儿子约翰(John)：
 
-> “因此，梅西耶描述了这个非常奇异的物体: –“无星云”。 “在3πππππππππ上的弥散谱图上。” “ Elle est double，ayant chacune un center brillant eloigne l'un de l'autre de 4'35”。 Les deux的气氛非常贴切。”通过这种描述，很明显，围绕着中心核的星云状环的奇特现象已经逃脱了他的观察，这可能是从他的望远镜的劣质光所期望的。 “我的父亲”在观测梅西埃星云时将其描述为明亮的圆形星云，周围有光晕或光晕，并伴有同伴；但我没有发现他注意到环的整个部分向南细分为两个分支。但是，这是它最引人注目的功能之一。假设它由恒星组成，它将呈现给一个旁观者，该旁观者将被安置在一个行星服务员上，其中一个行星偏心地朝向中心质量的北四分之一，它将与我们的银河系完全相似，在银河系中穿越这种方式恰好类似于大型恒星的穹苍，可以看到中央星团投射到其中，并且(由于其距离)看起来像是由比天上其他地方的恒星小得多的恒星组成。那么，难道我们这里有一个兄弟系统，它具有真正的物理相似性，并且与我们自己的结构有很强的类比性吗？如果不是对环的细分，最明显的类比就是土星系统，而拉普拉斯尊重该系统形成的想法将被这个对象强烈地唤起。但是很明显，当我们考虑内部细分部分的椭圆形式极有可能表明该部分在其余平面之上的高度时，必须放弃所有由轴旋转引起的对称性的想法。真正的形状必须是一个环，该环在其圆周的一半处分开，并且分开的部分以彼此相对于彼此的平面大约45度的角度设置成下面。
+> “这个非常奇异的物体，梅西耶是这样描述的：‘没有恒星的星云。’‘用一架普通的 3.5 英尺望远镜，只能勉强看到它。’‘它是双重的，各有一个明亮的核心，彼此相距 4′35″。两个“大气层”相互接触。’”由此可见，环绕中央核心的星云环这一奇特现象显然逃过了他的观测，这从他的望远镜集光力较差来看也不难理解。我的父亲在观测梅西耶星云时，把它描述为一团明亮的圆形星云，外围有一圈光晕或光辉，并伴有一颗伴星；但我没有发现他注意到，这个环在其南侧随后的边缘处部分地分成了两条支臂。然而，这恰恰是它最引人注目、最有趣的特征之一。假设它由恒星组成，那么对于一位站在该星系某颗行星上的观察者来说——这颗行星偏处于中央星团西北四分之一方向——所看到的景象将与我们的银河系完全相似：同样地穿过大片恒星的穹苍，中央星团会如同投射其中，并且（由于距离遥远）看起来也由比天上其他地方小得多的恒星组成。那么，难道我们在这里面对的真的是一个兄弟星系，它与我们自己的星系有着真实的物理相似性和结构上的高度类似吗？若不是环存在这种细分，最明显的类比本应是土星系统，而这个天体也会强烈地让人回想起拉普拉斯关于该系统形成的设想。但很明显，当我们考虑到内部细分部分的椭圆形状极可能表明该部分高出其所在平面时，一切由绕轴自转产生的对称性设想都必须放弃。真正的形状必定是一个环：它在其圆周的一半处断开，而分开的两部分相对于彼此所在的平面倾斜约 45 度。
 
 ![Sketch of M51 by William Parsons, 3rd Earl of Rosse (Lord Rosse) in 1845. - Image Credit: Credit: Public Domain](https://images.squarespace-cdn.com/content/v1/54bf12d2e4b0f0d81bf74ee7/1500953138432-VQB49RJYG8TE5OWC73AU/ke17ZwdGBToddI8pDm48kNMu_aaBs2K7ohJSWTM4BElZw-zPPgdn4jUwVcJE1ZvWQUxwkmyExglNqGp0IvTJZUJFbgE-7XRK3dMEBRBhUpzsPq-7AudIDfBK79nHOHaI516vMhFit5lpc_WwGqHisYxkHtAJxPjAVh_pTthy6qM/image-asset.jpeg?format=1500w)
 
 Sketch of M51 by William Parsons, 3rd Earl of Rosse (Lord Rosse) in 1845. - Image Credit: Credit: Public Domain
 
-威廉·帕森斯(William Parsons)的M51草图，罗瑟三世伯爵(罗瑟勋爵)，1845年。-图片来源: 图片来源: Public Domain
+威廉·帕森斯(William Parsons)绘制的 M51 草图，第三代罗瑟伯爵(罗瑟勋爵)，1845 年。——图片来源: Public Domain
 
 As with other Messier Objects, Admiral Smyth also had some insightful and poetic observations to add. As he wrote of this galaxy in September of 1836:
 
@@ -104,7 +104,7 @@ As with other Messier Objects, Admiral Smyth also had some insightful and poetic
 >
 > 有趣的是，如果存在智能的存在，一个天文学家凝视着我们遥远的宇宙，就会用一架好望远镜，正好在它们呈现给我们的侧面看。但是毕竟我们看到了什么？这个奇妙的宇宙，我们自己的宇宙，以及光学辅助向我们揭示的一切，可能仅仅是一个庞大得多的星团的异常值。
 >
-> 我们认为，数以百万计的太阳无法构成造物主的宇宙。无穷无尽。赫歇尔长老的最大胆的看法只不过是让我们指挥了一个肯，它的半径比小天狼星与我们的距离长35,000倍。垂死的拉普拉斯或许可以解释: 我们所不知道的是巨大的。”
+> 我们认为，数以百万计的太阳无法构成造物主的宇宙。无穷尽是没有边界的；赫歇尔长老最大胆的见解，也不过是让我们拥有了一个视野，其半径比天狼星到我们的距离还长 35,000 倍。垂死的拉普拉斯或许会这样解释：“我们所知道的很少；我们所不知道的却浩瀚无边。”
 
 Lord Rosse would continue on in 1844 with his 6-feet (72-inch) aperture, 53-ft FL “Leviathan” telescope, but he was a man of fewer words.
 
@@ -124,7 +124,7 @@ May the stars from this distant island universe fill your eyes!
 
 > The Whirlpool Galaxy (Spiral Galaxy M51, NGC 5194), a classic spiral galaxy located in the Canes Venatici constellation, and its companion NGC 5195. Credit: NASA/ESA
 
-> 惠而浦星系(螺旋星系M51，NGC 5194)是一个经典的旋涡星系，位于Canes Venatici星座中，并伴有NGC5195。图片来源: NASA / ESA
+> 漩涡星系(螺旋星系M51，NGC 5194)是一个经典的旋涡星系，位于Canes Venatici星座中，并伴有NGC5195。图片来源: NASA / ESA
 
 ## LOCATING MESSIER 51:
 
@@ -132,11 +132,11 @@ Locating M51 isn’t too hard if you have dark skies, but this particular galaxy
 
 In locations where skies are clear and dark, it is easy to see spiral structure in even small telescopes, or to make out the galaxy in binoculars – but even a change in sky conditions can hide it from a good location. Rich field telescopes with fast focal lengths to an outstanding job on this galaxy and companion and you may be able to make out the nucleus of both galaxies on a good night from even a bad location.
 
-## 定位信使51:
+## 定位梅西耶 51:
 
 如果天空很暗，定位M51并不难，但是在存在月光污染的情况下，这个特殊的星系非常困难。 要找到它，请从北斗七星手柄上的星星Eta UM开始。 在寻像镜或双筒望远镜中，您会清楚地看到西南向24 UM。 现在，将您的光学元件居中放置，并向西南缓慢移动至Cor Caroli(Alpha CVn)，您将找到它！
 
-在天空晴朗而黑暗的地方，即使是小型望远镜也很容易看到螺旋结构，或者用双筒望远镜可以分辨出星系，但是即使天空条件发生变化也可以将其隐藏在合适的位置。 具有快速焦距的富视野望远镜在此星系和伴星上的出色表现，即使在一个糟糕的夜晚，您也可以在一个美好的夜晚辨认出两个星系的核。
+在天空晴朗而黑暗的地方，即便是小型望远镜也很容易看到螺旋结构，或者用双筒望远镜分辨出星系——但即便在天色良好的地点，天空条件的一点变化也能把它藏起来。短焦距的富视场望远镜观测这个星系及其伴星系效果极佳，哪怕在条件不佳的地点，只要赶上好天气，你也可能分辨出两个星系的核。
 
 | :--          | :--        |
 | Object Name: | Messier 51 |
@@ -153,7 +153,7 @@ We have written many interesting articles about Messier Objects here at Universe
 
 Be to sure to check out our complete [Messier Catalog](http://www.universetoday.com/30572/messier-objects/). And for more information, check out the [SEDS Messier Database](http://messier.seds.org/).
 
-今天，我们在Universe上写了许多有关Messier对象的有趣文章。 这是Tammy Plotner的[Messier天体简介](http://www.universetoday.com/50254/introduction-to-the-messier-objects/)，[M1 –蟹状星云](http: // www。 Universetoday.com/30959/messier-1/)、[M8 –泻湖星云](http://www.universetoday.com/31235/messier-8/)，以及戴维·迪克森(David Dickison)在[2013]上的文章(http://www.universetoday.com/31235/messier-8/)。 //www.universetoday.com/100472/why-this-weekend-is-perfect-for-a-messier-marathon/)和[2014](http://www.universetoday.com/110655/ready-set- messier-marathon-a-2014-guide /)梅西耶(Messier)马拉松。
+在 Universe Today 上，我们写过许多关于梅西耶天体的有趣文章。这里有 Tammy Plotner 的[梅西耶天体简介](http://www.universetoday.com/50254/introduction-to-the-messier-objects/)、[M1 —— 蟹状星云](http://www.universetoday.com/30959/messier-1/)、[M8 —— 泻湖星云](http://www.universetoday.com/31235/messier-8/)，以及 David Dickison 关于[2013 年](http://www.universetoday.com/100472/why-this-weekend-is-perfect-for-a-messier-marathon/)和[2014 年](http://www.universetoday.com/110655/ready-set-messier-marathon-a-2014-guide/)梅西耶马拉松的文章。
 
 请确保检查完整的[Messier目录](http://www.universetoday.com/30572/messier-objects/)。 有关更多信息，请访问[SEDS Messier数据库](http://messier.seds.org/)。
 
