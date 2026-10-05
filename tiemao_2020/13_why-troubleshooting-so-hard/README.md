@@ -43,7 +43,7 @@ The situation goes from bad to worse when you are shipping “let’s hope this 
 
 
 接下来是安全性相关的限制， 这些限制导致生产环境是独立和隔离的。
-如果没有权限访问生产环境，那么久只能进行远程故障排除，并涉及到所有与之相关的问题：
+如果没有权限访问生产环境，那么就只能进行远程故障排除，并涉及到所有与之相关的问题：
 - 每个要执行的操作都需要多人参与或审核，这不仅增加了执行单个操作所需的时间，而且沟通交流过程中可能会丢失一些信息。
 
 特别是将临时程序发布到生产环境时， “希望它能生效”， 但情况却可能越来越糟糕。
@@ -56,7 +56,7 @@ Last but not least in line are the tools to be used themselves. **Some of the to
 - Increased verbosity in logging is likely to introduce additional concurrency issues.
 - The sheer overhead of an attached profiler can bring an already slow application completely down.
 
-最后但并也很重要的一点是需要使用的工具。 **对于最终用户来说，您希望安装的某些工具可能会使情况变得更糟**。
+最后但同样重要的一点是需要使用的工具。 **对于最终用户来说，您希望安装的某些工具可能会使情况变得更糟**。
 例如：
 
 - 对JVM进行堆转储(heap dump)可能会使JVM暂停几十秒或更长时间。
@@ -65,7 +65,7 @@ Last but not least in line are the tools to be used themselves. **Some of the to
 
 So it is likely that you end up in a situation where days or even weeks are spent in passing yet another telemetry gathering script or yet another “let’s hope it works” patch to production:
 
-因此，要想给系统打补丁或者增加新的远程监测程序，可能最终会花费很多天的时间：
+因此，要想给系统打补丁或者增加新的远程监测程序，可能最终会花费好几天甚至几周的时间：
 
 ![isolating engineers from operations](https://plumbr.io/app/uploads/2016/09/wall-of-confusion.jpg)
 
@@ -89,7 +89,7 @@ When troubleshooting in a different environment you can escape the menaces haunt
 
 - 测试环境和生产环境使用的数据源不同。 这意味着由数据量引发的性能问题可能不会在测试环境中重现。
 - 某些问题的使用方式可能不容易复现。 例如只在2月29日这个特殊时间引起的并发问题，只在多个用户同时访问某个功能时引发，如果事先不知道原因，那也很难排查。
-- 两个环境下的应用程序可能还不一样。 生产部署的配置可能明显不同。 这些差异包括： 操作系统，群集，启动参数, 以及不同的打包版本。
+- 两个环境下的应用程序可能还不一样。 生产部署的配置可能明显不同。 这些差异包括： 操作系统、集群、启动参数，以及不同的打包版本。
 
 These difficulties lead to the infamous “works on my machine” quote being brought into the discussion:
 
@@ -101,7 +101,7 @@ So as can be seen, independent of the environment at hand, when you have to trou
 
 Besides the environment-specific constraints, there are other aspects also contributing to the unpredictable nature of the troubleshooting process. This will be covered in the next section.
 
-可以看出，因为和手头的环境不同，所以在对某些问题进行故障排除时，当前系统环境的性质可能会让你遇到的一些莫名其妙的障碍。
+可以看出，无论手头是什么样的环境，当您需要对某些问题进行故障排除时，当前环境的特性都会给您的排查带来一些障碍。
 
 除了特定环境的约束之外，还有其他方面的因素也会导致故障排除过程的不可预测性。 下面我们一起来看一下。
 
@@ -109,9 +109,9 @@ Besides the environment-specific constraints, there are other aspects also contr
 
 The environmental constraints would not be actual showstoppers if the tools used and the discipline of troubleshooting were mature. In reality it is far from it – the engineers responsible for solving the issue often do not have a predefined process to tackle the problem. Honestly, do you recognize yourself in the following sequence of actions taken in shell:
 
-## 临时专家与趁手工具
+## 工具与经验丰富的专家
 
-如果使用趁手的工具, 并且对于故障排除的规则已经胸有成竹，那么环境限制就不再是什么大问题。
+如果使用趁手的工具， 并且对于故障排除的规则已经胸有成竹，那么环境限制就不再是什么大问题。
 实际上，负责排查和解决问题的工程师通常没有预先规划好的处理流程。
 老实说，您是否有过像下面这样的 shell 操作：
 
@@ -182,7 +182,7 @@ This lack of experience tends to result in tossing different evidence-gathering 
 
 The number of such tools you can use is almost unlimited. Just check out the lists [here](https://github.com/deephacks/awesome-jvm) and [here](https://docs.oracle.com/javase/8/docs/technotes/guides/troubleshoot/tooldescr.html#diagnostic_tools) if you are not convinced. The approach of randomly trying out different tools results in more time spent in choosing and trying out the tools than in actually solving the issue at hand.
 
-我们可以使用的工具几乎是无限的。 如果你不信，可以看:
+我们可以使用的工具几乎是无限的。 如果你不信，可以看：
 - [here](https://github.com/deephacks/awesome-jvm)
 - [here](https://docs.oracle.com/javase/8/docs/technotes/guides/troubleshoot/tooldescr.html#diagnostic_tools)。
 
@@ -209,7 +209,7 @@ However, the differences in data, usage patterns and environments will only end 
 相反，了解应用程序各个部分的热点以及内存消耗，能有效防止某些问题影响到生产环境的用户。
 
 虽然由于数据，使用方式和环境的差异， 最终只能模拟生产环境中面临的一部分问题。
-但使用这种技术可以预先进行风险排查，如果真的发生问题，可以在追溯问题原因时很快定位。
+但同样这些技术，作为预防措施时效果很好，在事后追溯排查问题时却很少能帮上忙。
 
 ### Testing in QA
 
@@ -219,12 +219,12 @@ However it is often hard to justify the investments in QA. Everything labelled �
 
 ### 在QA环境中测试
 
-在质量保证领域投入适当的资源，尤其是自动化的持续集成、持续交付流程能及早暴露出很多问题。
+在质量保证(QA)领域投入资源，尤其是当这些投入带来流程自动化时，就是您可以建立的下一道防线。
 如果进行周全和彻底的测试，将进一步减少生产环境的事故。
 
 但是，很难证明对质量检查的投资是否合理。
 一切标有“性能测试”或“验收测试”的产品，最终都将与清晰而可衡量的业务目标（新功能开发）存在竞争。
-现在，当开发人员推动 “执行某项性能优化” 的任务时， 如果不能提升优先级， 此类任务会积压下来，永远都是待办事项：
+而现在，推动 “某项性能任务” 的开发人员，手里能拿出的只有几个缩写词， 这类任务永远都排不出待办事项列表：
 
 |  **优先级**  |  **类型**  |        **说明**                     | **ROI（投资回报率）**                      |
 | :----------- | :------- | :---------------------------------- | :-------------------------------------- |
@@ -235,7 +235,7 @@ However it is often hard to justify the investments in QA. Everything labelled �
 
 To justify such investments, you need to link the return of the investment to the activity. Reducing the P1 performance incidents in production by 3x can be linked to its dollar value and in such case it has a chance against the next feature the sales team is pushing.
 
-为了证明这种投资的合理性，您需要将投资回报与活动联系起来。 将生产环境中的P1性能事件减少3倍，是可以和美元价值联系起来的， 在这种情况下，它就有机会与销售团队推动的下一个功能相抵触。
+为了证明这种投资的合理性，您需要将投资回报与活动联系起来。 将生产环境中的P1性能事件减少3倍，是可以和美元价值联系起来的， 在这种情况下，它才有机会与销售团队推动的下一个功能一较高下。
 
 ### Monitoring in production
 
