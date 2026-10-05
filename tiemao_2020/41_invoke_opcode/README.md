@@ -155,7 +155,7 @@ public static void testMethodInvoke();
 - 当通过接口引用来调用方法时, 会直接编译为 invokeinterface 指令。
 - 调用构造函数会编译为 invokespecial 指令, 当然还包括调用 private 方法, 以及可见的超类方法。
 - 如果变量引用的类型是具体类, 则编译器会使用 invokevirtual 来调用 public, protected和包可见级别的方法。
-- JDK7新增加了一个 [`invokedynamic`](https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-6.html#jvms-6.5.invokedynamic) 指令, 用来支持“动态类型语言”（Dynamically TypedLanguage, 从JDK8开始引入的lambda表达式, 在使用时会编译为这个指令。
+- JDK7新增加了一个 [`invokedynamic`](https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-6.html#jvms-6.5.invokedynamic) 指令, 用来支持“动态类型语言”（Dynamically Typed Languages）, 从JDK8开始引入的lambda表达式, 在使用时会编译为这个指令。
 
 
 更多文章请参考GitHub上的文章翻译项目: <https://github.com/cncounter/translation>
