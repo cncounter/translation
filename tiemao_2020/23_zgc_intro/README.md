@@ -24,7 +24,7 @@ Z垃圾收集器, 简称ZGC, 全称为 Z Garbage Collector, 是一款低延迟�
 
 ZGC was initially introduced as an experimental feature in JDK 11, and was declared Production Ready in JDK 15.
 
-ZGC 最早在JDK11中作为实验性质的功能特性引入, 并在JDK15中成为准生产版(Production Ready).
+ZGC 最早在JDK11中作为实验性质的功能特性引入, 并在JDK15中宣布生产就绪(Production Ready).
 
 At a glance, ZGC is:
 
@@ -88,11 +88,11 @@ For more detailed logging, use the following options:
 -XX:+UnlockExperimentalVMOptions -XX:+UseZGC -Xmx<size> -Xlog:gc*
 ```
 
-如果是高版本JDK, 已经正式支持 ZGC, 则不需要使用 `-XX:+UnlockExperimentalVMOptions` 参数解锁实验特性;
+如果是高版本JDK, 已经正式支持 ZGC, 则不需要使用 `-XX:+UnlockExperimentalVMOptions` 参数解锁实验特性。
 
 See below for more information on these and additional options.
 
-更多参数说明信息的参阅下文。
+更多参数说明信息请参阅下文。
 
 
 ## Configuration & Tuning
@@ -178,7 +178,7 @@ ZGC最重要的配置参数是设置堆内存的最大值(`-Xmx<size>`)。 因�
 - 2）在执行并发GC的过程中，堆内存必须要有足够的空闲内存，以允许程序的正常运行和对应的内存分配。
 
 需要多少空间主要取决于分配速率(allocation rate)，以及应用程序的活动集有多大。
-通常来说，给ZGC的内存越多越好，但也没必要故意去浪费用不到的内存，所以需要评估程序所需的内存量使用量，并与GC执行的频次之间进行权衡。
+通常来说，给ZGC的内存越多越好，但也没必要故意去浪费用不到的内存，所以需要评估程序所需的内存使用量，并与GC执行的频次之间进行权衡。
 
 
 ### Setting Concurrent GC Threads
@@ -195,7 +195,7 @@ ZGC具有启发式的特性，可以自动选择此数字。 大部分情况下�
 给的太多，GC开销就比较大，甚至抢占一些业务线程的CPU时间。
 给的太少，GC回收内存的速度可能跟不上应用程序分配内存的速度。
 
-> **说明!**  如果低延迟（即系统响应时间）是非常关键的性能指标，那么整个系统的负载就不能太高。 理想情况下，系统的CPU使用率应该在70％以下, 很多金融系统的CPU使用率要求在30%以下。
+> **说明!**  如果低延迟（即系统响应时间）是非常关键的性能指标，那么整个系统的负载就不能太高。 理想情况下，系统的CPU使用率应该在70%以下, 很多金融系统的CPU使用率要求在30%以下。
 
 ### Returning Unused Memory to the Operating System
 
@@ -210,7 +210,7 @@ NOTE! On Linux, uncommitting unused memory requires fallocate(2) with FALLOC_FL_
 默认情况下，ZGC会将未使用的内存申请撤销(uncommits)，归还给操作系统。 这对于关注内存占用的应用程序环境很有用。
 如果要禁用此功能可以设置参数开关 `-XX:-ZUncommit`。
 当然，撤销内存分配的时候, 不会让堆内存低于最小堆内存空间(`-Xms`)。
-换句话说, 加入将最小堆内存空间(`-Xms`) 和 最大堆内存空间(`-Xmx`) 设置为一样大小，则此功能将被隐式地禁用。
+换句话说, 假如将最小堆内存空间(`-Xms`) 和 最大堆内存空间(`-Xmx`) 设置为一样大小，则此功能将被隐式地禁用。
 
 可以使用 `-XX:ZUncommitDelay=<seconds>` 参数（默认值为300秒）来配置撤销分配内存的延迟时间。 这个延迟参数指定了在撤销内存提交之前, 应等待多长时间。
 
@@ -283,7 +283,7 @@ $ java -XX:+UnlockExperimentalVMOptions -XX:+UseZGC -Xms16G -Xmx16G -XX:+UseLarg
 
 If there are more than one accessible hugetlbfs filesystem available, then (and only then) do you also have to use -XX:AllocateHeapAt to specify the path to the filesystems you want to use. For example, assume there are multiple accessible hugetlbfs filesystems mounted, but the filesystem you specifically want to use it mounted on /hugepages, then use the following options.
 
-如果有多个可用的 hugetlbfs 文件系统， 那么我们必须同时使用 `-XX:AllocateHeapAt` 参数来指定需要使用哪个挂载路径。
+如果有多个可用的 hugetlbfs 文件系统， 那么且仅在这种情况下，才需要同时使用 `-XX:AllocateHeapAt` 参数来指定需要使用哪个挂载路径。
 例如，假设系统中挂载了多个可访问的 hugetlbfs 文件系统，但我们想使用挂载到 `/hugepages` 目录的这个，则使用的参数为:
 
 ```
@@ -626,7 +626,7 @@ export JAVA_OPTS="-Xmx6g -Xms6g -XX:+UnlockExperimentalVMOptions -XX:+UseZGC -XX
 
 AWS+K8S运行环境:
 
-结果稳定在40ms左右,1分钟CPU负载均值在1.0左右（1核心CPU运行ZGC的1m负载在6.0左右）:
+结果稳定在40ms左右，1分钟CPU负载均值在1.0左右（1核心CPU运行ZGC的1m负载在6.0左右）:
 
 ```
 [GC日志监听-GC事件]gcId=74; duration:42; gcDetail: {"duration":42,"maxPauseMillis":67,"gcCause":"Timer","collectionTime":255,"gcAction":"end of major GC","afterUsage":{"ZHeap":"332MB","CodeHeap 'profiled nmethods'":"32MB","CodeHeap 'non-profiled nmethods'":"15MB","Metaspace":"103MB","CodeHeap 'non-nmethods'":"1MB"},"gcId":74,"collectionCount":74,"gcName":"ZGC","type":"jvm.gc.pause"}
@@ -678,7 +678,7 @@ Source Code
 ZGC相关源代码：
 
 - 稳定版（Stable）:  https://github.com/openjdk/jdk
-- 开发板（Development）: https://github.com/openjdk/zgc
+- 开发版（Development）: https://github.com/openjdk/zgc
 
 
 Talks
