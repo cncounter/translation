@@ -24,7 +24,7 @@ This is done from the Notification channels page.
 
 ## 添加通知渠道
 
-1. 在 Grafana 的侧边栏中，将光标悬停在`Alerting` (一个铃铛图标）上，然后选择 `Notification channels`。
+1. 在 Grafana 的侧边栏中，将光标悬停在 `Alerting`（一个铃铛图标）上，然后选择 `Notification channels`。
 2. 点击 `Add/New channel` 按钮。
 3. 填写或者选择相应的表单输入项。
 4. 输入完成后点击 `Save` 按钮。
@@ -117,9 +117,9 @@ To enable email notifications you have to set up [SMTP settings](https://grafana
 > `注意：` 电子邮件告警不支持模板变量。
 
 | 设置 | 说明 |
-| :----------- | :------------------------------------------------- ---------- |
+| :----------- | :----------------------------------------------------------- |
 | 单个电子邮件 | 向所有收件人发送一封电子邮件。 默认禁用。 |
-| 地址 | 收件人的电子邮件地址。 您可以使用“;”输入多个电子邮件地址 分隔器。 |
+| 地址 | 收件人的电子邮件地址。 您可以使用“;”作为分隔符输入多个电子邮件地址。 |
 
 
 ### Slack
@@ -132,7 +132,7 @@ To set up Slack, you need to configure an incoming Slack webhook URL. You can fo
 
 [![Alerting Slack Notification](https://grafana.com/static/img/docs/v4/slack_notification.png)](https://grafana.com/static/img/docs/v4/slack_notification.png)
 
-要设置 Slack，您需要配置传入的 Slack webhook URL。 您可以按照 [使用传入 Webhooks 发送消息](https://api.slack.com/incoming-webhooks) 了解如何执行此操作。 如果您想在 Slack 消息中包含触发告警的屏幕截图，您必须配置 [外部图像目标](#external -image-store) 在 Grafana 中或通过 Slack Apps 进行机器人集成。 [按照 Slack 的指南设置机器人集成](https://api.slack.com/bot-users) 并使用提供的令牌，以“xoxb”开头。
+要设置 Slack，您需要配置传入的 Slack webhook URL。 您可以按照 [使用传入 Webhooks 发送消息](https://api.slack.com/incoming-webhooks) 了解如何执行此操作。 如果您想在 Slack 消息中包含触发告警的屏幕截图，您必须配置 [外部图像目标](#external-image-store) 在 Grafana 中或通过 Slack Apps 进行机器人集成。 [按照 Slack 的指南设置机器人集成](https://api.slack.com/bot-users) 并使用提供的令牌，以“xoxb”开头。
 
 
 | Setting         | Description                                                  |
@@ -150,16 +150,16 @@ To set up Slack, you need to configure an incoming Slack webhook URL. You can fo
 If you are using the token for a slack bot, then you have to invite the bot to the channel you want to send notifications and add the channel to the recipient field.
 
 |设置 |说明 |
-| :-------------- | :------------------------------------------------- ---------- |
+| :-------------- | :----------------------------------------------------------- |
 |网址 | Slack 传入 webhook URL，或最终 [chat.postMessage](https://api.slack.com/methods/chat.postMessage) Slack API 端点。 |
 |用户名 |设置机器人消息的用户名。 |
 |收件人 |允许您覆盖 Slack 收件人。您必须提供通道 Slack ID、用户 Slack ID、用户名引用（@<user>，全小写，无空格）或通道引用（#<channel>，全小写，无空格）。如果您使用 `chat.postMessage` Slack API 端点，则这是必需的。 |
-|图标表情符号 |提供一个表情符号用作机器人消息的图标。例如：微笑：|
+|图标表情符号 |提供一个表情符号用作机器人消息的图标。例如 :smile: |
 |图标网址 |提供图像的 URL 以用作机器人消息的图标。 |
 |提及用户 | （可选）在 Grafana 发送的 Slack 通知中提及一个或多个用户。您必须通过相应的 Slack ID（您可以通过单击每个用户的 Slack 个人资料上的溢出按钮找到）来引用用户，以逗号分隔。 |
 |提及组 |可选择在 Grafana 发送的 Slack 通知中提及一个或多个组。您必须通过相应的 Slack ID（您可以从每个组的 Slack 配置文件 URL 获取）来引用以逗号分隔的组。 |
 |提及通道 |可选择提及所有通道成员或仅提及活跃成员。 |
-|代币 |如果提供，Grafana 将通过 Slack 的 file.upload API 方法上传生成的图像，而不是外部图像目的地。如果您使用 `chat.postMessage` Slack API 端点，则这是必需的。 |
+|令牌 |如果提供，Grafana 将通过 Slack 的 file.upload API 方法上传生成的图像，而不是外部图像目的地。如果您使用 `chat.postMessage` Slack API 端点，则这是必需的。 |
 
 如果您将令牌用于 slack 机器人，那么您必须邀请机器人加入您要发送通知的通道并将该通道添加到收件人字段。
 
@@ -181,10 +181,10 @@ To setup Opsgenie you will need an API Key and the Alert API Url. These can be o
 要设置 Opsgenie，您需要一个 API 密钥和告警 API 网址。这些可以通过配置新的 [Grafana 集成](https://docs.opsgenie.com/docs/grafana-integration) 获得。
 
 |设置 |说明 |
-| :------------------------ | :------------------------------------------------- ---------- |
+| :------------------------ | :----------------------------------------------------------- |
 |告警 API 网址 | Opsgenie 实例的 API URL。这通常是“https://api.opsgenie.com”，或者对于欧盟客户来说是“https://api.eu.opsgenie.com”。 |
 | API 密钥 | Opsgenie 为您配置的 Grafana 集成提供的 API 密钥。 |
-|覆盖优先级 |使用 `og_priority` 标签配置告警优先级。 `og_priority` 标签必须具有以下值之一：`P1`、`P2`、`P3`、`P4` 或`P5`。默认为“假”。 |
+|覆盖优先级 |使用 `og_priority` 标签配置告警优先级。 `og_priority` 标签必须具有以下值之一：`P1`、`P2`、`P3`、`P4` 或`P5`。默认为 `False`。 |
 |将通知标签发送为 |指定您希望将 [通知标签](https://grafana.com/docs/grafana/latest/alerting/old-alerting/create-alerts/#notifications) 传送到 Opsgenie 的方式。它们可以作为“标签”、“额外属性”或两者同时提供。默认为标签。有关更多信息，请参阅下面的注释。 |
 
 > `注意：` 当通知标签作为 `Tags` 发送时，它们会被连接成一个带有 `key:value` 格式的字符串。如果您更喜欢在 Opsgenie 中的额外属性下将通知标签作为键/值接收，请将“发送通知标签为”更改为“额外属性”或“标签和额外属性”。
@@ -206,7 +206,7 @@ To set up PagerDuty, all you have to do is to provide an integration key.
 要设置 PagerDuty，您只需提供一个集成密钥。
 
 | 设置 | 说明 |
-| :--------------------- | :------------------------------------------------- ---------- |
+| :--------------------- | :----------------------------------------------------------- |
 | 集成密钥 | PagerDuty 的集成密钥。 |
 | 严重性 | 动态通知级别，默认为`critical` (1) |
 | 自动解决事件 | 一旦告警恢复正常，解决 PagerDuty 中的事件 |
@@ -222,7 +222,7 @@ To set up PagerDuty, all you have to do is to provide an integration key.
 
 > `Note:` Grafana uses the `Events API V2` integration. This can be configured for each service.
 
-> `注意：`标签`Severity`、`Class`、`Group`、`dedup_key`和`Component`在[Pagerduty Common Event Format - PD-CEF](https://support.pagerduty .com/docs/pd-cef）。如果告警面板定义了这些标签键，那么它们将被转置到发送到 Pagerduty 的事件的根。这意味着它们将在 Pagerduty UI 和过滤工具中可用。如果是有效级别，则在告警上设置的严重性标记会覆盖在通知通道上设置的全局严重性。
+> `注意：`标签`Severity`、`Class`、`Group`、`dedup_key`和`Component`在[Pagerduty Common Event Format - PD-CEF](https://support.pagerduty.com/docs/pd-cef)。如果告警面板定义了这些标签键，那么它们将被转置到发送到 Pagerduty 的事件的根。这意味着它们将在 Pagerduty UI 和过滤工具中可用。如果是有效级别，则在告警上设置的严重性标签会覆盖在通知通道上设置的全局严重性。
 
 > 在详细信息中使用消息将更改 PagerDuty 事件中 `custom_details` 字段的结构。如果您依赖 `payload.custom_details` 中的字段，这可能会破坏 PagerDuty 规则中的自定义事件规则。使用 `custom_details.myMetric` 将任何现有规则移动到 `custom_details.queries.myMetric`。此行为将成为 Grafana 未来版本中的默认设置。
 
@@ -264,10 +264,10 @@ To set up Pushover, you must provide a user key and an API token. Refer to [What
 
 ### Pushover软件
 
-要设置 Pushover，您必须提供用户密钥和 API 令牌。有关如何生成的说明，请参阅[什么是 Pushover 以及如何使用它](https://support.pushover.net/i7-what-is-pushover-and-how-do-i-use-it)他们。
+要设置 Pushover，您必须提供用户密钥和 API 令牌。有关如何生成的说明，请参阅[什么是 Pushover 以及如何使用它](https://support.pushover.net/i7-what-is-pushover-and-how-do-i-use-it)。
 
 |设置 |说明 |
-| :------------- | :------------------------------------------------- ---------- |
+| :------------- | :----------------------------------------------------------- |
 | API 令牌 |应用令牌 |
 |用户密钥 |逗号分隔的用户键列表 |
 |设备 |逗号分隔的设备列表 |
@@ -345,14 +345,14 @@ In DingTalk PC Client:
 
 在钉钉的PC版客户端中:
 
-1. 单击群聊面板右上角的 "群设置" 按钮。
-2. 在弹出的菜单中点击 "智能群助手" 项, 会出现一个新的 “机器人管理” 面板。
-3. 在“机器人管理”面板中，添加 "机器人", 选择 【自定义(通过Webhook接入自定义服务)】。
-4. 在机器人预览面板中，单击 "添加" 按钮。
+1. 单击群聊面板右上角的 “群设置” 按钮。
+2. 在弹出的菜单中点击 “智能群助手” 项, 会出现一个新的 “机器人管理” 面板。
+3. 在“机器人管理”面板中，添加 “机器人”, 选择 【自定义（通过Webhook接入自定义服务）】。
+4. 在机器人预览面板中，单击 “添加” 按钮。
 5. 在 “添加机器人” 面板中，输入机器人昵称，选择机器人要加入的 “消息群”，以及安全设置, 最后点击“完成”。
 6. 面板中会展示一个Webhook URL，形如：`https://oapi.dingtalk.com/robot/send?access_token=xxxxxxxxx`。 将此URL复制到Grafana的钉钉设置页面，然后单击“完成”。
 7. 如果选择的是 “自定义关键字”, 则每条告警消息中都必须包含关键字才会被接受。
-8. 如果选择的是 “加签” 方式，则需要配置签名token信息
+8. 如果选择的是 “加签” 方式，则需要配置签名 token 信息。
 
 
 ### Discord
@@ -373,7 +373,7 @@ Alternately, use the [Slack](#slack) notifier by appending `/slack` to a Discord
 要设置 Discord，您必须创建一个 Discord 通道 webhook。有关如何创建通道的说明，请参阅 [Webhooks 简介](https://support.discord.com/hc/en-us/articles/228383668-Intro-to-Webhooks)。
 
 |设置 |说明 |
-| :----------------------------- | :------------------------------------------------- ---------- |
+| :----------------------------- | :----------------------------------------------------------- |
 |网络钩子网址 |不和谐网络钩子 URL。 |
 |留言内容 |在通道中通知时使用 @ 提及组或使用 <@ID> 的用户。 |
 |头像网址 |或者，提供图像的 URL 以用作机器人消息的头像。 |
@@ -418,7 +418,7 @@ Alertmanager handles alerts sent by client applications such as Prometheus serve
 
 ### Prometheus告警管理器
 
-Alertmanager 处理客户端应用程序（例如 Prometheus 服务器或 Grafana）发送的告警。 它负责对它们进行重复数据删除、分组和路由到正确的接收器。 Grafana 通知可以通过一个简单的传入 webhook 发送到 Alertmanager。 配置信息参考官方【Prometheus Alertmanager文档】(https://prometheus.io/docs/alerting/alertmanager)。
+Alertmanager 处理客户端应用程序（例如 Prometheus 服务器或 Grafana）发送的告警。 它负责对它们进行重复数据删除、分组和路由到正确的接收器。 Grafana 通知可以通过一个简单的传入 webhook 发送到 Alertmanager。 配置信息请参考官方 [Prometheus Alertmanager 文档](https://prometheus.io/docs/alerting/alertmanager)。
 
 > `注意：` 在高可用性设置的情况下，不要在 Grafana 和 Alertmanager 之间负载平衡流量，以保持所有 Alertmanager 实例之间的一致性。 相反，通过在通知通道配置中以逗号分隔列出它们的 URL，将 Grafana 指向所有告警管理器的列表。
 
@@ -470,7 +470,7 @@ The alert notification template feature allows you to take the [label](https://g
 
 > 注意：告警通知模板仅在 Grafana v7.4 及更高版本中可用。
 
-告警通知模板功能允许您从告警查询中获取 [label](https://grafana.com/docs/grafana/latest/basics/timeseries-dimensions/#labels) 值并[将其注入告警通知] （https://grafana.com/docs/grafana/latest/alerting/old-alerting/add-notification-template/）。
+告警通知模板功能允许您从告警查询中获取 [label](https://grafana.com/docs/grafana/latest/basics/timeseries-dimensions/#labels) 值并[将其注入告警通知](https://grafana.com/docs/grafana/latest/alerting/old-alerting/add-notification-template/)。
 
 
 ## Alert rule fields
