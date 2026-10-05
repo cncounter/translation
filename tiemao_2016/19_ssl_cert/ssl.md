@@ -22,7 +22,7 @@ openssl req -nodes -newkey rsa:2048 -keyout myserver.key -out server.csr -subj "
 
 记得将你的域名的隐私保护给去除掉，或者域名对应了邮箱。
 
-否则收不到SSL证书服务商发送来的短信.
+否则收不到 SSL 证书服务商发送来的短信。
 
 
 
