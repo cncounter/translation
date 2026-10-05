@@ -253,7 +253,7 @@ The header on top shows cpu usage along with RAM and swap usage with the corresp
 
 To find out hardware information about the installed RAM, use the `demidecode` command. It reports lots of information about the installed RAM memory.
 
-想要查看物理内存的硬件信息，可以使用 `demidecode` 命令。
+想要查看物理内存的硬件信息，可以使用 `dmidecode` 命令。
 这个命令会输出物理内存相关的信息。
 
 ```
