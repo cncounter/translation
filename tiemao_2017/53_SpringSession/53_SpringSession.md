@@ -16,7 +16,7 @@ Spring Session 是 [Spring.io](https://spring.io/) 组织维护的一个开源�
 
 - 用户Session管理相关的API和具体实现
 
-- HttpSession - 以独立的方式，替换如Tomcat之类Web容器所提供的HttpSession，。
+- HttpSession - 以独立的方式，替换如Tomcat之类Web容器所提供的HttpSession。
 
 - Clustered Sessions - 集群会话管理, 通过Spring Session，可以很轻易地实现Web服务器集群，不需要根据各种Web容器进行一堆繁琐的配置.
 
