@@ -1,6 +1,6 @@
 # 用Chrome将网页打印成PDF
 
-本文通过示例，演示怎样使用 HeadLess-Chrome 将网页打印保存为PDF文件, 并在此基础上，进行适当的扩展与集成,来提供自动化的服务。
+本文通过示例，演示怎样使用 Headless-Chrome 将网页打印保存为PDF文件, 并在此基础上，进行适当的扩展与集成,来提供自动化的服务。
 
 最新版的Chrome为程序员提供了很多实用的功能, Chrome60版本开始支持Headless模式。
 
@@ -10,10 +10,10 @@ Chrome支持多种方式的调用与交互,常用的有:
 
 - 命令行方式; 可以进行简单的试验和使用,但比较简陋，不支持复杂的配置参数。
 - NodeJS调用; 谷歌官方提供了 Puppeteer 库,内置了Chrome, 非常强大和方便。
-- C++方式; 把Chrome当做一个第三方库, 详情请参考本文官网文档。 
+- C++方式; 把Chrome当做一个第三方库, 详情请参考官网文档。
 
 
-使用HeadLess模式的好处: 
+使用Headless模式的好处: 
 
 - 不需要显卡支持, 可以在Linux服务器以及Windows环境上运行。
 
@@ -21,7 +21,7 @@ Chrome支持多种方式的调用与交互,常用的有:
 
 - 加入IP代理池, 拿来刷点击量/投票，能破解大部分高级预防措施，算是不错的选择。好用的IP池，比如蘑菇代理: <http://www.moguproxy.com/>。
 
-将网页保存为PDF进行存档的好处，是因为修改网页和样式非常简单，应对需求变更的能力非常棒。 比起硬编码将数据转换为PDF，实现起来，以及修改起来都容易很多。
+将网页保存为PDF进行存档的好处是，修改网页和样式非常简单，应对需求变更的能力非常棒。 比起硬编码将数据转换为PDF，实现起来，以及修改起来都容易很多。
 
 下面，一起来看如何实现。
 
@@ -35,7 +35,7 @@ Chrome支持多种方式的调用与交互,常用的有:
 
 下载并安装最新版的Chrome, 至少Chrome60+。可以搜索 [离线安装 Chrome] 找到下载地址。
 
-安转成功后一般会自动打开浏览器。
+安装成功后一般会自动打开浏览器。
 
 Chrome本身就可以将网页打印为PDF文件，一般是按 `CTRL+P` 调出打印界面,选择目标是另存为PDF，此外还可以控制纸张、页眉、背景等选项。
 
@@ -60,7 +60,7 @@ chrome --headless --print-to-pdf=C:/renfufei_blog.pdf  https://renfufei.blog.csd
 
 
 
-### 2、NodeJS方式调用
+## 2、NodeJS方式调用
 
 #### 2.1 安装NodeJS
 
@@ -91,9 +91,9 @@ NodeJS安装完成后, 自动安装了 node、npm 等工具。
 
 其中, node 是一个 REPL 环境, 可以执行各种JS脚本.
 
-npm 全称就是 node package manage, 即Node的软件包管理工具.
+npm 全称就是 node package manager, 即Node的软件包管理工具.
 
-如果某些安装包下载速度缓慢, 则可以先安装淘宝提供的 `cnpm` 程序, cnpm的使用方式和npm基本上完全一致。:
+如果某些安装包下载速度缓慢, 则可以先安装淘宝提供的 `cnpm` 程序, cnpm的使用方式和npm基本上完全一致:
 
 ```
 npm install -g cnpm --registry=https://registry.npm.taobao.org
@@ -263,7 +263,7 @@ sudo yum -y update nss
 
 
 
-### 3. 集成http与puppeteer提供打印服务
+## 3. 集成http与puppeteer提供打印服务
 
 NodeJS 通过内置的 http/https 模块来提供web服务。
 
@@ -305,7 +305,7 @@ node demo-http.js
 如果要关闭正在命令行中执行的程序, 按 `CTRL+C` 组合键打断即可。
 
 
-### 3.2 express框架示例
+#### 3.2 express框架示例
 
 安装 express 框架:
 
@@ -372,7 +372,7 @@ node demo-express.js
 关于nodejs与http服务,请参考: <https://blog.risingstack.com/your-first-node-js-http-server/>
 
 
-#### 2.3. 集成http服务与PDF打印
+#### 3.3. 集成http服务与PDF打印
 
 
 先创建 `printpdf.js` 文件, 内容为:
@@ -470,7 +470,7 @@ node demo-express.js
 ```
 
 
-再创建 express-pdf.js 文件:
+再创建 `express-pdf.js` 文件:
 
 
 ```
@@ -567,9 +567,9 @@ node express-pdf.js
 
 
 
-### 2.4. 文件下载
+#### 3.4. 文件下载
 
-创建 demo-download.js 文件:
+创建 `demo-download.js` 文件:
 
 ```
 // 模块依赖
@@ -633,7 +633,7 @@ node demo-download.js
 
 ### 总结
 
-Chrome 的 headless 模式可用于自动化测试，尽管有一些不完善的地方。
+Chrome 的 Headless 模式可用于自动化测试，尽管有一些不完善的地方。
 毕竟是真实的浏览器, 比起其他前端自动化测试工具来说, 具有很大优势。
 
 
