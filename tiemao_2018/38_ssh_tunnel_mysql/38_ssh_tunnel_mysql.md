@@ -26,7 +26,7 @@
 
 最后, 推荐一款国产的跨数据库迁移工具, DB2DB, 亲测好用, 非常强悍, 也很友好。 官网地址: <http://www.szmesoft.com/DB2DB>
 
-> DB2DB 是目前经过测试速度最快、最稳定实现多种数据库之间进行数据转换的工具。支持 SQL Server、MySQL、SQLite、PostgresSQL、Access 等多种数据库类型。
+> DB2DB 是目前经过测试速度最快、最稳定实现多种数据库之间进行数据转换的工具。支持 SQL Server、MySQL、SQLite、PostgreSQL、Access 等多种数据库类型。
 
 
 日期: 2018年11月2日
