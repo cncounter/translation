@@ -44,7 +44,7 @@ Build an app to get video and take snapshots with your webcam and share them pee
 ## 相关词汇对照:
 
 - `webcam` : 网络摄像头
-- ` data channel` : 数据通道
+- `data channel` : 数据通道
 
 
 原文链接: <https://codelabs.developers.google.com/codelabs/webrtc-web/#1>
