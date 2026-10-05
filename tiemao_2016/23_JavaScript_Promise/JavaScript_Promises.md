@@ -154,7 +154,7 @@ Promise 会越来越流行,所以前端开发需要快速掌握它们。当然, 
 
 
 
-`then` 回调由 promise 的 resolved 触发。你也可以使用链式的 then` 回调方法:
+`then` 回调由 promise 的 resolved 触发。你也可以使用链式的 `then` 回调方法:
 
 
 	new Promise(function(resolve, reject) { 
@@ -267,7 +267,7 @@ Promise 会越来越流行,所以前端开发需要快速掌握它们。当然, 
 ## `Promise.race`
 
 
-`Promise.race` 是一个有趣的函数. 与 `Promise.all` 相反,  只要某个 priomise 被 resolved 或者 rejected, 就会触发 `Promise.race`:
+`Promise.race` 是一个有趣的函数. 与 `Promise.all` 相反,  只要某个 promise 被 resolved 或者 rejected, 就会触发 `Promise.race`:
 
 
 	var req1 = new Promise(function(resolve, reject) { 
