@@ -2,7 +2,7 @@
 
 > **译者注:** 一般来说，`function` 翻译为函数, `method` 翻译为方法。
 > 
-> 我们一般说， 某某对象的方法， 而不说 “某某对象的函数”。原因是在面向对象中, 一个对象就是一个具体额实例，有自己的方法。 而函数，是和对象没关系的。
+> 我们一般说， 某某对象的方法， 而不说 “某某对象的函数”。原因是在面向对象中, 一个对象就是一个具体的实例，有自己的方法。 而函数，是和对象没关系的。
 >
 > 另外,  `scope`(作用域) 和 `context`(上下文) 也是一个容易迷糊的地方。请参考: [Javascript Context和Scope的一些学习总结](http://www.cnblogs.com/rush/archive/2013/03/24/2979432.html)
 >
@@ -145,13 +145,13 @@
 	message.showContent();
 	// output: I'm JavaScript Ninja!
 
-在上面的示例中, 有一个名为 `Message()` 的构造函数。通过使用 `new` 操作符创建了一个全新的对象，名为 `message`。同时还通传给构造函数一个字符串, 作为新对象的`content `属性。通过最后一行代码中可以看到这个字符串成功地打印出来了, 因为 `this` 指向的是新创建的对象, 而不是构造函数本身。
+在上面的示例中, 有一个名为 `Message()` 的构造函数。通过使用 `new` 操作符创建了一个全新的对象，名为 `message`。同时还传给构造函数一个字符串, 作为新对象的 `content` 属性。通过最后一行代码中可以看到这个字符串成功地打印出来了, 因为 `this` 指向的是新创建的对象, 而不是构造函数本身。
 
 ## 如何正确地使用 `this`
 
 在本节中,我们将学习一些决定 `this` 行为的内部机制。
 
-在JavaScript中,所有的函数都是对象, 因此函数也可以有自己的方法。所有的函数都有的两个方法， 是 [apply()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/apply) 和 [call()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/call). 。我们可以通过这两个方法来改变函数的上下文, 在任何时候都有效, 用来显式地设置 `this` 的值。
+在JavaScript中,所有的函数都是对象, 因此函数也可以有自己的方法。所有的函数都有的两个方法， 是 [apply()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/apply) 和 [call()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/call)。我们可以通过这两个方法来改变函数的上下文, 在任何时候都有效, 用来显式地设置 `this` 的值。
 
 `apply()` 方法接收两个参数: 第一个是要设置为 `this` 的那个对象,  第二个参数是可选的，如果要传入参数, 则封装为数组作为 `apply()` 的第二个参数即可。
 
