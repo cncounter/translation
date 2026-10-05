@@ -25,7 +25,7 @@ Aberdeen research has found that when leading organizations adopt modern APM too
 
 但是，很多企业和组织所用来监控和管理应用程序的 APM 解决方案, 并不是为这些新的开发形式而设计的。 对于使用较老的解决方案的企业，他们使用非连接式, 孤立的 APM 工具来理解、优化和改进他们的应用系统， 这些工具的告警周期在分钟级, 而不是秒级，并且严重依赖客户端，并且无法扩容来应对成千上万个不同的容器，对这些工具而言, 这基本上是一项复杂且几乎不可能完成的任务。
 
-Aberdeen 研究发现，大厂(头部公司)在采用从零设计的方式来构建现代 APM 工具时, 为了支持当今的应用程序，IT Ops 和 DevOps 团队需要对应用程序具有深入而快速的洞察力，以便能够在影响终端用户之前, 就排查和处理掉相应的故障。
+Aberdeen 研究发现，大厂(头部公司)在采用从零设计的方式来构建现代 APM 工具时, 为了支持当今的应用程序，IT Ops 和 DevOps 团队就能对应用程序具有深入而快速的洞察力，以便能够在影响终端用户之前, 就排查和预防相应的故障。
 
 
 > Defining Modern APM:
@@ -35,7 +35,7 @@ Aberdeen 研究发现，大厂(头部公司)在采用从零设计的方式来构
 
 > **现代APM的定义**：
 
-> 现代 APM 旨在满足当今应用程序和微服务的需求，提供强大的实时流、全保真数据摄取、开源基础设置和深度 AI 驱动的数据分析
+> 现代 APM 旨在满足当今应用程序和微服务的需求，提供强大的实时流、全保真数据摄取、开源插桩(instrumentation)和深度 AI 驱动的数据分析
 
 
 
@@ -87,7 +87,7 @@ Leaders also want APM solutions that are as based on open standards as the tools
 
 ## 大厂如何迭代升级APM的功能特性
 
-很多公司都在努力升级和改进他们的 APM 系统功能，但我们发现那些领军者不仅仅是简单地获取已有的最新版本。 被 Aberdeen 认定为系统开发领军者的企业 —— 这意味着它们在正常运行时间、性能、成本节约和客户满意度方面得分排在 30% —— 都选择了专为微服务和云原生应用而设计的新型现代 APM 解决方案。
+很多公司都在努力升级和改进他们的 APM 系统功能，但我们发现那些领军者不仅仅是简单地获取已有的最新版本。 被 Aberdeen 认定为系统开发领军者的企业 —— 这意味着它们在正常运行时间、性能、成本节约和客户满意度方面得分排在前 30% —— 都选择了专为微服务和云原生应用而设计的新型现代 APM 解决方案。
 
 什么样的 APM 解决方案是大厂认可和使用的？ 我们发现他们正在寻找具有深度分析能力的 APM，以处理来自应用程序的大量数据，包括所有指标、跟踪、日志和所有其他有价值的信息。
 
@@ -116,7 +116,7 @@ We discovered that application development organizations that adopt modern APM (
 
 ## 支持AI的现代APM, 提升所有应用程序管理
 
-应用程序开发的领军者正在利用 APM 的强大实时流计算功能、全保真数据摄取、开源基础设施, 以及AI 驱动的深度 数据分析特性。 但如果不是领军者的组织, 在采用这些解决方案时, 能获得哪些能力和优势呢？ 为了理解这一点，Aberdeen 分析了我们的研究数据，以确定采用现代最先进的 APM 的企业的结果。 然后，将这些组织与那些没有采用具有流分析和AI功能的 APM 的竞争对手进行对比。
+应用程序开发的领军者正在利用 APM 的强大实时流计算功能、全保真数据摄取、开源插桩, 以及 AI 驱动的深度数据分析特性。 但如果不是领军者的组织, 在采用这些解决方案时, 能获得哪些能力和优势呢？ 为了理解这一点，Aberdeen 分析了我们的研究数据，以确定哪些企业采用了先进的现代 APM。 然后，将这些组织与那些没有采用具有流分析和AI功能的 APM 的竞争对手进行对比。
 
 我们发现，采用现代APM（在前面的小节所定义）的应用程序开发组织, 在理解和管理当今最复杂的云原生应用和微服务方面, 许多关键能力都超过了同行。
 
@@ -136,7 +136,7 @@ We’ve found that among the top pressures pushing development organizations to 
 
 When Aberdeen looked at the benefits that application development organizations gained by adopting modern APM, the answer to this question is yes. Across the board, businesses with modern APM are seeing significant gains over their competitors, as shown in Table 1.
 
-借助现代 APM 为其监控和故障排除功能提供支持，开发组织获得了实时告警的好处，这意味着他们可能能够在几秒钟内识别问题，而不是传统 APM 监控的业务那样需要几分钟甚至几小时。 现代 APM 还可以更好地全面采用强大的应用程序性能监控，并且 AI 能够对应用程序问题执行深入而准确的根本原因分析。
+借助现代 APM 为其监控和故障排除功能提供支持，开发组织获得了实时告警的好处，这意味着他们可能能够在几秒钟内识别问题，而不是使用传统 APM 的企业那样需要几分钟甚至几小时。 现代 APM 还可以更好地全面采用强大的应用程序性能监控，并且 AI 能够对应用程序问题执行深入而准确的根本原因分析。
 
 很明显，采用现代 APM 可以为管理当今复杂的应用环境带来更好的端到端功能。 Aberdeen 的研究表明，这些优势不仅限于能力，而且正在帮助组织提高投资回报率(ROI)、可靠性(reliability)和用户体验(customer experience)。
 
@@ -146,7 +146,7 @@ When Aberdeen looked at the benefits that application development organizations 
 
 > Table 1: Meeting Complex Application Demands with a Modern APM Organizations with a modern APM are:
 >
-> 表1: 通过现代 APM 来满足复杂的应用程序需求, 对使用现代 APM 的组织的共享包括:
+> 表1: 通过现代 APM 来满足复杂的应用程序需求, 对使用现代 APM 的组织的收益包括:
 
 | 比例 | 说明 |
 | --- | --- |
@@ -176,11 +176,11 @@ To join these leaders, and bring their APM capabilities into the modern age, app
 
 ## 关键要点
 
-近年来，应用程序开发人员一直处于不断变化的状态。 他们采用了 DevOps 和敏捷，他们在测试中漂移，他们正在部署容器化、基于 Kubernetes 的云原生应用程序，而不是传统的单体应用程序。
+近年来，应用程序开发人员一直处于不断变化的状态。 他们采用了 DevOps 和敏捷，他们在测试中左移(shift left)，他们正在部署容器化、基于 Kubernetes 的云原生应用程序，而不是传统的单体应用程序。
 
 这种变革性的变化需要一种新的 APM 监控方案。 正如我们所见，采用基于现代、开放标准的 APM、全保真跟踪和端到端实时分析的组织，面对不断增长的数据量, 利用 AI 来增加洞察力，获得增强的功能并收到明显的好处。
 
-要加入这些领军者的行列，并将他们的 APM 能力带入现代的，应用程序开发人员、IT Ops 和 DevOps 团队, 可以这样做：
+要加入这些领军者的行列，并将他们的 APM 能力带入现代化的时代，应用程序开发人员、IT Ops 和 DevOps 团队, 可以这样做：
 
 
 - **Know what is happening right now**.
@@ -204,7 +204,7 @@ Modern applications based on cloud, containers, microservices, and serverless fu
 当今复杂的应用程序创建了大量有价值且压倒性的数据。 领先的企业利用 APM 可以从所有来源（例如跟踪和指标）中提取数据，并且可以使用强大的 AI 来分析这些海量数据以更好地理解和管理。
 
 - **立即采取行动**。
-应用程序问题越早解决，影响到用户的可能性就越小（影响到用户就会降低生产力和收入）。 具有流式分析和 AI 功能的现代 APM 系统可以采取快速措施来限制应用程序问题的影响范围，并提供未来可能发生问题所需的信息。
+应用程序问题越早解决，影响到用户的可能性就越小（影响到用户就会降低生产力和收入）。 具有流式分析和 AI 功能的现代 APM 系统可以采取快速措施来限制应用程序问题的影响范围，并提供避免将来出现问题所需的信息。
 
 - **开放, 打破信息孤岛**。
 今天的应用程序是使用开放标准和框架构建的，旨在轻松与任何其他应用程序或服务集成。 开发人员用来管理和监控应用程序的解决方案同样需要开放性。 领先的组织利用基于开放标准的 APM 系统，将监控整合到一个屏幕中，使他们能够随时更换 APM、控制和拥有自己的数据，而不会被专有agent的单一 APM 供应商锁定和掣肘。
