@@ -16,7 +16,7 @@ The universe has a speed limit: the speed of light in a vacuum. This limit preve
 
 In the first case, because there is really nothing “moving”, beyond the photons that travel at the speed of light. The trail that those photons leave when we shake the laser is not a structure, nor can information be transmitted with it. In the case of warp engines, or curvature of space because, if feasible (which is questionable), they would be deforming spacetime in such a way that, rather than traveling very fast, we would be shortening the distance to our destination.
 
-在第一种情况下，因为除了以光速传播的光子之外，真的没有什么东西在“移动”。当我们摇动激光时，那些光子留下的轨迹不是结构，也不能用它传输信息。在扭曲引擎或空间曲率的情况下，因为如果可行（这是有问题的），它们会以这样一种方式变形时空，而不是我们会非常快地旅行，而不是缩短到我们目的地的距离。
+在第一种情况下，因为除了以光速传播的光子之外，真的没有什么东西在“移动”。当我们摇动激光时，那些光子留下的轨迹不是结构，也不能用它传输信息。在曲速引擎或空间弯曲的情况下，因为如果可行（这一点值得怀疑），它们会以这样一种方式扭曲时空：与其说我们是在以极快的速度旅行，不如说我们是在缩短到达目的地的距离。
 
 Therefore, the maximum speed that any object in the universe is capable of reaching is the speed of light, so called because light was the first phenomenon we knew of that traveled at that speed. We now know that this speed is not specific to light, but to any massless particle. In fact, this concept is closely related to the speed limit of our universe. Being massless and traveling at the speed of light seem to be the same thing. So let’s ask ourselves, what does it mean for a particle to have no mass?
 
@@ -48,7 +48,7 @@ The speed of light is the speed at which particles whose energy is completely (1
 
 We could only make a particle with mass reach the speed of light by giving it infinite kinetic energy. This of course is not possible. So the universe seems to have an arbitrary speed limit because we’re looking at the wrong magnitude. What is important is not really the speed of the particle, but its kinetic energy. Specifically the relationship between kinetic energy and energy at rest. If we think of it this way, the limit of the universe is at infinity (a very good place to put a limit), at an infinitely greater amount of kinetic energy than rest energy.
 
-我们只有给一个有质量的粒子赋予无穷大的动能，才能使它达到光速。这当然是不可能的。所以宇宙似乎有一个任意的速度限制，因为我们看到的是错误的大小。重要的不是粒子的速度，而是它的动能。特别是动能和静止能量之间的关系。如果我们这样想，宇宙的极限是无穷大（一个很好的下限），动能比静止能量大得多。
+我们只有给一个有质量的粒子赋予无穷大的动能，才能使它达到光速。这当然是不可能的。所以宇宙似乎有一个任意的速度限制，因为我们看错了物理量。重要的其实不是粒子的速度，而是它的动能——具体说来，是动能与静止能量之间的关系。如果我们这样想，宇宙的极限就是无穷大（一个很适合安放极限的地方）：动能比静止能量大无穷多倍。
 
 
 ## References:
