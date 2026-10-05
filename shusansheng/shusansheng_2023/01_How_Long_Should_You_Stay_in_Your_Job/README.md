@@ -97,7 +97,7 @@ They will still look at your hard skills and relevant expertise in the field. St
 这些经历, 和[类似的软技能](https://www.wikijob.co.uk/interview-advice/competencies/soft-skills), 会得到加分，因为这表明, 你能够快速融入他们团队。
 
 当然, 对于大部分工作来说, 雇主最关注的还是你的硬实力, 也就是专业技能和领域相关的专业知识。 
-尽管如此，拥有卓越的软实力和软技能, 通常是运营岗位, 以及 [金融领域](https://www.wikijob.co.uk/interview-advice/interview-questions/interview-question-why-finance) 相关岗位的基础要求。
+尽管如此，拥有卓越的软实力和软技能, 通常是市场营销岗位, 以及 [金融领域](https://www.wikijob.co.uk/interview-advice/interview-questions/interview-question-why-finance) 相关岗位的基础要求。
 
 
 ### 2.2 Potential Salary Increase
@@ -196,7 +196,9 @@ Before changing jobs, you should look into how much this will affect you.
 
 如果你的情况特殊, 需要休假或者医疗护理，跳槽可能会导致某些问题。
 
-从长远来看，没有职工社保可能会产生很多不利的后果。
+此外, 拥有 401(k) 账户(由雇主发起的养老基金)并不意味着, 如果你跳槽太早, 雇主也一定愿意为你缴纳同等份额。有些公司为了保护自己, 只有当你与公司共事足够长的时间, 才会向你的退休金或储蓄账户提供补贴。
+
+从长远来看，损失退休储蓄可能会带来更多不利的后果。
 
 
 ### 3.2 Potential Stigmatization
@@ -214,7 +216,7 @@ This is something that can often be overcome with a great job interview. If you 
 
 如果简历上有很多短时间内频繁更换的工作经历，可能会被视为 “面霸” 之类的职业跳槽人士(job-hopper)。
 
-频繁更换工作是一种耻辱, 会释放一种危险信号: 你这个人难以共事。 HR可能会质疑你的 [职业承诺](https://www.wikijob.co.uk/interview-advice/competcies/commitment-career)。
+频繁更换工作是一种耻辱, 会释放一种危险信号: 你这个人难以共事。 HR可能会质疑你的 [职业承诺](https://www.wikijob.co.uk/interview-advice/competencies/commitment-career)。
 
 如果潜在雇主觉得很难培养忠诚度，可能就不会雇用你。 
 毕竟对于公司来说，培训那些只学习不干活的人，代价可能会得不偿失。
@@ -300,7 +302,7 @@ Naturally, when it comes to seasonal work, these unwritten rules don't apply sin
 
 短期兼职和临时工, 应该优先考虑职业发展, 而不是长期任职。
 
-例如， 酒店行业的普通岗位, 这类员工通常在工作两年之后, 会被鼓励继续工作。 
+例如， 酒店行业的普通岗位, 这类员工通常在工作两年之后, 会被鼓励跳槽。 
 通常是因为这类岗位，需要这么长的时间来熟悉相关的技能，特别是对于年轻工人来说。 
 对于25-34岁的人，建议一到两年后跳槽，而对于50岁以上的人，四到五年后再跳槽也是可以接受的。
 
@@ -346,7 +348,7 @@ However, be aware that, despite all the benefits, uprooting your career in the t
 
 不过，一般两三年后，金融、法律工作者就可以升职，甚至加薪。
 
-对于其他公共部门员工来说，这可能需要更长的时间，但即使是普通部门，也应该在 7~10 年内展现出职业发展。
+对于其他公共部门员工来说，这可能需要更长的时间，但即使是他们，也应该在 7~10 年内展现出职业发展。
 
 通常建议这些行业的年轻人, 最多等三年, 不升职就应该转向不同的方向； 否则就可能会停滞不前，无法进步。
 
