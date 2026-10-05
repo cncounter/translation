@@ -3,7 +3,7 @@ JDK内置故障排查工具: jhat 简介
 
 > 更详细的校对版-请转到Windows版本系列: <https://github.com/cncounter/java-tools-cn/blob/master/15_Troubleshooting/jhat.md>
 
-jhat 是Java堆分析工具(Java heap Analyzes Tool). 在JDK6u7之后成为JDK标配. 使用该命令需要有一定的Java开发经验,官方不对此工具提供技术支持和客户服务。
+jhat 是Java堆分析工具(Java heap Analysis Tool). 在JDK6u7之后成为JDK标配. 使用该命令需要有一定的Java开发经验,官方不对此工具提供技术支持和客户服务。
 
 ## 用法: ##
 	
@@ -18,7 +18,7 @@ jhat 是Java堆分析工具(Java heap Analyzes Tool). 在JDK6u7之后成为JDK�
 
 ## 示例 ##
 
-使用jmap工具转储堆内存、可以使用如下方式: 
+使用jmap工具转储堆内存,可以使用如下方式: 
 
 ```
 jmap -dump:file=DumpFileName.txt,format=b <pid>
@@ -60,7 +60,7 @@ Java生成堆转储的方式有多种:
 - 使用 `hprof` 命令。 请参考: 性能分析工具-HPROF简介, <https://github.com/cncounter/translation/blob/master/tiemao_2017/20_hprof/20_hprof.md>
 
 
-##<a name="Options">Options</a>
+## <a name="Options">Options</a>
 
 ##### -stack false|true
 
@@ -68,7 +68,7 @@ Java生成堆转储的方式有多种:
 
 ##### -refs false|true
 
-关闭对象引用跟踪(tracking of references to objects)。 默认值为 `true`. 默认情况下, 返回的指针是指向其他特定对象的对象,如反向链接或输入引用(referrers or incoming references), 会统计/计算堆中的所有对象。
+关闭对象引用跟踪(tracking of references to objects)。 默认值为 `true`. 默认情况下, 反向指针是指向其他特定对象的对象,如反向链接或输入引用(referrers or incoming references), 会统计/计算堆中的所有对象。
 
 ##### -port port-number
 
@@ -76,7 +76,7 @@ Java生成堆转储的方式有多种:
 
 ##### -exclude exclude-file
 
-指定对象查询时需要排除的数据成员列表文件(a file that lists data members that should be excluded from the reachable objects query)。 例如, 如果文件列列出了 `java.lang.String.value` , 那么当从某个特定对象 Object o 计算可达的对象列表时, 引用路径涉及 `java.lang.String.value` 的都会被排除。
+指定对象查询时需要排除的数据成员列表文件(a file that lists data members that should be excluded from the reachable objects query)。 例如, 如果文件中列出了 `java.lang.String.value` , 那么当从某个特定对象 Object o 计算可达的对象列表时, 引用路径涉及 `java.lang.String.value` 的都会被排除。
 
 ##### -baseline exclude-file
 
