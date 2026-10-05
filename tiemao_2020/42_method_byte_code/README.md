@@ -235,7 +235,7 @@ Constant pool:
 
 - `descriptor: ([Ljava/lang/String;)V` : 方法描述符信息, 括号里面是参数类型, `[`打头代表数组, `[L`表示对象类型数组; 括号后面的`V`表示没有返回值(类似于void)。
 - `flags: ACC_PUBLIC, ACC_STATIC` 访问标志, 表示这是一个 public 的 static 方法。
-- `stack=0, locals=1, args_size=1` : 表示操作数栈的最大深度=0, 因为是空方法, 里面没有什么压栈操作; 局部变量表槽位数=1, 一个引用变量只占用1个槽位, 特殊的是long和double占2个操作,这个后面会介绍; 接收的参数个数=1, 和前面的构造函数对比来看, static 方法不能使用this, 所以定义了几个入参就是几个;
+- `stack=0, locals=1, args_size=1` : 表示操作数栈的最大深度=0, 因为是空方法, 里面没有什么压栈操作; 局部变量表槽位数=1, 一个引用变量只占用1个槽位, 特殊的是long和double占2个槽位,这个后面会介绍; 接收的参数个数=1, 和前面的构造函数对比来看, static 方法不能使用this, 所以定义了几个入参就是几个;
 - `0: return` 前面的0表示字节码的位置索引, return表示方法结束并返回; 因为这是一个空方法, 什么也没有。
 - `LineNumberTable` 表示与源代码对应的行号映射信息, `line 8: 0` 是说此方法字节码的0索引对应第8行源码。
 - `LocalVariableTable` 则是局部变量表;
@@ -747,7 +747,7 @@ public static void testLongLoad(long, long, long);
 
 解读如下:
 
-- 每个 long 类型的占2个槽位, 所以3个long类型入参占据了0号,2号,4号槽位;
+- 每个 long 类型的入参占2个槽位, 所以3个long类型入参占据了0号,2号,4号槽位;
 - `lload_0` 从0号槽位取值;
 - `lload_2` 从2号槽位取值;
 - `lload 4` 从4号槽位取值。
@@ -1241,7 +1241,7 @@ Stack在这里明显是指的操作数栈。
 
 实际进行理解时，可以加入一些中间态。比如:
 
-- swap 实际上是吃掉栈顶的两个操作数, 然后再将他们调换顺序之后, 依次压入栈顶。
+- swap 实际上是吃掉栈顶的两个操作数, 然后再将它们调换顺序之后, 依次压入栈顶。
 
 
 #### 5.2 示例代码
@@ -1614,7 +1614,7 @@ public static void testMethodInvoke();
 - 当通过接口引用来调用方法时, 会直接编译为 invokeinterface 指令。
 - 调用构造函数会编译为 invokespecial 指令, 当然还包括调用 private 方法, 以及可见的超类方法。
 - 如果变量引用的类型是具体类, 则编译器会使用 invokevirtual 来调用 public, protected和包可见级别的方法。
-- JDK7新增加了一个 [`invokedynamic`](https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-6.html#jvms-6.5.invokedynamic) 指令, 用来支持“动态类型语言”（Dynamically TypedLanguage, 从JDK8开始引入的lambda表达式, 在使用时会编译为这个指令。
+- JDK7新增加了一个 [`invokedynamic`](https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-6.html#jvms-6.5.invokedynamic) 指令, 用来支持“动态类型语言”(Dynamically Typed Language), 从JDK8开始引入的lambda表达式, 在使用时会编译为这个指令。
 
 
 
