@@ -50,11 +50,11 @@ callee: ƒ demo1()
   > [[Scopes]]: Scopes[1]
 ```
 
-`arguments.callee` 就表示当前函数, 
+`arguments.callee` 就表示当前函数。
 
 
 
-### 3、 获取当前函数的名称
+## 3、 获取当前函数的名称
 
 请看代码1:
 
@@ -119,7 +119,7 @@ stack = testSS();
 
 ```
 
-"Error: hahaha
+"Error: test-for-call-stack
     at checkCallStack (<anonymous>:1:37)
     at testSS (<anonymous>:2:26)
     at <anonymous>:3:1"
@@ -130,7 +130,7 @@ stack = testSS();
 
 
 
-一般来说有3种方式, 至于 eval和JSON反序列化之类的则不讨论。
+一般来说有3种方式, 至于 eval 和 JSON 反序列化之类的则不讨论。
 
 在控制台执行以下代码：
 
