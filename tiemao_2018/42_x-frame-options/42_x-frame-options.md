@@ -9,11 +9,11 @@
 x-frame-options: SAMEORIGIN
 ```
 
-当然, 根据Http规范, Header中的KEY是不区分大小写的, `x-frame-options` 和 `X-FRAME-OPTIONS` 等价。
+当然, 根据HTTP规范, Header中的KEY是不区分大小写的, `x-frame-options` 和 `X-FRAME-OPTIONS` 等价。
 
-`x-frame-options: SAMEORIGIN` 的意思, 是告诉浏览器, 该网页不允许其他域名通过 `<frame src=XXX` 或者 `<iframe src=XXX` 引用。
+`x-frame-options: SAMEORIGIN` 的意思, 是告诉浏览器, 该网页不允许其他域名通过 `<frame src=XXX>` 或者 `<iframe src=XXX>` 引用。
 
-你可以试试在HTML中加上一下内容:
+你可以试试在HTML中加上以下内容:
 
 ```
 <iframe src="https://www.google.com/ncr"></iframe>
@@ -42,7 +42,7 @@ X-Frame-Options 有三个值:
 
 - `DENY` 表示该页面不允许在 frame 中展示，即便是在相同域名的页面中嵌套也不允许。
 - `SAMEORIGIN` 表示该页面可以在相同域名页面的 frame 中展示。
-- `ALLOW-FROM uri` 表示该页面可以在指定来源的 frame 中展示。`
+- `ALLOW-FROM uri` 表示该页面可以在指定来源的 frame 中展示。
 
 详细介绍请参考MDN网站: <https://developer.mozilla.org/zh-CN/docs/Web/HTTP/X-Frame-Options>
 
