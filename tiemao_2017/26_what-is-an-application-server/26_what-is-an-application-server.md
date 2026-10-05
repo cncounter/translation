@@ -21,12 +21,12 @@ In the previous post, we talked about what a JSR reference implementation is. Al
 
 Better still, Java EE is what is termed an umbrella JSR in that it encapsulates a number of JSRs. So Java EE 7 for instance, is [JSR 342](https://www.jcp.org/en/jsr/detail?id=342). Java EE 8 is [JSR 366](https://www.jcp.org/en/jsr/detail?id=366). So Java EE itself is a JSR that goes through the JCP JSR process and is subject to the requirements of every JSR.
 
-例如,Java EE 7 对应于 [JSR 342](https://www.jcp.org/en/jsr/detail?id=342)。 Java EE 8 对应于 [JSR 366](https://www.jcp.org/en/jsr/detail?id=366)。 由此可见 Java EE 自身也是一项通过JCP严格审核的JSR。
+更妙的是, Java EE 被称为伞形JSR(umbrella JSR), 因为它封装了多个JSR。例如,Java EE 7 对应于 [JSR 342](https://www.jcp.org/en/jsr/detail?id=342)。 Java EE 8 对应于 [JSR 366](https://www.jcp.org/en/jsr/detail?id=366)。 由此可见 Java EE 自身也是一项通过JCP严格审核的JSR。
 
 
 Flowing from the above, and remember we did say that the JSR process requires every JSR to have a reference implementation, this means Java EE as an umbrella JSR must also have a reference implementation.
 
-我们知道, 每个JSR都必须有参考实现。
+由此可见, 既然每个JSR都必须有参考实现, 那么 Java EE 作为伞形JSR, 也必须有参考实现。
 
 
 So an implementation of the umbrella JSR or Java EE is what is commonly referred to as an application server. An app server essentially is a concrete implementation of the Java EE spec that you can actually run your code on. The reference implementation of Java EE is [Glassfish Application Server](https://github.com/javaee/glassfish).
@@ -36,7 +36,7 @@ Java EE 也是一样的, 其实现被称为 **应用服务器** (`application se
 
 An application server generally abstracts you the developer away from a lot of mundane stuff that you would have had to manage on your own, like datasource pooling, caching, clustering, and other overheads.
 
-应用服务器将程序开发中, 很多必须单独处理的东西抽象出来, 如数据量连接池(datasource pooling)、缓存(caching)、集群(clustering) 等等。
+应用服务器将程序开发中, 很多必须单独处理的东西抽象出来, 如数据源连接池(datasource pooling)、缓存(caching)、集群(clustering) 等等。
 
 
 The application server generally must also pass the TCK to be fully certified as being compliant with a given umbrella JSR. An app server is also the basis for the portability of Java EE. As a developer, you generally are encouraged to code against the javax.* packages, which is the standard Java EE package namespace.
