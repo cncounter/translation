@@ -119,7 +119,7 @@ The `<w:tbl>` element can contain a whole host of elements, mostly related to tr
         <span >tr</span>
       </td>
       <td>
-        指定表格的列(table row).  详情请参考: 
+        指定表格的行(table row).  详情请参考: 
         <a href="http://officeopenxml.com/WPtableRow.php">WPtableRow</a>.
         <div class="ECMAref">
           <span style="font-weight:bold">规范参考:</span>  ECMA-376, 3rd Edition (June, 2011), Fundamentals and Markup Language Reference § 17.4.79.
@@ -136,7 +136,9 @@ The `<w:tbl>` element can contain a whole host of elements, mostly related to tr
 > ### 相关的ODF(Open Document Format) 属性:
 
 
-A table in the ODF format is specified with `<table:table>` element. A table consists of rows and columns. Rows are divided into cells, and columns are implied by taking all cells with the same position within the rows. A table can appear within a `<office:text>`, within a section, within a table cell, a header, or a footer, among others.
+A table in the ODF format is specified with `<table:table>` element. A table consists of rows and columns. Rows are divided into cells, and columns are implied by taking all cells with the same position within the rows. A table can appear within an `<office:text>`, within a section, within a table cell, a header, or a footer, among others.
+
+ODF 格式中的表格使用 `<table:table>` 元素来定义。表格由行(rows)和列(columns)组成。行被划分为单元格(cells)，而列则通过取各行中位置相同的所有单元格来隐含确定。表格可以出现在 `<office:text>` 中，也可以出现在某个 section、某个表格单元格、页眉(header)或页脚(footer)等位置。
 
 Reference: Open Document Format for Office Applications Version 1.2 (May, 2011) § 9.1.2.
 
@@ -157,9 +159,11 @@ Reference: Open Document Format for Office Applications Version 1.2 (May, 2011) 
 	</table:table>
 
 
-### Attributes:
+### 属性(Attributes):
 
 The most commonly used attributes are below.
+
+下面列出的是最常用的属性。
 
 
 <table class="odfAttributes" width="100%">
@@ -211,9 +215,11 @@ The most commonly used attributes are below.
 
 
 
-### Elements:
+### 元素(Elements):
 
 The most commonly used elements are below.
+
+下面列出的是最常用的元素。
 
 
 <table class="odfElements" width="100%">
