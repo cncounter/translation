@@ -89,7 +89,7 @@ jedis的依赖库可以到 [mvnrepository.com](https://mvnrepository.com/artifac
 </dependency>
 ```
 
-Jedis提供的方法, 命名和Redis命令很类似, 使用起来很方面。
+Jedis提供的方法, 命名和Redis命令很类似, 使用起来很方便。
 
 如果直接对 `JedisCluster` 调用 `scan` 方法, 则会提示报错信息:
 
@@ -405,7 +405,7 @@ public static HostAndPort hostPort(Jedis jedis) {
         Field jedisSocketFactoryField = clazzClient.getDeclaredField("jedisSocketFactory");
         // 不同版本Jedis字段名称有所变化; 如果反射报错, 可以查看 Connection 类里面的字段是什么; 
         //Field jedisSocketFactoryField = clazzClient.getDeclaredField("socketFactory");
-        // 临时设置这个字段包装允许访问/读取
+        // 临时设置这个字段保证允许访问/读取
         clientField.setAccessible(true);
         jedisSocketFactoryField.setAccessible(true);
         // 反射获取对应的属性
@@ -556,7 +556,7 @@ public static void main(String[] args) {
 
 Key与内存使用量的关系:
 
-清理完成后, 存活Key的数量为 `3.9亿``, Redis主节点的内存占用量为: `70G`。
+清理完成后, 存活Key的数量为 `3.9亿`, Redis主节点的内存占用量为: `70G`。
 
 
 Key的长度平均为 `18字符`, Value的长度大约为 `40~50个字符`。
