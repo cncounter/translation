@@ -1,6 +1,6 @@
 # Quiz Yourself: Threads and `Executors` (Advanced)
 
-＃ Java坑人面试题系列: 线程/线程池（高级难度）
+# Java坑人面试题系列: 线程/线程池（高级难度）
 
 > The details of relying on specific operations from `ExecutorService`
 
@@ -127,7 +127,7 @@ Given that the pool created by the code in the question has multiple threads, yo
 
 回到前面的问题， 试题中给出的代码创建了缓存模式的线程池。
 这类线程池会根据需要生成新的worker线程，并清理一段时间内没有使用到的线程。
-但缓存模式的线程池有一个严重缺点： 创建的线程数有可能不被限制, 那样的话会导致大量的资源占用。 在高负载场景下，可能会由于资源争用而导致性能急剧下降。
+但缓存模式的线程池有一个严重缺点： 创建的线程数没有上限, 那样的话会导致大量的资源占用。 在高负载场景下，可能会由于资源争用而导致性能急剧下降。
 
 因为创建的线程池具有多个线程， 所以后面提交的任务可以并发执行。
 无论谁先开始，我们都无法对其执行进度做出精确预测。
