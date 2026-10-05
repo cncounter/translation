@@ -91,7 +91,7 @@ TortoiseGit-2.3中文版与Git安装包_手册: [http://download.csdn.net/detail
 	[credential]
 		helper = store
 
-需要注意的是,因为远端有多个分支,所以这个配置文件里,相应的就多了一个小节 `[branch "master"]`,而 这个小节下面的 remote = origion, 现在加上 master 变为:
+需要注意的是,因为远端有多个分支,所以这个配置文件里,相应的就多了一个小节 `[branch "master"]`,而 这个小节下面的 remote = origin, 现在加上 master 变为:
 
 		[branch "master"]
 		remote = origin master
