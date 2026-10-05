@@ -93,7 +93,7 @@ Git安装与配置
 
 - Win7_8下的Git: [https://windows.github.com/](https://windows.github.com/)(这应该是Github在windows下的官方软件,但不支持XP)
 
-##相关文章
+## 相关文章
 
 1. [目录](GitHelp.md)
 1. [安装及配置Git](01_GitInstall.md)
