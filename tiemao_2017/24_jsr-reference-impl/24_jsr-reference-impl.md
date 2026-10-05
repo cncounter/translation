@@ -42,7 +42,7 @@ Essentially a TCK is used to test a JSR implementation for compliance to the spe
 
 This rigorous process also ensures the quality of the APIs that are derived from the JSR document. Some popular RIs of some JSRs are
 
-这种严格的审核过程确保了JSR文档中API的质量。下面是一些流行的消息格式(RIs)的JSR:
+这种严格的审核过程确保了JSR文档中API的质量。下面是一些流行的参考实现(RI)的JSR:
 
 
 
