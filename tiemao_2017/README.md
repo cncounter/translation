@@ -21,9 +21,9 @@ CNCounter translation - 2017年目录
 03. [**SpringMVC中JSP页面不显示EL表达式的原因**](./03_spring_mvc_jsp_el_jstl/03_spring_mvc_jsp_el_jstl.md)【已完成】
 04. [JDK 10 相关信息](./04_jdk10/04_jdk10.md)【---】
 05. [Google人工智能超级帝国 -- TensorFlow 1.0](./05_TensorFlow/05_TensorFlow.md)【---】
-06. [实战Linux性能监控: sar 命令](./06_sar_examples/06_sar_examples.md)
-06. [实战Linux性能监控: sar](./06_sar_examples/sar.md)
-06. [Linux_性能监控_常用命令](./Linux_性能监控_常用命令.md)
+06. [实战Linux性能监控: sar 命令](./06_sar-examples/06_sar_examples.md)
+06. [实战Linux性能监控: sar](./06_sar-examples/sar.md)
+06. [Linux_性能监控_常用命令](./06_sar-examples/Linux_性能监控_常用命令.md)
 07. [**Tomcat 启动速度优化**](./07_FasterStartUp_Tomcat/07_FasterStartUp_Tomcat.md)【已完成】
 08. [The Valve Component](./08_tomcat_8.0_valve/08_tomcat_8.0_valve.md)
 08. [Tomcat valve 简介](./08_tomcat_8.0_valve/08_01_tomcat-valve.md)
