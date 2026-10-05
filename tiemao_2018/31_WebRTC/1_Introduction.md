@@ -22,7 +22,7 @@ WebRTC 主要包括以下 JavaScript API(点击链接可查看相关demo)。
 
 In Firefox, Opera and in Chrome on desktop and Android. WebRTC is also available for native apps on iOS and Android.
 
-目前, PC版和Android版的 Firefox、Opera 和 Chrome 浏览器都支持WebRTC。 此外、iOS和Android的一些原生App也支持WebRTC。
+目前, PC版和Android版的 Firefox、Opera 和 Chrome 浏览器都支持WebRTC。 此外, iOS和Android的一些原生App也支持WebRTC。
 
 > 译者注: 国内使用量巨大的360浏览器、搜狗浏览器兼容性基本和Chrome一致。当然, 推荐使用最新的版本(当前时间: 2018年6月28日)。
 
@@ -32,7 +32,7 @@ In Firefox, Opera and in Chrome on desktop and Android. WebRTC is also available
 
 WebRTC uses RTCPeerConnection to communicate streaming data between browsers, but also needs a mechanism to coordinate communication and to send control messages, a process known as signaling. Signaling methods and protocols are not specified by WebRTC. In this codelab you will use Socket.IO for messaging, but there are [many alternatives](https://github.com/muaz-khan/WebRTC-Experiment/blob/master/Signaling.md).
 
-WebRTC 通过 RTCPeerConnection 在浏览器之间进行流数据传输, 但还需要一种机制, 来协调通信以及发送控制指令, 这个过程就叫做信令控制. WebRTC 没有规定具体使用的协议或方法。
+WebRTC 通过 RTCPeerConnection 在浏览器之间进行流数据传输, 但还需要一种机制, 来协调通信以及发送控制指令, 这个过程就叫做信令. WebRTC 没有规定具体使用的协议或方法。
 
 在本教程中, 我们使用 Socket.IO 来传递消息, 当然也可以使用 [其他实现](https://github.com/muaz-khan/WebRTC-Experiment/blob/master/Signaling.md)。
 
