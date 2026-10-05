@@ -27,7 +27,7 @@
 
 ## 2. API与方法
 
-guava工具库的MAVEN依赖为:
+Guava工具库的MAVEN依赖为:
 
 ```xml
 <properties>
