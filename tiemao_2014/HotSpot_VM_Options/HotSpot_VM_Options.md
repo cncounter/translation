@@ -91,7 +91,7 @@ JVM选项大致可以分为以下几类:
 			<td>-XX:+UseGCOverheadLimit</td><td>使用一种政策,限制在抛出OutOfMemory错误前JVM花费在GC上的那部分时间. (开始引入: 6.)</td>
 		</tr>
 		<tr valign="top">
-			<td>-XX:+UseLWPSynchronization</td><td>使用 LWP-based 来取代基于线程的同步(thread based synchronization). (开始引入: 1.4.0. 只适用于 Solaris only.)</td>
+			<td>-XX:+UseLWPSynchronization</td><td>使用 LWP-based 来取代基于线程的同步(thread based synchronization). (开始引入: 1.4.0. 只适用于 Solaris.)</td>
 		</tr>
 		<tr valign="top">
 			<td>-XX:-UseParallelGC</td><td>使用并行垃圾收集(parallel garbage collection)来清扫内存(scavenges). (开始引入: 1.4.1)</td>
@@ -184,7 +184,7 @@ JVM选项大致可以分为以下几类:
 			<td>-XX:MaxHeapFreeRatio=70</td><td>GC之后避免收缩(shrinking)的堆内存自由空间最大百分比.</td>
 		</tr>
 		<tr valign="top">
-			<td>-XX:MaxNewSize=size</td><td>年轻代(new generation）的最大尺寸(单位: 字节,byte). 从JDK 1.4开始, MaxNewSize 的值根据 NewRatio 计算得出. [1.3.1 Sparc: 32m; 1.3.1 x86: 2.5m.]</td>
+			<td>-XX:MaxNewSize=size</td><td>年轻代(new generation)的最大尺寸(单位: 字节,byte). 从JDK 1.4开始, MaxNewSize 的值根据 NewRatio 计算得出. [1.3.1 Sparc: 32m; 1.3.1 x86: 2.5m.]</td>
 		</tr>
 		<tr valign="top">
 			<td>-XX:MaxPermSize=64m</td><td>持久代(Permanent Generation, Class,常量等信息放在这里,最新的String常量池已移出持久代)的大小.&nbsp; [5.0 and newer: 64 bit VMs are scaled 30% larger; 1.4 amd64: 96m; 1.3.1 -client: 32m.]</td>
@@ -196,7 +196,7 @@ JVM选项大致可以分为以下几类:
 			<td>-XX:NewRatio=2</td><td>年轻代与老年代(new/old generation)的比值(Ratio). [Sparc -client: 8; x86 -server: 8; x86 -client: 12.]-client: 4 (1.3) 8 (1.3.1+), x86: 12]</td>
 		</tr>
 		<tr valign="top">
-			<td>-XX:NewSize=2m</td><td>年轻代(new generation）的默认大小 (单位: 字节,byte) [5.0 及以后版本: 64 bit VM 为 30% 以上比例; x86: 1m; x86, 5.0 及更早版本为: 640k]</td>
+			<td>-XX:NewSize=2m</td><td>年轻代(new generation)的默认大小 (单位: 字节,byte) [5.0 及以后版本: 64 bit VM 为 30% 以上比例; x86: 1m; x86, 5.0 及更早版本为: 640k]</td>
 		</tr>
 		<tr valign="top">
 			<td>-XX:ReservedCodeCacheSize=32m</td><td>保留代码缓存空间大小(Reserved code cache size 单位: 字节, byte) - 也是最大(maximum) 代码缓存空间大小. [Solaris 64-bit, amd64, 以及 -server x86: 2048m; 在 1.5.0_06 及更早版本的 Solaris 64-bit 和 amd64: 1024m.]</td>
@@ -342,7 +342,7 @@ JVM选项大致可以分为以下几类:
 			<td>-XX:+UseCompressedOops</td><td>启用指针压缩(对象引用使用32位偏移量表示,而不是64位指针),在Java堆内存大小 小于 32gb 时用来对64位JVM进行优化.</td>
 		</tr>
 		<tr valign="top">
-			<td>-XX:+AlwaysPreTouch</td><td> 在 JVM 初始化期间对Java堆内存进行摸底(Pre-touch). 因此能可以在初始化期间将堆内存的每一页(Every page of the heap)都写0 (demand-zeroed),而不必等到应用程序执行时再慢慢进行.</td>
+			<td>-XX:+AlwaysPreTouch</td><td> 在 JVM 初始化期间对Java堆内存进行摸底(Pre-touch). 因此可以在初始化期间将堆内存的每一页(Every page of the heap)都写0 (demand-zeroed),而不必等到应用程序执行时再慢慢进行.</td>
 		</tr>
 		<tr valign="top">
 			<td>-XX:AllocatePrefetchDistance=n</td><td>为对象内存分配(object allocation)设置预取距离(prefetch distance). 即将写入新对象值的内存,会连同最近分配的对象地址后一段距离(单位: 字节 byte)被一起预取到 cache 中. 每个 Java 线程都有自己的分配点(allocation point). 各个平台上的JVM默认值会有很大差别.</td>
@@ -360,10 +360,10 @@ JVM选项大致可以分为以下几类:
 			<td>-XX:LoopUnrollLimit=n</td><td>对小于此值的循环体,server模式编译器将其展开(Unroll). server模式编译器根据一个函数计算出限制值,而不是直接使用指定值. 各平台JVM的默认值会有很大差别.</td>
 		</tr>
 		<tr valign="top">
-			<td>-XX:InitialTenuringThreshold=7</td><td>为年轻代收集器(parallel young collector)中的 自适应GC(adaptive GC)设置初始生命周期阀值(initial tenuring threshold). 生命周期阀值是指一个对象被提升到老年代(old, or tenured)之前,在年轻代GC中存活的次数.</td>
+			<td>-XX:InitialTenuringThreshold=7</td><td>为年轻代收集器(parallel young collector)中的 自适应GC(adaptive GC)设置初始生命周期阈值(initial tenuring threshold). 生命周期阈值是指一个对象被提升到老年代(old, or tenured)之前,在年轻代GC中存活的次数.</td>
 		</tr>
 		<tr valign="top">
-			<td>-XX:MaxTenuringThreshold=n</td><td>为自适应GC(adaptive GC sizing)设置对象的最大生命期阀值(tenuring threshold) . 当前允许的最大值是 15. 并行垃圾收集器(parallel collector)的默认值为 15, CMS 默认值为 4 .</td>
+			<td>-XX:MaxTenuringThreshold=n</td><td>为自适应GC(adaptive GC sizing)设置对象的最大生命期阈值(tenuring threshold) . 当前允许的最大值是 15. 并行垃圾收集器(parallel collector)的默认值为 15, CMS 默认值为 4 .</td>
 		</tr>
 		<tr valign="top">
 			<td>-Xloggc:&lt;filename&gt;</td><td>记录 GC verbose 日志输出到指定的文件. verbose 输出由正常的 verbose GC flags 控制.</td>
@@ -384,6 +384,6 @@ JVM选项大致可以分为以下几类:
 
 原文链接: <http://www.oracle.com/technetwork/java/javase/tech/vmoptions-jsp-140102.html>
 
-原文日前: 大约2014-01-02
+原文日期: 大约2014-01-02
 
 翻译参考: JVM 不稳定参数: <http://286.iteye.com/blog/1924947>
