@@ -28,7 +28,7 @@
 
 	
 	
-###设置 nginx 自启动
+### 设置 nginx 自启动
 
 	chkconfig nginx on
 	
@@ -188,7 +188,7 @@
 
 	openssl genrsa -des3 -out server.rsa.key 1024
 
-接着会要求你输入2次密码口语,输入后回车即可.
+接着会要求你输入2次密码口令,输入后回车即可.
 
 生成证书:
 
