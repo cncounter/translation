@@ -133,7 +133,7 @@
 	car.getBrand();   // output: Nissan
 
 
-这里, 我们可以把_this 值赋给 `_this`, `that`, `self`, `me`, `my`, `context` 之类的变量, 或者是其他有这一类含义的变量名。关键是保留下外层的对象引用。
+这里, 我们可以把 `this` 值赋给 `_this`, `that`, `self`, `me`, `my`, `context` 之类的变量, 或者是其他有这一类含义的变量名。关键是保留下外层的对象引用。
 
 ## ECMAScript 6 中的高科技
 
@@ -165,11 +165,10 @@
 
 - 在下列情况下 `this` 指向的是全局对象:
   - 在最外层的代码中, 不在任何 function 里面
-  - 不是对象方法(method)的函数(method)里面
+  - 不是对象方法(method)的函数(function)里面
   - 不是构造函数(constructor)的函数里面
 - 当函数作为父对象的属性被调用时, `this` 指向的是父对象(parent object)。
-- 当函数通过  `call()` 、 `apply()` 或者 `bind()`调用时, `this`指向的是传递给这些方法的第一个参数。如果第一个参数是 `null`
-- 或者不是一个对象, 那么 `this` 指向的是全局对象。
+- 当函数通过  `call()` 、 `apply()` 或者 `bind()`调用时, `this`指向的是传递给这些方法的第一个参数。如果第一个参数是 `null` 或者不是一个对象, 那么 `this` 指向的是全局对象。
 - 在使用 `new` 操作符来调用一个函数时, `this` 指向的是新创建的这个对象。
 - 在 ECMAScript 6 中使用箭头函数时,  `this` 根据所处的语法作用域指向上级对象(parent object)。
 
