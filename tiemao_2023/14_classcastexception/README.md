@@ -63,10 +63,10 @@
 参考:  [JAXB (with Java 11) - Tutorial](https://www.vogella.com/tutorials/JAXB/article.html)
 
 
-还有今天的主题,  类加载器问题, 主要原因是:
+还有今天的主题, 类加载器问题, 主要原因是:
 
-- 父类由上层Classloader加载
-- 之类由下层ClassLoader加载
+- 父类由上层ClassLoader加载
+- 子类由下层ClassLoader加载
 
 导致类型转换问题.
 
@@ -82,7 +82,7 @@ public interface DataSourceProvider {
 public class MysqlDataSourceProvider implements DataSourceProvider {
 }
 
-// 第2组雷和接口
+// 第2组类和接口
 @SPI(key = ExtConfig.EVENT_CENTER, dftValue = "injvm")
 public interface EventCenter {
 }
