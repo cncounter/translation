@@ -8,7 +8,7 @@ elasticsearch，简称es, 是一个封装好的搜索引擎服务器。
 
 ## Docker安装
 
-如果是本地测试或者开发, 可以试用Docker来快速搭建服务.
+如果是本地测试或者开发, 可以使用Docker来快速搭建服务。
 
 需要确保本地安装好了Docker服务, 内存和磁盘等资源也足够, 否则可能会启动不起来多个docker服务。
 
@@ -66,7 +66,7 @@ MEM_LIMIT=1073741824
 #COMPOSE_PROJECT_NAME=myproject
 ```
 
-注意这里的密码必须是字符串, 不能纯数字, 对应的Kibana用户名是 `elastic`;
+注意这里的密码必须是字符串, 不能纯数字, 对应的Elasticsearch用户名是 `elastic`;
 
 > kibana_1   [config validation of [elasticsearch].password]: expected value of type [string] but got [number]
 
@@ -97,7 +97,7 @@ docker-compose up -d
 访问ElasticSearch: https://localhost:9200/
 
 
-> 说明: 生产环境的配置请参考官方文档.
+> 说明: 生产环境的配置请参考官方文档。
 
 
 ### 使用docker命令行方式
@@ -116,7 +116,7 @@ docker network create elastic
 docker run --name es01 --net elastic -p 9200:9200 -p 9300:9300 -it docker.elastic.co/elasticsearch/elasticsearch:8.1.0
 
 # 使用环境变量设置堆内存
-# docker run -e ES_JAVA_OPTS="-Xms1g -Xmx1g" -e ENROLLMENT_TOKEN="<token>" --name es02 -p 9201:9200 --net elastic -it docker.elastic.co/elasticsearch/elasticsearch:docker.elastic.co/elasticsearch/elasticsearch:8.1.0
+# docker run -e ES_JAVA_OPTS="-Xms1g -Xmx1g" -e ENROLLMENT_TOKEN="<token>" --name es02 -p 9201:9200 --net elastic -it docker.elastic.co/elasticsearch/elasticsearch:8.1.0
 
 
 # 关注控制台显示的密码
