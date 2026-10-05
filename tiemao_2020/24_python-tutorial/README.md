@@ -12,7 +12,7 @@ Python是当今最流行的编程语言之一， 作者 Guido van Rossum 在 199
 
 开源、免费、自由分发，也自由用于商业软件。
 
-本教程简单介绍python基础以及优势。
+本教程简单介绍python基础以及一些高级概念。
 
 ## 1. Python is Interpreted
 
@@ -30,7 +30,7 @@ In means, any sourcecode written in python can be directly executed without comp
 
 编程语言天然分为两大类： 解释型语言（interpreted languages），和编译型语言（compiled languages）。
 
-编译型语言，比如Java，通过编译器将源文件便以为可执行的指令，然后由运行时环境来负责执行。
+编译型语言，比如Java，通过编译器将源文件编译为可执行的指令，然后由运行时环境来负责执行。
 
 解释型语言，则不需要编译过程，运行时环境直接读取源代码并执行，在执行过程中将源码直接翻译成机器代码。
 
@@ -43,6 +43,14 @@ Python was mainly developed for emphasis on code readability, and its syntax all
 As a rough measurement of simplicity based on available keywords in the language, Python 3 has 33 keywords, and Python 2 has 31. By contrast, C++ has 62, Java has 53 keywords.
 
 Python syntax allows a clean structure that is easy to learn and easy to read.
+
+## 2. Python 简单易用
+
+Python 的设计主要强调代码的可读性，其语法允许程序员用更少的代码行来表达概念。
+
+以语言中关键字的数量作为衡量简单程度的粗略标准：Python 3 有 33 个关键字，Python 2 有 31 个。相比之下，C++ 有 62 个，Java 有 53 个关键字。
+
+Python 的语法结构清晰，容易学习，也容易阅读。
 
 
 
