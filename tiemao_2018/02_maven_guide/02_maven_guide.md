@@ -27,7 +27,7 @@ You’ll create an application that provides the time of day and then build it w
 
 Like most Spring [Getting Started guides](/guides), you can start from scratch and complete each step, or you can bypass basic setup steps that are already familiar to you. Either way, you end up with working code.
 
-本文摘自于Spring官方网站的[Maven教程](https://spring.io/guides/gs/maven/), 可以从头开始, 也可以跳过某些步骤. 到最后,工作目录中的代码应该是基本一致的。
+本文摘自于Spring官方网站的[Maven教程](https://spring.io/guides/gs/maven/), 可以从头开始, 也可以跳过某些步骤。到最后, 工作目录中的代码应该是基本一致的。
 
 
 *   [Download](https://github.com/spring-guides/gs-maven/archive/master.zip) and unzip the source repository for this guide, or clone it using [Git](/understanding/Git): `git clone [https://github.com/spring-guides/gs-maven.git](https://github.com/spring-guides/gs-maven.git)`
@@ -113,7 +113,7 @@ Maven项目的基本结构创建好了。
 
 Maven is downloadable as a zip file at [http://maven.apache.org/download.cgi](https://maven.apache.org/download.cgi). Only the binaries are required, so look for the link to apache-maven-_{version}_-bin.zip or apache-maven-_{version}_-bin.tar.gz.
 
-Maven的下载页面是: <http://maven.apache.org/download.cgi>. 我们需要下载对应的压缩包bin文件。根据平台,对应的是 `apache-maven-_{version}_-bin.zip` 或者 `apache-maven-_{version}_-bin.tar.gz`。
+Maven的下载页面是: <http://maven.apache.org/download.cgi>。我们需要下载对应的压缩包bin文件。根据平台,对应的是 `apache-maven-_{version}_-bin.zip` 或者 `apache-maven-_{version}_-bin.tar.gz`。
 
 Once you have downloaded the zip file, unzip it to your computer. Then add the _bin_ folder to your path.
 
@@ -153,7 +153,7 @@ Maven安装很简单, 应该没多大问题。
 
 Now that Maven is installed, you need to create a Maven project definition. Maven projects are defined with an XML file named _pom.xml_. Among other things, this file gives the project’s name, version, and dependencies that it has on external libraries.
 
-安装Maven之后, 我们需要定义一个Maven项目。Maven项目的定义, 使用一个XML文件, 名为 `pom.xml`. 在这个文件中, 配置项目名称,项目版本,以及需要依赖哪些外部库。
+安装Maven之后, 我们需要定义一个Maven项目。Maven项目的定义, 使用一个XML文件, 名为 `pom.xml`。在这个文件中, 配置项目名称,项目版本,以及需要依赖哪些外部库。
 
 Create a file named _pom.xml_ at the root of the project (i.e. put it next to the `src` folder) and give it the following contents:
 
@@ -209,7 +209,7 @@ Create a file named _pom.xml_ at the root of the project (i.e. put it next to th
 
 With the exception of the optional `<packaging>` element, this is the simplest possible _pom.xml_ file necessary to build a Java project. It includes the following details of the project configuration:
 
-除了 `<packaging>` 是可选的, 其他的顶级元素都是 `pom.xml` 必须的元素. 说明如下:
+除了 `<packaging>` 是可选的, 其他的顶级元素都是 `pom.xml` 必需的元素。说明如下:
 
 *   `<modelVersion>`. POM model version (always 4.0.0).
 *   `<groupId>`. Group or organization that the project belongs to. Often expressed as an inverted domain name.
@@ -221,7 +221,7 @@ With the exception of the optional `<packaging>` element, this is the simplest p
 *   `<modelVersion>`, POM模型版本号(固定为 4.0.0)。
 *   `<groupId>`, 该项目所属的项目组或者组织。和Java的基本包名类似, 一般使用网站域名的反转, 如 [`com.cncounter`](http://www.cncounter.com)。
 *   `<artifactId>`, 项目的名字, 一般会设置为 JAR/WAR 包的名字。
-*   `<version>`, 版本的构建项目号。
+*   `<version>`, 正在构建的项目的版本号。
 *   `<packaging>` —— 打包类型, 告诉Maven如何打包项目。默认为 `jar`, 即打包为JAR文件。如果需要打包为WAR文件, 则设置为 `war`。
 
 > When it comes to choosing a versioning scheme, Spring recommends the [semantic versioning](http://semver.org) approach.
@@ -240,7 +240,7 @@ At this point you have a minimal, yet capable Maven project defined.
 
 Maven is now ready to build the project. You can execute several build lifecycle goals with Maven now, including goals to compile the project’s code, create a library package (such as a JAR file), and install the library in the local Maven dependency repository.
 
-现在可以使用Maven来构建项目了. Maven可以执行多个构建目标, 比如编译代码(compile),打包(package), 安装到本地Maven仓库。
+现在可以使用Maven来构建项目了。Maven可以执行多个构建目标, 比如编译代码(compile),打包(package), 安装到本地Maven仓库。
 
 To try out the build, issue the following at the command line:
 
@@ -287,7 +287,7 @@ JAR文件的名称取决于项目的 `<artifactId>`和`<version>`属性。例如
 
 Maven also maintains a repository of dependencies on your local machine (usually in a _.m2/repository_ directory in your home directory) for quick access to project dependencies. If you’d like to install your project’s JAR file to that local repository, then you should invoke the `install` goal:
 
-Maven在还维护着一个本地仓库, 一般位于当前用户HomePod目录下的 `.m2/repository` 子目录中, 如 `C:\Users\Administrator\.m2\repository`, 本质是一个镜像缓存, 以方便快速获取到项目的依赖. 如果想将项目的JAR文件安装到本地仓库, 可以指定 `install` 目标:
+Maven还维护着一个本地仓库, 一般位于当前用户Home目录下的 `.m2/repository` 子目录中, 如 `C:\Users\Administrator\.m2\repository`, 本质是一个镜像缓存, 以方便快速获取到项目的依赖。如果想将项目的JAR文件安装到本地仓库, 可以指定 `install` 目标:
 
 
 
@@ -310,11 +310,11 @@ Speaking of dependencies, now it’s time to declare dependencies in the Maven b
 
 The simple Hello World sample is completely self-contained and does not depend on any additional libraries. Most applications, however, depend on external libraries to handle common and complex functionality.
 
-上面的简单示例中, Hello World 是完全独立的, 不依赖任何第三方库. 但在实际应用中, 很多项目都会依赖外部库, 以处理和实现各种复杂的功能。
+上面的简单示例中, Hello World 是完全独立的, 不依赖任何第三方库。但在实际应用中, 很多项目都会依赖外部库, 以处理和实现各种复杂的功能。
 
 For example, suppose that in addition to saying "Hello World!", you want the application to print the current date and time. While you could use the date and time facilities in the native Java libraries, you can make things more interesting by using the Joda Time libraries.
 
-例如, 需要打印当前的日期和时间. 当然,我们可以使用JDK自带的日期和时间相关的类, 但也可以使用Joda Time库,让编程更节省生命。
+例如, 需要打印当前的日期和时间。当然,我们可以使用JDK自带的日期和时间相关的类, 但也可以使用Joda Time库,让编程更节省生命。
 
 First, change HelloWorld.java to look like this:
 
@@ -379,7 +379,7 @@ This block of XML declares a list of dependencies for the project. Specifically,
 
 By default, all dependencies are scoped as `compile` dependencies. That is, they should be available at compile-time (and if you were building a WAR file, including in the _/WEB-INF/libs_ folder of the WAR). Additionally, you may specify a `<scope>` element to specify one of the following scopes:
 
-默认情况下, 依赖的生命周期(`scope`) 是 `compile`, 即编译时就依赖。如果构建一个WAR文件, 则会放到 `/WEB-INF/libs` 目录中。
+默认情况下, 依赖的范围(`scope`)是 `compile`, 即编译时就依赖。如果构建一个WAR文件, 则会放到 `/WEB-INF/libs` 目录中。
 
 当然,也可以通过`<scope>`元素指定具体的范围:
 
@@ -392,7 +392,7 @@ By default, all dependencies are scoped as `compile` dependencies. That is, they
 
 Now if you run `mvn compile` or `mvn package`, Maven should resolve the Joda Time dependency from the Maven Central repository and the build will be successful.
 
-再次执行 `mvn compile` 或 `mvn package`, Maven应该就能解决Joda Time对应的依赖, 然后构建成功。
+再次执行 `mvn compile` 或 `mvn package`, Maven应该就能解析Joda Time对应的依赖, 然后构建成功。
 
 ## Write a Test
 
