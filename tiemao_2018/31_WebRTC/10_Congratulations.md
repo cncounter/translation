@@ -23,7 +23,7 @@ In this codelab you learned how to:
 
 - 获取webcam摄像头的视频内容。
 - 通过 RTCPeerConnection 传输视频。
-- 通过 RTCPeerConnection 传输数据。
+- 通过 RTCDataChannel 传输数据。
 - 配置信令服务来交换消息。
 - 集成对等连接和信令服务。
 - 拍照并用数据通道传递给对方。
