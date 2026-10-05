@@ -23,7 +23,7 @@ Please make sure you have the correct access rights
 and the repository exists.
 ```
 
-看来需要生成 ssh 秘钥.
+看来需要生成 ssh 密钥.
 
 ## 2. 操作
 
