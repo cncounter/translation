@@ -49,7 +49,7 @@ vue init webpack demo-vue-front
 
 初始化过程中会要求输入一些信息, 回车确认即可。
 
-提示是否安装eslint，输入 `n` 不安装。
+提示是否安装eslint, 输入 `n` 不安装。
 
 各个版本可能行为不一致。 糟点是会提示初始化完成之后自动执行 `npm install`, 然后就因为墙的原因报一些错。
 
@@ -83,7 +83,7 @@ cnpm i vuex --save
 cnpm i vue-resource --save
 ```
 
-其中, `vue-router` 是路由管理, `vuex` 是状态管理,  `vue-resource` 是网路请求模块。 也可以安装其他模块。
+其中, `vue-router` 是路由管理, `vuex` 是状态管理,  `vue-resource` 是网络请求模块。 也可以安装其他模块。
 
 `--save`选项的作用, 是将依赖信息保存到 `package.json` 之中。
 
