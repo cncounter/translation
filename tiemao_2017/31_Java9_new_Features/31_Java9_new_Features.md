@@ -3,7 +3,7 @@
 
 
 
-## Factory Methods for Collections
+## 集合的工厂方法(Factory Methods for Collections)
 
 
 ### Java7 
