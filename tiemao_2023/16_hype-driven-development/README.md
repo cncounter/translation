@@ -11,7 +11,7 @@
 
 
 
-# 
+# 炒作驱动的开发(Hype-Driven Development)
 
-https://blog.daftcode.pl/hype-driven-development-3469fc2e9b22
+- 原文链接: <https://blog.daftcode.pl/hype-driven-development-3469fc2e9b22>
 
