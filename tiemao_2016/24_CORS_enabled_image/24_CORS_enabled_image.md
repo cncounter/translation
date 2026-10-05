@@ -34,7 +34,7 @@ HTML 规范文档为 images 引入了 [`crossorigin`](https://developer.mozilla.
 
 
 
-这些设置生效之后, 就可以像本站的资源一样, 保存其他站点的图片到 [DOM存储]((https://developer.mozilla.org/en-US/docs/Web/Guide/API/DOM/Storage)) 之中(或者其他地方)。
+这些设置生效之后, 就可以像本站的资源一样, 保存其他站点的图片到 [DOM存储](https://developer.mozilla.org/en-US/docs/Web/Guide/API/DOM/Storage) 之中(或者其他地方)。
 
 
 	var img = new Image,
