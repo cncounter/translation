@@ -40,7 +40,7 @@ The following statement illustrates how to create a unique constraint when you c
 
 创建唯一约束时，MySQL会自动创建对应的唯一索引。
 
-建表时同时创建唯一约束的语法为:
+建表时同时创建唯一约束的语法为：
 
 ```sql
 CREATE TABLE table_name(
@@ -68,7 +68,7 @@ ADD CONSTRAINT constraint_name UNIQUE KEY(column_1,column_2,...);
 
 ## 创建索引的语法
 
-`CREATE INDEX` 创建索引的语法格式定义为 ：
+`CREATE INDEX` 创建索引的语法格式定义为：
 
 ```sql
 CREATE [UNIQUE | FULLTEXT | SPATIAL] INDEX index_name
@@ -78,7 +78,7 @@ CREATE [UNIQUE | FULLTEXT | SPATIAL] INDEX index_name
     [algorithm_option | lock_option] ...
 ```
 
-其各个部分的定义如下:
+其各个部分的定义如下：
 
 ```sql
 key_part: {col_name [(length)] | (expr)} [ASC | DESC]
@@ -123,21 +123,21 @@ Otherwise, _rowid refers to the column in the first UNIQUE NOT NULL index if tha
 
 ## 唯一索引的特性
 
-问题:
+问题：
 
-- 1. MySQL唯一索引列中, 可以有多行包含NULL值吗？
+- 1. MySQL唯一索引列中，可以有多行包含NULL值吗？
 
 唯一索引不仅是索引，同时还会创建唯一约束，使索引中的每个值都不同。
 如果尝试添加与现有的key值一样的新行，则会报错。
 如果唯一索引只约束对应列中最前面的N个字符，那么对应列中前面的N个字符也就必须保持唯一。
 对于允许NULL值的列，唯一索引允许存在多个NULL值。
 
-如果存在整数类型的单列 PRIMARY KEY, 或者具有 UNIQUE NOT NULL 的单列索引, 则可以使用虚拟列 `_rowid` 来引用SELECT语句中的索引列，如下所示：
+如果存在整数类型的单列 PRIMARY KEY，或者具有 UNIQUE NOT NULL 的单列索引，则可以使用虚拟列 `_rowid` 来引用SELECT语句中的索引列，如下所示：
 
-- 如果是单列主键，并且为整数类型, 则 `_rowid` 就是指向 PRIMARY KEY 列。如果主键不是单列的整数，则不能使用 `_rowid`。
-- 此外, 如果第一个 UNIQUE NOT NULL 索引是单个整数列, 则 `_rowid` 指向符合条件的列。如果第一个 UNIQUE NOT NULL 索引不由单个整数列组成，则不能使用 `_rowid`。
+- 如果是单列主键，并且为整数类型，则 `_rowid` 就是指向 PRIMARY KEY 列。如果主键不是单列的整数，则不能使用 `_rowid`。
+- 此外，如果第一个 UNIQUE NOT NULL 索引是单个整数列，则 `_rowid` 指向符合条件的列。如果第一个 UNIQUE NOT NULL 索引不由单个整数列组成，则不能使用 `_rowid`。
 
-示例:
+示例：
 
 ```
 select _rowid from t1;
@@ -154,11 +154,11 @@ Another important point is that the UNIQUE constraint does not apply to NULL val
 
 ## 唯一索引与 `NULL` 值
 
-与其他数据库不同之处在于，MySQL将`NULL`视为独特的值(distinct values)。 因此，在UNIQUE索引中可以有多个NULL值。
+与其他数据库不同之处在于，MySQL 将 `NULL` 视为不同的值(distinct values)。 因此，在UNIQUE索引中可以有多个NULL值。
 
 这就是MySQL的设计方式。 虽然有人认为这是BUG，但我们不认为这是BUG。
 
-另外很重要的一点是，除了BDB存储引擎之外，其他的数据库引擎都不会在 UNIQUE constraint 中索引NULL值。
+另外很重要的一点是，除了BDB存储引擎之外，UNIQUE 约束不适用于 NULL 值。
 
 
 ## MySQL UNIQUE index examples
@@ -187,7 +187,7 @@ CREATE TABLE IF NOT EXISTS contacts (
 
 If you use the SHOW INDEXES statement, you will see that MySQL created a UNIQUE index for email column.
 
-查看索引信息，可以使用 `SHOW INDEXES` 语句，例如:
+查看索引信息，可以使用 `SHOW INDEXES` 语句，例如：
 
 ```sql
 SHOW INDEXES FROM contacts;
@@ -195,7 +195,7 @@ SHOW INDEXES FROM contacts;
 
 Let’s insert a row into the contacts table.
 
-插入数据:
+插入数据：
 
 ```sql
 INSERT INTO contacts(first_name,last_name,phone,email)
@@ -204,14 +204,14 @@ VALUES('John','Doe','(408)-999-9765','john.doe@mysqltutorial.org');
 
 Now if you try to insert a row whose email is john.doe@mysqltutorial.org, you will get an error message.
 
-如果尝试插入重复数据, 则会报错:
+如果尝试插入重复数据，则会报错：
 
 ```sql
 INSERT INTO contacts(first_name,last_name,phone,email)
 VALUES('Johny','Doe','(408)-999-4321','john.doe@mysqltutorial.org');
 ```
 
-会收到类似下面这样的错误提示信息:
+会收到类似下面这样的错误提示信息：
 
 ```
 Error Code: 1062. Duplicate entry 'john.doe@mysqltutorial.org' for key 'unique_email'
@@ -219,8 +219,8 @@ Error Code: 1062. Duplicate entry 'john.doe@mysqltutorial.org' for key 'unique_e
 
 Suppose you want the combination of first_name, last_name, and  phone is also unique among contacts. In this case, you use the CREATE INDEX statement to create a UNIQUE index for those columns as follows:
 
-如果还希望 `first_name`, `last_name`, 和 `phone` 的组合在表中唯一。
-则可以使用 CREATE INDEX 语句来增加唯一索引，示例为:
+如果还希望 `first_name`、`last_name` 和 `phone` 的组合在表中唯一。
+则可以使用 CREATE INDEX 语句来增加唯一索引，示例为：
 
 ```sql
 CREATE UNIQUE INDEX idx_name_phone
@@ -229,7 +229,7 @@ ON contacts(first_name,last_name,phone);
 
 Adding the following row into the contacts table causes an error because the combination of the first_name, last_name, and phone already exists.
 
-添加 first_name，last_name和phone 的相同组合则会报错。
+添加 first_name、last_name 和 phone 的相同组合则会报错。
 
 
 ```sql
@@ -237,7 +237,7 @@ INSERT INTO contacts(first_name,last_name,phone,email)
 VALUES('john','doe','(408)-999-9765','john.d@mysqltutorial.org');
 ```
 
-错误提示信息差不多, 提示也很明确:
+错误提示信息差不多，提示也很明确：
 
 ```
 Error Code: 1062. Duplicate entry 'john-doe-(408)-999-9765' for key 'idx_name_phone'
