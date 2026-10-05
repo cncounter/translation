@@ -11,7 +11,7 @@
 
 我们准备借助于 Docker 来屏蔽各种系统的复杂性。 最终在内置的CentOS操作系统上执行JDK的编译任务。
 
-所以需要先安装 Docker， 但要求操作系统版本不能太老了.
+所以需要先安装 Docker， 但要求操作系统版本不能太老了。
 
 ### 0.1 安装 Docker
 
@@ -28,7 +28,7 @@ docker -v
 docker --version
 ```
 
-如果不报错，那就表示安装成功.
+如果不报错，那就表示安装成功。
 
 ### 0.2 Docker 安装CentOS7
 
@@ -73,7 +73,7 @@ docker run -ti -v /sys/fs/cgroup:/sys/fs/cgroup:ro local/c7-systemd
 docker run -ti centos:7
 ```
 
-启动成功， 则自动进入CentOS命令行.
+启动成功， 则自动进入 CentOS 命令行。
 
 
 ### 0.3 CentOS7的操作
@@ -154,7 +154,7 @@ bash configure
 ```
 
 
-JDK 需要使用 GNU Bash.  并不支持其他 shell.
+JDK 需要使用 GNU Bash， 并不支持其他 shell。
 
 
 
