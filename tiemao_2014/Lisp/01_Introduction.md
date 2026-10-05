@@ -42,12 +42,12 @@ Common Lisp是一种多范式编程语言, 允许程序员根据应用领域选�
 相关服务
 ==
 
-- [项目托管](http://common-lisp.net/project-intro/) 为开 源/免费的Common Lisp项目做托管。
+- [项目托管](http://common-lisp.net/project-intro/) 为开源/免费的Common Lisp项目做托管。
 - [邮件列表](http://common-lisp.net/independent-lists/) Common Lisp相关议题的邮件列表。
 
 
 
-###更多###
+### 更多 ###
 
 - Common Lisp社区门户: [http://common-lisp.net/](http://common-lisp.net/)
 - Getting Started： [点击这里开始学习](http://cliki.net/Getting%20Started)
