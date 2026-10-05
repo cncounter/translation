@@ -1,10 +1,10 @@
-# NodeJS调用HeadLess-Chrome
+# NodeJS调用Headless-Chrome
 
 `Headless` 模式是指没有图形化界面(GUI),运行在后台的程序。
 
-本文先简要介绍如何通过命令行调用HeadLess-Chrome, 然后再演示如何通过 NodeJS 来调用HeadLess-Chrome。 至于C++方式的API调用请参考开发者官网。
+本文先简要介绍如何通过命令行调用Headless-Chrome, 然后再演示如何通过 NodeJS 来调用Headless-Chrome。 至于C++方式的API调用请参考开发者官网。
 
-使用HeadLess模式-Chrome 的好处是: 
+使用 Chrome 的 Headless 模式的好处是: 
 
 - 不需要显卡支持, 可以在Linux服务器环境中运行。
 
@@ -149,7 +149,7 @@ C:\Users\Administrator>
 
 和Chrome的开发者工具-Console控制台很像, 因为都基于V8引擎。
 
-npm 全称是 node package manage, 即NodeJS的软件包管理工具.
+npm 全称是 node package manager, 即NodeJS的软件包管理工具.
 
 如果某些安装包被墙,则可以配置代理, 或者使用淘宝的npm注册中心:
 
@@ -174,7 +174,7 @@ npm install chrome-launcher --save
 
 `chrome-launcher` 这个 NPM module 能自动查找到机器上安装的 Chrome 程序, 并启动 debug 实例, 加载浏览器, 以及关闭浏览器。当然, 因为基于Node,所以支持跨平台使用!
 
-`chrome-remote-interface` 是一个底层API, 比 Puppeteer's API 更底层. 比起直接使用 DevTools protocol 来说, 此API更加方便.
+`chrome-remote-interface` 是一个底层API, 比 Puppeteer 的 API 更底层. 比起直接使用 DevTools protocol 来说, 此API更加方便.
 
 
 然后,  创建 `index.js` 文件, 并输入内容:
@@ -1064,7 +1064,7 @@ node testdownload.js
 ### 总结
 
 Chrome 的 headless 模式可用于自动化测试，尽管还有一些不完善的地方。
-但毕竟是真实的浏览器, 比起其他测试套具来说具有很多优势。
+但毕竟是真实的浏览器, 比起其他测试套件来说具有很多优势。
 
 
 
