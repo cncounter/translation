@@ -19,7 +19,7 @@ MySQL现在是一个更好的NoSQL解决方案。我们这样说是因为在存�
 当用户访问Wix上的某个网站页面时, 浏览器会向Wix网站服务器发送一个HTTP请求。不管是自定义域名(例如, `cncounter.com`)还是免费的Wix二级域名(如: `user.wix.com/site`)。服务器需要通过查询键/值对来将URL请求解析为相应的站点。在下面的讨论中我们将URL视为 route(路由)。
 
 
-`routes` 表用来将网址解析为 site 对象。因为网站可能有多个路由, 所以是多对一的关系(many to one, N:1)。找到网站以后, 程序就加载它。site 对象机构比较复杂, 包括两个子对象列表 —— 网站使用的不同服务。下面是示例对象模型, 假设使用标准SQL数据库和规范化表结构:
+`routes` 表用来将网址解析为 site 对象。因为网站可能有多个路由, 所以是多对一的关系(many to one, N:1)。找到网站以后, 程序就加载它。site 对象结构比较复杂, 包括两个子对象列表 —— 网站使用的不同服务。下面是示例对象模型, 假设使用标准SQL数据库和规范化表结构:
 
 
 ![](01_sql_scheme.png)
@@ -147,7 +147,7 @@ MySQL现在是一个更好的NoSQL解决方案。我们这样说是因为在存�
 
 原文链接(需要翻墙): [http://engineering.wix.com/2015/12/10/scaling-to-100m-mysql-is-a-better-nosql/](http://engineering.wix.com/2015/12/10/scaling-to-100m-mysql-is-a-better-nosql/) 
 
-原文日前: 2015年12月10日
+原文日期: 2015年12月10日
 
 翻译日期: 2015年12月27日
 
