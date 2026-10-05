@@ -1,13 +1,13 @@
 ZeroClipboard 复制内容到剪贴板
 ==
 
->译者注: ios明确不支持 Flash, android上的浏览器默认页不支持Flash, 而Chrome不支持纯JS的方式复制内容到剪贴板. 所以实现思路是检测Flash支持,如果支持则使用Flash方式,否则使用HTML5或者JS方式. 如果还不支持,那就没办法了,可能是浏览器太古老或者是很奇葩的浏览器,对其提供兼容简直是得不偿失. 如果浏览器中禁用了JavaScript脚本,则现代网站大多都不能进行良好的交互.
+>译者注: iOS 明确不支持 Flash, Android 上的浏览器默认页不支持 Flash, 而 Chrome 不支持纯 JS 的方式复制内容到剪贴板。所以实现思路是检测 Flash 支持, 如果支持则使用 Flash 方式, 否则使用 HTML5 或者 JS 方式。如果还不支持, 那就没办法了, 可能是浏览器太古老或者是很奇葩的浏览器, 对其提供兼容简直是得不偿失。如果浏览器中禁用了 JavaScript 脚本, 则现代网站大多都不能进行良好的交互。
 
-点一下按钮就将需要的内容拷贝到剪贴板,对于网站的易用性和用户的好评度都会有很大提升，特别是手机浏览器，触摸屏选择文本是很低效的一种操作。
+点一下按钮就将需要的内容拷贝到剪贴板, 对于网站的易用性和用户的好评度都会有很大提升, 特别是手机浏览器, 触摸屏选择文本是很低效的一种操作。
 
 ## Flash 相关的部分
 
-杯具的是 Flash 10 将API和处理方式都改变了,此时 [ZeroClipboard](https://github.com/zeroclipboard/zeroclipboard) 应运而生. ZeroClipboard库封装了一个Flash文件以及相应的JS代码,使得在浏览器中将内容拷贝到剪贴板变得简单易用.
+杯具的是 Flash 10 将 API 和处理方式都改变了, 此时 [ZeroClipboard](https://github.com/zeroclipboard/zeroclipboard) 应运而生。ZeroClipboard 库封装了一个 Flash 文件以及相应的 JS 代码, 使得在浏览器中将内容拷贝到剪贴板变得简单易用。
 
 项目首页: [http://zeroclipboard.org/](http://zeroclipboard.org/)
 
@@ -31,7 +31,7 @@ GitHub地址: [https://github.com/zeroclipboard/zeroclipboard](https://github.co
 			value="拷贝到剪贴板" />
 	</p>
 
-上面的HTML代码创建了一个ID为 "box-content" 的表单元素. 以及一个ID为 "copy" 的按钮. 这是与ZeroClipboard交互时需要的2个重要元素.
+上面的 HTML 代码创建了一个 ID 为 "box-content" 的表单元素。以及一个 ID 为 "copy" 的按钮。这是与 ZeroClipboard 交互时需要的 2 个重要元素。
 
 ### 调用ZeroClipboard
 
@@ -54,12 +54,12 @@ GitHub地址: [https://github.com/zeroclipboard/zeroclipboard](https://github.co
 上面使用 ZeroClipboard 的例子中我们执行了以下步骤:
 
 - 设置 SWF 文件的下载地址.
-- 创建一个ZeroClipboard的`client`: 在同一个页面中,client是一个单例对象, 可以关联到某个按钮,或者其他DOM元素上.
-- 添加 mousedown 事件监听.设置要粘贴的内容
-- 添加可选的complete事件监听. 用来通知拷贝完成信息,实际使用时可能只是显示提示信息,而不用alert.
-- 将设置好的client粘附(glue)到对应ID的DOM元素
+- 创建一个 ZeroClipboard 的 `client`: 在同一个页面中, client 是一个单例对象, 可以关联到某个按钮, 或者其他 DOM 元素上.
+- 添加 mousedown 事件监听. 设置要粘贴的内容
+- 添加可选的 complete 事件监听. 用来通知拷贝完成信息, 实际使用时可能只是显示提示信息, 而不用 alert.
+- 将设置好的 client 粘附(glue)到对应 ID 的 DOM 元素
 
-OK,很简单吧? ZeroClipboard 是基于Flash的跨浏览器解决方案,好用的拷贝大多是通过Flash来执行的.
+OK, 很简单吧? ZeroClipboard 是基于 Flash 的跨浏览器解决方案, 好用的拷贝大多是通过 Flash 来执行的.
 
 ZeroClipboard 2.x 配置选项详解
 
@@ -69,7 +69,7 @@ ZeroClipboard 2.x 配置选项详解
 	  // 其默认值指向与ZeroClipboard JS 文件同目录下的"ZeroClipboard.swf"文件
 	  swfPath: _swfPath,
 
-	  // SWF入内的脚本策略: 用于指定SWF应该信任的页面域名
+	  // SWF 内嵌的脚本策略: 用于指定 SWF 应该信任的页面域名
 	  // (单个字符串，字符串数组)
 	  // 默认为当前域名
 	  trustedDomains: window.location.host ? [window.location.host] : [],
@@ -107,7 +107,7 @@ ZeroClipboard 2.x 配置选项详解
 	  // 将鼠标滑过复制载体元素时使用的CSS类名
 	  hoverClass: "zeroclipboard-is-hover",
 
-	  // The class used to indicate that a clipped element is active (is being clicked).
+	  // 用于指示复制载体元素处于激活状态(正在被点击)的 CSS 类名
 	  activeClass: "zeroclipboard-is-active",
 
 
