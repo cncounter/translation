@@ -70,13 +70,13 @@ Just give more value than you take in payment, and you'll be successful.
 You can already provide a lot of value -- even as a complete beginner. Each course member will get their first freelancing gig for Finxter, and you will realize that you already have a lot of value to give by completing this easy gig.
 
 
-逐步建立信任，是最直接的成功方式。
+逐步建立自信，是最直接的成功方式。
 
 完全可以由你自己控制，不需要以限制资源和竞争的限制性思维方式思考。
 
 只要给客户交付比对方付出更多的价值，你就会成功。
 
-你可以提供很多价值 —— 即使是一个粉嫩的新人。 每一门课程的学员都能获得他们在 Finxter 的第一次自由职业，您会意识到通过完成这个简单的工作，您已经收获了很多价值。
+你可以提供很多价值 —— 即使是一个粉嫩的新人。 每一门课程的学员都能获得他们在 Finxter 的第一次自由职业，您会意识到通过完成这个简单的工作，您已经有很多可以提供的价值。
 
 
 - https://finxter.com/
