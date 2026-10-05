@@ -40,7 +40,7 @@ Extending Class Data Sharing to application classes. Reducing the memory needed 
 
 ## 2. 哪些不是本提案的目标
 
-将Class的数据扩展并共享给应用程序类。 减少Java类的元数据(class metadata) 所需的内存。 允许class元数据的异步垃圾收集。
+将类数据共享(Class Data Sharing)扩展到应用程序类。 减少Java类的元数据(class metadata) 所需的内存。 允许class元数据的异步垃圾收集。
 
 
 ## Success Metrics
@@ -58,7 +58,7 @@ Application startup and footprint will not regress more than 1% as measured by a
 
 Hotspot JVM 源码中永久代相关的代码将被删除。
 
-根据一组尚未选择的基准进行衡量，应用程序启动时间、占用的内存空间, 相比原来不得超过1%。
+根据一组尚未选择的基准进行衡量，应用程序启动时间、占用的内存空间, 相比原来回退不得超过1%。
 
 
 ## Motivation
@@ -67,7 +67,7 @@ This is part of the JRockit and Hotspot convergence effort. JRockit customers do
 
 ## 4. 动机
 
-这是 JRockit 和 Hotspot 融合工作的一部分。 JRockit 客户不需要配置永久代（因为JRockit 没有永久代）, 而且他们并不习惯配置永久代。
+这是 JRockit 和 Hotspot 融合工作的一部分。 JRockit 客户不需要配置永久代（因为JRockit 没有永久代）, 而且他们习惯于不配置永久代。
 
 ## Description
 
@@ -134,7 +134,7 @@ Hotspot JVM 的更改范围是最主要的风险。 此外，准确确定需要�
 
 将内联字符串和类静态变量移动到 Java 堆中, 可能会导致OOM异常或 GC 数量增加。 用户可能需要对 `-Xmx` 进行一些调整。
 
-使用 UseCompressedOops 选项，指向（永久代中）class元数据的指针可以和指向 Java 堆的指针相同的方式进行压缩。 这产生了显着的性能改进（大约几个百分点）。 指向本地内存中元数据的指针将以类似的方式压缩，但实现方式不同。 后一种实现的性能可能不如将指针压缩到 Java 堆中那样高效。 压缩指向元数据的指针, 可能要求对元数据的大小设置上限。 例如，如果实现要求将所有元数据分配到某个地址空间以内（例如小于 4g），这将限制元数据的大小。
+使用 UseCompressedOops 选项，指向（永久代中）class元数据的指针可以以与指向 Java 堆的指针相同的方式进行压缩。 这产生了显著的性能改进（大约几个百分点）。 指向本地内存中元数据的指针将以类似的方式压缩，但实现方式不同。 后一种实现的性能可能不如将指针压缩到 Java 堆中那样高效。 压缩指向元数据的指针, 可能要求对元数据的大小设置上限。 例如，如果实现要求将所有元数据分配到某个地址空间以内（例如小于 4g），这将限制元数据的大小。
 
 ## Dependences
 
@@ -159,7 +159,7 @@ Documentation: References to the permanent generation will need to be removed.
 
 - 兼容性: 与永久代相关的命令行参数将过时。
 
-- 文档: 需要删除与永久代相关的链接。
+- 文档: 需要删除对永久代的引用。
 
 
 ## 11. 相关链接
