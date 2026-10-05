@@ -21,9 +21,9 @@ https://app.datadoghq.com/account/settings#api
 
 各个平台的配置方法不一样, 比如 Docker 安装只能通过环境变量设置。
 
-安装完成后启动.
+安装完成后启动。
 
-Mac 启动后会有一个小骨头的图标。 然后可以打开 Web UI. 进入 Setting修改配置，保存，然后重启 DataDog Agent 即可生效。
+Mac 启动后会有一个小骨头的图标。 然后可以打开 Web UI。 进入 Setting 修改配置，保存，然后重启 Datadog Agent 即可生效。
 
 需要注意的是 Web UI 里面 CTRL+F 查找配置并不太方便，可能是为了提高性能使用了懒加载技术。
 
