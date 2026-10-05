@@ -60,7 +60,7 @@ The symbolic references in the run-time constant pool are derived from entries i
 
   - 对于非数组类(nonarray class)或接口, name 是类或接口的二进制名称（[§4.2.1](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-4.html#jvms-4.2.1)) 。
   - 对于 *n* 维数组类, name 以 *n* 个 ASCII 字符 `[` 开头, 后跟元素类型的表示:
-    - 如果元素类型是原生类型(primitive type), 则元素类型由相应的字段描述符表示（([§4.3.2](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-4.html#jvms-4.3.2))。
+    - 如果元素类型是原生类型(primitive type), 则元素类型由相应的字段描述符表示（[§4.3.2](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-4.html#jvms-4.3.2))。
     - 其他情况, 如果元素是引用类型, 元素类型部分由 ASCII 字符 `L` 开头, 后跟元素类型的二进制名称, 后跟 ASCII 分号字符 `;` 表示。
 
   在本章中提到类或接口的名称时, 该名称应理解为上述形式. （这也是 `Class.getName` 方法返回的形式。）
@@ -84,7 +84,7 @@ The symbolic references in the run-time constant pool are derived from entries i
 
 - A symbolic reference to a method type is derived from a `CONSTANT_MethodType_info` structure ([§4.4.9](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-4.html#jvms-4.4.9)). Such a reference gives a method descriptor ([§4.3.3](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-4.html#jvms-4.3.3)).
 
-- 方法类型的符号引用, 源自`CONSTANT_MethodType_info`结构（[§4.4.9](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-4.html#jvms-4.4.9))。这样的引用给出了一个方法描述符（[§4.3.3](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-4.html#jvms-4.3.3））。
+- 方法类型的符号引用, 源自`CONSTANT_MethodType_info`结构（[§4.4.9](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-4.html#jvms-4.4.9))。这样的引用给出了一个方法描述符（[§4.3.3](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-4.html#jvms-4.3.3)）。
 
 
 - A symbolic reference to a *dynamically-computed constant* is derived from a `CONSTANT_Dynamic_info` structure ([§4.4.10](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-4.html#jvms-4.4.10)). Such a reference gives:
@@ -391,7 +391,7 @@ When a class or interface C = `<N1, L1>` makes a symbolic reference to a field o
 
 To ensure this, the Java Virtual Machine imposes *loading constraints* of the form `N(L1` = `N(L2` during preparation ([§5.4.2](#jvms-5.4.2)) and resolution ([§5.4.3](#jvms-5.4.3)). To enforce these constraints, the Java Virtual Machine will, at certain prescribed times (see [§5.3.1](#jvms-5.3.1), [§5.3.2](#jvms-5.3.2), [§5.3.3](#jvms-5.3.3), and [§5.3.5](#jvms-5.3.5)), record that a particular loader is an initiating loader of a particular class. After recording that a loader is an initiating loader of a class, the Java Virtual Machine must immediately check to see if any loading constraints are violated. If so, the record is retracted, the Java Virtual Machine throws a `LinkageError`, and the loading operation that caused the recording to take place fails.
 
-为了确保这一点, Java 虚拟机在准备 ([§5.4.2](#jvms-5.4.2)) 和解析 ( [§5.4.3](#jvms-5.4.3))阶段, 施加了加载约束 `N(L1` = `N(L2`。 为了强制这种约束, Java 虚拟机将在某些规定的时间（参见 [§5.3.1](#jvms-5.3.1)、[§5.3.2](#jvms-5.3.2)、[§5.3 .3](#jvms-5.3.3) 和 [§5.3.5](#jvms-5.3.5)), 记录特定加载器为特定类的初始加载器。 在记录加载器是某个类的初始加载器之后, Java 虚拟机必须立即检查是否违反了任何加载约束。 如果是这样, 记录将被收回, Java 虚拟机抛出一个 `LinkageError`, 导致发生记录操作的加载行为失败。
+为了确保这一点, Java 虚拟机在准备 ([§5.4.2](#jvms-5.4.2)) 和解析 ( [§5.4.3](#jvms-5.4.3))阶段, 施加了加载约束 `N(L1` = `N(L2`。 为了强制这种约束, Java 虚拟机将在某些规定的时间（参见 [§5.3.1](#jvms-5.3.1)、[§5.3.2](#jvms-5.3.2)、[§5.3.3](#jvms-5.3.3) 和 [§5.3.5](#jvms-5.3.5)), 记录特定加载器为特定类的初始加载器。 在记录加载器是某个类的初始加载器之后, Java 虚拟机必须立即检查是否违反了任何加载约束。 如果是这样, 记录将被收回, Java 虚拟机抛出一个 `LinkageError`, 导致发生记录操作的加载行为失败。
 
 Similarly, after imposing a loading constraint (see [§5.4.2](#jvms-5.4.2), [§5.4.3.2](#jvms-5.4.3.2), [§5.4.3.3](#jvms-5.4.3.3), and [§5.4.3.4](#jvms-5.4.3.4)), the Java Virtual Machine must immediately check to see if any loading constraints are violated. If so, the newly imposed loading constraint is retracted, the Java Virtual Machine throws a `LinkageError`, and the operation that caused the constraint to be imposed (either resolution or preparation, as the case may be) fails.
 
@@ -502,7 +502,7 @@ The following steps are used to derive a `Class` object for the nonarray class o
 
 The Java Virtual Machine supports the organization of classes and interfaces into modules. The membership of a class or interface C in a module `M` is used to control access to C from classes and interfaces in modules other than `M` ([§5.4.4](#jvms-5.4.4)).
 
-最新版本的Java虚拟机, 支持将类和接口组织成模块。 模块`M`中的类或接口 C 的成员资格, 用于控制从 `M` 以外的模块中的类和接口对 C 的访问（[§5.4.4](#jvms-5.4.4)）。
+Java 虚拟机支持将类和接口组织成模块。 模块`M`中的类或接口 C 的成员资格, 用于控制从 `M` 以外的模块中的类和接口对 C 的访问（[§5.4.4](#jvms-5.4.4)）。
 
 Module membership is defined in terms of run-time packages ([§5.3](#jvms-5.3)). A program determines the names of the packages in each module, and the class loaders that will create the classes and interfaces of the named packages; it then specifies the packages and class loaders to an invocation of the `defineModules` method of the class `ModuleLayer`. Invoking `defineModules` causes the Java Virtual Machine to create new *run-time modules* that are associated with the run-time packages of the class loaders.
 
@@ -514,7 +514,7 @@ Every run-time module indicates the run-time packages that it *exports*, which i
 
 We say that *a class is in a run-time module* iff the class's run-time package is associated (or will be associated, if the class is actually created) with that run-time module.
 
-如果一个类的运行时包, 与某个运行时模块关联（或即将关联, 等该类实际创建时）, 我们说 *该类在这个运行时模块中*, 。
+如果一个类的运行时包, 与某个运行时模块关联（或即将关联, 等该类实际创建时）, 我们说 *该类在这个运行时模块中*。
 
 A class created by a class loader is in exactly one run-time package and therefore exactly one run-time module, because the Java Virtual Machine does not support a run-time package being associated with (or more evocatively, "split across") multiple run-time modules.
 
@@ -542,7 +542,7 @@ The set of class loaders specified for a layer, and the set of run-time modules 
 
 If a user-defined layer contains more than one class loader, then any delegation between the class loaders is the responsibility of the program that created the layer. The Java Virtual Machine does not check that the layer's class loaders delegate to each other in accordance with how the layer's run-time modules read each other. Moreover, if the layer's run-time modules are modified via the `ModuleLayer` class to read additional run-time modules, then the Java Virtual Machine does not check that the layer's class loaders are modified by some out-of-band mechanism to delegate in a corresponding fashion.
 
-如果用户定义的层包含多个类加载器, 那么类加载器之间的任何委托, 都是创建该层的程序的责任. Java 虚拟机 **不会** 根据层的运行时模块相互读取的方式, 检查层的类加载器之间是否相互委托。 此外, 如果通过 `ModuleLayer` 类修改层的运行时模块, 以读取额外的运行时模块, 则 Java 虚拟机不会检查层的类加载器是否被某些带外机制修改以委托以相应的方式。
+如果用户定义的层包含多个类加载器, 那么类加载器之间的任何委托, 都是创建该层的程序的责任. Java 虚拟机 **不会** 根据层的运行时模块相互读取的方式, 检查层的类加载器之间是否相互委托。 此外, 如果通过 `ModuleLayer` 类修改层的运行时模块, 以读取额外的运行时模块, 则 Java 虚拟机不会检查层的类加载器是否被某些带外机制修改, 从而以相应的方式进行委托。
 
 There are similarities and differences between class loaders and layers. On the one hand, a layer is similar to a class loader in that each may delegate to, respectively, one or more parent layers or class loaders that created, respectively, modules or classes at an earlier time. That is, the set of modules specified to a layer may depend on modules not specified to the layer, and instead specified previously to one or more parent layers. On the other hand, a layer may be used to create new modules only once, whereas a class loader may be used to create new classes or interfaces at any time via multiple invocations of the `defineClass` method.
 
@@ -563,7 +563,7 @@ It is possible for a class loader to define a class or interface in a run-time p
 - 类加载器的未命名模块, 与绑定到同一类加载器的其他运行时模块都不同。
 - 类加载器的未命名模块, 与绑定到其他类加载器的所有运行时模块都不同（包括未命名模块）。
 - 每个未命名的模块, 都会读取每个运行时模块。
-- 每个未命名的模块, 都导出到与每个运行时包相关联的每一个运行时模块。
+- 每个未命名的模块, 都会将与其自身关联的每个运行时包, 导出给每一个运行时模块。
 
 
 <a name="jvms-5.4"></a>
@@ -596,14 +596,14 @@ This specification allows an implementation flexibility as to when linking activ
 
   A symbolic reference to a dynamically-computed call site is not resolved until a bootstrap method that refers to it as a static argument is invoked.
 
-- 对动态计算常量的符号引用, 直到 (i) 引用它的 `ldc`, `ldc_w`, or `ldc2_w` 指令被执行, 或者 (ii) 引用它作为静态参数的引导方法被调用时, 才会解析。
+- 对动态计算常量的符号引用, 直到 (i) 引用它的 `ldc`, `ldc_w` 或 `ldc2_w` 指令被执行, 或者 (ii) 引用它作为静态参数的引导方法被调用时, 才会解析。
 
   动态计算调用点的符号引用， 在将其作为静态参数的引导方法被调用之前, 不会解析。
 
 
 For example, a Java Virtual Machine implementation may choose a "lazy" linkage strategy, where each symbolic reference in a class or interface (other than the symbolic references above) is resolved individually when it is used. Alternatively, an implementation may choose an "eager" linkage strategy, where all symbolic references are resolved at once when the class or interface is being verified. This means that the resolution process may continue, in some implementations, after a class or interface has been initialized. Whichever strategy is followed, any error detected during resolution must be thrown at a point in the program that (directly or indirectly) uses a symbolic reference to the class or interface.
 
-例如, Java 虚拟机实现可能会选择 "惰性(lazy)" 链接策略, 类或接口中的每个符号引用在使用时都会单独解析（除了上面提到的动态计算常量的的符号引用）。 或者, JVM实现也可以选择 "急切(eager)" 的链接策略, 在验证类或接口时, 立即解析所有的符号引用。 这意味着在某些实现中, 在初始化类或接口之后, 可能会继续执行解析过程。 无论JVM采用哪种策略, 在解析期间检测到的任何错误, 都必须在程序实际用到类或接口的符号引用时（直接或间接）, 才能在这个点抛出链接错误。
+例如, Java 虚拟机实现可能会选择 "惰性(lazy)" 链接策略, 类或接口中的每个符号引用在使用时都会单独解析（除了上面提到的动态计算常量的符号引用）。 或者, JVM实现也可以选择 "急切(eager)" 的链接策略, 在验证类或接口时, 立即解析所有的符号引用。 这意味着在某些实现中, 在初始化类或接口之后, 可能会继续执行解析过程。 无论JVM采用哪种策略, 在解析期间检测到的任何错误, 都必须在程序实际用到类或接口的符号引用时（直接或间接）, 才能在这个点抛出链接错误。
 
 Because linking involves the allocation of new data structures, it may fail with an `OutOfMemoryError`.
 
@@ -674,7 +674,7 @@ During preparation of a class or interface C, the Java Virtual Machine also impo
    Then `TiL2` = `TiL3` for `i` = 0 to `n`.
 
 
-2.对于在C的超接口 `<I, L3>` 中声明的每个实例方法`m`, 如果C本身没有声明覆写 `m` 的实例方法, 则选择一个方法（[§5.4.6](#jvms-5.4.6)) 关于 C 和 `<I, L3>` 中的方法 `m`。 让 `<D, L2>` 为声明所选方法的类或接口.  Java 虚拟机施加如下加载约束。
+2. 对于在C的超接口 `<I, L3>` 中声明的每个实例方法`m`, 如果C本身没有声明覆写 `m` 的实例方法, 则选择一个方法（[§5.4.6](#jvms-5.4.6)) 关于 C 和 `<I, L3>` 中的方法 `m`。 让 `<D, L2>` 为声明所选方法的类或接口.  Java 虚拟机施加如下加载约束。
 
    然后 Ti`L2` = Ti`L3` 对于 `i` = 0 到 `n`。
 
@@ -739,7 +739,7 @@ Resolution of an unresolved symbolic reference to a dynamically-computed call si
 
   The symbolic reference is still unresolved for all other instructions in the `class` file, of any opcode, which indicate the same entry in the run-time constant pool as the `invokedynamic` instruction above.
 
-- 如果在解析符号引用期间没有发生错误, 则解析成功; *仅针对的 `class` 文件中请求解析的指令*。该指令必须具有 `invokedynamic` 操作码。
+- 如果在解析符号引用期间没有发生错误, 则解析成功; *仅针对 `class` 文件中请求解析的指令*。该指令必须具有 `invokedynamic` 操作码。
 
   随后该`class`文件中, 尝试通过指令解析符号引用, 总是成功并产生和初始解析相同的实体。 对于这些后续尝试, 不会重新执行引导方法。
 
@@ -759,11 +759,11 @@ Resolution of an unresolved symbolic reference to a dynamically-computed call si
 
 Certain of the instructions above require additional linking checks when resolving symbolic references. For instance, in order for a `getfield` instruction to successfully resolve the symbolic reference to the field on which it operates, it must not only complete the field resolution steps given in [§5.4.3.2](#jvms-5.4.3.2) but also check that the field is not `static`. If it is a `static` field, a linking exception must be thrown.
 
-在解析符号引用时，上述某些指令需要额外的链接检查。 例如，为了让 `getfield` 指令成功解析对其操作的字段的符号引用，它不仅必须完成 [§5.4.3.2](#jvms-5.4.3.2) 中给出的字段解析步骤, 还要检查该字段是不是`static`。 如果是“静态”字段，则必须抛出链接异常。
+在解析符号引用时，上述某些指令需要额外的链接检查。 例如，为了让 `getfield` 指令成功解析对其操作的字段的符号引用，它不仅必须完成 [§5.4.3.2](#jvms-5.4.3.2) 中给出的字段解析步骤, 还要检查该字段是不是`static`。 如果是 `static` 字段，则必须抛出链接异常。
 
 Linking exceptions generated by checks that are specific to the execution of a particular Java Virtual Machine instruction are given in the description of that instruction and are not covered in this general discussion of resolution. Note that such exceptions, although described as part of the execution of Java Virtual Machine instructions rather than resolution, are still properly considered failures of resolution.
 
-链接异常由具体JVM指令执行的检查生成, 并且在该指令的描述中给出链接异常说明，并且不包括在解析阶段的一般讨论中。 请注意，尽管此类异常被描述为 Java 虚拟机指令执行的一部分, 而不在解析这一节讨论，但他们仍被视为解析失败。
+链接异常由具体JVM指令执行的检查生成, 并且在该指令的描述中给出链接异常说明，并且不包括在解析阶段的一般讨论中。 请注意，尽管此类异常被描述为 Java 虚拟机指令执行的一部分, 而不在解析这一节讨论，但它们仍被视为解析失败。
 
 
 <a name="jvms-5.4.3.1"></a>
@@ -951,7 +951,7 @@ The result of method resolution is determined as follows:
 
   如果 Tr 不是数组类型, 则令 T0 为 Tr； 否则, 令 T0 为 Tr 的元素类型。
 
-   For `i` = 1 to `n`: 如果Tfi不是数组类型, 则令 Ti 为 Tfi；否则, 令 Ti 为 Tfi 的元素类型。
+   对于 `i` = 1 到 `n`: 如果Tfi不是数组类型, 则令 Ti 为 Tfi；否则, 令 Ti 为 Tfi 的元素类型。
 
    Java 虚拟机对 `i` = 0 到 `n` 施加加载约束 `TiL1` = `TiL2`。
 
@@ -969,7 +969,7 @@ Otherwise, the result is nondeterministic. This is not new: *The Java® Virtual 
 
 Note that if the result of resolution is an `abstract` method, the referenced class C may be non-`abstract`. Requiring C to be `abstract` would conflict with the nondeterministic choice of superinterface methods. Instead, resolution assumes that the run time class of the invoked object has a concrete implementation of the method.
 
-否则, 结果是不确定的。这并不新鲜:  *Java® 虚拟机规范* 从未明确确定选择哪种方法, 以及应该如何打破`联系`。 在 Java SE 8 之前, 这主要是一种无法观察到的区别。 但是, 从 Java SE 8 开始, 接口方法集更加异构, 因此必须注意避免出现不确定行为的问题。 因此:
+否则, 结果是不确定的。这并不新鲜:  *Java® 虚拟机规范* 从未明确确定选择哪种方法, 以及应该如何打破平局。 在 Java SE 8 之前, 这主要是一种无法观察到的区别。 但是, 从 Java SE 8 开始, 接口方法集更加异构, 因此必须注意避免出现不确定行为的问题。 因此:
 
 - `private` 和 `static` 的超接口方法被解析过程忽略。 这与 Java 编程语言一致, 不继承此类接口方法。
 - 由已解析方法控制的任何行为, 不应取决于该方法是否为 `abstract`。
@@ -1039,7 +1039,7 @@ The result of interface method resolution is determined as follows:
 
   如果 Tr 不是数组类型, 则令 T0 为 Tr； 否则, 令 T0 为 Tr 的元素类型。
 
-   For `i` = 1 to `n`: 如果Tfi不是数组类型, 则令 Ti 为 Tfi；否则, 令 Ti 为 Tfi 的元素类型。
+   对于 `i` = 1 到 `n`: 如果Tfi不是数组类型, 则令 Ti 为 Tfi；否则, 令 Ti 为 Tfi 的元素类型。
 
    Java 虚拟机对 `i` = 0 到 `n` 施加加载约束 `TiL1` = `TiL2`。
 
@@ -1134,7 +1134,7 @@ To resolve `MH`, all symbolic references to classes, interfaces, fields, and met
 
 1. R is resolved. This occurs as if by field resolution ([§5.4.3.2](#jvms-5.4.3.2)) when `MH`'s bytecode behavior is kind 1, 2, 3, or 4, and as if by method resolution ([§5.4.3.3](#jvms-5.4.3.3)) when `MH`'s bytecode behavior is kind 5, 6, 7, or 8, and as if by interface method resolution ([§5.4.3.4](#jvms-5.4.3.4)) when `MH`'s bytecode behavior is kind 9.
 
-1. R 已解析。 当 `MH` 的字节码行为是种类 1、2、3 或 4 时, 就像字段解析 ([§5.4.3.2](#jvms-5.4.3.2)) 一样; 当 `MH` 的字节码行为是种类 5、6、7 或 8时, 和方法解析 ([§5.4.3.3](#jvms-5.4.3.3)) 一样; 当 `MH` 的字节码行为是 kind 9 时, 好像接口方法解析一样 ([§5.4.3.4](#jvms-5.4.3.4)) 。
+1. R 已解析。 当 `MH` 的字节码行为是种类 1、2、3 或 4 时, 就像字段解析 ([§5.4.3.2](#jvms-5.4.3.2)) 一样; 当 `MH` 的字节码行为是种类 5、6、7 或 8时, 和方法解析 ([§5.4.3.3](#jvms-5.4.3.3)) 一样; 当 `MH` 的字节码行为是种类 9 时, 好像接口方法解析一样 ([§5.4.3.4](#jvms-5.4.3.4)) 。
 
 2. The following constraints apply to the result of resolving R. These constraints correspond to those that would be enforced during verification or execution of the instruction sequence for the relevant bytecode behavior.
 
@@ -1151,7 +1151,7 @@ To resolve `MH`, all symbolic references to classes, interfaces, fields, and met
 
 - 如果 `MH` 的字节码行为是类型 8 (`REF_newInvokeSpecial`), 则 R 必须解析为 C 类中声明的实例初始化方法。
 - 如果 R 解析为 `protected` 成员, 则适用以下规则, 具体取决于 `MH` 字节码行为的类型:
-  - 对于种类 1、3 和 5（`REF_getField`、`REF_putField` 和 `REF_invokeVirtual`）: 如果 `C.f` 或 `C.m` 解析为 `protected` 字段或方法, 并且 C 和当前类在不同的运行时包中, 那么C必须可被当前类赋值。
+  - 对于种类 1、3 和 5（`REF_getField`、`REF_putField` 和 `REF_invokeVirtual`）: 如果 `C.f` 或 `C.m` 解析为 `protected` 字段或方法, 并且 C 和当前类在不同的运行时包中, 那么 C 必须可以赋值给当前类。
   - 对于种类 8 (`REF_newInvokeSpecial`): 如果 `C.<init>` 解析为 `protected` 方法, 则 C 必须在与当前类相同的运行时包中声明。
 - R 必须根据 `MH` 的字节码行为类型, 解析为`static` 或非 `static` 成员:
   - 对于种类 1、3、5、7 和 9（`REF_getField`、`REF_putField`、`REF_invokeVirtual`、`REF_invokeSpecial` 和 `REF_invokeInterface`）: `C.f` 或 `C.m` 必须解析为非 `static` 字段或方法。
@@ -1211,15 +1211,15 @@ The type descriptor of a method handle is such that a valid call to `invokeExact
 
 If the method referenced by R has the `ACC_VARARGS` flag set ([§4.6](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-4.html#jvms-4.6)), then the `java.lang.invoke.MethodHandle` instance is a variable arity method handle; otherwise, it is a fixed arity method handle.
 
-如果 R 引用的方法, 设置了 `ACC_VARARGS` 标志（[§4.6](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-4.html#jvms-4.6)） , 那么 `java.lang.invoke.MethodHandle` 实例是一个参数数量可变的稀疏方法句柄； 否则, 它是一个固定参数的方法句柄。
+如果 R 引用的方法, 设置了 `ACC_VARARGS` 标志（[§4.6](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-4.html#jvms-4.6)） , 那么 `java.lang.invoke.MethodHandle` 实例是一个可变参数方法句柄； 否则, 它是一个固定参数的方法句柄。
 
 A variable arity method handle performs argument list boxing (JLS §15.12.4.2) when invoked via `invoke`, while its behavior with respect to `invokeExact` is as if the `ACC_VARARGS` flag were not set.
 
-参数可变的稀疏方法句柄, 在通过 `invoke` 调用时, 执行参数列表装箱（JLS §15.12.4.2）, 而它相对于 `invokeExact` 的行为就像没有设置 `ACC_VARARGS` 标志一样。
+可变参数方法句柄, 在通过 `invoke` 调用时, 执行参数列表装箱（JLS §15.12.4.2）, 而它相对于 `invokeExact` 的行为就像没有设置 `ACC_VARARGS` 标志一样。
 
 Method handle resolution throws an `IncompatibleClassChangeError` if the method referenced by R has the `ACC_VARARGS` flag set and either A* is an empty sequence or the last parameter type in A* is not an array type. That is, creation of a variable arity method handle fails.
 
-如果 R 引用的方法设置了 `ACC_VARARGS` 标志, 并且 A' 是空序列, 或 A' 中的最后一个参数类型不是数组类型, 则方法句柄解析会抛出 `IncompatibleClassChangeError`。 也就是说, 创建变量稀疏方法句柄失败。
+如果 R 引用的方法设置了 `ACC_VARARGS` 标志, 并且 A' 是空序列, 或 A' 中的最后一个参数类型不是数组类型, 则方法句柄解析会抛出 `IncompatibleClassChangeError`。 也就是说, 创建可变参数方法句柄失败。
 
 An implementation of the Java Virtual Machine is not required to intern method types or method handles. That is, two distinct symbolic references to method types or method handles which are structurally identical might not resolve to the same instance of `java.lang.invoke.MethodType` or `java.lang.invoke.MethodHandle` respectively.
 
@@ -1655,17 +1655,17 @@ A class or interface C may be initialized only as a result of:
 
   Upon execution of a `getstatic`, `putstatic`, or `invokestatic` instruction, the class or interface to be initialized is the class or interface that declares the resolved field or method.
 
-- 执行引用 C 的任何 Java 虚拟机指令:  `new`, `getstatic`, `putstatic`, or `invokestatic`,（[§new](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-6.html#jvms-6.5.new), [§getstatic](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-6.html#jvms-6.5.getstatic), [§putstatic](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-6.html#jvms-6.5.putstatic), [§invokestatic](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-6.html#jvms-6.5.invokestatic) )。
+- 执行引用 C 的任何 Java 虚拟机指令:  `new`, `getstatic`, `putstatic`, 或 `invokestatic`,（[§new](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-6.html#jvms-6.5.new), [§getstatic](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-6.html#jvms-6.5.getstatic), [§putstatic](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-6.html#jvms-6.5.putstatic), [§invokestatic](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-6.html#jvms-6.5.invokestatic) )。
 
   在执行 `new` 指令时, 要初始化的类, 是指令引用的类。
 
-  在执行 `getstatic`, `putstatic`, or `invokestatic` 指令时, 要初始化的类或接口, 是声明已解析字段或方法的类或接口。
+  在执行 `getstatic`, `putstatic` 或 `invokestatic` 指令时, 要初始化的类或接口, 是声明已解析字段或方法的类或接口。
 
 - The first invocation of a `java.lang.invoke.MethodHandle` instance which was the result of method handle resolution ([§5.4.3.5](#jvms-5.4.3.5)) for a method handle of kind 2 (`REF_getStatic`), 4 (`REF_putStatic`), 6 (`REF_invokeStatic`), or 8 (`REF_newInvokeSpecial`).
 
   This implies that the class of a bootstrap method is initialized when the bootstrap method is invoked for an `invokedynamic` instruction ([invokedynamic](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-6.html#jvms-6.5.invokedynamic)), as part of the continuing resolution of the call site specifier.
 
-- 方法句柄解析类型 2 (`REF_getStatic`), 4 (`REF_putStatic`), 6 (`REF_invokeStatic`), or 8 (`REF_newInvokeSpecial`) 的结果, 是 `java.lang.invoke.MethodHandle` 实例, [§5.4.3.5](#jvms-5.4.3.5), 第一次调用时。
+- 方法句柄解析类型 2 (`REF_getStatic`), 4 (`REF_putStatic`), 6 (`REF_invokeStatic`), 或 8 (`REF_newInvokeSpecial`) 的结果, 是 `java.lang.invoke.MethodHandle` 实例, [§5.4.3.5](#jvms-5.4.3.5), 第一次调用时。
 
   这意味着, 在 `invokedynamic` 指令调用时（[invokedynamic](https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-6.html#jvms-6.5.invokedynamic)), 作为调用点说明符的持续解析的一部分, 引导方法的类会被初始化。
 
