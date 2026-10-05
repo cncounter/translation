@@ -7,7 +7,7 @@
 
 ## 名词解释
 
-- 人工智能、人工智慧: AI, Artificial Intelligience, 
+- 人工智能、人工智慧: AI, Artificial Intelligence
 - 机器学习: Machine Learning, 从过去的资料中找出规则。
 - 深度学习: Deep Learning, 机器学习找出规则的其中一种方法, 模仿人类神经网络。
 
@@ -20,7 +20,7 @@
 
 ## 简单线性回归
 
-Simple Linear Regression, 把收集到的资料, 用一条简单的, 最适合的直线来表示.
+Simple Linear Regression, 把收集到的资料, 用一条简单的, 最适合的直线来表示。
 
 
 
