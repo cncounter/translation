@@ -71,7 +71,7 @@ The doctype looks like this (as seen in the context of a very simple HTML 4.01 p
 In the example above, the doctype relates to HTML 4.01 Strict. In this reference, you’ll see examples of HTML 4.01 and also XHTfML 1.0 and 1.1, identified as such. While many of the elements and attributes may have the same names, there are some distinct syntactic differences between the various versions of HTML andXHTML. You can find out more about this in the sections entitled [HTML Versus XHTML](http://www.sitepoint.com/web-foundations/differences-html-xhtml/) and [HTML and XHTML Syntax](http://reference.sitepoint.com/html/html-xhtml-syntax).
 
 
-在上面的例子中，doctype与HTML 4.01 Strict相关。在本文中，您将看到 HTML 4.01 以及 XHTfML 1.0 , 1.1 的示例。虽然许多元素和属性可能具有相同的名称，但在不同版本的HTML和xhtml之间存在一些明显的语法差异。详情请参考 [HTML Versus XHTML](http://www.sitepoint.com/web-foundations/differences-html-xhtml/) 以及 [HTML and XHTML Syntax](http://reference.sitepoint.com/html/html-xhtml-syntax).
+在上面的例子中，doctype与HTML 4.01 Strict相关。在本文中，您将看到 HTML 4.01 以及 XHTML 1.0, 1.1 的示例。虽然许多元素和属性可能具有相同的名称，但在不同版本的HTML和XHTML之间存在一些明显的语法差异。详情请参考 [HTML Versus XHTML](http://www.sitepoint.com/web-foundations/differences-html-xhtml/) 以及 [HTML and XHTML Syntax](http://reference.sitepoint.com/html/html-xhtml-syntax).
 
 
 ## The Document Tree
@@ -80,7 +80,7 @@ In the example above, the doctype relates to HTML 4.01 Strict. In this reference
 
 A web page could be considered as a document tree that can contain any number of branches.There are rules as to what items each branch can contain (and these are detailed in each element’s reference in the “Contains” and “Contained by”sections). To understand the concept of a document tree, it’s useful to consider a simple web page with typical content features alongside its tree view, as shown in [Figure 1](https://www.sitepoint.com/web-foundations/basic-structure-of-a-web-page/#page-structure__fig-doc-tree).
 
-可以将web页面看做包含任意数量枝干的文档树。对于每个分支可以包含什么项，有一些规则(这些内容在每个元素的“包含”和“包含”部分中都有详细的说明)。要理解文档树的概念，可以考虑一个简单的web页面，其中包含典型的内容特性，以及它的树视图，如图1所示:
+可以将web页面看做包含任意数量枝干的文档树。对于每个分支可以包含什么项，有一些规则(这些内容在每个元素的“包含”和“被包含”部分中都有详细的说明)。要理解文档树的概念，可以考虑一个简单的web页面，其中包含典型的内容特性，以及它的树视图，如图1所示:
 
 
 ![Document Tree](https://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2014/04/1397707822DocTree-300x149.png)
@@ -102,7 +102,7 @@ Note that there’s some symmetry in the way the tags are opened and closed. For
 
 Immediately after the doctype comes the [`html`]()element—this is the root element of the document tree and everything that follows is a descendant of that root element.
 
-在doctype之后紧着着出现了 [`html`] 元素，这是文档的根元素，接下来的所有内容都是根元素的后代。
+在doctype之后紧接着出现了 [`html`] 元素，这是文档的根元素，接下来的所有内容都是根元素的后代。
 
 
 If the root element exists within the context of a document that’s identified by its doctype as XHTML, then the `html`element also requires an `xmlns` (XML Namespace) attribute (this isn’t needed for HTML documents):
@@ -164,7 +164,7 @@ In addition to the`title` element, the `head` may also contain:
 
   defines baseURLs for links or resources on the page, and target windows in which to open linked content
 
-  定义了页面上的链接或资源的 baseURL, 打开链接内容所对应的基地址。
+  定义了页面上链接或资源的 baseURL, 以及打开所链接内容的目标窗口。
 
 
 - [`link`]()
