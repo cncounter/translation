@@ -50,7 +50,7 @@ Failed to complete processing of a request
 ## 相关代码
 
 
-可以使用LogBack的自定义Appender, 将错误日志输出到Dingding之类的即时消息通信软件.
+可以使用Logback的自定义Appender, 将错误日志输出到钉钉之类的即时消息通信软件.
 
 > Maven配置: pom.xml
 
