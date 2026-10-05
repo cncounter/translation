@@ -46,9 +46,9 @@ In this post I’ll highlight some of the more important and interesting ZGC enh
 For feedback and questions about ZGC, feel free to post to the [mailing list](https://mail.openjdk.java.net/mailman/listinfo/zgc-dev).
 
 
-像闹钟一样, [JDK 14](https://openjdk.java.net/projects/jdk/14) 正式版于2020年3月23日准时发布, 距离 [JDK 13](https://openjdk.java.net/projects/) 的发布时间仅有6个月。
+像闹钟一样, [JDK 14](https://openjdk.java.net/projects/jdk/14) 正式版于2020年3月17日准时发布, 距离 [JDK 13](https://openjdk.java.net/projects/jdk/13) 的发布时间仅有6个月。
 对于 [ZGC](https://wiki.openjdk.java.net/display/zgc/Main) 来说, 这是一个重大更新版本, 因为我们成功达成了多个重要的里程碑和改进, 使其成为完全可以投入使用的生产环境版本。
-总共 [超过80项](https://bugs.openjdk.org/browse/JDK-8236110?filter=34672&jql=labels%20%3D%20zgc%20AND%20status%20in%20(Resolved%2C%20Closed)%20AND%20fixVersion%20%3D%2014%20AND%20resolution%20!%3D%20Duplicate)的增强和错误修复被提交到 ZGC 中。
+总共 [超过80项](https://bugs.openjdk.java.net/issues/?filter=34672&jql=labels%20%3D%20zgc%20AND%20status%20in%20(Resolved%2C%20Closed)%20AND%20fixVersion%20%3D%2014%20AND%20resolution%20!%3D%20Duplicate)的增强和错误修复被提交到 ZGC 中。
 如果统计在 HotSpot 的其他部分完成的 “ZGC相关” 的提交, 则数量更多。
 
 在这篇文章中, 我将重点介绍一些重要和有趣的 ZGC 增强功能。 如果您使用 ZGC, 我强烈建议升级到 JDK 14版本。 总之, 您将获得更好的性能、更低的延迟、新功能、以及更好的稳定性。 如果您使用的是 JDK 11 或更高版本, 升级到 14 应该很简单。
@@ -61,7 +61,7 @@ For feedback and questions about ZGC, feel free to post to the [mailing list](ht
 [JEP 365](http://openjdk.java.net/jeps/365) and [JEP 364](http://openjdk.java.net/jeps/364) brought Windows and macOS support to ZGC. Support for these platforms has perhaps been the most common feature request we received. All commonly used platforms are now supported, and the complete list looks like this.
 
 
-[JEP 365](http://openjdk.java.net/jeps/365) 和 [JEP 364](http://openjdk.java.net/jeps/364) 为 ZGC 带来了 Windows 和 macOS 支持。 对这些平台的支持可能是我们收到的最常见的功能请求。 JDK11支持的所有平台列表如下所示。
+[JEP 365](http://openjdk.java.net/jeps/365) 和 [JEP 364](http://openjdk.java.net/jeps/364) 为 ZGC 带来了 Windows 和 macOS 支持。 对这些平台的支持可能是我们收到的最常见的功能请求。 所有常用平台现在都已支持, 完整列表如下所示。
 
 - **Linux/x86_64** (since JDK 11)
 - **Linux/aarch64** (since JDK 13)
@@ -81,7 +81,7 @@ Windows 用户请注意, ZGC 需要 **Windows 1803 版本**(即 Windows 10 或 W
 
 增加支持新的操作系统很难吗？ 需要做很多工作吗？ 不, 并不是很难。 ZGC 中针对具体 OS 的代码, 是执行内存多重映射的部分, 即将相同的物理内存映射到进程地址空间中的多个位置。
 因此, 这一切都归结为操作系统提供的内存管理 API, 以及使用它的难易程度。 
-macOS 在这方面是迄今为止最灵活的, 它具有出色的 `mach_vm_remap()` 系统调用(相对应的, Linux 中的 `mremap()` 则没有那么出色)。 macOS 的特定代码量只有为 [300行](https://github.com/openjdk/jdk/tree/74f0ef505094761c0eb16a7f3fe09b62d335369d/src/hotspot/os/bsd/gc/z)。 
+macOS 在这方面是迄今为止最灵活的, 它具有出色的 `mach_vm_remap()` 系统调用(相对应的, Linux 中的 `mremap()` 则没有那么出色)。 macOS 的特定代码量大约只有 [300行](https://github.com/openjdk/jdk/tree/74f0ef505094761c0eb16a7f3fe09b62d335369d/src/hotspot/os/bsd/gc/z)。 
 Windows 则需要做更多的工作, 主要是因为它的内存管理 API 不如 POSIX 和 Mach API 灵活(尤其是使用 `MEM_{RESERVE,REPLACE,COALESCE}_PLACEHOLDERS` 处理地址空间保留的部分)。尽管如此, 它并没有那么糟糕, 特定于 Windows 的代码量不到 [1000行](https://github.com/openjdk/jdk/tree/74f0ef505094761c0eb16a7f3fe09b62d335369d/src/hotspot/os/windows/gc/z)。 在撰写本文时, 84% 的 ZGC 代码与平台无关, 由所有操作系统和 CPU 架构共享。
 
 ![ZGC中各个操作系统的代码分布](./code_distribution.svg)
@@ -93,16 +93,16 @@ When using `-XX:+AlwaysPreTouch` you’re telling the GC to touch the heap (up t
 
 Prior to JDK 14, ZGC only used a single thread to do heap pre-touching. This meant that pre-touching could take a long time if the heap was huge. Now, ZGC uses multiple threads to do this work, which shortens the startup/pre-touch time substantially. On large machines with terabytes of memory, this reduction can translate into startup times on the order of **seconds instead of minutes**.
 
-## 2.2 并行执行堆内存预分配(heap pre-touching)
+## 2.2 并行执行堆内存预触(heap pre-touching)
 
-当指定JVM启动参数 `-XX:+AlwaysPreTouch` 时, 是告诉 GC 在JVM启动时要预分配堆内存(一直获取到 `-Xms` 或 `-XX:InitialHeapSize` )。 
+当指定JVM启动参数 `-XX:+AlwaysPreTouch` 时, 是告诉 GC 在JVM启动时要预触(touch)堆内存(直到 `-Xms` 或 `-XX:InitialHeapSize` )。 
 这将确保堆内存相关的页面:
 
 - 1) 可以实际得到分配
-- 2) 不够的话就立即失败。
+- 2) 已经映射到物理内存(faulted in)。
 
 通过在启动时执行此操作, 可以避免应用程序在之后的运行过程中才分配物理内存并造成性能抖动。 
-对于某些应用程序来说, 预先获取堆内存可能是一个明智的选择, 但与往常一样, 这也是一种权衡, 因为启动时间会延长。
+对于某些应用程序来说, 对堆内存进行预触可能是一个明智的选择, 但与往常一样, 这也是一种权衡, 因为启动时间会延长。
 
 在 JDK 14 之前, ZGC 只使用单个线程来做堆预触。  如果堆内存很大, 预触可能需要很长时间。 
 现在, ZGC 使用多线程来完成这项工作, 大大缩短了启动/预触时间。 
@@ -120,10 +120,10 @@ The heap reserve is a portion of the heap that is set aside to cope with “emer
 
 ## 2.3 支持极小的堆内存
 
-ZGC 在大型堆内存扩展方面一直表现的很棒, 但在超小型的堆内存方面并不那么出色。 
+ZGC 在大型堆内存扩展方面一直表现得非常棒, 但在超小型的堆内存方面并不那么出色。 
 在 JDK 14 之前, 使用小于 128M 的堆内存, 并不具备很好的体验。 主要原因是ZGC保留的堆内存, 与可用堆的比例太大, 有时会导致过早的 `OutOfMemoryError`。
 
-保留堆储备(heap reserve)是为应对 “紧急情况” 而预留的一部分堆, 例如当 ZGC 需要在堆内存用满之后整理堆内存时。 堆保留的大小计算公式如下。
+堆预留区(heap reserve)是为应对 “紧急情况” 而预留的一部分堆, 例如当 ZGC 需要在堆内存用满之后整理堆内存时。 堆预留区的大小计算公式如下。
 
 ```
 heap_reserve = (number_of_gc_worker_threads * 2M) + 32M
@@ -140,13 +140,13 @@ With these adjustments, ZGC scales down to **8M** (and up to **16T**) heaps with
 
 简而言之, 保留的大小是为了让每个 GC工作线程有足够的空间来分配一个私有的 *small* ZPage (2M), 并让所有 GC worker 共享一个全局的 *medium* ZPage (32M)。
 
-正如我们所见, 当堆较小时, 预留空间会按比例变大, 从而为应用程序留下的可用空间很小。 为了解决这个问题, 我们没有改变堆储备必须有多大的原则。相反, 我们通过以下方式调整了该计算公式的输入。
+正如我们所见, 当堆较小时, 预留空间会按比例变大, 从而为应用程序留下的可用空间很小。 为了解决这个问题, 我们没有改变堆预留区必须有多大的原则。相反, 我们通过以下方式调整了该计算公式的输入。
 
-- 1. 我们使 *medium* ZPages 变成动态化的大小。 它过去总是 32M, 但现在它在运行时确定, 并随堆大小扩缩, 因此单个 *medium* ZPage 永远不会占用超过 3% 的堆。 对于非常小的堆, 这意味着 *medium* ZPages 将被有效地禁用, 并且正常情况下在 *medium* ZPage 中分配的对象, 改为在 *large* ZPage 中分配(*large* ZPages 不需要预留堆内存, 因为它们永远不会被重新定位)。
-- 2. 我们调整了使用的 GC 工作线程的数量, 以便堆储备中所需的 *small* ZPage 总数不会超过堆的 2%(但至少有一个 GC 工作线程, 最少需要一个 *small* ZPage 的空间)。
+- 1. 我们让 *medium* ZPage 的大小变成动态的。 它过去总是 32M, 但现在它在运行时确定, 并随堆大小扩缩, 因此单个 *medium* ZPage 永远不会占用超过 3% 的堆。 对于非常小的堆, 这意味着 *medium* ZPages 将被有效地禁用, 并且正常情况下在 *medium* ZPage 中分配的对象, 改为在 *large* ZPage 中分配(*large* ZPages 不需要预留堆内存, 因为它们永远不会被重新定位)。
+- 2. 我们调整了使用的 GC 工作线程的数量, 以便堆预留区中所需的 *small* ZPage 总数不会超过堆的 2%(但至少有一个 GC 工作线程, 最少需要一个 *small* ZPage 的空间)。
 
-通过这些调整, ZGC 可以毫无问题地缩减到 **8M** 堆内存(最大则支持 **16T**)。 保留内存现在最多为堆的 5%, 但最小为一个 *small* ZPage (2M)。
-为了更好地说明改进, 让我们将 JDK 14 与 JDK 13 进行比较, 看看有多少个百分比的堆被当做保留空间。
+通过这些调整, ZGC 可以毫无问题地缩减到 **8M** 堆内存(最大则支持 **16T**)。 堆预留区现在最多为堆的 5%, 但最小为一个 *small* ZPage (2M)。
+为了更好地说明改进, 让我们将 JDK 14 与 JDK 13 进行比较, 看看堆内存中有多大比例被留作堆预留区。
 
 ![JDK14中ZGC最小可以只占用2MB](./heap_reserve.svg)
 
@@ -168,7 +168,7 @@ JFR 泄漏分析器(JFR leak profiler)是一款方便的工具, 但之前在使�
 泄漏分析器与 ZGC 不兼容的原因有两个。
 
 1. 泄漏分析器不符合访问堆上对象指针的规则。 使用 ZGC 时, 从堆中加载的对象指针, 必须通过读屏障(load barrier)之后才能解除引用。
-2. 泄漏分析器分配了一个 Native 数据结构(标记位图, mark bitmap), 它与堆内存的保留地址空间的大小成正比。 由于 ZGC 的地址空间相对较大, 因此扩缩性不好。
+2. 泄漏分析器分配了一个 Native 数据结构(标记位图, mark bitmap), 它与堆内存的保留地址空间的大小成正比。 由于 ZGC 对地址空间的需求相对较大, 因此这种做法的伸缩性并不好。
 
 这两个问题都在JDK14中得到了解决, JFR 泄漏分析器现在可以很好地与 ZGC 配合使用。
 
@@ -185,7 +185,7 @@ This overhaul significantly improved ZGC stability. In fact, it was so successfu
 ZGC中, 即时编译器C2生成的读屏障, 通常是 ZGC 中产生 bug 的根源。 
 ZGC的实现方式, 有时会与 C2 的一些优化通道产生不良交互, 从而导致优化不完全, 甚至是有问题的代码。
 
-在 JDK 14 中, 我们彻彻底底过了一遍 C2 生成 ZGC 负载屏障的代码。 现在, 在整个编译和优化过程中, 在编译流水线的最后阶段之前, C2不会受ZGC的干扰。
+在 JDK 14 中, 我们彻底重写了 C2 生成 ZGC 读屏障(load barrier)的代码。 现在, 基本上直到编译流水线的很晚阶段, ZGC 都待在 C2 的视线之外。
 在这里我不会详细介绍所有细节, 但可以说, ZGC避免了与编译器优化过程的所有交互, 并且还获得了对代码生成的更多控制。
 例如, 我们现在可以轻松地保证, 在 load 指令和对应的读屏障(load barrier)之间, 不会安排安全点轮询指令(safepoint-poll instruction), 这在之前是很难控制的, 并且是许多错误的根源。
 
@@ -200,7 +200,7 @@ When the JVM executes a Safepoint (aka Stop-The-World) operation it first brings
 
 当 JVM 执行安全点操作时(也称为 Stop-The-World), 首先以一种受控的方式, 暂停所有 Java 线程。
 也就是说, Java线程在“安全点”位置停顿, 所以它们的执行状态是已知的, 比如方法栈和各种状态。 
-确保所有Java线程都进入停顿状态, JVM将继续执行实际的 Safepoint 操作(比如 GC或其他行为)。
+等所有 Java 线程都进入停顿状态之后, JVM 才会继续执行实际的 Safepoint 操作(比如 GC 或其他操作)。
 因为在 Safepoint 操作完成之前, 所有 Java 线程都保持停顿状态, 啥也干不了,  所以让安全点操作保持精简, 对响应时间敏感的系统而言尤为重要。
 
 Time-To-Safepoint (TTSP) is the time from when the JVM orders all Java threads to stop until they have stopped. All threads will typically not come to a stop immediately or at the same time. A thread might be in the middle of some sensitive operation that needs to complete before it can reach a safepoint. A long TTSP can be just as bad as a long Safepoint operation, since it will prolong the time some of the threads are stopped. Again, this will have a negative impact on application response times.
@@ -217,7 +217,7 @@ Ok, that was a quick introdution to Safepoint and Time-To-Safepoint. Now, when t
 那么, 当应用程序要求 JVM 为对象分配内存空间时, JVM 不仅会在堆上的某个地方分配对象, 还会确保对象的字段都初始化为零值(zero initialization)。 
 在初始化零值期间, JVM 处于敏感状态, 因为堆内存里面有一个半生不熟的对象。
 在初始化零值完成之前, 不允许执行内存分配的 Java线程进入安全点状态。 
-假若允许它没完成之前就进入安全点状态, 如果执行的是 GC 周期, 那么 GC 可能会因为对象字段中的一些随机数值出错, 从而导致 JVM 崩溃。
+假如它真的进入了安全点状态, 那么很可能会启动一轮 GC, GC 很快就会撞上一个包含随机数据的对象, 从而导致 JVM 崩溃。
 
 So, Safepoint operations are effectively blocked/delayed during object allocation and initialization, which directly impacts TTSP negatively. This is not an problem when allocating normal/small objects. However, is it a problem when allocating large arrays (remember, the largest Java array can be 16GB in size), where the time it takes to zero initialize all array elements can be substantial, like several hundred milliseconds (or more if you’re unlucky).
 
@@ -255,7 +255,7 @@ Starting with JDK 14, ZGC will detect that it’s running in a constrained envir
 ## 2.7 支持受限环境
 
 ZGC 需要很大范围的地址空间。 
-通过地址空间的方式, 使ZGC免受操作系统内存碎片的影响, 从而避免遇到必须整理堆内存才能找到足够大的空闲内存块来分配的情况。 
+利用地址空间, 使 ZGC 免受外部堆碎片的影响, 从而避免遇到必须整理堆内存才能找到足够大的空闲内存块来分配的情况。 
 这就是 ZGC 能够很好地处理大量分配的原因之一。 
 保留大量进程地址空间基本上没什么代价。 这只是一个预留空间(reservation), 并不需要真实的物理内存来支持该空间。 
 当然, 内核需要一小部分内存来跟踪预留情况, 一般来说我们可以放心地忽略它。
@@ -303,7 +303,7 @@ More about these and other enhancements in a future post.
 本节的最后, 将对未来的特性做个简短介绍。 
 [JDK 15](https://openjdk.java.net/projects/jdk/15) 的开发工作已经进行了几个月;
 
-[JDK 14](https://openjdk.java.net/projects/jdk/14) 的功能列表, 早在2019年12月就已冻结; 当时JDK15版本进入 `Rampdown Phase One` 阶段, 并从主线分叉, 我们正在准备一些令人兴奋的东西。
+[JDK 14](https://openjdk.java.net/projects/jdk/14) 的功能列表, 早在2019年12月就已冻结; 当时 JDK 14 版本进入 `Rampdown Phase One` 阶段, 并从主线分叉, 我们正在准备一些令人兴奋的东西。
 
 
 - [JEP 377: ZGC:可扩展的低延迟垃圾收集器(生产)](https://openjdk.java.net/jeps/377), 这将取消 ZGC 的实验状态。
@@ -311,9 +311,9 @@ More about these and other enhancements in a future post.
 - [JDK-8233300: Safepoint-aware array copy](https://bugs.openjdk.java.net/browse/JDK-8233300), 这将解决类似上面提到的“Safepoint-aware array allocations” 问题, 当然这个特性是针对复制大数组的。
 
 
-> 需要特别说明, 在撰写本文时, 这些 JEP 和增强功能尚未发布。 我们希望他们能进入 JDK 15, 但并不能百分百保证。
+> 需要特别说明, 在撰写本文时, 这些 JEP 和增强功能尚未发布。 我们希望它们能进入 JDK 15, 但并不能百分百保证。
 
-后续的文章将会详细介绍他们以及其他的增强功能。
+后续的文章将会详细介绍它们以及其他的增强功能。
 
 
 # 3.  ZGC 中使用 `-XX:SoftMaxHeapSize` 参数
@@ -333,7 +333,7 @@ JDK 13 引入了一个新的 JVM 选项:  `-XX:SoftMaxHeapSize=<size>`。
 As the name implies, this new option sets a soft limit on how large the Java heap can grow. When set, the GC will strive to not grow the heap beyond the soft max heap size. But, the GC is still allowed to grow the heap beyond the specified size if it really needs to, like when the only other alternatives left is to stall an allocation or throw an `OutOfMemoryError`.
 
 顾名思义,这个新的JVM启动参数, 对 Java 堆内存的最大值设置了软限制。 
-设置该参数后,GC 将努力使堆的使用量不超过这个软参数。 
+设置该参数后, GC 将努力使堆内存不超过这个软上限。 
 但是,如果确实需要,仍然允许 GC 将堆增长到超过指定的大小,就像当唯一剩下的其他选择是停止分配或抛出 OutOfMemoryError 时。
 
 
@@ -344,12 +344,12 @@ There are different use cases where setting a soft max heap size can be useful. 
 
 Let’s make up an example, to illustrate the first use case listed above. Pretend that your workload under normal conditions needs 2G of heap to run well. But once in a while you see workload spikes (maybe you’re providing a service that attracts a lot more users a certain day of the week/month, or something similar). With this increase in workload your application now needs, say, 5G to run well. To deal with this situation you would normally set the max heap size (`-Xmx`) to 5G to cover for the occasional workload spikes. However, that also means you will be wasting 3G of memory 98% (or something) of the time when it’s not needed, since those unused 3G will still be tied up in the Java heap. This is where a soft max heap size can come in handy, which together with ZGC’s ability to uncommit unused memory allows you to have your cake and eat it too. Set the max heap size to the max amount of heap your application will ever need (`-Xmx5G` in this case), and set the soft max heap size to what your application needs under normal conditions (`-XX:SoftMaxHeapSize=2G` in this case). You’re now covered to handle those workload spikes nicely, without always wasting 3G. Once the workload spike has passed and the need for memory drops down to normal again, ZGC will shrink the heap and continue to do it’s best to honor the `-XX:SoftMaxHeapSize` setting. When those extra 3G of heap have been sitting unused for a while, ZGC will uncommit that memory, returning it to the operating system for other processes (or the disk cache, or something else) to use.
 
-在不同的用例中,设置最大堆内存的软开关可能很有用。 例如:
+在不同的用例中,设置最大堆内存的软上限可能很有用。 例如:
 
 - 当您希望减少堆占用空间,同时保持处理临时增加的堆空间需求的能力时。
-- 或者当你想安全地玩时,为了增加你不会遇到分配停顿或由于分配率或活动集大小的意外增加而出现 OutOfMemoryError 的信心。
+- 或者你想稳妥一些, 增加一些信心, 相信自己不会遇到分配停顿, 也不会因为分配速率或存活集大小意外增长而抛出 OutOfMemoryError。
 
-让我们举个例子来说明上面列出的第一个用例。 假设您的工作负载在正常情况下需要 2G 的堆才能正常运行。 但是偶尔您会看到工作量激增(也许您提供的服务在一周/一个月的某一天或类似的某天吸引了更多用户)。 随着工作负载的增加,您的应用程序现在需要 5G 才能正常运行。 要处理这种情况,您通常会将最大堆大小 (`-Xmx`) 设置为 5G 以应对偶尔出现的工作负载高峰。 然而,这也意味着您将在 98%(或更多)不需要的时候浪费 3G 内存,因为那些未使用的 3G 内存仍将占用 Java 堆。 这就是软最大堆大小可以派上用场的地方,它与 ZGC 反向申请未使用内存的能力一起让您可以吃蛋糕和吃蛋糕。 将最大堆大小设置为您的应用程序将永远需要的最大堆大小(在本例中为 `-Xmx5G`),并将软最大堆大小设置为您的应用程序在正常情况下需要的大小(`-XX:SoftMaxHeapSize=2G` 在这种情况下)。 您现在可以很好地处理这些工作负载高峰,而不会总是浪费 3G。 一旦工作负载高峰过去并且对内存的需求再次下降到正常水平,ZGC 将缩小堆并继续尽最大努力遵守 `-XX:SoftMaxHeapSize` 设置。 当那些额外的 3G 堆有一段时间未使用时,ZGC 将反向申请该内存,将其返回给操作系统以供其他进程(或磁盘缓存或其他)使用。
+让我们举个例子来说明上面列出的第一个用例。 假设您的工作负载在正常情况下需要 2G 的堆才能正常运行。 但是偶尔您会看到工作量激增(也许您提供的服务在一周/一个月的某一天或类似的某天吸引了更多用户)。 随着工作负载的增加,您的应用程序现在需要 5G 才能正常运行。 要处理这种情况,您通常会将最大堆大小 (`-Xmx`) 设置为 5G 以应对偶尔出现的工作负载高峰。 然而,这也意味着您将在 98%(或更多)不需要的时候浪费 3G 内存,因为那些未使用的 3G 内存仍将占用 Java 堆。 这就是软上限可以派上用场的地方, 它与 ZGC 返还未使用内存的能力相结合, 让您可以鱼与熊掌兼得。 将最大堆大小设置为您的应用程序可能需要的最大值(在本例中为 `-Xmx5G`),并将软上限设置为您的应用程序在正常情况下需要的大小(本例中为 `-XX:SoftMaxHeapSize=2G`)。 您现在可以很好地处理这些工作负载高峰,而不会总是浪费 3G。 一旦工作负载高峰过去并且对内存的需求再次下降到正常水平,ZGC 将缩小堆并继续尽最大努力遵守 `-XX:SoftMaxHeapSize` 设置。 当那些额外的 3G 堆有一段时间未使用时,ZGC 将返还该内存,把它归还给操作系统,以供其他进程(或磁盘缓存之类)使用。
 
 
 ## 3.2 系统运行过程中动态修改 SoftMaxHeapSize
@@ -360,7 +360,7 @@ Let’s make up an example, to illustrate the first use case listed above. Prete
 > `jcmd <pid> VM.set_flag SoftMaxHeapSize <size>`
 
 
-最大堆内存软指标(SoftMaxHeapSize) 的值, 不能超过最大堆内存; 如果没有在JVM启动参数中指定这个软指标的值, 则默认等于最大堆内存.
+最大堆内存软上限(SoftMaxHeapSize) 的值, 不能超过最大堆内存; 如果没有在 JVM 启动参数中指定这个软上限的值, 则默认等于最大堆内存。
 
 
 ## 3.3 内存返还的积极性
@@ -414,13 +414,13 @@ In summary, ZGC is now a stable, high performance, low-latency GC, that is ready
 ## 4.1 ZGC正式成为稳定版产品
 
 在 JDK 15 中,ZGC 正式成为产品级稳定版(production ready)。 
-换句话说,ZGC成为了 JDK 中的一个产品功能, 而不再是实验性能的功能,官方鼓励用户在生产中使用它。 
+换句话说,ZGC成为了 JDK 中的一个产品功能, 而不再是实验性功能,官方鼓励用户在生产中使用它。 
 
 这一变化通过 [JEP 377](http://openjdk.java.net/jeps/377) 实现,是很多人多年来共同努力的结晶。
 
 当然, 这也是 ZGC 项目的一个重要里程碑,我们一直都渴望达到这个目标。 
 请放心,取消实验状态并不是我们随便下决定的事情。 
-没有用户会信任一款时不时导致JVM 崩溃的垃圾收集器。 
+没有用户会信任一款时不时破坏堆内存, 或者导致 JVM 崩溃的垃圾收集器。 
 当然,用户肯定希望产品级的 GC 性能良好的同时, 还提供与当今业务需求相关的特性。
 
 自从在 JDK 11 中首次引入以来,ZGC 在后续版本中实现了许多新特性、增强了性能, 提升了稳定性, 并支持所有主流平台。  这期间经历了很多轮严谨的测试。
@@ -450,20 +450,20 @@ In JDK 15, this part of the allocation path was re-worked so that this lock is n
 
 一般给 Java 对象分配内存都非常快。 
 新对象具体的分配方式取决于我们使用的垃圾收集器(虽然叫做GC, 但实际上GC包括了内存分配程序)。 
-在 ZGC 的实现中,分配的过程透过了多个不同的层。 绝大多数分配相关的操作都能由第1层搞定,速度非常快。 只有极个别的分配, 需要一直向下走到最后一层,这时候就会慢得多。
+在 ZGC 的实现中,分配路径需要经过多个不同的层级。 绝大多数分配相关的操作都能由第1层搞定,速度非常快。 只有极个别的分配, 需要一直向下走到最后一层,这时候就会慢得多。
 
 ![](./allocation_tiers.svg)
 
 只有当前面所有的层都无法满足分配时,才会走到最后一层。 
-这是最后的保底手段,ZGC 将要求操作系统调拨(commit)更多的内存以扩展堆。 
+这是最后的保底手段,ZGC 将要求操作系统提交(commit)更多的内存以扩展堆。 
 如果这一步也失败了,或者已达到最大堆内存限制(`-Xmx`),那么将抛出 `OutOfMemoryError`。
 
-在 JDK 15 之前的版本中, ZGC 在调拨(committing)和取消调拨(uncommitting)内存时, 会持有一个全局锁。 
+在 JDK 15 之前的版本中, ZGC 在提交(committing)和返还(uncommitting)内存时, 会持有一个全局锁。 
 当然这也就意味着在任何给定时刻, 只有一个线程可以扩展(或缩减)堆内存。 
-调拨和取消内存调拨, 是相对昂贵的操作, 可能需要一段时间才能完成。 
+提交和返还内存, 是相对昂贵的操作, 可能需要一段时间才能完成。 
 所以这个全局锁有时就会成为争抢点。
 
-在 JDK 15 中, 重新设计了这些分配路径, 以便在调拨和取消内存调拨时不再需要这个全局锁。 
+在 JDK 15 中, 重新设计了这些分配路径, 以便在提交和返还内存时不再需要这个全局锁。 
 这样实现的好处, 是降低了最后一层分配内存的平均成本, 而且显著提高了这一层处理分配的并发能力。
 
 
@@ -476,22 +476,22 @@ Uncommitting memory is a relatively expensive operation and the time it takes fo
 The uncommit mechanism was re-worked in JDK 15 to uncommit memory incrementally. Instead of a single uncommit operation, ZGC will now issue many smaller uncommit operations to the operating system. This allows a change in memory pressure to be promptly detected and the uncommit process to be aborted or revised mid-flight.
 
 
-### 4.2.2 增量式内存撤销(Incremental uncommit)
+### 4.2.2 增量式内存返还(Incremental uncommit)
 
 ZGC 的 uncommit 能力是在 JDK 13 中开始引入的。
-这种机制允许 ZGC 将不使用的内存反向申请, 以缩减堆内存, 并返还给操作系统, 以供其他进程使用。 
-一段内存要满足反向申请条件, 必须有一段时间未使用(默认时间是 300 秒, 由参数 `-XX:ZUncommitDelay=<seconds>` 控制)。 
-如果后续又需要更多内存, 则 ZGC 将调拨新内存以再次增加堆内存。
+这种机制允许 ZGC 返还(uncommit)不使用的内存, 以缩减堆内存, 并将其归还给操作系统, 供其他进程使用。 
+一段内存要满足返还条件, 必须有一段时间未使用(默认时间是 300 秒, 由参数 `-XX:ZUncommitDelay=<seconds>` 控制)。 
+如果后续又需要更多内存, 则 ZGC 将提交新内存以再次增加堆内存。
 
-反向申请内存是一项相对昂贵的操作, 完成此操作所需的时间, 往往与正在操作的内存大小成正比。 
-在 JDK 15 之前, ZGC 并不在乎满足反向申请条件得是 2MB 还是 2TB 的内存, 它只会向操作系统发出一个反向申请操作。 
-实践证明这里有一个潜在的问题, 因为反向申请大量内存(如几百GB, 或几TB), 可能需要耗费相当长的时间。 
-在此期间, 内存压力可能会发生巨大变化, 但 ZGC 无法中止或修改反向申请操作。 
-如果内存压力增加, ZGC 必须先等正在执行的反向申请操作完成, 然后才能再次申请内存。
+返还内存是一项相对昂贵的操作, 完成此操作所需的时间, 往往与正在操作的内存大小成正比。 
+在 JDK 15 之前, ZGC 并不在乎满足返还条件的是 2MB 还是 2TB 的内存, 它都只会向操作系统发出一个返还操作。 
+实践证明这里有一个潜在的问题, 因为返还大量内存(如几百GB, 或几TB), 可能需要耗费相当长的时间。 
+在此期间, 内存压力可能会发生巨大变化, 但 ZGC 无法中止或修改正在执行的返还操作。 
+如果内存压力增加, ZGC 必须先等正在执行的返还操作完成, 然后才能再次提交(commit)内存。
 
-在 JDK 15 中, 重新设计了反向申请机制, 以增量方式反向申请内存。 
-现在, ZGC 将向操作系统发出许多个规模较小的反向申请操作。 
-这允许ZGC及时检测到内存压力的变化, 并且可以中止或修改尚未正式提给操作系统的那些反向申请。
+在 JDK 15 中, 重新设计了返还机制, 以增量方式返还内存。 
+现在, ZGC 将向操作系统发出许多个规模较小的返还操作。 
+这允许ZGC及时检测到内存压力的变化, 并可以在执行过程中中止或修改返还操作。
 
 
 ### 4.2.3 Improved NUMA awareness
@@ -525,10 +525,10 @@ ZUnmap: Generated each time ZGC unmaps memory. ZGC will asynchronously unmap mem
 
 正式支持下列 [JFR](https://en.wikipedia.org/wiki/JDK_Flight_Recorder) 事件:
 
-- `ZAllocationStall`: 如果 Java 线程遇到内存分配缓慢, 则生成此事件。
+- `ZAllocationStall`: 如果 Java 线程发生内存分配停顿(allocation stall), 则生成此事件。
 - `ZPageAllocation`: 每次分配一个新的 ZPage 页面(堆区)时, 生成此事件。
 - `ZRelocationSet` 和 `ZRelocationSetGroup`: 每个 GC 周期都生成此事件, 并描述堆内存的哪些部分被压缩/回收。
-- `ZUncommit`: 每次 ZGC 取消提交一些不使用的部分时, 都生成此事件, 也就是将不使用的内存返回给操作系统时。
+- `ZUncommit`: 每次 ZGC 返还堆内存中不使用的一部分时, 都生成此事件, 也就是将不使用的内存归还给操作系统时。
 - `ZUnmap`: 每次 ZGC 取消映射内存(unmaps memory)时生成此事件。 当一组分散的页面需要重新映射为更大的连续页面时, ZGC 将异步取消映射内存。
 
 相关的事件, 可参考JDK的源码: [jdk/src/hotspot/share/jfr/metadata/metadata.xml](https://github.com/openjdk/jdk/blob/83b2411fd15d0890042ede118a08731ca162b951/src/hotspot/share/jfr/metadata/metadata.xml#L1052)
@@ -556,9 +556,9 @@ The implementation of the Compressed Class Pointers feature has historically bee
 
 ### 4.2.6 类指针压缩(Compressed class pointers)
 
-在 HotSpot 中, 所有 Java 对象都有一个对象头, 由两个字段组成: 包含一个标记字(mark word), 一个类指针(class pointer)。 
-在 64 位 CPU 上, 这两个字段通常都是 64 位, 其中, 类指针是指向描述对象所属类的普通内存指针。 
-类指针压缩功能 (`-XX:+UseCompressedClassPointers`) 可以减小所有对象标头的大小, 来降低堆内存的占用空间。 
+在 HotSpot 中, 所有 Java 对象都有一个对象头, 由两个字段组成: 一个标记字(mark word)和一个类指针(class pointer)。 
+在 64 位 CPU 上, 这两个字段通常都是 64 位, 其中, 类指针是指向描述对象所属类的内存的普通指针(包含类型信息、虚函数表等等)。 
+类指针压缩功能 (`-XX:+UseCompressedClassPointers`) 可以减小所有对象头的大小, 来降低堆内存的占用空间。 
 这个压缩功能, 是将类指针字段的长度压缩为 32 位(原本是 64 位)。 
 
 压缩后的类指针(compressed class pointer), 和普通指针不同了, 是压缩类空间(CCS, Compressed Class Space)的偏移量, 具有已知的基地址(base address)。 
@@ -566,7 +566,7 @@ The implementation of the Compressed Class Pointers feature has historically bee
 
 类指针压缩功能(Compressed Class Pointers)的实现, 历来与 Compressed Oops 功能相关联, 也就是说我们无法在禁用 Compressed Oops 的情况下, 启用类指针压缩功能。
 当然, 这只是一种人为的依赖, 因为没有技术上的限制说, 我们不能启用一个, 而禁用另一个。 
-由于 ZGC 在低版本中还不支持 Compressed Oops, 这意味着 ZGC 也就被禁止使用 Compressed Class Pointers。 
+由于 ZGC 目前还不支持 Compressed Oops, 这意味着 ZGC 也就被禁止使用 Compressed Class Pointers。 
 在 JDK 15 中, 压缩类指针和压缩 Oops 之间的人为依赖被打破了, 因此 ZGC 现在可以很好地与压缩类指针一起工作。
 
 
@@ -579,8 +579,8 @@ The Class Data Sharing (CDS) feature in HotSpot helps reduce the startup time an
 
 HotSpot 中, 多个 JVM 实例之间的类数据共享功能 ([CDS, Class Data Sharing](https://docs.oracle.com/en/java/javase/15/vm/class-data-sharing.html)) , 有助于减少启动耗时和内存占用。 
 此特性仅在开启压缩 Oops 功能(`-XX:+UseCompressedOops`)时有效。 
-在 JDK 15 中, 类数据共享得到增强, 即使禁用 Oops 压缩功能, 也能正常工作。 
-因此, 类数据共享现在可以与 ZGC(禁用 Oops 压缩功能)一起协同工作。
+在 JDK 15 中, 类数据共享得到增强, 即使禁用压缩 Oops 功能, 也能正常工作。 
+因此, 类数据共享现在可以与 ZGC(禁用压缩 Oops 功能)一起协同工作。
 
 
 
@@ -600,10 +600,9 @@ Here is my talk, titled [ZGC - The Next Generation Low-Latency Garbage Collector
 
 2020年09月15日, [JDK 15](https://openjdk.java.net/projects/jdk/15) 正式发布; 
 
-为了庆祝这次发布, Oracle 举办了一次 开发者线上大会,
-- [Oracle Developer Live - Java](https://developer.oracle.com/community/events/devlive-java-recordings.html)。
+为了庆祝这次发布, Oracle 举办了一次开发者线上大会: [Oracle Developer Live - Java](https://developer.oracle.com/community/events/devlive-java-recordings.html)。
 
-在2020年的会议中,  pliden 分享了 [ZGC](https://wiki.openjdk.java.net/display/zgc) 相关的内容。 
+在2020年的会议中, pliden 分享了 [ZGC](https://wiki.openjdk.java.net/display/zgc) 相关的内容。 
 
 - [http://cr.openjdk.java.net/~pliden/slides/ZGC-OracleDevLive-2020.pdf](http://cr.openjdk.java.net/~pliden/slides/ZGC-OracleDevLive-2020.pdf)
 
@@ -622,7 +621,7 @@ Here is my talk, titled [ZGC - The Next Generation Low-Latency Garbage Collector
 
 I had the pleasure of being invited to the Inside Java Podcast, where David Delabassee and I talked about ZGC. We covered some of the things that is new in JDK 15 as well as what’s coming in JDK 16. Listen to it right here, or head over to the home of the podcast to find a feed or listen to other episodes.
 
-[Inside Java Podcast](https://inside.java/podcast/) 邀请 pliden 和 [David Delabassee](https://inside.java/u/DavidDelabassee/) 参与了 ZGC 相关的讨论, 在视频中, 主要讨论的 JDK15 的新特性和 JDK16 预期的功能特征; 
+[Inside Java Podcast](https://inside.java/podcast/) 邀请 pliden 和 [David Delabassee](https://inside.java/u/DavidDelabassee/) 参与了 ZGC 相关的讨论, 在播客中, 主要讨论了 JDK 15 的新特性, 以及 JDK 16 预期的新功能; 
 
 链接如下: 
 
@@ -643,7 +642,7 @@ JDK 16 已经发布, 包含一系列的新功能、增强功能和BUG修复。
 
 其中, ZGC 的更新包括:
 
-- [46项增强功能]((https://bugs.openjdk.java.net/issues/?jql=project%20%3D%20jdk%20and%20component%20%3D%20hotspot%20and%20labels%20in%20(zgc)%20and%20fixVersion%20%3D%2016%20and%20type%20%3D%20Enhancement%20))
+- [46项增强功能](https://bugs.openjdk.java.net/issues/?jql=project%20%3D%20jdk%20and%20component%20%3D%20hotspot%20and%20labels%20in%20(zgc)%20and%20fixVersion%20%3D%2016%20and%20type%20%3D%20Enhancement%20)
 - [25项BUG修复](https://bugs.openjdk.java.net/issues/?jql=project%20%3D%20jdk%20and%20component%20%3D%20hotspot%20and%20labels%20in%20(zgc)%20and%20fixVersion%20%3D%2016%20and%20type%20%3D%20Bug%20)
 
 下面介绍一些有趣的增强功能。
@@ -655,12 +654,12 @@ JDK 16 已经发布, 包含一系列的新功能、增强功能和BUG修复。
 
 When we started the ZGC project, our goal was to never have a GC pause take longer than 10ms. At the time, 10ms seemed like an ambitious goal. Other GCs in HotSpot typically offered max pause times several magnitudes worse than that, especially when using large heaps. Reaching this goal was to a large extent a matter of doing all the really heavy work, such as relocation, reference processing, and class unloading, in a concurrent phase rather than in a Stop-The-World phase. Back then, HotSpot lacked a lot of the infrastructure needed to do this concurrently, so it took a few years of development to get there.
 
-### 7.1 不到毫秒级的最大暂停时间
+### 7.1 亚毫秒级的最大暂停时间
 
 > 这项技术也被称为: 线程栈并发处理(Concurrent Thread-Stack Processing)
 
 ZGC项目刚开始启动时, 设计目标是 GC 暂停时间绝对不要超过 10 毫秒。 在当时, 10ms 是一个野心勃勃的目标。 
-HotSpot 虚拟机中的其他 GC 实现, 通常只能保证几个数量级之外的最大暂停时间, 尤其是堆内存非常庞大时。 
+HotSpot 虚拟机中的其他 GC 实现, 通常提供的最大暂停时间要比这差好几个数量级, 尤其是堆内存非常庞大时。 
 实现这个目标的原理很简单, 将 Stop-The-World 阶段的各种任务全部拆出去, 在并发阶段来完成。 
 这些繁重的工作, 包括: 对象迁移(relocation), 引用处理(reference processing), 类卸载(class unloading) 等等。
 当时, HotSpot 还没有支持这些并发操作的各种基础组件, 因此整个研发过程消耗了好几年才实现。
@@ -680,7 +679,7 @@ After reaching that initial 10ms goal, we re-aimed and set our target on somethi
 从 JDK 16 开始, 我们很高兴地宣布: 这个目标已经达成。 
 
 现在, 新版 ZGC 的暂停时间复杂度为 `O(1)`。  换句话说, 它们执行时间是恒定的。 
-不再随着堆内存大小(heap)、存活对象多少(live-set), 或者GC根的数量(root-set )而发生变化。 
+不再随着堆内存大小(heap)、存活对象多少(live-set), 或者 GC 根的数量(root-set)而发生变化。 
 
 当然, ZGC仍然受制于操作系统调度程序来为 GC 线程分配 CPU 时间。 
 
@@ -717,7 +716,7 @@ As you can imagine, poking around in thread stacks, while threads are running, r
 With JEP 376 in place, ZGC now scans exactly zero roots in Stop-The-World phases. For many workloads, you saw really low max pause times even before JDK 16. But if you ran on a large machine, and your workload had a large number of threads, you could still see max pause times well above 1ms. To visualize the improvement, here’s an example comparing JDK 15 and JDK 16, running SPECjbb®2015 on a large machine with a couple of thousand Java threads.
 
 通过 [JEP 376](http://openjdk.java.net/jeps/376) 的实现方式, ZGC 在 Stop-The-World 阶段可以一个GC根都不需要扫描。 
-对于许多小型应用系统和低负载工况下, 我们甚至在 JDK 16 之前就可以看到非常低的GC暂停时间。
+对于许多工作负载而言, 甚至在 JDK 16 之前, 就能看到非常低的最大暂停时间。
 但如果是在大型机器上运行的高负载应用, 伴随着大量线程, 仍然可以看到最大暂停时间远高于 1 毫秒。 
 
 为了方便对比, 下图列出了 JDK 15 和 JDK 16 的对比示例, 在具有几千个 Java 线程的大型机器上运行 `SPECjbb®2015`。
@@ -734,26 +733,26 @@ In JDK 16, ZGC got support for in-place relocation. This feature helps avoid `Ou
 在 JDK 16 中, ZGC 开始支持就地执行对象迁移。 
 在堆内存基本上用满的情况下, 需要GC收集垃圾时, 这个特性可以有效避免 `OutOfMemoryError`。 
 正常情况下, ZGC整理堆内存(并释放内存)的执行逻辑是: 将对象从多个稀疏区, 整理压实, 移动到一个或者多个空闲区。
-这种方式简单直接, 很适合并行处理。 但也有缺点, 就是额外需要一定数量的空闲内存(每种尺寸的region都至少需要一个)才能启动迁移过程。 
+这种方式简单直接, 很适合并行处理。 但也有缺点, 就是额外需要一定数量的空闲内存(每种尺寸的堆区都至少需要一个)才能启动迁移过程。 
 如果堆内存已经用满, 那就没有地方用来腾挪和移动对象。
 
 Prior to JDK 16, ZGC solved this by having a heap reserve. This heap reserve was a set of heap regions that was set aside and made unavailable for normal allocations from Java threads. Instead only the GC itself was allowed to use the heap reserve when relocating objects. This ensured that empty heap regions were available, even if the heap was full from a Java thread’s perspective, to get the relocation process started. The heap reserve was typically a small fraction of the heap. In a previous blog post, I wrote about how we improved it in JDK 14 to better support tiny heaps.
 
-在 JDK 16 之前, ZGC 通过预留一部分堆内存来解决这个问题。 
+在 JDK 16 之前, ZGC 通过堆预留区(heap reserve)来解决这个问题。 
 也就是将一部分堆内存块(heap regions)保留下来, 不给 Java 线程用来分配对象。 
-与此对应, 在迁移对象时, 只允许 GC 使用保留的堆内存。 
+与此对应, 在迁移对象时, 只允许 GC 使用堆预留区。 
 这种方式确保了空闲堆块的可用, 即使在 Java 线程的角度来看堆内存已经用满了, GC也可以启动迁移过程。 
-保留堆通常只是堆内存的一小部分。 
-前面的博客文章中, 我们介绍了在 JDK 14 中是如何优化保留堆内存, 以更好地支持小型堆(比如128MB)。
+堆预留区通常只占堆内存的一小部分。 
+前面的博客文章中, 我们介绍了在 JDK 14 中是如何优化堆预留区, 以更好地支持小型堆(比如128MB)。
 
 ![](./relocation_with_heap_reserve.svg)
 
 Still, the heap reserve approach had a few problems. For example, since the heap reserve was not available to Java threads doing relocation, there was no hard guarantee that the relocation process could complete and hence the GC couldn’t reclaim (enough) memory. This was a non-issue for basically all normal workloads, but our testing revealed that it was possible to construct a program that provoked this problem, which in turn resulted in premature `OutOfMemoryError`. Also, setting aside some (though small) portion of the heap, just in case it was needed during relocation, was a waste of memory for most workloads.
 
 但这种保留一部分堆内存的解决办法, 存在一些问题。 
-比如, 进行对象迁移的 Java 线程, 由于不能使用保留堆内存块, 无法保证迁移过程一定能够完成, 因此 GC 无法回收足够的内存。 
+比如, 进行对象迁移的 Java 线程, 由于不能使用堆预留区, 无法保证迁移过程一定能够完成, 因此 GC 无法回收足够的内存。 
 基本上对于所有正常的工作负载来说, 这都不是问题。
-但我们的测试表明, 开发出一个蕴含这类问题的系统是可能的, 从而导致过早出现 `OutOfMemoryError`。 
+但我们的测试表明, 构造出一个能触发这个问题的程序是可能的, 从而导致过早出现 `OutOfMemoryError`。 
 此外, 留出一小块堆内存, 尽管很小, 对于大多数业务场景来说, 也是一种浪费。
 
 Another approach to free up contiguous chunks of memory is to compact the heap in-place. Other HotSpot collectors (e.g. G1, Parallel and Serial) do some version of this when they do a so called Full GC. The main advantage of this approach is that it doesn’t need memory to free up memory. In other words, it will happily compact a full heap, without needing a heap reserve of some sort.
@@ -761,7 +760,7 @@ Another approach to free up contiguous chunks of memory is to compact the heap i
 另一种释放连续内存块的方法, 是就地整理堆内存(compact the heap in-place)。 
 HotSpot 中的其他垃圾收集器(例如 G1、并行GC、串行GC), 在执行 Full GC 时会执行某种类型的就地内存整理。 
 这种方法的主要优点是不需要额外的内存来释放内存。 
-换句话说, 整理整个堆的过程很轻松, 不需要某种形式的保留堆内存。
+换句话说, 它可以在堆已满的情况下顺利整理, 不需要任何形式的堆预留区。
 
 ![](./in_place_relocation.svg)
 
@@ -789,7 +788,7 @@ Starting with JDK 16, ZGC now uses both approaches to get the best of both world
 在极端情况下, 始终保证对象迁移能够成功完成。 
 
 默认情况下, 只要存在可用的空闲堆内存块, 允许将对象移动过去, ZGC 就不会使用就地迁移。 
-如果情况恶劣, 那么 ZGC 使用 `就地对象迁移`。 
+如果不存在可用的空闲堆内存块, ZGC 就会切换成 `就地对象迁移`。 
 之后如果有堆内存块空闲, ZGC 将再次切换成 `非就地对象迁移`。
 
 
@@ -834,7 +833,7 @@ Prior to JDK 16, the allocation and initialization of forwarding tables could ta
 
 在 JDK 16 之前, 如果迁移集合非常大, 那么转发表的分配和初始化过程, 可能会占整个 GC 周期的很大一部分时间。 
 迁移集合的大小, 与迁移期间移动的对象数量相关。 
-例如, Java堆内存超过 `100GB`, 并且执行过程中会产生大量的内存碎片, 并且这些碎片均匀分布到整个堆内存, 那么迁移集合将会很大。
+例如, Java堆内存超过 `100GB`, 并且执行过程中会产生大量的内存碎片, 而这些碎片均匀分布到整个堆内存, 那么迁移集合将会很大。
 这种情况下, 分配/初始化迁移集合, 可能需要一段时间。 
 当然, 这项工作一直是在并发阶段完成的, 所以并没有影响到 GC 暂停时间。 
 尽管如此, 这里仍有改进的空间。
@@ -850,12 +849,12 @@ In JDK 16, ZGC now allocates forwarding tables in bulk. Instead of making numero
 The initialization of these tables was another bottleneck. The forwarding table is a hash table, so initializing it means setting up a small header and zeroing out a (potentially large) array of forwarding table entries. Starting with JDK 16, ZGC now does this initialization in parallel using multiple threads, instead of with a single thread.
 
 转发表的初始化是另一个瓶颈。 
-转发表是一个哈希表, 因此对它的初始化, 意味着设置一个小小的header, 并将转发表的条目数组清零(可能很大)。 
+转发表是一个哈希表, 因此对它的初始化, 意味着设置一个小小的表头(header), 并将转发表的条目数组清零(可能很大)。 
 从 JDK 16 开始, ZGC 使用多个线程来并行执行初始化(以前是单个线程)。
 
 In summary, these changes significantly reduce the time is takes to allocate and initialize forwarding tables, especially when collecting very large heaps that are sparsely populated, where the reduction can be on the order of one or two magnitudes.
 
-总之, 这些更改, 显著减少了转发表分配和初始化所需的时间, 特别是在回收非常大的Java堆时, 对象分布比较分散的话, 其中减少的时间可能是好几个数量级。
+总之, 这些更改, 显著减少了转发表分配和初始化所需的时间, 特别是在回收非常大的Java堆时, 对象分布比较分散的话, 其中减少的时间可以达到一到两个数量级。
 
 ![](./phases.svg)
 
@@ -921,7 +920,7 @@ Now let’s dive into what’s new in JDK 17 from a ZGC perspective.
 
 The JVM has for a long time had an option called `-XX:+UseDynamicNumberOfGCThreads`. It’s enabled by default and tells the GC to be smart about how many GC threads it’s using for various operations. The number of threads used will be constantly re-evaluated and can thus vary over time. This option is useful for several reasons. For example, it can be hard to figure out what the optimal number of GC threads is for a given workload. What usually happens is that you try various settings of `-XX:ParallelGCThreads` and/or `-XX:ConcGCThreads` (depending on which GC you are using) to see which seems to give the best result. To complicate things, the optimal number of GC threads might vary over time as the application goes through different phases, so setting a fixed number of GC threads can be inherently sub-optimal.
 
-`-XX:+UseDynamicNumberOfGCThreads` 启动选项已经受JVM支持很长时间了。 
+JVM 支持 `-XX:+UseDynamicNumberOfGCThreads` 启动选项已经很长时间了。 
 该选项默认开启, 让 GC 自动调整各种相关操作的 GC 线程数。 
 具体使用的线程数, 将根据运行时的情况, 持续地进行重新计算, 所以随着时间的推移, 可能会发生变化。 
 这个选项非常有用, 原因有多个方面。 
@@ -962,13 +961,13 @@ The first graph shows the number of GC threads used throughout the run. SPECjbb2
 
 In the second graph we see the benchmark scores. Because ZGC is no longer using all GC threads all the time, we’re giving more CPU time to the Java threads, which results in better throughput (max-jOPS) and better latency (critical-jOPS).
 
-在第二张图中, 我们可以看到基准分数。 由于 ZGC 不再一直使用最大的 GC 线程数, 因此为 Java 线程提供了更多的 CPU 时间, 从而实现了更好的吞吐量 (max-jOPS) 和更好的延迟表现 (ritic-jOPS)。
+在第二张图中, 我们可以看到基准分数。 由于 ZGC 不再一直使用最大的 GC 线程数, 因此为 Java 线程提供了更多的 CPU 时间, 从而实现了更好的吞吐量 (max-jOPS) 和更好的延迟表现 (critical-jOPS)。
 
 ![](./specjbb2015_score.svg)
 
 If you for some reason want to always use a fixed number of GC threads (like in JDK 16 and earlier) then you can disable this feature by using .
 
-如果有特殊原因, 想要使用固定数量的 GC 线程, 那么可以使用减号参数 `-XX:-UseDynamicNumberOfGCThreads` 禁用此功能。(就像在 JDK 16 及更早版本中那样)
+如果有特殊原因, 想要像 JDK 16 及更早版本那样使用固定数量的 GC 线程, 那么可以使用减号参数 `-XX:-UseDynamicNumberOfGCThreads` 禁用此功能。
 
 
 ### 8.2 Fast JVM Termination
@@ -977,18 +976,18 @@ If you for some reason want to always use a fixed number of GC threads (like in 
 
 When using ZGC, you might have noticed that terminating a running Java process (e.g. by hitting Ctrl+C or by having the application call `System.exit()` ) hasn’t always had an immediate effect. It can sometimes can take a while (in the worst case many seconds) for the JVM to actually terminate. This can be pretty annoying and cause problems in environments where being able to promptly terminate is important.
 
-可能你已经注意到, 使用ZGC垃圾收集器, 有时想要终止 Java 进程, 却没有立即响应, (例如, 通过按 `Ctrl+C` 或者通过代码调用 `System.exit()` 方法)。 有时 JVM 可能需要一段时间, 甚至好几秒才能真正终止。 这可能造成一些烦恼, 并且在某些需要立即响应的环境中会导致问题。
+可能你已经注意到, 使用ZGC垃圾收集器, 有时想要终止 Java 进程, 却没有立即生效(例如, 按下 `Ctrl+C`, 或者代码中调用 `System.exit()` 方法)。 有时 JVM 可能需要一段时间, 甚至好几秒才能真正终止。 这可能造成一些烦恼, 并且在某些需要立即响应的环境中会导致问题。
 
 
 So, why does it sometimes take time for the JVM to terminate when using ZGC? The reason is that the JVM shutdown sequence needs to coordinate with the GC, so that the GC stops doing what it’s doing and enters a “safe” state. ZGC was only in a “safe” state when it was idle, i.e. not currently collecting garbage. If a very long GC cycle was in progress when the termination signal arrived, then the JVM shutdown sequence simply had to wait for that GC cycle to completed before ZGC became idle and entered a “safe” state again.
 
 那么, 为什么ZGC需要一段时间才能终止呢？ 原因是 JVM 关闭序列需要与 GC 协调, 以便 GC 停止执行其正在执行的操作并进入“安全”状态。 
-ZGC仅在空闲时才处于“安全”状态, 即不再执行收集垃圾。 
+ZGC仅在空闲时才处于“安全”状态, 即当前没有在执行垃圾回收。 
 如果收到终止信号时, 正在处于很长的 GC 周期中, 那么 JVM 关闭序列必须等待该 GC 周期完成, 然后 ZGC 空闲, 并进入“安全”状态。
 
 This was addressed in JDK 17. ZGC is now able to abort an ongoing GC cycle to quickly reach the “safe” state on demand. Terminating a JVM running ZGC is now more or less instant.
 
-这个问题在 JDK 17 中得到了解决。 ZGC直接终止正在进行的 GC 周期, 快速达到“安全”状态。 现在, 运行 ZGC 的 JVM 终止过程基本上是即时完成的。
+这个问题在 JDK 17 中得到了解决。 ZGC 现在可以按需中止正在进行的 GC 周期, 快速达到“安全”状态。 现在, 运行 ZGC 的 JVM 终止过程基本上是即时完成的。
 
 
 ### 8.3 Reduced Mark Stack Memory Usage
@@ -1014,7 +1013,7 @@ This approach works well for most workloads, but there’s also a pathological p
 
 这种方法适用于大部分常规的工作负载，但在极端情况下可能存在一些问题。 
 如果有一个或多个 `N:1` 关系的对象图，其中 N 是一个非常大的数字，那么标记栈可能会使用大量内存（如许多 GB）。 
-官方一直都知道有这个隐患，我们也可以编写一个小型的测试程序来引发， 但在现实世界中却一直没有遇到过这种业务负载情况。
+官方一直都知道有这个隐患，我们也可以编写一个小型的测试程序来触发它， 但在现实世界中却一直没有遇到过这种业务负载情况。
 直到腾讯公司的 OpenJDK 贡献者报告说他们遇到了这个问题。 
 所以，需要对此进行改进。
 
@@ -1032,12 +1031,12 @@ JDK 17 中的修复, 通过以下方式来放宽严格的条带限制：
 
 These tweaks help stop excessive mark stack memory usage in the pathological N:1 case, where GC threads come across the same object reference over and over again, pushing lots of duplicate object references onto mark stacks. Duplicates are useless because an object only needs to be marked once. By marking before pushing, and only pushing previously unmarked objects, the production of duplicates stops.
 
-这些调整有助于在极端 N:1 的情况下, 防止标记栈内存的过度使用，在这种情况下，GC 线程一遍又一遍地遇到相同的对象引用，将大量重复的对象引用推送到标记栈里面。 重复添加这么多个引用并没有什么用，因为一个对象只需要标记一次。 通过在推送之前进行标记，并且仅推送之前未标记的对象，可以阻止产生重复项。
+这些调整有助于在极端 N:1 的情况下, 防止标记栈内存的过度使用，在这种情况下，GC 线程一遍又一遍地遇到相同的对象引用，将大量重复的对象引用推送到标记栈里面。 这些重复项毫无用处，因为一个对象只需要标记一次。 通过在推送之前进行标记，并且仅推送之前未标记的对象，可以阻止产生重复项。
 
 We were initially a bit reluctant to do this, since GC threads are now doing atomic compare-and-swap operations to mark objects in memory that belongs to stripes that other GC threads are assigned to work on. This breaks the strict striping, making it less cache-friendly. Java threads are now also doing atomic loads to see if objects are marked, something they didn’t do before. At the same time, other work done by GC threads (scanning/following object fields and tracking number of live objects/bytes per heap region) still adheres to strict striping. In the end, benchmarking showed that our initial concerns were unfounded. GC marking times were unaffected and the impact on Java threads wasn’t noticeable either. On the flip side, we now have a more robust marking scheme that isn’t prone to excessive memory usage.
 
 
-我们最初有点不愿意这样做，因为 GC 线程需要执行原子比较和交换操作(atomic compare-and-swap operations)，来标记内存中分配给其他 GC 线程处理的的对象。 
+我们最初有点不愿意这样做，因为 GC 线程需要执行原子比较和交换操作(atomic compare-and-swap operations)，来标记内存中分配给其他 GC 线程处理的对象。 
 这打破了严格的条带化，使其对CPU高速缓存不太友好。 
 Java 线程还执行原子加载(atomic loads)来查看对象是否被标记，这是以前没有做过的。 
 与此同时，GC 线程完成的其他工作（扫描/跟踪对象字段,以及跟踪每个堆区域的活动对象数/字节数）仍然遵循严格的条带化。 
@@ -1053,9 +1052,9 @@ Java 线程还执行原子加载(atomic loads)来查看对象是否被标记，�
 Some time ago, Apple announced a long-term plan to transition their line of Mac computers from x86 to ARM. Not long after, [JEP 391: macOS/AArch64 Port](https://openjdk.java.net/jeps/391) proposed a port of the JDK to this new platform. The JVM code base is fairly modular, with OS- and CPU-specific code isolated from the shared platform independent code. The JDK already supported macOS/x86 and Linux/Aarch64, so the main pieces needed to support macOS/Aarch64 were already there. Of course, work is still needed by anyone who plans to ship and support a macOS/Aarch64 build of the JDK, like invest in new hardware, integrate this new platform in CI-pipelines, etc.
 
 
-不久前，苹果公司宣布了一项长期计划，将其 Mac 电脑系列从 x86架构 过渡到 ARM架构。 
+不久前，苹果公司宣布了一项长期计划，将其 Mac 电脑系列从 x86 架构过渡到 ARM 架构。 
 然后，[JEP 391: macOS/AArch64 Port](https://openjdk.java.net/jeps/391) 提议将 JDK 移植到这个新平台。 
-JVM 代码库相当模块化，特定于操作系统和CPU 的代码, 与共享平台无关的代码是互相隔离的。 
+JVM 代码库相当模块化，特定于操作系统和CPU 的代码, 与平台无关的共享代码是互相隔离的。 
 JDK 已经支持 macOS/x86 和 Linux/Aarch64，因此支持 macOS/Aarch64 所需的主要部分是现成的。 
 当然，任何计划发布和支持 JDK 的 macOS/Aarch64 版本的人仍然需要做一些工作，例如投资新硬件、将这个新平台集成到 CI 管道中等等。
 
@@ -1069,7 +1068,7 @@ The story is pretty much the same when it comes to ZGC. Both macOS/x86 and Linux
 - Windows/AArch64
 
 ZGC 的事情也差不多。 macOS/x86 和 Linux/Aarch64 都已得到支持，因此主要是对操作系统/CPU组合, 启用新的构建和测试。 
-从 JDK 17 开始，ZGC 支持以下平台上：
+从 JDK 17 开始，ZGC 支持以下平台：
 
 - Linux/x64
 - Linux/AArch64
@@ -1104,7 +1103,7 @@ Prior to JDK 17, ZGC published a single bean called `ZGC`. This bean provided in
 
 在 JDK 17 之前，ZGC 发布了一个名为 `ZGC` 的 bean。 这个 bean 提供了有关 `ZGC cycles` 的信息。 
 一个GC周期包括从开始到结束的所有 GC 阶段。 大多数阶段是并发执行的，但有些阶段则有 "Stop-The-World" 暂停。 
-虽然GC周期相关的信息很有用，但我们更想知道在 GC 上花费了多少时间用于 Stop-The-World 暂停。 
+虽然 GC 周期相关的信息很有用, 但你可能还想知道, 花在 GC 上的时间中有多少是 Stop-The-World 暂停。 
 只通过 ZGC bean 无法获得此信息。 
 
 为了解决这个问题，ZGC 又暴露了两种 Bean:
@@ -1193,9 +1192,9 @@ In both cases we see that the GC ran 100 cycles and each cycle took on average ~
 
 - 支持 JVM 选项 `-XX:+UseDynamicNumberOfGCThreads`,  该功能默认启用, 告诉 ZGC 动态决定需要使用的 GC 线程数, 这通常可以为 Java 应用程序带来更高的吞吐量和更低的延迟。
 
-- 使用 ZGC 的 JVM终结过程, 基本上是即时完成的。
+- 使用 ZGC 的 JVM 终止过程, 基本上是即时完成的。
 
-- 标记算法总体上使用较更少的内存, 且不再容易出现内存使用过多的情况。
+- 标记算法总体上使用的内存更少, 且不再容易出现内存使用过多的情况。
 
 - ZGC 可以在 `macOS/Aarch64` 架构的机器上运行。
 
@@ -1216,13 +1215,13 @@ For more information on ZGC, please see the [OpenJDK Wiki](https://wiki.openjdk.
 
 > 发表日期: 2022年03月25日
 
-Oracle举办了另外一场 [Oracle开发者线上大会 - Java创新](https://developer.oracle.com/developer-live/java-innovations-mar-2022/), 来发布 JDK 18. 
+Oracle举办了另外一场 [Oracle开发者线上大会 - Java创新](https://developer.oracle.com/developer-live/java-innovations-mar-2022/), 来发布 JDK 18。 
 
-这是一场在线直播, 所有会议都被记录。 ZGC作者的主题是
+这是一场在线直播, 所有会议都有录像。 ZGC作者的演讲主题是
 
 - [ZGC - The Future of Low-Latency Garbage Collection Is Here](https://www.youtube.com/watch?v=OcfvBoyTvA8)
 
-其中介绍了  [ZGC](https://wiki.openjdk.java.net/display/zgc), 并展示了最新的性能数据，并更新让 ZGC 成为分代垃圾收集器的计划。
+其中介绍了  [ZGC](https://wiki.openjdk.java.net/display/zgc), 展示了最新的性能数据, 并介绍了让 ZGC 成为分代垃圾收集器(generational GC)的最新计划。
 
 视频链接:
 
@@ -1235,14 +1234,14 @@ Oracle举办了另外一场 [Oracle开发者线上大会 - Java创新](https://d
 
 On March 22, [JDK 18](http://jdk.java.net/18) was released. This was a fairly quiet release for ZGC, since most of our efforts in the last year or so has gone into making ZGC a generational GC. Still, there were [37 bugfixes and enhancements](https://bugs.openjdk.java.net/issues/?jql=labels%20%3D%20zgc%20AND%20type%20in%20(Bug%2C%20Enhancement)%20AND%20status%20in%20(Resolved%2C%20Closed)%20AND%20resolution%20in%20(Fixed)%20AND%20fixVersion%20%3D%2018%20) related to ZGC in this release. I’ll discuss some of the more interesting ones in this post. If you’re interested in knowing more about ZGC features/enhancements in previous JDK releases, then check out some of my previous posts.
 
-2022年03月22日, [JDK 18](http://jdk.java.net/18) 正式发布.
-该版本属于快速发布版, 不是长期支持板.
+2022年03月22日, [JDK 18](http://jdk.java.net/18) 正式发布。
+该版本属于快速发布版, 不是长期支持版。
 ZGC在该版本中变更不太明显, 因为官方团队正致力于将ZGC改造成一款分代垃圾收集器(generational GC)。
 ZGC在JDK18版本中, 包含:
 
 - [37个BUG修复和改进](https://bugs.openjdk.java.net/issues/?jql=labels%20%3D%20zgc%20AND%20type%20in%20(Bug%2C%20Enhancement)%20AND%20status%20in%20(Resolved%2C%20Closed)%20AND%20resolution%20in%20(Fixed)%20AND%20fixVersion%20%3D%2018%20)
 
-本文只是简单介绍其中有趣的内容, 更多信息请参考前面的文章.
+本文只是简单介绍其中有趣的内容, 更多信息请参考前面的文章。
 
 
 Now let’s talk about what’s new in JDK 18 (from a ZGC perspective).
@@ -1260,7 +1259,7 @@ Now let’s talk about what’s new in JDK 18 (from a ZGC perspective).
 
 *String对象自动去重* 是JVM提供的一个特性(`-XX:+UseStringDeduplication`)。
 通过自动去除String对象底层使用的, 重复的等价字符数组(identical character arrays), 有助于降低Java堆内存的使用量。
-比如, 在堆内存中有两个String对象, 底层所使用的字符数组, 内容都是 `"Java"`, 那么,JVM会将其中一个String对象的字符数组指针修改, 让两个String对象都指向同一个字符数组. 另一个没有引用指向的数组, 则会因为不可达而被GC回收。
+比如, 在堆内存中有两个String对象, 底层所使用的字符数组, 内容都是 `"Java"`, 那么,JVM会将其中一个String对象的字符数组指针修改, 让两个String对象都指向同一个字符数组。 另一个没有引用指向的数组, 则会因为不可达而被GC回收。
 对于具有大量重复字符串的应用, 可以减少内存占用。
 
 参考JDK的源代码: [java/lang/String.java](https://github.com/openjdk/jdk17/blob/master/src/java.base/share/classes/java/lang/String.java)
@@ -1279,7 +1278,7 @@ public final class String
 
 I wrote the [JEP](https://openjdk.java.net/jeps/192) and the initial [implementation](https://github.com/openjdk/jdk/commit/4a4c0fce93fb919383c793983bcf1cc4bfb7b7bc) for this feature back in 2014, and it shipped as part of JDK 8u20. This was before ZGC was born, and the initial implementation only added support for String deduplication in the G1 garbage collector.
 
-作者在2013年编写了 [JEP](https://openjdk.java.net/jeps/192) 提案, 并在 2014年提交了相关的 [代码实现](https://github.com/openjdk/jdk/commit/4a4c0fce93fb919383c793983bcf1cc4bfb7b7bc), 伴随着 JDK 8u20 发布。 字符串去重的特性早于ZGC的发布, 最初只有G1垃圾收集器提供支持。
+作者在2014年编写了 [JEP](https://openjdk.java.net/jeps/192) 提案, 并提交了相关的 [代码实现](https://github.com/openjdk/jdk/commit/4a4c0fce93fb919383c793983bcf1cc4bfb7b7bc), 伴随着 JDK 8u20 发布。 字符串去重的特性早于ZGC的发布, 最初只有G1垃圾收集器提供支持。
 
 Fast forward to 2021. Kim Barrett [overhauled](https://github.com/openjdk/jdk/commit/be0a655208f64e076e9e0141fe5dadc862cba981) a significant part of the String deduplication infrastructure. The overall concept remained the same, but the way in which the String deduplication mechanism interfaces with the garbage collector became more general. This enabled easier integration of this feature into garbage collectors other than G1. As a result, String deduplication support was later added to [SerialGC](https://github.com/openjdk/jdk/commit/e8a289e77d70d31f2f7d1a8dea620062dbdb3e2a), [ParallalGC](https://github.com/openjdk/jdk/commit/fb1dfc6f49f62990aa9988e9d6f7ffd1adf45d8e), and [ZGC](https://github.com/openjdk/jdk/commit/abebbe2335a6dc9b12e5f271bf32cdc54f80b660).
 
@@ -1293,7 +1292,7 @@ If you’re unfamiliar with String dediuplication, what it actually does, and wh
 
 - [JEP 192: String Deduplication in G1](https://openjdk.java.net/jeps/192)
 
-其中介绍了运行原理和启用开关。 虽然该文档时间发布比较久了, 但后续的相关实现都是同样的原理。
+其中介绍了运行原理和启用开关。 虽然该文档发布的时间比较久了, 但后续的相关实现都是同样的原理。
 
 
 ### 10.2 Class Unloading Issue Fixed
@@ -1303,7 +1302,7 @@ If you’re unfamiliar with String dediuplication, what it actually does, and wh
 We received a [report](https://mail.openjdk.java.net/pipermail/zgc-dev/2021-November/001086.html) about a performance issue on the ZGC mailinglist. This turned out to be a 10-year-old bug that dates back to the [removal of *PermGen*](http://openjdk.java.net/jeps/122).
 
 我们在ZGC邮件列表中, 收到了一个 [性能问题报告](https://mail.openjdk.java.net/pipermail/zgc-dev/2021-November/001086.html)。
-这原来是一个持续10年的bug, 可追溯到 [JEP 122: 移除永久代(Permanent Generation)](http://openjdk.java.net/jeps/122).。
+这原来是一个持续10年的bug, 可追溯到 [JEP 122: 移除永久代(Permanent Generation)](http://openjdk.java.net/jeps/122)。
 
 
 So, about 10 years ago, the [patch](https://github.com/openjdk/jdk/commit/5c58d27aac7b291b879a7a3ff6f39fca25619103) to remove *PermGen* made some changes to a function that deals with Inline Cache cleaning. An Inline Cache is a speculative optimization technique used by the JVM to speed up method calls in Java. When the GC unloads unused classes and compiled methods, some of the Inline Caches need to be cleaned so that they no longer refer to any unloaded entities.
@@ -1313,11 +1312,11 @@ So, about 10 years ago, the [patch](https://github.com/openjdk/jdk/commit/5c58d2
 As it turns out, this patch contained a small but important editing mistake, where indentation and scopes were mixed up. It was hard to spot that mistake by just looking at the patch, because the code in question was also moved. This mistake resulted in some Inline Caches being incorrectly cleaned. However, the incorrect cleaning didn’t cause any obvious problems, like a JVM crash. Instead it induced a vicious cycle where the GC and Java threads disagreed about, and fought over, how to clean these caches. The end result was that class unloading, under certain conditions, could take a very long time to complete. Since the root cause of the issue was bad interaction between the GC and concurrently running Java threads, it only affected GCs doing concurrent class unloading (such as ZGC). GCs doing Stop-the-World class unloading (such as SerialGC, ParallelGC and G1GC), were unaffected simply because this bad interaction could never arise, since Java threads never run concurrently with the GC.
 
 
-事实证明，这个补丁包有一个很小的编辑错误(editing mistake), 但是却很致命, 其中将缩进(indentation)和作用域(scopes)混淆了。
+事实证明，这个补丁包有一个很小的编辑错误(editing mistake), 但是却很重要, 其中将缩进(indentation)和作用域(scopes)混淆了。
 只看补丁的代码, 很难发现这个错误，因为有问题的代码也被移动了。
 这个错误导致一些内联缓存被错误地清理。
-但是呢，即使错误清理了一些缓存, 并没有导致任何明显的问题， 不会导致JVM崩溃。
-当然，它引发了一个恶性循环，GC和Java线程在是否清理这些缓存的问题上产生了分歧和争执。
+不过，这种错误的清理并没有导致任何明显的问题， 比如JVM崩溃。
+相反，它引发了一个恶性循环，GC和Java线程在如何清理这些缓存的问题上产生了分歧和争执。
 最终的结果是，在某些场景下，类卸载可能需要耗费很长时间才能完成。
 由于问题的根源在于 GC和并发运行的Java线程之间的不良交互，因此只影响到执行并发类卸载的GC(concurrent class unloading, 例如ZGC)。
 执行 Stop-the-World 类卸载的GC(例如 SerialGC, ParallelGC 和 G1GC) 不受影响，对于这类GC来说, 在类卸载阶段, 这种糟糕的交互永远不会出现， Java线程不会和GC线程并发运行。
@@ -1338,19 +1337,19 @@ This fix was also backported to JDK 17.0.2.
 
 Back in 2013, i.e. before ZGC had come into existence, [JEP 175](https://openjdk.java.net/jeps/175) was created to bring Linux/PowerPC (as well as AIX/PowerPC) support to OpenJDK. The initial port shipped as part of JDK 8u20 and has been maintained ever since. The effort to support this platform has from the start been funded by our friends over at [SAP](https://sap.com/).
 
-早在2013年, 就有 [JEP 175](https://openjdk.java.net/jeps/175) 提案, 将 OpenJDK 支持 Linux/PowerPC 平台, 包括 AIX/PowerPC 平台. 这时候ZGC还没有出现呢。
+早在2013年, 就有了 [JEP 175](https://openjdk.java.net/jeps/175) 提案, 让 OpenJDK 支持 Linux/PowerPC 平台(以及 AIX/PowerPC 平台)。 这时候 ZGC 还没有出现呢。 这个移植随 JDK 8u20 首次发布, 并且一直维护至今。
 
 So, it might not be a surprise to hear that it was also SAP that contributed the patch to make ZGC available on Linux/PowerPC. Adding support for a new CPU architecture is mostly a matter of implementing ZGC’s various barriers (load barrier, nmethod entry barrier, and stack watermark barrier) in the interpreter and the two JIT compilers. The [patch](https://github.com/openjdk/jdk/commit/337b73a459ba24aa529b7b097617434be1d0030e) weights in at around 1200 lines of code.
 
 所以SAP提交了相关的补丁包, 在 Linux/PowerPC 平台上支持 ZGC。
 
-增加新的CPU架构, 最关键的就是实现ZGC需要的各种内存屏障(load barrier, nmethod entry barrier, and stack watermark barrier), 包括: 解释执行器( interpreter), 以及两款 JIT 编译器。
+增加新的CPU架构, 最关键的就是在解释器(interpreter)和两款 JIT 编译器中, 实现ZGC需要的各种屏障(load barrier, nmethod entry barrier, and stack watermark barrier)。
 
 相关的代码提交只有大约1200行代码: [补丁包链接](https://github.com/openjdk/jdk/commit/337b73a459ba24aa529b7b097617434be1d0030e)
 
 As of JDK 18, ZGC now runs on the following platforms (see [this table](https://wiki.openjdk.java.net/display/zgc#Main-SupportedPlatforms) for more details):
 
-所以从 JDK 18 版本开始, ZGC支持在以下的平台上运行.
+所以从 JDK 18 版本开始, ZGC 支持在以下的平台上运行。
 
 - Linux/x64
 - Linux/AArch64
@@ -1373,9 +1372,9 @@ For more information on ZGC, please see the [OpenJDK Wiki](https://wiki.openjdk.
 
 ### 10.4 小结
 
-- JVM中的各种GC算法现在都支持 `-XX:+UseStringDeduplication` 选项了.  这个功能默认是禁用的, 启用之后则告诉ZGC, 需要去查找并去除String对象底层, 重复的字符数组, 以减少堆内存的占用.
+- ZGC 现在也支持 JVM 选项 `-XX:+UseStringDeduplication` 了。 这个功能默认是禁用的, 启用之后则告诉ZGC, 需要去查找并去除String对象底层重复的字符数组, 以减少堆内存的占用。
 - 修复了一个持续10年以上的BUG: 某些情况下类卸载(class unloading)会消耗大量时间。
-- ZGC正式支持 Linux/PowerPC 平台架构, 感谢SAP的小伙伴.
+- ZGC正式支持 Linux/PowerPC 平台架构, 感谢SAP的小伙伴。
 
 
 更多有关 ZGC 的信息, 请参考:
