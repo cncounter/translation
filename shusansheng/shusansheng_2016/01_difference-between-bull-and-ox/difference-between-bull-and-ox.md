@@ -1,6 +1,6 @@
 # Difference Between Bull and Ox
 
-# Bull和Ox这两种公牛的区别
+# 公牛(Bull)与役牛(Ox)的区别
 
 
 ![bull](./bull.jpg) 
@@ -11,32 +11,32 @@
 
 The difference between a bull and a ox goes further than just how we refer to livestock.  Ox, or oxen, are actually used for different purposes than bulls.  An ox is typically used for things like pulling.  In developing countries they are still, to this day, used for pulling a plow and harvesting crops.
 
-一头公牛和一个牛的区别远远不只是我们如何把牲畜。牛,牛比公牛实际上是用于不同的目的.牛通常用于拉之类的东西。他们仍然在发展中国家,这一天,用于拉犁和收割庄稼。
+公牛(bull)与役牛(ox)的区别,远不止我们如何称呼这些家畜这么简单。 役牛(oxen)的用途其实与公牛不同。 役牛通常用来干拉拽之类的活。 在发展中国家,直到今天,它们仍被用来拉犁和收割庄稼。
 
 
 The bull is how we refer to cattle (or cows) when we speak of the male gender of the species.  The ox is scientifically coded as a sub-genus of the cattle.  Technically, this makes each a related species like cousins, but does not make them an identical species.
 
-how is The牛公约we to奶牛(或)当我们说话的cows》《性别男》。scientifically is The牛coded作为sub-genus of The奶牛.从技术上讲,这使得每一个相关的物种像堂兄弟,但并不使它们相同的物种。
+公牛,是我们说到该物种的雄性时所使用的称呼。 而役牛在科学分类上被划为牛的一个亚属。 严格来说,这使二者成为像表亲一样的近缘物种,但并不意味着它们是同一个物种。
 
 
 With the exception of a few that are used for breeding, it is customary to castrate the ox.  Bulls, however, are almost never castrated.  The bulls found within livestock are used for breeding purposes, as well as for stock purposes.  This creates the [need](http://www.differencebetween.net/language/difference-between-a-want-and-a-need/) to produce more cattle at a faster rate.  Oxen are more controlled when it comes to breeding.  This is generally because they are simply not considered much of a popular food source, especially in developed countries.
 
-除了几个用于育种,习惯上阉割牛,牛,但是,几乎从来没有被阉割.公牛在牲畜用于繁殖的目的,以及股票的目的。这将创建(需要)(http://www.differencebetween).net/language/difference-between-a-want-and-a-need/)以更快的速度生产更多的牛。牛更育种时控制.这通常是因为他们不被认为是一个受欢迎的食物来源,尤其是在发达国家。
+除少数用于配种的以外,役牛按惯例都要阉割。 而公牛几乎从不被阉割。 畜群中的公牛用于配种,也用于存栏。 这就产生了 [需要](http://www.differencebetween.net/language/difference-between-a-want-and-a-need/) 以更快的速度繁育更多牛的情况。 而役牛在繁殖方面则更受控制。 这通常是因为它们根本算不上受欢迎的食物来源,尤其是在发达国家。
 
 
 The ox is typically larger than a bull.  Oxen used as ‘draft’, or pulling animals, are usually beyond the age of four, to ensure that they are at their bulkiest and fullest, when it comes to their size.  Alternatively, most bulls are smaller than the ox, and beef cattle are generally slaughtered before they reach the age of four.
 
-牛通常比一头牛.牛用作“草案”,或把动物,通常超出了四岁,以确保他们在笨重和充分,当涉及到他们的大小.另外,大多数牛比牛小,和牛肉通常屠杀才四岁。
+役牛通常比公牛大。 用作“挽畜”(draft animals)即拉拽牲畜的役牛,通常要长到四岁以上,以确保它们在体型上达到最壮实、最饱满的状态。 相比之下,大多数公牛都比役牛小,而肉牛一般在满四岁之前就被屠宰了。
 
 
 Many mistakenly consider any castrated bull to be an ox.  However, this is inaccurate, as they share all of the bovine genes, but do have an actual distinctive genetic code that separates them from each other.
 
-许多人错误地认为任何被阉割的公牛是一头牛.然而,这是不准确的,因为他们分享所有的牛的基因,但实际有一个独特的基因代码,将他们与彼此区分开来。
+许多人误以为任何被阉割的公牛就是役牛。 然而这是不准确的:虽然它们共享牛类的全部基因,但确实存在一种真正独特的遗传密码,将二者彼此区分开来。
 
 
 When it comes to symbolism, there are those cultures that consider them to be separate entities, and there are those that classify both bulls and oxen together.  The Chinese calendar offers representation to both the bull and the ox, for the years of birth including, but not limited to, 2009, 1997, and 1985.  Other cultures and religious affiliations often segregate the two animals.  Hindu celebrants recognize the ox.
 
-象征意义时,有那些认为他们的文化是独立的实体,还有那些牛和牛在一起进行分类.中国日历提供了表示牛和牛,出生年包括,但不限于,2009,1997,1997.其他文化和宗教信仰往往隔离这两只动物。印度参加庆典的人们认识到牛。
+说到象征意义,有些文化将它们视为彼此独立的实体,也有些文化把公牛和役牛归为一类。 中国的农历同时为公牛和役牛保留了代表年份,包括但不限于2009年、1997年和1985年。 其他文化和宗教信仰则往往把这两种动物区分开来。 印度教的庆典者崇敬役牛。
 
 
 Summary:
@@ -46,38 +46,38 @@ Summary:
 
 1.    The oxen are draft or pulling animals, usually used for cart transportation, or to pull plows.
 
-1. 牛草案或动物,通常用于车运输,或拉犁。
+1. 役牛是挽畜,即拉拽用的牲畜,通常用于拉车运输或拉犁。
 
 
 
 2.    While both are part of the bovine family, the oxen are a sub-genus of the male cattle, or bull.
 
-2. 虽然都是牛家族的一部分,牛是sub-genus男性牛,牛。
+2. 虽然二者都属于牛科,但役牛是雄性牛(公牛)的一个亚属。
 
 
 
 3.    Oxen are castrated, and breeding is more controlled and selective.
 
-3. 牛是被阉割,育种是更多的控制和选择。
+3. 役牛会被阉割,其繁殖也受到更多控制和选择。
 
 
 
 4.    The typical ox is larger than the typical bull
 
-4. 典型的牛比典型的牛大
+4. 典型的役牛比典型的公牛大。
 
 
 
 5.    The ox and the bull have similar, yet unique, genetic DNA codes.
 
-5. 牛和牛有相似,但独特的基因DNA编码。
+5. 役牛和公牛拥有相似却又各自独特的基因DNA编码。
 
 
 
 6.    While they maintain religious and ethnic symbolism, they are often heralded separately.
 
 
-6. 时保持宗教和种族的象征意义,它们通常被分开。
+6. 尽管二者都保有宗教和民族象征意义,它们通常被分开看待。
 
 
 
