@@ -222,7 +222,7 @@ git clone git@github.com:xhh890921/mnist_network.git
 例如这样的:
 
 ```
-# 复制终端带里命令, 然后在命令行执行:
+# 复制终端里的命令, 然后在命令行执行:
 # export https_pr*oxy=http://127.0.0.1:7890
 # export http_pro*xy=http://127.0.0.1:7890
 # export all_prox*y=socks5://127.0.0.1:7890
