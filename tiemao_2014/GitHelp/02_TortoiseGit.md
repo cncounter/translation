@@ -5,7 +5,7 @@ TortoiseGit 简称 tgit, 中文名海龟Git. 海龟Git只支持神器 Windows �
 
 **注意:** XP系统已经不支持最新的安装包,请尽量使用 Win7 或更高版本的操作系统. 
 
-官方说明是: Windows XP 只兼容 1.8.16.0 及之前的版本:  (last version which is compatible with Windows XP is [1.8.16.0](https://download.tortoisegit.org/tgit/1.8.16.0/);
+官方说明是: Windows XP 只兼容 1.8.16.0 及之前的版本(最后一个兼容 Windows XP 的版本是 [1.8.16.0](https://download.tortoisegit.org/tgit/1.8.16.0/)).
 
 ## 下载
 
