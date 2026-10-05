@@ -4,7 +4,7 @@
 
 > [比特币白皮书_英文版.pdf](https://bitcoin.org/bitcoin.pdf)
 
-- 作者: Satoshi Nakamoto(聪·中本)
+- 作者: Satoshi Nakamoto(中本聪)
 - 邮箱: satoshin@gmx.com
 - 网站: www.bitcoin.org
 
@@ -48,7 +48,7 @@ Commerce on the Internet has come to rely almost exclusively on financial instit
 
 What is needed is an electronic payment system based on cryptographic proof instead of trust, allowing any two willing parties to transact directly with each other without the need for a trusted third party. Transactions that are computationally impractical to reverse would protect sellers from fraud, and routine escrow mechanisms could easily be implemented to protect buyers. In this paper, we propose a solution to the double-spending problem using a peer-to-peer distributed timestamp server to generate computational proof of the chronological order of transactions. The system is secure as long as honest nodes collectively control more CPU power than any cooperating group of attacker nodes.
 
-我们需要一种基于密码证明而不是基于信任的电子支付系统，允许任意两个交易方直接进行交易，而无需第三方可信结构。
+我们需要一种基于密码证明而不是基于信任的电子支付系统，允许任意两个交易方直接进行交易，而无需第三方可信机构。
 在计算上不可逆的交易将保护卖方免受欺诈， 并且可以很容易地通过常规托管机制来保护买方。
 在本文中，我们提出了一种解决双花问题的方案，使用对等的分布式时间戳服务器，来生成交易的时间顺序的计算证明。
 只要诚实节点共同控制的CPU算力，比协作攻击者的算力高，那么这个系统就是安全的。
@@ -77,8 +77,8 @@ We need a way for the payee to know that the previous owners did not sign any ea
 就我们的目的而言，最早的交易才算数，所以我们不关心随后进行的双花尝试。
 确认有没有这个交易的唯一方法，就是知道所有所有交易信息。
 在基于造币厂的模型中，造币厂知道所有交易，并可以确定哪个交易请求先到达。
-为了在没有受信方参与的情况下完成这个任务，必须公开宣布所有交易(参见[1])，并且需要一种系统，只要参与就可以接收订单的单一历史并达成一致。
-收款人在每次交易时都需要证明，需要超过半数的节点确认这是先收到的交易请求。
+为了在没有受信方参与的情况下完成这个任务，交易必须公开宣布（参见[1]），我们还需要一种机制，让参与者就交易被接收的先后顺序这一单一历史达成一致。
+收款人需要这样的证明：在每一笔交易发生时，大多数节点都认可它是最先收到的。
 
 
 ## 3. Timestamp Server
@@ -140,7 +140,7 @@ The steps to run the network are as follows:
 
 Nodes always consider the longest chain to be the correct one and will keep working on extending it. If two nodes broadcast different versions of the next block simultaneously, some nodes may receive one or the other first. In that case, they work on the first one they received, but save the other branch in case it becomes longer. The tie will be broken when the next proof-of-work is found and one branch becomes longer; the nodes that were working on the other branch will then switch to the longer one.
 
-节点始终将最长的链视为正确的链，并继续在其基础上努力进行扩展。 如果两个节点同时广播了下一个区块的不同版本，则可能会有一部分节点先收到某个广播，另一部分节点却先收到另一个。 在这种情况下，这些节点都在自己先收到的那个分支上运作，但保留另一个分支以备其变得更长。 当下一个工作证明被找到，并且某个分支变得更长时，关系将断开。 然后，在另一个分支上工作的节点将切换到更长的链上。
+节点始终将最长的链视为正确的链，并继续在其基础上努力进行扩展。 如果两个节点同时广播了下一个区块的不同版本，则可能会有一部分节点先收到某个广播，另一部分节点却先收到另一个。 在这种情况下，这些节点都在自己先收到的那个分支上运作，但保留另一个分支以备其变得更长。 当下一个工作量证明被找到、某个分支变得更长时，平局就会被打破。随后，在另一个分支上工作的节点会切换到更长的链上。
 
 New transaction broadcasts do not necessarily need to reach all nodes. As long as they reach many nodes, they will get into a block before long. Block broadcasts are also tolerant of dropped messages. If a node does not receive a block, it will request it when it receives the next block and realizes it missed one.
 
@@ -193,7 +193,7 @@ As such, the verification is reliable as long as honest nodes control the networ
 
 这样，只要诚信节点控制了网络，验证就变得可靠，但如果网络受到攻击者的算力压制，这种验证过程就有弱点了。
 尽管网络节点可以自己进行交易验证，但只要攻击者可以一直保持算力优势的网络攻击，简化的验证方法就可能受到虚假交易的欺骗。
-防止这种情况发生的一种策略是，当网络节点检测到无效块时，接受它们的警报，提示用户端软件去下载完整的块，并警告交易以确认不一致。
+防止这种情况发生的一种策略是：当网络节点检测到无效区块时，接受它们发出的警报，提示用户端软件下载完整的区块以及触发警报的交易，以核实这一不一致。
 频繁交易的企业可能会希望一直运行自己的节点，以获得更独立的安全性和更快的验证。
 
 
@@ -221,7 +221,7 @@ The traditional banking model achieves a level of privacy by limiting access to 
 传统的银行业务模型，通过限制用户和第三方机构对信息的访问来实现一定程度上的隐私保护。
 必须公开广播所有交易的模式不能使用这种方法，但也可以通过在另一个地方中断信息流来保持隐私： 将公钥保持匿名。
 大家都可以看到有人在向其他人汇款，却没办法将交易信息关联到具体的人身上。
-这有点类似于证券交易所公布的信息等级，这个等级，公开的信息包括每次交易的时间和数量，即"tape"，但交易双方的信息却不进行公布。
+这有点类似于证券交易所公布的信息级别：每次交易的时间和数量（即所谓的“tape”）都会公开，但不会公布交易双方是谁。
 
 
 ![](10_01_privacy.jpg)
@@ -270,7 +270,7 @@ qz = 攻击者在后面z个区块追赶上的概率
 
 Given our assumption that p > q, the probability drops exponentially as the number of blocks the attacker has to catch up with increases. With the odds against him, if he doesn't make a lucky lunge forward early on, his chances become vanishingly small as he falls further behind.
 
-我们假设 `p > q` 的情况下， 随着区块数量增加，攻击者赶上的概率呈指数下降。 随着他的赔率越来越大，如果他不及早地向前走，那么随着他的落后，其机会就越来越小。
+在 `p > q` 的假设下，随着攻击者需要追赶的区块数量增加，他赶上的概率呈指数下降。由于形势对他不利，如果他没能趁早幸运地冲上一把，那么随着他越落越远，机会就变得微乎其微。
 
 We now consider how long the recipient of a new transaction needs to wait before being sufficiently certain the sender can't change the transaction. We assume the sender is an attacker who wants to make the recipient believe he paid him for a while, then switch it to pay back to himself after some time has passed. The receiver will be alerted when that happens, but the sender hopes it will be too late.
 
@@ -278,7 +278,7 @@ We now consider how long the recipient of a new transaction needs to wait before
 
 The receiver generates a new key pair and gives the public key to the sender shortly before signing. This prevents the sender from preparing a chain of blocks ahead of time by working on it continuously until he is lucky enough to get far enough ahead, then executing the transaction at that moment. Once the transaction is sent, the dishonest sender starts working in secret on a parallel chain containing an alternate version of his transaction.
 
-收款者生成一个新的密钥对，并在签名之前将公钥提供给发送者。 这可以防止付款人通过不断地进行处理，直到他有幸能够取得足够的领先优势，然后再执行交易，并提前准备区块链。 一旦交易信息发送出去，不诚实的付款方就开始，偷偷在包含其变种交易的并行链上执行计算。
+收款方生成一个新的密钥对，并在签名前不久把公钥交给发送方。这可以防止发送方提前准备一条区块链——即一直不停地计算，直到他侥幸取得足够的领先优势，然后在那一刻执行交易。一旦交易发出，不诚实的发送方就开始在私下里构建一条并行链，其中包含他这笔交易的另一个版本。
 
 The recipient waits until the transaction has been added to a block and z blocks have been linked after it. He doesn't know the exact amount of progress the attacker has made, but assuming the honest blocks took the average expected time per block, the attacker's potential progress will be a Poisson distribution with expected value:
 
