@@ -4,7 +4,7 @@
 
 Be sure to **read** this [Javaworld article](http://www.javaworld.com/javaworld/jw-12-2000/jw-1229-traps.html?page=1). It describes the various **pitfalls** related to the Runtime.exec() method.
 
-基础知识请参考Javaworld的文章: [Runtime.exec() 的错误用法集锦](http://www.javaworld.com/article/2071275/core-java/when-runtime-exec---won-t.html)。它描述了各种相关* *陷阱* * Runtime.exec()方法。
+基础知识请参考 Javaworld 的文章：[Runtime.exec() 的错误用法集锦](http://www.javaworld.com/article/2071275/core-java/when-runtime-exec---won-t.html)。它描述了与 Runtime.exec() 方法相关的各种**陷阱**。
 
 ##### Using Runtime.exec()
 
@@ -16,7 +16,7 @@ This example will
 
 capture the output (from stdio) of an external program.
 
-捕获一个外部程序的输出(头)。
+捕获一个外部程序的输出（来自 stdio）。
 
 ```
 import java.io.*;
@@ -54,7 +54,7 @@ public class Exec {
 
 The next example, launch CMD.EXE, grab stdin/stdout and push to stdin command to be interpreted by the shell.
 
-下一个例子中,启动CMD。EXE,抓住stdin和stdout,推动stdin命令解释的壳。
+下一个例子中，启动 CMD.EXE，抓取 stdin 和 stdout，并向 stdin 推入命令交由 shell 解释。
 
 ```
 import java.io.*;
@@ -114,7 +114,7 @@ public class Exec2 {
 
 ##### Launch a Windows CMD (or BAT) file and retrieve the errorlevel or exitcode
 
-##### 启动Windows CMD文件(或蝙蝠)和检索返回码或exitcode
+##### 启动 Windows CMD（或 BAT）文件并获取 errorlevel 或 exitcode
 
 ```
 // win xp
@@ -136,7 +136,7 @@ public class CmdExec {
 
 test.cmd (set the errorlevel manually)
 
-测试。cmd(手动设置的返回码)
+test.cmd（手动设置 errorlevel）
 
 ```
 @echo hello world
@@ -147,7 +147,7 @@ test.cmd (set the errorlevel manually)
 
 test.cmd (set the errorlevel 1 (problem detected)
 
-测试。cmd(设置返回码1(发现问题)
+test.cmd（将 errorlevel 设为 1（检测到问题））
 
 ```
 @java -garbage
@@ -157,7 +157,7 @@ test.cmd (set the errorlevel 1 (problem detected)
 
 test.cmd (set the errorlevel 0 (execution Ok)
 
-测试。cmd(设置返回码为0(执行好)
+test.cmd（将 errorlevel 设为 0（执行成功））
 
 ```
 @java -version
@@ -190,7 +190,7 @@ public class ExecUnix {
 
 Since 1.5, the ProcessBuilder class provides more controls overs the process to be started. It's possible to set a starting directory.
 
-自1.5以来,ProcessBuilder类提供了更多的控制筛渣要启动这个过程。可以设置一个目录开始。
+自 1.5 起，ProcessBuilder 类对将要启动的进程提供了更多的控制。可以设置一个起始目录。
 
 ```
 import java.io.*;
@@ -225,15 +225,15 @@ public class CmdProcessBuilder {
 
 ##### Windows rundll32 utility
 
-##### Windows rundll32效用
+##### Windows rundll32 工具
 
 Windows File association
 
-Windows文件关联
+Windows 文件关联
 
 Any program using the Windows file association mechanism can be started with the rundll32 utility.
 
-任何程序使用Windows文件关联机制可以从rundll32效用。
+任何使用 Windows 文件关联机制的程序都可以通过 rundll32 工具启动。
 
 ```
 // "file" is the filename of the data file
@@ -248,15 +248,15 @@ Runtime.getRuntime().exec
 
 See also this [HowTo](http://www.rgagnon.com/javadetails/java-0579.html) about the new Desktop API, the recommended solution (but you need JDK1.6).
 
-看到这个[HowTo](http://www.rgagnon.com/javadetails/java - 0579. - html)的新桌面API,(但你需要JDK1.6)推荐的解决方案。
+另请参阅这个 [HowTo](http://www.rgagnon.com/javadetails/java-0579.html)，它介绍新的 Desktop API，是官方推荐的解决方案（但需要 JDK1.6）。
 
 See also this [one](http://www.rgagnon.com/javadetails/java-0071.html) to open the default browser.
 
-看到这个[1](http://www.rgagnon.com/javadetails/java - 0071. - html)打开默认浏览器。
+另请参阅这个[链接](http://www.rgagnon.com/javadetails/java-0071.html)，用于打开默认浏览器。
 
 The following example **start a Dial-up connection** on the Win plateform :
 
-下面的例子* *开始拨号连接* *赢平台:
+下面的例子在 Win 平台上**启动拨号连接**：
 
 ```
 public class Dialup {
@@ -274,15 +274,15 @@ public class Dialup {
 
 The "MyConnection" is the DUN and it's case sensitive.
 
-“MyConnection”DUN和它是区分大小写的。
+“MyConnection”是 DUN（拨号网络连接），且区分大小写。
 
 You still need to press ENTER to CONNECT, there is an option in the Connection properties to connect automatically.
 
-你仍然需要按ENTER键连接,连接属性中有一个选项自动连接。
+你仍然需要按 ENTER 键来连接，连接属性中有一个可自动连接的选项。
 
 On NT and W2K, rnaui.dll is not available. Use rasdial.exe instead.
 
-在NT和能正常,rnaui。dll是不可用的。使用rasdial。exe。
+在 NT 和 W2K 上，rnaui.dll 不可用。请改用 rasdial.exe。
 
 ```
 rasdial "connection name"
@@ -327,7 +327,7 @@ public class ShowPDFMac {
 
 [More runddl32 examples](http://www.rgagnon.com/pbdetails/pb-0204.html)
 
-[http://www.rgagnon.com/pbdetails/pb-0204.html](runddl32 More实例)
+[更多 runddl32 示例](http://www.rgagnon.com/pbdetails/pb-0204.html)
 
 ------
 
@@ -335,11 +335,11 @@ public class ShowPDFMac {
 
 ##### Path to executable with spaces in them
 
-##### 可执行路径和空间
+##### 可执行文件路径中包含空格
 
 You can include a path for the program to be executed. On the Win plateform, you need to put the path in quotes if **the path contains spaces**.
 
-你可以包括一个程序执行路径。赢得的园地,你需要把路径在引号中* * * *的路径是否包含空格。
+你可以为要执行的程序指定路径。在 Win 平台上，如果**路径中包含空格**，你就需要把路径放在引号里。
 
 ```
 public class TestExecute {
@@ -356,7 +356,7 @@ public class TestExecute {
 
 If you need to **pass arguments**, it's safer to a String array especially if they contain spaces.
 
-如果你需要* * * *传递参数,是安全的一个字符串数组特别是如果他们包含空格。
+如果你需要**传递参数**，使用字符串数组会更安全，尤其是当参数中包含空格时。
 
 ```
 String[] cmd = { "myProgram.exe", "-o=This is an option" };
@@ -368,7 +368,7 @@ Runtime.getRuntime().exec(cmd);
 
 If using the start command and the path of the file to be started contains a space then you must specified a title to the start command.
 
-如果使用启动命令和文件的路径开始包含一个空间然后你必须指定一个标题开始命令。
+如果使用 start 命令，且要启动的文件的路径中包含空格，那么必须为 start 命令指定一个标题。
 
 ```
 String fileName = "c:\\Applications\\My Documents\\test.doc";
@@ -453,7 +453,7 @@ public class StartExcel2 {
 
 It's important to pass a dummy title to the Windows start command where there is a possibility that the filename contains a space. It's a feature.
 
-重要的是要通过一个虚拟的Windows启动命令,有可能文件名包含一个空格。这是一个功能。
+当文件名可能包含空格时，向 Windows 的 start 命令传递一个占位标题(虚拟标题)很重要。这是一个特性。
 
 ##### Start a Windows application under another account
 
@@ -461,7 +461,7 @@ It's important to pass a dummy title to the Windows start command where there is
 
 You use the RUNAS command from the command line to start an application under another account (not available with XP Home edition). There are many switches that can enhance the behaviour of RUNAS. Typing "runas /?" from the command prompt gets you all the options.
 
-你使用RUNAS命令从命令行启动一个应用程序在另一个帐户与XP家庭版(不可用)。有很多开关可以增强RUNAS的行为.输入“runas / ?“从命令提示让你所有的选项。
+你可以在命令行使用 RUNAS 命令，以另一个帐户的身份启动应用程序（XP 家庭版不可用）。有很多开关可以增强 RUNAS 的行为。在命令提示符下输入 "runas /?" 就能看到所有选项。
 
 ```
   String  commands [] = new String [] {
@@ -480,35 +480,35 @@ You use the RUNAS command from the command line to start an application under an
 
 The `/savecred` option allows you to save a password for that account and then reuse it later. For example, The command `runas /savecred /user:administrator regedit.exe` prompts for the password, and then Regedit runs. Next time you use the same command, there is no password prompt.
 
-的`/savecred`选项允许您保存密码的帐户,然后重用它。例如,命令`runas /savecred /user:administrator regedit.exe`提示输入密码,然后运行注册表编辑器。下次你使用相同的命令,没有密码提示。
+`/savecred` 选项允许你为该帐户保存密码，以便之后复用。例如，命令 `runas /savecred /user:administrator regedit.exe` 会提示输入密码，然后运行 Regedit。下次你再使用同一命令时，就不会再提示密码了。
 
 One potential problem is that when `/SaveCred` saves the credentials it saves it for whenever RUNAS invokes that user account. This can be a huge security risk so be careful using it!
 
-一个潜在的问题是,当`/SaveCred`保存凭证保存它,每当RUNAS调用用户帐户。这是一个巨大的安全风险,所以要小心使用它!
+一个潜在的问题是，`/SaveCred` 保存凭证后，每当 RUNAS 调用该用户帐户时都会使用它。这可能是一个巨大的安全风险，因此使用时要小心！
 
 RUNAS capability can be disabled by editing the Registry or by disabling the RUNAS or Secondary Logon Services. The appropriate registry key is `HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\policies\Explorer`, create a new DWORD value named `HideRunAsVerb` and assign it a value of 1 to disable Run as.
 
-RUNAS能力可以禁用编辑注册表或禁用RUNAS或二次登录服务。适当的注册表键`HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\policies\Explorer`,创建一个新的DWORD值命名`HideRunAsVerb`并为其分配一个值1禁用运行。
+可以通过编辑注册表，或禁用 RUNAS / 二次登录(Secondary Logon)服务来禁用 RUNAS 功能。相应的注册表键为 `HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\policies\Explorer`，新建一个名为 `HideRunAsVerb` 的 DWORD 值，并将其赋值为 1，即可禁用“运行方式(Run as)”。
 
 RUNAS doesn't work when used from a Windows service.
 
-RUNAS不使用时从一个Windows服务工作。
+从 Windows 服务中使用 RUNAS 是无效的。
 
 ##### Windows : execute something in Program Files
 
-##### Windows:一些程序文件执行
+##### Windows：在 Program Files 中执行程序
 
 We want to execute the textpad editor located in `C:\Program Files\TextPad 4` but without hard coding the path since it can be different for a localized version of Windows.
 
-我们想执行文本编辑编辑器位于`C:\Program Files\TextPad 4`但是没有硬编码的路径,因为它可以是不同的本地化版本的Windows。
+我们想执行位于 `C:\Program Files\TextPad 4` 的 TextPad 编辑器，但不硬编码该路径，因为对于本地化版本的 Windows，它可能不同。
 
 We simply extract to environnment variable called *%programfiles%* and build the complete path from there.
 
-我们只是提取environnment变量* % programfiles % *和构建完整的路径。
+我们只需提取名为 *%programfiles%* 的环境变量，并据此构建完整路径。
 
 [JDK1.5]
 
-(JDK1.5)
+[JDK1.5]
 
 ```
 public class Exec {
@@ -533,7 +533,7 @@ public class Exec {
 
 NOTE : Prior Vista, System folders were localized on disk like `C:\Program Files` -> `C:\Archivos de programa` on the Windows with the Spanish localization. Since Vista, System Folders always exists with the english name BUT when viewed through Explorer, the localized name is shown. See <http://msmvps.com/blogs/carlosq/archive/2007/02/12/windows-vista-junctions-points-mui-and-localized-folder-names.aspx>.
 
-注意:之前Vista系统文件夹是本地化的磁盘上`C:\Program Files`- >`C:\Archivos de programa`在Windows与西班牙本地化。因为Vista系统文件夹的英文名字总是存在,但当通过浏览器查看,显示本地化名称。看到< http://msmvps.com/blogs/carlosq/archive/2007/02/12/windows-vista-junctions-points-mui-and-localized-folder-names.aspx >。
+注意：在 Vista 之前，系统文件夹在磁盘上是本地化的，例如在西班牙语本地化的 Windows 上，`C:\Program Files` 对应 `C:\Archivos de programa`。从 Vista 起，系统文件夹始终以英文名存在，但当通过资源管理器(Explorer)查看时，显示的是本地化名称。参见 <http://msmvps.com/blogs/carlosq/archive/2007/02/12/windows-vista-junctions-points-mui-and-localized-folder-names.aspx>。
 
 原文链接: <http://www.rgagnon.com/javadetails/java-0014.html>
 
