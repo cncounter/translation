@@ -24,7 +24,7 @@ JDK安装没有什么好说的, 设置 Path,以及 JAVA_HOME 即可:
 
 ![](00_JAVA_HOME.png)
 
-设置 Path,使用英文逗号分隔,添加上 java对应的bin目录:
+设置 Path,使用英文分号分隔,添加上 java对应的bin目录:
 
 	Path
 值为
