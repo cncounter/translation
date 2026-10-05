@@ -8,7 +8,7 @@ Micrometer provides a simple facade over the instrumentation clients for the mos
 Instructions for how to configure Micrometer for use with different monitoring systems. As a facade over multiple monitoring systems, the point of Micrometer is to allow you to instrument your code in the same way and be able to visualize the results in your monitoring system of choice.
 
 
-Micrometer作为一个技术设备指标的采集客户端, 支持大部分的监控系统，提供了像SLF4J一样的简单门面模式，使用者不需要关心具体的JVM版本和厂商。
+Micrometer作为一个技术设备指标的采集客户端，支持大部分的监控系统，提供了像SLF4J一样的简单门面模式，使用者无需被厂商锁定。
 Micrometer采集的指标主要是用于监控，告警，以及对当前系统环境的变化做出响应。
 
 作为指标采集的基础类库，Micrometer以相同的方式来配置，支持对接到不同的可视化监控系统服务。
@@ -31,11 +31,11 @@ Micrometer采集的指标主要是用于监控，告警，以及对当前系统�
 
 - [AppOptics](https://www.appoptics.com/)，支持APM和系统监控的SAAS服务，支持各种仪表板和时间轴等监控界面，提供API和客户端。
 
-- [Atlas](https://github.com/Netflix/atlas), 是Netflix旗下的一款开源的，基于内存的时序数据库，内置图形界面，支持高级数学运算和自定义查询语言。
+- [Atlas](https://github.com/Netflix/atlas)， 是Netflix旗下的一款开源的，基于内存的时序数据库，内置图形界面，支持高级数学运算和自定义查询语言。
 
 - [Datadog](https://www.datadoghq.com/)， 支持APM和系统监控的SAAS服务，内置各种仪表板，支持告警。 支持API和客户端，以及客户端代理。
 
-- [Dynatrace](https://www.dynatrace.com/), 支持APM和系统监控的SAAS服务, 内置各种仪表板， 集成了监控和分析平台。
+- [Dynatrace](https://www.dynatrace.com/)，支持APM和系统监控的SAAS服务，内置各种仪表板， 集成了监控和分析平台。
 
 - ELK开源技术栈，一般用于日志监控，[Elasticsearch](http://www.elastic.co/) 是搜索引擎，支持各种数据和指标存储， 日志监控一般通过 [Logstash](http://www.elastic.co/products/logstash) 执行分析， [Kibana](http://www.elastic.co/products/kibana) 负责人机交互和可视化。
 
@@ -48,14 +48,14 @@ Micrometer采集的指标主要是用于监控，告警，以及对当前系统�
 
 - Influx. The InfluxData suite of tools supports real-time stream processing and storage of time-series data. It supports downsampling, automatically expiring and deleting unwanted data, as well as backup and restore. Analysis of data is done via a SQL-like query language.
 
-- [Ganglia](http://ganglia.sourceforge.net/)， 用于高性能计算系统，群集和网络的可伸缩的分布式监控工具。 起源于加州大学伯克利分校，是一款历史悠久的多层级指标监控系统，在Linux系统中广受欢迎。
+- [Ganglia](http://ganglia.sourceforge.net/)， 用于高性能计算系统，集群和网络的可伸缩的分布式监控工具。 起源于加州大学伯克利分校，是一款历史悠久的多层级指标监控系统，在Linux系统中广受欢迎。
 
 
-- [Graphite](https://graphiteapp.org/), 当前非常流行的多层级次指标监控系统，使用固定数量的底层数据库，其设计和目的与RRD相似。 由Orbitz在2006年创建，并于2008年开源。
+- [Graphite](https://graphiteapp.org/)，当前非常流行的多层级指标监控系统，使用固定数量的底层数据库，其设计和目的与RRD相似。 由Orbitz在2006年创建，并于2008年开源。
 
-- [Humio](https://www.humio.com/), 支持APM、日志和系统监控的SAAS服务。
+- [Humio](https://www.humio.com/)，支持APM、日志和系统监控的SAAS服务。
 
-- [Influx](https://www.influxdata.com/), InfluxDB是由InfluxData开发的一款开源时序型数据库。它由Go写成，着力于高性能地查询与存储时序数据。InfluxDB被广泛应用于存储系统的监控数据，IoT行业的实时数据等场景，通过类似SQL的查询语言来完成数据分析。 InfluxData工具套件可用于实时流处理，支持抽样采集指标，自动过期，删除不需要的数据，以及备份和还原等功能。
+- [Influx](https://www.influxdata.com/)，InfluxDB是由InfluxData开发的一款开源时序型数据库。它由Go写成，着力于高性能地查询与存储时序数据。InfluxDB被广泛应用于存储系统的监控数据，IoT行业的实时数据等场景，通过类似SQL的查询语言来完成数据分析。 InfluxData工具套件可用于实时流处理，支持降采样、自动过期、删除不需要的数据，以及备份和还原等功能。
 
 - Instana. Instana is an automatic application performance management and infrastructure monitoring system.
 
@@ -73,7 +73,7 @@ Micrometer采集的指标主要是用于监控，告警，以及对当前系统�
 
 - [New Relic](https://newrelic.com/)。 这是一款具有完整UI的可视化SaaS产品，支持NRQL查询语言， New Relic Insights 基于推模型来运行。
 
-- [Prometheus](https://prometheus.io/), 具有简单的内置UI，支持自定义查询语言和数学运算的, 开源的内存时序数据库。  Prometheus设计为基于拉模型来运行，根据服务发现，定期从应用程序实例中收集指标。
+- [Prometheus](https://prometheus.io/)，具有简单的内置UI，支持自定义查询语言和数学运算的，开源的内存时序数据库。  Prometheus设计为基于拉模型来运行，根据服务发现，定期从应用程序实例中收集指标。
 
 - [SignalFx](https://www.signalfx.com/)， 在推送模型上运行的SaaS服务，具有完整UI。支持实时的系统性能，微服务，以及APM监控系统，支持多样化的预警“检测器”。
 
@@ -83,9 +83,9 @@ Micrometer采集的指标主要是用于监控，告警，以及对当前系统�
 
 - Wavefront. Wavefront is a SaaS-based metrics monitoring and analytics platform that lets you visualize, query, and alert over data from across your entire stack (infrastructure, network, custom app metrics, business KPIs, etc.)
 
-- [Stackdriver](https://cloud.google.com/stackdriver?hl=zh-cn), 是 Google Cloud 的嵌入式监测套件，用于监控云基础架构、软件和应用的性能，排查其中的问题并加以改善。 这个监测套件属于 SAAS服务，支持内置仪表板和告警功能。
+- [Stackdriver](https://cloud.google.com/stackdriver?hl=zh-cn)，是 Google Cloud 的嵌入式监测套件，用于监控云基础架构、软件和应用的性能，排查其中的问题并加以改善。 这个监测套件属于 SAAS服务，支持内置仪表板和告警功能。
 
-- [StatsD](https://github.com/statsd/statsd), 开源的，简单但很强大的统计信息聚合服务器。
+- [StatsD](https://github.com/statsd/statsd)，开源的，简单但很强大的统计信息聚合服务器。
 
 - [Wavefront](https://www.wavefront.com/)，是基于SaaS的指标监视和分析平台，支持可视化查询，以及预警监控等功能， 包括系统性能、网络，自定义指标，业务KPI等等。
 
