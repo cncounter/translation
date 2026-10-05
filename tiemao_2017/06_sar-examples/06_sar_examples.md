@@ -45,8 +45,8 @@ This article explains how to install and configure sysstat package (which contai
 4. 交换空间的使用量和可用值
 5. 系统整体的I/O活动
 6. 每个I/O设备的活动情况
-7. 切换统计上下文
-8. 执行队列与平均负载数据
+7. 上下文切换统计
+8. 运行队列与平均负载数据
 9. 网络统计信息
 10. 在特定时间报告 sar 数据
 
@@ -121,7 +121,7 @@ sudo ./configure --enable-install-cron
 
 **Note:** Make sure to pass the option –enable-install-cron. This does the following automatically for you. If you don’t configure sysstat with this option, you have to do this ugly job yourself manually.
 
-**注意:** 编译时必须指定 `-enable-install-cron` 参数。该参数会自动执行下面这些步骤. 如果不指定这个编译参数, 就需要手工来执行这些重复的工作。
+**注意:** 编译时必须指定 `--enable-install-cron` 参数。该参数会自动执行下面这些步骤. 如果不指定这个编译参数, 就需要手工来执行这些重复的工作。
 
 
 *   Creates /etc/rc.d/init.d/sysstat
@@ -152,7 +152,7 @@ sudo make && sudo make install
 
 Once installed, verify the sar version using “sar -V”. Version 10 is the current stable version of sysstat.
 
-安装完成之后, 通过需要校验一下 sar 的版本号。
+安装完成之后, 需要用 "sar -V" 校验 sar 的版本。版本 10 是 sysstat 当前的稳定版本。
 
 ```
 sar -V
@@ -165,7 +165,7 @@ sar -V
 
 Finally, make sure sar works. For example, the following gives the system CPU statistics 3 times (with 1 second interval).
 
-最后,确保sar工作原理。例如,下面给出了系统CPU统计3次(1秒间隔)。
+最后, 确保 sar 能正常工作。例如, 下面给出系统 CPU 统计的 3 次输出(间隔 1 秒)。
 
 
 > $ sar 1 3
@@ -183,12 +183,12 @@ Finally, make sure sar works. For example, the following gives the system CPU st
 
 ### Utilities part of Sysstat
 
-### 实用程序的一部分Sysstat
+### Sysstat 附带的实用程序
 
 
 Following are the other sysstat utilities.
 
-以下是其他sysstat公用事业。
+以下是 sysstat 的其它实用程序。
 
 
 *   **sar** collects and displays ALL system activities statistics.
@@ -202,31 +202,31 @@ Following are the other sysstat utilities.
 *   **nfsiostat** displays NFS I/O statistics.
 *   **cifsiostat** generates CIFS statistics.
 
-* * * * * sar收集和显示所有系统活动的统计数据。
-* * * * * sadc代表“系统活动数据收集器”。这是特区后端工具,数据收集。
-* * * * * sa1存储二进制数据文件的系统活动。为此sa1取决于南部非洲发展共同体。sa1从cron。
-* * * * * sa2创建每日总结收集到的统计数据。sa2从cron运行。
-* * * * * sadf可以生成sar报告在CSV,XML,以及各种其他格式。与其他工具使用这个集成sar数据。
-* * * * * iostat生成CPU、I / O统计数据
-* * * * * mpstat显示CPU统计数据。
-* * * * * pidstat报告统计数据基于进程id(PID)
-* * * * * nfsiostat显示NFS I / O统计数据。
-* * * * * cifsiostat CIFS生成统计数据。
+*   **sar** 收集并显示所有系统活动的统计数据。
+*   **sadc** 代表 "system activity data collector"(系统活动数据收集器)。这是负责数据采集的 sar 后端工具。
+*   **sa1** 将系统活动数据存储到二进制数据文件中。sa1 为此依赖于 sadc。sa1 由 cron 运行。
+*   **sa2** 生成所收集统计数据的每日汇总。sa2 由 cron 运行。
+*   **sadf** 可以生成 CSV、XML 以及各种其他格式的 sar 报告。可用它将 sar 数据与其他工具集成。
+*   **iostat** 生成 CPU、I/O 统计数据。
+*   **mpstat** 显示 CPU 统计数据。
+*   **pidstat** 根据进程 id(PID)报告统计数据。
+*   **nfsiostat** 显示 NFS I/O 统计数据。
+*   **cifsiostat** 生成 CIFS 统计数据。
 
 
 This article focuses on sysstat fundamentals and sar utility.
 
-本文主要关注sysstat基本面和sar效用。
+本文主要关注 sysstat 的基础知识和 sar 工具。
 
 
 ### Collect the sar statistics using cron job – sa1 and sa2
 
-### 收集使用cron作业——sa1和sa2 sar数据
+### 使用 cron 作业收集 sar 数据 —— sa1 和 sa2
 
 
 Create sysstat file under /etc/cron.d directory that will collect the historical sar data.
 
-sysstat file之下的Create / etc / cron。d目录,将所有形式the历史sar数据。
+在 /etc/cron.d 目录下创建 sysstat 文件, 用于收集历史 sar 数据。
 
 
 >	# vi /etc/cron.d/sysstat
@@ -237,17 +237,17 @@ sysstat file之下的Create / etc / cron。d目录,将所有形式the历史sar�
 
 If you’ve installed sysstat from source, the default location of sa1 and sa2 is /usr/local/lib/sa. If you’ve installed using your distribution update method (for example: yum, up2date, or apt-get), this might be /usr/lib/sa/sa1 and /usr/lib/sa/sa2.
 
-如果你从源代码安装sysstat,sa1和sa2 /usr/local/lib/sa的默认位置.如果你安装使用您的发行版更新方法(例如:百胜,up2date或apt-get),这可能是/usr/lib/sa/sa1 /usr/lib/sa/sa2.
+如果你从源代码安装 sysstat, sa1 和 sa2 的默认位置是 /usr/local/lib/sa。如果你使用发行版的更新方式安装(例如:yum、up2date 或 apt-get), 则可能是 /usr/lib/sa/sa1 和 /usr/lib/sa/sa2。
 
 
 **Note**: To understand cron entries, read [Linux Crontab: 15 Awesome Cron Job Examples](http://www.thegeekstuff.com/2009/06/15-practical-crontab-examples/).
 
-* *注意* *:了解cron条目,读(Linux Crontab:15个很棒的cron作业的例子)(http://www.thegeekstuff.com/2009/06/15-practical-crontab-examples/)。
+**注意**: 要了解 cron 配置项, 请阅读 [Linux Crontab: 15 Awesome Cron Job Examples](http://www.thegeekstuff.com/2009/06/15-practical-crontab-examples/)。
 
 
 ### /usr/local/lib/sa/sa1
 
-### / usr /地方/ lib / sa / sa1
+### /usr/local/lib/sa/sa1
 
 
 *   This runs every 10 minutes and collects sar data for historical reference.
@@ -257,54 +257,54 @@ If you’ve installed sysstat from source, the default location of sa1 and sa2 i
 *   You can pass two parameters to sa1: interval (in seconds) and count.
 *   In the above crontab example: sa1 1 1 means that sa1 collects sar data 1 time with 1 second interval (for every 10 mins).
 
-*这每十分钟运行一次,收集历史的sar数据参考。
-*如果你想收集sar数据每5分钟,改变10 * / * / 5 /etc/cron.之上d / sysstat文件。
-*这写数据到/var/log/sa/saXX文件。XX是一日。saXX文件是一个二进制文件。你不能查看其内容在一个文本编辑器打开它。
-例如,如果* For today is 26th day of the month)、《sa1 sar数据to / var / log / sa / sa26
-*你可以通过两个parameters to sa1 interval(seconds):在与count。
-*在上面的crontab例子:sa1 1 1意味着sa1收集sar数据1和1秒间隔(每10分钟)。
+*   它每 10 分钟运行一次, 收集供历史参考的 sar 数据。
+*   如果你想每 5 分钟收集一次 sar 统计数据, 请把上述 /etc/cron.d/sysstat 文件中的 */10 改为 */5。
+*   它会把数据写入 /var/log/sa/saXX 文件。XX 是该月的日期。saXX 是二进制文件, 无法用文本编辑器打开查看其内容。
+*   例如, 如果今天是该月的 26 号, sa1 会把 sar 数据写入 /var/log/sa/sa26。
+*   你可以给 sa1 传两个参数: interval(间隔, 单位秒)和 count(次数)。
+*   在上面的 crontab 示例中: sa1 1 1 表示 sa1 以 1 秒间隔收集 1 次 sar 数据(每 10 分钟执行一次)。
 
 
 ### /usr/local/lib/sa/sa2
 
-### / usr /地方/ lib / sa /发动机
+### /usr/local/lib/sa/sa2
 
 
 *   This runs close to midnight (at 23:53) to create the daily summary report of the sar data.
 *   sa2 creates /var/log/sa/sarXX file (Note that this is different than saXX file that is created by sa1). This sarXX file created by sa2 is an ascii file that you can view it in a text editor.
 *   This will also remove saXX files that are older than a week. So, write a quick shell script that runs every week to copy the /var/log/sa/* files to some other directory to do historical sar data analysis.
 
-*这个运行接近午夜(23:53)来创建每日sar数据的汇总报告。
-* sa2创建/var/log/sa/sarXX文件(注意,这是不同于saXX sa1)创建的文件。这个sarXX文件由sa2是一个ascii文件,你可以把它在一个文本编辑器。
-*这也将删除saXX文件超过一个星期.所以,每周写一个快速的shell脚本,运行/var/log/sa/*文件复制到其他目录做历史sar数据分析。
+*   它在接近午夜时(23:53)运行, 生成 sar 数据的每日汇总报告。
+*   sa2 创建 /var/log/sa/sarXX 文件(注意, 它不同于 sa1 创建的 saXX 文件)。sa2 创建的这个 sarXX 文件是 ascii 文件, 可以用文本编辑器查看。
+*   它还会删除超过一周的 saXX 文件。所以, 请编写一个每周运行的简短 shell 脚本, 把 /var/log/sa/* 文件复制到其它目录, 以便进行历史 sar 数据分析。
 
 
 ## II. 10 Practical Sar Usage Examples
 
-## II. 10实际Sar用法示例
+## II. 10 个实用 sar 用法示例
 
 
 There are two ways to invoke sar.
 
-有两种方法可以调用sar。
+有两种方法可以调用 sar。
 
 
 1.  sar followed by an option (without specifying a saXX data file). This will look for the current day’s saXX data file and report the performance data that was recorded until that point for the current day.
 2.  sar followed by an option, and additionally specifying a saXX data file using -f option. This will report the performance data for that particular day. i.e XX is the day of the month.
 
-1. sar紧随其后的一个选项(没有指定saXX数据文件).这将寻找当前天saXX数据文件和报告的性能数据记录之前对当前的一天。
-2. sar紧随其后的是一个选项,而且指定saXX数据文件使用- f选项。这将报告的性能数据,特别的一天。我。XX是一日。
+1. `sar` 后面跟一个选项(不指定 saXX 数据文件)。它会查找当天的 saXX 数据文件, 并报告当天到目前为止记录的性能数据。
+2. `sar` 后面跟一个选项, 另外通过 -f 选项指定 saXX 数据文件。它会报告该特定日期(XX 为该月的日期)的性能数据。
 
 
 
 In all the examples below, we are going to explain how to view certain performance data for the current day. To look for a specific day, add “-f /var/log/sa/saXX” at the end of the sar command.
 
-下面的例子,我们将解释如何查看特定的性能数据为当前的一天。寻找一个特定的天,添加“- f /var/log/sa/saXX”结束时sar命令。
+在下面所有示例中, 我们将说明如何查看当天特定的性能数据。要查看指定日期的数据, 请在 sar 命令末尾加上 "-f /var/log/sa/saXX"。
 
 
 All the sar command will have the following as the 1st line in its output.
 
-所有的sar命令将有以下输出的第一行。
+所有 sar 命令的输出第一行都如下所示。
 
 
 	$ sar -u
@@ -317,21 +317,21 @@ All the sar command will have the following as the 1st line in its output.
 *   _i686_ – The system architecture
 *   (8 CPU) – Number of CPUs available on this system. On multi core systems, this indicates the total number of cores.
 
-Linux 2.6.18-194 *。el5PAE - Linux内核版本的系统。
-*(dev-db)- sar数据收集的主机名。
-* 03/26/2011 - sar数据收集时的日期。
-* _i686_ - The system architecture
-8 * (CPU) - the Number of CPUs available on this system. On multi core systems, this are the total Number of cores.
+*   Linux 2.6.18-194.el5PAE – 系统的 Linux 内核版本。
+*   (dev-db) – 收集 sar 数据的主机名。
+*   03/26/2011 – 收集 sar 数据的日期。
+*   _i686_ – 系统架构。
+*   (8 CPU) – 该系统可用的 CPU 数量。在多核系统上, 这表示内核总数。
 
 
 ### 1. CPU Usage of ALL CPUs (sar -u)
 
-### 1。CPU使用的CPU(sar - u)
+### 1. 所有 CPU 的 CPU 使用率(sar -u)
 
 
 This gives the cumulative real-time CPU usage of all CPUs. “1 3” reports for every 1 seconds a total of 3 times. Most likely you’ll focus on the last field “%idle” to see the cpu load.
 
-这给所有CPU的累积实时CPU使用率。“1 3”报告每1秒共3次。最有可能你会关注最后一场“%闲置”查看cpu负载。
+它给出所有 CPU 的累积实时 CPU 使用率。"1 3" 表示每 1 秒报告一次, 共报告 3 次。你多半会关注最后一个字段 "%idle" 来查看 CPU 负载。
 
 > $ sar -u 1 3
 
@@ -360,31 +360,31 @@ Following are few variations:
 
 <br/>
 
-* * * sar - u * *显示CPU使用率为当前天收集到这一点。
-* * * * * sar - u 1 - 3显示实时CPU使用率每1秒3次。
-所有* * * * * sar - u一样“sar - u”,但显示附加字段。
-* * * sar - u所有1 3 * *一样“sar - u 1 3”,但显示附加字段。
-* * * sar - u - f /var/log/sa/sa10**显示CPU使用率的十天月从sa10文件。
+*   **sar -u** 显示当天到目前为止收集的 CPU 使用率。
+*   **sar -u 1 3** 每 1 秒显示一次实时 CPU 使用率, 共 3 次。
+*   **sar -u ALL** 与 "sar -u" 相同, 但显示额外的字段。
+*   **sar -u ALL 1 3** 与 "sar -u 1 3" 相同, 但显示额外的字段。
+*   **sar -u -f /var/log/sa/sa10** 从 sa10 文件显示该月 10 号的 CPU 使用率。
 
 
 ### 2. CPU Usage of Individual CPU or Core (sar -P)
 
-### 2。针对社区使用就是针对社区-P里亚尔(Core)黄金
+### 2. 单个 CPU 或内核的 CPU 使用率(sar -P)
 
 
 If you have 4 Cores on the machine and would like to see what the individual cores are doing, do the following.
 
-如果你有4核机和希望看到个人核心在做什么,做以下。
+如果你的机器有 4 个内核, 想看看各个内核在做什么, 可以执行以下命令。
 
 
 “-P ALL” indicates that it should displays statistics for ALL the individual Cores.
 
-“p”表明它应该为所有单个核显示统计数据。
+"-P ALL" 表示显示所有单个内核的统计信息。
 
 
 In the following example under “CPU” column 0, 1, 2, and 3 indicates the corresponding CPU core numbers.
 
-下面的例子在“CPU”专栏0,1,2,3表示对应的CPU核心数据。
+在下面的示例中, "CPU" 列中的 0、1、2、3 表示对应的 CPU 内核编号。
 
 
 > $ sar -P ALL 1 1
@@ -403,7 +403,7 @@ In the following example under “CPU” column 0, 1, 2, and 3 indicates the cor
 
 “-P 1” indicates that it should displays statistics only for the 2nd Core. (Note that Core number starts from 0).
 
-“1 - p”表明它应该只对第二核心显示统计数据。(注意,核心数量从0)。
+"-P 1" 表示只显示第 2 个内核的统计信息。(注意, 内核编号从 0 开始)。
 
 > $ sar -P 1 1 1
 
@@ -427,21 +427,21 @@ Following are few variations:
 
 <br/>
 
-* * * sar - p * *显示CPU使用率分解的所有核心为当前的一天。
-* * *所有1 3 * *显示实时sar - p所有核心CPU使用率每1秒3 *(由所有核分解)。
-1 * * * * * sar - p显示CPU使用当前核心1天。
-* * * * * sar - p 1 1 3显示实时为1号核心CPU使用率,每1秒3次。
-* * * sar - p - f /var/log/sa/sa10**显示器所有核心CPU使用率分解为10月天天sa10文件。
+*   **sar -P ALL** 按所有内核细分显示当天的 CPU 使用率。
+*   **sar -P ALL 1 3** 每 1 秒显示一次所有内核的实时 CPU 使用率, 共 3 次(按所有内核细分)。
+*   **sar -P 1** 显示当天 1 号内核的 CPU 使用率。
+*   **sar -P 1 1 3** 每 1 秒显示一次 1 号内核的实时 CPU 使用率, 共 3 次。
+*   **sar -P ALL -f /var/log/sa/sa10** 从 sa10 文件按所有内核细分显示该月 10 号的 CPU 使用率。
 
 
 ### 3. Memory Free and Used (sar -r)
 
-### 3所示。空闲内存和使用(sar - r)
+### 3. 内存的空闲与使用(sar -r)
 
 
 This reports the memory statistics. “1 3” reports for every 1 seconds a total of 3 times. Most likely you’ll focus on “kbmemfree” and “kbmemused” for free and used memory.
 
-这报告内存统计信息。“1 3”报告每1秒共3次。最有可能你会关注“kbmemfree”和“kbmemused”自由和用去的内存。
+它报告内存统计信息。"1 3" 表示每 1 秒报告一次, 共报告 3 次。你多半会关注 "kbmemfree" 和 "kbmemused" 来查看空闲和已用内存。
 
 > $ sar -r 1 3
 
@@ -471,12 +471,12 @@ Following are few variations:
 
 ### 4. Swap Space Used (sar -S)
 
-### 4所示。交换空间使用(sar - s)
+### 4. 交换空间的使用(sar -S)
 
 
 This reports the swap statistics. “1 3” reports for every 1 seconds a total of 3 times. If the “kbswpused” and “%swpused” are at 0, then your system is not swapping.
 
-This in the reports互换统计》。“1”3每个reports共计3增收1时报》。如果“swpused % kbswpused”和“正式”制度,那么你0 swapping not。
+它报告交换空间统计信息。"1 3" 表示每 1 秒报告一次, 共报告 3 次。如果 "kbswpused" 和 "%swpused" 均为 0, 说明你的系统没有在使用交换空间。
 
 
 > $ sar -S 1 3
@@ -505,7 +505,7 @@ Following are few variations:
 
 **Notes:**
 
-注:* * * *
+**注意:**
 
 
 *   Use “sar -R” to identify number of memory pages freed, used, and cached per second by the system.
@@ -513,25 +513,25 @@ Following are few variations:
 *   Use “sar -B” to generate paging statistics. i.e Number of KB paged in (and out) from disk per second.
 *   Use “sar -W” to generate page swap statistics. i.e Page swap in (and out) per second.
 
-*使用“sar - r”来确定数量的内存页释放,使用,和缓存系统每秒。
-*使用“sar - h”来识别hugepages(KB)使用和可用的。
-*使用“sar - b”生成分页数据。我。e的KB分页数量(和)从磁盘每秒。
-*使用“sar - w”生成页面交换数据。我。e页面换入(出)每秒。
+*   使用 "sar -R" 查看系统每秒释放、使用和缓存的内存页数。
+*   使用 "sar -H" 查看已使用和可用的 hugepages(单位 KB)。
+*   使用 "sar -B" 生成分页统计信息, 即每秒从磁盘换入(和换出)的 KB 数。
+*   使用 "sar -W" 生成页交换统计信息, 即每秒的页面换入(和换出)。
 
 
 ### 5. Overall I/O Activities (sar -b)
 
-### 5。总体I / O活动(sar - b)
+### 5. 整体 I/O 活动(sar -b)
 
 
 This reports I/O statistics. “1 3” reports for every 1 seconds a total of 3 times.
 
-这个报告的I / O统计数据。“1 3”报告每1秒共3次。
+它报告 I/O 统计信息。"1 3" 表示每 1 秒报告一次, 共报告 3 次。
 
 
 Following fields are displays in the example below.
 
-以下字段显示在下面的例子中。
+下面的示例中显示了以下字段。
 
 
 *   tps – Transactions per second (this includes both read and write)
@@ -542,11 +542,11 @@ Following fields are displays in the example below.
 
 
 
-* tps -每秒事务数(这包括读和写)
-* rtp -每秒读事务
-* wtp -写事务/秒
-*面包/ s -字节每秒读取
-* bwrtn / s -每秒字节写
+*   tps – 每秒事务数(包括读和写)
+*   rtps – 每秒读事务数
+*   wtps – 每秒写事务数
+*   bread/s – 每秒读取的字节数
+*   bwrtn/s – 每秒写入的字节数
 
 
 > $ sar -b 1 3
@@ -577,17 +577,17 @@ Following are few variations:
 
 **Note:** Use “sar -v” to display number of inode handlers, file handlers, and pseudo-terminals used by the system.
 
-* *注意:* *使用“sar - v”显示inode处理程序,文件处理程序,仍然使用的系统。
+**注意:** 使用 "sar -v" 显示系统所使用的 inode 句柄、文件句柄和伪终端数量。
 
 
 ### 6. Individual Block Device I/O Activities (sar -d)
 
-### 6。单独的块设备I / O活动(sar - d)
+### 6. 单个块设备的 I/O 活动(sar -d)
 
 
 To identify the activities by the individual block devices (i.e a specific mount point, or LUN, or partition), use “sar -d”
 
-识别个体块设备(我的活动。e特定的挂载点,或LUN,或分区),使用“sar - d”
+要识别各块设备(即特定的挂载点、LUN 或分区)的活动, 可使用 "sar -d"
 
 
 > $ sar -d 1 1
@@ -609,17 +609,17 @@ To identify the activities by the individual block devices (i.e a specific mount
 
 In the above example “DEV” indicates the specific block device.
 
-在上面的例子中“开发”表示特定的块设备。
+在上面的示例中, "DEV" 表示特定的块设备。
 
 
 For example: “dev53-1” means a block device with 53 as major number, and 1 as minor number.
 
-例如:“dev53-1”意味着一个块设备与53个主设备号,和1小数量。
+例如: "dev53-1" 表示主设备号为 53、次设备号为 1 的块设备。
 
 
 The device name (DEV column) can display the actual device name (for example: sda, sda1, sdb1 etc.,), if you use the -p option (pretty print) as shown below.
 
-设备名称(DEV列)可以显示实际的设备名称(例如:sda sda1,sdb1等),如果您使用- p选项(漂亮的打印),如下所示。
+如果使用 -p 选项(美化输出), 设备名称(DEV 列)可以显示实际的设备名(例如: sda、sda1、sdb1 等), 如下所示。
 
 
 > $ sar -p -d 1 1
@@ -656,12 +656,12 @@ Following are few variations:
 
 ### 7. Display context switch per second (sar -w)
 
-### 7所示。显示每秒上下文切换(sar - w)
+### 7. 显示每秒上下文切换(sar -w)
 
 
 This reports the total number of processes created per second, and total number of context switches per second. “1 3” reports for every 1 seconds a total of 3 times.
 
-这个报告的进程总数创建每秒,每秒和总数量的上下文切换。“1 3”报告每1秒共3次。
+它报告每秒创建的进程总数以及每秒的上下文切换总数。"1 3" 表示每 1 秒报告一次, 共报告 3 次。
 
 
 > $ sar -w 1 3
@@ -690,12 +690,12 @@ Following are few variations:
 
 ### 8. Reports run queue and load average (sar -q)
 
-### 8。报告运行队列和平均负载(sar - q)
+### 8. 报告运行队列和平均负载(sar -q)
 
 
 This reports the run queue size and load average of last 1 minute, 5 minutes, and 15 minutes. “1 3” reports for every 1 seconds a total of 3 times.
 
-这报告运行队列大小和平均负载的最后1分钟,5分钟,15分钟。“1 3”报告每1秒共3次。
+它报告运行队列大小以及最近 1 分钟、5 分钟和 15 分钟的平均负载。"1 3" 表示每 1 秒报告一次, 共报告 3 次。
 
 
 > $ sar -q 1 3
@@ -712,7 +712,7 @@ This reports the run queue size and load average of last 1 minute, 5 minutes, an
 
 **Note:** The “blocked” column displays the number of tasks that are currently blocked and waiting for I/O operation to complete.
 
-* *注意:* *“阻塞”列显示任务的数量目前阻塞和等待I / O操作完成。
+**注意:** "blocked" 列显示当前被阻塞、正在等待 I/O 操作完成的任务数量。
 
 
 Following are few variations:
@@ -728,12 +728,12 @@ Following are few variations:
 
 ### 9. Report network statistics (sar -n)
 
-### 9。报告网络统计(sar - n)
+### 9. 报告网络统计(sar -n)
 
 
 This reports various network statistics. For example: number of packets received (transmitted) through the network card, statistics of packet failure etc.,. “1 3” reports for every 1 seconds a total of 3 times.
 
-这个报告了各种网络统计信息。例如:收到的数据包数量通过网卡(传播),统计包失败等。.“1 3”报告每1秒共3次。
+它报告各种网络统计信息。例如:通过网卡接收(发送)的数据包数量、数据包失败统计等。"1 3" 表示每 1 秒报告一次, 共报告 3 次。
 
 
 	sar -n KEYWORD
@@ -763,20 +763,20 @@ KEYWORD can be one of the following:
 
 
 
-* DEV -显示网络设备的重要统计eth0,eth1,等等,
-* EDEV——显示网络设备故障统计数据
-* NFS -显示NFS客户机活动
-* NFSD:显示NFS服务器的活动
-*袜子-显示套接字使用了IPv4
-* IP -显示IPv4网络流量
-* EIP -显示IPv4网络错误
-* ICMP -显示ICMPv4网络流量
-* EICMP -显示ICMPv4网络错误
-* TCP -显示TCPv4网络流量
-* ETCP -显示TCPv4网络错误
-* UDP -显示UDPv4网络流量
-* SOCK6、IP6 EIP6、ICMP6 UDP6 IPv6
-*以上,这将显示所有的信息。的输出将会非常长。
+*   DEV – 显示 eth0、eth1 等网络设备的关键统计数据
+*   EDEV – 显示网络设备故障统计数据
+*   NFS – 显示 NFS 客户端活动
+*   NFSD – 显示 NFS 服务器活动
+*   SOCK – 显示 IPv4 正在使用的套接字
+*   IP – 显示 IPv4 网络流量
+*   EIP – 显示 IPv4 网络错误
+*   ICMP – 显示 ICMPv4 网络流量
+*   EICMP – 显示 ICMPv4 网络错误
+*   TCP – 显示 TCPv4 网络流量
+*   ETCP – 显示 TCPv4 网络错误
+*   UDP – 显示 UDPv4 网络流量
+*   SOCK6、IP6、EIP6、ICMP6、UDP6 用于 IPv6
+*   ALL – 显示以上所有信息。输出会非常长。
 
 
 
@@ -794,27 +794,27 @@ KEYWORD can be one of the following:
 
 ### 10. Report Sar Data Using Start Time (sar -s)
 
-### 10。报告Sar数据使用开始时间(Sar - s)
+### 10. 使用开始时间报告 sar 数据(sar -s)
 
 
 When you view historic sar data from the /var/log/sa/saXX file using “sar -f” option, it displays all the sar data for that specific day starting from 12:00 a.m for that day.
 
-当你查看历史sar数据从/var/log/sa/saXX文件使用“sar - f”选项,显示所有的sar数据,从12点开始一个特定的一天。为那一天。
+当你使用 "sar -f" 选项查看 /var/log/sa/saXX 文件中的历史 sar 数据时, 它会显示该特定日期从凌晨 12:00 开始的所有 sar 数据。
 
 
 Using “-s hh:mi:ss” option, you can specify the start time. For example, if you specify “sar -s 10:00:00”, it will display the sar data starting from 10 a.m (instead of starting from midnight) as shown below.
 
-使用“- s hh:mi:ss”选项,您可以指定开始时间。例如,如果您指定“sar - s 10:00:00”,它将从10开始显示sar数据.米(而不是从午夜开始),如下所示。
+使用 "-s hh:mi:ss" 选项可以指定开始时间。例如, 如果指定 "sar -s 10:00:00", 它将从上午 10 点开始显示 sar 数据(而不是从午夜开始), 如下所示。
 
 
 You can combine -s option with other sar option.
 
-你可以结合sar s选项和其他选项。
+你可以把 -s 选项与其他 sar 选项结合使用。
 
 
 For example, to report the load average on 26th of this month starting from 10 a.m in the morning, combine the -q and -s option as shown below.
 
-例如,报告在本月26日平均负载从10开始。早上m,将q和- s选项如下所示。
+例如, 要报告本月 26 日从上午 10 点开始的平均负载, 可以把 -q 和 -s 选项结合使用, 如下所示。
 
 
 > $ sar -q -f /var/log/sa/sa23 -s 10:00:01
@@ -832,12 +832,12 @@ For example, to report the load average on 26th of this month starting from 10 a
 
 There is no option to limit the end-time. You just have to get creative and use head command as shown below.
 
-没有选项限制末世。你只需要得到创造性和使用头命令如下所示。
+没有限制结束时间的选项。你只能发挥创意, 使用 head 命令, 如下所示。
 
 
 For example, starting from 10 a.m, if you want to see 7 entries, you have to pipe the above output to “head -n 10”.
 
-例如,从10开始。米,如果你想看7项,你要管上面的输出“头- n 10”。
+例如, 从上午 10 点开始, 如果你想看 7 条记录, 就要把上面的输出通过管道传给 "head -n 10"。
 
 
 > $ sar -q -f /var/log/sa/sa23 -s 10:00:01 | head -n 10
@@ -857,19 +857,19 @@ For example, starting from 10 a.m, if you want to see 7 entries, you have to pip
 
 There is lot more to cover in Linux performance monitoring and tuning. We are only getting started. More articles to come in the performance series.
 
-还有很多需要在Linux性能监控和调优。我们只是开始。更多的文章来表现。
+Linux 性能监控与调优还有很多内容要讲。我们才刚刚开始, 性能系列还会有更多文章。
 
 
 Previous articles in the Linux performance monitoring and tuning series:
 
-Linux性能监控和调优系列之前的文章:
+Linux 性能监控与调优系列之前的文章:
 
 
 *   [Linux Performance Monitoring and Tuning Introduction](http://www.thegeekstuff.com/2011/03/linux-performance-monitoring-intro/)
 *   [15 Practical Linux Top Command Examples](http://www.thegeekstuff.com/2010/01/15-practical-unix-linux-top-command-examples/)
 
-*(Linux性能监控和调优介绍)(http://www.thegeekstuff.com/2011/03/linux-performance-monitoring-intro/)
-*(15实际Linux命令大)(http://www.thegeekstuff.com/2010/01/15-practical-unix-linux-top-command-examples/)
+*   [Linux Performance Monitoring and Tuning Introduction](http://www.thegeekstuff.com/2011/03/linux-performance-monitoring-intro/)
+*   [15 Practical Linux Top Command Examples](http://www.thegeekstuff.com/2010/01/15-practical-unix-linux-top-command-examples/)
 
 
 
