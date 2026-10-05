@@ -24,7 +24,7 @@ In MongoDB, Projections are a way to fetch only the required fields of a documen
 
 With Spring Data MongDB, projections can be used both with `MongoTemplate` and `MongoRepository.`
 
-Spring Data MongDB中, 可以使用 `MongoTemplate` 和 `MongoRepository` 来实现映射。
+Spring Data MongoDB 中, 可以使用 `MongoTemplate` 和 `MongoRepository` 来实现映射。
 
 Before we move further, let’s look at the data model we will be using:
 
@@ -62,7 +62,7 @@ These methods can be chained together to include or exclude multiple fields. The
 
 Excluded fields are `null` in the model class instance when records are fetched with projection. In the case where fields are of a primitive type or their wrapper class, then the value of excluded fields are default values of the primitive types.
 
-使用映射, 被排除的字段在对应Model中就是 `null`. 如果是原生类型或其包装类, 被排除字段的值则是原生类型的默认值。?
+使用映射, 被排除的字段在对应Model中就是 `null`. 如果是原生类型或其包装类, 被排除字段的值则是原生类型的默认值。
 
 For example, `String` would be `null`, `int`/`Integer` would be `0` and `boolean`/`Boolean` would be `false`.
 
@@ -103,7 +103,7 @@ Spring Data MongoDB 对聚合查询进行封装和抽象，提供了3个class，
 
 To perform and aggregation, first, create aggregation pipelines using the static builder methods on `Aggregation` class, then create an instance of `Aggregation` using the `newAggregation()` method on the `Aggregation` class and finally run the aggregation using `MongoTemplate`:
 
-先用 Aggregation 类的静态构建方法来创建聚合管道上, 然后使用 `newAggregation()` 方法生成 `Aggregation` 实例,  最后通过 `MongoTemplate` 执行聚合查询:
+先用 Aggregation 类的静态构建方法来创建聚合管道, 然后使用 `newAggregation()` 方法生成 `Aggregation` 实例,  最后通过 `MongoTemplate` 执行聚合查询:
 
 ```
 MatchOperation matchStage = Aggregation.match(new Criteria("foo").is("bar"));
@@ -130,7 +130,7 @@ The dataset which we will be using in this article lists details about all the z
 
 Let’s look at a sample document after importing it into a collection called `zips` in the `test` database.
 
-`test`数据库, `zips` 集合中有一条导入的数据。
+`test` 数据库的 `zips` 集合, 导入数据之后, 来看一条样例文档。
 
 ```
 {
@@ -206,7 +206,7 @@ If the output data model is not known, the standard MongoDB class `Document` can
 
 ### 3.2. Get Smallest State by Average City Population
 
-### 3.2。获取城市平均人口最低的州
+### 3.2. 获取城市平均人口最低的州
 
 For this problem, we will need four stages:
 
@@ -298,7 +298,7 @@ In this article, we learned how to fetch specified fields of a document in Mongo
 
 We also learned about the MongoDB aggregation framework support in Spring Data. We covered major aggregation phases – group, project, sort, limit, and match and looked at some examples of its practical applications. The complete source code is [available over on GitHub](https://github.com/eugenp/tutorials/tree/master/persistence-modules/spring-data-mongodb).
 
-还学习了 MongoDB 和 Spring Data 框架的聚合函数. 通过示例介绍了主要的聚合阶段, group, project, sort, limit, 和 match. 完整的代码请参考: <https://github.com/eugenp/tutorials/tree/master/persistence-modules/spring-data-mongodb>。
+还学习了 Spring Data 对 MongoDB 聚合框架的支持. 通过示例介绍了主要的聚合阶段, group, project, sort, limit, 和 match. 完整的代码请参考: <https://github.com/eugenp/tutorials/tree/master/persistence-modules/spring-data-mongodb>。
 
 原文链接: <https://www.baeldung.com/spring-data-mongodb-projections-aggregations>
 
@@ -307,5 +307,5 @@ We also learned about the MongoDB aggregation framework support in Spring Data. 
 
 - [Spring Data MongoDB系列(一): 简介](05_01_spring-data-mongodb-tutorial.md)
 - [Spring Data MongoDB系列(二): 简单查询](05_02_queries-in-spring-data-mongodb.md)
-- [Spring Data MongoDB系列(三): 索引、注解和转换器](05_02_queries-in-spring-data-mongodb.md)
+- [Spring Data MongoDB系列(三): 索引、注解和转换器](05_03_spring-data-mongodb-index-annotations-converter.md)
 - [Spring Data MongoDB系列(八): 映射与聚合](05_08_spring-data-mongodb-projections-aggregations.md)
