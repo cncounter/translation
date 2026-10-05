@@ -10,7 +10,7 @@ When Redis is used as a cache, sometimes it is handy to let it automatically evi
 
 LRU is actually only one of the supported eviction methods. This page covers the more general topic of the Redis `maxmemory` directive that is used in order to limit the memory usage to a fixed amount, and it also covers in depth the LRU algorithm used by Redis, that is actually an approximation of the exact LRU.
 
-LRU是Redis唯一支持的回收算法. 本文详细介绍用于限制最大内存使用量的 `maxmemory`  指令, 并深入讲解 Redis 所使用的近似LRU算法。
+LRU 实际上只是 Redis 支持的淘汰算法之一。本文详细介绍用于限制最大内存使用量的 `maxmemory` 指令, 并深入讲解 Redis 所使用的近似 LRU 算法(它实际上是精确 LRU 的近似)。
 
 
 ## Maxmemory configuration directive
@@ -35,7 +35,7 @@ maxmemory 100mb
 
 Setting `maxmemory` to zero results into no memory limits. This is the default behavior for 64 bit systems, while 32 bit systems use an implicit memory limit of 3GB.
 
-将 `maxmemory` 设置为 `0`, 则表示不进行内存限制。当然, 对32位系统来说有一个隐性的限制条件: 最多 3GB 内存。
+将 `maxmemory` 设置为 `0`, 表示不进行内存限制。这是 64 位系统的默认行为; 而 32 位系统有一个隐式的内存上限: 最多 3GB 内存。
 
 
 When the specified amount of memory is reached, it is possible to select among different behaviors, called **policies**. Redis can just return errors for commands that could result in more memory being used, or it can evict some old data in order to return back to the specified limit every time new data is added.
@@ -163,7 +163,7 @@ If a command results in a lot of memory being used (like a big set intersection 
 
 Redis LRU algorithm is not an exact implementation. This means that Redis is not able to pick the *best candidate* for eviction, that is, the access that was accessed the most in the past. Instead it will try to run an approximation of the LRU algorithm, by sampling a small number of keys, and evicting the one that is the best (with the oldest access time) among the sampled keys.
 
-Redis 使用的并不是完全LRU算法。自动淘汰的 key , 并不一定是最满足LRU特征的那个. 而是通过近似LRU算法, 抽取少量的 key 样本, 然后删除其中访问时间最古老的那个key。
+Redis 使用的并不是完全 LRU 算法。自动淘汰的 key, 并不一定是最满足 LRU 特征的那个. 而是通过近似 LRU 算法, 抽取少量的 key 样本, 然后删除其中访问时间最早的那个 key。
 
 
 However since Redis 3.0 the algorithm was improved to also take a pool of good candidates for eviction. This improved the performance of the algorithm, making it able to approximate more closely the behavior of a real LRU algorithm.
@@ -227,7 +227,7 @@ Note that LRU is just a model to predict how likely a given key will be accessed
 
 In simulations we found that using a power law access pattern, the difference between true LRU and Redis approximation were minimal or non-existent.
 
-在模拟中, 我们发现, 如果使用幂律方式访问, 纯粹的LRU和Redis的结果差别非常, 甚至看不出来。
+在模拟中, 我们发现, 如果使用幂律方式访问, 纯粹的 LRU 和 Redis 的结果差别非常小, 甚至看不出来。
 
 
 However you can raise the sample size to 10 at the cost of some additional CPU usage in order to closely approximate true LRU, and check if this makes a difference in your cache misses rate.
