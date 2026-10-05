@@ -145,7 +145,7 @@ systemctl start nfs-idmap
 注意: 如果被防火墙拦截, 那么客户端会显示连接超时错误(Connection Time Out)。
 
 
-现在我们已经准备好与NFS服务器部分。
+现在，NFS 服务端部分已经准备好了。
 
 
 
