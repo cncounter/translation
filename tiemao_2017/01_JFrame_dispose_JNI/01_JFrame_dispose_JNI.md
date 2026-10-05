@@ -37,7 +37,7 @@ Wikipedia has a good overview of [Java Native Interface](http://en.wikipedia.org
 
 JNI global references are prone to memory leaks, as they are not automatically garbage collected, and the programmer must explicitly free them.  If you are not writing any JNI code yourself, it is possible that the library you are using has a memory leak.
 
-JNI全局引用很容易造成内存泄漏, 因为它们不能被自动垃圾收集所清理, 程序员必须显式地释放它们. 如果你没有编写任何JNI代码, 那么狠可能是使用的库中存在内存泄漏。
+JNI全局引用很容易造成内存泄漏, 因为它们不能被自动垃圾收集所清理, 程序员必须显式地释放它们. 如果你没有编写任何JNI代码, 那么很可能是使用的库中存在内存泄漏。
 
 
 **edit** [here](http://journals.ecs.soton.ac.uk/java/tutorial/native1.1/implementing/refs.html) is a bit more info on local vs. global references, and why global references are used (and how they should be freed)
@@ -84,7 +84,7 @@ These references will keep the Java objects from being garbage collected. To mak
 
 For example, the following program (a variation of the native method in FieldAccess.c) mistakenly caches the Java class for the field ID so that it does not have to repeatedly search for the field ID based on the field name and signature:
 
-例如,以下程序(`FieldAccess.c` 中的一种变体native方法) 错误地将Java类的 ID field 缓存起来, 期待不必每次都通过字段名称和签名去搜索 ID field ,:
+例如,以下程序(`FieldAccess.c` 中的一种变体native方法) 错误地将Java类的 ID field 缓存起来, 期待不必每次都通过字段名称和签名去搜索 ID field:
 
 
 	/* !!! 本段代码有问题 */
@@ -142,7 +142,7 @@ To overcome this problem, you need to create a global reference. This global ref
 
 A global reference keeps the Java class from begin unloaded, and therefore also ensures that the field ID remains valid, as discussed in Accessing Java Fields. The native code must call DeleteGlobalRefs when it no longer needs access to the global reference; otherwise, the corresponding Java object (e.g., the Java class referenced to by cls above) will never be unloaded.
 
-全局引用一直存在,直到Java类被卸载之后。 因此保证了在下次用到Java类的ID字段时其一直有效。 native 代码不再使用全局引用时必须调用 `DeleteGlobalRefs` 函数; 否则,对应的Java对象(如 cls引用的Java类)永远都不会被卸载。
+全局引用可以阻止 Java 类被卸载, 因此也保证了字段 ID 始终保持有效, 这一点在《Accessing Java Fields》中已有讨论。 native 代码不再需要访问全局引用时, 必须调用 `DeleteGlobalRefs` 函数; 否则, 对应的 Java 对象(例如上面 cls 所引用的 Java 类)将永远不会被卸载。
 
 
 In most cases, the native programmer should rely on the VM to free all local references after the native method returns. In certain situations, however, the native code may need to call the DeleteLocalRef function to explicitly delete a local reference. These situations are:
