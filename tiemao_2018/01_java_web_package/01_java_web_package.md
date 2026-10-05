@@ -20,7 +20,7 @@ In addition to web components and web resources, a web module can contain other 
 
 A web module has a specific structure. The top-level directory of a web module is the **document root** of the application. The document root is where XHTML pages, client-side classes and archives, and static web resources, such as images, are stored.
 
-web模块有特定的结构。顶层目录对应Web应用的 **document root**. 可以存放 HTML页面, 静态web资源等等。
+web模块有特定的结构。顶层目录对应Web应用的 **document root**。可以存放 HTML页面, 静态web资源等等。
 
 The document root contains a subdirectory named `WEB-INF`, which can contain the following files and directories:
 
@@ -41,7 +41,7 @@ The document root contains a subdirectory named `WEB-INF`, which can contain the
 
 A web module needs a `web.xml` file if it uses JavaServer Faces technology, if it must specify certain kinds of security information, or if you want to override information specified by web component annotations.
 
-使用 JavaServer Face 技术时, 如果需要指定特别的安全信息, 或者覆盖 web component 上的注解配置, 则需要通过 `web.xml` 文件来指定。
+使用 JavaServer Faces 技术时, 如果需要指定特别的安全信息, 或者覆盖 web component 上的注解配置, 则需要通过 `web.xml` 文件来指定。
 
 You can also create application-specific subdirectories (that is, package directories) in either the document root or the `WEB-INF/classes/` directory.
 
@@ -49,7 +49,7 @@ You can also create application-specific subdirectories (that is, package direct
 
 A web module can be deployed as an unpacked file structure or can be packaged in a JAR file known as a Web Archive (WAR) file. Because the contents and use of WAR files differ from those of JAR files, WAR file names use a `.war` extension. The web module just described is portable; you can deploy it into any web container that conforms to the Java Servlet specification.
 
-web模块可以解压为文件夹来部署, 也可以部署为单个WAR包(Web Archive), 本质上WAR包是一个ZIP格式的JAR文件. 因为WAR里面的内容和常规的JAR不同, 所以使用 `.war` 后缀来区分。 web模块具有可移植性(portable); 能部署到符合Java Servlet规范的各种web容器里。
+web模块可以解压为文件夹来部署, 也可以部署为单个WAR包(Web Archive), 本质上WAR包是一个ZIP格式的JAR文件，因为WAR里面的内容和常规的JAR不同, 所以使用 `.war` 后缀来区分。 web模块具有可移植性(portable); 能部署到符合Java Servlet规范的各种web容器里。
 
 
 web模块结构。根目录下面包含 `WEB-INF`和web页面/目录。WEB-INF下面包含 lib 和 classes 目录。
