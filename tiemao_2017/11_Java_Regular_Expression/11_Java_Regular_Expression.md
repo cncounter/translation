@@ -57,7 +57,7 @@ The following tables lists several regular expressions and describes which patte
 
 Regular expressions are supported by most programming languages, e.g., Java, Perl, Groovy, etc. Unfortunately each language supports regular expressions slightly different.
 
-大多数编程语言都支持正则表达式, 如 Java、Perl, Groovy 等等。但各种语言的正则表达式写法略有一些不同。
+大多数编程语言都支持正则表达式, 如 Java、Perl、Groovy 等等。但各种语言的正则表达式写法略有一些不同。
 
 ## 2. Prerequisites
 
@@ -93,7 +93,7 @@ The following description is an overview of available meta characters which can 
 | `[abc]`     | 字符组(set), 匹配 a 或 b 或 c.                 |
 | `[abc][vz]` | 字符组(set), 匹配 a 或 b 或 c,紧接着是 v 或 z.      |
 | `[^abc]`    | 如果小尖号(`^`, caret, 此处读作 `非`) 出现在中括号里面的第一位, 则表示否定(negate). 这里匹配: 除 `a`, `b`, `c` 之外的其他任意字符. |
-| `[a-d1-7]`  | 范围表示法: 匹配 `a` 到 `d` 之间的单个字符, 或者 `1` 到 `7`之间的单个字符, 整体只匹配单个字符, 而不是 `d1` 这种组合. |
+| `[a-d1-7]`  | 范围表示法: 匹配 `a` 到 `d` 之间的单个字符, 或者 `1` 到 `7` 之间的单个字符, 整体只匹配单个字符, 而不是 `d1` 这种组合. |
 | X\|Z        | 匹配 `X` 或者 `Z`.                           |
 | `XZ`        | 匹配`XZ`, X和Z必须按顺序全部出现.                    |
 | `$`         | 判断一行是否结束.                                |
@@ -138,7 +138,7 @@ A quantifier defines how often an element can occur. The symbols ?, *, + and {} 
 | -------- | ---------------------------------------- | ---------------------------------- |
 | `*`      | 0到多次, 等价于 `{0,}`                         | `X*` 匹配0到多个连续的X,  `.*` 则匹配任意字符串    |
 | `+`      | 1到多次, 等价于 `{1,}`                         | `X+` 匹配1到多个连续的X                    |
-| `?`      | 0到1次, 等价于 `{0,1}`                        | `X?` 匹配0个,后者1个X                    |
+| `?`      | 0到1次, 等价于 `{0,1}`                        | `X?` 匹配0个,或者1个X                    |
 | `{n}`    | 精确匹配 n 次 `{}` 前面序列出现的次数                  | `\d{3}` 匹配3位数字, `.{10}` 匹配任意10个字符. |
 | `{m, n}` | 出现 m 到 n 次,                              | `\d{1,4}` 匹配至少1位数字,至多4位数字.         |
 | `*?`     | 在量词后面加上 `?`, 表示懒惰模式(*reluctant quantifier*). 从左到右慢慢扫描, 找到第一个满足正则表达式的地方就暂停搜索, 用来尝试匹配最少的字符串. |                                    |
@@ -514,7 +514,7 @@ The following lists typical examples for the usage of regular expressions. I hop
 
 Task: Write a regular expression which matches a text line if this text line contains either the word "Joe" or the word "Jim" or both.
 
-任务: 编写正则表达式, 用来匹配包含单词 "Joe" 或者 "Jim" , 或者两者都包含的行。
+任务: 编写正则表达式, 用来匹配包含单词 "Joe" 或者 "Jim", 或者两者都包含的行。
 
 Create a project `de.vogella.regex.eitheror` and the following class.
 
