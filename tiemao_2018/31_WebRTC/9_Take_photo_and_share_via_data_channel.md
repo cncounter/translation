@@ -14,7 +14,7 @@ In this step you'll learn how to:
 - Exchange image data with a remote user.
 
 - 拍照并通过canvas元素获取图像数据。
-- 给对面发送图片。
+- 与对方交换图像数据。
 
 A complete version of this step is in the **step-06** folder.
 
@@ -208,7 +208,7 @@ Replace the contents of your **work** folder with the contents of **step-06**. Y
 If you are not following this codelab from your **work** directory, you may need to install the dependencies for the **step-06**folder or your current working folder. Simply run the following command from your working directory:
 
 
-如果没有执行上一节的操作, 需要在 **step-06**目录, 或者工作目录下, 安装相应的依赖, 命令如下:
+如果不是在 **work** 目录下进行本节操作, 则需要在 **step-06**目录下, 或者当前工作目录下, 安装相应的依赖, 命令如下:
 
 
 ```
@@ -230,7 +230,7 @@ node index.js
 Make sure you're using the version of **index.js** that implements Socket.IO, and remember to restart your Node.js server if you make changes. For more information on Node and Socket IO, review the section "Set up a signaling service to exchange messages".
 
 
-请确认 **index.js** 文件的内容中包含了 Socket.IO 相关的内容, 参考前一小节。更多关于Node和Socket.IO的内容, 请参考 [7_Set_up_signaling_service.md](./7_Set_up_signaling_service.md)。
+请确认 **index.js** 文件的内容中包含了 Socket.IO 相关的内容, 参考前一小节。如果修改了该文件, 记得重启 Node.js 服务器。更多关于Node和Socket.IO的内容, 请参考 [7_Set_up_signaling_service.md](./7_Set_up_signaling_service.md)。
 
 If necessary, click on the **Allow** button to allow the app to use your webcam.
 
@@ -282,7 +282,7 @@ You should see something like this:
 - How to exchange that data with a remote user.
 
 - 拍照并通过canvas元素获取图像数据。
-- 给对面发送图片。
+- 与对方交换图像数据。
 
 A complete version of this step is in the **step-06** folder.
 
