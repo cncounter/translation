@@ -119,9 +119,9 @@ Based on the information in the log we can start improving the situation with th
 基于日志中的信息, 我们需要在心里记住,通过三个不同的指标来改善这种情况:
 
 
-1. Making sure the worst-case GC pause does not exceed a predetermined threshold
-1. Making sure the total time during which application threads are stopped does not exceed a predetermined threshold
-1. Reducing infrastructure costs while making sure we can still achieve reasonable latency and/or throughput targets.
+1. 确保最坏情况下的 GC 停顿不超过预定阈值(Making sure the worst-case GC pause does not exceed a predetermined threshold)
+1. 确保应用线程被停止的总时长不超过预定阈值(Making sure the total time during which application threads are stopped does not exceed a predetermined threshold)
+1. 在确保仍能达到合理的延迟和/或吞吐量目标的前提下, 降低基础设施成本(Reducing infrastructure costs while making sure we can still achieve reasonable latency and/or throughput targets).
 
 For this, the code above was run for 10 minutes on three different configurations resulting in three very different results summarized in the following table:
 
