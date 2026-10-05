@@ -4,7 +4,7 @@
 
 This guide provides a sampling of how [Spring Boot](https://github.com/spring-projects/spring-boot) helps you accelerate and facilitate application development. As you read more Spring Getting Started guides, you will see more use cases for Spring Boot. It is meant to give you a quick taste of Spring Boot. If you want to create your own Spring Boot-based project, visit [Spring Initializr](https://start.spring.io/), fill in your project details, pick your options, and you can download either a Maven build file, or a bundled up project as a zip file.
 
-本文通过示例, 详细介绍如何通过[Spring Boot](https://github.com/spring-projects/spring-boot) 快速开发应用程序。 当然,还可以阅读Spring相关的教程, 来学习更多Spring Boot的用法. 如果想要自己创建一个基于 Spring Boot 的项目, 可以使用 [Spring Initializr](https://start.spring.io/) 工具, 在其中填写项目相关的信息, 勾选相关的配置项, 就可以快速得到Maven构建文件, 或者是项目zip包。
+本文通过示例, 详细介绍如何通过[Spring Boot](https://github.com/spring-projects/spring-boot) 快速开发应用程序。 当然,还可以阅读Spring相关的教程, 来学习更多Spring Boot的用法。如果想要自己创建一个基于 Spring Boot 的项目, 可以使用 [Spring Initializr](https://start.spring.io/) 工具, 在其中填写项目相关的信息, 勾选相关的配置项, 就可以快速得到Maven构建文件, 或者是项目zip包。
 
 ## What you’ll build
 
@@ -45,7 +45,7 @@ Like most Spring [Getting Started guides](/guides), you can start from scratch a
 
 To **start from scratch**, move on to [Build with Gradle](#scratch).
 
-如果想要从头开始, 请略过下面的步骤, 直接下拉到后面的 【使用Maven构建】 小节.
+如果想要从头开始, 请略过下面的步骤, 直接下拉到后面的 【使用Maven构建】 小节。
 
 To **skip the basics**, do the following:
 
@@ -74,7 +74,7 @@ To **skip the basics**, do the following:
 
 First you set up a basic build script. You can use any build system you like when building apps with Spring, but the code you need to work with [Maven](https://maven.apache.org) is included here. If you’re not familiar with Maven, refer to [Building Java Projects with Maven](/guides/gs/maven).
 
-首先需要创建一个基本的Maven构建脚本。当然也可以使用其他构建工具, 如果使用[Maven](https://maven.apache.org), 请参考本节. 如果对Maven不熟悉, 可以参考 [Building Java Projects with Maven](https://spring.io/guides/gs/maven) 教程。
+首先需要创建一个基本的Maven构建脚本。当然也可以使用其他构建工具, 如果使用[Maven](https://maven.apache.org), 请参考本节。如果对Maven不熟悉, 可以参考 [Building Java Projects with Maven](https://spring.io/guides/gs/maven) 教程。
 
 ### Create the directory structure
 
@@ -171,7 +171,7 @@ The [Spring Boot Maven plugin](https://github.com/spring-projects/spring-boot/tr
 
 Spring Boot offers a fast way to build applications. It looks at your classpath and at beans you have configured, makes reasonable assumptions about what you’re missing, and adds it. With Spring Boot you can focus more on business features and less on infrastructure.
 
-Spring Boot 提供了一种快速构建应用程序的方法。查找classpath中配置的bean, 设置合理的默认值. 通过 Spring Boot 使开发者专注于业务逻辑的开发, 降低基础配置的时间和复杂性。
+Spring Boot 提供了一种快速构建应用程序的方法。查找classpath中配置的bean, 设置合理的默认值。通过 Spring Boot 使开发者专注于业务逻辑的开发, 降低基础配置的时间和复杂性。
 
 For example:
 
@@ -179,7 +179,7 @@ For example:
 
 *   Got Spring MVC? There are several specific beans you almost always need, and Spring Boot adds them automatically. A Spring MVC app also needs a servlet container, so Spring Boot automatically configures embedded Tomcat.
 
-* 使用Spring MVC, 总免不了配置一些特定的Bean, 而Spring Boot可以自动添加这些Bean. Spring MVC 应用还需要 servlet 容器, 而 Spring Boot 可以自动配置嵌入式的Tomcat。
+* 使用Spring MVC, 总免不了配置一些特定的Bean, 而Spring Boot可以自动添加这些Bean。Spring MVC 应用还需要 servlet 容器, 而 Spring Boot 可以自动配置嵌入式的Tomcat。
 
 *   Got Jetty? If so, you probably do NOT want Tomcat, but instead embedded Jetty. Spring Boot handles that for you.
 
@@ -297,7 +297,7 @@ public class Application {
 
 *   Normally you would add `@EnableWebMvc` for a Spring MVC app, but Spring Boot adds it automatically when it sees **spring-webmvc** on the classpath. This flags the application as a web application and activates key behaviors such as setting up a `DispatcherServlet`.
 
-* 对于 Spring MVC应用程序, 通常需要添加 `@EnableWebMvc` ,但Spring Boot在扫描 classpath 时如果发现 **spring-webmvc**, 将会自动添加该注解. 标志这此应用是一个web应用程序, 会自动激活 `DispatcherServlet` 等行为。
+* 对于 Spring MVC应用程序, 通常需要添加 `@EnableWebMvc` ,但Spring Boot在扫描 classpath 时如果发现 **spring-webmvc**, 将会自动添加该注解。这标志着此应用是一个web应用程序, 会自动激活 `DispatcherServlet` 等行为。
 
 *   `@ComponentScan` tells Spring to look for other components, configurations, and services in the `hello` package, allowing it to find the controllers.
 
@@ -305,7 +305,7 @@ public class Application {
 
 The `main()` method uses Spring Boot’s `SpringApplication.run()` method to launch an application. Did you notice that there wasn’t a single line of XML? No **web.xml** file either. This web application is 100% pure Java and you didn’t have to deal with configuring any plumbing or infrastructure.
 
-`main()`方法使用 Spring Boot 的`SpringApplication.run()`方法来启动应用程序。注意到没有一行XML,对吧? 也没有 **web.xml**文件. 这是100%的纯Java应用, 不需要配置任何管道或基础设施。
+`main()`方法使用 Spring Boot 的`SpringApplication.run()`方法来启动应用程序。注意到没有一行XML,对吧? 也没有 **web.xml**文件。这是100%的纯Java应用, 不需要配置任何管道或基础设施。
 
 There is also a `CommandLineRunner` method marked as a `@Bean` and this runs on start up. It retrieves all the beans that were created either by your app or were automatically added thanks to Spring Boot. It sorts them and prints them out.
 
@@ -467,7 +467,7 @@ public class HelloControllerTest {
 
 The `MockMvc` comes from Spring Test and allows you, via a set of convenient builder classes, to send HTTP requests into the `DispatcherServlet` and make assertions about the result. Note the use of the `@AutoConfigureMockMvc` together with `@SpringBootTest` to inject a `MockMvc` instance. Having used `@SpringBootTest` we are asking for the whole application context to be created. An alternative would be to ask Spring Boot to create only the web layers of the context using the `@WebMvcTest`. Spring Boot automatically tries to locate the main application class of your application in either case, but you can override it, or narrow it down, if you want to build something different.
 
-`MockMvc` 是Spring Test中的注解, 可以很方便地用来构建器测试类, 发送HTTP请求到 `DispatcherServlet` , 以及对响应结果执行断言。
+`MockMvc` 来自Spring Test, 可以通过一组便捷的构建器类, 发送HTTP请求到 `DispatcherServlet`, 以及对响应结果执行断言。
 
 需要注意,  `@AutoConfigureMockMvc` 可以和 `@SpringBootTest` 一起使用, 以自动注入 `MockMvc`实例。 
 
@@ -636,15 +636,15 @@ Because we didn’t enable it, the request is blocked by the virtue of not exist
 
 For more details about each of these REST points and how you can tune their settings with an `application.properties` file, you can read detailed [docs about the endpoints](https://docs.spring.io/spring-boot/docs/1.5.9.RELEASE/reference/htmlsingle/#production-ready-endpoints).
 
-关于REST point以及优化的更多细节, 请参考: [docs about the endpoints](https://docs.spring.io/spring-boot/docs/1.5.9.RELEASE/reference/htmlsingle/#production-ready-endpoints)。
+关于这些REST endpoint的详细信息, 以及如何通过 `application.properties` 文件调整配置, 请参考: [docs about the endpoints](https://docs.spring.io/spring-boot/docs/1.5.9.RELEASE/reference/htmlsingle/#production-ready-endpoints)。
 
 ## View Spring Boot’s starters
 
-## 参考 Spring Boot 入门教程
+## 查看 Spring Boot 的 starters
 
 You have seen some of [Spring Boot’s "starters"](https://docs.spring.io/spring-boot/docs/1.5.9.RELEASE/reference/htmlsingle/#using-boot-starter). You can see them all [here in source code](https://github.com/spring-projects/spring-boot/tree/master/spring-boot-project/spring-boot-starters).
 
-可以看到, Spring编写了很多入门教程, 请参考 [Spring Boot’s "starters"](https://docs.spring.io/spring-boot/docs/1.5.9.RELEASE/reference/htmlsingle/#using-boot-starter). 相应的源代码zai Github上, <https://github.com/spring-projects/spring-boot/tree/master/spring-boot-project/spring-boot-starters>。
+可以看到, Spring Boot 提供了很多 [starters](https://docs.spring.io/spring-boot/docs/1.5.9.RELEASE/reference/htmlsingle/#using-boot-starter)。 所有 starters 的源代码在 Github 上: <https://github.com/spring-projects/spring-boot/tree/master/spring-boot-project/spring-boot-starters>。
 
 ## JAR support and Groovy support
 
@@ -656,7 +656,7 @@ The last example showed how Spring Boot makes it easy to wire beans you may not 
 
 But Spring Boot does yet more. It supports not only traditional WAR file deployments, but also makes it easy to put together executable JARs thanks to Spring Boot’s loader module. The various guides demonstrate this dual support through the `spring-boot-gradle-plugin` and `spring-boot-maven-plugin`.
 
-但Spring Boot的优点不止这些。不仅支持传统的WAR文件部署方式, 也可以通过 Spring Boot’s loader module 来生成可执行 JAR 包. 本质上是通过 `spring-boot-gradle-plugin` and `spring-boot-maven-plugin` 插件来进行支持。
+但Spring Boot的优点不止这些。不仅支持传统的WAR文件部署方式, 也可以通过 Spring Boot’s loader module 来生成可执行 JAR 包, 本质上是通过 `spring-boot-gradle-plugin` 和 `spring-boot-maven-plugin` 插件来进行支持。
 
 On top of that, Spring Boot also has Groovy support, allowing you to build Spring MVC web apps with as little as a single file.
 
@@ -727,7 +727,7 @@ Spring Boot通过动态地添加注解, 并使用 [Groovy Grape](http://groovy.c
 
 Congratulations! You built a simple web application with Spring Boot and learned how it can ramp up your development pace. You also turned on some handy production services. This is only a small sampling of what Spring Boot can do. Checkout [Spring Boot’s online docs](https://docs.spring.io/spring-boot/docs/1.5.9.RELEASE/reference/htmlsingle) if you want to dig deeper.
 
-牛B! 我们创建了一个简单的Spring Boot应用, 并学会了如何提高开发效率。在开发实际应用系统时非常方便. 如果想深入学习Spring Boot, 请参考 [Spring Boot’s online docs](https://docs.spring.io/spring-boot/docs/1.5.9.RELEASE/reference/htmlsingle)。
+牛B! 我们创建了一个简单的Spring Boot应用, 并学会了如何提高开发效率。在开发实际应用系统时非常方便。如果想深入学习Spring Boot, 请参考 [Spring Boot’s online docs](https://docs.spring.io/spring-boot/docs/1.5.9.RELEASE/reference/htmlsingle)。
 
 ## See Also
 
