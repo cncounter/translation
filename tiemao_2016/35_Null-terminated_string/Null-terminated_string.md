@@ -1,19 +1,21 @@
+# 以 null 结尾的字符串
+
 # https://en.wikipedia.org/wiki/Null-terminated_string
 
-In computer programming, a null-terminated string is a character string stored as an array containing the characters and terminated with a null character ('\0', called NUL in ASCII). Alternative names are C string, which refers to the C programming language and ASCIIZ (note that C strings do not imply the use of ASCII).
+在计算机编程中,以 null 结尾的字符串(null-terminated string)是一种以数组形式存储的字符串,数组包含各个字符,并以一个 null 字符('\0',在 ASCII 中称为 NUL)结尾。它的别名有 C 字符串(因 C 编程语言而得名)和 ASCIIZ(注意,C 字符串并不意味着必须使用 ASCII)。
 
-The length of a C string is found by searching for the (first) NUL byte. This can be slow as it takes O(n) (linear time) with respect to the string length. It also means that a NUL cannot be inside the string, as the only NUL is the one marking the end.
+C 字符串的长度通过查找(第一个)NUL 字节来确定。这可能很慢,因为相对于字符串长度,它的时间复杂度是 O(n)(线性时间)。这也意味着 NUL 不能出现在字符串内部,因为唯一的 NUL 就是标记结尾的那一个。
 
-History[edit]
-Null-terminated strings were produced by the .ASCIZ directive of the PDP-11 assembly languages and the ASCIZ directive of the MACRO-10 macro assembly language for the PDP-10. These predate the development of the C programming language, but other forms of strings were often used.
+## 历史
 
-At the time C (and the languages that it was derived from) was developed, memory was extremely limited, so using only one byte of overhead to store the length of a string was attractive. The only popular alternative at that time, usually called a "Pascal string" (though also used by early versions of BASIC), used a leading byte to store the length of the string. This allows the string to contain NUL and made finding the length need only one memory access (O(1) (constant) time). However, C designer Dennis Ritchie chose to follow the convention of NUL-termination, already established in BCPL, to avoid the limitation on the length of a string caused by holding the count in an 8- or 9-bit slot, and partly because maintaining the count seemed, in his experience, less convenient than using a terminator.[1]
+以 null 结尾的字符串由 PDP-11 汇编语言的 .ASCIZ 伪指令以及 PDP-10 的 MACRO-10 宏汇编语言的 ASCIZ 伪指令产生。它们出现的时间早于 C 编程语言的发展,但当时也常使用其他形式的字符串。
 
-This had some influence on CPU instruction set design. Some CPUs in the 1970s and 1980s, such as the Zilog Z80 and the DEC VAX, had dedicated instructions for handling length-prefixed strings. However, as the NUL-terminated string gained traction, CPU designers began to take it into account, as seen for example in IBM's decision to add the "Logical String Assist" instructions to the ES/9000 520 in 1992.
+在 C(以及它所衍生的那些语言)被开发出来的年代,内存极其有限,因此只用一个字节的开销来存储字符串长度很有吸引力。当时唯一流行的替代方案通常被称为"Pascal 字符串"(不过早期版本的 BASIC 也使用它),它用一个前导字节来存储字符串的长度。这样做允许字符串中包含 NUL,并且查找长度只需一次内存访问(O(1),常数时间)。然而,C 的设计者 Dennis Ritchie 选择沿用 BCPL 中已经确立的 NUL 结尾约定,以避免因把长度计数放在 8 位或 9 位槽中而对字符串长度造成限制,部分原因还在于,以他的经验来看,维护长度计数不如使用终止符方便。[1]
 
-FreeBSD developer Poul-Henning Kamp, writing in ACM Queue, would later refer to the victory of the C string over use of a 2-byte (not 1-byte) length as "the most expensive one-byte mistake" ever.[2]
+这对 CPU 指令集设计产生了一些影响。20 世纪 70 和 80 年代的一些 CPU,例如 Zilog Z80 和 DEC VAX,就有专门用于处理带长度前缀的字符串的指令。然而,随着以 NUL 结尾的字符串越来越流行,CPU 设计者开始把它纳入考虑,例如 IBM 在 1992 年决定为 ES/9000 520 增加"Logical String Assist"指令。
+
+FreeBSD 开发者 Poul-Henning Kamp 后来在《ACM Queue》上撰文,把 C 字符串战胜使用 2 字节(而非 1 字节)长度这一结果,称为有史以来"代价最大的一字节错误"。[2]
 
 
 
 from https://en.wikipedia.org/wiki/Null-terminated_string
-
