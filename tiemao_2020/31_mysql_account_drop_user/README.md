@@ -14,10 +14,9 @@ The [`DROP USER`](https://dev.mysql.com/doc/refman/8.0/en/drop-user.html) statem
 可以看到, 一条 [`DROP USER`](https://dev.mysql.com/doc/refman/8.0/en/drop-user.html) 语句能删除多个用户。
 
 删除用户帐号的同时, 也会将授权信息表中对应的权限一起删除。
-帐号
 Roles named in the [`mandatory_roles`](https://dev.mysql.com/doc/refman/8.0/en/server-system-variables.html#sysvar_mandatory_roles) system variable value cannot be dropped.
 
-注意, 名字在 [`mandatory_roles`](https://dev.mysql.com/doc/refman/8.0/en/server-system-variables.html#sysvar_mandatory_roles) 系统变量中的角色不能删除。
+注意, 在 [`mandatory_roles`](https://dev.mysql.com/doc/refman/8.0/en/server-system-variables.html#sysvar_mandatory_roles) 系统变量值中指定的角色不能删除。
 
 ## 删除用户需要具有的权限
 
@@ -36,7 +35,7 @@ To use [`DROP USER`](https://dev.mysql.com/doc/refman/8.0/en/drop-user.html), yo
 
 [`DROP USER`](https://dev.mysql.com/doc/refman/8.0/en/drop-user.html) either succeeds for all named users or rolls back and has no effect if any error occurs. By default, an error occurs if you try to drop a user that does not exist. If the `IF EXISTS` clause is given, the statement produces a warning for each named user that does not exist, rather than an error.
 
-[`DROP USER`](https://dev.mysql.com/doc/refman/8.0/en/drop-user.html) 具有原子性，要么将指定的所有用户一次性全部成功删除，有任何错误都会进行回滚。 默认情况下，如果删除不存在的用户，则会报错。 但如果指定了 `IF EXISTS` 子句，则不再报错，而是将不存在的错误提示转为警告。
+[`DROP USER`](https://dev.mysql.com/doc/refman/8.0/en/drop-user.html) 具有原子性，要么将指定的所有用户一次性全部成功删除，有任何错误都会进行回滚。 默认情况下，如果删除不存在的用户，则会报错。 但如果指定了 `IF EXISTS` 子句，则对每个不存在的用户只产生警告，而不再报错。
 
 The statement is written to the binary log if it succeeds, but not if it fails; in that case, rollback occurs and no changes are made. A statement written to the binary log includes all named users. If the `IF EXISTS` clause is given, this includes even users that do not exist and were not dropped.
 
