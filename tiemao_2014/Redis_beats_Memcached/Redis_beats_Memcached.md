@@ -21,7 +21,7 @@ Memcached还是Redis? 在现代高性能Web应用中这一直是个争论不休�
 
 Memcached最初在2003年由 Brad Fitzpatrick 为 LiveJournal网站开发。然后又用C语言重写了一遍(初版为Perl实现),并开放给公众使用,从此成为现代Web系统开发的基石。 当前Memcached的发展方向是改进稳定性和性能优化,而不是添加新功能特性。
 
-Redis于2009年由 Salvatore Sanfilippo 创建, 直到今天 Sanfilippo 依然是Redis的唯一开发者和代码维护者。 Redis也被称为 "Memcached增强版(Memcached on steroids)", 这一点也不令人惊讶, 因为 Redis 有一部分就是在 Memcached 的经验总结之上构建的的。 Redis比Memcached具有更多的功能特性,这使得它更灵活,更强大也更复杂。
+Redis于2009年由 Salvatore Sanfilippo 创建, 直到今天 Sanfilippo 依然是Redis的唯一开发者和代码维护者。 Redis也被称为 "Memcached增强版(Memcached on steroids)", 这一点也不令人惊讶, 因为 Redis 有一部分就是在 Memcached 的经验总结之上构建的。 Redis比Memcached具有更多的功能特性,这使得它更灵活,更强大也更复杂。
 
 Memcached和Redis被众多企业以及大量生产系统所采用, 支持各种语言开发的客户端,有丰富的SDK。 事实上, 在上点规模的互联网Web开发语言中,基本上没有不支持Memcached或Redis的。
 
@@ -35,7 +35,7 @@ Memcached和Redis被众多企业以及大量生产系统所采用, 支持各种�
 
 第一种是**很细碎的静态数据**,如HTML代码片段。 Memcached的内存管理不像Redis那么复杂,所以性能更高一些,原因是 **Memcached 的元数据metadata更小**,相对来说额外开销就很少。 Memcached唯一支持的数据类型是字符串 `String`,非常适合缓存只读数据,因为字符串不需要额外的处理。
 
-第二个场景,是**Memcached比Redis更容易水平扩展**。 原因在于它的设计和和功能很简单,Memcached更容易扩展。 消息显示, Redis在即将到来的3.0版([阅读CA版本发布笔记](http://antirez.com/news/79))将内置可靠的集群支持[但一直在跳票]。
+第二个场景,是**Memcached比Redis更容易水平扩展**。 原因在于它的设计和功能很简单,Memcached更容易扩展。 消息显示, Redis在即将到来的3.0版([阅读CA版本发布笔记](http://antirez.com/news/79))将内置可靠的集群支持[但一直在跳票]。
 
 ### Redis 用武之地 ###
 
