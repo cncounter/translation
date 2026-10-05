@@ -18,7 +18,7 @@ MySQL 转换函数与运算符
 
 - **`BINARY`**
 
-`BINARY` 运算符将紧随其后的 string 转换为 二进制字符串。主要用来强制进行按字节进行比较(byte by byte),字节而不是字符的字符。这使得字符串比较是区分大小写的, 不管原始的列定义是否是 `BINARY` 或者 `BLOB`。`BINARY` 也对字符串末尾的空格敏感。
+`BINARY` 运算符将紧随其后的 string 转换为二进制字符串。主要用来强制按字节(byte by byte)进行比较, 而不是按字符比较。这使得字符串比较区分大小写, 不管原始的列定义是不是 `BINARY` 或者 `BLOB`。`BINARY` 还对字符串末尾的空格敏感。
 
 	SELECT 'a' = 'A';
 
@@ -117,7 +117,7 @@ MySQL 转换函数与运算符
 	| New York    | new york                          |
 	+-------------+-----------------------------------+
 
-转换函数可以用来创建特定类型的列,比如在 ` CREATE TABLE ... SELECT`语句之中:
+转换函数可以用来创建特定类型的列,比如在 `CREATE TABLE ... SELECT` 语句之中:
 
 	CREATE TABLE new_table SELECT CAST('2000-01-01' AS DATE);
 
@@ -127,7 +127,7 @@ MySQL 转换函数与运算符
 
 `CAST(str AS BINARY)` 和  `BINARY str` 等价。`CAST(expr AS CHAR)` 将表达式当作默认字符集来处理。
 
-`CAST()` 可能会改变复杂表达式的结果，例如 ` CONCAT('Date: ',CAST(NOW() AS DATE))`。
+`CAST()` 可能会改变复杂表达式的结果，例如 `CONCAT('Date: ',CAST(NOW() AS DATE))`。
 
 这里就不应该使用 `CAST()` 来提取不同格式的数据,而应该使用字符串函数，如  `LEFT()` 或者 `EXTRACT()`。详情请参考  [Section 12.7, “Date and Time Functions”](http://dev.mysql.com/doc/refman/5.6/en/date-and-time-functions.html)。
 
@@ -147,7 +147,7 @@ MySQL 转换函数与运算符
 > 'hello you 2'
 
 
-在 MySQL 5.6.4之前的版本,用 `CAST()` 处理 `TIMESTAMP` 时， 如果不从具体的表中选取值, MySQL 5.6 会在执行转换之前把值优先当成字符串来对待。这在转换为数字时可能会导致截断,如下所示:
+在 MySQL 5.6.4 之前的版本,用 `CAST()` 处理 `TIMESTAMP` 时， 如果不从具体的表中选取值, MySQL 5.6 会在执行转换之前把值优先当成字符串来对待。这在转换为数字时可能会导致截断,如下所示:
 
 	mysql> SELECT CAST(TIMESTAMP '2014-09-08 18:07:54' AS SIGNED);
 	+-------------------------------------------------+
@@ -215,7 +215,7 @@ MySQL支持有符号的和无符号的64位算术运算。如果您使用的是�
 
 > -1
 
-如果有操作数是浮点值, 那么结果就是浮点值, 不受前面规则的影响。(在这种情况下, ` DECIMAL` 列被视为浮点值。)
+如果有操作数是浮点值, 那么结果就是浮点值, 不受前面规则的影响。(在这种情况下, `DECIMAL` 列被视为浮点值。)
 
 	SELECT CAST(1 AS UNSIGNED) - 2.0;
 
