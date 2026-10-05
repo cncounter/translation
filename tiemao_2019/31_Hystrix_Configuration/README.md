@@ -76,7 +76,7 @@ hystrix.command.default.execution.isolation.thread.timeoutInMilliseconds: 1000
 
 > 注意: 此配置只支持 `THREAD` 模式
 
-在超时发生时是否打断原线程的执行。 实际上就是给执行线程发送中断信号, 会抛出 `InterruptedException` 异常.
+在超时发生时是否打断原线程的执行。 实际上就是给执行线程发送中断信号, 会抛出 `InterruptedException` 异常。
 
 默认配置:
 
@@ -116,7 +116,7 @@ hystrix.command.default.execution.isolation.semaphore.maxConcurrentRequests: 10
 
 线程池可以配置:
 
-核心线程数量.
+核心线程数量。
 
 
 默认配置:
@@ -125,7 +125,7 @@ hystrix.command.default.execution.isolation.semaphore.maxConcurrentRequests: 10
 hystrix.threadpool.default.coreSize: 10
 ```
 
-1.5.9 版本增加了配置, 最大线程数量.
+1.5.9 版本增加了配置, 最大线程数量。
 
 默认配置:
 
@@ -133,7 +133,7 @@ hystrix.threadpool.default.coreSize: 10
 hystrix.threadpool.default.maximumSize: 10
 ```
 
-需要 `maximumSize` 生效，还需要允许 `maximumSize` 和 `coreSize` 不一致, 配置 `allowMaximumSizeToDivergeFromCoreSize=true` 才行:
+需要 `maximumSize` 生效，还需要允许 `maximumSize` 和 `coreSize` 不一致, 配置 `allowMaximumSizeToDivergeFromCoreSize=true` 才行：
 
 默认配置:
 
