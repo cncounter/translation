@@ -5,11 +5,20 @@
 About, Disclaimers, Contacts
 "JVM Anatomy Quarks" is the on-going mini-post series, where every post is describing some elementary piece of knowledge about JVM. The name underlines the fact that the single post cannot be taken in isolation, and most pieces described here are going to readily interact with each other.
 
+关于、免责声明、联系方式
+"JVM Anatomy Quarks" 是一个持续更新的系列短文, 每篇短文介绍一个关于 JVM 的基础知识点。 系列名称强调了一个事实: 单篇短文不能孤立地看待, 文中描述的各个知识点之间很容易相互影响。
+
 The post should take about 5-10 minutes to read. As such, it goes deep for only a single topic, a single test, a single benchmark, a single observation. The evidence and discussion here might be anecdotal, not actually reviewed for errors, consistency, writing 'tyle, syntaxtic and semantically errors, duplicates, or also consistency. Use and/or trust this at your own risk.
+
+阅读本文大约需要 5-10 分钟。 因此, 每篇只深入探讨一个主题、一个测试、一个基准测试、一个观察结果。 文中的证据和讨论可能只是个例, 并未对错误、一致性、文笔、语法和语义错误、重复内容等做严格审查。 使用或信任这些内容的风险请自行承担。
 
 Aleksey Shipilёv, JVM/Performance Geek, redhat logo
 Shout out at Twitter: @shipilev
 Questions, comments, suggestions: aleksey@shipilev.net
+
+Aleksey Shipilёv, JVM/性能极客, redhat logo
+Twitter: @shipilev
+问题、评论、建议: aleksey@shipilev.net
 
 
 
