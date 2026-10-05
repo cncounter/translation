@@ -17,7 +17,7 @@
 ## 查询IP
 
 - ipip.net, 国内最准确的IP地址库, 网址: https://ipip.net/
-- ip138, 挺有意思, 还可以查手机号码吉利, 网址: http://ip138.com/
+- ip138, 挺有意思, 还可以查手机号码吉凶, 网址: http://ip138.com/
 - 蘑菇代理, IP代理池, 网址: http://www.moguproxy.com
 
 
