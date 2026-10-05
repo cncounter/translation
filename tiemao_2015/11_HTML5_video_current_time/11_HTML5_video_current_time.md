@@ -1,7 +1,7 @@
 # 获取并设置HTML5 Video的当前进度
 
 
-上周翻译了一篇文章: [如何获取HTML5视频的持续时间](http://blog.csdn.net/renfufei/article/details/44260695)。很显然这是一门简单却很实用的技术, 但我认为还有一个更重要的知识点是控制视频的时间设置。在用HTML5技术处理视频时,设置(setting)和获取(getting)时间都是很有用的,那就让我们一起来看看如何达成这个 目标吧！
+上周翻译了一篇文章: [如何获取HTML5视频的持续时间](http://blog.csdn.net/renfufei/article/details/44260695)。很显然这是一门简单却很实用的技术, 但我认为还有一个更重要的知识点是控制视频的时间设置。在用HTML5技术处理视频时,设置(setting)和获取(getting)时间都是很有用的,那就让我们一起来看看如何达成这个目标吧！
 
 
 
@@ -17,7 +17,7 @@
 	video.currentTime = 0; // Restart
 
 
-API 接口很容易理解,而且是自解释的(self-explanatory)。你仍然需要处理“second”来指定时间,包括内在实际的和外在显示的(both inward and outward),但是秒(second)这个单位和你预期的一样公平,所以说这个API设计是非常巧妙的。
+API 接口很容易理解,而且是自解释的(self-explanatory)。你仍然需要和“second”打交道,无论是设置还是读取(both inward and outward),不过秒(second)这个单位和你预期的一样公平,所以说这个API设计是非常巧妙的。
 
 
 示例可以参考 [小米空气净化器的演示页面: http://www.mi.com/air/](http://www.mi.com/air/)  
