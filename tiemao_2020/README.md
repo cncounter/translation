@@ -24,7 +24,7 @@
 * [16.迁移Ubuntu下MySQL的data目录](./16_mysql_data_dir/README.md)【已完成】
 * [17.Java坑人面试题系列: 变量声明（中级难度）](./17_quiz-variable-declaration/README.md)【已完成】
 * [18.实战MySQL唯一索引](./18_mysql-unique-index/README.md)【粗翻.TODO】
-* [19.Java坑人面试题系列: 集合（高级难度）](./19_quiz-advanced-collectors/README.md)【粗翻】
+* [19.Java坑人面试题系列: 使用Collectors（高级难度）](./19_quiz-advanced-collectors/README.md)【粗翻】
 * [20.真实用户监控与综合性能监控](./20_monitoring-vs-synthetic-monitoring/README.md)【机器翻译】
 * [21.深入JVM - Code Cache内存池](./21_jvm-code-cache/README.md)【已完成】
 * [22.Java 9 Module System(系列)](./22_Java_9_Module_System/README.md) 【系列文章】
@@ -41,7 +41,7 @@
 * [33.数据结构与集合](./33_collection_intro/README.md)
 * [34.Word创建目录与导出技巧](./34_word_skill/README.md)【已完成】
 * [35.MySQL优化手册 - 官方文档[中文版]](./35_mysql_optimization/README.md)【系列文章】
-* [36.InnoDB引擎中AUTO_INCREMENT的处理机制](.//README.md)
+* [36.InnoDB引擎中AUTO_INCREMENT的处理机制](./36_innodb-auto-increment-handling/README.md)
 * [37.CompressedOops详解](./37_CompressedOops/README.md)
 * [38.如何选择机器学习平台](./38_how-to-choose-a-cloud-machine-learning-platform/README.md)
 * [39.辨析深度学习和机器学习](./39_deep-learning-vs-machine-learning/README.md)
