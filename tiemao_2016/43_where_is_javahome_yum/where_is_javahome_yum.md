@@ -1,8 +1,8 @@
 # 如何查找YUM 安装的 JAVA_HOME
 
-很多需要javac 的程序依赖 JAVA_HOME环境变量.
+很多需要javac 的程序依赖 JAVA_HOME环境变量。
 
-如果是手工下载源码安装的JDK，很容易知道JAVA_HOME的目录. 例如
+如果是手工下载源码安装的JDK，很容易知道JAVA_HOME的目录。例如
 
 	whereis javac
 
@@ -21,7 +21,7 @@
 
 	sudo yum list -y java*
 
-然后可用看到类似下面这样的输出(省略部分...):
+然后可以看到类似下面这样的输出(省略部分...):
 
 	...
 	Available Packages
@@ -67,7 +67,7 @@
 
 > javac: /usr/bin/javac /usr/share/man/man1/javac.1.gz
 
-可以看到, `/usr/bin/javac`, 一般来说 **/usr/bin** 默认加入了 PATH 路径,所以可以直接执行.
+可以看到, `/usr/bin/javac`, 一般来说 **/usr/bin** 默认加入了 PATH 路径,所以可以直接执行。
 
 然后一路跟踪,看软连接指向的位置( `ll` 是 `ls -l` 的快捷命令):
 
@@ -146,7 +146,7 @@ JDK1.7 大致是这个样子:
 
 > javac: /usr/bin/javac /usr/share/man/man1/javac.1.gz
 
-可以看到, `/usr/bin/javac`, 一般来说 /usr/bin 默认加入了 PATH 路径,所以可以直接执行.
+可以看到, `/usr/bin/javac`, 一般来说 /usr/bin 默认加入了 PATH 路径,所以可以直接执行。
 
 然后一路跟踪,看软连接指向的位置( `ll` 是 `ls -l` 的快捷命令):
 
@@ -217,7 +217,7 @@ JDK1.8 大致是这个样子:
 
 所以,可以使用其中之一作为 `JAVA_HOME` 环境变量的值。
 
-说明: 既然安装了,基本上服务器上就不会频繁变更.  如果有变更,则查找并修正即可。
+说明: 既然安装了,基本上服务器上就不会频繁变更。如果有变更,则查找并修正即可。
 
 
 ### 3.3  将 JAVA_HOME 加入环境变量:
