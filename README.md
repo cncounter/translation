@@ -22,11 +22,11 @@ GitHub地址: <https://github.com/cncounter/translation>
 <summary>点击展开2024年目录</summary>
 
 * [01.Git修改某些提交的作者信息](./tiemao_2024/01_git_rebase_change_author/README.md)【完成】
-* [02.一次堆内存溢出的问题排查 ](./tiemao_2024/02_math_english/README.md)【草稿】
+* [02.一次堆内存溢出的问题排查 ](./tiemao_2024/02_jvm_space_out_of_memory/README.md)【已完成】
 * [03.通过SDKMAN安装各种版本JDK](./tiemao_2024/03_sdk_man_jdk_graal/README.md)【已发布】
-* [04.探析Java的调用栈深度](./tiemao_2024/04_java_stack_trace_depth/README.md)【草稿】
+* [04.探析Java的调用栈深度](./tiemao_2024/04_java_stack_trace_depth/README.md)【已完成】
 * [05.让调用者自己干活的特殊线程池](./tiemao_2024/05_unit_test_caller_runs_thread_pool/README.md)【已发布】
-* [06.JVM配置参数MaxMetaspaceSize案例](./tiemao_2024/06_max_meta_space_size/README.md)【草稿】
+* [06.JVM配置参数MaxMetaspaceSize案例](./tiemao_2024/06_max_meta_space_size/README.md)【已完成】
 
 
 </details>
@@ -39,17 +39,17 @@ GitHub地址: <https://github.com/cncounter/translation>
 <details>
 <summary>点击展开2023年目录</summary>
 
-* [01.Java垃圾回收和性能面试问题](./tiemao_2023/01_top-50-gc-questions-answers/README.md)【未翻译】
-* [02.数学中一些常用的英语表示](./tiemao_2023/02_math_english/README.md)【迭代中】
-* [03.浅谈InterruptedException](./tiemao_2023/03_InterruptedException/README.md)【草稿未完成】
-* [04.机器学习笔记](./tiemao_2023/04_ml_dl/README.md)【迭代中】
+* [01.Java垃圾回收和性能面试问题](./tiemao_2023/01_top-50-gc-questions-answers/README.md)【已完成】
+* [02.数学中一些常用的英语表示](./tiemao_2023/02_math_english/README.md)【已完成】
+* [03.浅谈InterruptedException](./tiemao_2023/03_InterruptedException/README.md)【已完成】
+* [04.机器学习笔记](./tiemao_2023/04_ml_dl/README.md)【已完成】
 * [05.SwaggerUI 增加公共的Global全局Header](./tiemao_2023/05_swaggerui_global_header/README.md)【已完成】
-* [06.开发环境搭建: 用Docker来配置和启动Kafka](./tiemao_2023/06_kafka-docker-setup/README.md)【部分翻译】
-* [07.开发环境搭建: 如何从宿主机和外部访问Docker容器中的Kafka](./tiemao_2023/07_kafka-docker-connection/README.md)【未翻译】
-* [08.抓包工具Wireshark](./tiemao_2023/08_network_analyzer_wireshark/README.md)【未完成】
+* [06.开发环境搭建: 用Docker来配置和启动Kafka](./tiemao_2023/06_kafka-docker-setup/README.md)【已完成】
+* [07.开发环境搭建: 如何从宿主机和外部访问Docker容器中的Kafka](./tiemao_2023/07_kafka-docker-connection/README.md)【已完成】
+* [08.抓包工具Wireshark](./tiemao_2023/08_network_analyzer_wireshark/README.md)【已完成】
 * [09.深入JVM - JIT分层编译技术与日志详解](./tiemao_2023/09_jvm-tiered-compilation/README.md)【已校对完成】
 * [10.遍历Redis集群中的所有Key](./tiemao_2023/10_redis_cluster_scan/README.md)【已完成】
-* [11.分享一些常用的技术类网站](./tiemao_2023/11_tech_website/README.md)【迭代中】
+* [11.分享一些常用的技术类网站](./tiemao_2023/11_tech_website/README.md)【已完成】
 
 
 </details>
@@ -64,26 +64,26 @@ GitHub地址: <https://github.com/cncounter/translation>
 <summary>点击展开2022年目录</summary>
 
 * [01.软件开发中的幂等性](./tiemao_2022/01_idempotent/README.md)
-* [02.一次Java包冲突的问题排查案例](./tiemao_2022/02_package_conflict_sample/README.md)【初稿】
-* [03.JVM调优经验系列文章: GC线程数](./tiemao_2022/03_graal-java-jit-compiler/README.md)【粗翻】
+* [02.一次Java包冲突的问题排查案例](./tiemao_2022/02_package_conflict_sample/README.md)【已完成】
+* [03.JVM调优经验系列文章: GC线程数](./tiemao_2022/03_gc_thread_count/README.md)【已完成】
 * [04.Java对象的里里外外漫谈](./tiemao_2022/04_jvm-objects-inside-out/README.md)
 * [05.JVM Anatomy Quarks](./tiemao_2022/05-jvm-anatomy-quarks/README.md)
 * [06.Lock Lock Lock: Enter!](./tiemao_2022/06_lock-lock-lock-enter/README.md)
-* [07.填坑日记: Map接口的getOrDefault方法](./tiemao_2022/07_Map/README.md)【初稿】
+* [07.填坑日记: Map接口的getOrDefault方法](./tiemao_2022/07_Map/README.md)【已完成】
 * [08.synchronized与wait-notify](./tiemao_2022/08_wait_notify/README.md)
-* [09.Java_Performance读书笔记](./tiemao_2022/09_Java_Performance_Notes/README.md)【持续更新中...】
-* [10.自由职业者: 成功的秘诀](./tiemao_2022/10_success_secret/README.md)【粗翻】
-* [11.费波那契数列与黄金分割比例的一种优化算法](./tiemao_2022/11_Fibonacci/README.md)【初稿】
-* [12.Java语言规范文档: 第12章. 执行(Execution)](./tiemao_2022/12_Java_LS_Chapter_12_Execution/README.md)【粗翻】
-* [13.面试题-Java中long和double类型的最大取值](./tiemao_2022/13_Java_Number/README.md)【初稿】
+* [09.Java_Performance读书笔记](./tiemao_2022/09_Java_Performance_Notes/README.md)【已完成】
+* [10.自由职业者: 成功的秘诀](./tiemao_2022/10_success_secret/README.md)【已完成】
+* [11.费波那契数列与黄金分割比例的一种优化算法](./tiemao_2022/11_Fibonacci/README.md)【已完成】
+* [12.Java语言规范文档: 第12章. 执行(Execution)](./tiemao_2022/12_Java_LS_Chapter_12_Execution/README.md)【已完成】
+* [13.面试题-Java中long和double类型的最大取值](./tiemao_2022/13_Java_Number/README.md)【已完成】
 * [14.Spring Boot and Kafka Configuration Tuning](./tiemao_2022/14_spring-boot-kafka-config-tuning/README.md)
-* [15.Java基础面试题：main方法可以写在interface中吗？](./tiemao_2022/15_java_interface_main/README.md)【初稿】
-* [16.Java虚拟机规范文档: 第5章. 加载、链接和初始化](./tiemao_2022/16_jvm_s_Chapter_5_Loading_Linking_Initializing/README.md)【粗翻】
+* [15.Java基础面试题：main方法可以写在interface中吗？](./tiemao_2022/15_java_interface_main/README.md)【已完成】
+* [16.Java虚拟机规范文档: 第5章. 加载、链接和初始化](./tiemao_2022/16_jvm_s_Chapter_5_Loading_Linking_Initializing/README.md)【已完成】
 * [17.深入JVM - 一个class文件中最多包含多少个常量?](./tiemao_2022/17_java_class_constants_opcode_num_limit/README.md)【已校对】
 * [18.Synchronization in Java](./tiemao_2022/18_java-thread-synchronization/README.md)
 * [19.老版本POSTMAN安装日记](./tiemao_2022/19_postman_old_edtion/README.md)
 * [20.业务指标采集影响系统性能问题排查](./tiemao_2022/20_metrics_and_queue_performance/README.md)【已完成】
-* [37.perliden的ZGC博客内容翻译](./tiemao_2022/37_malloc.se/README.md)【粗翻】
+* [37.perliden的ZGC博客内容翻译](./tiemao_2022/37_malloc.se/README.md)【已完成】
 * [39.合理使用DTO(Data Transfer Object)](./tiemao_2022/39_the-dto-data-transfer-object/README.md)【已完成】
 
 
@@ -97,35 +97,35 @@ GitHub地址: <https://github.com/cncounter/translation>
 <details>
 <summary>点击展开2021年目录</summary>
 
-* [01.Spring Boot配置Filter过滤器](./tiemao_2021/01_spring-boot-add-filter/README.md)【粗翻】
-* [02.可以多次获取InputStream的HttpServletRequest](./tiemao_2021/02_ByteArrayRequestWrapper/README.md)【草稿】
+* [01.Spring Boot配置Filter过滤器](./tiemao_2021/01_spring-boot-add-filter/README.md)【已完成】
+* [02.可以多次获取InputStream的HttpServletRequest](./tiemao_2021/02_ByteArrayRequestWrapper/README.md)【已完成】
 * [03.graal-java-jit-compiler](./tiemao_2021/03_graal-java-jit-compiler/README.md)
 * [04.用Java语言实现数据结构-跳表(SkipList)](./tiemao_2021/04_Java_SkipList/README.md)
-* [05.一次Redis缓存问题排查案例](./tiemao_2021/05_redis_cache_problem/README.md)【草稿】
+* [05.一次Redis缓存问题排查案例](./tiemao_2021/05_redis_cache_problem/README.md)【已完成】
 * [06.How to Perform Redis Benchmark Tests](./tiemao_2021/06_how-to-perform-redis-benchmark-tests/README.md)
 * [07.徒手编写Java数据结构系列](./tiemao_2021/07_write_java_data_structure/README.md)
 * [08.低延迟对系统性能的影响](./tiemao_2021/08_low-latency-effect-application-performance/README.md)
 * [09.GC算法对系统性能的影响](./tiemao_2021/09_garbage-collection-application-performance-impact/README.md)
-* [10.系统调优实战入门](./tiemao_2021/10_system_tuning/README.md)【草案】
-* [11.MySQL雪崩效应调优案例](./tiemao_2021/11_mysql_avalanche_example/README.md)【草稿】
-* [12.数据库范式与实战案例](./tiemao_2021/12_Normal_Forms_1NF_2NF_3NF_BCNF/README.md)【草案】
-* [13.防御式编程案例一则](./tiemao_2021/13_defensive_programming/README.md)【草稿】
-* [14.JDK16的空指针异常长这样](./tiemao_2021/14_jdk16_new_feature/README.md)【草稿】
-* [15.应对DEVOPS面临的挑战：需要使用新一代的APM监控工具](./tiemao_2021/15_devops_monitoring/README.md)【粗翻】
+* [10.系统调优实战入门](./tiemao_2021/10_system_tuning/README.md)【已完成】
+* [11.MySQL雪崩效应调优案例](./tiemao_2021/11_mysql_avalanche_example/README.md)【已完成】
+* [12.数据库范式与实战案例](./tiemao_2021/12_Normal_Forms_1NF_2NF_3NF_BCNF/README.md)【已完成】
+* [13.防御式编程案例一则](./tiemao_2021/13_defensive_programming/README.md)【已完成】
+* [14.JDK16的空指针异常长这样](./tiemao_2021/14_jdk16_new_feature/README.md)【已完成】
+* [15.应对DEVOPS面临的挑战：需要使用新一代的APM监控工具](./tiemao_2021/15_devops_monitoring/README.md)【已完成】
 * [16.技术选型 - 客户采用Java作为高频交易系统开发语言的考虑](./tiemao_2021/16_java-for-high-frequency-trading-application/README.md)
 * [17.Spring网关入门教程](./tiemao_2021/17_SpringGateway-Intro/README.md)
 * [18.图文实例讲解SQL中的Join](./tiemao_2021/18_sql-join-types-explained-visually/README.md)
 * [19.Intel_CPU架构开发者手册_Volumn-1-2-3](./tiemao_2021/19_Intel_CPU_Arch_Manual/README.md)【索引链接】
-* [20.常用的IP地址解析库](./tiemao_2021/20_ip_parse_lib_service/README.md)【草稿】
-* [21.Strict-Transport-Security - 307 Internal Redirect 跳转码案例一则](./tiemao_2021/21_HSTS/README.md)【草稿】
+* [20.常用的IP地址解析库](./tiemao_2021/20_ip_parse_lib_service/README.md)【已完成】
+* [21.Strict-Transport-Security - 307 Internal Redirect 跳转码案例一则](./tiemao_2021/21_HSTS/README.md)【已完成】
 * [22.虚幻引擎5 - Unreal Engine 5](./tiemao_2021/22_UnrealEngine5/README.md)【链接】
-* [23.JEP 122: 删除永久代(Remove the Permanent Generation)](./tiemao_2021/23_JEP_122_Remove_Permanent_Generation/README.md)【粗翻】
-* [24.自适应线程池](./tiemao_2021/24_AdatperSizeThreadPoolQueue/README.md)【草稿】
+* [23.JEP 122: 删除永久代(Remove the Permanent Generation)](./tiemao_2021/23_JEP_122_Remove_Permanent_Generation/README.md)【已完成】
+* [24.自适应线程池](./tiemao_2021/24_AdatperSizeThreadPoolQueue/README.md)【已完成】
 * [25.The Ultimate Guide to Data Cleaning](./tiemao_2021/25_ultimate-guide-to-data-cleaning/README.md)
 * [26.Chaos Engineering – Simulating CPU Spike](./tiemao_2021/26_chaos-engineering-simulating-cpu-spike/README.md)
 * [27.一些好用的 alias 命令](./tiemao_2021/27_shell_alias/README.md)【已发布】
-* [28.系统响应延迟调优案例一则](./tiemao_2021/28_response_time_tuning/README.md)【草稿】
-* [29.Grafana告警规则与通知](./tiemao_2021/29_grafana_alert_rule/README.md)【粗翻】
+* [28.系统响应延迟调优案例一则](./tiemao_2021/28_response_time_tuning/README.md)【已完成】
+* [29.Grafana告警规则与通知](./tiemao_2021/29_grafana_alert_rule/README.md)【已完成】
 * [30.不需要再手工指定JVM启动参数 `-XX:+UseCompressedOops`](./tiemao_2021/30_avoid-passing-xxusecompressedoops/README.md)【已发布】
 * [31.Redis集群入门简介【系列文章】](./tiemao_2021/31_redis_cluster/README.md)【系列文章】
 
@@ -150,17 +150,17 @@ GitHub地址: <https://github.com/cncounter/translation>
 * [09.获取Java线程转储的常用方法](./tiemao_2020/09_java-thread-dump/README.md)【已完成】
 * [10.高级数据结构: 跳表（Skip List）](./tiemao_2020/10_skip-list/README.md)【已校对】
 * [11.JVM最重要的性能调优参数](./tiemao_2020/11_jvm-arguments-of-highly-effective/README.md)【已完成】
-- [12.0 MAVEN基础系列（〇）Maven五分钟入门教程](./tiemao_2020/12_introduction-to-the-pom/maven-in-five-minutes.md)【粗翻】
-- [12.1 MAVEN基础系列（一）项目构建的各个阶段](./tiemao_2020/12_introduction-to-the-pom/introduction-to-the-lifecycle.md)【粗翻】
-- [12.2 MAVEN基础系列（二）POM文件](./tiemao_2020/12_introduction-to-the-pom/README.md)【粗翻】
+- [12.0 MAVEN基础系列（〇）Maven五分钟入门教程](./tiemao_2020/12_introduction-to-the-pom/maven-in-five-minutes.md)【已完成】
+- [12.1 MAVEN基础系列（一）项目构建的各个阶段](./tiemao_2020/12_introduction-to-the-pom/introduction-to-the-lifecycle.md)【已完成】
+- [12.2 MAVEN基础系列（二）POM文件](./tiemao_2020/12_introduction-to-the-pom/README.md)【已完成】
 * [13.诊断问题和排查故障非常难？](./tiemao_2020/13_why-troubleshooting-so-hard/README.md)【已完成】
 * [14.JVM性能指标监控工具 -- Micrometer](./tiemao_2020/14_micrometer_intro/README.md)【已完成】
 * [15.DataDog集成MySQL的配置](./tiemao_2020/15_datadog_mysql/README.md)【已完成】
 * [16.迁移Ubuntu下MySQL的data目录](./tiemao_2020/16_mysql_data_dir/README.md)【已完成】
 * [17.Java坑人面试题系列: 变量声明（中级难度）](./tiemao_2020/17_quiz-variable-declaration/README.md)【已完成】
-* [18.实战MySQL唯一索引](./tiemao_2020/18_mysql-unique-index/README.md)【粗翻.TODO】
-* [19.Java坑人面试题系列: 集合（高级难度）](./tiemao_2020/19_quiz-advanced-collectors/README.md)【粗翻】
-* [20.真实用户监控与综合性能监控](./tiemao_2020/20_monitoring-vs-synthetic-monitoring/README.md)【机器翻译】
+* [18.实战MySQL唯一索引](./tiemao_2020/18_mysql-unique-index/README.md)【已完成】
+* [19.Java坑人面试题系列: 集合（高级难度）](./tiemao_2020/19_quiz-advanced-collectors/README.md)【已完成】
+* [20.真实用户监控与综合性能监控](./tiemao_2020/20_monitoring-vs-synthetic-monitoring/README.md)【已完成】
 * [21.深入JVM - Code Cache内存池](./tiemao_2020/21_jvm-code-cache/README.md)【已完成】
 * [22.Java 9 Module System(系列)](./tiemao_2020/22_Java_9_Module_System/README.md) 【系列文章】
 * [23.ZGC简介](./tiemao_2020/23_zgc_intro/README.md)【已校对】
@@ -176,11 +176,11 @@ GitHub地址: <https://github.com/cncounter/translation>
 * [33.数据结构与集合](./tiemao_2020/33_collection_intro/README.md)
 * [34.Word创建目录与导出技巧](./tiemao_2020/34_word_skill/README.md)【已完成】
 * [35.MySQL优化手册 - 官方文档[中文版]](./tiemao_2020/35_mysql_optimization/README.md)【系列文章】
-* [36.InnoDB引擎中AUTO_INCREMENT的处理机制](./tiemao_2020//README.md)
+* [36.InnoDB引擎中AUTO_INCREMENT的处理机制](./tiemao_2020/36_innodb-auto-increment-handling/README.md)
 * [37.CompressedOops详解](./tiemao_2020/37_CompressedOops/README.md)
 * [38.如何选择机器学习平台](./tiemao_2020/38_how-to-choose-a-cloud-machine-learning-platform/README.md)
 * [39.辨析深度学习和机器学习](./tiemao_2020/39_deep-learning-vs-machine-learning/README.md)
-* [40.JDK 16新特性抢先看](./tiemao_2020/40_jdk-16-whats-coming-in-java-16/README.md)【粗翻】
+* [40.JDK 16新特性抢先看](./tiemao_2020/40_jdk-16-whats-coming-in-java-16/README.md)【已完成】
 * [41.深入JVM - 实例详解invoke相关操作码](./tiemao_2020/41_invoke_opcode/README.md)【已完成】
 * [42.案例讲解JVM方法体字节码](./tiemao_2020/42_method_byte_code/README.md)
 * [43.Java多线程与并发面试题](./tiemao_2020/43_java_thread_conc_interview/README.md)【已完成】
@@ -286,9 +286,9 @@ GitHub地址: <https://github.com/cncounter/translation>
 03. [**SpringMVC中JSP页面不显示EL表达式的原因**](tiemao_2017/03_spring_mvc_jsp_el_jstl/03_spring_mvc_jsp_el_jstl.md)【已完成】
 04. [JDK 10 相关信息](tiemao_2017/04_jdk10/04_jdk10.md)【---】
 05. [Google人工智能超级帝国 -- TensorFlow 1.0](tiemao_2017/05_TensorFlow/05_TensorFlow.md)【---】
-06. [实战Linux性能监控: sar 命令](tiemao_2017/06_sar_examples/06_sar_examples.md)
-06. [实战Linux性能监控: sar](tiemao_2017/06_sar_examples/sar.md)
-06. [Linux_性能监控_常用命令](tiemao_2017/Linux_性能监控_常用命令.md)
+06. [实战Linux性能监控: sar 命令](tiemao_2017/06_sar-examples/06_sar_examples.md)
+06. [实战Linux性能监控: sar](tiemao_2017/06_sar-examples/sar.md)
+06. [Linux_性能监控_常用命令](tiemao_2017/06_sar-examples/Linux_性能监控_常用命令.md)
 07. [**Tomcat 启动速度优化**](tiemao_2017/07_FasterStartUp_Tomcat/07_FasterStartUp_Tomcat.md)【已完成】
 08. [The Valve Component](tiemao_2017/08_tomcat_8.0_valve/08_tomcat_8.0_valve.md)
 08. [Tomcat valve 简介](tiemao_2017/08_tomcat_8.0_valve/08_01_tomcat-valve.md)
@@ -356,7 +356,7 @@ GitHub地址: <https://github.com/cncounter/translation>
 <summary>点击展开2016年文章目录</summary>
 
 
-08. [内存屏障: 通过版本控制来理解](tiemao_2016/08_memory-barriers/memory-barriers.md)【】
+08. [内存屏障: 通过版本控制来理解](tiemao_2016/08_memory-barriers/memory-barriers.md)【已完成】
 
 </details>
 
@@ -365,34 +365,34 @@ GitHub地址: <https://github.com/cncounter/translation>
 <details>
 <summary>点击展开2015年文章目录</summary>
 
-* [01.Object类源码分析](tiemao_2015/01_Object_Class/Object_Class.md)【部分-未完成】
+* [01.Object类源码分析](tiemao_2015/01_Object_Class/Object_Class.md)【已完成】
 * [02.ZeroClipboard 复制内容到剪贴板](tiemao_2015/02_ZeroClipboard/ZeroClipboard.md)【废弃-效果不好】
 * [03.JavaScript 的坑人错误(Error)及修正](tiemao_2015/03_JavaScript_Error_Fix/JavaScript_Error_Fix.md)【废弃】
 * [04.AngularJS最佳实践: 请小心使用 ng-repeat 中的 $index](tiemao_2015/04_ng_repeat_$index/ng_repeat_$index.md)【完成】
 * [05.巧用`JSON.stringify()`生成漂亮格式的JSON字符串](tiemao_2015/05_JSON_indent/05_JSON_indent.md)【完成】
 * [06.获取HTML5视频的时间长度](tiemao_2015/06_HTML5_duration/06_HTML5_duration.md)【完成】
 * [07.程序员应该了解的Hadoop现状](tiemao_2015/07_Hadoop/07_Hadoop.md)【过时】
-* [08.Java正则表达式优化](tiemao_2015/08_Optimizing_Java_Regular/Optimizing_Java_Regular.md)【校对ing...】
-* [09.用正则来简化模式匹配代码](tiemao_2015/09_pattern_matching/README.md)【等待ing...】
+* [08.Java正则表达式优化](tiemao_2015/08_Optimizing_Java_Regular/08_Optimizing_Java_Regular.md)【已完成】
+* [09.用正则来简化模式匹配代码](tiemao_2015/09_pattern_matching/README.md)【已完成】
 * [10.深入详解SQL中的Null](tiemao_2015/10_Understanding_SQL_Null/10_Understanding_SQL_Null.md)【完成】
 * [11.获取并设置HTML5 Video的当前进度](tiemao_2015/11_HTML5_video_current_time/11_HTML5_video_current_time.md)【完成】
 * [12.Java基础 - Exception](tiemao_2015/12_Exception/exception.html)【完成】
 * [13.JavaScript函数表达式详解](tiemao_2015/13_NamedFunction/NamedFunction.md)【完成】
-* [14.Http2.0](tiemao_2015/14_Http2.0/Http2.0.md)【外链】
-* [15.CentOS下yum安装 Nginx](tiemao_2015/15_Nginx/Nginx.md)【完成】
+* [14.Http2.0](tiemao_2015/14_Http2.0/14_Http2.0.md)【外链】
+* [15.CentOS下yum安装 Nginx](tiemao_2015/15_Nginx/nginx.md)【完成】
 * [16.MySQL自增主键_AUTO_INCREMENT](tiemao_2015/16_MySQL_AUTO_INCREMENT/MySQL_AUTO_INCREMENT.md)【完成】
 * [17.MySQL的事务陷阱和艺术](tiemao_2015/17_MySQL_Savepoint/MySQL_Savepoint.md)【完成】
 * [18.(视频)深入理解 Scope 与 闭包 ](tiemao_2015/18_Scope_Closure_Video/Scope_Closure_Video.md)【外链】
 * [19.JavaScript 变量作用域及声明提前](tiemao_2015/19_JavaScript_Scope_Hoisting/JavaScript_Scope_Hoisting.md)【完成】
 * [20.掌握JS中的“`this`” (一)](tiemao_2015/20_0_JavaScript_this_InnerWorkings/Revealing_this_InnerWorkings.md)【完成】
 * [20.掌握JS中的“`this`” (二)](tiemao_2015/20_JavaScript_Mastering_this/JavaScript_Mastering_this.md)【完成】
-* [21."catalog" 与 "category" 的区别](tiemao_2015/21_catalog_category_difference/catalog_category_difference.md)【完成】
+* [21."catalog" 与 "category" 的区别](tiemao_2015/21_catalog_category_difference/difference_between_catalog_category.md)【完成】
 * [22.JavaScript: 互相转换String与Unicode编码](tiemao_2015/22_JavaScript_Unicode_String/JavaScript_Unicode_String.md)【完成】
 * [23.如何禁止某些代码调用 System.exit()](tiemao_2015/23_No_System_Exit/No_System_Exit.md)【完成】
 * [24.Java9: REPL环境与编程](tiemao_2015/24_Java_REPL/Java_REPL.md)【完成】
 * [25.IFRAME contentWindow is null](tiemao_2015/25_IFRAME_contentWindow/IFRAME_contentWindow.md)【完成】
 * [26.如何检测 JavaScript 中的自定义全局变量](tiemao_2015/26_Get_Global_Variable/Get_Global_Variable.md)【完成】
-* [27.Java: 系统属性(System Properties)简介](tiemao_2015/27_System_Properties/System_Properties.md)【等待ing...】
+* [27.Java: 系统属性(System Properties)简介](tiemao_2015/27_System_Properties/System_Properties.md)【已完成】
 * [28.MySQL 转换函数与运算符](tiemao_2015/28_MySQL_Cast_Function/MySQL_Cast_Function_Operator.md)【完成】
 * [29.快速解读GC日志](tiemao_2015/29_Understanding_GC_Log/Understanding_GC_Log.md)【完成】
 * [30.GC调优实战](tiemao_2015/30_GC_tuning_practice/GC_tuning_practice.md)【系列文章】
@@ -414,7 +414,7 @@ GitHub地址: <https://github.com/cncounter/translation>
 <summary>点击展开2014年目录</summary>
 
 1. **[编程界12个靠谱的5年预测](./tiemao_2014/5year/5year.md)** 【过时】
-1. **[年轻程序员越早知道越好的8个职场建议](./tiemao_2014/CareerAdvice/CareerAdvice.md)** 【校对ing...】
+1. **[年轻程序员越早知道越好的8个职场建议](./tiemao_2014/CareerAdvice/CareerAdvice.md)** 【已完成】
 1. **[CPU空闲时在忙什么](./tiemao_2014/CPUIdel/CPUIdel.md)** 【完成】
 1. **[Hadoop的发展开辟了对数据迁移工具的需求](./tiemao_2014/DataMigration/DataMigration.md)**【废弃】
 1. **[G1垃圾收集器入门](./tiemao_2014/G1/G1.md)**【完成】
@@ -422,7 +422,7 @@ GitHub地址: <https://github.com/cncounter/translation>
 1. **[10分钟折腾HBase](./tiemao_2014/hbase/quickstart.md)**【废弃】
 1. **[JDK7-HotSpot启动参数](./tiemao_2014/HotSpot_VM_Options/HotSpot_VM_Options.md)**【过时】
 1. **[内存计算带来可操作的实时智能系统](./tiemao_2014/InMemoryComputing/InMemoryComputing.md)**【废弃】
-1. **[Java框架ForkJoin入门简介](./tiemao_2014/Java_ForkJoin/Java_ForkJoin.md)**【等待ing...】
+1. **[Java框架ForkJoin入门简介](./tiemao_2014/Java_ForkJoin/Java_ForkJoin.md)**【已完成】
 1. **[最常用的Java类 Top 100](./tiemao_2014/Java100Classes/Java100Classes.md)**【完成】
 1. **[JavaEE标准很难推销给Spring框架用户](./tiemao_2014/JavaEEvsSpring/JavaEEvsSpring.md)**【废弃】
 1. **[Java Heap dump文件分析工具jhat简介](./tiemao_2014/jhat/jhat.md)**【完成】
