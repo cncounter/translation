@@ -65,7 +65,7 @@ Nearly every engineering team in the world that does web application development
 
 With a change in the way software was developed, it was only natural for the methods of software release to evolve as well. To facilitate faster release cycles, where teams released software more frequently, the CI/CD pipeline was conceived. This stands for the combined practices of continuous integration and continuous delivery. [Jenkins](https://jenkins.io/), [Travis](https://travis-ci.org/), and [CircleCI](https://circleci.com/) are among the most popular tools used by engineering teams to have functional CI/CD pipelines.
 
-随着软件开发方式的改变，软件的发布方式自热也跟着发展。 为了促进更快的发布周期，团队想要更频繁地快速发布软件，则需要 CI/CD管道的方式。 这代表了持续集成和持续交付的综合实践。 [Jenkins](https://jenkins.io/), [Travis](https://travis-ci.org/), 和 [CircleCI](https://circleci.com/) 都是常流行的CI/CD工具。
+随着软件开发方式的改变，软件的发布方式自然也跟着发展。 为了促进更快的发布周期，团队想要更频繁地快速发布软件，CI/CD管道应运而生。 这代表了持续集成和持续交付的综合实践。 [Jenkins](https://jenkins.io/), [Travis](https://travis-ci.org/), 和 [CircleCI](https://circleci.com/) 都是很流行的CI/CD工具。
 
 ## Configuration tools
 
@@ -84,8 +84,8 @@ This is a very scattered space at the moment. That said, there is enormous evolu
 
 监控领域相关的工具, 又多又杂, 而且一直在努力发展和迭代。
 早期的监控工具, 只在系统发布时检查服务器参数，并将这些参数用作系统运行状况的指标。
-服务器的健康状况保持，与用户体验之间存在相关性。杯具在于，这种方式下发生的问题比实际检测的要多。 
-如今，随着浏览器、通信协议和其他方面的发展，这种模式发生了变化。已经为浏览器设置代理(agent)来记录用户的体验。
+服务器的健康状况保持，与用户体验之间存在相关性。杯具在于，这种方式引发的问题比它能解答的还要多。 
+如今，随着浏览器、通信协议和其他方面的发展，这种模式发生了变化。可以为浏览器附加代理(agent)来记录用户的体验。
 
 There is also a lot of effort invested in areas like log management, alerting, telemetry, and reporting in the name of monitoring. Some of these are valid. Logging security events, meaningful alerting, resource utilization are valuable parameters to track, but only if accompanied by a clear strategy of monitoring users. A handful of tools like [Zabbix](https://www.zabbix.com/), [Nagios](https://www.nagios.org/), and [Prometheus](https://prometheus.io/) are used by engineers, but none of them solve the problem of real-user monitoring.
 
