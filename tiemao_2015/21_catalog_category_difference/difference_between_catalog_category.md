@@ -20,7 +20,7 @@
 
 原文如下: 
 
-> ##Difference between the "catalog" and "category"?
+> ## Difference between the "catalog" and "category"?
 
 >A catalog is a list of items in some order or system of classification.
 >
