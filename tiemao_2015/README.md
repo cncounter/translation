@@ -12,13 +12,13 @@
 * [05_巧用`JSON.stringify()`生成漂亮格式的JSON字符串](./05_JSON_indent/05_JSON_indent.md)【完成】
 * [06_获取HTML5视频的时间长度](./06_HTML5_duration/06_HTML5_duration.md)【完成】
 * [07_程序员应该了解的Hadoop现状](./07_Hadoop/07_Hadoop.md)【过时】
-* [08_Java正则表达式优化](./08_Optimizing_Java_Regular/Optimizing_Java_Regular.md)【校对ing...】
+* [08_Java正则表达式优化](./08_Optimizing_Java_Regular/08_Optimizing_Java_Regular.md)【校对ing...】
 * [09_用正则来简化模式匹配代码](./09_pattern_matching/README.md)【等待ing...】
 * [10_深入详解SQL中的Null](./10_Understanding_SQL_Null/10_Understanding_SQL_Null.md)【完成】
 * [11_获取并设置HTML5 Video的当前进度](./11_HTML5_video_current_time/11_HTML5_video_current_time.md)【完成】
 * [12_Java基础 - Exception](./12_Exception/exception.html)【完成】
 * [13_JavaScript函数表达式详解](./13_NamedFunction/NamedFunction.md)【完成】
-* [14_Http2.0](./14_Http2.0/Http2.0.md)【外链】
+* [14_Http2.0](./14_Http2.0/14_Http2.0.md)【外链】
 * [15_CentOS下yum安装 Nginx](./15_Nginx/Nginx.md)【完成】
 * [16_MySQL自增主键_AUTO_INCREMENT](./16_MySQL_AUTO_INCREMENT/MySQL_AUTO_INCREMENT.md)【完成】
 * [17_MySQL的事务陷阱和艺术](./17_MySQL_Savepoint/MySQL_Savepoint.md)【完成】
@@ -26,7 +26,7 @@
 * [19_JavaScript 变量作用域及声明提前](./19_JavaScript_Scope_Hoisting/JavaScript_Scope_Hoisting.md)【完成】
 * [20_掌握JS中的“`this`” (一)](./20_0_JavaScript_this_InnerWorkings/Revealing_this_InnerWorkings.md)【完成】
 * [20_掌握JS中的“`this`” (二)](./20_JavaScript_Mastering_this/JavaScript_Mastering_this.md)【完成】
-* [21_"catalog" 与 "category" 的区别](./21_catalog_category_difference/catalog_category_difference.md)【完成】
+* [21_"catalog" 与 "category" 的区别](./21_catalog_category_difference/difference_between_catalog_category.md)【完成】
 * [22_JavaScript: 互相转换String与Unicode编码](./22_JavaScript_Unicode_String/JavaScript_Unicode_String.md)【完成】
 * [23_如何禁止某些代码调用 System.exit()](./23_No_System_Exit/No_System_Exit.md)【完成】
 * [24_Java9: REPL环境与编程](./24_Java_REPL/Java_REPL.md)【完成】
