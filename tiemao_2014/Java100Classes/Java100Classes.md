@@ -7,7 +7,7 @@
 
 ## 1. Top 100 Java Classes ##
 
-下面括号中的数字表示出现频率, 范围从 1 到 10000; 例如, “`java.util.ArrayList (6958)`” 代表在这10000个项目中, 有 **5958** 个使用到 `java.util.ArrayList`; 如果感兴趣,你也可以 [查看详细统计列表](http://www.programcreek.com/java-api-examples/?action=index)
+下面括号中的数字表示出现频率, 范围从 1 到 10000; 例如, “`java.util.ArrayList (6958)`” 代表在这10000个项目中, 有 **6958** 个使用到 `java.util.ArrayList`; 如果感兴趣,你也可以 [查看详细统计列表](http://www.programcreek.com/java-api-examples/?action=index)
 
 
 1. [java.util.ArrayList](http://www.programcreek.com/java-api-examples/index.php?api=java.util.ArrayList)(6958)
@@ -121,9 +121,9 @@
 
 关于上面的列表,使用说明如下:
 
-1. 一个类的使用频率反映其流行程度和重要性。 对Java初学者来说, 多花心思学习最有用的这些 API 可能是个很主意。
+1. 一个类的使用频率反映其流行程度和重要性。 对Java初学者来说, 多花心思学习最有用的这些 API 可能是个好主意。
 2. 全世界大多数程序员的选择反映了Java开发的趋势。 在这100个类中,我们可以看到, Android 是非常受欢迎的。
-3. 如果两个类具有 同样/相似 的功能, 则频率越高意味着这个类被优先考虑。 一个类被优先考虑的原因可能各不相同,比如可用性(usability), API文档(documentation), 时间复杂度(complexity)、 电量消耗(energy consumption)等。
+3. 如果两个类具有 同样/相似 的功能, 则频率越高意味着这个类被优先考虑。 一个类被优先考虑的原因可能各不相同,比如可用性(usability), API文档(documentation), 复杂度(complexity)、 电量消耗(energy consumption)等。
 
 
 
