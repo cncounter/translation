@@ -74,7 +74,7 @@ console.error("姓名:", realName);
 console.info(`测试顿点: ${realName}`);
 ```
 
-请注意,如果使用顿点, 即 Markdown 中的code引用符号, 则可以解析上下文中的变量。 和 shell 之类的语法类似。
+请注意,如果使用反引号(backtick), 即 Markdown 中的代码引用符号, 则可以解析上下文中的变量。 和 shell 之类的语法类似。
 
 截图如下:
 
@@ -123,7 +123,7 @@ console.dir(testObj);
 
 ![](11_05_console.dir_2.png)
 
-所以、特殊情况下,请考虑使用序列化, 或者深度clone之后, 再用 dir 打印信息。
+所以, 特殊情况下, 请考虑使用序列化, 或者深度clone之后, 再用 dir 打印信息。
 
 
 ##
