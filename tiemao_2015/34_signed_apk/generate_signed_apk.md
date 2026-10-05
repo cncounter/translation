@@ -58,7 +58,7 @@ Country Code (XX) 应该是 **CN**, 如下图所示:
 
 ![](08_02_ok.png)
 
-生成的aPK如下所示:
+生成的APK如下所示:
 
 ![](10_explorer.png)
 
