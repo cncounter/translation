@@ -1,145 +1,145 @@
-## The Valve Component
+## Valve 组件
 
-### Introduction
+### 简介
 
-A **Valve** element represents a component that will be inserted into the request processing pipeline for the associated Catalina container ([Engine](https://tomcat.apache.org/tomcat-8.0-doc/config/engine.html), [Host](https://tomcat.apache.org/tomcat-8.0-doc/config/host.html), or [Context](https://tomcat.apache.org/tomcat-8.0-doc/config/context.html)). Individual Valves have distinct processing capabilities, and are described individually below.
+**Valve** 元素表示一个组件, 会被插入到关联 Catalina 容器([Engine](https://tomcat.apache.org/tomcat-8.0-doc/config/engine.html)、[Host](https://tomcat.apache.org/tomcat-8.0-doc/config/host.html), 或者 [Context](https://tomcat.apache.org/tomcat-8.0-doc/config/context.html))的请求处理流水线(request processing pipeline)中。每种 Valve 都有各自不同的处理能力, 下面分别进行描述。
 
-*The description below uses the variable name `$CATALINA_BASE` to refer the base directory against which most relative paths are resolved. If you have not configured Tomcat for multiple instances by setting a `CATALINA_BASE` directory, then `$CATALINA_BASE` will be set to the value of `$CATALINA_HOME`, the directory into which you have installed Tomcat.*
+*下文使用变量名 `$CATALINA_BASE` 来指代 base 目录, 大多数相对路径都是基于它来解析的。如果你没有通过设置 `CATALINA_BASE` 目录来配置多个 Tomcat 实例, 那么 `$CATALINA_BASE` 会被设置为 `$CATALINA_HOME` 的值, 也就是安装 Tomcat 的目录。*
 
-### Access Logging
+### 访问日志(Access Logging)
 
-Access logging is performed by valves that implement **org.apache.catalina.AccessLog** interface.
+访问日志由实现了 **org.apache.catalina.AccessLog** 接口的 valve 来完成。
 
 #### Access Log Valve
 
-#### Introduction
+#### 简介
 
-The **Access Log Valve** creates log files in the same format as those created by standard web servers. These logs can later be analyzed by standard log analysis tools to track page hit counts, user session activity, and so on. This `Valve` uses self-contained logic to write its log files, which can be automatically rolled over at midnight each day. (The essential requirement for access logging is to handle a large continuous stream of data with low overhead. This `Valve` does not use Apache Commons Logging, thus avoiding additional overhead and potentially complex configuration).
+**Access Log Valve** 创建的日志文件, 与标准 web 服务器创建的格式相同。这些日志后续可由标准的日志分析工具来分析, 以跟踪页面点击量、用户会话活动等。这个 `Valve` 使用自包含的逻辑来写日志文件, 并且每天午夜可以自动滚动。 (访问日志的基本要求是以较低的开销处理大量连续的数据流。此 `Valve` 不使用 Apache Commons Logging, 从而避免了额外的开销以及可能复杂的配置)。
 
-This `Valve` may be associated with any Catalina container (`Context`, `Host`, or `Engine`), and will record ALL requests processed by that container.
+此 `Valve` 可以关联到任意 Catalina 容器(`Context`、`Host` 或 `Engine`), 并会记录该容器处理的所有请求。
 
-Some requests may be handled by Tomcat before they are passed to a container. These include redirects from /foo to /foo/ and the rejection of invalid requests. Where Tomcat can identify the `Context` that would have handled the request, the request/response will be logged in the `AccessLog`(s) associated `Context`, `Host` and `Engine`. Where Tomcat cannot identify the `Context` that would have handled the request, e.g. in cases where the URL is invalid, Tomcat will look first in the `Engine`, then the default `Host` for the `Engine` and finally the ROOT (or default) `Context` for the default `Host` for an `AccessLog` implementation. Tomcat will use the first `AccessLog` implementation found to log those requests that are rejected before they are passed to a container.
+有些请求在传给容器之前就由 Tomcat 处理了。这包括从 /foo 到 /foo/ 的重定向, 以及拒绝非法请求。如果 Tomcat 能识别出本来应该处理该请求的 `Context`, 那么请求/响应会被记录到该 `Context`、`Host` 和 `Engine` 关联的 `AccessLog` 中。如果 Tomcat 无法识别本来应该处理该请求的 `Context`(例如 URL 非法的情况), Tomcat 会先查找 `Engine`, 然后是该 `Engine` 的默认 `Host`, 最后是该默认 `Host` 的 ROOT(或默认)`Context`, 以寻找 `AccessLog` 实现。对于在传给容器之前就被拒绝的请求, Tomcat 会使用找到的第一个 `AccessLog` 实现来记录。
 
-The output file will be placed in the directory given by the `directory` attribute. The name of the file is composed by concatenation of the configured `prefix`, timestamp and `suffix`. The format of the timestamp in the file name can be set using the `fileDateFormat` attribute. This timestamp will be omitted if the file rotation is switched off by setting `rotatable` to `false`.
+输出文件会放在 `directory` 属性指定的目录中。文件名由配置的 `prefix`、时间戳和 `suffix` 拼接而成。文件名中时间戳的格式可以通过 `fileDateFormat` 属性来设置。如果将 `rotatable` 设置为 `false` 关闭了文件滚动, 则会省略该时间戳。
 
-**Warning:** If multiple AccessLogValve instances are used, they should be configured to use different output files.
+**警告:** 如果使用了多个 AccessLogValve 实例, 应该配置它们使用不同的输出文件。
 
-If sendfile is used, the response bytes will be written asynchronously in a separate thread and the access log valve will not know how many bytes were actually written. In this case, the number of bytes that was passed to the sendfile thread for writing will be recorded in the access log valve.
+如果使用了 sendfile, 响应字节会在单独的线程中异步写出, 此时 access log valve 无法得知实际写出了多少字节。这种情况下, 传给 sendfile 线程去写的字节数会被记录到 access log valve 中。
 
-#### Attributes
+#### 属性
 
-The **Access Log Valve** supports the following configuration attributes:
+**Access Log Valve** 支持以下配置属性:
 
-| Attribute                  | Description                              |
+| 属性                       | 描述                                       |
 | -------------------------- | ---------------------------------------- |
-| **className**              | Java class name of the implementation to use. This MUST be set to **org.apache.catalina.valves.AccessLogValve** to use the default access log valve. |
-| `directory`                | Absolute or relative pathname of a directory in which log files created by this valve will be placed. If a relative path is specified, it is interpreted as relative to $CATALINA_BASE. If no directory attribute is specified, the default value is "logs" (relative to $CATALINA_BASE). |
-| `prefix`                   | The prefix added to the start of each log file's name. If not specified, the default value is "access_log". |
-| `suffix`                   | The suffix added to the end of each log file's name. If not specified, the default value is "" (a zero-length string), meaning that no suffix will be added. |
-| `fileDateFormat`           | Allows a customized timestamp in the access log file name. The file is rotated whenever the formatted timestamp changes. The default value is `.yyyy-MM-dd`. If you wish to rotate every hour, then set this value to `.yyyy-MM-dd.HH`. The date format will always be localized using the locale `en_US`. |
-| `rotatable`                | Flag to determine if log rotation should occur. If set to `false`, then this file is never rotated and `fileDateFormat` is ignored. Default value: `true` |
-| `renameOnRotate`           | By default for a rotatable log the active access log file name will contain the current timestamp in `fileDateFormat`. During rotation the file is closed and a new file with the next timestamp in the name is created and used. When setting `renameOnRotate` to `true`, the timestamp is no longer part of the active log file name. Only during rotation the file is closed and then renamed to include the timestamp. This is similar to the behavior of most log frameworks when doing time based rotation. Default value: `false` |
-| `pattern`                  | A formatting layout identifying the various information fields from the request and response to be logged, or the word `common` or `combined` to select a standard format. See below for more information on configuring this attribute. |
-| `encoding`                 | Character set used to write the log file. An empty string means to use the system default character set. Default value: use the system default character set. |
-| `locale`                   | The locale used to format timestamps in the access log lines. Any timestamps configured using an explicit SimpleDateFormat pattern (`%{xxx}t`) are formatted in this locale. By default the default locale of the Java process is used. Switching the locale after the AccessLogValve is initialized is not supported. Any timestamps using the common log format (`CLF`) are always formatted in the locale `en_US`. |
-| `requestAttributesEnabled` | Set to `true` to check for the existence of request attributes (typically set by the RemoteIpValve and similar) that should be used to override the values returned by the request for remote address, remote host, server port and protocol. If the attributes are not set, or this attribute is set to `false` then the values from the request will be used. If not set, the default value of `false` will be used. |
-| `conditionIf`              | Turns on conditional logging. If set, requests will be logged only if `ServletRequest.getAttribute()` is not null. For example, if this value is set to `important`, then a particular request will only be logged if `ServletRequest.getAttribute("important") != null`. The use of Filters is an easy way to set/unset the attribute in the ServletRequest on many different requests. |
-| `conditionUnless`          | Turns on conditional logging. If set, requests will be logged only if `ServletRequest.getAttribute()` is null. For example, if this value is set to `junk`, then a particular request will only be logged if `ServletRequest.getAttribute("junk") == null`. The use of Filters is an easy way to set/unset the attribute in the ServletRequest on many different requests. |
-| `condition`                | The same as `conditionUnless`. This attribute is provided for backwards compatibility. |
-| `buffered`                 | Flag to determine if logging will be buffered. If set to `false`, then access logging will be written after each request. Default value: `true` |
-| `maxLogMessageBufferSize`  | Log message buffers are usually recycled and re-used. To prevent excessive memory usage, if a buffer grows beyond this size it will be discarded. The default is `256` characters. This should be set to larger than the typical access log message size. |
-| `resolveHosts`             | This attribute is no longer supported. Use the connector attribute `enableLookups` instead.If you have `enableLookups` on the connector set to `true` and want to ignore it, use **%a** instead of **%h** in the value of `pattern`. |
+| **className**              | 要使用的实现的 Java 类名。必须设置为 **org.apache.catalina.valves.AccessLogValve** 才能使用默认的 access log valve。 |
+| `directory`                | 日志文件放置的目录的绝对或相对路径, 该文件由这个 valve 创建。如果指定的是相对路径, 则会相对于 $CATALINA_BASE 来解析。如果没有指定 directory 属性, 默认值是 "logs"(相对于 $CATALINA_BASE)。 |
+| `prefix`                   | 添加到每个日志文件名开头的文件前缀。如果未指定, 默认值是 "access_log"。 |
+| `suffix`                   | 添加到每个日志文件名末尾的后缀。如果未指定, 默认值是 ""(空字符串), 表示不添加后缀。 |
+| `fileDateFormat`           | 允许自定义访问日志文件名中的时间戳。只要格式化后的时间戳发生变化, 文件就会滚动。默认值是 `.yyyy-MM-dd`。如果你想每小时滚动一次, 可以把这个值设置为 `.yyyy-MM-dd.HH`。日期格式总是使用 locale `en_US` 进行本地化。 |
+| `rotatable`                | 用于确定是否进行日志滚动的标志。如果设置为 `false`, 则该文件永远不会滚动, 并且忽略 `fileDateFormat`。默认值: `true` |
+| `renameOnRotate`           | 默认情况下, 对于可滚动的日志, 当前活动的访问日志文件名会包含 `fileDateFormat` 中的当前时间戳。在滚动期间, 文件被关闭, 并创建和启用一个名字中带有下一个时间戳的新文件。当把 `renameOnRotate` 设置为 `true` 时, 时间戳不再是活动日志文件名的一部分。只有在滚动期间, 文件才会被关闭, 然后重命名以包含时间戳。这与大多数日志框架在进行基于时间的滚动时的行为类似。默认值: `false` |
+| `pattern`                  | 一种格式化布局, 用于标识从请求和响应中记录的各种信息字段, 也可以使用 `common` 或 `combined` 关键字来选择一种标准格式。关于此属性配置的更多信息见下文。 |
+| `encoding`                 | 用于写入日志文件的字符集。空字符串表示使用系统默认字符集。默认值: 使用系统默认字符集。 |
+| `locale`                   | 用于格式化访问日志行中时间戳的 locale。任何使用显式 SimpleDateFormat 模式(`%{xxx}t`)配置的时间戳, 都会用这个 locale 来格式化。默认使用 Java 进程的默认 locale。不支持在 AccessLogValve 初始化之后再切换 locale。任何使用通用日志格式(`CLF`)的时间戳总是用 locale `en_US` 来格式化。 |
+| `requestAttributesEnabled` | 设置为 `true` 时, 检查是否存在请求属性(通常由 RemoteIpValve 及类似组件设置), 这些属性应该用于覆盖请求返回的 remote address、remote host、server port 和 protocol 值。如果这些属性未设置, 或者该属性设置为 `false`, 则使用请求中的值。如果未设置, 则使用默认值 `false`。 |
+| `conditionIf`              | 开启条件日志。如果设置了该属性, 则只有当 `ServletRequest.getAttribute()` 不为 null 时才会记录请求。例如, 如果把这个值设置为 `important`, 那么只有当 `ServletRequest.getAttribute("important") != null` 时才会记录某个请求。使用 Filter 是在众多不同请求上设置/取消设置 ServletRequest 属性的简便方法。 |
+| `conditionUnless`          | 开启条件日志。如果设置了该属性, 则只有当 `ServletRequest.getAttribute()` 为 null 时才会记录请求。例如, 如果把这个值设置为 `junk`, 那么只有当 `ServletRequest.getAttribute("junk") == null` 时才会记录某个请求。使用 Filter 是在众多不同请求上设置/取消设置 ServletRequest 属性的简便方法。 |
+| `condition`                | 与 `conditionUnless` 相同。提供此属性是为了向后兼容。 |
+| `buffered`                 | 用于确定日志是否使用缓冲的标志。如果设置为 `false`, 则会在每个请求之后写出访问日志。默认值: `true` |
+| `maxLogMessageBufferSize`  | 日志消息缓冲区通常会被回收和复用。为防止内存占用过多, 如果缓冲区增长超过此大小, 就会被丢弃。默认是 `256` 个字符。应该把它设置得比典型的访问日志消息更大一些。 |
+| `resolveHosts`             | 不再支持此属性。请改用连接器属性 `enableLookups`。如果连接器上的 `enableLookups` 设置为 `true` 而你想忽略它, 可以在 `pattern` 的值中使用 **%a** 而不是 **%h**。 |
 
-Values for the `pattern` attribute are made up of literal text strings, combined with pattern identifiers prefixed by the "%" character to cause replacement by the corresponding variable value from the current request and response. The following pattern codes are supported:
+`pattern` 属性的值由字面文本字符串组成, 并可以结合以 "%" 字符为前缀的模式标识符, 从而用当前请求和响应中对应的变量值来替换。支持以下模式代码:
 
-- **%a** - Remote IP address
-- **%A** - Local IP address
-- **%b** - Bytes sent, excluding HTTP headers, or '-' if zero
-- **%B** - Bytes sent, excluding HTTP headers
-- **%h** - Remote host name (or IP address if `enableLookups` for the connector is false)
-- **%H** - Request protocol
-- **%l** - Remote logical username from identd (always returns '-')
-- **%m** - Request method (GET, POST, etc.)
-- **%p** - Local port on which this request was received. See also `%{xxx}p` below.
-- **%q** - Query string (prepended with a '?' if it exists)
-- **%r** - First line of the request (method and request URI)
-- **%s** - HTTP status code of the response
-- **%S** - User session ID
-- **%t** - Date and time, in Common Log Format
-- **%u** - Remote user that was authenticated (if any), else '-'
-- **%U** - Requested URL path
-- **%v** - Local server name
-- **%D** - Time taken to process the request, in millis
-- **%T** - Time taken to process the request, in seconds
-- **%F** - Time taken to commit the response, in millis
-- **%I** - Current request thread name (can compare later with stacktraces)
+- **%a** - 远程 IP 地址
+- **%A** - 本地 IP 地址
+- **%b** - 发送的字节数, 不含 HTTP 头, 为零时显示 '-'
+- **%B** - 发送的字节数, 不含 HTTP 头
+- **%h** - 远程主机名(如果连接器的 `enableLookups` 为 false, 则为 IP 地址)
+- **%H** - 请求协议
+- **%l** - 来自 identd 的远程逻辑用户名(总是返回 '-')
+- **%m** - 请求方法(GET、POST 等)
+- **%p** - 接收此请求的本地端口。另见下面的 `%{xxx}p`。
+- **%q** - 查询字符串(如果存在, 会在前面加上 '?')
+- **%r** - 请求的第一行(方法和请求 URI)
+- **%s** - 响应的 HTTP 状态码
+- **%S** - 用户会话 ID
+- **%t** - 日期和时间, 采用 Common Log Format
+- **%u** - 已通过身份验证的远程用户(如果存在), 否则为 '-'
+- **%U** - 请求的 URL 路径
+- **%v** - 本地服务器名称
+- **%D** - 处理请求所花费的时间, 单位毫秒
+- **%T** - 处理请求所花费的时间, 单位秒
+- **%F** - 提交响应所花费的时间, 单位毫秒
+- **%I** - 当前请求的线程名(后续可以与堆栈跟踪比对)
 
-There is also support to write information incoming or outgoing headers, cookies, session or request attributes and special timestamp formats. It is modeled after the [Apache HTTP Server](http://httpd.apache.org/) log configuration syntax. Each of them can be used multiple times with different `xxx` keys:
+此外还支持写入传入或传出的 headers、cookies、session 或 request 属性以及特殊的时间戳格式。它是仿照 [Apache HTTP Server](http://httpd.apache.org/) 的日志配置语法设计的。每一项都可以用不同的 `xxx` 键多次使用:
 
-- **%{xxx}i** write value of incoming header with name `xxx`
-- **%{xxx}o** write value of outgoing header with name `xxx`
-- **%{xxx}c** write value of cookie with name `xxx`
-- **%{xxx}r** write value of ServletRequest attribute with name `xxx`
-- **%{xxx}s** write value of HttpSession attribute with name `xxx`
-- **%{xxx}p** write local (server) port (`xxx==local`) or remote (client) port (`xxx=remote`)
-- **%{xxx}t** write timestamp at the end of the request formatted using the enhanced SimpleDateFormat pattern `xxx`
+- **%{xxx}i** 写出名为 `xxx` 的传入 header 的值
+- **%{xxx}o** 写出名为 `xxx` 的传出 header 的值
+- **%{xxx}c** 写出名为 `xxx` 的 cookie 的值
+- **%{xxx}r** 写出名为 `xxx` 的 ServletRequest 属性的值
+- **%{xxx}s** 写出名为 `xxx` 的 HttpSession 属性的值
+- **%{xxx}p** 写出本地(服务器)端口(`xxx==local`)或远程(客户端)端口(`xxx=remote`)
+- **%{xxx}t** 写出请求结束时的时间戳, 使用增强的 SimpleDateFormat 模式 `xxx` 格式化
 
-All formats supported by SimpleDateFormat are allowed in `%{xxx}t`. In addition the following extensions have been added:
+`%{xxx}t` 中允许使用 SimpleDateFormat 支持的所有格式。此外还添加了以下扩展:
 
-- **sec** - number of seconds since the epoch
-- **msec** - number of milliseconds since the epoch
-- **msec_frac** - millisecond fraction
+- **sec** - 自纪元(epoch)以来的秒数
+- **msec** - 自纪元以来的毫秒数
+- **msec_frac** - 毫秒的小数部分
 
-These formats can not be mixed with SimpleDateFormat formats in the same format token.
+这些格式不能与 SimpleDateFormat 的格式混用在同一个格式 token 中。
 
-Furthermore one can define whether to log the timestamp for the request start time or the response finish time:
+此外, 还可以定义记录请求开始时间还是响应结束时间的时间戳:
 
-- **begin** or prefix **begin:** chooses the request start time
-- **end** or prefix **end:** chooses the response finish time
+- **begin** 或前缀 **begin:** 表示选择请求开始时间
+- **end** 或前缀 **end:** 表示选择响应结束时间
 
-By adding multiple `%{xxx}t` tokens to the pattern, one can also log both timestamps.
+通过在 pattern 中添加多个 `%{xxx}t` token, 还可以同时记录两个时间戳。
 
-The shorthand pattern `pattern="common"` corresponds to the Common Log Format defined by **'%h %l %u %t "%r" %s %b'**.
+速记模式 `pattern="common"` 对应于由 **'%h %l %u %t "%r" %s %b'** 定义的 Common Log Format。
 
-The shorthand pattern `pattern="combined"` appends the values of the `Referer` and `User-Agent` headers, each in double quotes, to the `common` pattern.
+速记模式 `pattern="combined"` 会在 `common` 模式的基础上, 追加 `Referer` 和 `User-Agent` header 的值, 每个都用双引号括起来。
 
-When Tomcat is operating behind a reverse proxy, the client information logged by the Access Log Valve may represent the reverse proxy, the browser or some combination of the two depending on the configuration of Tomcat and the reverse proxy. For Tomcat configuration options see [Proxies Support](https://tomcat.apache.org/tomcat-8.0-doc/config/valve.html#Proxies_Support) and the [Proxy How-To](https://tomcat.apache.org/tomcat-8.0-doc/proxy-howto.html). For reverse proxies that use mod_jk, see the [generic proxy](http://tomcat.apache.org/connectors-doc/generic_howto/proxy.html)documentation. For other reverse proxies, consult their documentation.
+当 Tomcat 运行在反向代理之后时, Access Log Valve 记录的客户端信息可能代表反向代理、浏览器, 或者两者的某种组合, 具体取决于 Tomcat 和反向代理的配置。Tomcat 的配置选项参见 [Proxies Support](https://tomcat.apache.org/tomcat-8.0-doc/config/valve.html#Proxies_Support) 和 [Proxy How-To](https://tomcat.apache.org/tomcat-8.0-doc/proxy-howto.html)。对于使用 mod_jk 的反向代理, 参见 [generic proxy](http://tomcat.apache.org/connectors-doc/generic_howto/proxy.html)文档。对于其他反向代理, 请查阅它们的文档。
 
 #### Extended Access Log Valve
 
-#### Introduction
+#### 简介
 
-The **Extended Access Log Valve** extends the [Access Log Valve](https://tomcat.apache.org/tomcat-8.0-doc/config/valve.html#Access_Log_Valve) class, and so uses the same self-contained logging logic. This means it implements many of the same file handling attributes. The main difference to the standard `AccessLogValve` is that `ExtendedAccessLogValve` creates log files which conform to the Working Draft for the [Extended Log File Format](http://www.w3.org/TR/WD-logfile.html) defined by the W3C.
+**Extended Access Log Valve** 扩展了 [Access Log Valve](https://tomcat.apache.org/tomcat-8.0-doc/config/valve.html#Access_Log_Valve) 类, 因此使用相同的自包含日志逻辑。这意味着它实现了许多相同的文件处理属性。与标准 `AccessLogValve` 的主要区别在于, `ExtendedAccessLogValve` 创建的日志文件符合 W3C 定义的 [Extended Log File Format](http://www.w3.org/TR/WD-logfile.html) 工作草案。
 
-#### Attributes
+#### 属性
 
-The **Extended Access Log Valve** supports all configuration attributes of the standard [Access Log Valve.](https://tomcat.apache.org/tomcat-8.0-doc/config/valve.html#Access_Log_Valve) Only the values used for `className` and `pattern` differ.
+**Extended Access Log Valve** 支持标准 [Access Log Valve](https://tomcat.apache.org/tomcat-8.0-doc/config/valve.html#Access_Log_Valve) 的所有配置属性。只有 `className` 和 `pattern` 使用的值不同。
 
-| Attribute     | Description                              |
+| 属性          | 描述                                       |
 | ------------- | ---------------------------------------- |
-| **className** | Java class name of the implementation to use. This MUST be set to **org.apache.catalina.valves.ExtendedAccessLogValve** to use the extended access log valve. |
-| `pattern`     | A formatting layout identifying the various information fields from the request and response to be logged. See below for more information on configuring this attribute. |
+| **className** | 要使用的实现的 Java 类名。必须设置为 **org.apache.catalina.valves.ExtendedAccessLogValve** 才能使用 extended access log valve。 |
+| `pattern`     | 一种格式化布局, 用于标识从请求和响应中记录的各种信息字段。关于此属性配置的更多信息见下文。 |
 
-Values for the `pattern` attribute are made up of format tokens. Some of the tokens need an additional prefix. Possible prefixes are `c` for "client", `s` for "server", `cs` for "client to server", `sc` for "server to client" or `x` for "application specific". Furthermore some tokens are completed by an additional selector. See the [W3C specification](http://www.w3.org/TR/WD-logfile.html) for more information about the format.
+`pattern` 属性的值由格式 token 组成。有些 token 需要额外的前缀。可能的前缀有: `c` 表示 "client", `s` 表示 "server", `cs` 表示 "client to server", `sc` 表示 "server to client", `x` 表示 "application specific"。此外有些 token 还需要一个额外的选择器来补全。关于该格式的更多信息参见 [W3C specification](http://www.w3.org/TR/WD-logfile.html)。
 
-The following format tokens are supported:
+支持以下格式 token:
 
-- **bytes** - Bytes sent, excluding HTTP headers, or '-' if zero
-- **c-dns** - Remote host name (or IP address if `enableLookups` for the connector is false)
-- **c-ip** - Remote IP address
-- **cs-method** - Request method (GET, POST, etc.)
-- **cs-uri** - Request URI
-- **cs-uri-query** - Query string (prepended with a '?' if it exists)
-- **cs-uri-stem** - Requested URL path
-- **date** - The date in yyyy-mm-dd format for GMT
-- **s-dns** - Local host name
-- **s-ip** - Local IP address
-- **sc-status** - HTTP status code of the response
-- **time** - Time the request was served in HH:mm:ss format for GMT
-- **time-taken** - Time (in seconds as floating point) taken to serve the request
-- **x-threadname** - Current request thread name (can compare later with stacktraces)
+- **bytes** - 发送的字节数, 不含 HTTP 头, 为零时显示 '-'
+- **c-dns** - 远程主机名(如果连接器的 `enableLookups` 为 false, 则为 IP 地址)
+- **c-ip** - 远程 IP 地址
+- **cs-method** - 请求方法(GET、POST 等)
+- **cs-uri** - 请求 URI
+- **cs-uri-query** - 查询字符串(如果存在, 会在前面加上 '?')
+- **cs-uri-stem** - 请求的 URL 路径
+- **date** - GMT 日期, 格式为 yyyy-mm-dd
+- **s-dns** - 本地主机名
+- **s-ip** - 本地 IP 地址
+- **sc-status** - 响应的 HTTP 状态码
+- **time** - 服务此请求的时间, GMT 格式为 HH:mm:ss
+- **time-taken** - 服务此请求所花费的时间(秒, 浮点数)
+- **x-threadname** - 当前请求的线程名(后续可以与堆栈跟踪比对)
 
-For any of the `x-H(XXX)` the following method will be called from the HttpServletRequest object:
+对于任意 `x-H(XXX)`, 都会从 HttpServletRequest 对象调用以下方法:
 
 - **x-H(authType)**: getAuthType
 - **x-H(characterEncoding)**: getCharacterEncoding
@@ -153,60 +153,60 @@ For any of the `x-H(XXX)` the following method will be called from the HttpServl
 - **x-H(scheme)**: getScheme
 - **x-H(secure)**: isSecure
 
-There is also support to write information about headers cookies, context, request or session attributes and request parameters.
+此外还支持写入关于 headers、cookies、context、request 或 session 属性以及请求参数的信息。
 
-- **cs(XXX)** for incoming request headers with name XXX
-- **sc(XXX)** for outgoing response headers with name XXX
-- **x-A(XXX)** for the servlet context attribute with name XXX
-- **x-C(XXX)** for the first cookie with name XXX
-- **x-O(XXX)** for a concatenation of all outgoing response headers with name XXX
-- **x-P(XXX)** for the URL encoded (using UTF-8) request parameter with name XXX
-- **x-R(XXX)** for the request attribute with name XXX
-- **x-S(XXX)** for the session attribute with name XXX
+- **cs(XXX)** 用于名为 XXX 的传入请求 header
+- **sc(XXX)** 用于名为 XXX 的传出响应 header
+- **x-A(XXX)** 用于名为 XXX 的 servlet context 属性
+- **x-C(XXX)** 用于名为 XXX 的第一个 cookie
+- **x-O(XXX)** 用于名为 XXX 的所有传出响应 header 的拼接
+- **x-P(XXX)** 用于名为 XXX 的 URL 编码(使用 UTF-8)后的请求参数
+- **x-R(XXX)** 用于名为 XXX 的 request 属性
+- **x-S(XXX)** 用于名为 XXX 的 session 属性
 
-### Access Control
+### 访问控制(Access Control)
 
 #### Remote Address Filter
 
-#### Introduction
+#### 简介
 
-The **Remote Address Filter** allows you to compare the IP address of the client that submitted this request against one or more *regular expressions*, and either allow the request to continue or refuse to process the request from this client. A Remote Address Filter can be associated with any Catalina container ([Engine](https://tomcat.apache.org/tomcat-8.0-doc/config/engine.html), [Host](https://tomcat.apache.org/tomcat-8.0-doc/config/host.html), or [Context](https://tomcat.apache.org/tomcat-8.0-doc/config/context.html)), and must accept any request presented to this container for processing before it will be passed on.
+**Remote Address Filter** 允许你将提交此请求的客户端 IP 地址与一个或多个*正则表达式*进行比较, 从而允许请求继续, 或者拒绝处理来自此客户端的请求。Remote Address Filter 可以关联到任意 Catalina 容器([Engine](https://tomcat.apache.org/tomcat-8.0-doc/config/engine.html)、[Host](https://tomcat.apache.org/tomcat-8.0-doc/config/host.html), 或者 [Context](https://tomcat.apache.org/tomcat-8.0-doc/config/context.html)), 并且必须先接受提交给此容器的任何请求进行处理, 然后才会继续传递。
 
-The syntax for *regular expressions* is different than that for 'standard' wildcard matching. Tomcat uses the `java.util.regex` package. Please consult the Java documentation for details of the expressions supported.
+*正则表达式*的语法与 '标准' 通配符匹配不同。Tomcat 使用 `java.util.regex` 包。关于所支持表达式的细节, 请查阅 Java 文档。
 
-Optionally one can append the server connector port separated with a semicolon (";") to allow different expressions for each connector.
+可选地, 可以附加用分号(";")分隔的服务器连接器端口, 以便为每个连接器配置不同的表达式。
 
-The behavior when a request is refused can be changed to not deny but instead set an invalid `authentication` header. This is useful in combination with the context attribute`preemptiveAuthentication="true"`.
+请求被拒绝时的行为可以改为不拒绝, 而是设置一个无效的 `authentication` header。这与 context 属性 `preemptiveAuthentication="true"` 配合使用时很有用。
 
-**Note:** There is a caveat when using this valve with IPv6 addresses. Format of the IP address that this valve is processing depends on the API that was used to obtain it. If the address was obtained from Java socket using Inet6Address class, its format will be `x:x:x:x:x:x:x:x`. That is, the IP address for localhost will be `0:0:0:0:0:0:0:1` instead of the more widely used `::1`. Consult your access logs for the actual value.
+**注意:** 在 IPv6 地址下使用此 valve 时有一个需要注意的地方。此 valve 处理的 IP 地址格式取决于获取它时所用的 API。如果该地址是通过 Inet6Address 类从 Java socket 获取的, 其格式会是 `x:x:x:x:x:x:x:x`。也就是说, localhost 的 IP 地址会是 `0:0:0:0:0:0:0:1`, 而不是更常用的 `::1`。实际取值请查阅你的访问日志。
 
-See also: [Remote Host Filter](https://tomcat.apache.org/tomcat-8.0-doc/config/valve.html#Remote_Host_Filter), [Remote IP Valve](https://tomcat.apache.org/tomcat-8.0-doc/config/valve.html#Remote_IP_Valve).
+另见: [Remote Host Filter](https://tomcat.apache.org/tomcat-8.0-doc/config/valve.html#Remote_Host_Filter), [Remote IP Valve](https://tomcat.apache.org/tomcat-8.0-doc/config/valve.html#Remote_IP_Valve)。
 
-#### Attributes
+#### 属性
 
-The **Remote Address Filter** supports the following configuration attributes:
+**Remote Address Filter** 支持以下配置属性:
 
-| Attribute                       | Description                              |
+| 属性                            | 描述                                       |
 | ------------------------------- | ---------------------------------------- |
-| **className**                   | Java class name of the implementation to use. This MUST be set to **org.apache.catalina.valves.RemoteAddrValve**. |
-| `allow`                         | A regular expression (using `java.util.regex`) that the remote client's IP address is compared to. If this attribute is specified, the remote address MUST match for this request to be accepted. If this attribute is not specified, all requests will be accepted UNLESS the remote address matches a `deny` pattern. |
-| `deny`                          | A regular expression (using `java.util.regex`) that the remote client's IP address is compared to. If this attribute is specified, the remote address MUST NOT match for this request to be accepted. If this attribute is not specified, request acceptance is governed solely by the `allow` attribute. |
-| `denyStatus`                    | HTTP response status code that is used when rejecting denied request. The default value is `403`. For example, it can be set to the value `404`. |
-| `addConnectorPort`              | Append the server connector port to the client IP address separated with a semicolon (";"). If this is set to `true`, the expressions configured with `allow` and`deny` is compared against `ADDRESS;PORT` where `ADDRESS` is the client IP address and `PORT` is the Tomcat connector port which received the request. The default value is `false`. |
-| `invalidAuthenticationWhenDeny` | When a request should be denied, do not deny but instead set an invalid `authentication` header. This only works if the context has the attribute `preemptiveAuthentication="true"` set. An already existing `authentication` header will not be overwritten. In effect this will trigger authentication instead of deny even if the application does not have a security constraint configured.This can be combined with `addConnectorPort` to trigger authentication depending on the client and the connector that is used to access an application. |
+| **className**                   | 要使用的实现的 Java 类名。必须设置为 **org.apache.catalina.valves.RemoteAddrValve**。 |
+| `allow`                         | 一个正则表达式(使用 `java.util.regex`), 远程客户端的 IP 地址会与它进行比较。如果指定了此属性, 则远程地址必须匹配, 该请求才会被接受。如果未指定此属性, 则所有请求都会被接受, 除非远程地址匹配某个 `deny` 模式。 |
+| `deny`                          | 一个正则表达式(使用 `java.util.regex`), 远程客户端的 IP 地址会与它进行比较。如果指定了此属性, 则远程地址必须不匹配, 该请求才会被接受。如果未指定此属性, 请求是否被接受就只由 `allow` 属性决定。 |
+| `denyStatus`                    | 拒绝被拒绝的请求时使用的 HTTP 响应状态码。默认值是 `403`。例如, 可以把它设置为 `404`。 |
+| `addConnectorPort`              | 将用分号(";")分隔的服务器连接器端口附加到客户端 IP 地址后面。如果设置为 `true`, 则用 `allow` 和 `deny` 配置的表达式会与 `ADDRESS;PORT` 比较, 其中 `ADDRESS` 是客户端 IP 地址, `PORT` 是接收到该请求的 Tomcat 连接器端口。默认值是 `false`。 |
+| `invalidAuthenticationWhenDeny` | 当请求应被拒绝时, 不拒绝, 而是设置一个无效的 `authentication` header。只有当 context 设置了属性 `preemptiveAuthentication="true"` 时才有效。已经存在的 `authentication` header 不会被覆盖。实际上, 即使应用没有配置安全约束, 这也会触发身份验证而不是拒绝。这可以与 `addConnectorPort` 结合使用, 根据客户端以及用于访问应用的连接器来触发身份验证。 |
 
-#### Example 1
+#### 示例 1
 
-To allow access only for the clients connecting from localhost:
+只允许来自 localhost 的客户端访问:
 
 ```
 <Valve className="org.apache.catalina.valves.RemoteAddrValve"
    allow="127\.\d+\.\d+\.\d+|::1|0:0:0:0:0:0:0:1"/>
 ```
 
-#### Example 2
+#### 示例 2
 
-To allow unrestricted access for the clients connecting from localhost but for all other clients only to port 8443:
+允许来自 localhost 的客户端不受限制地访问, 但其他所有客户端只能访问 8443 端口:
 
 ```
 <Valve className="org.apache.catalina.valves.RemoteAddrValve"
@@ -214,9 +214,9 @@ To allow unrestricted access for the clients connecting from localhost but for a
    allow="127\.\d+\.\d+\.\d+;\d*|::1;\d*|0:0:0:0:0:0:0:1;\d*|.*;8443"/>
 ```
 
-#### Example 3
+#### 示例 3
 
-To allow unrestricted access to port 8009, but trigger basic authentication if the application is accessed on another port:
+允许不受限制地访问 8009 端口, 但如果应用是通过其他端口访问的, 则触发基本身份验证:
 
 ```
 <Context>
@@ -232,50 +232,50 @@ To allow unrestricted access to port 8009, but trigger basic authentication if t
 
 #### Remote Host Filter
 
-#### Introduction
+#### 简介
 
-The **Remote Host Filter** allows you to compare the hostname of the client that submitted this request against one or more *regular expressions*, and either allow the request to continue or refuse to process the request from this client. A Remote Host Filter can be associated with any Catalina container ([Engine](https://tomcat.apache.org/tomcat-8.0-doc/config/engine.html), [Host](https://tomcat.apache.org/tomcat-8.0-doc/config/host.html), or [Context](https://tomcat.apache.org/tomcat-8.0-doc/config/context.html)), and must accept any request presented to this container for processing before it will be passed on.
+**Remote Host Filter** 允许你将提交此请求的客户端主机名与一个或多个*正则表达式*进行比较, 从而允许请求继续, 或者拒绝处理来自此客户端的请求。Remote Host Filter 可以关联到任意 Catalina 容器([Engine](https://tomcat.apache.org/tomcat-8.0-doc/config/engine.html)、[Host](https://tomcat.apache.org/tomcat-8.0-doc/config/host.html), 或者 [Context](https://tomcat.apache.org/tomcat-8.0-doc/config/context.html)), 并且必须先接受提交给此容器的任何请求进行处理, 然后才会继续传递。
 
-The syntax for *regular expressions* is different than that for 'standard' wildcard matching. Tomcat uses the `java.util.regex` package. Please consult the Java documentation for details of the expressions supported.
+*正则表达式*的语法与 '标准' 通配符匹配不同。Tomcat 使用 `java.util.regex` 包。关于所支持表达式的细节, 请查阅 Java 文档。
 
-Optionally one can append the server connector port separated with a semicolon (";") to allow different expressions for each connector.
+可选地, 可以附加用分号(";")分隔的服务器连接器端口, 以便为每个连接器配置不同的表达式。
 
-The behavior when a request is refused can be changed to not deny but instead set an invalid `authentication` header. This is useful in combination with the context attribute`preemptiveAuthentication="true"`.
+请求被拒绝时的行为可以改为不拒绝, 而是设置一个无效的 `authentication` header。这与 context 属性 `preemptiveAuthentication="true"` 配合使用时很有用。
 
-**Note:** This filter processes the value returned by method `ServletRequest.getRemoteHost()`. To allow the method to return proper host names, you have to enable "DNS lookups" feature on a **Connector**.
+**注意:** 此 filter 处理的是方法 `ServletRequest.getRemoteHost()` 返回的值。为了让该方法返回正确的主机名, 你必须在 **Connector** 上启用 "DNS lookups" 特性。
 
-See also: [Remote Address Filter](https://tomcat.apache.org/tomcat-8.0-doc/config/valve.html#Remote_Address_Filter), [HTTP Connector](https://tomcat.apache.org/tomcat-8.0-doc/config/http.html) configuration.
+另见: [Remote Address Filter](https://tomcat.apache.org/tomcat-8.0-doc/config/valve.html#Remote_Address_Filter), [HTTP Connector](https://tomcat.apache.org/tomcat-8.0-doc/config/http.html) 配置。
 
-#### Attributes
+#### 属性
 
-The **Remote Host Filter** supports the following configuration attributes:
+**Remote Host Filter** 支持以下配置属性:
 
-| Attribute                       | Description                              |
+| 属性                            | 描述                                       |
 | ------------------------------- | ---------------------------------------- |
-| **className**                   | Java class name of the implementation to use. This MUST be set to **org.apache.catalina.valves.RemoteHostValve**. |
-| `allow`                         | A regular expression (using `java.util.regex`) that the remote client's hostname is compared to. If this attribute is specified, the remote hostname MUST match for this request to be accepted. If this attribute is not specified, all requests will be accepted UNLESS the remote hostname matches a `deny` pattern. |
-| `deny`                          | A regular expression (using `java.util.regex`) that the remote client's hostname is compared to. If this attribute is specified, the remote hostname MUST NOT match for this request to be accepted. If this attribute is not specified, request acceptance is governed solely by the `allow` attribute. |
-| `denyStatus`                    | HTTP response status code that is used when rejecting denied request. The default value is `403`. For example, it can be set to the value `404`. |
-| `addConnectorPort`              | Append the server connector port to the client hostname separated with a semicolon (";"). If this is set to `true`, the expressions configured with `allow` and`deny` is compared against `HOSTNAME;PORT` where `HOSTNAME` is the client hostname and `PORT` is the Tomcat connector port which received the request. The default value is `false`. |
-| `invalidAuthenticationWhenDeny` | When a request should be denied, do not deny but instead set an invalid `authentication` header. This only works if the context has the attribute `preemptiveAuthentication="true"` set. An already existing `authentication` header will not be overwritten. In effect this will trigger authentication instead of deny even if the application does not have a security constraint configured.This can be combined with `addConnectorPort` to trigger authentication depending on the client and the connector that is used to access an application. |
+| **className**                   | 要使用的实现的 Java 类名。必须设置为 **org.apache.catalina.valves.RemoteHostValve**。 |
+| `allow`                         | 一个正则表达式(使用 `java.util.regex`), 远程客户端的主机名会与它进行比较。如果指定了此属性, 则远程主机名必须匹配, 该请求才会被接受。如果未指定此属性, 则所有请求都会被接受, 除非远程主机名匹配某个 `deny` 模式。 |
+| `deny`                          | 一个正则表达式(使用 `java.util.regex`), 远程客户端的主机名会与它进行比较。如果指定了此属性, 则远程主机名必须不匹配, 该请求才会被接受。如果未指定此属性, 请求是否被接受就只由 `allow` 属性决定。 |
+| `denyStatus`                    | 拒绝被拒绝的请求时使用的 HTTP 响应状态码。默认值是 `403`。例如, 可以把它设置为 `404`。 |
+| `addConnectorPort`              | 将用分号(";")分隔的服务器连接器端口附加到客户端主机名后面。如果设置为 `true`, 则用 `allow` 和 `deny` 配置的表达式会与 `HOSTNAME;PORT` 比较, 其中 `HOSTNAME` 是客户端主机名, `PORT` 是接收到该请求的 Tomcat 连接器端口。默认值是 `false`。 |
+| `invalidAuthenticationWhenDeny` | 当请求应被拒绝时, 不拒绝, 而是设置一个无效的 `authentication` header。只有当 context 设置了属性 `preemptiveAuthentication="true"` 时才有效。已经存在的 `authentication` header 不会被覆盖。实际上, 即使应用没有配置安全约束, 这也会触发身份验证而不是拒绝。这可以与 `addConnectorPort` 结合使用, 根据客户端以及用于访问应用的连接器来触发身份验证。 |
 
-### Proxies Support
+### 代理支持(Proxies Support)
 
 #### Remote IP Valve
 
-#### Introduction
+#### 简介
 
-Tomcat port of [mod_remoteip](http://httpd.apache.org/docs/trunk/mod/mod_remoteip.html), this valve replaces the apparent client remote IP address and hostname for the request with the IP address list presented by a proxy or a load balancer via a request headers (e.g. "X-Forwarded-For").
+这是 [mod_remoteip](http://httpd.apache.org/docs/trunk/mod/mod_remoteip.html) 的 Tomcat 移植版, 此 valve 会把请求中表面的客户端远程 IP 地址和主机名, 替换为代理或负载均衡器通过请求 header(例如 "X-Forwarded-For")提供的 IP 地址列表。
 
-Another feature of this valve is to replace the apparent scheme (http/https), server port and `request.secure` with the scheme presented by a proxy or a load balancer via a request header (e.g. "X-Forwarded-Proto").
+此 valve 的另一个功能是, 把表面上的 scheme(http/https)、server port 和 `request.secure` 替换为代理或负载均衡器通过请求 header(例如 "X-Forwarded-Proto")提供的值。
 
-This Valve may be used at the `Engine`, `Host` or `Context` level as required. Normally, this Valve would be used at the `Engine` level.
+此 Valve 可以根据需要用在 `Engine`、`Host` 或 `Context` 级别。通常情况下, 这个 Valve 会用在 `Engine` 级别。
 
-If used in conjunction with Remote Address/Host valves then this valve should be defined first to ensure that the correct client IP address is presented to the Remote Address/Host valves.
+如果与 Remote Address/Host valve 一起使用, 则此 valve 应该先定义, 以确保传递给 Remote Address/Host valve 的是正确的客户端 IP 地址。
 
-**Note:** By default this valve has no effect on the values that are written into access log. The original values are restored when request processing leaves the valve and that always happens earlier than access logging. To pass the remote address, remote host, server port and protocol values set by this valve to the access log, they are put into request attributes. Publishing these values here is enabled by default, but `AccessLogValve` should be explicitly configured to use them. See documentation for `requestAttributesEnabled` attribute of `AccessLogValve`.
+**注意:** 默认情况下, 此 valve 对写入访问日志的值没有影响。当请求处理离开该 valve 时, 会恢复原始值, 而这总是发生在访问日志记录之前。要把此 valve 设置的 remote address、remote host、server port 和 protocol 值传递给访问日志, 会将这些值放入 request 属性中。在此处发布这些值默认是启用的, 但 `AccessLogValve` 应该显式配置为使用它们。参见 `AccessLogValve` 的 `requestAttributesEnabled` 属性文档。
 
-The names of request attributes that are set by this valve and can be used by access logging are the following:
+此 valve 设置的、可供访问日志使用的 request 属性名如下:
 
 - `org.apache.catalina.AccessLog.RemoteAddr`
 - `org.apache.catalina.AccessLog.RemoteHost`
@@ -283,34 +283,34 @@ The names of request attributes that are set by this valve and can be used by ac
 - `org.apache.catalina.AccessLog.ServerPort`
 - `org.apache.tomcat.remoteAddr`
 
-#### Attributes
+#### 属性
 
-The **Remote IP Valve** supports the following configuration attributes:
+**Remote IP Valve** 支持以下配置属性:
 
-| Attribute                  | Description                              |
+| 属性                       | 描述                                       |
 | -------------------------- | ---------------------------------------- |
-| **className**              | Java class name of the implementation to use. This MUST be set to **org.apache.catalina.valves.RemoteIpValve**. |
-| `remoteIpHeader`           | Name of the HTTP Header read by this valve that holds the list of traversed IP addresses starting from the requesting client. If not specified, the default of `x-forwarded-for` is used. |
-| `internalProxies`          | Regular expression (using `java.util.regex`) that a proxy's IP address must match to be considered an internal proxy. Internal proxies that appear in the **remoteIpHeader** will be trusted and will not appear in the **proxiesHeader** value. If not specified the default value of `10\.\d{1,3}\.\d{1,3}\.\d{1,3}|192\.168\.\d{1,3}\.\d{1,3}|169\.254\.\d{1,3}\.\d{1,3}|127\.\d{1,3}\.\d{1,3}\.\d{1,3}|172\.1[6-9]{1}\.\d{1,3}\.\d{1,3}|172\.2[0-9]{1}\.\d{1,3}\.\d{1,3}|172\.3[0-1]{1}\.\d{1,3}\.\d{1,3} `will be used. |
-| `proxiesHeader`            | Name of the HTTP header created by this valve to hold the list of proxies that have been processed in the incoming **remoteIpHeader**. If not specified, the default of `x-forwarded-by` is used. |
-| `requestAttributesEnabled` | Set to `true` to set the request attributes used by AccessLog implementations to override the values returned by the request for remote address, remote host, server port and protocol. Request attributes are also used to enable the forwarded remote address to be displayed on the status page of the Manager web application. If not set, the default value of `true` will be used. |
-| `trustedProxies`           | Regular expression (using `java.util.regex`) that a proxy's IP address must match to be considered an trusted proxy. Trusted proxies that appear in the **remoteIpHeader** will be trusted and will appear in the **proxiesHeader** value. If not specified, no proxies will be trusted. |
-| `protocolHeader`           | Name of the HTTP Header read by this valve that holds the protocol used by the client to connect to the proxy. If not specified, the default of `null` is used. |
-| `portHeader`               | Name of the HTTP Header read by this valve that holds the port used by the client to connect to the proxy. If not specified, the default of `null` is used. |
-| `protocolHeaderHttpsValue` | Value of the **protocolHeader** to indicate that it is an HTTPS request. If not specified, the default of `https` is used. |
-| `httpServerPort`           | Value returned by `ServletRequest.getServerPort()` when the **protocolHeader** indicates `http` protocol and no **portHeader** is present. If not specified, the default of `80` is used. |
-| `httpsServerPort`          | Value returned by `ServletRequest.getServerPort()` when the **protocolHeader** indicates `https` protocol and no **portHeader** is present. If not specified, the default of `443` is used. |
-| `changeLocalPort`          | If `true`, the value returned by `ServletRequest.getLocalPort()` and `ServletRequest.getServerPort()` is modified by the this valve. If not specified, the default of `false` is used. |
+| **className**              | 要使用的实现的 Java 类名。必须设置为 **org.apache.catalina.valves.RemoteIpValve**。 |
+| `remoteIpHeader`           | 此 valve 读取的 HTTP Header 名称, 它保存着从请求客户端开始遍历的 IP 地址列表。如果未指定, 默认使用 `x-forwarded-for`。 |
+| `internalProxies`          | 一个正则表达式(使用 `java.util.regex`), 代理的 IP 地址必须匹配它才会被视为内部代理。出现在 **remoteIpHeader** 中的内部代理会被信任, 并且不会出现在 **proxiesHeader** 的值中。如果未指定, 则使用默认值 `10\.\d{1,3}\.\d{1,3}\.\d{1,3}|192\.168\.\d{1,3}\.\d{1,3}|169\.254\.\d{1,3}\.\d{1,3}|127\.\d{1,3}\.\d{1,3}\.\d{1,3}|172\.1[6-9]{1}\.\d{1,3}\.\d{1,3}|172\.2[0-9]{1}\.\d{1,3}\.\d{1,3}|172\.3[0-1]{1}\.\d{1,3}\.\d{1,3} `。 |
+| `proxiesHeader`            | 此 valve 创建的 HTTP header 名称, 用于保存传入的 **remoteIpHeader** 中已经处理过的代理列表。如果未指定, 默认使用 `x-forwarded-by`。 |
+| `requestAttributesEnabled` | 设置为 `true` 时, 设置 AccessLog 实现使用的 request 属性, 以覆盖请求返回的 remote address、remote host、server port 和 protocol 值。request 属性还用于让转发的远程地址显示在 Manager web 应用的状态页面上。如果未设置, 则使用默认值 `true`。 |
+| `trustedProxies`           | 一个正则表达式(使用 `java.util.regex`), 代理的 IP 地址必须匹配它才会被视为受信任的代理。出现在 **remoteIpHeader** 中的受信任代理会被信任, 并且会出现在 **proxiesHeader** 的值中。如果未指定, 则不会信任任何代理。 |
+| `protocolHeader`           | 此 valve 读取的 HTTP Header 名称, 它保存着客户端连接到代理所用的协议。如果未指定, 默认使用 `null`。 |
+| `portHeader`               | 此 valve 读取的 HTTP Header 名称, 它保存着客户端连接到代理所用的端口。如果未指定, 默认使用 `null`。 |
+| `protocolHeaderHttpsValue` | **protocolHeader** 的值, 用于表明这是一个 HTTPS 请求。如果未指定, 默认使用 `https`。 |
+| `httpServerPort`           | 当 **protocolHeader** 表明是 `http` 协议且不存在 **portHeader** 时, `ServletRequest.getServerPort()` 返回的值。如果未指定, 默认使用 `80`。 |
+| `httpsServerPort`          | 当 **protocolHeader** 表明是 `https` 协议且不存在 **portHeader** 时, `ServletRequest.getServerPort()` 返回的值。如果未指定, 默认使用 `443`。 |
+| `changeLocalPort`          | 如果为 `true`, 则 `ServletRequest.getLocalPort()` 和 `ServletRequest.getServerPort()` 返回的值会被此 valve 修改。如果未指定, 默认使用 `false`。 |
 
 #### SSL Valve
 
-#### Introduction
+#### 简介
 
-When using mod_proxy_http, the client SSL information is not included in the protocol (unlike mod_jk and mod_proxy_ajp). To make the client SSL information available to Tomcat, some additional configuration is required. In httpd, mod_headers is used to add the SSL information as HTTP headers. In Tomcat, this valve is used to read the information from the HTTP headers and insert it into the request.
+使用 mod_proxy_http 时, 客户端的 SSL 信息并不包含在协议中(不像 mod_jk 和 mod_proxy_ajp)。要让 Tomcat 能获取客户端的 SSL 信息, 需要一些额外的配置。在 httpd 中, 使用 mod_headers 把 SSL 信息添加为 HTTP header。在 Tomcat 中, 则使用此 valve 从 HTTP header 中读取信息并插入到请求中。
 
-Note: Ensure that the headers are always set by httpd for all requests to prevent a client spoofing SSL information by sending fake headers.
+注意: 确保 httpd 总是为所有请求设置这些 header, 以防止客户端通过发送伪造的 header 来欺骗 SSL 信息。
 
-To configure httpd to set the necessary headers, add the following:
+要配置 httpd 设置必要的 header, 请添加以下内容:
 
 ```
 <IfModule ssl_module>
@@ -321,124 +321,120 @@ To configure httpd to set the necessary headers, add the following:
 </IfModule>
 ```
 
-#### Attributes
+#### 属性
 
-The **SSL Valve** supports the following configuration attribute:
+**SSL Valve** 支持以下配置属性:
 
-| Attribute                    | Description                              |
+| 属性                         | 描述                                       |
 | ---------------------------- | ---------------------------------------- |
-| **className**                | Java class name of the implementation to use. This MUST be set to **org.apache.catalina.valves.SSLValve**. |
-| `sslClientCertHeader`        | Allows setting a custom name for the ssl_client_cert header. If not specified, the default of `ssl_client_cert` is used. |
-| `sslCipherHeader`            | Allows setting a custom name for the ssl_cipher header. If not specified, the default of `ssl_cipher` is used. |
-| `sslSessionIdHeader`         | Allows setting a custom name for the ssl_session_id header. If not specified, the default of `ssl_session_id` is used. |
-| `sslCipherUserKeySizeHeader` | Allows setting a custom name for the ssl_cipher_usekeysize header. If not specified, the default of `ssl_cipher_usekeysize` is used. |
+| **className**                | 要使用的实现的 Java 类名。必须设置为 **org.apache.catalina.valves.SSLValve**。 |
+| `sslClientCertHeader`        | 允许为 ssl_client_cert header 设置自定义名称。如果未指定, 默认使用 `ssl_client_cert`。 |
+| `sslCipherHeader`            | 允许为 ssl_cipher header 设置自定义名称。如果未指定, 默认使用 `ssl_cipher`。 |
+| `sslSessionIdHeader`         | 允许为 ssl_session_id header 设置自定义名称。如果未指定, 默认使用 `ssl_session_id`。 |
+| `sslCipherUserKeySizeHeader` | 允许为 ssl_cipher_usekeysize header 设置自定义名称。如果未指定, 默认使用 `ssl_cipher_usekeysize`。 |
 
-### Single Sign On Valve
+### 单点登录 Valve(Single Sign On Valve)
 
-#### Introduction
+#### 简介
 
-The *Single Sign On Valve* is utilized when you wish to give users the ability to sign on to any one of the web applications associated with your virtual host, and then have their identity recognized by all other web applications on the same virtual host.
+当你希望让用户可以登录到与你虚拟主机关联的任意一个 web 应用, 然后其身份能被同一虚拟主机上的所有其他 web 应用识别时, 就会用到 *Single Sign On Valve*。
 
-See the [Single Sign On](https://tomcat.apache.org/tomcat-8.0-doc/config/host.html#Single_Sign_On) special feature on the **Host** element for more information.
+更多信息参见 **Host** 元素上的 [Single Sign On](https://tomcat.apache.org/tomcat-8.0-doc/config/host.html#Single_Sign_On) 特殊特性。
 
-#### Attributes
+#### 属性
 
-The **Single Sign On** Valve supports the following configuration attributes:
+**Single Sign On** Valve 支持以下配置属性:
 
-| Attribute                 | Description                              |
+| 属性                      | 描述                                       |
 | ------------------------- | ---------------------------------------- |
-| **className**             | Java class name of the implementation to use. This MUST be set to **org.apache.catalina.authenticator.SingleSignOn**. |
-| `requireReauthentication` | Default false. Flag to determine whether each request needs to be reauthenticated to the security **Realm**. If "true", this Valve uses cached security credentials (username and password) to reauthenticate to the **Realm** each request associated with an SSO session. If "false", the Valve can itself authenticate requests based on the presence of a valid SSO cookie, without rechecking with the **Realm**. |
-| `cookieDomain`            | Sets the host domain to be used for sso cookies. |
+| **className**             | 要使用的实现的 Java 类名。必须设置为 **org.apache.catalina.authenticator.SingleSignOn**。 |
+| `requireReauthentication` | 默认为 false。用于确定是否需要对每个请求向安全 **Realm** 重新进行身份验证的标志。如果为 "true", 此 Valve 会使用缓存的安全凭证(用户名和密码), 对与某个 SSO session 关联的每个请求向 **Realm** 重新进行身份验证。如果为 "false", 此 Valve 可以自行根据有效的 SSO cookie 的存在来对请求进行身份验证, 而无需向 **Realm** 重新核对。 |
+| `cookieDomain`            | 设置用于 sso cookie 的主机域。 |
 
-### Error Report Valve
+### 错误报告 Valve(Error Report Valve)
 
-#### Introduction
+#### 简介
 
-The **Error Report Valve** is a simple error handler for HTTP status codes that will generate and return HTML error pages.
+**Error Report Valve** 是一个简单的 HTTP 状态码错误处理器, 会生成并返回 HTML 错误页面。
 
-**NOTE:** Disabling both showServerInfo and showReport will only return the HTTP status code and remove all CSS.
+**注意:** 同时禁用 showServerInfo 和 showReport 将只返回 HTTP 状态码, 并移除所有 CSS。
 
-#### Attributes
+#### 属性
 
-The **Error Report Valve** supports the following configuration attributes:
+**Error Report Valve** 支持以下配置属性:
 
-| Attribute        | Description                              |
+| 属性             | 描述                                       |
 | ---------------- | ---------------------------------------- |
-| **className**    | Java class name of the implementation to use. This MUST be set to **org.apache.catalina.valves.ErrorReportValve** to use the default error report valve. |
-| `showReport`     | Flag to determine if the error report is presented when an error occurs. If set to `false`, then the error report is not in the HTML response. Default value: `true` |
-| `showServerInfo` | Flag to determine if server information is presented when an error occurs. If set to `false`, then the server version is not returned in the HTML response. Default value: `true` |
+| **className**    | 要使用的实现的 Java 类名。必须设置为 **org.apache.catalina.valves.ErrorReportValve** 才能使用默认的 error report valve。 |
+| `showReport`     | 用于确定发生错误时是否展示错误报告的标志。如果设置为 `false`, 则 HTML 响应中不包含错误报告。默认值: `true` |
+| `showServerInfo` | 用于确定发生错误时是否展示服务器信息的标志。如果设置为 `false`, 则 HTML 响应中不返回服务器版本。默认值: `true` |
 
-### Crawler Session Manager Valve
+### 爬虫会话管理 Valve(Crawler Session Manager Valve)
 
-#### Introduction
+#### 简介
 
-Web crawlers can trigger the creation of many thousands of sessions as they crawl a site which may result in significant memory consumption. This Valve ensures that crawlers are associated with a single session - just like normal users - regardless of whether or not they provide a session token with their requests.
+Web 爬虫爬取站点时可能会触发创建成千上万个 session, 这可能导致内存占用显著增加。此 Valve 确保爬虫 - 就像普通用户一样 - 与单个 session 关联, 无论它们在请求中是否提供了 session token。
 
-This Valve may be used at the `Engine`, `Host` or `Context` level as required. Normally, this Valve would be used at the `Engine` level.
+此 Valve 可以根据需要用在 `Engine`、`Host` 或 `Context` 级别。通常情况下, 这个 Valve 会用在 `Engine` 级别。
 
-If used in conjunction with Remote IP valve then the Remote IP valve should be defined before this valve to ensure that the correct client IP address is presented to this valve.
+如果与 Remote IP valve 一起使用, 则 Remote IP valve 应该先于此 valve 定义, 以确保传递给此 valve 的是正确的客户端 IP 地址。
 
-#### Attributes
+#### 属性
 
-The **Crawler Session Manager Valve** supports the following configuration attributes:
+**Crawler Session Manager Valve** 支持以下配置属性:
 
-| Attribute                 | Description                              |
+| 属性                      | 描述                                       |
 | ------------------------- | ---------------------------------------- |
-| **className**             | Java class name of the implementation to use. This MUST be set to **org.apache.catalina.valves.CrawlerSessionManagerValve**. |
-| `crawlerIps`              | Regular expression (using `java.util.regex`) that client IP is matched against to determine if a request is from a web crawler. By default such regular expression is not set. |
-| `crawlerUserAgents`       | Regular expression (using `java.util.regex`) that the user agent HTTP request header is matched against to determine if a request is from a web crawler. If not set, the default of `.*[bB]ot.*|.*Yahoo! Slurp.*|.*Feedfetcher-Google.*` is used. |
-| `sessionInactiveInterval` | The minimum time in seconds that the Crawler Session Manager Valve should keep the mapping of client IP to session ID in memory without any activity from the client. The client IP / session cache will be periodically purged of mappings that have been inactive for longer than this interval. If not specified the default value of `60`will be used. |
+| **className**             | 要使用的实现的 Java 类名。必须设置为 **org.apache.catalina.valves.CrawlerSessionManagerValve**。 |
+| `crawlerIps`              | 一个正则表达式(使用 `java.util.regex`), 客户端 IP 会与它进行匹配, 以确定请求是否来自 web 爬虫。默认情况下不设置这样的正则表达式。 |
+| `crawlerUserAgents`       | 一个正则表达式(使用 `java.util.regex`), user agent HTTP 请求 header 会与它进行匹配, 以确定请求是否来自 web 爬虫。如果未设置, 则使用默认值 `.*[bB]ot.*|.*Yahoo! Slurp.*|.*Feedfetcher-Google.*`。 |
+| `sessionInactiveInterval` | Crawler Session Manager Valve 在客户端没有任何活动的情况下, 应该在内存中保留客户端 IP 到 session ID 映射的最短时间(秒)。客户端 IP / session 缓存会定期清除不活跃时间超过此间隔的映射。如果未指定, 则使用默认值 `60`。 |
 
-### Stuck Thread Detection Valve
+### 卡住线程检测 Valve(Stuck Thread Detection Valve)
 
-#### Introduction
+#### 简介
 
-This valve allows to detect requests that take a long time to process, which might indicate that the thread that is processing it is stuck. Additionally it can optionally interrupt such threads to try and unblock them.
+此 valve 允许检测处理耗时很长的请求, 这可能表明处理该请求的线程卡住了。此外, 它还可以选择性地中断这类线程, 以尝试解除阻塞。
 
-When such a request is detected, the current stack trace of its thread is written to Tomcat log with a WARN level.
+当检测到此类请求时, 会将该线程的当前堆栈跟踪以 WARN 级别写入 Tomcat 日志。
 
-The IDs and names of the stuck threads are available through JMX in the `stuckThreadIds` and `stuckThreadNames` attributes. The IDs can be used with the standard Threading JVM MBean (`java.lang:type=Threading`) to retrieve other information about each stuck thread.
+卡住线程的 ID 和名称可以通过 JMX 的 `stuckThreadIds` 和 `stuckThreadNames` 属性获取。这些 ID 可以与标准的 Threading JVM MBean(`java.lang:type=Threading`)一起使用, 以获取每个卡住线程的其他信息。
 
-#### Attributes
+#### 属性
 
-The **Stuck Thread Detection Valve** supports the following configuration attributes:
+**Stuck Thread Detection Valve** 支持以下配置属性:
 
-| Attribute                  | Description                              |
+| 属性                       | 描述                                       |
 | -------------------------- | ---------------------------------------- |
-| **className**              | Java class name of the implementation to use. This MUST be set to **org.apache.catalina.valves.StuckThreadDetectionValve**. |
-| `threshold`                | Minimum duration in seconds after which a thread is considered stuck. Default is 600 seconds. If set to 0, the detection is disabled.Note: since the detection (and optional interruption) is done in the background thread of the Container (Engine, Host or Context) declaring this Valve, the threshold should be higher than the `backgroundProcessorDelay` of this Container. |
-| `interruptThreadThreshold` | Minimum duration in seconds after which a stuck thread should be interrupted to attempt to "free" it.Note that there's no guarantee that the thread will get unstuck. This usually works well for threads stuck on I/O or locks, but is probably useless in case of infinite loops.Default is -1 which disables the feature. To enable it, the value must be greater or equal to `threshold`. |
+| **className**              | 要使用的实现的 Java 类名。必须设置为 **org.apache.catalina.valves.StuckThreadDetectionValve**。 |
+| `threshold`                | 线程被视为卡住之前的最短持续时间(秒)。默认是 600 秒。如果设置为 0, 则禁用检测。注意: 由于检测(以及可选的中断)是在声明此 Valve 的 Container(Engine、Host 或 Context)的后台线程中完成的, 因此 threshold 应该高于该 Container 的 `backgroundProcessorDelay`。 |
+| `interruptThreadThreshold` | 尝试"释放"一个卡住的线程而对其发起中断之前的最短持续时间(秒)。注意, 不能保证线程会解除卡住状态。对于卡在 I/O 或锁上的线程, 这通常效果不错, 但在无限循环的情况下可能就没用了。默认是 -1, 表示禁用此特性。要启用它, 该值必须大于或等于 `threshold`。 |
 
-### Semaphore Valve
+### 信号量 Valve(Semaphore Valve)
 
-#### Introduction
+#### 简介
 
-The **Semaphore Valve** is able to limit the number of concurrent request processing threads.
+**Semaphore Valve** 能够限制并发请求处理线程的数量。
 
-**org.apache.catalina.valves.SemaphoreValve** provides methods which may be overridden by a subclass to customize behavior:
+**org.apache.catalina.valves.SemaphoreValve** 提供了一些方法, 子类可以覆盖它们来自定义行为:
 
-- **controlConcurrency** may be overridden to add conditions;
-- **permitDenied** may be overridden to add error handling when a permit isn't granted.
+- **controlConcurrency** 可以被覆盖以添加条件;
+- **permitDenied** 可以被覆盖以在未授予许可时添加错误处理。
 
-#### Attributes
+#### 属性
 
-The **Semaphore Valve** supports the following configuration attributes:
+**Semaphore Valve** 支持以下配置属性:
 
-| Attribute       | Description                              |
+| 属性            | 描述                                       |
 | --------------- | ---------------------------------------- |
-| `block`         | Flag to determine if a thread is blocked until a permit is available. The default value is **true**. |
-| **className**   | Java class name of the implementation to use. This MUST be set to**org.apache.catalina.valves.SemaphoreValve**. |
-| `concurrency`   | Concurrency level of the semaphore. The default value is **10**. |
-| `fairness`      | Fairness of the semaphore. The default value is **false**. |
-| `interruptible` | Flag to determine if a thread may be interrupted until a permit is available. The default value is **false**. |
+| `block`         | 用于确定线程是否会被阻塞直到有可用许可的标志。默认值是 **true**。 |
+| **className**   | 要使用的实现的 Java 类名。必须设置为 **org.apache.catalina.valves.SemaphoreValve**。 |
+| `concurrency`   | 信号量的并发级别。默认值是 **10**。 |
+| `fairness`      | 信号量的公平性。默认值是 **false**。 |
+| `interruptible` | 用于确定在等待可用许可期间线程是否可以被中断的标志。默认值是 **false**。 |
 
 
 
 参考:  <https://www.oxxus.net/tutorials/tomcat/tomcat-valve>
 
 原文链接: <https://tomcat.apache.org/tomcat-8.0-doc/config/valve.html>
-
-
-
-
