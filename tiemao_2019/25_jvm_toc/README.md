@@ -22,7 +22,7 @@ JVM难不难?  自然是 “难者不会，会者不难。”
 
 ## 1. JVM体系结构概述
 
-- Classloder
+- ClassLoader
 - Java虚拟机栈
 - 本地方法栈
 - 程序计数器
