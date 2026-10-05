@@ -5,7 +5,7 @@
 
 一般需要先备份，再进行迁移。
 
-Ubuntu下MySQL的数据目录是 `/var/lib/mysql`, 改变这个目录比较麻烦，所以我们的策略是将目录下的数据迁移到另一个地方，然后使用 ln 软链接将这个目录指向目标地址。
+Ubuntu下MySQL的数据目录是 `/var/lib/mysql`，改变这个目录比较麻烦，所以我们的策略是将目录下的数据迁移到另一个地方，然后使用 ln 软链接将这个目录指向目标地址。
 
 
 
@@ -106,7 +106,7 @@ service mysql stop
 
 文件 `/etc/mysql/mysql.conf.d/mysqld.cnf`
 
-修改以下内容:
+修改以下内容：
 
 ```
 # bind-address          = 127.0.0.1
@@ -156,21 +156,21 @@ flush privileges;
 
 ## 处理文件数量限制
 
-因为数据库太多，建表时报错:
+因为数据库太多，建表时报错：
 
 ```
 [ERROR in query 1] Out of resoucnces when opening file 'xxx' (Ercncode: 24 - Too many open files)
 Execution stopped!
 ```
 
-修改文件 `/etc/systemd/system.conf`, 设置以下内容
+修改文件 `/etc/systemd/system.conf`，设置以下内容
 
 ```
 DefaultLimitNOFILE=infinity
 DefaultLimitMEMLOCK=infinity
 ```
 
-然后执行:
+然后执行：
 
 ```shell
 systemctl daemon-reload
@@ -179,7 +179,7 @@ service mysql restart
 
 ```
 
-参考: https://stackoverflow.com/questions/44006977/how-to-fix-too-many-open-files-in-mysql
+参考： https://stackoverflow.com/questions/44006977/how-to-fix-too-many-open-files-in-mysql
 
 
 
@@ -205,7 +205,7 @@ flush privileges;
 
 ## 主从配置相关
 
-参考:
+参考：
 
 > https://dev.mysql.com/doc/refman/5.7/en/replication-configuration.html
 
@@ -231,7 +231,7 @@ service mysql restart
 
 ```
 
-查看Binlog相关的文件:
+查看Binlog相关的文件：
 
 ```
 # ll /data/hh/mysql/mysql-bin-log*
@@ -329,11 +329,11 @@ CHANGE MASTER TO MASTER_HOST='192.168.1.28',MASTER_PORT=3306,
 SHOW SLAVE STATUS;
 ```
 
-因为之前Dump时指定了 --master-data 信息, 所以可以不指定 MASTER_LOG_FILE 和 MASTER_LOG_POS 值，下面导入时自动覆盖配置。
+因为之前Dump时指定了 --master-data 信息，所以可以不指定 MASTER_LOG_FILE 和 MASTER_LOG_POS 值，下面导入时自动覆盖配置。
 
 
 
-导入数据库:
+导入数据库：
 
 ```
 mysql -u root -p < hh_rr_28_dbdump.db
