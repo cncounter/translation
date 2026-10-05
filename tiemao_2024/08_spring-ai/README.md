@@ -4,7 +4,7 @@
 ## 1. 环境准备
 
 
-首先可以安装 Spring Cli。
+首先可以安装 Spring CLI。
 
 安装包下载页面:
 
@@ -14,7 +14,7 @@
 
 
 
-如果是MAC系统, 可能会有安全限制, 通过 `xattr` 命令可以去除  `@` 属性:
+如果是MAC系统, 可能会有安全限制, 通过 `xattr` 命令可以去除 `@` 属性:
 
 ```sh
 # 查看帮助
@@ -27,7 +27,7 @@ xattr -c spring-cli-standalone-0.9.0-osx.aarch64.zip
 然后再解压即可。
 
 
-如果是安装有 Home Brew 的 MacOS 或者 Linux 系统, 也可以使用以下命令:
+如果是安装有 Homebrew 的 MacOS 或者 Linux 系统, 也可以使用以下命令:
 
 ```sh
 # MAC
@@ -90,7 +90,7 @@ spring boot new --from ai --name myai
 cd myai
 
 # 5. 启动项目;
-./mvw spring-boot:run
+./mvnw spring-boot:run
 
 ```
 
