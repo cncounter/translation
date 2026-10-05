@@ -1,14 +1,14 @@
 # 将网页转换为图片和PDF
 
-> 通过NodeJS调用HeadLess-Chrome来实现。
+> 通过NodeJS调用Headless Chrome来实现。
 
 `Headless` 模式是指没有图形界面(GUI)的程序。
 
-本文先介绍需要使用到的相关技术, 然后再演示如何如何使用 HeadLess-Chrome；比如通过命令行调用， 以及通过NodeJS来调用HeadLess-Chrome。 
+本文先介绍需要使用到的相关技术, 然后再演示如何使用 Headless Chrome；比如通过命令行调用， 以及通过NodeJS来调用Headless Chrome。
 
 至于C++的API调用方式, 请参考官网文档。 Python语言的示例项目: <https://github.com/gslin/twitter2facebook>
 
-使用HeadLess模式-Chrome 的好处是: 
+使用Headless模式Chrome 的好处是:
 
 - 不需要显卡支持, 可以在服务器环境运行, 包括Linux以及Windows系统。
 
@@ -43,7 +43,7 @@ PATH
 chrome http://cncounter.com
 ```
 
-当然，也直接带上一个网址。
+当然，也可以直接带上一个网址。
 
 2.1 生成页面截图
 
@@ -188,9 +188,9 @@ undefined
 
 ```
 
-和Chrome浏览器中的-开发者控制台(Console)很像, 因为都基于V8引擎。
+和Chrome浏览器中的开发者控制台(Console)很像, 因为都基于V8引擎。
 
-npm 全称是 node package manage, 即NodeJS的软件包管理工具.
+npm 全称是 node package manager, 即NodeJS的软件包管理工具。
 
 如果某些安装包被墙, 则可以先安装淘宝的 cnpm 工具, 其使用方式和npm基本上完全一致。
 
@@ -362,7 +362,7 @@ const puppeteer = require('puppeteer');
 node demo-printpdf.js
 ```
 
-稍等片刻, 执行完成后, 即可在指定路径下看到 `cncounter_home.pdf` 文件, 打开试试?
+稍等片刻, 执行完成后, 即可在指定路径下看到 `cncounter_home.pdf` 文件, 打开试试？
 
 更多puppeteer相关的API和配置项请参考: <https://github.com/GoogleChrome/puppeteer/blob/master/docs/api.md>
 
@@ -705,7 +705,7 @@ node express-pdf.js
 
 在浏览器输入地址,加入参数访问即可查看效果:
 
-<http://localhost/pdf.json?callback=http%3A%2F%2Fwww.cncounter.com%2Ftest%2Fcounter.jsp%3Fformat%3Djson&url=http%3A%2F%2Fwww.cncounter.com&path=E%3A%2Fcncounter_home.pdf>
+<http://localhost/printpdf.json?callback=http%3A%2F%2Fwww.cncounter.com%2Ftest%2Fcounter.jsp%3Fformat%3Djson&url=http%3A%2F%2Fwww.cncounter.com&path=E%3A%2Fcncounter_home.pdf>
 
 
 #### 7.4 截屏并保存
