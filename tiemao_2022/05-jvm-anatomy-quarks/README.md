@@ -1,26 +1,48 @@
 # JVM Anatomy Quarks
 
+# JVM 解剖小知识(JVM Anatomy Quarks)
+
 ## About, Disclaimers, Contacts
+
+## 关于、免责声明、联系方式
 
 ["JVM Anatomy Quarks"](https://shipilev.net/jvm/anatomy-quarks/) is the on-going mini-post series, where every post is describing some elementary piece of knowledge about JVM. The name underlines the fact that the single post cannot be taken in isolation, and most pieces described here are going to readily interact with each other.
 
+["JVM Anatomy Quarks"](https://shipilev.net/jvm/anatomy-quarks/) 是一个持续更新的迷你文章系列, 每一篇都会介绍一些关于 JVM 的基础知识。 这个名称强调了一个事实: 单篇文章不能孤立地看待, 这里介绍的多数知识点之间都会相互影响。
+
 The post should take about 5-10 minutes to read. As such, it goes deep for only a single topic, a single test, a single benchmark, a single observation. The evidence and discussion here might be anecdotal, not actually reviewed for errors, consistency, writing 'tyle, syntaxtic and semantically errors, duplicates, or also consistency. Use and/or trust this at your own risk.
+
+每篇文章的阅读时间大约为 5-10 分钟。 因此, 它只针对单个主题、单个测试、单个基准测试、单个观察结果进行深入探讨。 这里的论据和讨论可能只是轶事性的, 实际上并未针对错误、一致性、写作风格、语法和语义错误、重复内容等进行审阅。 使用或信赖这些内容的风险由你自己承担。
 
 ![350](https://shipilev.net/jvm/anatomy-quarks/images/redhat-logo.svg)
 
 **Aleksey Shipilëv, JVM/Performance Geek**
 Shout out at Twitter: [@shipilev](http://twitter.com/shipilev); Questions, comments, suggestions: [aleksey@shipilev.net](mailto:aleksey@shipilev.net)
 
+**Aleksey Shipilëv, JVM/性能极客**
+在 Twitter 上喊话: [@shipilev](http://twitter.com/shipilev); 问题、评论、建议: [aleksey@shipilev.net](mailto:aleksey@shipilev.net)
+
 ## Complete Snapshots
+
+## 完整快照
 
 The series is on-going, the auto-generated complete bundles are here:
 [ePUB](https://shipilev.net/jvm/anatomy-quarks/jvm-anatomy-quarks-complete.epub) (smallest, under MB, Pandoc HTML-to-ePUB)
 [MOBI](https://shipilev.net/jvm/anatomy-quarks/jvm-anatomy-quarks-complete.mobi) (small, around MB, KindleGen ePUB-to-MOBI)
 [PDF](https://shipilev.net/jvm/anatomy-quarks/jvm-anatomy-quarks-complete.pdf) (very large — tens of MBs, high-quality wkhtmltopdf HTML-to-PDF)
 
+这个系列仍在持续更新中, 自动生成的完整合集在这里:
+[ePUB](https://shipilev.net/jvm/anatomy-quarks/jvm-anatomy-quarks-complete.epub) (最小, 不到 1MB, 由 Pandoc 将 HTML 转换为 ePUB)
+[MOBI](https://shipilev.net/jvm/anatomy-quarks/jvm-anatomy-quarks-complete.mobi) (较小, 约 1MB, 由 KindleGen 将 ePUB 转换为 MOBI)
+[PDF](https://shipilev.net/jvm/anatomy-quarks/jvm-anatomy-quarks-complete.pdf) (非常大 — 几十 MB, 由 wkhtmltopdf 高质量地将 HTML 转换为 PDF)
+
 ## Individual Index
 
+## 独立索引
+
 These are convenient to hyperlink around the Internet (easy internet karma points for anyone, folks):
+
+这些短链接便于在互联网上互相引用(各位, 这可以轻松为任何人在网上赚取口碑分):
 
 | Compiler | Runtime | GC   | Library | Link                                                         |
 | :------- | :------ | :--- | :------ | :----------------------------------------------------------- |
