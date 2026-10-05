@@ -71,9 +71,9 @@ Java HotSpot(TM) 64-Bit Server VM 18.9 (build 11.0.6+8-LTS, mixed mode)
 
 简单解读一下;
 
-| -- | -- |
 | 参数名称              | 示例| 说明信息 |
-| ThreadStackSize      | `-XXThreadStackSize=1024`| 单位k字节; 类似于 `-xss1M` 或者 `-ss1M`;  |
+| -- | -- | -- |
+| ThreadStackSize      | `-XX:ThreadStackSize=1024`| 单位k字节; 类似于 `-Xss1M` 或者 `-ss1M`;  |
 
 
 
