@@ -68,7 +68,7 @@ PATH=C:\ProgramData\Oracle\Java\javapath;D:\Develop\Java\jdk1.8.0_65\bin;C:\Wind
 
 也就是 `C:\ProgramData\Oracle\Java\javapath` 这个路径。 打开此目录，可以看到只有3个 exe 文件在其中。
 
-Windows下的 JDK8 和 JDK7, 如果不小心连带安装了JRE, 那更悲剧, 会直接将 java 命令拷贝一份到 `C:\Windows\system32` 目录下, 导致 java 和 javac 命令/不在同一处，或(安装多个JDK时)两者版本不一致, 开发时可能碰到一堆莫名其妙的问题.
+Windows下的 JDK8 和 JDK7, 如果不小心连带安装了JRE, 那更悲剧, 会直接将 java 命令拷贝一份到 `C:\Windows\system32` 目录下, 导致 java 和 javac 命令不在同一处，或(安装多个JDK时)两者版本不一致, 开发时可能碰到一堆莫名其妙的问题.
 
 解决方法有2种:
 
@@ -118,5 +118,5 @@ javac 9
 
 
 
-参考: {Java Magazine 2017年07_08月刊:Java9](http://www.javamagazine.mozaicreader.com/MayJune2017)
+参考: [Java Magazine 2017年07_08月刊:Java9](http://www.javamagazine.mozaicreader.com/MayJune2017)
 
