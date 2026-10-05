@@ -375,7 +375,7 @@ And there are a number of things that _must_ or _must_not_ be assumed:
 
 - (`*`) 对不受 `READ_ONCE()` 和 `WRITE_ONCE()` 保护的内存引用操作, 不能假设编译器会按你的预期处理。 没有这种保护, 编译器将有权进行各种"创造性"的转换, 这在后面的 "编译器屏障" 一节中介绍。
 
-- (`*`) 独立的 loads 和 stores操作, 不能假定他们会以给定的顺序触发。 这意味着:
+- (`*`) 独立的 loads 和 stores操作, 不能假定它们会以给定的顺序触发。 这意味着:
 
 ```c
 X = *A; Y = *B; *D = Z;
@@ -442,7 +442,7 @@ And there are anti-guarantees:
 
 - (`*`) 这些保证不适用于bit字段(bitfields), 因为编译器生成的代码, 通常会以非原子性的 read-modify-write 顺序对其进行修改。不要尝试使用bit字段来同步并行算法。
 
-- (`*`) 即使bit字段受锁保护的情况下, 给定 bitfield 中的所有字段也必须由同一个锁保护。 如果给定 bitfield 中的两个域由不同的锁来保护, 则编译器的非原子性 read-modify-write 顺序会导致对一个 field 的更新破坏相邻 field 的值。
+- (`*`) 即使在bit字段受锁保护的情况下, 给定 bitfield 中的所有字段也必须由同一个锁保护。 如果给定 bitfield 中的两个域由不同的锁来保护, 则编译器的非原子性 read-modify-write 顺序会导致对一个 field 的更新破坏相邻 field 的值。
 
 - (`*`) 这些保证只适用于正确对齐且大小合适的标量变量。 "大小合适(Properly sized)" 的意思是指与 "char", "short", "int" and "long" 大小相同的变量。 "正确对齐(Properly aligned)" 是指自然对齐,  因此对 "char" 没有约束, 对于 "short" 为两个字节对齐, 对于 "int" 为四字节对齐, 对于 "long" 为四字节或八字节对齐, 分别对应在32位和64位系统上。 请注意, 这些保证是C11标准中引入的, 因此在使用C11之前的编译器时要当心（例如 gcc 4.6）。 标准中包含此保证的章节为 Section 3.14, 其中对 "内存位置(memory location)" 的定义如下:
 
@@ -476,7 +476,7 @@ Such enforcement is important because the CPUs and other devices in a system can
 
 内存屏障就是这种干预。 它们对屏障两侧的内存访问操作施加了感知的局部排序。
 
-这种强制很重要, 因为系统中的CPU和其他设备可以使用各种技巧来提高性能, 包括指令重排序, 推迟和组合内存操作。 投机负荷;  投机分支预测和各种类型的缓存。 内存屏障用于覆盖或抑制这些技巧, 从而使代码可以合理地控制多个CPU和/或设备的交互。
+这种强制很重要, 因为系统中的CPU和其他设备可以使用各种技巧来提高性能, 包括指令重排序, 推迟和组合内存操作, 投机加载;  投机分支预测和各种类型的缓存。 内存屏障用于覆盖或抑制这些技巧, 从而使代码可以合理地控制多个CPU和/或设备的交互。
 
 
 VARIETIES OF MEMORY BARRIER
@@ -618,7 +618,7 @@ This means that `ACQUIRE` acts as a minimal "acquire" operation and `RELEASE` ac
 
 在 `RELEASE` 操作之后发生的内存操作, 可能在其完成之前发生。
 
-使用 `ACQUIRE` 和 `RELEASE` 操作一般排除了对其他种类内存屏障的需求。此外, RELEASE+ACQUIRE 不保证可充当完整的内存屏障。 但是, 在对给定变量执行 `ACQUIRE` 之后, 可以保证对该变量进行任何`RELEASE`之前的内存访问都是可见的。 换句话说, 在给定变量的关键部分内, 可以保证对该变量的所有前面关键部分的所有访问均已完成。
+使用 `ACQUIRE` 和 `RELEASE` 操作一般排除了对其他种类内存屏障的需求。此外, RELEASE+ACQUIRE 不保证可充当完整的内存屏障。 但是, 在对给定变量执行 `ACQUIRE` 之后, 可以保证对该变量进行任何`RELEASE`之前的内存访问都是可见的。 换句话说, 在给定变量的临界区内, 可以保证该变量所有先前临界区中的所有访问均已完成。
 
 这意味着 `ACQUIRE` 充当最小 "获取" 操作, `RELEASE`充当最小 "释放" 操作。
 
@@ -635,7 +635,7 @@ Note that these are the _minimum_ guarantees.  Different architectures may give 
 仅在两个CPU之间,或CPU与设备之间可能存在交互的情况下才需要内存屏障。 如果可以保证在任何特定的代码段中都不会发生此类交互, 那么该代码段中就不需要内存屏障。
 
 
-请注意, 这些是最低保证。不同的体系结构可能会提供更多实质性保证, 但是特定于体系结构的代码之外可能不会可靠。
+请注意, 这些是最低保证。不同的体系结构可能会提供更多实质性保证, 但是在特定于体系结构的代码之外可能不可靠。
 
 
 
@@ -660,7 +660,7 @@ There are certain things that the Linux kernel memory barriers do not guarantee:
 下面是Linux内核的内存屏障不能提供保证的事情:
 
 - (`*`) 不保证内存屏障之前的内存访问操作, 都能通过屏障指令的完成而完成。 可以认为屏障只是对CPU的访问队列划了一条线, 使特定类型的内存操作不会交叉。
-- (`*`) 不能保证在一个CPU上发出的内存屏障, 会对其他CPU或者其他硬件件产生直接影响。 间接效果则是其他CPU看到第一个CPU的操作效果发生的顺序, 但请看下一点。
+- (`*`) 不能保证在一个CPU上发出的内存屏障, 会对其他CPU或者其他硬件产生直接影响。 间接效果则是其他CPU看到第一个CPU的操作效果发生的顺序, 但请看下一点。
 - (`*`) 不能保证CPU会从第二个CPU的访问中看到正确的效果顺序, 即使第二个CPU也使用了内存屏障, 除非第一个CPU也使用了匹配的内存屏障。 请参阅 ["SMP barrier pairing"](#SMP_BARRIER_PAIRING) 小节。
 - (`*`) 不能保证某些介于中间的非CPU硬件(off-the-CPU hardware), 不会对内存访问进行重排序。 CPU缓存一致性机制应在CPU之间传播内存屏障的间接影响, 但也可能不这样做。
 
@@ -750,13 +750,13 @@ A data-dependency barrier is not required to order dependent writes because the 
 
 这样就强制了只能发生两种含义之中的一种, 并阻止第三种可能性的出现。
 
-> [!] 请注意, 这种非常违反直觉的情况, 在具有拆分式 cache 的计算机上很容易出现, 例如, 一个缓存库处理偶数缓存行, 另一缓存库处理奇数缓存行。 指针`P`可能会存储在奇数缓存行中, 变量B可以存储在偶数缓存行中。 然后, 如果CPU的偶数缓存读取繁忙, 而奇数存储区处于空闲状态, 则可能会看到指针 `P (&B) `已经变成了新值,  但看到的变量`B`还是旧值 `2` 。
+> [!] 请注意, 这种非常违反直觉的情况, 在具有拆分式 cache 的计算机上很容易出现, 例如, 一个缓存库处理偶数缓存行, 另一缓存库处理奇数缓存行。 指针`P`可能会存储在奇数缓存行中, 变量B可以存储在偶数缓存行中。 然后, 如果读取CPU的偶数缓存库非常繁忙, 而奇数缓存库处于空闲状态, 则可能会看到指针 `P (&B) `已经变成了新值,  但看到的变量`B`还是旧值 `2` 。
 
 
-对于顺序依赖的写入, 不需要数据依赖屏障, 因为Linux内核支持以下情况发生前, CPU不会执行写入:
-- (1) 写入实际发生之前,
-- (2) 确定写入的位置之前,
-- (3) 确定要写入的具体值之前。
+对于顺序依赖的写入, 不需要数据依赖屏障, 因为 Linux 内核支持的 CPU 在确定以下三点之前, 不会执行写入:
+- (1) 写入确实会发生;
+- (2) 写入的位置;
+- (3) 要写入的具体值。
 
 但请仔细阅读 "CONTROL DEPENDENCIES" 章节, 以及 `Documentation/RCU/rcu_dereference.rst` 文件: 编译器可能会以各种匪夷所思的优化手段来打破依赖关系。
 
@@ -855,9 +855,9 @@ Control dependencies pair normally with other types of barriers. That said, plea
 
 Worse yet, if the compiler is able to prove (say) that the value of variable 'a' is always non-zero, it would be well within its rights to optimize the original example by eliminating the "if" statement as follows:
 
-控制依赖通常与其他屏障配对使用。 也就是说, `READ_ONCE()` 和 `WRITE_ONCE() 都是不可省略的！ 如果没有`READ_ONCE()`, 则编译器可能会将 'a' 的load 与 'a' 的其他load组合在一起。 如果没有 `WRITE_ONCE()`, 编译器可能会将 'b' 的 store 与'b'的其他 store 合并。 这两种情况都会造成违反预期顺序的影响。
+控制依赖通常与其他屏障配对使用。 也就是说, `READ_ONCE()` 和 `WRITE_ONCE()` 都是不可省略的！ 如果没有 `READ_ONCE()`, 则编译器可能会将 'a' 的load 与 'a' 的其他load组合在一起。 如果没有 `WRITE_ONCE()`, 编译器可能会将 'b' 的 store 与'b'的其他 store 合并。 这两种情况都会造成违反预期顺序的影响。
 
-更糟糕的是, 如果能够证明变量'a'的值始终为非零, 那么按照约定, 编译器就可以通过消除 "if" 语句来进行优化, 然后就像下面这样:
+更糟糕的是, 如果能够证明变量'a'的值始终为非零, 那么编译器完全有权通过消除 "if" 语句来优化最初的示例, 就像下面这样:
 
 ```c
 q = a;
@@ -870,9 +870,7 @@ It is tempting to try to enforce ordering on identical stores on both branches o
 
 因此, 请不要忽略 `READ_ONCE()`。
 
-编译器试图在 "if" 语句的两个分支上的相同 store 上强制执行排队。
-
-比如有下面的代码:
+有人可能很想在 "if" 语句的两个分支上对相同的 store 强制执行排序, 比如有下面的代码:
 
 ```c
 q = READ_ONCE(a);
@@ -938,7 +936,7 @@ The initial `READ_ONCE()` is still required to prevent the compiler from proving
 
 In addition, you need to be careful what you do with the local variable 'q', otherwise the compiler might be able to guess the value and again remove the needed conditional.  For example:
 
-仍然需要初始的 `READ_ONCE()` 来防止编译器 proving 'a' 的值。
+仍然需要初始的 `READ_ONCE()` 来防止编译器推断出 'a' 的值。
 
 另外, 需要注意对局部变量 'q' 的处理方式, 否则编译器可能会猜测该值并再次删除所需的条件。 例如:
 
@@ -1006,9 +1004,9 @@ This example underscores the need to ensure that the compiler cannot out-guess y
 
 In addition, control dependencies apply only to the then-clause and else-clause of the if-statement in question.  In particular, it does not necessarily apply to code following the if-statement:
 
-此示例强调了确保编译器不会猜测您的代码的需要。 更通用地讲, 尽管 `READ_ONCE()` 确实会强制编译器针对给定的 load 操作生成代码, 但不会强制编译器使用他的结果。
+此示例强调了需要确保编译器无法猜透您的代码。 更通用地讲, 尽管 `READ_ONCE()` 确实会强制编译器针对给定的 load 操作生成代码, 但不会强制编译器使用它的结果。
 
-此外, 控制依赖项仅适用于所讨论的if语句的子句和 else-子句。 特别是, 它不一定适用于 if 语句后面的代码:
+此外, 控制依赖项仅适用于所讨论的if语句的 then-子句和 else-子句。 特别是, 它不一定适用于 if 语句后面的代码:
 
 ```c
 q = READ_ONCE(a);
@@ -1022,7 +1020,7 @@ WRITE_ONCE(c, 1);  /* BUG: No ordering against the read from 'a'. */
 
 It is tempting to argue that there in fact is ordering because the compiler cannot reorder volatile accesses and also cannot reorder the writes to 'b' with the condition.  Unfortunately for this line of reasoning, the compiler might compile the two writes to 'b' as conditional-move instructions, as in this fanciful pseudo-assembly language:
 
-这段代码试图想要说明代码是有序的, 因为编译器无法对 volatile 易失性访问进行重排序,  也无法根据条件对 'b' 的写操作进行重排序。 不幸的是, 出于这种推理, 编译器可能会将这两个对b的写操作作为条件移动指令进行编译, 例如在这种奇妙的伪汇编语言中:
+有人可能想争辩说这里实际上是有顺序的, 因为编译器无法对 volatile 易失性访问进行重排序,  也无法根据条件对 'b' 的写操作进行重排序。 但不幸的是, 这种推理行不通: 编译器可能会将这两个对b的写操作作为条件移动指令进行编译, 例如在这种奇妙的伪汇编语言中:
 
 ```c
 ld r1,a
@@ -1039,7 +1037,7 @@ A weakly ordered CPU would have no dependency of any sort between the load from 
 Note well that the ordering provided by a control dependency is local to the CPU containing it.  See the section on "Multicopy atomicity" for more information.
 
 
-顺序较弱的CPU在从 'a' load, 和 store 到 'c' 之间将没有任何依赖关系。 控制依赖项将仅扩展到这对 cmov 指令和依赖它们的store。 简而言之, 控制依赖项仅适用于所讨论的if语句的子句和else子句中的store（包括由这两个子句调用的函数）, 而不适用于if语句之后的代码。
+顺序较弱的CPU在从 'a' load, 和 store 到 'c' 之间将没有任何依赖关系。 控制依赖项将仅扩展到这对 cmov 指令和依赖它们的store。 简而言之, 控制依赖项仅适用于所讨论的if语句的then子句和else子句中的store（包括由这两个子句调用的函数）, 而不适用于if语句之后的代码。
 
 
 请注意, 控制依赖项提供的排序是包含它的CPU本地的。 更多信息, 请参见 [2.5.3 多副本原子性](#MULTICOPY_ATOMICITY) 部分。
@@ -1173,7 +1171,7 @@ STORE E = 5
 
 This sequence of events is committed to the memory coherence system in an order that the rest of the system might perceive as the unordered set of `{ STORE A, STORE B, STORE C }` all occurring before the unordered set of `{ STORE D, STORE E }`:
 
-事件序列提交给内存一致性系统(memory coherence system):  而系统的其余部分可以将 `{ STORE A, STORE B, STORE C }` 视为无序的集合,只要它们都发生另一个无序集合 `{ STORE D, STORE E }` 之前:
+事件序列提交给内存一致性系统(memory coherence system):  而系统的其余部分可以将 `{ STORE A, STORE B, STORE C }` 视为无序的集合, 只要它们都发生在另一个无序集合 `{ STORE D, STORE E }` 之前:
 
 
 ```c
@@ -1219,7 +1217,7 @@ Secondly, data dependency barriers act as partial orderings on data-dependent lo
 
 Without intervention, CPU 2 may perceive the events on CPU 1 in some effectively random order, despite the write barrier issued by CPU 1:
 
-如果没有干预(intervention), 即使 CPU 1 发出了写屏障, 但 CPU 2 还是可能会以某种优化的随机顺序感知到CPU 1上的事件。
+如果没有干预(intervention), 即使 CPU 1 发出了写屏障, 但 CPU 2 还是可能会以某种有效的随机顺序感知到CPU 1上的事件。
 
 
 ```c
@@ -1437,7 +1435,7 @@ Even though the two loads of A both occur after the load of B, they may both com
 
 But it may be that the update to A from CPU 1 becomes perceptible to CPU 2 before the read barrier completes anyway:
 
-但无论如何, 在读屏障完成之前, CPU 2 一定可以感知到 CPU 1 对 A 执行的更新:    
+但也有可能, 在读屏障完成之前, CPU 2 就已经感知到 CPU 1 对 A 执行的更新:
 
 ```c
   +-------+       :      :                :       :
@@ -1662,7 +1660,7 @@ General barriers can compensate not only for non-multicopy atomicity, but can al
 
 通用屏障不仅可以补偿非多副本原子性, 还可以生成额外的排序, 以确保所有 CPU 都以相同的顺序感知到各种操作。
 相比之下, 具有 release-acquire 对的链不提供这种额外的排序, 意味着只有链上的 CPU 才能保证对访问的组合顺序达成一致。
-例如, 根据 Herman Hollerith 的鬼影迁移到 C 代码:
+例如, 为了向 Herman Hollerith 的幽灵致敬, 换成 C 代码:
 
 
 ```c
@@ -1739,7 +1737,7 @@ However, please keep in mind that smp_load_acquire() is not magic. In particular
 
 尽管 cpu0()、cpu1() 和 cpu2() 会按顺序看到它们各自的读取和写入, 但不在 release-acquire 链中的 CPU 很可能在顺序上存在分歧。
 这种分歧源于这样一种事实, 即用于实现 `smp_load_acquire()` 和 `smp_store_release()` 的弱内存屏障指令, 不需要在所有情况下针对后续load对先前store保证顺序。
-这意味着 cpu3() 可以看到 cpu0() 对 u 的 store 发生在 cpu1() 从 v 读取值之后, 即使 cpu0() 和 cpu1() 都同意这两个操作按预期顺序发生.
+这意味着 cpu3() 可以看到 cpu0() 对 u 的 store 发生在 cpu1() 从 v 读取值之后, 即使 cpu0() 和 cpu1() 都同意这两个操作按预期顺序发生。
 
 但请记住 `smp_load_acquire()` 并不魔幻。 它只是从参数中按顺序读取。 但不保证将读取到某个特定值。 因此, 以下结果是可能的:
 
@@ -1935,7 +1933,7 @@ Into this:
 
 This transformation is a win for single-threaded code because it gets rid of a load and a branch.  The problem is that the compiler will carry out its proof assuming that the current CPU is the only one updating variable 'a'.  If variable 'a' is shared, then the compiler's proof will be erroneous.  Use `READ_ONCE()` to tell the compiler that it doesn't know as much as it thinks it does:
 
-这种转换对于单线程代码来说是优势, 因为它摆脱了负载和分支的开销。
+这种转换对于单线程代码来说是有利的, 因为它省掉了一次 load 和一次分支的开销。
 问题是编译器将执行其证明, 假设当前 CPU 是唯一会更新变量"a"的存在。
 如果变量 'a' 是共享的, 那么编译器的证明将是错误的。
 使用 `READ_ONCE()` 可以告诉编译器不能推断它的值:
@@ -2024,7 +2022,7 @@ There is nothing to prevent the compiler from transforming process_level() to th
 
 If the interrupt occurs between these two statement, then `interrupt_handler()` might be passed a garbled msg.  Use `WRITE_ONCE()` to prevent this as follows:
 
-如果在这两个语句之间发生中断, 则 `interrupt_handler()` 中的函数调用可能会传如一个乱码参数。 使用 `WRITE_ONCE()` 来防止这种情况:
+如果在这两个语句之间发生中断, 则 `interrupt_handler()` 中的函数调用可能会传入一个乱码参数。 使用 `WRITE_ONCE()` 来防止这种情况:
 
 ```c
   void process_level(void)
@@ -2047,7 +2045,7 @@ You should assume that the compiler can move `READ_ONCE()` and `WRITE_ONCE()` pa
 
 This effect could also be achieved using `barrier()`, but `READ_ONCE()` and `WRITE_ONCE()` are more selective:  With `READ_ONCE()` and `WRITE_ONCE()`, the compiler need only forget the contents of the indicated memory locations, while with `barrier()` the compiler must discard the value of all memory locations that it has currently cached in any machine registers.  Of course, the compiler must also respect the order in which the `READ_ONCE()`s and `WRITE_ONCE()`s occur, though the CPU of course need not do so.
 
-请注意, 如果中断处理程序本身还可以被能读写 'flag' 和 'msg' 的其他程序中断, 例如嵌套中断或NMI, 则 `interrupt_handler()` 中也需要使用 `READ_ONCE()` 和 `WRITE_ONCE()` 来包装器。
+请注意, 如果中断处理程序本身还可以被能读写 'flag' 和 'msg' 的其他程序中断, 例如嵌套中断或NMI, 则 `interrupt_handler()` 中也需要使用 `READ_ONCE()` 和 `WRITE_ONCE()` 来进行包装。
 否则, 除了用于文档演示的目的之外,  `interrupt_handler()` 中不需要使用 `READ_ONCE()` 和 `WRITE_ONCE()`。
 还要注意, 嵌套中断通常不会出现在现代 Linux 内核中, 事实上, 如果中断处理程序在启用中断的情况下返回, 您将得到一个 `WARN_ONCE()` 告警。
 
@@ -2100,7 +2098,7 @@ The compiler can also invent loads.  These are usually less damaging, but they c
 
 - (`*`) For aligned memory locations whose size allows them to be accessed with a single memory-reference instruction, prevents "load tearing" and "store tearing," in which a single large access is replaced by multiple smaller accesses.  For example, given an architecture having 16-bit store instructions with 7-bit immediate fields, the compiler might be tempted to use two 16-bit store-immediate instructions to implement the following 32-bit store:
 
-- (`*`) 对于允许使用单个内存引用指令来访问的, 对齐过的内存位置, 防止"load撕裂"和"store撕裂", 其中单个大访问被多个较小访问替换。 例如, 在某种体系结构下, 用 16 位store指令, 和 7 位是即时数字段,  编译器可能会尝试使用两个 16 位的即时存储指令(store-immediate)来实现以下 32 位store:
+- (`*`) 对于允许使用单个内存引用指令来访问的, 对齐过的内存位置, 防止"load撕裂"和"store撕裂", 其中单个大访问被多个较小访问替换。 例如, 在具有 16 位 store 指令和 7 位立即数字段(immediate field)的体系结构下,  编译器可能会尝试使用两个 16 位的立即数存储指令(store-immediate)来实现以下 32 位store:
 
 ```c
   p = 0x00010002;
@@ -2139,7 +2137,7 @@ Use of packed structures can also result in load and store tearing, as in this e
 
 Because there are no `READ_ONCE()` or `WRITE_ONCE()` wrappers and no volatile markings, the compiler would be well within its rights to implement these three assignment statements as a pair of 32-bit loads followed by a pair of 32-bit stores.  This would result in load tearing on 'foo1.b' and store tearing on 'foo2.b'.  `READ_ONCE()` and `WRITE_ONCE()` again prevent tearing in this example:
 
-因为没有 `READ_ONCE()` 或 `WRITE_ONCE()` 包装器, 也没有 volatile 标记, 编译器完全可以将这三个赋值语句实现为一对 32 位的 load, 然后是一对 32-位的 stores。
+因为没有 `READ_ONCE()` 或 `WRITE_ONCE()` 包装器, 也没有 volatile 标记, 编译器完全可以将这三个赋值语句实现为一对 32 位的 load, 然后是一对 32 位的 stores。
 这将导致 'foo1.b' 上的load撕裂和 'foo2.b' 上的store撕裂。 `READ_ONCE()` 和 `WRITE_ONCE()` 在这个例子中同样可以防止撕裂:
 
 ```c
@@ -2220,7 +2218,7 @@ There are some more advanced barrier functions:
 
   As an example, consider a piece of code that marks an object as being dead and then decrements the object's reference count:
 
-  这两个函数用于原子 RMW 函数, 不包含隐式的内存屏障, 但代码需要内存屏障的的情况。
+  这两个函数用于原子 RMW 函数, 它们不包含隐式的内存屏障, 但代码又需要内存屏障的情况。
   不包含隐式内存屏障的原子 RMW 函数的示例, 比如 加、减、（失败）条件操作、 _relaxed 函数, 但不是 `atomic_read` 或 `atomic_set`。 可能需要内存屏障的一个常见例子, 是用于引用计数的原子操作。
 
   这些也用于不隐含内存屏障的RMW 原子位操作函数（例如 `set_bit` 和 `clear_bit`）。
@@ -2278,7 +2276,7 @@ There are some more advanced barrier functions:
   See the subsection "[Kernel I/O barrier effects](#KERNEL_IO_BARRIER_EFFECTS) " for more information on relaxed I/O accessors and the `Documentation/core-api/dma-api.rst` file for more information on consistent memory.
 
   `dma_rmb()` 允许我们保证: 从描述符读取数据之前, 设备已释放了所有权;
-  而 `dma_wmb()` 允许我们保证: 在设备看到之前, 就将数据写入了描述符。
+  而 `dma_wmb()` 允许我们保证: 在设备看到自己已获得所有权之前, 数据就已经写入描述符。
   请注意, 在使用 `writel()` 时, 不需要在前面的 `wmb()` 来保证在写入 MMIO 区域之前已完成缓存一致性内存写入。
   更便宜的  `writel_relaxed()` 不提供此保证, 不能在此处使用。
 
@@ -2295,7 +2293,7 @@ There are some more advanced barrier functions:
   这个函数与持久内存一起使用, 以确保将修改对应的store写入持久存储, 到达平台持久域。
 
   例如, 在对 pmem 区域进行非临时写入后, 我们使用 `pmem_wmb()` 来确保store已达到平台持久性域。
-  这确保在初始化任何由后续指令引起的数据访问或数据传输之前, store已更新到持久存储。 这是 `wmb()` 完成的排序的补充。
+  这确保在后续指令引发的任何数据访问或数据传输发起之前, store已更新到持久存储。 这是 `wmb()` 完成的排序的补充。
 
   对于从持久内存load, 现有的内存读屏障足以确保读取顺序。
 
@@ -2422,7 +2420,7 @@ Similarly, the reverse case of a `RELEASE` followed by an `ACQUIRE` does not imp
 
 当 `ACQUIRE` 和 `RELEASE` 分别是锁的获取和释放时, 如果锁的 `ACQUIRE` 和 `RELEASE` 是同一个锁变量, 那么同样的重排序可以发生, 但只有从另一个不持有那个锁的 CPU 角度来看是这样。 简而言之, 一个 `ACQUIRE` 后跟一个 `RELEASE` 可能`不`被认为是一个完整的内存屏障。
 
-类似地, 顺序调过来, 先是 `ACQUIRE`, 后面跟着 `RELEASE` 的情况也不代表完整的内存屏障。 因此, CPU 对 `RELEASE` 和 `ACQUIRE` 对应的临界区的执行可能会交叉, 例如下面的代码:
+类似地, 顺序调过来, 先是 `RELEASE`, 后面跟着 `ACQUIRE` 的情况也不代表完整的内存屏障。 因此, CPU 对 `RELEASE` 和 `ACQUIRE` 对应的临界区的执行可能会交叉, 例如下面的代码:
 
 ```c
   *A = a;
@@ -2452,7 +2450,7 @@ One key point is that we are only talking about the CPU doing the reordering, no
 
 But suppose the CPU reordered the operations. In this case, the unlock precedes the lock in the assembly code. The CPU simply elected to try executing the later lock operation first. If there is a deadlock, this lock operation will simply spin (or try to sleep, but more on that later). The CPU will eventually execute the unlock operation (which preceded the lock operation in the assembly code), which will unravel the potential deadlock, allowing the lock operation to succeed.
 
-一个关键点是我们只讨论了 CPU 重排序, 而没有讨论编译器重排序。如果编译器调换了操作顺序（对开发人员有影响）, 则可能会发生死锁。
+一个关键点是我们只讨论了 CPU 重排序, 而没有讨论编译器重排序。 如果编译器（或者开发人员）调换了操作顺序, 则可能会发生死锁。
 
 但是假设 CPU 执行了重排序操作。 在这种情况下, 在汇编代码中解锁先于锁定。
 CPU 只是选择先尝试执行后面的锁定操作。
@@ -2540,7 +2538,7 @@ Firstly, the sleeper normally follows something like this sequence of events:
 ### 4.3 睡眠和唤醒函数
 
 在全局数据中标记的事件上睡眠和唤醒, 可以被视为两个数据之间的交互:  等待事件的任务的状态, 以及用于指示事件的全局数据。
-为了确保他们以正确的顺序发生, 开始进入睡眠过程的原语和启动唤醒过程的原语蕴含着某些屏障。
+为了确保它们以正确的顺序发生, 开始进入睡眠过程的原语和启动唤醒过程的原语蕴含着某些屏障。
 
 首先, 睡眠者通常跟在某些操作后面, 例如以下事件序列:
 
@@ -2898,10 +2896,10 @@ Once it has queued itself and dropped the semaphore lock, the waiter does not ge
 
 Consider then what might happen to the above sequence of events:
 
-如果这些步骤中的任何一个出错, 那么整个设备都可能出现故障。
+如果这些步骤中的任何一个出错, 那么整个流程都可能出现故障。
 
 一旦它把自己加入队列并放弃信号量锁, 等待者就不会再次获得锁； 它在继续之前只是等待其任务指针被清除。
-由于记录是存放在 waiter 的栈上, 这意味着: 假如在读取列表中的后续指针之前, 任务指针就先被清除了, 则另一个 CPU 可能会开始处理 waiter 并可能在 `up*()` 函数有机会阅读后续指针之前, 破坏 waiter 的栈。
+由于记录是存放在 waiter 的栈上, 这意味着: 假如在读取列表中的后续指针之前, 任务指针就先被清除了, 则另一个 CPU 可能会开始处理 waiter 并可能在 `up*()` 函数有机会读取后续指针之前, 破坏 waiter 的栈。
 
 那么考虑上述事件序列可能会发生什么:
 
@@ -2929,7 +2927,7 @@ This could be dealt with using the semaphore lock, but then the down_xxx() funct
 
 The way to deal with this is to insert a general SMP memory barrier:
 
-这种情况可以使用信号量锁来处理, 但是 down_xxx() 函数在被唤醒后只能（不必要地)再次获取自旋锁。
+这种情况可以使用信号量锁来处理, 但是 down_xxx() 函数在被唤醒后不得不（不必要地）再次获取自旋锁。
 
 处理这种情况的方法是插入一个通用的 SMP 内存屏障:
 
@@ -2963,7 +2961,7 @@ See Documentation/atomic_t.txt for more information.
 <a name="ATOMIC_OPERATIONS"></a>
 ### 6.2 原子操作
 
-虽然在技术上, 这是处理器间交互的考虑因素, 但需要特别说一下原子操作: 其中一些原子操作隐式包含着完整的内存屏障, 另一些没有, 但它们在整个过程中作为系统内核的一个组被高度依赖。
+虽然在技术上, 这是处理器间交互的考虑因素, 但需要特别说一下原子操作: 其中一些原子操作隐式包含着完整的内存屏障, 另一些没有, 但它们作为一个整体在整个内核中被高度依赖。
 
 更多信息, 请参阅 `Documentation/atomic_t.txt`。
 
@@ -3094,7 +3092,7 @@ The `readX()` and `writeX()` MMIO accessors take a pointer to the peripheral bei
 
 5. A `readX()` by a CPU thread from the peripheral will complete before any subsequent `delay()` loop can begin execution on the same thread. This ensures that two MMIO register writes by the CPU to a peripheral will arrive at least 1us apart if the first write is immediately read back with `readX()` and `udelay(1)` is called prior to the second `writeX()`:
 
-5. CPU 线程从外围设备执行的  `readX()` 读取,  将在同一线程上的任何后续的 `delay()` 循环开始执行之前完成。 这确保了 CPU 对外围设备的两次 MMIO 寄存器写入至少相隔 1us, 如果第一次写入使用 `readX()` 立即回读, 并且在第二次 `writeX() 之前调用 `udelay(1)`:
+5. CPU 线程从外围设备执行的  `readX()` 读取,  将在同一线程上的任何后续的 `delay()` 循环开始执行之前完成。 这确保了 CPU 对外围设备的两次 MMIO 寄存器写入至少相隔 1us, 如果第一次写入使用 `readX()` 立即回读, 并且在第二次 `writeX()` 之前调用 `udelay(1)`:
 
 
 ```c
@@ -3120,7 +3118,7 @@ These are similar to `readX()` and `writeX()`, but provide weaker memory orderin
 
 The `readsX()` and `writesX()` MMIO accessors are designed for accessing register-based, memory-mapped FIFOs residing on peripherals that are not capable of performing DMA. Consequently, they provide only the ordering guarantees of `readX_relaxed()` and `writeX_relaxed()`, as documented above.
 
-`readsX()` 和 `writesX()` 这两个MMIO访问器专门设计了用来访问, 基于寄存器的, 内存映射 FIFO的, 不能执行 DMA 驻留的外设。 因此, 它们仅提供 `readX_relaxed()` 和 `writeX_relaxed()` 的排序保证, 如上文所述。
+`readsX()` 和 `writesX()` 这两个MMIO访问器专为访问基于寄存器的内存映射 FIFO 而设计, 这些 FIFO 位于不能执行 DMA 的外设上。 因此, 它们仅提供 `readX_relaxed()` 和 `writeX_relaxed()` 的排序保证, 如上文所述。
 
 ### (`*`) `inX()`, `outX()`:
 
@@ -3132,7 +3130,7 @@ Device drivers may expect `outX()` to emit a non-posted write transaction that w
 
 `inX()` 和 `outX()` 这两个访问器旨在访问传统的端口映射 I/O 外设, 在某些体系结构（特别是x86架构）上这可能需要特殊指令。 被访问的外围设备端口号通过函数参数来传递。
 
-由于许多 CPU 架构最终通过内部虚拟内存来映射这些外设访问, 因此 `inX()` 和 `outX()` 提供的可移植排序保证与 `readX()` 和 `writeX()` 提供的保证相同, 区别只在这两个函数是用来访问具有默认 I/O 属性的映射。
+由于许多 CPU 架构最终通过内部虚拟内存映射来访问这些外设, 因此当访问具有默认 I/O 属性的映射时, `inX()` 和 `outX()` 提供的可移植排序保证与 `readX()` 和 `writeX()` 分别提供的保证相同。
 
 设备驱动程序可能期望 `outX()` 发出一个非发布的写事务, 在返回之前等待来自 I/O 外设的完成响应。 这不是所有架构都能保证的, 因此不是可移植排序语义的一部分。
 
@@ -3151,7 +3149,7 @@ With the exception of the string accessors (`insX()`, `outsX()`, `readsX()` and 
 
 这些将根据他们实际执行的访问类型适当地执行, 无论是 `inX()`/`outX()` 或 `readX()`/`writeX()`。
 
-除了字符串访问器（`insX()`、`outsX()`、`readsX()` 和`writesX()` ）, 以上列出的其他函数都假设底层外设是小端排序的(little-endian), 因此将在大端排列的架构上将要执行的字节交换操作(byte-swapping)。
+除了字符串访问器（`insX()`、`outsX()`、`readsX()` 和`writesX()` ）, 以上列出的其他函数都假设底层外设是小端排序的(little-endian), 因此将在大端排序的架构上执行字节交换操作(byte-swapping)。
 
 
 ========================================
@@ -3278,7 +3276,7 @@ Amongst these properties is usually the fact that such accesses bypass the cachi
 
 内存映射 I/O 通常是通过内存位置进行的, 这些内存位置是 CPU 内存地址空间中窗口的一部分, 该窗口具有与通常的 RAM 定向窗口不同的属性。
 
-在这些属性中, 通常这样的访问完全绕过缓存并直接进入设备总线。 这意味着 MMIO 访问实际上可能会在先前发出的缓存内存的访问之前到达。 在这种情况下, 内存屏障是不够的, 如果两者有任何依赖关系的话, 必须在缓存内存写入和 MMIO 访问之间刷新缓存, 。
+在这些属性中, 通常这样的访问完全绕过缓存并直接进入设备总线。 这意味着 MMIO 访问实际上可能会在先前发出的缓存内存的访问之前到达。 在这种情况下, 仅靠内存屏障是不够的, 如果两者有任何依赖关系的话, 必须在缓存内存写入和 MMIO 访问之间刷新缓存。
 
 
 =========================
@@ -3334,7 +3332,7 @@ Reality is, of course, much messier.  With many CPUs and compilers, the above as
 
 - (`*`) 在与内存或 I/O 硬件交互时, 如果这些硬件支持对相邻位置进行批量访问的话, 就可以组合多个load操作和/或store操作, 以提高性能, 从而降低事务设置成本（内存和 PCI 设备都会有）;
 
-- (`*`) CPU 的data cache可能会影响指令顺序, 虽然缓存一致性机制可以缓解这种情况, 如果store操作实际命中缓存的话, 但一致性管理并不保证会传播到其他 CPU。
+- (`*`) CPU 的data cache可能会影响指令顺序, 虽然缓存一致性机制可以缓解这种情况（前提是store操作实际命中了缓存）, 但一致性管理并不保证会按顺序传播到其他 CPU。
 
 So what another CPU, say, might actually observe from the above piece of code is:
 
@@ -3457,11 +3455,11 @@ To handle this case optimally, low-level virt_mb() etc macros are available. The
 
 These are equivalent to `smp_mb()` etc counterparts in all other respects, in particular, they do not control MMIO effects: to control MMIO effects, use mandatory barriers.
 
-即使在虚拟机中运行的程序是在没有 SMP 支持的情况下编译的, 这些访客也可能会受到 SMP 效果的影响。 这是在UP内核的SMP宿主机上运行产品。 对这种场景使用强制性障碍是可能的, 但一般不是最理想的方案。
+即使虚拟机中运行的程序是在没有 SMP 支持的情况下编译的, 这些访客也可能会受到 SMP 效果的影响。 这是运行 UP 内核的同时与 SMP 宿主机交互而产生的问题。 对这种场景使用强制性障碍是可能的, 但一般不是最理想的方案。
 
-为了最佳地处理这种情况, 可以使用底层的 `virt_mb()` 等宏函数。 当启用 SMP 时, 它们与 `smp_mb()` 具有相同的效果, 但是会为 SMP 和非 SMP 系统生成等效的代码。 例如, 虚拟机访客在（可能是 SMP的）主机上进行同步时, 会使用 `virt_mb()` 而不是 `smp_mb()`。
+为了最佳地处理这种情况, 可以使用底层的 `virt_mb()` 等宏函数。 当启用 SMP 时, 它们与 `smp_mb()` 具有相同的效果, 但是会为 SMP 和非 SMP 系统生成等效的代码。 例如, 虚拟机访客在（可能是 SMP的）主机上进行同步时, 应该使用 `virt_mb()` 而不是 `smp_mb()`。
 
-这些在其他所有方面都等价于 `smp_mb()` 的对应函数 特别是, 它们不控制 MMIO 效果: 要控制 MMIO 效果, 请使用强制障碍。
+这些在其他所有方面都等价于 `smp_mb()` 等对应的函数。 特别是, 它们不控制 MMIO 效果: 要控制 MMIO 效果, 请使用强制障碍。
 
 ============
 EXAMPLE USES
